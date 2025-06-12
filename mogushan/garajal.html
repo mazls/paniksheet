@@ -35,34 +35,15 @@
     
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
         <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
-        <p class="mb-4">Gara'jal ist ein einphasiger Kampf, der in zwei Welten stattfindet. Der Kampf ist ein harter DPS-Check mit einem 6-minütigen Enrage-Timer. Die Koordination zwischen den Spielern in der normalen Welt und der Geisterwelt ist entscheidend.</p>
+        <p class="mb-4">Gara'jal der Geisterbinder ist der dritte Boss im Mogu'shangewölbe. Der Kampf erinnert an Valiona und Theralion im heroischen Modus der Bastion des Zwielichts und gliedert sich in eine Hauptphase, die zwischen der realen Welt und einer Geisterwelt wechselt. Der Kampf ist ein harter DPS-Check mit einem 6-minütigen Enrage-Timer. Die Koordination zwischen den Spielern in der normalen Welt und der Geisterwelt ist entscheidend.</p>
         <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Geisterwelt:</strong> Spieler müssen regelmäßig über <strong class="text-cyan-400">Geistertotems</strong> in die Geisterwelt wechseln, um dort <strong class="text-purple-300">Schattenhafte Günstlinge</strong> zu töten. Diese verursachen sonst massiven Raidschaden. In der Geisterwelt erhält man durch Heilung den starken Buff <strong class="text-yellow-400">Geistige Beseelung</strong>.</li>
-            <li><strong>Voodoopuppe:</strong> Gara'jal verbindet den Tank und mehrere Spieler. 70% des Schadens auf eine Puppe wird auf die anderen übertragen. Dies erfordert hohe Aufmerksamkeit von den Heilern, besonders auf den Tank.</li>
-            <li><strong>Verbannung & Spott:</strong> Wenn die Voodoopuppe ausläuft, wird der Tank in die Geisterwelt verbannt. Der zweite Tank muss sofort spotten.</li>
-            <li><strong>Soft Enrage:</strong> Bei 20% Gesundheit kann niemand mehr in die Geisterwelt wechseln, wodurch der Raidschaden schnell ansteigt. Dies ist die Burn-Phase.</li>
+            <li><strong>Voodoopuppen:</strong> Gara'jal fixiert den Tank und mehrere weitere zufällige Helden. Erhält der fixierte Tank Schaden, kopiert er 70% des Schadens auf die anderen Voodoopuppen. Dieser Debuff verschwindet, wenn der Tank stirbt oder in die Geisterwelt verbannt wird. Die betroffenen Spieler können nicht über das Geistertotem in die Geisterwelt wechseln.</li>
+            <li><strong>Geisterwelt:</strong> Spieler müssen regelmäßig über <strong class="text-cyan-400">Geistertotems</strong> in die Geisterwelt wechseln, um dort <strong class="text-purple-300">Schattenhafte Diener</strong> zu töten. Diese verursachen sonst massiven Raidschaden in der realen Welt.</li>
+            <li><strong>Bannung:</strong> Ist ein Tank in der Schattenwelt, muss er dort als einziger einen Seelentrenner angreifen und binnen 30 Sekunden töten, um zurück in die normale Welt zu gelangen. Gelingt ihm dies nicht, stirbt er.</li>
+            <li><strong>Geistertotem & Übertreten:</strong> Der Boss erschafft in regelmäßigen Abständen ein Geistertotem. Wird dieses vernichtet, werden die nächsten 3 (10-Spieler) bzw. 5 (25-Spieler) Charaktere im Umkreis von sechs Metern in die Geisterwelt teleportiert und verlieren 70% ihrer aktuellen Gesundheit.</li>
+            <li><strong>Revitalisierter Geist & Seelenrückkehr:</strong> Um aus der Geisterwelt zurückzukehren, müssen sich die Spieler einmal vollständig heilen lassen. Sie erhalten dann einen Extra-Knopf ("Seelenrückkehr"), mit dem sie sofort zurückkehren können. Bei vollständiger Heilung stellt sich kurzzeitig ihre Ressource schneller wieder her. Spieler können maximal 30 Sekunden in der Geisterwelt bleiben, bevor sie sterben.</li>
+            <li><strong>Wutanfall (Soft Enrage):</strong> Ab 20% seiner verbleibenden Gesundheit hört Gara'jal auf, Geistertotems zu erschaffen. Außerdem erhöht sich sein verursachter Schaden um 25% sowie seine Angriffsgeschwindigkeit um 50%. Der Kampf muss nach sechs Minuten beendet sein.</li>
         </ul>
-    </section>
-
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Die Welten im Detail</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-             <div class="bg-slate-750 p-4 rounded-lg">
-                <h3 class="text-xl font-bold text-white">Normale Welt</h3>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li><strong class="text-cyan-400">Geistertotem:</strong> Wird alle 20s beschworen. Wenn es zerstört wird, werden die nächsten Spieler in die Geisterwelt geschickt (<span data-size="10" class="tactic-content"><strong>3 Spieler</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>5 Spieler</strong></span>).</li>
-                    <li><strong class="text-orange-400">Voodoopuppe:</strong> Betrifft den Tank + <span data-size="10" class="tactic-content"><strong>2 zufällige Spieler</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>3 zufällige Spieler</strong></span>. Verlinkter Schaden erfordert starke Heilung auf alle Ziele.</li>
-                </ul>
-             </div>
-             <div class="bg-slate-750 p-4 rounded-lg">
-                <h3 class="text-xl font-bold text-purple-400">Geisterwelt</h3>
-                 <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li><strong>Aufenthalt:</strong> Maximal 30 Sekunden, sonst stirbt man. Ein Debuff zeigt die verbleibende Zeit.</li>
-                    <li><strong class="text-green-300">Seele zurückbringen:</strong> Um die Welt zu verlassen, muss man auf 100% Leben geheilt werden, damit der Aktions-Button erscheint.</li>
-                    <li><strong>Aufgabe:</strong> <strong class="text-purple-300">Schattenhafte Günstlinge</strong> schnell töten, um den Raidschaden zu reduzieren.</li>
-                </ul>
-             </div>
-        </div>
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
@@ -151,15 +132,51 @@
                     <div>
                         <h4 class="text-lg font-semibold">Positionierung für "Voodoopuppe"</h4>
                         <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
-                                                    </div>
+                                                   </div>
                     </div>
                      <div>
                         <h4 class="text-lg font-semibold">Video Guide</h4>
                         <div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500">
-                                                    </div>
+                                                   </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Boss-Fähigkeiten und Schadenswerte</h2>
+
+        <!-- Allgemeine Fähigkeiten -->
+        <div class="mb-4">
+            <h3 class="text-xl font-bold text-white">Gara'jal der Geisterbinder (Phasenübergreifend)</h3>
+            <ul class="list-disc list-inside space-y-1 text-gray-300 mt-2">
+                <li><strong>Voodoopuppen:</strong> Der aktuelle Tank sowie <span data-size="10" class="tactic-content">zwei weitere Charaktere</span><span data-size="25" class="tactic-content" style="display: inline-block;">drei weitere Charaktere</span> erhalten diesen Schwächungszauber. 70% des erhaltenen Schadens wird auf die anderen Voodoopuppen kopiert. Der Tank kann keine Bedrohung verlieren. Verschwindet beim Tod oder wenn der Tank in die Schattenwelt verbannt wird.</li>
+                <li><strong>Bannung:</strong> Tank muss den Seelentrenner binnen 30 Sekunden vernichten, um zurück in die normale Welt zu gelangen. Gelingt dies nicht, stirbt der Tank.</li>
+                <li><strong>Übertreten:</strong> Tötet man ein Geistertotem, treten die nächsten <span data-size="10" class="tactic-content">drei</span><span data-size="25" class="tactic-content" style="display: inline-block;">fünf</span> Charaktere innerhalb von sechs Metern in die Geisterwelt über. Sie verlieren 70% ihrer aktuellen Trefferpunkte und müssen die Geisterwelt innerhalb von 30 Sekunden verlassen, um nicht zu sterben.</li>
+                <li><strong>Revitalisierter Geist:</strong> Werden Charaktere in der Geisterwelt vollständig geheilt, können sie über "Seelenrückkehr" zurückkehren. Sie erhalten über zwölf Sekunden einen klassen- und spezialisierungsabhängigen Buff zur schnelleren Ressourcenregeneration.</li>
+                <li><strong>Wutanfall:</strong> Bei 20% Gesundheit hört Gara'jal auf, Geistertotems zu erschaffen. Sein verursachter Schaden erhöht sich um 25% und seine Angriffsgeschwindigkeit um 50%.</li>
+            </ul>
+        </div>
+
+        <!-- Fähigkeiten Schattenhafter Diener -->
+        <div class="mb-4">
+            <h3 class="text-xl font-bold text-white">Schattenhafter Diener (in der Geisterwelt)</h3>
+            <ul class="list-disc list-inside space-y-1 text-gray-300 mt-2">
+                <li><strong>Spirituelle Umklammerung:</strong> Fügt einem zufällig gewählten Charakter in der normalen Welt <span data-size="10" class="tactic-content">43.200 bis 52.800</span><span data-size="25" class="tactic-content" style="display: inline-block;">63.000 bis 77.000</span> Punkte Schattenschaden zu.</li>
+                <li><strong>Schattenblitz:</strong> Verursacht an einem zufällig gewählten Charakter in der Schattenwelt <span data-size="10" class="tactic-content">18.500 bis 21.500</span><span data-size="25" class="tactic-content" style="display: inline-block;">20.350 bis 23.650</span> Punkte Schattenschaden.</li>
+            </ul>
+        </div>
+
+        <!-- Heroische Anpassungen -->
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-400">Heroische Anpassungen (10- & 25-Spieler)</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2">
+                <li>Nach dem Entkommen aus der Schattenwelt kann man für 30 Sekunden nicht erneut in diese. Eine strikte Rotation bei den Totems ist Pflicht.</li>
+                <li>Bei der "Bannung" erscheinen drei Seelentrenner: Einer ist nur für den Tank angreifbar, die anderen beiden können von allen Charakteren in der Schattenwelt angegriffen werden.</li>
+                <li>Stirbt ein Seelentrenner, erleidet ein zufällig gewählter Charakter in der normalen Welt Schattenschaden, der auch in einem kleinen Umkreis spürbar ist.</li>
+                <li>Alle Fähigkeiten haben erhöhten Schaden und erhöhte Gesundheitswerte der Bosse.</li>
+            </ul>
         </div>
     </section>
 </main>

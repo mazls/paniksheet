@@ -36,38 +36,16 @@
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
         <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
         <p class="mb-4">
-            Der Kampf besteht aus zwei Phasen. In <strong>Phase 1</strong> (90 Sek.) kämpft der Raid gegen Wellen von drei verschiedenen Terrakotta-Adds. In <strong>Phase 2</strong> werden die beiden Bosse, <strong>Jan-xi</strong> und <strong>Qin-xi</strong>, aktiv, während die Add-Wellen weiter spawnen. Der Kampf ist ein permanenter Test der Add-Kontrolle und des räumlichen Bewusstseins.
+            Der Wille des Kaisers ist der letzte Boss im Mogu'shangewölbe. Der Kampf findet in einem leeren Raum statt, in dem nacheinander viele Soldaten aus Stein erwachen. Der Kampf gestaltet sich dauerhaft als eine Schlacht mit unterschiedlichen Gegnerarten (Adds), zu denen sich nach 90 Sekunden Kampfzeit auch noch die beiden Zwillingsbosse Jan-xi und Qin-xi hinzugesellen.
         </p>
          <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Add-Priorität:</strong> Der Schlüssel zum Sieg ist das schnelle Töten der Adds in der richtigen Reihenfolge: 1. <strong class="text-orange-400">Mut</strong> (Tank-Fixierer), 2. <strong class="text-yellow-400">Stärke</strong> (Flächen-Stunner), 3. <strong class="text-red-500">Zorn</strong> (Spieler-Fixierer, kann gekitet/CCt werden).</li>
-            <li><strong>Boss-Positionierung:</strong> In Phase 2 müssen die beiden Bosse weit auseinander getankt werden, um überlappende Angriffe zu vermeiden.</li>
-            <li><strong>Verheerende Kombo:</strong> Beide Bosse kanalisieren regelmäßig eine Serie von Angriffen. Nahkämpfer und Tanks müssen den Animationen ausweichen, um massiven Schaden und einen Rüstungs-Debuff zu vermeiden. Erfolgreiches Ausweichen belohnt mit einem <strong class="text-yellow-400">Opportunistischen Schlag</strong> für extra Schaden.</li>
-            <li><strong>Titangas:</strong> Ein periodischer Buff/Debuff, der den Schaden aller erhöht. Dies ist die ideale Phase für Cooldowns und Heldentum.</li>
+            <li><strong>Add-Priorität:</strong> Der Schlüssel zum Sieg ist das schnelle Töten der Adds in der richtigen Reihenfolge: 1. <strong class="text-orange-400">Mut des Kaisers</strong> (Tank-Fixierer), 2. <strong class="text-yellow-400">Stärke des Kaisers</strong> (Flächen-Stunner), 3. <strong class="text-red-500">Zorn des Kaisers</strong> (Spieler-Fixierer, kann gekitet/CCt werden).</li>
+            <li><strong>Boss-Positionierung:</strong> In Phase 2 müssen die beiden Bosse Jan-xi und Qin-xi weit auseinander getankt werden (jeder an eine der Treppen im Süden), um überlappende Angriffe zu vermeiden. Tanks kümmern sich ab dann nur noch um ihren jeweiligen Boss.</li>
+            <li><strong>Vernichtende Kombo:</strong> Beide Bosse kanalisieren regelmäßig eine Serie von fünf Attacken. Nahkämpfer und Tanks müssen den Animationen blitzschnell ausweichen, um massiven Schaden und einen Rüstungs-Debuff zu vermeiden. Erfolgreiches Ausweichen belohnt mit einem <strong class="text-yellow-400">Opportunistischen Schlag</strong> für extra Schaden.</li>
+            <li><strong>Titangas:</strong> Alle zweieinhalb Minuten wird der gesamte Raum mit "Titanengas" geflutet (20.000 Frostschaden/Sek., +50% Schaden für alle Gegner). Dies ist die ideale Phase für defensive und offensive Cooldowns. Während des Gases erscheinen keine neuen Konstrukte.</li>
         </ul>
     </section>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Phase 1: Die Terrakotta-Armee</h2>
-        <p class="mb-3">Alle 15 Sekunden spawnen Wellen von drei verschiedenen Add-Typen aus Nischen in der Wand. Die Add-Anzahl variiert je nach Raidgröße.</p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h3 class="text-xl font-bold text-orange-400">Mut des Kaisers</h3>
-                <p class="mt-2">Fixiert einen Tank und kann nur von hinten angegriffen werden. Muss verlangsamt und schnell getötet werden, bevor er den Tank erreicht und ihn mit <strong class="text-white">Impeding Thrust</strong> verlangsamt.</p>
-                 <div class="mt-2 text-sm text-gray-400">Spawnt <span data-size="10" class="tactic-content"><strong>1 Add</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>2 Adds</strong></span> pro Welle.</div>
-            </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h3 class="text-xl font-bold text-yellow-400">Stärke des Kaisers</h3>
-                <p class="mt-2">Hat eine normale Aggro-Liste und wirkt einen Flächen-Stun (<strong class="text-white">Energiegeladenes Schmettern</strong>), dessen Radius mit jedem Einsatz wächst. Muss schnell getötet werden, damit der Nahkampfbereich spielbar bleibt.</p>
-                 <div class="mt-2 text-sm text-gray-400">Spawnt <span data-size="10" class="tactic-content"><strong>1 Add</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>2 Adds</strong></span> pro Welle.</div>
-            </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h3 class="text-xl font-bold text-red-500">Zorn des Kaisers</h3>
-                <p class="mt-2">Fixiert zufällige Spieler und verfolgt sie. Anfällig für alle Arten von CC (Stuns, Verlangsamung). Sollte kontrolliert und gekitet werden, bis die höherpriorisierte Adds tot sind.</p>
-                 <div class="mt-2 text-sm text-gray-400">Spawnt <span data-size="10" class="tactic-content"><strong>2 Adds</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>4 Adds</strong></span> pro Welle.</div>
-            </div>
-        </div>
-    </section>
-    
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
         <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -192,6 +170,104 @@
                     <div><h4 class="text-lg font-semibold">Video Guide</h4><div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500"></div></div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Fähigkeiten und Schadenswerte</h2>
+
+        <!-- Gemeinsame Fähigkeiten -->
+        <div class="mb-4">
+            <h3 class="text-xl font-bold text-white">Gemeinsame Fähigkeiten (Jan-xi & Qin-xi)</h3>
+            <ul class="list-disc list-inside space-y-1 text-gray-300 mt-2">
+                <li><strong>Magnetrüstung:</strong> Tanks dürfen sich nicht weiter als 16 Meter vom Boss entfernen, sonst werden sie sofort zurückgezogen.</li>
+                <li><strong>Vernichtende Combo:</strong> Nach ca. 20 Sekunden Energieaufbau. Eine Kombination aus fünf zufälligen Angriffen.
+                    <ul class="list-circle list-inside ml-4">
+                        <li><strong>Verwüstender Bogen:</strong> Trifft einen 180-Grad-Bereich (25m Reichweite) vor dem Boss. 200.000 Schaden und 30s stapelbarer Debuff (-10% Rüstung/Stapel).</li>
+                        <li><strong>Stampfen:</strong> Hebt den Fuß, nach 2s 150.000 Schaden und 2s Stun im Umkreis von 12 Metern.</li>
+                        <li>Erfolgreiches Ausweichen der kompletten Combo belohnt den Raid mit einem "Opportunistischen Schlag" (500.000 Schaden für den Boss).</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 10-Spieler Modus -->
+        <div data-size="10" class="tactic-content">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">10-Spieler-Modus</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Zorn des Kaisers -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-red-500">Zorn des Kaisers (Kleines Add)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li>Erscheinen immer im Doppelpack aus den Nischen im Norden (alle ~30s).</li>
+                        <li>Fixieren sich auf einen Charakter. Anfällig für alle Arten von Gegnerkontrolle (Verlangsamung, Festwurzelung, Betäubung).</li>
+                        <li>Verursachen Nahkampfschaden.</li>
+                    </ul>
+                </div>
+                <!-- Mut des Kaisers -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-orange-400">Mut des Kaisers (Großes Add, Tank-Fixierer)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li>Erscheinen aus den Nischen an der Seite des Raumes. Fixieren den am weitesten entfernten Tank.</li>
+                        <li><strong>Hindernder Stoß:</strong> Wenn er den Tank erreicht: Leichter Schaden + stapelbarer Debuff (25% langsamer für 10s pro Stapel; bei 4 Stapeln bewegungsunfähig).</li>
+                        <li>Anfällig gegen Verlangsamungseffekte. Kann nur von hinten getroffen werden.</li>
+                    </ul>
+                </div>
+                <!-- Stärke des Kaisers -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-yellow-400">Stärke des Kaisers (Großes Add, Flächen-Stun)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li>Erscheinen im Nordwesten und Nordosten des Raumes (alle ~50s).</li>
+                        <li>Immun gegen Gegnerkontrolle. Normale Bedrohungsliste.</li>
+                        <li><strong>Aufgeladenes Schmettern:</strong> Nach 2s: 150.000 Schaden im Umkreis von 10 Metern, betäubt getroffene Charaktere für 2s. Radius erhöht sich mit jedem Schmettern um 1 Meter.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 25-Spieler Modus -->
+        <div data-size="25" class="tactic-content" style="display: block;">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">25-Spieler-Modus</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Zorn des Kaisers -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-red-500">Zorn des Kaisers (Kleines Add)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li>Erscheinen immer im Doppelpack aus den Nischen im Norden (alle ~30s).</li>
+                        <li>Fixieren sich auf einen Charakter. Anfällig für alle Arten von Gegnerkontrolle (Verlangsamung, Festwurzelung, Betäubung).</li>
+                        <li>Verursachen Nahkampfschaden.</li>
+                    </ul>
+                </div>
+                <!-- Mut des Kaisers -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-orange-400">Mut des Kaisers (Großes Add, Tank-Fixierer)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li>Erscheinen aus den Nischen an der Seite des Raumes. Fixieren den am weitesten entfernten Tank.</li>
+                        <li><strong>Hindernder Stoß:</strong> Wenn er den Tank erreicht: Leichter Schaden + stapelbarer Debuff (25% langsamer für 10s pro Stapel; bei 4 Stapeln bewegungsunfähig).</li>
+                        <li>Anfällig gegen Verlangsamungseffekte. Kann nur von hinten getroffen werden.</li>
+                    </ul>
+                </div>
+                <!-- Stärke des Kaisers -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-yellow-400">Stärke des Kaisers (Großes Add, Flächen-Stun)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li>Erscheinen im Nordwesten und Nordosten des Raumes (alle ~50s).</li>
+                        <li>Immun gegen Gegnerkontrolle. Normale Bedrohungsliste.</li>
+                        <li><strong>Aufgeladenes Schmettern:</strong> Nach 2s: 150.000 Schaden im Umkreis von 10 Metern, betäubt getroffene Charaktere für 2s. Radius erhöht sich mit jedem Schmettern um 1 Meter.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heroische Anpassungen -->
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-400">Heroische Anpassungen (10- & 25-Spieler)</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2">
+                <li>Jeder der vier Mogu-Add-Typen (Zorn, Mut, Stärke, Jan-xi/Qin-xi) erhält eine neue, heroische Fähigkeit.</li>
+                <li><strong>Jan-xi & Qin-xi:</strong> Erhalten einen Wuteffekt, der die Energieleiste doppelt so schnell füllt, wenn sie auf ihr Schild geschlagen werden. Oder können sie sich mit einem magischen Schild stärken, das sie immun gegen Angriffe macht und bei Attacken zurückschlägt.</li>
+                <li><strong>Zorn des Kaisers:</strong> Können Titanfunken absondern, die Spieler soaken müssen.</li>
+                <li>Alle Fähigkeiten haben erhöhten Schaden und erhöhte Gesundheitswerte der Adds/Bosse.</li>
+            </ul>
         </div>
     </section>
 </main>

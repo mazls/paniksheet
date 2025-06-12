@@ -35,26 +35,17 @@
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
         <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
-        <p class="mb-4">Elegon ist ein komplexer, mehrphasiger Kampf, der sich um einen Zyklus aus drei Phasen dreht. Dieser Zyklus wiederholt sich zweimal. Der Kampfraum ist in einen <strong class="text-cyan-300">Inneren Ring</strong> und einen <strong class="text-gray-400">Äußeren Ring</strong> unterteilt.</p>
+        <p class="mb-4">Elegon ist der vorletzte Boss im Mogu'shangewölbe. Der Kampf mit dem Drachen gliedert sich in insgesamt drei Phasen, die Ihr bewältigen müsst und sich in einem Zyklus wiederholen.</p>
         <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Phase 1 (Boss-Phase):</strong> Bekämpft Elegon und seine <strong class="text-white">Himmlischen Beschützer</strong> im Inneren Ring. Hauptaufgabe ist das Management des <strong class="text-red-400">Überladen</strong>-Debuffs durch kurzes Betreten des Äußeren Rings und das korrekte Töten der Adds im Äußeren Ring.</li>
+            <li><strong>Phase 1 (Boss-Phase):</strong> Bekämpft Elegon und seine <strong class="text-white">Himmlischen Beschützer</strong>. Der Energievortex in der Mitte erhöht euren Schaden/Heilung, aber ihr erhaltet auch den stapelbaren <strong class="text-red-400">Überladen</strong>-Debuff.</li>
             <li><strong>Phase 2 (Add-Wellen):</strong> Elegon wird immun. Der Raid muss so viele Wellen von <strong class="text-yellow-400">Energieladungen</strong> wie möglich töten, um einen permanenten Schadens-Debuff auf dem Boss zu stapeln.</li>
-            <li><strong>Phase 3 (Säulen-Phase):</strong> Der Boden des Inneren Rings verschwindet. Der Raid teilt sich auf, um 6 <strong class="text-white">Empyreale Foki</strong> im Äußeren Ring zu zerstören, die durch tödliche <strong class="text-red-500">Energieleiter</strong> verbunden sind.</li>
+            <li><strong>Phase 3 (Säulen-Phase):</strong> Der Boden des Inneren Rings verschwindet. Der Raid teilt sich auf, um 6 <strong class="text-white">Himmlische Fokusse</strong> im Äußeren Ring zu zerstören, die durch tödliche <strong class="text-red-500">Energieleiter</strong> verbunden sind.</li>
         </ul>
-    </section>
-
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Heroische Mechaniken</h2>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-             <li><strong>Sichtlinie:</strong> Es gibt eine Sichtlinien-Blockade zwischen dem Inneren und Äußeren Ring. Man kann nicht von einem Bereich in den anderen heilen oder Schaden machen.</li>
-             <li><strong class="text-red-500">Totale Vernichtung (neu):</strong> Die Explosion des Beschützers trifft nur Spieler im selben Ring, in dem er stirbt (also im Äußeren Ring). Es muss eine Mindestanzahl an Spielern den Schaden abfangen ("soaken"), sonst explodiert der ganze Raid.
-                <ul>
-                   <li data-size="10" class="tactic-content ml-4 list-disc">Mindestens <strong>1 Spieler</strong> muss soaken.</li>
-                   <li data-size="25" class="tactic-content ml-4 list-disc" style="display: inline-block;">Mindestens <strong>3 Spieler</strong> müssen soaken.</li>
-                </ul>
-             </li>
-              <li>Spieler, die den Schaden abfangen, erhalten den Debuff <strong class="text-gray-400">Destabilisiert</strong> und können 2 Minuten lang keinen weiteren "Soak" überleben. Dies erfordert eine feste Soak-Rotation.</li>
-        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Phase 1:</strong> Ein Tank hält Elegon vom Raid weg. Der andere Tank kümmert sich um die <strong class="text-white">Himmlischen Beschützer</strong>. Diese werden im Vortex getankt bis 25% Leben, dann außerhalb des Vortex getötet, um den <strong class="text-red-400">Überladen</strong>-Debuff zurückzusetzen. Spieler im Vortex müssen ihren <strong class="text-red-400">Überladen</strong>-Stapel im Auge behalten und den Vortex kurz verlassen, um ihn zurückzusetzen.</p>
+        <p class="mb-2"><strong>Phase 2:</strong> Nahkämpfer positionieren sich in der Mitte, Fernkämpfer verteilen sich am Rand des Vortex, um die <strong class="text-yellow-400">Energieladungen</strong> schnell zu töten. Ziel ist es, möglichst viele Wellen zu besiegen, um Elegon anfälliger für Schaden zu machen.</p>
+        <p class="mb-2"><strong>Phase 3:</strong> Der Raid teilt sich auf, um die <strong class="text-white">Himmlischen Fokusse</strong> zu zerstören. Achtet auf die <strong class="text-red-500">Energieleiter</strong> und die <strong class="text-blue-400">Energiekaskaden</strong>. Tanks sammeln die daraus entstehenden Adds ein. Nach Zerstörung aller Fokusse beginnt Phase 1 von Neuem.</p>
+        <p class="mb-4">Der Kampf endet nach 9 Minuten und 45 Sekunden mit einem Soft-Enrage.</p>
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
@@ -80,7 +71,7 @@
                 <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Heiler-Einteilung</h3>
                 <div class="space-y-4">
                     <div>
-                        <label for="elegon-healer1" class="block font-semibold mb-1">Heiler 1 (Innener Ring):</label>
+                        <label for="elegon-healer1" class="block font-semibold mb-1">Heiler 1 (Innerer Ring):</label>
                         <div class="flex items-center">
                             <select id="elegon-healer1" class="assignment-select" data-assignment-id="elegon-healer1"></select>
                         </div>
@@ -159,6 +150,86 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Boss-Fähigkeiten und Schadenswerte</h2>
+
+        <!-- 10-Spieler Modus -->
+        <div data-size="10" class="tactic-content">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">10-Spieler-Modus</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Elegon Fähigkeiten -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-cyan-300">Elegon (Phase 1, 2 & 3)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Berührung der Titanen (P1+P2):</strong> Im Energievortex: +50% Schaden/Heilung, alle 5s 1 Stapel <strong class="text-red-400">Überladen</strong>.</li>
+                        <li><strong>Überladen (P1+P2):</strong> Erhöht erhaltenen Schaden um 5% je Stapel. Verschwindet beim Verlassen des Vortex.</li>
+                        <li><strong>Himmlischer Atem (P1):</strong> Kegelförmiger Arkanschaden (60 Grad vor Boss): 57.000-63.000/0.5s über 1.5s.</li>
+                        <li><strong>Greifende Energietentakel (P1):</strong> Wenn kein Charakter in Nahkampfreichweite: Zieht alle Charaktere heran und verursacht 166.250-183.750 Arkanschaden.</li>
+                        <li><strong>Strahlungsenergie (P1, ab 50% HP):</strong> Regelmäßig 16.625-18.375 Arkanschaden im Vortex, 47.500-52.500 außerhalb.</li>
+                        <li><strong>Beschützer materialisieren (P1):</strong> Beschwört einen Himmlischen Beschützer.</li>
+                        <li><strong>Energiewiederaufladung (P2):</strong> Beschwört 6 Energieladungen, die sich zu den Fokusse bewegen. Pro getöteter Welle: Elegon erhält <strong class="text-yellow-400">Kraftentzug</strong> (+10% erlittener Schaden). Jede Welle 20% schneller. Explosion einer Ladung: 32.062-35.437 Arkanschaden.</li>
+                        <li><strong>Instabile Energie (P3):</strong> Alle Charaktere erhalten regelmäßig 17.100-18.900 Arkanschaden.</li>
+                        <li><strong>Energiekaskade (P3):</strong> Einschlag verursacht 166.250-183.750 Arkanschaden im Umkreis (5m) und lässt einen Kosmischen Funken erscheinen (Nahkampf-Add).</li>
+                        <li><strong>Himmlischer Fokus (P3):</strong> Strahlt Energie zur Wand aus. Berührung: 190.000-210.000 Arkanschaden/0.5s. Stirbt ein Fokus: Elegon erhält +20% Zaubergeschwindigkeit und Schaden.</li>
+                    </ul>
+                </div>
+                <!-- Himmlischer Beschützer Fähigkeiten -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-gray-400">Himmlischer Beschützer (Phase 1)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Phasenverschiebung:</strong> >25% HP: 90% weniger Schaden außerhalb des Energievortex.</li>
+                        <li><strong>Überspringende Energie:</strong> Fügt zwei zufälligen Charakteren 90.250-99.750 Arkanschaden zu. Hinterlässt einen magischen Debuff (-50% erhaltene Heilung für 20s).</li>
+                        <li><strong>Stabilitätsfluss:</strong> <25% HP: Verursacht jede Sekunde 21.375-23.625 Arkanschaden an allen Charakteren.</li>
+                        <li><strong>Totale Vernichtung:</strong> Bei Tod: Explodiert und verursacht 195.000-205.000 Arkanschaden an allen Charakteren.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 25-Spieler Modus -->
+        <div data-size="25" class="tactic-content" style="display: block;">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">25-Spieler-Modus</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Elegon Fähigkeiten -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-cyan-300">Elegon (Phase 1, 2 & 3)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Berührung der Titanen (P1+P2):</strong> Im Energievortex: +50% Schaden/Heilung, alle 5s 1 Stapel <strong class="text-red-400">Überladen</strong>.</li>
+                        <li><strong>Überladen (P1+P2):</strong> Erhöht erhaltenen Schaden um 5% je Stapel. Verschwindet beim Verlassen des Vortex.</li>
+                        <li><strong>Himmlischer Atem (P1):</strong> Kegelförmiger Arkanschaden (60 Grad vor Boss): 61.750-68.250/0.5s über 1.5s.</li>
+                        <li><strong>Greifende Energietentakel (P1):</strong> Wenn kein Charakter in Nahkampfreichweite: Zieht alle Charaktere heran und verursacht 213.750-236.250 Arkanschaden.</li>
+                        <li><strong>Strahlungsenergie (P1, ab 50% HP):</strong> Regelmäßig 16.625-18.375 Arkanschaden im Vortex, 47.500-52.500 außerhalb.</li>
+                        <li><strong>Beschützer materialisieren (P1):</strong> Beschwört einen Himmlischen Beschützer.</li>
+                        <li><strong>Energiewiederaufladung (P2):</strong> Beschwört 6 Energieladungen, die sich zu den Fokusse bewegen. Pro getöteter Welle: Elegon erhält <strong class="text-yellow-400">Kraftentzug</strong> (+10% erlittener Schaden). Jede Welle 20% schneller. Explosion einer Ladung: 32.062-35.437 Arkanschaden.</li>
+                        <li><strong>Instabile Energie (P3):</strong> Alle Charaktere erhalten regelmäßig 17.100-18.900 Arkanschaden.</li>
+                        <li><strong>Energiekaskade (P3):</strong> Einschlag verursacht 166.250-183.750 Arkanschaden im Umkreis (5m) und lässt einen Kosmischen Funken erscheinen (Nahkampf-Add).</li>
+                        <li><strong>Himmlischer Fokus (P3):</strong> Strahlt Energie zur Wand aus. Berührung: 190.000-210.000 Arkanschaden/0.5s. Stirbt ein Fokus: Elegon erhält +20% Zaubergeschwindigkeit und Schaden.</li>
+                    </ul>
+                </div>
+                <!-- Himmlischer Beschützer Fähigkeiten -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-gray-400">Himmlischer Beschützer (Phase 1)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Phasenverschiebung:</strong> >25% HP: 90% weniger Schaden außerhalb des Energievortex.</li>
+                        <li><strong>Überspringende Energie:</strong> Fügt fünf zufälligen Charakteren 95.000-105.000 Arkanschaden zu. Hinterlässt einen magischen Debuff (-50% erhaltene Heilung für 20s).</li>
+                        <li><strong>Stabilitätsfluss:</strong> <25% HP: Verursacht jede Sekunde 21.375-23.625 Arkanschaden an allen Charakteren.</li>
+                        <li><strong>Totale Vernichtung:</strong> Bei Tod: Explodiert und verursacht 195.000-205.000 Arkanschaden an allen Charakteren.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heroische Anpassungen -->
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-400">Heroische Anpassungen (10- & 25-Spieler)</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2">
+                <li>Man kann Gegner nicht mehr im Energievortex angreifen, wenn man nicht darinsteht. Umgekehrt ist es auch nicht möglich, Gegner außerhalb des Vortex anzugreifen, wenn man sich im Vortex befindet.</li>
+                <li>Ein Himmlischer Beschützer vernichtet den gesamten Schlachtzug, wenn nicht mindestens eine Mindestanzahl an Charakteren der "Totalen Vernichtung" ausgesetzt ist (1 im 10er, 3 im 25er).</li>
+                <li>Getroffene Charaktere durch "Totale Vernichtung" sind zudem noch betäubt und verlieren regelmäßig Trefferpunkte. Ihr könnt den Effekt nur aufheben, wenn Ihr sie über 80% der Trefferpunkte bringt.</li>
+            </ul>
         </div>
     </section>
 </main>
