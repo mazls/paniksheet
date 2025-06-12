@@ -1,0 +1,174 @@
+<style>
+    /* Spezifische Stile für diese Seite. Könnten auch in index.html zentralisiert werden. */
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.5;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Die Geisterkönige</h1>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+        <p class="mb-4">Dies ist ein "Council"-Kampf, bei dem ihr 4 Könige nacheinander bekämpft: <strong>Qiang -> Subetai -> Zian -> Meng</strong>. Jeder besiegte König hinterlässt eine seiner Fähigkeiten, die für den Rest des Kampfes aktiv bleibt. Die Herausforderung besteht darin, die immer größer werdende Anzahl an sich überlappenden Mechaniken zu meistern, die oft gegensätzliche Positionierungen erfordern (z.B. stapeln vs. verteilen).</p>
+        <div class="bg-slate-750 p-4 rounded-lg">
+            <h3 class="text-xl font-bold mb-3 text-blue-450">Raid-Setup</h3>
+            <div data-size="10" class="tactic-content"><p>Im 10-Spieler Modus wird mit <strong>1 Tank und 2-3 Heilern</strong> gespielt.</p></div>
+            <div data-size="25" class="tactic-content" style="display: inline-block;"><p>Im 25-Spieler Modus wird mit <strong>1 Tank und 5-7 Heilern</strong> gespielt.</p></div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Boss-Reihenfolge & beibehaltene Fähigkeiten</h2>
+        <div class="space-y-6">
+            <div>
+                <h3 class="text-xl font-bold text-yellow-400">1. Qiang der Gnadlose</h3>
+                <p>Der Raid muss sich vor dem Boss stapeln, um den Schaden von <strong class="text-white">Massiven Angriffen</strong> zu teilen. Bei <strong class="text-white">Auslöschen</strong> läuft der gesamte Raid durch den Boss hindurch. <br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-orange-400">Flankenangriffsbefehl</strong> - Eine tödliche Mogu-Wand marschiert über das Feld und erzwingt Bewegung.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-yellow-400">2. Subetai der Schnelle</h3>
+                <p>Der Raid muss sich verteilen (8 Meter), um <strong class="text-white">Pfeilregen</strong> zu kontern. Getroffene Spieler müssen durch Zerstören der Pfeile befreit werden.<br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-orange-400">Plündern</strong> - Stürmt einen Spieler an und verteilt einen Debuff (-50% Schaden/Heilung, +50% erlittener phys. Schaden). Zwingt den Raid, sich zu verteilen.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-yellow-400">3. Zian von den endlosen Schatten</h3>
+                <p><strong class="text-white">Schattenstoß</strong> muss immer unterbrochen werden. Der Raid bleibt verteilt wegen <strong class="text-white">Aufgeladene Schatten</strong>.<br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-purple-400">Unsterbliche Schatten</strong> - Beschwört ein Add, das den nächsten Spieler fixiert. Wenn es stirbt, hinterlässt es eine Voidzone und wird wiederbelebt. Muss an den Rand gekitet werden.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-yellow-400">4. Meng der Wahnsinnige</h3>
+                <p>Sein <strong class="text-white">Wahnsinn</strong> muss gemanagt werden (Zauber durchlassen bei hohem Wahnsinn, unterbrechen bei niedrigem). Bei <strong class="text-white">Feigheit</strong> den Schaden stoppen.<br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-red-500">Wahnsinniger Schrei</strong> - Macht alle Spieler feindselig. Der Raid muss sich schnell stapeln, damit der Effekt durch leichten AoE gebrochen werden kann.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="geisterkoenige-tank1" class="block font-semibold mb-1">Tank 1:</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-tank1" class="assignment-select" data-assignment-id="geisterkoenige-tank1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="geisterkoenige-tank2" class="block font-semibold mb-1">Tank 2:</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-tank2" class="assignment-select" data-assignment-id="geisterkoenige-tank2"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Heiler-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="geisterkoenige-healer1" class="block font-semibold mb-1">Heiler 1:</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-healer1" class="assignment-select" data-assignment-id="geisterkoenige-healer1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="geisterkoenige-healer2" class="block font-semibold mb-1">Heiler 2:</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-healer2" class="assignment-select" data-assignment-id="geisterkoenige-healer2"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="geisterkoenige-healer3" class="block font-semibold mb-1">Heiler 3 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-healer3" class="assignment-select" data-assignment-id="geisterkoenige-healer3"></select>
+                        </div>
+                    </div>
+                     <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="geisterkoenige-healer4" class="block font-semibold mb-1">Heiler 4 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-healer4" class="assignment-select" data-assignment-id="geisterkoenige-healer4"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Allgemeine Aufgaben</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="geisterkoenige-interruptZian" class="block font-semibold mb-1">Unterbrecher-Rotation für Zian:</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-interruptZian" class="assignment-select" data-assignment-id="geisterkoenige-interruptZian"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="geisterkoenige-aoeMeng" class="block font-semibold mb-1">Leichter AoE für Meng's Schrei:</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-aoeMeng" class="assignment-select" data-assignment-id="geisterkoenige-aoeMeng"></select>
+                        </div>
+                    </div>
+                     <div>
+                        <label for="geisterkoenige-dispelZian" class="block font-semibold mb-1">Dispel für Zian's Schild (Heroisch):</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-dispelZian" class="assignment-select" data-assignment-id="geisterkoenige-dispelZian"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="geisterkoenige-dispelMeng" class="block font-semibold mb-1">Enrage-Dispel für Meng (Heroisch):</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-dispelMeng" class="assignment-select" data-assignment-id="geisterkoenige-dispelMeng"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="geisterkoenige-spiritkite1" class="block font-semibold mb-1">Unsterbliche Schatten Kiter 1 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-spiritkite1" class="assignment-select" data-assignment-id="geisterkoenige-spiritkite1"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="geisterkoenige-spiritkite2" class="block font-semibold mb-1">Unsterbliche Schatten Kiter 2 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="geisterkoenige-spiritkite2" class="assignment-select" data-assignment-id="geisterkoenige-spiritkite2"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-semibold">Positionierung für "Flankenangriffsbefehl"</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
+                                                    </div>
+                    </div>
+                     <div>
+                        <h4 class="text-lg font-semibold">Video Guide</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500">
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

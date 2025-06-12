@@ -1,0 +1,197 @@
+<style>
+    /* Spezifische Stile für diese Seite. Könnten auch in index.html zentralisiert werden. */
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.5;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Wille des Kaisers</h1>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+        <p class="mb-4">
+            Der Kampf besteht aus zwei Phasen. In <strong>Phase 1</strong> (90 Sek.) kämpft der Raid gegen Wellen von drei verschiedenen Terrakotta-Adds. In <strong>Phase 2</strong> werden die beiden Bosse, <strong>Jan-xi</strong> und <strong>Qin-xi</strong>, aktiv, während die Add-Wellen weiter spawnen. Der Kampf ist ein permanenter Test der Add-Kontrolle und des räumlichen Bewusstseins.
+        </p>
+         <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Add-Priorität:</strong> Der Schlüssel zum Sieg ist das schnelle Töten der Adds in der richtigen Reihenfolge: 1. <strong class="text-orange-400">Mut</strong> (Tank-Fixierer), 2. <strong class="text-yellow-400">Stärke</strong> (Flächen-Stunner), 3. <strong class="text-red-500">Zorn</strong> (Spieler-Fixierer, kann gekitet/CCt werden).</li>
+            <li><strong>Boss-Positionierung:</strong> In Phase 2 müssen die beiden Bosse weit auseinander getankt werden, um überlappende Angriffe zu vermeiden.</li>
+            <li><strong>Verheerende Kombo:</strong> Beide Bosse kanalisieren regelmäßig eine Serie von Angriffen. Nahkämpfer und Tanks müssen den Animationen ausweichen, um massiven Schaden und einen Rüstungs-Debuff zu vermeiden. Erfolgreiches Ausweichen belohnt mit einem <strong class="text-yellow-400">Opportunistischen Schlag</strong> für extra Schaden.</li>
+            <li><strong>Titangas:</strong> Ein periodischer Buff/Debuff, der den Schaden aller erhöht. Dies ist die ideale Phase für Cooldowns und Heldentum.</li>
+        </ul>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Phase 1: Die Terrakotta-Armee</h2>
+        <p class="mb-3">Alle 15 Sekunden spawnen Wellen von drei verschiedenen Add-Typen aus Nischen in der Wand. Die Add-Anzahl variiert je nach Raidgröße.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-orange-400">Mut des Kaisers</h3>
+                <p class="mt-2">Fixiert einen Tank und kann nur von hinten angegriffen werden. Muss verlangsamt und schnell getötet werden, bevor er den Tank erreicht und ihn mit <strong class="text-white">Impeding Thrust</strong> verlangsamt.</p>
+                 <div class="mt-2 text-sm text-gray-400">Spawnt <span data-size="10" class="tactic-content"><strong>1 Add</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>2 Adds</strong></span> pro Welle.</div>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-yellow-400">Stärke des Kaisers</h3>
+                <p class="mt-2">Hat eine normale Aggro-Liste und wirkt einen Flächen-Stun (<strong class="text-white">Energiegeladenes Schmettern</strong>), dessen Radius mit jedem Einsatz wächst. Muss schnell getötet werden, damit der Nahkampfbereich spielbar bleibt.</p>
+                 <div class="mt-2 text-sm text-gray-400">Spawnt <span data-size="10" class="tactic-content"><strong>1 Add</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>2 Adds</strong></span> pro Welle.</div>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-red-500">Zorn des Kaisers</h3>
+                <p class="mt-2">Fixiert zufällige Spieler und verfolgt sie. Anfällig für alle Arten von CC (Stuns, Verlangsamung). Sollte kontrolliert und gekitet werden, bis die höherpriorisierte Adds tot sind.</p>
+                 <div class="mt-2 text-sm text-gray-400">Spawnt <span data-size="10" class="tactic-content"><strong>2 Adds</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>4 Adds</strong></span> pro Welle.</div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="wille-tankJanxi" class="block font-semibold mb-1">Tank für Jan-xi:</label>
+                        <div class="flex items-center">
+                            <select id="wille-tankJanxi" class="assignment-select" data-assignment-id="wille-tankJanxi"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="wille-tankQinxi" class="block font-semibold mb-1">Tank für Qin-xi:</label>
+                        <div class="flex items-center">
+                            <select id="wille-tankQinxi" class="assignment-select" data-assignment-id="wille-tankQinxi"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="wille-tankMut" class="block font-semibold mb-1">Tank für Mut des Kaisers (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="wille-tankMut" class="assignment-select" data-assignment-id="wille-tankMut"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Heiler-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="wille-healer1" class="block font-semibold mb-1">Heiler 1:</label>
+                        <div class="flex items-center">
+                            <select id="wille-healer1" class="assignment-select" data-assignment-id="wille-healer1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="wille-healer2" class="block font-semibold mb-1">Heiler 2:</label>
+                        <div class="flex items-center">
+                            <select id="wille-healer2" class="assignment-select" data-assignment-id="wille-healer2"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="wille-healer3" class="block font-semibold mb-1">Heiler 3 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="wille-healer3" class="assignment-select" data-assignment-id="wille-healer3"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="wille-healer4" class="block font-semibold mb-1">Heiler 4 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="wille-healer4" class="assignment-select" data-assignment-id="wille-healer4"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">DPS-Einteilungen & Aufgaben</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="wille-cdGas1" class="block font-semibold mb-1">Heiler-CD für 1. Titangas:</label>
+                        <div class="flex items-center">
+                            <select id="wille-cdGas1" class="assignment-select" data-assignment-id="wille-cdGas1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="wille-cdGas2" class="block font-semibold mb-1">Heiler-CD für 2. Titangas:</label>
+                        <div class="flex items-center">
+                            <select id="wille-cdGas2" class="assignment-select" data-assignment-id="wille-cdGas2"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="wille-cdGas3" class="block font-semibold mb-1">Heiler-CD für 3. Titangas (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="wille-cdGas3" class="assignment-select" data-assignment-id="wille-cdGas3"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="wille-kiterZorn1" class="block font-semibold mb-1">Kiter für Zorn des Kaisers 1:</label>
+                        <div class="flex items-center">
+                            <select id="wille-kiterZorn1" class="assignment-select" data-assignment-id="wille-kiterZorn1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="wille-kiterZorn2" class="block font-semibold mb-1">Kiter für Zorn des Kaisers 2:</label>
+                        <div class="flex items-center">
+                            <select id="wille-kiterZorn2" class="assignment-select" data-assignment-id="wille-kiterZorn2"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="wille-kiterZorn3" class="block font-semibold mb-1">Kiter für Zorn des Kaisers 3 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="wille-kiterZorn3" class="assignment-select" data-assignment-id="wille-kiterZorn3"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-red-400 mb-4 mt-6">Heroisch: Titanfunken-Soaker</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="wille-soaker1" class="block font-semibold mb-1">Soaker 1:</label>
+                        <div class="flex items-center">
+                            <select id="wille-soaker1" class="assignment-select" data-assignment-id="wille-soaker1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="wille-soaker2" class="block font-semibold mb-1">Soaker 2:</label>
+                        <div class="flex items-center">
+                            <select id="wille-soaker2" class="assignment-select" data-assignment-id="wille-soaker2"></select>
+                        </div>
+                    </div>
+                     <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="wille-soaker3" class="block font-semibold mb-1">Soaker 3 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="wille-soaker3" class="assignment-select" data-assignment-id="wille-soaker3"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                 <div class="space-y-6">
+                    <div><h4 class="text-lg font-semibold">Boss-Positionierung</h4><div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500"></div></div>
+                    <div><h4 class="text-lg font-semibold">Video Guide</h4><div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

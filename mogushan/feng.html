@@ -1,0 +1,174 @@
+<style>
+    /* Spezifische Stile für diese Seite. Könnten auch in index.html zentralisiert werden. */
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.5;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Feng der Verfluchte</h1>
+
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+        <p class="mb-4">
+            Der Kampf gegen Feng ist ein dreiphasiger Kampf, der bei 66% und 33% Gesundheit wechselt. In jeder Phase absorbiert er die Kraft einer der Statuen im Raum, was ihm neue Fähigkeiten verleiht. Der Schlüssel zum Sieg liegt in der korrekten Nutzung der beiden Spezialfähigkeiten, die die Tanks zu Beginn aufnehmen können.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-blue-400">Nullifizierungsbarriere</h3>
+                <p class="mt-2">Ein Tank kann diese Fähigkeit aufnehmen. Erzeugt eine 6-sekündige Barriere, die Verbündete vor magischem Schaden schützt und bestimmte Boss-Buffs verhindern kann.</p>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-green-400">Schleier der Umkehrung</h3>
+                <p class="mt-2">Der zweite Tank kann diese Fähigkeit aufnehmen. Ermöglicht es, einen Zauber, der auf einen verbündeten Spieler gewirkt wird, zu kopieren und auf den Boss zurückzuwerfen.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Phase 1 (100%-66%): Geist der Faust</h2>
+        <ul class="list-disc list-inside space-y-2">
+            <li><strong>Tank-Debuff:</strong> <strong class="text-green-400">Blitzpeitsche</strong>. Ein stapelbarer DoT. Bei 2 Stapeln spotten.</li>
+            <li><strong class="text-yellow-400">Epizentrum:</strong> Feng kanalisiert 10s lang ein Erdbeben, das Schaden am ganzen Raid verursacht (je weiter weg, desto weniger) und die Trefferchance um 75% reduziert.</li>
+            <li><strong class="text-yellow-400">Blitzfäuste:</strong> Eine Schockwelle nach vorne, die Schaden verursacht und für einige Sekunden betäubt.</li>
+        </ul>
+         <h3 class="text-xl font-semibold mt-4 text-blue-450">Strategie</h3>
+         <p>Der Tank mit <strong class="text-green-400">Schleier der Umkehrung</strong> platziert diesen auf sich selbst und lässt sich absichtlich von <strong class="text-yellow-400">Blitzfäuste</strong> treffen. Wenn Feng <strong class="text-yellow-400">Epizentrum</strong> wirkt, wird die kopierte Fähigkeit auf ihn zurückgeworfen, was ihn betäubt und den Kanal unterbricht. Falls das fehlschlägt, sammelt sich der Raid im <strong class="text-blue-400">Nullifizierungsbarriere</strong>, um den Schaden zu überleben und weiter Schaden machen zu können.</p>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Phase 2 (66%-33%): Geist des Speers</h2>
+        <ul class="list-disc list-inside space-y-2">
+            <li><strong>Tank-Debuff:</strong> <strong class="text-orange-400">Flammender Speer</strong>. Ein stapelbarer DoT. Bei 2 Stapeln spotten.</li>
+            <li><strong class="text-orange-400">Lauffeuerfunke:</strong> Ein 5-Sekunden-Debuff auf zufällige Spieler, der danach eine sich ausbreitende Feuerfläche hinterlässt.</li>
+            <li><strong class="text-orange-400">Flammenanziehung:</strong> Feng saugt alle Feuerflächen auf und erhält einen Buff, der seine Nahkampfangriffe zusätzlichen Feuerschaden am gesamten Raid verursachen lässt.</li>
+        </ul>
+         <h3 class="text-xl font-semibold mt-4 text-blue-450">Strategie</h3>
+         <p>Spieler mit <strong class="text-orange-400">Lauffeuerfunke</strong> laufen an eine vordefinierte Position am Rand des Raumes. Wenn Feng <strong class="text-orange-400">Flammenanziehung</strong> wirkt, stellt sich der gesamte Raid auf die gegenüberliegende Seite, um nicht von den zum Boss reisenden Flammen getroffen zu werden. Der Tank mit <strong class="text-blue-400">Nullifizierungsbarriere</strong> kanalisiert diese auf Feng, kurz bevor <strong class="text-orange-400">Flammenanziehung</strong> endet, um zu verhindern, dass Feng den Schadensbuff erhält. Dies ist besonders vor dem Phasenübergang zu 33% wichtig.</p>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Phase 3 (33%-0%): Geist des Stabs</h2>
+        <ul class="list-disc list-inside space-y-2">
+            <li><strong>Tank-Debuff:</strong> <strong class="text-purple-400">Arkaner Schock</strong>. Ein stapelbarer DoT. Bei 2 Stapeln spotten.</li>
+            <li><strong class="text-purple-400">Arkane Schnelligkeit:</strong> Kanalisierter Zauber, der mehr Schaden verursacht, je weiter man vom Boss entfernt ist.</li>
+            <li><strong class="text-purple-400">Arkane Resonanz:</strong> Debuff auf
+                <span data-size="10" class="tactic-content"><strong>1</strong> zufälligen Fernkämpfer/Heiler</span>
+                <span data-size="25" class="tactic-content" style="display: inline-block;"><strong>2</strong> zufällige Fernkämpfer/Heiler</span>,
+                der ihm und allen im Umkreis von 6 Metern Schaden zufügt.
+            </li>
+        </ul>
+         <h3 class="text-xl font-semibold mt-4 text-blue-450">Strategie</h3>
+         <p>Die schwierigste Phase. Fernkämpfer und Heiler müssen sich im Raum verteilen (mind. 6m Abstand). Wenn Feng <strong class="text-purple-400">Arkane Schnelligkeit</strong> wirkt, müssen alle sofort zum Boss laufen und sich stapeln, um den Schaden zu minimieren. Die Spieler mit <strong class="text-purple-400">Arkane Resonanz</strong> bleiben jedoch draußen, um den Raid nicht zu schädigen. Kurz bevor der Kanal endet, müssen sich alle wieder verteilen, um für die nächste <strong class="text-purple-400">Arkane Resonanz</strong> bereit zu sein.</p>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="feng-tankNullification" class="block font-semibold mb-1">Tank mit Nullifizierungsbarriere:</label>
+                        <div class="flex items-center">
+                            <select id="feng-tankNullification" class="assignment-select" data-assignment-id="feng-tankNullification"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="feng-tankReversal" class="block font-semibold mb-1">Tank mit Schleier der Umkehrung:</label>
+                        <div class="flex items-center">
+                            <select id="feng-tankReversal" class="assignment-select" data-assignment-id="feng-tankReversal"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Heiler-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="feng-healer1" class="block font-semibold mb-1">Heiler 1:</label>
+                        <div class="flex items-center">
+                            <select id="feng-healer1" class="assignment-select" data-assignment-id="feng-healer1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="feng-healer2" class="block font-semibold mb-1">Heiler 2:</label>
+                        <div class="flex items-center">
+                            <select id="feng-healer2" class="assignment-select" data-assignment-id="feng-healer2"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="feng-healer3" class="block font-semibold mb-1">Heiler 3 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="feng-healer3" class="assignment-select" data-assignment-id="feng-healer3"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">DPS-Einteilung (z.B. für Kicks/Spreads)</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="feng-dps1" class="block font-semibold mb-1">DPS 1:</label>
+                        <div class="flex items-center">
+                            <select id="feng-dps1" class="assignment-select" data-assignment-id="feng-dps1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="feng-dps2" class="block font-semibold mb-1">DPS 2:</label>
+                        <div class="flex items-center">
+                            <select id="feng-dps2" class="assignment-select" data-assignment-id="feng-dps2"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="feng-dps3" class="block font-semibold mb-1">DPS 3 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="feng-dps3" class="assignment-select" data-assignment-id="feng-dps3"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-semibold">Positionierung für "Arkane Resonanz"</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
+                            [Image of Spieler-Positionierung für Arkane Resonanz]
+                        </div>
+                    </div>
+                     <div>
+                        <h4 class="text-lg font-semibold">Video Guide</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500">
+                            [Image of Platzhalter für YouTube/Twitch Video]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

@@ -1,0 +1,165 @@
+<style>
+    /* Spezifische Stile für diese Seite. Könnten auch in index.html zentralisiert werden. */
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.5;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Gara'jal der Geisterbinder</h1>
+
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+    
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+        <p class="mb-4">Gara'jal ist ein einphasiger Kampf, der in zwei Welten stattfindet. Der Kampf ist ein harter DPS-Check mit einem 6-minütigen Enrage-Timer. Die Koordination zwischen den Spielern in der normalen Welt und der Geisterwelt ist entscheidend.</p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Geisterwelt:</strong> Spieler müssen regelmäßig über <strong class="text-cyan-400">Geistertotems</strong> in die Geisterwelt wechseln, um dort <strong class="text-purple-300">Schattenhafte Günstlinge</strong> zu töten. Diese verursachen sonst massiven Raidschaden. In der Geisterwelt erhält man durch Heilung den starken Buff <strong class="text-yellow-400">Geistige Beseelung</strong>.</li>
+            <li><strong>Voodoopuppe:</strong> Gara'jal verbindet den Tank und mehrere Spieler. 70% des Schadens auf eine Puppe wird auf die anderen übertragen. Dies erfordert hohe Aufmerksamkeit von den Heilern, besonders auf den Tank.</li>
+            <li><strong>Verbannung & Spott:</strong> Wenn die Voodoopuppe ausläuft, wird der Tank in die Geisterwelt verbannt. Der zweite Tank muss sofort spotten.</li>
+            <li><strong>Soft Enrage:</strong> Bei 20% Gesundheit kann niemand mehr in die Geisterwelt wechseln, wodurch der Raidschaden schnell ansteigt. Dies ist die Burn-Phase.</li>
+        </ul>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Die Welten im Detail</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-white">Normale Welt</h3>
+                <ul class="list-disc list-inside space-y-2 mt-2">
+                    <li><strong class="text-cyan-400">Geistertotem:</strong> Wird alle 20s beschworen. Wenn es zerstört wird, werden die nächsten Spieler in die Geisterwelt geschickt (<span data-size="10" class="tactic-content"><strong>3 Spieler</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>5 Spieler</strong></span>).</li>
+                    <li><strong class="text-orange-400">Voodoopuppe:</strong> Betrifft den Tank + <span data-size="10" class="tactic-content"><strong>2 zufällige Spieler</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>3 zufällige Spieler</strong></span>. Verlinkter Schaden erfordert starke Heilung auf alle Ziele.</li>
+                </ul>
+             </div>
+             <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-purple-400">Geisterwelt</h3>
+                 <ul class="list-disc list-inside space-y-2 mt-2">
+                    <li><strong>Aufenthalt:</strong> Maximal 30 Sekunden, sonst stirbt man. Ein Debuff zeigt die verbleibende Zeit.</li>
+                    <li><strong class="text-green-300">Seele zurückbringen:</strong> Um die Welt zu verlassen, muss man auf 100% Leben geheilt werden, damit der Aktions-Button erscheint.</li>
+                    <li><strong>Aufgabe:</strong> <strong class="text-purple-300">Schattenhafte Günstlinge</strong> schnell töten, um den Raidschaden zu reduzieren.</li>
+                </ul>
+             </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="garajal-tank1" class="block font-semibold mb-1">Tank 1:</label>
+                        <div class="flex items-center">
+                            <select id="garajal-tank1" class="assignment-select" data-assignment-id="garajal-tank1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="garajal-tank2" class="block font-semibold mb-1">Tank 2:</label>
+                        <div class="flex items-center">
+                            <select id="garajal-tank2" class="assignment-select" data-assignment-id="garajal-tank2"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Geisterwelt-Teams</h3>
+                <p class="text-gray-400 mb-4">Es müssen feste Teams (inkl. Backups) eingeteilt werden. Pro Totem geht 1 Heiler mit den DDs.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-blue-450">Team 1 (Erstes, drittes, ... Totem)</h4>
+                        <div>
+                            <label for="garajal-spiritTeam1Heal" class="block font-semibold mb-1">Heiler:</label>
+                            <div class="flex items-center">
+                                <select id="garajal-spiritTeam1Heal" class="assignment-select" data-assignment-id="garajal-spiritTeam1Heal"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="garajal-spiritTeam1Dps1" class="block font-semibold mb-1">DPS 1:</label>
+                            <div class="flex items-center">
+                                <select id="garajal-spiritTeam1Dps1" class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps1"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="garajal-spiritTeam1Dps2" class="block font-semibold mb-1">DPS 2:</label>
+                            <div class="flex items-center">
+                                <select id="garajal-spiritTeam1Dps2" class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps2"></select>
+                            </div>
+                        </div>
+                        <div data-size="25" class="tactic-content" style="display: block;">
+                            <label for="garajal-spiritTeam1Dps3" class="block font-semibold mb-1">DPS 3 (nur 25er):</label>
+                            <div class="flex items-center">
+                                <select id="garajal-spiritTeam1Dps3" class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps3"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-blue-450">Team 2 (Zweites, viertes, ... Totem)</h4>
+                        <div>
+                            <label for="garajal-spiritTeam2Heal" class="block font-semibold mb-1">Heiler:</label>
+                            <div class="flex items-center">
+                                <select id="garajal-spiritTeam2Heal" class="assignment-select" data-assignment-id="garajal-spiritTeam2Heal"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="garajal-spiritTeam2Dps1" class="block font-semibold mb-1">DPS 1:</label>
+                            <div class="flex items-center">
+                                <select id="garajal-spiritTeam2Dps1" class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps1"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="garajal-spiritTeam2Dps2" class="block font-semibold mb-1">DPS 2:</label>
+                            <div class="flex items-center">
+                                <select id="garajal-spiritTeam2Dps2" class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps2"></select>
+                            </div>
+                        </div>
+                        <div data-size="25" class="tactic-content" style="display: block;">
+                            <label for="garajal-spiritTeam2Dps3" class="block font-semibold mb-1">DPS 3 (nur 25er):</label>
+                            <div class="flex items-center">
+                                <select id="garajal-spiritTeam2Dps3" class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps3"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-semibold">Positionierung für "Voodoopuppe"</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
+                                                    </div>
+                    </div>
+                     <div>
+                        <h4 class="text-lg font-semibold">Video Guide</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500">
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

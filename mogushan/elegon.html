@@ -1,0 +1,164 @@
+<style>
+    /* Spezifische Stile für diese Seite. Könnten auch in index.html zentralisiert werden. */
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.5;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Elegon</h1>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+        <p class="mb-4">Elegon ist ein komplexer, mehrphasiger Kampf, der sich um einen Zyklus aus drei Phasen dreht. Dieser Zyklus wiederholt sich zweimal. Der Kampfraum ist in einen <strong class="text-cyan-300">Inneren Ring</strong> und einen <strong class="text-gray-400">Äußeren Ring</strong> unterteilt.</p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Phase 1 (Boss-Phase):</strong> Bekämpft Elegon und seine <strong class="text-white">Himmlischen Beschützer</strong> im Inneren Ring. Hauptaufgabe ist das Management des <strong class="text-red-400">Überladen</strong>-Debuffs durch kurzes Betreten des Äußeren Rings und das korrekte Töten der Adds im Äußeren Ring.</li>
+            <li><strong>Phase 2 (Add-Wellen):</strong> Elegon wird immun. Der Raid muss so viele Wellen von <strong class="text-yellow-400">Energieladungen</strong> wie möglich töten, um einen permanenten Schadens-Debuff auf dem Boss zu stapeln.</li>
+            <li><strong>Phase 3 (Säulen-Phase):</strong> Der Boden des Inneren Rings verschwindet. Der Raid teilt sich auf, um 6 <strong class="text-white">Empyreale Foki</strong> im Äußeren Ring zu zerstören, die durch tödliche <strong class="text-red-500">Energieleiter</strong> verbunden sind.</li>
+        </ul>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Heroische Mechaniken</h2>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+             <li><strong>Sichtlinie:</strong> Es gibt eine Sichtlinien-Blockade zwischen dem Inneren und Äußeren Ring. Man kann nicht von einem Bereich in den anderen heilen oder Schaden machen.</li>
+             <li><strong class="text-red-500">Totale Vernichtung (neu):</strong> Die Explosion des Beschützers trifft nur Spieler im selben Ring, in dem er stirbt (also im Äußeren Ring). Es muss eine Mindestanzahl an Spielern den Schaden abfangen ("soaken"), sonst explodiert der ganze Raid.
+                <ul>
+                   <li data-size="10" class="tactic-content ml-4 list-disc">Mindestens <strong>1 Spieler</strong> muss soaken.</li>
+                   <li data-size="25" class="tactic-content ml-4 list-disc" style="display: inline-block;">Mindestens <strong>3 Spieler</strong> müssen soaken.</li>
+                </ul>
+             </li>
+              <li>Spieler, die den Schaden abfangen, erhalten den Debuff <strong class="text-gray-400">Destabilisiert</strong> und können 2 Minuten lang keinen weiteren "Soak" überleben. Dies erfordert eine feste Soak-Rotation.</li>
+        </ul>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="elegon-tank1" class="block font-semibold mb-1">Tank 1:</label>
+                        <div class="flex items-center">
+                            <select id="elegon-tank1" class="assignment-select" data-assignment-id="elegon-tank1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="elegon-tank2" class="block font-semibold mb-1">Tank 2 (für Adds/Säulen):</label>
+                        <div class="flex items-center">
+                            <select id="elegon-tank2" class="assignment-select" data-assignment-id="elegon-tank2"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Heiler-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="elegon-healer1" class="block font-semibold mb-1">Heiler 1 (Innener Ring):</label>
+                        <div class="flex items-center">
+                            <select id="elegon-healer1" class="assignment-select" data-assignment-id="elegon-healer1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="elegon-healer2" class="block font-semibold mb-1">Heiler 2 (Äußerer Ring / Adds):</label>
+                        <div class="flex items-center">
+                            <select id="elegon-healer2" class="assignment-select" data-assignment-id="elegon-healer2"></select>
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="elegon-healer3" class="block font-semibold mb-1">Heiler 3 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="elegon-healer3" class="assignment-select" data-assignment-id="elegon-healer3"></select>
+                        </div>
+                    </div>
+                     <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="elegon-healer4" class="block font-semibold mb-1">Heiler 4 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="elegon-healer4" class="assignment-select" data-assignment-id="elegon-healer4"></select>
+                        </div>
+                    </div>
+                </div>
+
+                 <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">DPS-Einteilungen</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="elegon-chargeGroup1" class="block font-semibold mb-1">Gruppe für Energieladungen (Links):</label>
+                        <div class="flex items-center">
+                            <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="elegon-chargeGroup2" class="block font-semibold mb-1">Gruppe für Energieladungen (Rechts):</label>
+                        <div class="flex items-center">
+                            <select id="elegon-chargeGroup2" class="assignment-select" data-assignment-id="elegon-chargeGroup2"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-red-400 mb-4 mt-6">Heroisch: Soak-Rotation</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="elegon-soakGroup1" class="block font-semibold mb-1">Soak-Gruppe 1:</label>
+                        <div class="flex items-center">
+                            <select id="elegon-soakGroup1" class="assignment-select" data-assignment-id="elegon-soakGroup1"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="elegon-soakGroup2" class="block font-semibold mb-1">Soak-Gruppe 2:</label>
+                        <div class="flex items-center">
+                            <select id="elegon-soakGroup2" class="assignment-select" data-assignment-id="elegon-soakGroup2"></select>
+                        </div>
+                    </div>
+                     <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="elegon-soakGroup3" class="block font-semibold mb-1">Soak-Gruppe 3 (nur 25er):</label>
+                        <div class="flex items-center">
+                            <select id="elegon-soakGroup3" class="assignment-select" data-assignment-id="elegon-soakGroup3"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-semibold">Positionierung für Energieladungen</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
+                                                    </div>
+                    </div>
+                     <div>
+                        <h4 class="text-lg font-semibold">Video Guide</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500">
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

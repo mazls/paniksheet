@@ -1,0 +1,117 @@
+<style>
+    /* Spezifische Stile für diese Seite. Könnten auch in index.html zentralisiert werden. */
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.5;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Die Steinwache</h1>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+        <p class="mb-4">
+            Der Kampf gegen die Steinwache ist ein "Council"-Kampf mit geteilter Lebensleiste. Es sind <span data-size="10" class="tactic-content"><strong>drei</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>vier</strong></span> Wachen gleichzeitig aktiv. Der gesamte Kampf dreht sich um das Management ihrer Energie und das korrekte Positionieren der Wachen.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Energie & Überladen:</strong> Jede Wache gewinnt Energie, wenn sie in der Nähe einer anderen Wache steht. Bei 100 Energie wirkt sie <strong class="text-red-500">Versteinern</strong>, was den Raid sofort tötet. Die einzige Möglichkeit, dies zu verhindern, ist, dass die Tanks die Wachen so übereinander positionieren, dass sie sich gegenseitig mit der Fähigkeit <strong class="text-green-400">Überladen</strong> treffen. Dies setzt die Energie aller getroffenen Wachen zurück.</li>
+            <li><strong>Geteilte Lebensleiste:</strong> Alle Wachen teilen sich einen Lebenspool. Schaden auf eine Wache schadet allen, daher ist die Priorität das Überleben und die korrekte Positionierung, nicht das Fokussieren eines bestimmten Ziels.</li>
+        </ul>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Fähigkeiten der Wachen im Detail</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-purple-400">Amethystwache</h3>
+                <p class="mt-2"><strong class="text-purple-300">Amethyst-Pfütze:</strong> Erzeugt eine violette Schadensfläche unter einem zufälligen Spieler. Hält lange an und muss sofort verlassen werden.</p>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-blue-400">Kobaltwache</h3>
+                <p class="mt-2"><strong class="text-blue-300">Kobaltmine:</strong> Platziert eine Mine, die nach 3 Sekunden scharf wird. Bei Auslösung (7m Radius) erleiden alle nahen Spieler Schaden und werden für 6s gewurzelt.</p>
+            </div>
+             <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-green-400">Jadewache</h3>
+                <p class="mt-2"><strong class="text-green-300">Jadesplitter:</strong> Ein unvermeidbarer, raidweiter Naturschaden, der alle 10 Sekunden gewirkt wird. Hauptquelle für konstanten Heildruck.</p>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-orange-400">Jaspiswache</h3>
+                <p class="mt-2"><strong class="text-orange-300">Jaspisketten:</strong> Verbindet zwei Spieler. Stehen sie mehr als 10m auseinander, erleiden beide Feuerschaden, der pro Sekunde ansteigt.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="tank1" class="block font-semibold mb-1">Tank 1:</label>
+                        <div class="flex items-center">
+                            <select id="tank1" class="assignment-select" data-assignment-id="steinwache-tank1"></select>
+                            
+                        </div>
+                    </div>
+                    <div>
+                        <label for="tank2" class="block font-semibold mb-1">Tank 2:</label>
+                        <div class="flex items-center">
+                            <select id="tank2" class="assignment-select" data-assignment-id="steinwache-tank2"></select>
+                            
+                        </div>
+                    </div>
+                    <div data-size="25" class="tactic-content" style="display: block;">
+                        <label for="tank3" class="block font-semibold mb-1">Tank 3 (nur 25er):</label>
+                         <div class="flex items-center">
+                            <select id="tank3" class="assignment-select" data-assignment-id="steinwache-tank3"></select>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-semibold">Positionierung für "Überladen"</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
+                            [Bild der Tank-Positionierung]
+                        </div>
+                    </div>
+                     <div>
+                        <h4 class="text-lg font-semibold">Video Guide</h4>
+                        <div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500">
+                            [Platzhalter für YouTube/Twitch Video]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

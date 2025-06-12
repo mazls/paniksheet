@@ -1,0 +1,29 @@
+<main class="space-y-6">
+    <div class="text-center p-8 bg-slate-850 rounded-lg">
+        <h2 class="text-2xl font-semibold text-blue-450">Willkommen bei den Raid Guides!</h2>
+        <p class="mt-2 text-gray-400">Wähle oben einen Boss aus oder verwalte hier die Raid-Aufstellung.</p>
+    </div>
+    
+    <section class="bg-slate-850 p-6 rounded-lg">
+        <h3 class="text-xl font-semibold mb-3 text-blue-450">Raid-Helper Import</h3>
+        <p class="text-gray-400 mb-4">Nur Gildenräte können die Aufstellung importieren und bearbeiten.</p>
+        <textarea id="json-input" class="w-full h-32 bg-slate-900 text-gray-300 p-3 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='{"_id":"...", "raidDrop":[...]}'></textarea>
+        <div class="flex flex-wrap gap-4 mt-4">
+            <button id="import-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                Aufstellung importieren & speichern
+            </button>
+            <button id="add-player-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                Spieler hinzufügen
+            </button>
+            <button id="clear-roster-btn" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                Roster leeren
+            </button>
+        </div>
+
+        <div id="roster-display" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div class="bg-slate-750 p-4 rounded-lg"><h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">🛡️ Tanks</h4><div id="tanks-list" class="space-y-2"></div></div>
+            <div class="bg-slate-750 p-4 rounded-lg"><h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">❤️ Heiler</h4><div id="healers-list" class="space-y-2"></div></div>
+            <div class="bg-slate-750 p-4 rounded-lg"><h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">⚔️ DDs</h4><div id="dps-list" class="space-y-2"></div></div>
+        </div>
+    </section>
+</main>
