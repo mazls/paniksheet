@@ -26,4 +26,255 @@
             <div class="bg-slate-750 p-4 rounded-lg"><h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">⚔️ DDs</h4><div id="dps-list" class="space-y-2"></div></div>
         </div>
     </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg">
+        <h3 class="text-xl font-semibold mb-3 text-blue-450">Raid Buffs & Cooldowns (Mists of Pandaria)</h3>
+        <p class="text-gray-400 mb-4">Übersicht der wichtigen Schlachtzugsbuffs und Cooldowns, die eure Gruppe mitbringen sollte.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Offensive Buffs -->
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2 text-green-400">Offensive Buffs</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-300">
+                    <li id="buff-stats" class="buff-item" data-buff-name="5% Stärke, Beweglichkeit, Intelligenz" data-providing-classes="PALADIN,DRUID,MONK,HUNTER"><strong>5% alle Attribute:</strong> <span class="buff-info"></span></li>
+                    <li id="buff-ap" class="buff-item" data-buff-name="10% Angriffskraft" data-providing-classes="DEATHKNIGHT,HUNTER,WARRIOR"><strong>10% Angriffskraft:</strong> <span class="buff-info"></span></li>
+                    <li id="buff-haste-attack" class="buff-item" data-buff-name="10% Angriffsgeschwindigkeit" data-providing-classes="DEATHKNIGHT,HUNTER,ROGUE,SHAMAN"><strong>10% Angriffsgeschwindigkeit:</strong> <span class="buff-info"></span></li>
+                    <li id="buff-mastery" class="buff-item" data-buff-name="3000 Meisterschaft" data-providing-classes="HUNTER,PALADIN,SHAMAN"><strong>3000 Meisterschaft:</strong> <span class="buff-info"></span></li>
+                    <li id="buff-crit" class="buff-item" data-buff-name="5% Kritische Trefferchance" data-providing-classes="DRUID,HUNTER,MAGE,MONK,PRIEST"><strong>5% Kritische Trefferchance:</strong> <span class="buff-info"></span></li>
+                    <li id="buff-spellpower" class="buff-item" data-buff-name="10% Zaubermacht" data-providing-classes="HUNTER,MAGE,SHAMAN,WARLOCK"><strong>10% Zaubermacht:</strong> <span class="buff-info"></span></li>
+                    <li id="buff-haste-spell" class="buff-item" data-buff-name="5% Zaubertempo" data-providing-classes="DRUID,HUNTER,PRIEST,SHAMAN"><strong>5% Zaubertempo:</strong> <span class="buff-info"></span></li>
+                </ul>
+            </div>
+
+            <!-- Defensive Buffs -->
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2 text-blue-400">Defensive Buffs</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-300">
+                    <li id="buff-stamina" class="buff-item" data-buff-name="10% Ausdauer" data-providing-classes="HUNTER,PRIEST,WARLOCK,WARRIOR"><strong>10% Ausdauer:</strong> <span class="buff-info"></span></li>
+                    <li id="debuff-physical-damage-reduction" class="buff-item" data-buff-name="-10% physischer Schaden (Weakened Blows)" data-providing-classes="DEATHKNIGHT,DRUID,HUNTER,MONK,PALADIN,SHAMAN,WARLOCK,WARRIOR"><strong>-10% physischer Schaden (Weakened Blows):</strong> <span class="buff-info"></span></li>
+                </ul>
+            </div>
+
+            <!-- Debuffs (für Gegner) -->
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2 text-red-400">Debuffs (für Gegner)</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-300">
+                    <li id="debuff-physical-vulnerability" class="buff-item" data-buff-name="+4% erlittener physischer Schaden (Physical Vulnerability)" data-providing-classes="DEATHKNIGHT,HUNTER,PALADIN,WARRIOR"><strong>+4% erlittener physischer Schaden:</strong> <span class="buff-info"></span></li>
+                    <li id="debuff-armor-reduction" class="buff-item" data-buff-name="-4% Rüstung (Weakened Armor)" data-providing-classes="DRUID,HUNTER,ROGUE,WARRIOR"><strong>-4% Rüstung:</strong> <span class="buff-info"></span></li>
+                    <li id="debuff-spell-damage-taken" class="buff-item" data-buff-name="+5% erlittener Zauberschaden" data-providing-classes="HUNTER,ROGUE,WARLOCK"><strong>+5% erlittener Zauberschaden:</strong> <span class="buff-info"></span></li>
+                    <li id="debuff-healing-reduction" class="buff-item" data-buff-name="Heilungsreduktion (Mortal Wounds)" data-providing-classes="HUNTER,MONK,ROGUE,WARRIOR"><strong>Heilungsreduktion:</strong> <span class="buff-info"></span></li>
+                    <li id="debuff-casting-speed" class="buff-item" data-buff-name="Zaubergeschwindigkeitsreduktion" data-providing-classes="DEATHKNIGHT,HUNTER,MAGE,ROGUE,WARLOCK"><strong>Zaubergeschwindigkeitsreduktion:</strong> <span class="buff-info"></span></li>
+                </ul>
+            </div>
+
+            <!-- Raid Cooldowns -->
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2 text-purple-400">Raid Cooldowns</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-300">
+                    <li><strong>Offensive Raid CDs:</strong>
+                        <ul class="list-circle list-inside ml-4">
+                            <li id="cd-heroism" class="buff-item" data-buff-name="Blutdurst/Heldentum" data-providing-classes="SHAMAN,MAGE,HUNTER">Blutdurst/Heldentum <span class="buff-info"></span></li>
+                            <li id="cd-skullbanner" class="buff-item" data-buff-name="Schädelfahne" data-providing-classes="WARRIOR">Schädelfahne <span class="buff-info"></span></li>
+                            <li id="cd-stormlash" class="buff-item" data-buff-name="Sturmhagel-Totem" data-providing-classes="SHAMAN">Sturmhagel-Totem <span class="buff-info"></span></li>
+                        </ul>
+                    </li>
+                    <li><strong>Defensive Raid CDs:</strong>
+                        <ul class="list-circle list-inside ml-4">
+                            <li id="cd-amz" class="buff-item" data-buff-name="Antimagische Zone" data-providing-classes="DEATHKNIGHT">Antimagische Zone <span class="buff-info"></span></li>
+                            <li id="cd-demoralizingbanner" class="buff-item" data-buff-name="Demoralisierende Standarte" data-providing-classes="WARRIOR">Demoralisierende Standarte <span class="buff-info"></span></li>
+                            <li id="cd-devotionaura" class="buff-item" data-buff-name="Hingabe-Aura" data-providing-classes="PALADIN">Hingabe-Aura <span class="buff-info"></span></li>
+                            <li id="cd-powerwordbarrier" class="buff-item" data-buff-name="Machtwort: Barriere" data-providing-classes="PRIEST">Machtwort: Barriere <span class="buff-info"></span></li>
+                            <li id="cd-rallyingcry" class="buff-item" data-buff-name="Sammelruf" data-providing-classes="WARRIOR">Sammelruf <span class="buff-info"></span></li>
+                            <li id="cd-smokebomb" class="buff-item" data-buff-name="Rauchbombe" data-providing-classes="ROGUE">Rauchbombe <span class="buff-info"></span></li>
+                            <li id="cd-spiritlink" class="buff-item" data-buff-name="Geisterverbindungstotem" data-providing-classes="SHAMAN">Geisterverbindungstotem <span class="buff-info"></span></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
 </main>
+
+<script>
+    // Define the mapping of buff names to providing classes
+    // Note: Pet classes are mapped to HUNTER. Spell/ability names are for tooltip clarity.
+    const raidBuffsClassesMap = {
+        // Offensive Buffs
+        "5% Stärke, Beweglichkeit, Intelligenz": {
+            classes: { "PALADIN": "Segen der Könige", "DRUID": "Mal der Wildnis", "MONK": "Vermächtnis des Kaisers", "HUNTER": "Umarmung der Schieferkrabbe (Pet)" }
+        },
+        "10% Angriffskraft": {
+            classes: { "DEATHKNIGHT": "Horn des Winters", "HUNTER": "Trueshot Aura", "WARRIOR": "Kampfruf" }
+        },
+        "10% Angriffsgeschwindigkeit": {
+            classes: { "DEATHKNIGHT": "Unholy Aura", "HUNTER": ["Kicherndes Heulen (Hyänen-Pet)", "Schlangenschnelligkeit (Schlangen-Pet)"], "ROGUE": "List des Schnellklinglers", "SHAMAN": "Entfesselte Wut" }
+        },
+        "3000 Meisterschaft": {
+            classes: { "HUNTER": ["Brüllen des Mutes (Katzen-Pet)", "Segen des Geisterbestien (Geisterbestien-Pet)"], "PALADIN": "Segen der Macht", "SHAMAN": "Anmut der Luft" }
+        },
+        "5% Kritische Trefferchance": {
+            classes: { "DRUID": "Anführer der Meute", "HUNTER": ["Furchterregendes Brüllen (Wolfs-Pet)", "Ruhiges Wasser (Wasserläufer-Pet)"], "MAGE": "Arkane Brillanz", "MONK": "Vermächtnis des Weißen Tigers", "PRIEST": "Inneres Feuer" } // Priest added based on common buffing
+        },
+        "10% Zaubermacht": {
+            classes: { "HUNTER": "Ruhiges Wasser (Wasserläufer-Pet)", "MAGE": "Arkane Brillanz", "SHAMAN": "Brennender Zorn", "WARLOCK": "Dunkle Absicht" }
+        },
+        "5% Zaubertempo": {
+            classes: { "DRUID": "Mondkingestalt", "HUNTER": "Gedankenstärkung (Sporebat-Pet)", "PRIEST": "Schattenform", "SHAMAN": "Elementarer Eid" }
+        },
+
+        // Defensive Buffs
+        "10% Ausdauer": {
+            classes: { "HUNTER": "Qiraji-Standhaftigkeit (Silithiden-Pet)", "PRIEST": "Machtwort: Seelenstärke", "WARLOCK": "Dunkle Absicht", "WARRIOR": "Befehlsruf" }
+        },
+        "10% physische Schadensreduktion": {
+            classes: { "DEATHKNIGHT": "Scharlachrotes Fieber (Blut)", "DRUID": "Verwüsten", "HUNTER": ["Demoralisierendes Gebrüll (Bären-Pet)", "Demoralisierender Schrei (Aasvogel-Pet)"], "MONK": "Fass-Sturm (Braumeister)", "PALADIN": "Hammer des Rechtschaffenen (Schutz/Vergeltung)", "SHAMAN": "Erdbeben (Elementar/Verstärkung)", "WARLOCK": "Fluch der Entkräftung", "WARRIOR": "Donnerknall" }
+        },
+
+        // Debuffs (für Gegner)
+        "+4% erlittener physischer Schaden (Physical Vulnerability)": {
+            classes: { "DEATHKNIGHT": ["Spröde Knochen (Frost/Unheilig)", "Ebonplaguesprenger (Frost/Unheilig)"], "HUNTER": ["Gore (Eber-Pet)", "Stampede (Nashorn-Pet)", "Säurespucke (Wurm-Pet)", "Verwüsten (Schreiter-Pet)"], "PALADIN": "Urteile des Kühnen (Vergeltung)", "WARRIOR": "Kolossales Zerschmettern (Waffen/Furor)" }
+        },
+        "-4% Rüstung (Weakened Armor)": {
+            classes: { "DRUID": "Feenfeuer", "HUNTER": ["Rüstung zerreißen (Raptoren-Pet)", "Staubwolke (Langbein-Pet)"], "ROGUE": "Rüstung zerreißen", "WARRIOR": ["Rüstung zerreißen (Waffen/Furor)", "Verwüsten (Schutz)"] }
+        },
+        "+5% erlittener Zauberschaden": {
+            classes: { "HUNTER": ["Feueratem (Drachenfalken-Pet)", "Blitzatem (Windnatter-Pet)"], "ROGUE": "Meistergiftmischer", "WARLOCK": "Fluch der Elemente" }
+        },
+        "Heilungsreduktion (Mortal Wounds)": {
+            classes: { "HUNTER": ["Witwengift", "Monströser Biss (Teufelssaurier-Pet)"], "MONK": "Aufsteigende Sonnenkick (Windläufer)", "ROGUE": "Wundgift", "WARRIOR": ["Tödlicher Stoß (Waffen/Furor)", "Wilder Stoß (Waffen/Furor)"] }
+        },
+        "Zaubergeschwindigkeitsreduktion": {
+            classes: { "DEATHKNIGHT": "Nekrotischer Stoß", "HUNTER": ["Lava-Atem (Kernhund-Pet)", "Sporenwolke (Sporebat-Pet)"], "MAGE": "Verlangsamen (Arkan)", "ROGUE": "Gedankenbenebelndes Gift", "WARLOCK": "Fluch der Entkräftung" }
+        },
+
+        // Raid Cooldowns (Hier bleiben die Namen meist direkt, da sie oft spezifische Fähigkeiten sind)
+        "Blutdurst/Heldentum": { classes: { "SHAMAN": "Blutdurst", "MAGE": "Zeitkrümmung", "HUNTER": "Uralte Hysterie (Exotisches Kernelementar-Pet)" } },
+        "Schädelfahne": { classes: { "WARRIOR": "Schädelfahne" } },
+        "Sturmhagel-Totem": { classes: { "SHAMAN": "Sturmhagel-Totem" } },
+        "Antimagische Zone": { classes: { "DEATHKNIGHT": "Antimagische Zone" } },
+        "Demoralisierende Standarte": { classes: { "WARRIOR": "Demoralisierende Standarte" } },
+        "Hingabe-Aura": { classes: { "PALADIN": "Hingabe-Aura" } },
+        "Machtwort: Barriere": { classes: { "PRIEST": "Machtwort: Barriere" } },
+        "Sammelruf": { classes: { "WARRIOR": "Sammelruf" } },
+        "Rauchbombe": { classes: { "ROGUE": "Rauchbombe" } },
+        "Geisterverbindungstotem": { classes: { "SHAMAN": "Geisterverbindungstotem" } }
+    };
+
+    // This function will be called from initCompPage in index.html
+    window.updateRaidBuffsDisplay = function(roster) {
+        if (!roster) return; // Ensure roster data is available
+
+        // Create a map of class counts from the current roster
+        const rosterClassCounts = {};
+        roster.forEach(player => {
+            const playerClass = player.class.toUpperCase();
+            rosterClassCounts[playerClass] = (rosterClassCounts[playerClass] || 0) + 1;
+        });
+
+        // Iterate through all buff items and update their display
+        document.querySelectorAll('.buff-item').forEach(buffItem => {
+            const buffName = buffItem.dataset.buffName;
+            const buffData = raidBuffsClassesMap[buffName];
+            const buffInfoSpan = buffItem.querySelector('.buff-info');
+
+            let availableCount = 0;
+            let tooltipLines = []; // Array to build tooltip HTML lines
+
+            if (buffData && buffData.classes) {
+                for (const className in buffData.classes) {
+                    const countInRoster = rosterClassCounts[className] || 0;
+                    if (countInRoster > 0) {
+                        availableCount += countInRoster; // Count total players of this class
+                        
+                        const classAbility = buffData.classes[className];
+                        const abilityNames = Array.isArray(classAbility) ? classAbility : [classAbility];
+
+                        // Add class name with color and abilities to tooltip
+                        const color = window.classColors[className] || '#FFFFFF';
+                        abilityNames.forEach(abilityName => {
+                             tooltipLines.push(`<span style="color: ${color};">${className.charAt(0).toUpperCase() + className.slice(1).toLowerCase()}</span>: ${abilityName}`);
+                        });
+                    }
+                }
+            }
+
+            // Update display
+            if (availableCount > 0) {
+                buffItem.classList.remove('opacity-50'); // Make it active
+                buffItem.style.fontWeight = 'bold';
+                buffItem.style.color = 'inherit'; // Use inherited color for active state
+                buffInfoSpan.textContent = ` (${availableCount})`;
+            } else {
+                buffItem.classList.add('opacity-50'); // Grey out
+                buffItem.style.fontWeight = 'normal';
+                buffItem.style.color = '#a0aec0'; // Ensure greyed out color
+                buffInfoSpan.textContent = ` (0)`;
+            }
+
+            // Add tooltip functionality
+            buffItem.style.position = 'relative'; // For tooltip positioning
+            buffItem.style.cursor = 'help'; // Indicate hoverable
+
+            // Create or update tooltip div
+            let tooltipDiv = buffItem.querySelector('.buff-tooltip');
+            if (!tooltipDiv) {
+                tooltipDiv = document.createElement('div');
+                tooltipDiv.className = 'buff-tooltip absolute z-10 p-2 text-xs text-gray-100 bg-gray-800 rounded-md shadow-lg hidden';
+                buffItem.appendChild(tooltipDiv);
+            }
+            tooltipDiv.innerHTML = tooltipLines.join('<br>'); // Join lines with <br>
+
+            buffItem.onmouseover = () => {
+                if (tooltipLines.length > 0) {
+                    tooltipDiv.classList.remove('hidden');
+                    // Position tooltip to the right or below, prevent overflow
+                    const rect = buffItem.getBoundingClientRect();
+                    const tooltipRect = tooltipDiv.getBoundingClientRect();
+
+                    // Try to position to the right
+                    let leftPos = '100%';
+                    let topPos = '0';
+
+                    // If tooltip overflows right, try to position below
+                    if (rect.right + tooltipRect.width > window.innerWidth) {
+                        leftPos = '0';
+                        topPos = 'calc(100% + 5px)'; // 5px below the item
+                    }
+
+                    tooltipDiv.style.left = leftPos;
+                    tooltipDiv.style.top = topPos;
+                }
+            };
+            buffItem.onmouseout = () => {
+                tooltipDiv.classList.add('hidden');
+            };
+        });
+    };
+</script>
+
+<style>
+    /* CSS for the buff items - initial greyed out state and active state */
+    .buff-item {
+        transition: opacity 0.2s ease-in-out;
+        color: #a0aec0; /* Initial greyed out color */
+    }
+    .buff-item.opacity-50 {
+        opacity: 0.5;
+    }
+    .buff-item:not(.opacity-50) {
+        opacity: 1;
+        /* color: #e2e8f0; -- Handled by inherit or specific element style */
+    }
+
+    /* Tooltip styles */
+    .buff-tooltip {
+        background-color: #1a202c; /* bg-slate-850 */
+        border: 1px solid #4a5568; /* border-slate-650 */
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        color: #e2e8f0;
+        white-space: nowrap; /* Prevent wrapping */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+</style>

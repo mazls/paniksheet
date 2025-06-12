@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P Ä N I K - Raidsheet</title>
+    <title>Raid Guides - Mogu'shangewölbe</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -164,6 +164,32 @@
             color: #a0aec0;
             margin-left: 8px;
         }
+        /* CSS for the buff items - initial greyed out state and active state */
+        .buff-item {
+            transition: opacity 0.2s ease-in-out;
+            color: #a0aec0; /* Initial greyed out color */
+        }
+        .buff-item.opacity-50 {
+            opacity: 0.5;
+        }
+        .buff-item:not(.opacity-50) {
+            opacity: 1;
+            /* color: #e2e8f0; -- Handled by inherit or specific element style */
+        }
+
+        /* Tooltip styles */
+        .buff-tooltip {
+            position: absolute; /* Added position absolute */
+            z-index: 100;
+            background-color: #1a202c; /* bg-slate-850 */
+            border: 1px solid #4a5568; /* border-slate-650 */
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            color: #e2e8f0;
+            white-space: nowrap; /* Prevent wrapping */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body class="bg-slate-850 text-gray-200 p-4 sm:p-8">
@@ -171,7 +197,7 @@
     <div class="max-w-7xl mx-auto bg-slate-750 p-6 rounded-lg shadow-lg relative">
         <div id="auth-section"></div>
         <header class="text-center pb-4 mb-6 border-b border-slate-650">
-            <h1 class="text-4xl font-bold text-white">P Ä N I K Raidsheet</h1>
+            <h1 class="4xl font-bold text-white">P Ä N I K Raidsheet</h1>
              <div class="flex justify-center items-center gap-2 mt-2">
                 <p class="text-lg text-gray-400">Strategien und Einteilungen</p>
                 <div id="presence-indicator" class="flex items-center gap-2 text-sm text-gray-400"></div>
@@ -246,7 +272,8 @@
         const HISTORY_COLLECTION = "raid-tool-history";
         const USER_PROFILES_COLLECTION = "user_profiles";
 
-        const classColors = { 'DEATHKNIGHT': '#C41F3B', 'DK': '#C41F3B', 'DRUID': '#FF7D0A', 'HUNTER': '#AAD372', 'MAGE': '#3FC7EB', 'MONK': '#00FF96', 'PALADIN': '#F48CBA', 'PRIEST': '#FFFFFF', 'ROGUE': '#FFF569', 'SHAMAN': '#0070DD', 'WARLOCK': '#8788EE', 'WARRIOR': '#C69B6D', 'TANK': '#A3A3A3' };
+        // Korrektur: window.classColors muss global sein, damit es in comp.html verwendet werden kann
+        window.classColors = { 'DEATHKNIGHT': '#C41F3B', 'DK': '#C41F3B', 'DRUID': '#FF7D0A', 'HUNTER': '#AAD372', 'MAGE': '#3FC7EB', 'MONK': '#00FF96', 'PALADIN': '#F48CBA', 'PRIEST': '#FFFFFF', 'ROGUE': '#FFF569', 'SHAMAN': '#0070DD', 'WARLOCK': '#8788EE', 'WARRIOR': '#C69B6D', 'TANK': '#A3A3A3' };
         const wowClasses = ['WARRIOR', 'PALADIN', 'HUNTER', 'ROGUE', 'PRIEST', 'DEATHKNIGHT', 'SHAMAN', 'MAGE', 'WARLOCK', 'MONK', 'DRUID'];
         const rosterDocRef = doc(db, DATA_COLLECTION, "currentRoster");
         const historyCollectionRef = collection(db, HISTORY_COLLECTION);
@@ -567,12 +594,21 @@
             currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
                 const jsonInput = document.getElementById('json-input');
                 if (docSnap.exists()) {
-                    displayRoster(docSnap.data().roster || []);
+                    const currentRosterData = docSnap.data().roster || [];
+                    displayRoster(currentRosterData);
+                    // Sicherstellen, dass updateRaidBuffsDisplay aufgerufen wird
+                    if (window.updateRaidBuffsDisplay) {
+                        window.updateRaidBuffsDisplay(currentRosterData);
+                    }
                     if(jsonInput && jsonInput.value === ''){
                          jsonInput.value = docSnap.data().rawJson || '';
                     }
                 } else {
                     displayRoster([]);
+                    // Sicherstellen, dass updateRaidBuffsDisplay auch bei leerem Roster aufgerufen wird
+                    if (window.updateRaidBuffsDisplay) {
+                        window.updateRaidBuffsDisplay([]);
+                    }
                 }
             });
             window.toggleCompEditability(); // Aufruf hier
@@ -642,7 +678,8 @@
                 selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
                 players.forEach(player => {
                     const option = document.createElement('option');
-                    const color = classColors[player.class.toUpperCase()] || '#FFFFFF';
+                    // Korrektur: window.classColors verwenden
+                    const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
                     option.value = player.name;
                     option.textContent = `${player.name} (${player.class})`; // Klasse zum Text hinzugefügt
                     option.style.color = color;
@@ -651,7 +688,7 @@
                 });
             }
 
-            // Handler für Änderungen in den Zuweisungs-Dropdowns
+            // Handler f+r Änderungen in den Zuweisungs-Dropdowns
             async function handleAssignmentChange(event) {
                 if (!window.isManager) return;
                 const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
@@ -696,6 +733,7 @@
 
                         // Farbe des Select-Elements basierend auf der ausgewählten Option setzen
                         const selectedOption = Array.from(select.options).find(o => o.value === assignedPlayerName);
+                        // Korrektur: window.classColors verwenden
                         select.style.color = selectedOption ? selectedOption.dataset.color : '#FFFFFF';
                     });
                     window.toggleSelectEditability(); // Bearbeitbarkeit nach Daten laden aktualisieren
@@ -754,7 +792,7 @@
             playerDiv.dataset.playerId = player.id;
             playerDiv.innerHTML = `
                 <div class="player-details">
-                    <input type="text" value="${player.name}" class="editable-name" style="color: ${classColors[player.class.toUpperCase()] || '#FFFFFF'};" ${!window.isManager ? 'disabled' : ''}>
+                    <input type="text" value="${player.name}" class="editable-name" style="color: ${window.classColors[player.class.toUpperCase()] || '#FFFFFF'};" ${!window.isManager ? 'disabled' : ''}>
                     <select class="editable-class-select" ${!window.isManager ? 'disabled' : ''}>
                         ${wowClasses.map(c => `<option value="${c}" ${player.class === c ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()}</option>`).join('')}
                     </select>
@@ -870,6 +908,161 @@
                 window.showModal("Roster wurde geleert.");
             }
         }
+
+        // Define the mapping of buff names to providing classes
+        // Note: Pet classes are mapped to HUNTER. Spell/ability names are for tooltip clarity.
+        const raidBuffsClassesMap = {
+            // Offensive Buffs
+            "5% Stärke, Beweglichkeit, Intelligenz": {
+                classes: { "PALADIN": "Segen der Könige", "DRUID": "Mal der Wildnis", "MONK": "Vermächtnis des Kaisers", "HUNTER": "Umarmung der Schieferkrabbe (Pet)" }
+            },
+            "10% Angriffskraft": {
+                classes: { "DEATHKNIGHT": "Horn des Winters", "HUNTER": "Trueshot Aura", "WARRIOR": "Kampfruf" }
+            },
+            "10% Angriffsgeschwindigkeit": {
+                classes: { "DEATHKNIGHT": "Unholy Aura", "HUNTER": ["Kicherndes Heulen (Hyänen-Pet)", "Schlangenschnelligkeit (Schlangen-Pet)"], "ROGUE": "List des Schnellklinglers", "SHAMAN": "Entfesselte Wut" }
+            },
+            "3000 Meisterschaft": {
+                classes: { "HUNTER": ["Brüllen des Mutes (Katzen-Pet)", "Segen des Geisterbestien (Geisterbestien-Pet)"], "PALADIN": "Segen der Macht", "SHAMAN": "Anmut der Luft" }
+            },
+            "5% Kritische Trefferchance": {
+                classes: { "DRUID": "Anführer der Meute", "HUNTER": ["Furchterregendes Brüllen (Wolfs-Pet)", "Ruhiges Wasser (Wasserläufer-Pet)"], "MAGE": "Arkane Brillanz", "MONK": "Vermächtnis des Weißen Tigers", "PRIEST": "Inneres Feuer" } // Priest added based on common buffing
+            },
+            "10% Zaubermacht": {
+                classes: { "HUNTER": "Ruhiges Wasser (Wasserläufer-Pet)", "MAGE": "Arkane Brillanz", "SHAMAN": "Brennender Zorn", "WARLOCK": "Dunkle Absicht" }
+            },
+            "5% Zaubertempo": {
+                classes: { "DRUID": "Mondkingestalt", "HUNTER": "Gedankenstärkung (Sporebat-Pet)", "PRIEST": "Schattenform", "SHAMAN": "Elementarer Eid" }
+            },
+
+            // Defensive Buffs
+            "10% Ausdauer": {
+                classes: { "HUNTER": "Qiraji-Standhaftigkeit (Silithiden-Pet)", "PRIEST": "Machtwort: Seelenstärke", "WARLOCK": "Dunkle Absicht", "WARRIOR": "Befehlsruf" }
+            },
+            "-10% physischer Schaden (Weakened Blows)": { // Updated name for clarity
+                classes: { "DEATHKNIGHT": "Scharlachrotes Fieber (Blut)", "DRUID": "Verwüsten", "HUNTER": ["Demoralisierendes Gebrüll (Bären-Pet)", "Demoralisierender Schrei (Aasvogel-Pet)"], "MONK": "Fass-Sturm (Braumeister)", "PALADIN": "Hammer des Rechtschaffenen (Schutz/Vergeltung)", "SHAMAN": "Erdbeben (Elementar/Verstärkung)", "WARLOCK": "Fluch der Entkräftung", "WARRIOR": "Donnerknall" }
+            },
+
+            // Debuffs (für Gegner)
+            "+4% erlittener physischer Schaden (Physical Vulnerability)": {
+                classes: { "DEATHKNIGHT": ["Spröde Knochen (Frost/Unheilig)", "Ebonplaguesprenger (Frost/Unheilig)"], "HUNTER": ["Gore (Eber-Pet)", "Stampede (Nashorn-Pet)", "Säurespucke (Wurm-Pet)", "Verwüsten (Schreiter-Pet)"], "PALADIN": "Urteile des Kühnen (Vergeltung)", "WARRIOR": "Kolossales Zerschmettern (Waffen/Furor)" }
+            },
+            "-4% Rüstung (Weakened Armor)": {
+                classes: { "DRUID": "Feenfeuer", "HUNTER": ["Rüstung zerreißen (Raptoren-Pet)", "Staubwolke (Langbein-Pet)"], "ROGUE": "Rüstung zerreißen", "WARRIOR": ["Rüstung zerreißen (Waffen/Furor)", "Verwüsten (Schutz)"] }
+            },
+            "+5% erlittener Zauberschaden": {
+                classes: { "HUNTER": ["Feueratem (Drachenfalken-Pet)", "Blitzatem (Windnatter-Pet)"], "ROGUE": "Meistergiftmischer", "WARLOCK": "Fluch der Elemente" }
+            },
+            "Heilungsreduktion (Mortal Wounds)": {
+                classes: { "HUNTER": ["Witwengift", "Monströser Biss (Teufelssaurier-Pet)"], "MONK": "Aufsteigende Sonnenkick (Windläufer)", "ROGUE": "Wundgift", "WARRIOR": ["Tödlicher Stoß (Waffen/Furor)", "Wilder Stoß (Waffen/Furor)"] }
+            },
+            "Zaubergeschwindigkeitsreduktion": {
+                classes: { "DEATHKNIGHT": "Nekrotischer Stoß", "HUNTER": ["Lava-Atem (Kernhund-Pet)", "Sporenwolke (Sporebat-Pet)"], "MAGE": "Verlangsamen (Arkan)", "ROGUE": "Gedankenbenebelndes Gift", "WARLOCK": "Fluch der Entkräftung" }
+            },
+
+            // Raid Cooldowns (Hier bleiben die Namen meist direkt, da sie oft spezifische Fähigkeiten sind)
+            "Blutdurst/Heldentum": { classes: { "SHAMAN": "Blutdurst", "MAGE": "Zeitkrümmung", "HUNTER": "Uralte Hysterie (Exotisches Kernelementar-Pet)" } },
+            "Schädelfahne": { classes: { "WARRIOR": "Schädelfahne" } },
+            "Sturmhagel-Totem": { classes: { "SHAMAN": "Sturmhagel-Totem" } },
+            "Antimagische Zone": { classes: { "DEATHKNIGHT": "Antimagische Zone" } },
+            "Demoralisierende Standarte": { classes: { "WARRIOR": "Demoralisierende Standarte" } },
+            "Hingabe-Aura": { classes: { "PALADIN": "Hingabe-Aura" } },
+            "Machtwort: Barriere": { classes: { "PRIEST": "Machtwort: Barriere" } },
+            "Sammelruf": { classes: { "WARRIOR": "Sammelruf" } },
+            "Rauchbombe": { classes: { "ROGUE": "Rauchbombe" } },
+            "Geisterverbindungstotem": { classes: { "SHAMAN": "Geisterverbindungstotem" } }
+        };
+
+        // This function will be called from initCompPage in index.html
+        window.updateRaidBuffsDisplay = function(roster) {
+            if (!roster) return; // Ensure roster data is available
+
+            // Create a map of class counts from the current roster
+            const rosterClassCounts = {};
+            roster.forEach(player => {
+                const playerClass = player.class.toUpperCase();
+                rosterClassCounts[playerClass] = (rosterClassCounts[playerClass] || 0) + 1;
+            });
+
+            // Iterate through all buff items and update their display
+            document.querySelectorAll('.buff-item').forEach(buffItem => {
+                const buffName = buffItem.dataset.buffName;
+                const buffData = raidBuffsClassesMap[buffName];
+                const buffInfoSpan = buffItem.querySelector('.buff-info');
+
+                let availableCount = 0;
+                let tooltipLines = []; // Array to build tooltip HTML lines
+
+                if (buffData && buffData.classes) {
+                    for (const className in buffData.classes) {
+                        const countInRoster = rosterClassCounts[className] || 0;
+                        if (countInRoster > 0) {
+                            availableCount += countInRoster; // Count total players of this class
+                            
+                            const classAbility = buffData.classes[className];
+                            const abilityNames = Array.isArray(classAbility) ? classAbility : [classAbility];
+
+                            // Add class name with color and abilities to tooltip
+                            const color = window.classColors[className] || '#FFFFFF';
+                            abilityNames.forEach(abilityName => {
+                                 tooltipLines.push(`<span style="color: ${color};">${className.charAt(0).toUpperCase() + className.slice(1).toLowerCase()}</span>: ${abilityName}`);
+                            });
+                        }
+                    }
+                }
+
+                // Update display
+                if (availableCount > 0) {
+                    buffItem.classList.remove('opacity-50'); // Make it active
+                    buffItem.style.fontWeight = 'bold';
+                    buffItem.style.color = 'inherit'; // Use inherited color for active state
+                    buffInfoSpan.textContent = ` (${availableCount})`;
+                } else {
+                    buffItem.classList.add('opacity-50'); // Grey out
+                    buffItem.style.fontWeight = 'normal';
+                    buffItem.style.color = '#a0aec0'; // Ensure greyed out color
+                    buffInfoSpan.textContent = ` (0)`;
+                }
+
+                // Add tooltip functionality
+                buffItem.style.position = 'relative'; // For tooltip positioning
+                buffItem.style.cursor = 'help'; // Indicate hoverable
+
+                // Create or update tooltip div
+                let tooltipDiv = buffItem.querySelector('.buff-tooltip');
+                if (!tooltipDiv) {
+                    tooltipDiv = document.createElement('div');
+                    tooltipDiv.className = 'buff-tooltip absolute z-10 p-2 text-xs text-gray-100 bg-gray-800 rounded-md shadow-lg hidden';
+                    buffItem.appendChild(tooltipDiv);
+                }
+                tooltipDiv.innerHTML = tooltipLines.join('<br>'); // Join lines with <br>
+
+                buffItem.onmouseover = () => {
+                    if (tooltipLines.length > 0) {
+                        tooltipDiv.classList.remove('hidden');
+                        // Position tooltip to the right or below, prevent overflow
+                        const rect = buffItem.getBoundingClientRect();
+                        const tooltipRect = tooltipDiv.getBoundingClientRect();
+
+                        // Try to position to the right
+                        let leftPos = '100%';
+                        let topPos = '0';
+
+                        // If tooltip overflows right, try to position below
+                        if (rect.right + tooltipRect.width > window.innerWidth) {
+                            leftPos = '0';
+                            topPos = 'calc(100% + 5px)'; // 5px below the item
+                        }
+
+                        tooltipDiv.style.left = leftPos;
+                        tooltipDiv.style.top = topPos;
+                    }
+                };
+                buffItem.onmouseout = () => {
+                    tooltipDiv.classList.add('hidden');
+                };
+            });
+        };
     </script>
 </body>
 </html>
