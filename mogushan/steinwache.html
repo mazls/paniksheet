@@ -101,16 +101,143 @@
                     <div>
                         <h4 class="text-lg font-semibold">Positionierung für "Überladen"</h4>
                         <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
-                            [Bild der Tank-Positionierung]
+                            [Image of Tank-Positionierung]
                         </div>
                     </div>
                      <div>
                         <h4 class="text-lg font-semibold">Video Guide</h4>
                         <div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500">
-                            [Platzhalter für YouTube/Twitch Video]
+                            [Image of YouTube/Twitch Video Placeholder]
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Boss-Fähigkeiten und Schadenswerte</h2>
+
+        <!-- General Mechanics applicable to all sizes -->
+        <div class="mb-4">
+            <h3 class="text-xl font-bold text-white">Allgemeine Kampfmechaniken</h3>
+            <ul class="list-disc list-inside space-y-1 text-gray-300 mt-2">
+                <li><strong>Energie & Überladung:</strong> Jede Steinwache hat eine eigene Energieleiste mit maximal 100 Energiepunkten. Füllt sich die Energieleiste auf 100 Punkte, wirkt die Steinwache eine Überladung. Dies richtet 250.000 Schadenspunkte in der jeweiligen Magieart an und setzt die Energieleiste zurück. Durch den Versteinerungs-Schutz erleidet man dabei nur 10% des eigentlichen Schadens.</li>
+                <li><strong>"In Stein verwandelt":</strong> Befindet sich keine andere Steinwache näher als zwölf Meter, verringert sich langsam die Energie. Die Wache erleidet jedoch auch 90% geringeren Schaden.</li>
+                <li><strong>Versteinerungs-Leiste:</strong> Füllt sich langsam. Je voller sie ist, desto langsamer werden alle Spieler. Ist sie vollständig gefüllt, erstarren alle Spieler zu Stein und der Kampf ist verloren. Wenn der Versteinerungs-Effekt einer Wache aktiv ist, erleidet Ihr 90% reduzierten Schaden des jeweiligen Elements dieser Wache. Nach einer Überladung wechselt die Versteinerungs-Leiste zu einer neuen Steinwache.</li>
+                <li><strong>Fleisch zerreißen:</strong> Schwächungszauber auf dem Tank, der über 15 Sekunden jede Sekunde Schaden verursacht. (Werte variieren nach Modus)</li>
+            </ul>
+        </div>
+
+        <!-- 10-Spieler Modus -->
+        <div data-size="10" class="tactic-content">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">10-Spieler-Modus (3 aktive Wachen)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Amethystwächter -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-purple-400">Amethystwächter (Schatten)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Amethystteich:</strong> Richtet an Helden jede Sekunde 60.000 Punkte Schattenschaden an. Ein Teich hält eine Minute an.</li>
+                        <li><strong>Amethystüberladung:</strong> Fügt Euch 250.000 Punkte Schattenschaden zu.</li>
+                        <li><strong>Amethystversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Schattenschaden.</li>
+                        <li><strong>Fleisch zerreißen:</strong> 50.000 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    </ul>
+                </div>
+                <!-- Kobaltwächter -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-blue-400">Kobaltwächter (Arkan)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Kobaltmine:</strong> Scharf nach 3 Sekunden. Detoniert bei Annäherung (&lt;7m), verursacht 170.625-179.375 Arkanschaden und wurzelt betroffene Charaktere für 6 Sekunden fest.</li>
+                        <li><strong>Kobaltüberladung:</strong> Fügt Euch 250.000 Punkte Arkanschaden zu.</li>
+                        <li><strong>Kobaltversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Arkanschaden.</li>
+                        <li><strong>Fleisch zerreißen:</strong> 50.000 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    </ul>
+                </div>
+                <!-- Jadewächter -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-green-400">Jadewächter (Natur)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Jadesplitter:</strong> Richtet an allen Charakteren 47.500-52.500 Naturschaden an.</li>
+                        <li><strong>Jadeüberladung:</strong> Fügt Euch 250.000 Punkte Naturschaden zu.</li>
+                        <li><strong>Jadeversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Naturschaden.</li>
+                        <li><strong>Fleisch zerreißen:</strong> 50.000 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    </ul>
+                </div>
+                <!-- Jaspiswächter -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-orange-400">Jaspiswächter (Feuer)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Jaspisketten:</strong> Verbindet zwei Charaktere. Erhalten jede Sekunde 35.000 Punkte Feuerschaden, der sich pro Sekunde um 10% erhöht, sofern sie &gt;10m auseinander stehen. Die Ketten brechen, sobald die Charaktere länger als 15 Sekunden auseinanderstehen.</li>
+                        <li><strong>Jaspisüberladung:</strong> Fügt Euch 250.000 Punkte Feuerschaden zu.</li>
+                        <li><strong>Jaspisversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Feuerschaden.</li>
+                        <li><strong>Fleisch zerreißen:</strong> 50.000 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Heroische Anpassungen für 10-Spieler -->
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+                <h4 class="text-lg font-bold text-red-400">Heroische Anpassungen (10-Spieler)</h4>
+                <p class="text-gray-300 mt-2">Zusätzlich zu den oben genannten Fähigkeiten müsst ihr im heroischen Modus auf die von den Wächtern abgesonderten Kristalle achten. Diese können eingesammelt werden, verursachen aber Schaden. Durch das Stehen auf bestimmten Steinplatten im Raum mit energetisierten Kristallen erhält die gesamte Gruppe mehr Schaden und Willenskraft.</p>
+                <ul class="list-disc list-inside text-gray-300 mt-2">
+                    <li>Alle Fähigkeiten haben erhöhten Schaden und erhöhte Gesundheitswerte der Bosse.</li>
+                    <li>Die Werte für "Fleisch zerreißen" bleiben wie im normalen 10-Spieler-Modus bei 50.000 Schaden/Sek.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 25-Spieler Modus -->
+        <div data-size="25" class="tactic-content" style="display: block;">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">25-Spieler-Modus (4 aktive Wachen)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Amethystwächter -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-purple-400">Amethystwächter (Schatten)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Amethystteich:</strong> Richtet an Charakteren jede Sekunde 60.000 Punkte Schattenschaden an. Ein Teich hält eine Minute an.</li>
+                        <li><strong>Amethystüberladung:</strong> Fügt Euch 250.000 Punkte Schattenschaden zu.</li>
+                        <li><strong>Amethystversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Schattenschaden.</li>
+                        <li><strong>Fleisch zerreißen:</strong> 66.500 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    </ul>
+                </div>
+                <!-- Kobaltwächter -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-blue-400">Kobaltwächter (Arkan)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Kobaltmine:</strong> Scharf nach 3 Sekunden. Detoniert bei Annäherung (&lt;7m), verursacht 170.625-179.375 Arkanschaden und wurzelt betroffene Charaktere für 6 Sekunden fest.</li>
+                        <li><strong>Kobaltüberladung:</strong> Fügt Euch 250.000 Punkte Arkanschaden zu.</li>
+                        <li><strong>Kobaltversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Arkanschaden.</li>
+                        <li><strong>Fleisch zerreißen:</strong> 66.500 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    </ul>
+                </div>
+                <!-- Jadewächter -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-green-400">Jadewächter (Natur)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Jadesplitter:</strong> Richtet an allen Charakteren 47.500-52.500 Naturschaden an.</li>
+                        <li><strong>Jadeüberladung:</strong> Fügt Euch 250.000 Punkte Naturschaden zu.</li>
+                        <li><strong>Jadeversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Naturschaden.</li>
+                        <li><strong>Fleisch zerreißen:</strong> 66.500 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    </ul>
+                </div>
+                <!-- Jaspiswächter -->
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-orange-400">Jaspiswächter (Feuer)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2">
+                        <li><strong>Jaspisketten:</strong> Verbindet zwei Charaktere. Erhalten jede Sekunde 35.000 Punkte Feuerschaden, der sich pro Sekunde um 10% erhöht, sofern sie &gt;10m auseinander stehen. Die Ketten brechen, sobald die Spieler länger als 15 Sekunden auseinanderstehen.</li>
+                        <li><strong>Jaspisüberladung:</strong> Fügt Euch 250.000 Punkte Feuerschaden zu.</li>
+                        <li><strong>Jaspisversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Feuerschaden.</li>
+                        <li><strong>Fleisch zerreißen:</strong> 62.500 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Heroische Anpassungen für 25-Spieler -->
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+                <h4 class="text-lg font-bold text-red-400">Heroische Anpassungen (25-Spieler)</h4>
+                <p class="text-gray-300 mt-2">Zusätzlich zu den oben genannten Fähigkeiten müsst ihr im heroischen Modus auf die von den Wächtern abgesonderten Kristalle achten. Diese können eingesammelt werden, verursachen aber Schaden. Durch das Stehen auf bestimmten Steinplatten im Raum mit energetisierten Kristallen erhält die gesamte Gruppe mehr Schaden und Willenskraft.</p>
+                <ul class="list-disc list-inside text-gray-300 mt-2">
+                    <li>Alle Fähigkeiten haben erhöhten Schaden und erhöhte Gesundheitswerte der Bosse.</li>
+                    <li>Die Werte für "Fleisch zerreißen" bleiben wie im normalen 25-Spieler-Modus (66.500 für Amethyst, Kobalt, Jade; 62.500 für Jaspis) Schaden/Sek.</li>
+                </ul>
             </div>
         </div>
     </section>
