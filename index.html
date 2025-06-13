@@ -3,201 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raid Guides - Mogu'shangewölbe</title>
+    <title>Raid Guides - PÄNIK</title>
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .bg-slate-850 { background-color: #1a202c; }
-        .bg-slate-750 { background-color: #2d3748; }
-        .bg-slate-900 { background-color: #0d1117; }
-        .border-slate-650 { border-color: #4a5568; }
-        .text-blue-450 { color: #63b3ed; }
-        .nav-link { background-color: #4a5568; }
-        .nav-link.active-tab { background-color: #4299e1; box-shadow: 0 2px 4px rgba(0,0,0,0.3); transform: translateY(-2px); }
-        #auth-section { position: absolute; top: 1rem; right: 1rem; }
-        /* Stile für comp.html -- hier zentralisiert */
-        .role-btn { padding: 0.1rem 0.5rem; font-size: 0.75rem; border-radius: 4px; border: 1px solid #4a5568; background-color: #2d3748; color: #a0aec0; opacity: 0.6; transition: all 0.2s; }
-        .role-btn:not(.disabled):hover { opacity: 1; border-color: #a0aec0; }
-        .role-btn.active { opacity: 1; font-weight: bold; color: #ffffff; }
-        .role-btn.role-tank.active { background-color: #2563eb; border-color: #60a5fa; }
-        .role-btn.role-healer.active { background-color: #059669; border-color: #34d399; }
-        .role-btn.role-dps.active { background-color: #dc2626; border-color: #f87171; }
-        .player-details { display: flex; align-items: center; min-width: 0; }
-        .editable-name { background-color: transparent; border: 1px solid transparent; border-radius: 4px; padding: 2px 4px; transition: all 0.2s; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .editable-name:not(:disabled):hover, .editable-name:not(:disabled):focus { background-color: rgba(255, 255, 255, 0.1); border-color: #4a5568; max-width: none; }
-        .editable-class-select { background-color: #2d3748; border: none; font-size: 0.8rem; border-radius: 4px; margin-left: 8px; }
+        /* FINALES "MISTS OF PANDARIA" THEMA MIT ALLEN FEHLERBEHEBUNGEN */
+        :root {
+            --color-gold: #fcd34d;
+            --color-jade: #5eead4;
+            --color-parchment: #f5f2e8;
+            --color-dark-green-bg: rgba(25, 42, 35, 0.92);
+            --color-medium-green-bg: rgba(36, 61, 51, 0.88);
+            --color-dark-text: #102a23;
+            --color-gold-border: rgba(204, 163, 76, 0.4);
+            --color-gold-border-light: rgba(204, 163, 76, 0.2);
+        }
+        body { 
+            font-family: 'Inter', sans-serif;
+            color: var(--color-parchment);
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.05em;
+        }
+        .main-container {
+            background-color: var(--color-dark-green-bg);
+            border: 1px solid var(--color-gold-border);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        /* Diese Klassen überschreiben die alten, falls sie im dynamischen HTML noch vorkommen */
+        .bg-slate-850, .bg-slate-750 {
+            background-color: var(--color-medium-green-bg) !important;
+            border: 1px solid var(--color-gold-border-light) !important;
+        }
+        .text-blue-450 { color: var(--color-gold) !important; }
+        .border-slate-650 { border-color: var(--color-gold-border) !important; }
+        .text-gold { color: var(--color-gold); }
 
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background-color: #2d3748;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            color: #e2e8f0;
-            width: 90%;
-            max-width: 400px;
-        }
-        .modal-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #63b3ed;
-        }
-        .modal-content p {
-            margin-bottom: 1.5rem;
-            color: #cbd5e0;
-        }
-        .modal-buttons button {
-            background-color: #4299e1;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
+        .nav-link { 
+            background-color: rgba(74, 115, 95, 0.6); 
+            border: 1px solid var(--color-gold-border-light);
+            transition: all 0.2s ease-in-out;
+            color: var(--color-parchment);
+            font-family: 'Cinzel', serif;
             font-weight: bold;
-            transition: background-color 0.2s;
-            margin: 0 0.5rem;
         }
-        .modal-buttons button:hover {
-            background-color: #3182ce;
+        .nav-link:hover {
+            background-color: rgba(87, 135, 111, 0.8);
+            border-color: var(--color-gold-border);
         }
-        .modal-buttons .cancel-btn {
-            background-color: #e53e3e;
+        .nav-link.active-tab { 
+            background-color: var(--color-jade);
+            color: var(--color-dark-text) !important;
+            border-color: #99f6e4;
+            box-shadow: 0 0 15px rgba(94, 234, 212, 0.4);
+            transform: translateY(-2px);
         }
-        .modal-buttons .cancel-btn:hover {
-            background-color: #c53030;
+        
+        button, .btn { font-family: 'Cinzel', serif; font-weight: bold; transition: all 0.2s ease-in-out; }
+        button:disabled { opacity: 0.5 !important; cursor: not-allowed !important; }
+
+        .bg-blue-600 { background-color: #ca8a04 !important; color: var(--color-dark-text) !important; }
+        .bg-blue-600:hover { background-color: #eab308 !important; }
+        .bg-green-600, .bg-green-700 { background-color: #15803d !important; color: var(--color-parchment) !important; }
+        .bg-green-600:hover, .bg-green-700:hover { background-color: #16a34a !important; }
+        .bg-red-700, .bg-red-800, .cancel-btn { background-color: #b91c1c !important; color: var(--color-parchment) !important; }
+        .bg-red-700:hover, .bg-red-800:hover, .cancel-btn:hover { background-color: #dc2626 !important; }
+
+        #raid-selector, .assignment-select {
+            background-color: rgba(10, 20, 15, 0.7) !important;
+            border: 1px solid var(--color-gold-border) !important;
+            color: var(--color-parchment) !important;
+            border-radius: 0.25rem;
         }
-        /* New: Login Modal specific styles */
+        
+        .editable-name {
+            background-color: transparent !important;
+            border: 1px solid transparent !important;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+        .editable-name:hover:not(:disabled), .editable-name:focus {
+             background-color: rgba(10, 20, 15, 0.7) !important;
+             border: 1px solid var(--color-gold-border) !important;
+        }
+        .editable-class-select {
+             background-color: rgba(10, 20, 15, 0.7) !important;
+             border: 1px solid var(--color-gold-border) !important;
+             color: var(--color-parchment) !important;
+        }
+        #json-input { background-color: rgba(10, 20, 15, 0.7) !important; border: 1px solid var(--color-gold-border) !important; color: #a0aec0 !important; }
+
+        #background-video { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -100; object-fit: cover; filter: brightness(0.4); }
+        .content-wrapper { position: relative; z-index: 2; }
+        
+        /* KORREKTUR: Login Modal Overlay Styling */
         .login-modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7);
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.75);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
         .login-modal-content {
-            background-color: #2d3748;
+            background-color: var(--color-dark-green-bg);
+            border: 1px solid var(--color-gold-border);
             padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             text-align: center;
-            color: #e2e8f0;
             width: 90%;
             max-width: 400px;
         }
-        .login-modal-content h3 {
+        .login-modal-content h3 { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--color-gold); }
+        .login-modal-content input { background-color: rgba(10, 20, 15, 0.7) !important; border: 1px solid var(--color-gold-border) !important; color: var(--color-parchment) !important; border-radius: 0.25rem; padding: 0.5rem; width: 100%; margin-bottom: 1rem; }
+        .login-modal-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+
+        /* KORREKTUR: Roster-Button Farben */
+        .role-btn { border: 1px solid var(--color-gold-border-light); background-color: transparent; color: rgba(204, 163, 76, 0.7); opacity: 0.7; }
+        .role-btn:not(:disabled):hover { opacity: 1; border-color: #ca8a04; }
+        .role-btn.active { opacity: 1; font-weight: bold; color: #ffffff !important; }
+        .role-btn.role-tank.active { background-color: #2563eb !important; border-color: #60a5fa !important; }
+        .role-btn.role-healer.active { background-color: #059669 !important; border-color: #34d399 !important; }
+        .role-btn.role-dps.active { background-color: #dc2626 !important; border-color: #f87171 !important; }
+
+        /* Originale Klassen zur Sicherheit beibehalten und überschreiben */
+        .text-gray-200, .text-white { color: var(--color-parchment); }
+        .text-gray-400 { color: #a0aec0; }
+        .buff-tooltip { position: absolute; z-index: 100; background-color: #1a202c; border: 1px solid #4a5568; padding: 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; color: #e2e8f0; white-space: nowrap; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
+    /* KORREKTUR: Fehlende Stile für das allgemeine Modal-Fenster */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background-color: var(--color-dark-green-bg);
+            border: 1px solid var(--color-gold-border);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+        .modal-content h3 {
             font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: #63b3ed;
-        }
-        .login-modal-content input {
-            background-color: #0d1117;
-            color: #e2e8f0;
-            border: 1px solid #4a5568;
-            border-radius: 4px;
-            padding: 0.75rem 1rem;
             margin-bottom: 1rem;
-            width: 100%;
+            color: var(--color-gold);
         }
-        .login-modal-buttons {
+        .modal-content p {
+            margin-bottom: 1.5rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--color-parchment);
+        }
+        .modal-buttons {
             display: flex;
             justify-content: center;
             gap: 1rem;
-            margin-top: 1.5rem;
         }
-        .login-modal-buttons button {
-            background-color: #4299e1;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: background-color 0.2s;
+        .modal-buttons button {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.25rem;
+            color: var(--color-dark-text) !important;
+            background-color: #ca8a04 !important;
         }
-        .login-modal-buttons button:hover {
-            background-color: #3182ce;
+        .modal-buttons button:hover {
+            background-color: #eab308 !important;
         }
-        .login-modal-buttons .cancel-btn {
-            background-color: #e53e3e;
+        .modal-buttons .cancel-btn {
+            background-color: #b91c1c !important;
+            color: var(--color-parchment) !important;
         }
         .modal-buttons .cancel-btn:hover {
-            background-color: #c53030;
+            background-color: #dc2626 !important;
         }
-
-        /* Spezifische Stile für Boss-Seiten (von steinwache.html übernommen) */
-        .size-toggle-btn {
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .active-size-btn {
-            background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
-            color: #ffffff !important;
-            font-weight: 600;
-        }
-        .assignment-select {
-            background-color: #2d3748;
-            border: 1px solid #4a5568;
-            border-radius: 4px;
-            padding: 4px 8px;
-            width: 100%;
-            color: white;
-        }
-        .assignment-select:disabled {
-            opacity: 0.5;
-        }
-        .editor-info {
-            font-size: 0.75rem;
-            color: #a0aec0;
-            margin-left: 8px;
-        }
-        /* CSS for the buff items - initial greyed out state and active state */
-        .buff-item {
-            transition: opacity 0.2s ease-in-out;
-            color: #a0aec0; /* Initial greyed out color */
-        }
-        .buff-item.opacity-50 {
-            opacity: 0.5;
-        }
-        .buff-item:not(.opacity-50) {
-            opacity: 1;
-            /* color: #e2e8f0; -- Handled by inherit or specific element style */
-        }
-
-        /* Tooltip styles */
-        .buff-tooltip {
-            position: absolute; /* Added position absolute */
-            z-index: 100;
-            background-color: #1a202c; /* bg-slate-850 */
-            border: 1px solid #4a5568; /* border-slate-650 */
-            padding: 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            color: #e2e8f0;
-            white-space: nowrap; /* Prevent wrapping */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-    </style>
+	</style>
 </head>
-<body class="bg-slate-850 text-gray-200 p-4 sm:p-8">
-
-    <div class="max-w-7xl mx-auto bg-slate-750 p-6 rounded-lg shadow-lg relative">
+<body>
+<video autoplay muted loop playsinline id="background-video">
+    <source src="static/background.webm" type="video/webm">
+</video>
+<div class="content-wrapper">
+    <div class="max-w-7xl mx-auto main-container p-6 rounded-lg shadow-2xl relative">
         <div id="auth-section"></div>
         <header class="text-center pb-4 mb-6 border-b border-slate-650">
-            <h1 class="4xl font-bold text-white">P Ä N I K Raidsheet</h1>
+            <h1 class="text-5xl font-bold text-gold">P Ä N I K Raidsheet</h1>
              <div class="flex justify-center items-center gap-2 mt-2">
                 <p class="text-lg text-gray-400">Strategien und Einteilungen</p>
                 <div id="presence-indicator" class="flex items-center gap-2 text-sm text-gray-400"></div>
@@ -208,28 +207,20 @@
         <div class="flex justify-center mb-4">
             <label for="raid-selector" class="sr-only">Raid auswählen</label>
             <select id="raid-selector" class="bg-slate-850 text-gray-200 p-2 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="mogushan" selected>Mogu'shan Gewölbe</option>
-                <!-- Weitere Raids können hier hinzugefügt werden, z.B.: -->
-                <!-- <option value="herausforderung">Terrasse des Endlosen Frühlings</option> -->
+                <option value="mogushan" selected>Mogu'shangewölbe</option>
+                <option value="heartoffear">Das Herz der Angst</option>
+                <option value="terraceofendlessspring">Terrasse des Endlosen Frühlings</option>
+                <option value="throneofthunder">Der Thron des Donners</option>
+                <option value="siegeoforgrimmar">Schlacht um Orgrimmar</option>
             </select>
         </div>
         <nav id="boss-nav" class="flex flex-wrap justify-center gap-2 mb-8">
-            <a href="#comp" data-page-id="comp" class="nav-link bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Übersicht & Comp</a>
-            <a href="#mogushan/steinwache" data-page-id="mogushan/steinwache" class="nav-link hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Die Steinwache</a>
-            <a href="#mogushan/feng" data-page-id="mogushan/feng" class="nav-link hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Feng der Verfluchte</a>
-            <a href="#mogushan/garajal" data-page-id="mogushan/garajal" class="nav-link hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Gara'jal der Geisterbinder</a>
-            <a href="#mogushan/geisterkoenige" data-page-id="mogushan/geisterkoenige" class="nav-link hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Die Geisterkönige</a>
-            <a href="#mogushan/elegon" data-page-id="mogushan/elegon" class="nav-link hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Elegon</a>
-            <a href="#mogushan/wille" data-page-id="mogushan/wille" class="nav-link hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Der Wille des Kaisers (Jan-xi und Qin-xi)</a>
-            <a href="#history" data-page-id="history" class="nav-link bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Änderungsverlauf</a>
-        </nav>
+            </nav>
 
         <main id="content-container">
-            <!-- Inhalt wird hier dynamisch geladen -->
-        </main>
+            </main>
     </div>
 
-    <!-- Login Modal HTML Structure -->
     <div id="login-modal-overlay" class="login-modal-overlay hidden">
         <div class="login-modal-content">
             <h3>Gildenrat-Login</h3>
@@ -241,8 +232,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Firebase SDK & Hauptlogik -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc, getDoc, serverTimestamp, query, orderBy, addDoc, updateDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -262,17 +251,87 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        window.isManager = false; // Global verfügbar machen
+        window.isManager = false;
         let currentRosterUnsubscribe = null;
         let historyUnsubscribe = null;
         let assignmentUnsubscribe = null;
-        let heartbeatIntervalId = null; // Global variable for heartbeat interval
+        let heartbeatIntervalId = null;
 
         const DATA_COLLECTION = "raid-tool-data";
         const HISTORY_COLLECTION = "raid-tool-history";
         const USER_PROFILES_COLLECTION = "user_profiles";
 
-        // Korrektur: window.classColors muss global sein, damit es in comp.html verwendet werden kann
+        const raidData = {
+            mogushan: {
+                name: "Mogu'shangewölbe",
+                bosses: [
+                    { id: 'steinwache', name: 'Die Steinwache' },
+                    { id: 'feng', name: 'Feng der Verfluchte' },
+                    { id: 'garajal', name: 'Gara\'jal der Geisterbinder' },
+                    { id: 'geisterkoenige', name: 'Die Geisterkönige' },
+                    { id: 'elegon', name: 'Elegon' },
+                    { id: 'wille', name: 'Wille des Kaisers' }
+                ]
+            },
+            heartoffear: {
+                name: "Das Herz der Angst",
+                bosses: [
+                    { id: 'zorlok', name: 'Kaiserlicher Wesir Zor\'lok' },
+                    { id: 'tayak', name: 'Klingenfürst Ta\'yak' },
+                    { id: 'garalon', name: 'Garalon' },
+                    { id: 'meljarak', name: 'Windfürst Mel\'jarak' },
+                    { id: 'unsof', name: 'Bernformer Un\'sok' },
+                    { id: 'shekzeer', name: 'Großkaiserin Shek\'zeer' }
+                ]
+            },
+            terraceofendlessspring: {
+                name: "Terrasse des Endlosen Frühlings",
+                bosses: [
+                    { id: 'protectors', name: 'Beschützer des Endlosen' },
+                    { id: 'tsulong', name: 'Tsulong' },
+                    { id: 'lei-shi', name: 'Lei Shi' },
+                    { id: 'sha-of-fear', name: 'Sha der Angst' }
+                ]
+            },
+            throneofthunder: {
+                name: "Der Thron des Donners",
+                bosses: [
+                    { id: 'jinrokh', name: 'Jin\'rokh der Zerstörer' },
+                    { id: 'horridon', name: 'Horridon' },
+                    { id: 'council', name: 'Rat der Ältesten' },
+                    { id: 'tortos', name: 'Tortos' },
+                    { id: 'megaira', name: 'Megaira' },
+                    { id: 'ji-kun', name: 'Ji-Kun' },
+                    { id: 'durumu', name: 'Durumu der Vergessene' },
+                    { id: 'primordius', name: 'Primordius' },
+                    { id: 'dark-animus', name: 'Dunkler Animus' },
+                    { id: 'iron-qon', name: 'Eiserner Qon' },
+                    { id: 'twin-consorts', name: 'Zwillingskonkubinen' },
+                    { id: 'lei-shen', name: 'Lei Shen' },
+                    { id: 'ra-den', name: 'Ra-den' }
+                ]
+            },
+            siegeoforgrimmar: {
+                name: "Schlacht um Orgrimmar",
+                bosses: [
+                    { id: 'immerseus', name: 'Immerseus' },
+                    { id: 'fallen-protectors', name: 'Die gefallenen Beschützer' },
+                    { id: 'norushen', name: 'Norushen' },
+                    { id: 'sha-of-pride', name: 'Sha des Stolzes' },
+                    { id: 'galakras', name: 'Galakras' },
+                    { id: 'iron-juggernaut', name: 'Eiserner Koloss' },
+                    { id: 'korkron-dark-shamans', name: 'Dunkelschamanen der Kor\'kron' },
+                    { id: 'general-nazgrim', name: 'General Nazgrim' },
+                    { id: 'malkorok', name: 'Malkorok' },
+                    { id: 'spoils-of-pandaria', name: 'Die Schätze Pandarias' },
+                    { id: 'thok', name: 'Thok der Blutrünstige' },
+                    { id: 'siegecrafter', name: 'Belagerungsingenieur Rußschmied' },
+                    { id: 'paragons', name: 'Die Getreuen der Klaxxi' },
+                    { id: 'garrosh', name: 'Garrosh Höllschrei' }
+                ]
+            }
+        };
+
         window.classColors = { 'DEATHKNIGHT': '#C41F3B', 'DK': '#C41F3B', 'DRUID': '#FF7D0A', 'HUNTER': '#AAD372', 'MAGE': '#3FC7EB', 'MONK': '#00FF96', 'PALADIN': '#F48CBA', 'PRIEST': '#FFFFFF', 'ROGUE': '#FFF569', 'SHAMAN': '#0070DD', 'WARLOCK': '#8788EE', 'WARRIOR': '#C69B6D', 'TANK': '#A3A3A3' };
         const wowClasses = ['WARRIOR', 'PALADIN', 'HUNTER', 'ROGUE', 'PRIEST', 'DEATHKNIGHT', 'SHAMAN', 'MAGE', 'WARLOCK', 'MONK', 'DRUID'];
         const rosterDocRef = doc(db, DATA_COLLECTION, "currentRoster");
@@ -280,7 +339,7 @@
         const userProfilesCollectionRef = collection(db, USER_PROFILES_COLLECTION);
 
         // ============== MODAL-FUNKTION (global verfügbar) ==============
-        window.showModal = function(message, isConfirm = false) { // Global verfügbar gemacht
+        window.showModal = function(message, isConfirm = false) {
             return new Promise((resolve) => {
                 const modalOverlay = document.createElement('div');
                 modalOverlay.className = 'modal-overlay';
@@ -309,19 +368,19 @@
                 }
             });
         };
-
+        
         // ============== LOGIN MODAL FUNKTION ==============
         function showLoginModal() {
-            return new Promise((resolve) => {
+             return new Promise((resolve) => {
                 const loginModalOverlay = document.getElementById('login-modal-overlay');
                 const loginUsernameInput = document.getElementById('login-username');
                 const loginPasswordInput = document.getElementById('login-password');
                 const loginSubmitBtn = document.getElementById('login-modal-submit-btn');
                 const loginCancelBtn = document.getElementById('login-modal-cancel-btn');
 
-                loginUsernameInput.value = ''; // Felder leeren
+                loginUsernameInput.value = '';
                 loginPasswordInput.value = '';
-                loginModalOverlay.classList.remove('hidden'); // Modal anzeigen
+                loginModalOverlay.classList.remove('hidden');
 
                 const handleSubmit = async () => {
                     const username = loginUsernameInput.value;
@@ -333,7 +392,6 @@
                     }
 
                     try {
-                        // Schritt 1: Finde die E-Mail und den Manager-Status basierend auf dem Benutzernamen in Firestore
                         const q = query(userProfilesCollectionRef, where("username", "==", username));
                         const querySnapshot = await getDocs(q);
 
@@ -345,8 +403,7 @@
                         const userProfile = querySnapshot.docs[0].data();
                         const email = userProfile.email;
                         const isManagerFlag = userProfile.isManager || false;
-
-                        // Schritt 2: Verwende die abgerufene E-Mail und das eingegebene Passwort für Firebase Auth
+                        
                         const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
                         if (isManagerFlag) {
@@ -365,7 +422,7 @@
                         if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
                             errorMessage = "Falscher Benutzername oder falsches Passwort.";
                         } else if (error.code === 'auth/invalid-email') {
-                            errorMessage = "Ungültiges E-Mail-Format (interner Fehler). Bitte überprüfe die E-Mail im Firestore user_profiles Dokument.";
+                            errorMessage = "Ungültiges E-Mail-Format (interner Fehler).";
                         }
                         window.showModal(errorMessage);
                         resolve(false);
@@ -376,7 +433,14 @@
                     loginModalOverlay.classList.add('hidden');
                     resolve(false);
                 };
-
+				const handleKeydown = (event) => {
+								if (event.key === 'Enter') {
+									event.preventDefault();
+									handleSubmit();
+								}
+							};
+				loginUsernameInput.addEventListener('keydown', handleKeydown);
+				loginPasswordInput.addEventListener('keydown', handleKeydown);
                 loginSubmitBtn.addEventListener('click', handleSubmit);
                 loginCancelBtn.addEventListener('click', handleCancel);
 
@@ -387,8 +451,7 @@
                 });
             });
         }
-
-
+        
         // ============== AUTHENTIFIZIERUNG & PRESENCE ==============
         async function setupAuthUI() {
             const authSection = document.getElementById('auth-section');
@@ -422,12 +485,7 @@
 
         onAuthStateChanged(auth, user => {
             const presenceIndicator = document.getElementById('presence-indicator');
-
-            // Clear any existing heartbeat interval
-            if (heartbeatIntervalId) {
-                clearInterval(heartbeatIntervalId);
-                heartbeatIntervalId = null;
-            }
+            if (heartbeatIntervalId) clearInterval(heartbeatIntervalId);
 
             if (!user) {
                 signInAnonymously(auth).catch(e => console.error("Anonymer Login-Fehler:", e));
@@ -436,135 +494,109 @@
             }
 
             const userStatusRef = doc(db, "presence", user.uid);
-
-            // Function to update last_changed timestamp
             const updatePresenceTimestamp = () => {
-                setDoc(userStatusRef, { online: true, last_changed: serverTimestamp() }, { merge: true })
-                    .catch(e => console.error("Fehler beim Aktualisieren des Präsenz-Zeitstempels:", e));
+                setDoc(userStatusRef, { online: true, last_changed: serverTimestamp() }, { merge: true });
             };
-
-            // Initial set of presence
             updatePresenceTimestamp();
+            heartbeatIntervalId = setInterval(updatePresenceTimestamp, 5 * 60 * 1000);
 
-            // Set up heartbeat to update timestamp every 5 minutes (300 seconds)
-            heartbeatIntervalId = setInterval(updatePresenceTimestamp, 5 * 60 * 1000); // Update every 5 minutes
-
-            // Listen for real-time updates on the presence collection
             onSnapshot(collection(db, "presence"), snap => {
-                const nowInSeconds = Date.now() / 1000; // Current time in seconds since epoch
+                const nowInSeconds = Date.now() / 1000;
                 const onlineUsersCount = snap.docs.filter(doc => {
                     const data = doc.data();
-                    // Consider user online if last_changed was within the last 6 minutes (360 seconds)
-                    // This gives a buffer for the 5-minute heartbeat interval
-                    return data.online && data.last_changed && (nowInSeconds - data.last_changed.seconds < (6 * 60));
+                    return data.online && data.last_changed && (nowInSeconds - data.last_changed.seconds < 360);
                 }).length;
                 presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div><span>${onlineUsersCount}</span> Online`;
-            }, (error) => {
-                console.error("Fehler beim Abrufen der Präsenz-Updates:", error);
-                presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-red-400 rounded-full"></div><span>Fehler</span>`;
             });
         });
 
-
         // ============== NAVIGATION & CONTENT LOADING ==============
         const contentContainer = document.getElementById('content-container');
-        let currentRaidFolder = 'mogushan'; // Standard-Raid-Ordner
+        const bossNav = document.getElementById('boss-nav');
+        const raidSelector = document.getElementById('raid-selector');
+
+        function updateBossNav(raidId) {
+            const raid = raidData[raidId];
+            if (!raid) {
+                bossNav.innerHTML = '';
+                return;
+            }
+            
+            let navHTML = `<a href="#comp" data-page-id="comp" class="nav-link bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Übersicht & Comp</a>`;
+            
+            raid.bosses.forEach(boss => {
+                const pageId = `${raidId}/${boss.id}`;
+                navHTML += `<a href="#${pageId}" data-page-id="${pageId}" class="nav-link hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">${boss.name}</a>`;
+            });
+
+            navHTML += `<a href="#history" data-page-id="history" class="nav-link bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Änderungsverlauf</a>`;
+            bossNav.innerHTML = navHTML;
+        }
 
         async function loadContent(pageId) {
-            // Unsubscribe from previous listeners to prevent memory leaks/multiple listeners
             if (currentRosterUnsubscribe) { currentRosterUnsubscribe(); currentRosterUnsubscribe = null; }
             if (historyUnsubscribe) { historyUnsubscribe(); historyUnsubscribe = null; }
             if (assignmentUnsubscribe) { assignmentUnsubscribe(); assignmentUnsubscribe = null; }
 
-            let filePath = '';
-            // Determine if it's a root-level page or a boss page within a raid folder
-            if (pageId === 'comp' || pageId === 'history') {
-                filePath = `${pageId}.html`;
-            } else {
-                // Assume boss pages are always prefixed with a folder (e.g., "mogushan/steinwache")
-                filePath = `${pageId}.html`;
-            }
+            const filePath = pageId.includes('/') ? `${pageId}.html` : `${pageId}.html`;
 
             try {
                 const response = await fetch(filePath);
                 if (!response.ok) throw new Error(`Seite ${filePath} nicht gefunden.`);
                 contentContainer.innerHTML = await response.text();
-                // Extract only the actual boss ID for initializePage, removing the folder prefix if present
                 const actualPageIdForInit = pageId.includes('/') ? pageId.split('/')[1] : pageId;
                 initializePage(actualPageIdForInit);
             } catch (error) {
                 console.error("Fehler beim Laden des Inhalts:", error);
-                contentContainer.innerHTML = `<p class="text-center text-red-500">Fehler: Der Inhalt für '${filePath}' konnte nicht geladen werden.</p>`;
+                contentContainer.innerHTML = `<div class="text-center p-8 bg-slate-850 rounded-lg"><h2 class="text-2xl font-semibold text-yellow-400">Inhalt nicht gefunden</h2><p class="mt-2 text-gray-400">Für diesen Boss wurde noch keine Seite angelegt. Bitte erstelle die Datei <code>${filePath}</code>.</p></div>`;
             }
         }
 
-        function handleNavigation() {
-            const raidSelector = document.getElementById('raid-selector');
-            if (raidSelector) {
-                // Update the currentRaidFolder based on the selector's value
-                currentRaidFolder = raidSelector.value;
-            }
+        function renderCurrentState() {
+            const currentRaidId = raidSelector.value;
+            updateBossNav(currentRaidId);
 
-            let hash = window.location.hash.substring(1);
-            let pageIdToLoad = '';
-
-            // Logic to determine the correct pageId to load based on hash and currentRaidFolder
-            if (!hash || hash === 'comp' || hash === 'history') {
-                pageIdToLoad = hash || 'comp'; // Default to 'comp' if hash is empty
-            } else {
-                // If a boss page is requested (e.g., #steinwache or #mogushan/steinwache)
-                // We need to ensure the hash reflects the current raid selection.
-                // If the hash already includes a folder, use that.
-                // If not, assume it's a boss ID and prepend the currentRaidFolder.
-                if (hash.includes('/')) {
-                    // Hash already contains a folder (e.g., mogushan/steinwache)
-                    pageIdToLoad = hash;
-                } else {
-                    // Hash is just boss name (e.g., steinwache), prepend current raid folder
-                    pageIdToLoad = `${currentRaidFolder}/${hash}`;
+            let pageId = window.location.hash.substring(1) || 'comp';
+            
+            if (pageId.includes('/')) {
+                const raidOfPage = pageId.split('/')[0];
+                if (raidData[raidOfPage] && raidSelector.value !== raidOfPage) {
+                    raidSelector.value = raidOfPage;
+                    updateBossNav(raidOfPage);
                 }
             }
+            
+            loadContent(pageId);
 
-            // Update the URL hash if it's different from what we're about to load,
-            // to keep the URL consistent with the loaded content.
-            // This is especially useful if a user types #steinwache and we load #mogushan/steinwache
-            if (window.location.hash.substring(1) !== pageIdToLoad) {
-                window.history.replaceState(null, '', `#${pageIdToLoad}`);
-            }
-
-            loadContent(pageIdToLoad);
-
-            // Update active class in navigation
             document.querySelectorAll('#boss-nav .nav-link').forEach(link => {
-                link.classList.toggle('active-tab', link.dataset.pageId === pageIdToLoad);
+                link.classList.toggle('active-tab', link.dataset.pageId === pageId);
             });
         }
 
-        window.addEventListener('hashchange', handleNavigation);
         document.addEventListener('DOMContentLoaded', () => {
-             setupAuthUI();
+            setupAuthUI();
 
-             const raidSelector = document.getElementById('raid-selector');
-             if (raidSelector) {
-                 raidSelector.addEventListener('change', () => {
-                     // When raid changes, force navigation to the 'comp' page or a default boss of the new raid.
-                     // For now, let's just set the hash to 'comp' and let handleNavigation handle the rest.
-                     // This ensures a consistent starting point when switching raids.
-                     window.location.hash = '#comp';
-                     // handleNavigation will be triggered by the hashchange event if the hash actually changed.
-                     // If the hash was already '#comp', it won't trigger hashchange, so call directly.
-                     if (window.location.hash.substring(1) === 'comp') {
-                         handleNavigation();
-                     }
-                 });
-                 // Set the raid selector to the initial currentRaidFolder value on load
-                 raidSelector.value = currentRaidFolder;
-             }
-             handleNavigation(); // Initial load of content based on URL hash
+            raidSelector.addEventListener('change', () => {
+                // ++ KORRIGIERTE LOGIK ++
+                // Wenn der User den Raid wechselt, soll zur #comp Seite navigiert werden.
+                // Wenn wir schon auf #comp sind, würde das `hashchange` Event nicht feuern.
+                // Deshalb rufen wir in diesem Fall die Render-Funktion manuell auf.
+                // Andernfalls setzen wir den Hash, was das Event automatisch auslöst.
+                if (window.location.hash === '#comp' || window.location.hash === '') {
+                    renderCurrentState();
+                } else {
+                    window.location.hash = '#comp';
+                }
+            });
+
+            window.addEventListener('hashchange', renderCurrentState);
+            
+            // Initialer Seitenaufbau
+            renderCurrentState();
         });
-
-        // ============== LOGGING-FUNKTION (global verfügbar) ==============
-        window.logHistory = async function(boss, assignment, player, editor) { // Global verfügbar gemacht
+        
+        // ============== LOGGING-FUNKTION ==============
+        window.logHistory = async function(boss, assignment, player, editor) {
              await addDoc(historyCollectionRef, {
                 boss: boss,
                 assignment: assignment,
@@ -579,10 +611,6 @@
             if (pageId === 'comp') initCompPage();
             else if (pageId === 'history') initHistoryPage();
             else initBossPage(pageId);
-
-            // Diese werden am Ende von initBossPage aufgerufen, damit sie immer aktuell sind.
-            // window.toggleSelectEditability(); // Global verfügbar machen
-            // window.toggleCompEditability(); // Global verfügbar machen
         }
 
         // --- Logik für comp.html ---
@@ -593,25 +621,16 @@
 
             currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
                 const jsonInput = document.getElementById('json-input');
-                if (docSnap.exists()) {
-                    const currentRosterData = docSnap.data().roster || [];
-                    displayRoster(currentRosterData);
-                    // Sicherstellen, dass updateRaidBuffsDisplay aufgerufen wird
-                    if (window.updateRaidBuffsDisplay) {
-                        window.updateRaidBuffsDisplay(currentRosterData);
-                    }
-                    if(jsonInput && jsonInput.value === ''){
-                         jsonInput.value = docSnap.data().rawJson || '';
-                    }
-                } else {
-                    displayRoster([]);
-                    // Sicherstellen, dass updateRaidBuffsDisplay auch bei leerem Roster aufgerufen wird
-                    if (window.updateRaidBuffsDisplay) {
-                        window.updateRaidBuffsDisplay([]);
-                    }
+                const currentRosterData = docSnap.exists() ? docSnap.data().roster || [] : [];
+                displayRoster(currentRosterData);
+                if (window.updateRaidBuffsDisplay) {
+                    window.updateRaidBuffsDisplay(currentRosterData);
+                }
+                if(jsonInput && jsonInput.value === ''){
+                     jsonInput.value = docSnap.data().rawJson || '';
                 }
             });
-            window.toggleCompEditability(); // Aufruf hier
+            window.toggleCompEditability();
         }
 
         // --- Logik für history.html ---
@@ -635,115 +654,85 @@
             });
         }
 
-        // --- Logik für Boss-Seiten (Steinwache, Feng, etc.) ---
-        function initBossPage(pageId) { // pageId ist der Boss-ID (z.B. "steinwache", "feng")
-            // The pageId here will already be without the folder prefix, e.g., "steinwache"
+        // --- Logik für Boss-Seiten ---
+        function initBossPage(pageId) {
             const assignmentsDocRef = doc(db, DATA_COLLECTION, "boss-" + pageId);
-
-            // --- Logik für Größenumschaltung (von individuellen Boss-HTML-Dateien hierher verschoben) ---
             const sizeToggle = document.getElementById('size-toggle');
-            if (sizeToggle) { // Prüfen, ob das Element auf der aktuellen Seite existiert
+            if (sizeToggle) {
                 sizeToggle.addEventListener('click', function(event) {
                     if (event.target.matches('.size-toggle-btn')) {
                         const selectedSize = event.target.dataset.size;
                         document.querySelectorAll('.size-toggle-btn').forEach(button => button.classList.remove('active-size-btn'));
                         event.target.classList.add('active-size-btn');
                         document.querySelectorAll('.tactic-content').forEach(content => {
-                            // 'inline' für SPAN, 'block' für DIV/P/UL, um die Darstellung zu erhalten
                             content.style.display = content.dataset.size === selectedSize ? (content.tagName === 'SPAN' ? 'inline' : 'block') : 'none';
                         });
                     }
                 });
-                // Initialen aktiven Zustand und Anzeige basierend auf der Standard-25-Spieler-Ansicht für Boss-Seiten setzen
                 const defaultSizeButton = document.querySelector(`#size-toggle button[data-size="25"]`);
-                if (defaultSizeButton) {
-                    defaultSizeButton.classList.add('active-size-btn');
-                }
+                if (defaultSizeButton) defaultSizeButton.classList.add('active-size-btn');
                 document.querySelectorAll('.tactic-content').forEach(content => {
                     content.style.display = content.dataset.size === '25' ? (content.tagName === 'SPAN' ? 'inline' : 'block') : 'none';
                 });
             }
-            // --- Ende der Größenumschaltungslogik ---
 
-            let rosterData = []; // Daten des Rosters, einmal geladen
-
-            // Funktion zum Abrufen des Rosters
-            async function fetchAndPopulateRoster() {
-                const rosterSnap = await getDoc(rosterDocRef);
-                rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
-            }
-
-            // Funktion zum Füllen von Dropdown-Optionen mit Spielernamen und Klassen
-            function populateDropdownOptions(selectElement, players) {
-                selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
-                players.forEach(player => {
-                    const option = document.createElement('option');
-                    // Korrektur: window.classColors verwenden
-                    const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
-                    option.value = player.name;
-                    option.textContent = `${player.name} (${player.class})`; // Klasse zum Text hinzugefügt
-                    option.style.color = color;
-                    option.dataset.color = color;
-                    selectElement.appendChild(option);
-                });
-            }
-
-            // Handler f+r Änderungen in den Zuweisungs-Dropdowns
             async function handleAssignmentChange(event) {
                 if (!window.isManager) return;
                 const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
                 const select = event.target;
                 const assignmentId = select.dataset.assignmentId;
                 const playerName = select.value || "Niemand";
-
-                // Zuweisung in Firestore speichern, einschließlich Editor und Zeitstempel
                 await setDoc(assignmentsDocRef, { [assignmentId]: { player: playerName, editor: currentManager, timestamp: serverTimestamp() } }, { merge: true });
-
                 const bossName = pageId.charAt(0).toUpperCase() + pageId.slice(1);
-                // Regex für CamelCase zu Leerzeichen und dann Trim
                 const assignmentName = assignmentId.replace(pageId + '-', '').replace(/([A-Z])/g, ' $1').trim();
-                window.logHistory(bossName, `Einteilung: ${assignmentName}`, playerName, currentManager); // Verwende globale logHistory
+                window.logHistory(bossName, `Einteilung: ${assignmentName}`, playerName, currentManager);
             }
 
-            // Dropdowns initialisieren und Snapshot-Listener einrichten
             (async () => {
-                await fetchAndPopulateRoster(); // Roster zuerst laden
-
+                const rosterSnap = await getDoc(rosterDocRef);
+                const rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
+                
+                function populateDropdownOptions(selectElement, players) {
+                    selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
+                    players.forEach(player => {
+                        const option = document.createElement('option');
+                        const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
+                        option.value = player.name;
+                        option.textContent = `${player.name} (${player.class})`;
+                        option.style.color = color;
+                        option.dataset.color = color;
+                        selectElement.appendChild(option);
+                    });
+                }
+                
                 document.querySelectorAll('.assignment-select').forEach(select => {
-                    select.addEventListener('change', handleAssignmentChange); // Change-Listener einmal hinzufügen
-
+                    select.addEventListener('change', handleAssignmentChange);
                     const assignmentId = select.dataset.assignmentId.toLowerCase();
                     let playersForDropdown = [];
                     if (assignmentId.includes('tank')) playersForDropdown = rosterData.filter(p => p.roles.includes('TANK'));
                     else if (assignmentId.includes('healer')) playersForDropdown = rosterData.filter(p => p.roles.includes('HEALER'));
                     else if (assignmentId.includes('dps') || assignmentId.includes('dd')) playersForDropdown = rosterData.filter(p => p.roles.includes('DPS'));
                     else playersForDropdown = rosterData;
-
-                    populateDropdownOptions(select, playersForDropdown); // Optionen füllen
+                    populateDropdownOptions(select, playersForDropdown);
                 });
 
                 assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
                     const assignments = docSnap.exists() ? docSnap.data() : {};
                     document.querySelectorAll('.assignment-select').forEach(select => {
                         const id = select.dataset.assignmentId;
-                        const assignment = assignments[id]; // Das vollständige Assignment-Objekt holen
+                        const assignment = assignments[id];
                         const assignedPlayerName = assignment ? assignment.player : "";
-
-                        select.value = assignedPlayerName; // Wert setzen
-
-                        // Farbe des Select-Elements basierend auf der ausgewählten Option setzen
+                        select.value = assignedPlayerName;
                         const selectedOption = Array.from(select.options).find(o => o.value === assignedPlayerName);
-                        // Korrektur: window.classColors verwenden
                         select.style.color = selectedOption ? selectedOption.dataset.color : '#FFFFFF';
                     });
-                    window.toggleSelectEditability(); // Bearbeitbarkeit nach Daten laden aktualisieren
+                    window.toggleSelectEditability();
                 });
-
-                window.toggleSelectEditability(); // Initialer Aufruf zur Einstellung der Bearbeitbarkeit
+                window.toggleSelectEditability();
             })();
         }
 
-        // ============== COMP LOGIK (HELFERFUNKTIONEN, global verfügbar) ==============
+        // ============== COMP LOGIK (HELFERFUNKTIONEN) ==============
         function getPlayerInfoFromEntry(playerEntry) {
             let playerClass = playerEntry.class ? playerEntry.class.toUpperCase() : 'UNKNOWN';
             if (playerClass === 'DK') playerClass = 'DEATHKNIGHT';
@@ -765,48 +754,57 @@
             const lists = { TANK: document.getElementById('tanks-list'), HEALER: document.getElementById('healers-list'), DPS: document.getElementById('dps-list') };
             if (!lists.TANK) return;
             Object.values(lists).forEach(list => list.innerHTML = '');
+
+            function createPlayerElement(player) {
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'flex justify-between items-center';
+                playerDiv.dataset.playerId = player.id;
+                playerDiv.innerHTML = `
+                    <div class="player-details">
+                        <input type="text" value="${player.name}" class="editable-name" style="color: ${window.classColors[player.class.toUpperCase()] || '#FFFFFF'};" ${!window.isManager ? 'disabled' : ''}>
+                        <select class="editable-class-select" ${!window.isManager ? 'disabled' : ''}>
+                            ${wowClasses.map(c => `<option value="${c}" ${player.class === c ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="flex gap-1">
+                        ${['TANK', 'HEALER', 'DPS'].map(role => `<button class="role-btn role-${role.toLowerCase()} ${player.roles.includes(role) ? 'active' : ''}" data-role="${role}" ${!window.isManager ? 'disabled' : ''}>${role.charAt(0)}</button>`).join('')}
+                    </div>`;
+                return playerDiv;
+            }
+
             roster.forEach(player => {
                 const playerElement = createPlayerElement(player);
                 if (player.roles.includes('TANK')) lists.TANK.appendChild(playerElement.cloneNode(true));
                 if (player.roles.includes('HEALER')) lists.HEALER.appendChild(playerElement.cloneNode(true));
                 if (player.roles.includes('DPS')) lists.DPS.appendChild(playerElement.cloneNode(true));
             });
+
             roster.forEach(player => {
                  document.querySelectorAll(`[data-player-id="${player.id}"]`).forEach(element => {
                     const nameInput = element.querySelector('.editable-name');
                     nameInput?.addEventListener('blur', (e) => handlePlayerUpdate(e, player.id, 'name'));
+					nameInput?.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        event.target.blur(); // Simuliert das Verlassen des Feldes
+                    }
+                });
                     const classSelect = element.querySelector('.editable-class-select');
                     classSelect?.addEventListener('change', (e) => handlePlayerUpdate(e, player.id, 'class'));
                     element.querySelectorAll('.role-btn').forEach(btn => btn.addEventListener('click', () => togglePlayerRole(player.id, btn.dataset.role)));
                 });
             });
+
             ['TANK', 'HEALER', 'DPS'].forEach(role => {
-                if(lists[role].children.length === 0) lists[role].innerHTML = `<p class="text-gray-500">Keine ${role.toLowerCase()}s zugewiesen.</p>`;
+                if(lists[role] && lists[role].children.length === 0) lists[role].innerHTML = `<p class="text-gray-500">Keine ${role.toLowerCase()}s zugewiesen.</p>`;
             });
             window.toggleCompEditability();
         }
 
-        function createPlayerElement(player) {
-            const playerDiv = document.createElement('div');
-            playerDiv.className = 'flex justify-between items-center';
-            playerDiv.dataset.playerId = player.id;
-            playerDiv.innerHTML = `
-                <div class="player-details">
-                    <input type="text" value="${player.name}" class="editable-name" style="color: ${window.classColors[player.class.toUpperCase()] || '#FFFFFF'};" ${!window.isManager ? 'disabled' : ''}>
-                    <select class="editable-class-select" ${!window.isManager ? 'disabled' : ''}>
-                        ${wowClasses.map(c => `<option value="${c}" ${player.class === c ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="flex gap-1">
-                    ${['TANK', 'HEALER', 'DPS'].map(role => `<button class="role-btn role-${role.toLowerCase()} ${player.roles.includes(role) ? 'active' : ''}" data-role="${role}" ${!window.isManager ? 'disabled' : ''}>${role.charAt(0)}</button>`).join('')}
-                </div>`;
-            return playerDiv;
-        }
-
-        window.toggleSelectEditability = function() { // Global verfügbar gemacht
+        window.toggleSelectEditability = function() {
             document.querySelectorAll('.assignment-select').forEach(el => { el.disabled = !window.isManager; });
         };
-        window.toggleCompEditability = function() { // Global verfügbar gemacht
+        window.toggleCompEditability = function() {
             if(!document.getElementById('import-btn')) return;
             document.querySelectorAll('#import-btn, #add-player-btn, #clear-roster-btn, .editable-name, .editable-class-select, .role-btn').forEach(el => { el.disabled = !window.isManager; });
         };
@@ -822,13 +820,20 @@
             if (playerIndex === -1) return;
 
             const oldPlayer = {...roster[playerIndex]};
-            const newValue = event.target.value;
-            roster[playerIndex][field] = newValue;
+            const newValue = event.target.value.trim();
 
-            await updateDoc(rosterDocRef, { roster: roster });
-
-            const changeText = field === 'name' ? `umbenannt in ${newValue}` : `Klasse geändert zu ${newValue}`;
-            window.logHistory('Roster', `${oldPlayer.name} ${changeText}`, '', currentManager);
+            if (field === 'name' && newValue === '') {
+                const deletedPlayerName = oldPlayer.name;
+                roster.splice(playerIndex, 1);
+                await updateDoc(rosterDocRef, { roster: roster });
+                window.logHistory('Roster', 'Spieler gelöscht', deletedPlayerName, currentManager);
+                window.showModal(`Spieler '${deletedPlayerName}' wurde gelöscht.`);
+            } else {
+                roster[playerIndex][field] = newValue;
+                await updateDoc(rosterDocRef, { roster: roster });
+                const changeText = field === 'name' ? `umbenannt in ${newValue}` : `Klasse geändert zu ${newValue}`;
+                window.logHistory('Roster', `${oldPlayer.name} ${changeText}`, '', currentManager);
+            }
         }
 
         async function togglePlayerRole(playerId, roleToToggle) {
@@ -862,16 +867,12 @@
         async function handleImportRoster() {
             if (!window.isManager) return;
             const jsonString = document.getElementById('json-input').value;
-            if (!jsonString) {
-                window.showModal("Bitte JSON einfügen.");
-                return;
-            }
+            if (!jsonString) return window.showModal("Bitte JSON einfügen.");
             try {
                 const data = JSON.parse(jsonString);
-                if (!data.raidDrop || !Array.isArray(data.raidDrop)) throw new Error("Ungültiges JSON: 'raidDrop' Array fehlt oder ist ungültig.");
+                if (!data.raidDrop || !Array.isArray(data.raidDrop)) throw new Error("Ungültiges JSON: 'raidDrop' Array fehlt.");
                 const newRoster = data.raidDrop.map(getPlayerInfoFromEntry);
                 await setDoc(rosterDocRef, { roster: newRoster, rawJson: jsonString });
-
                 const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
                 window.logHistory('Roster', `Importiert`, `${newRoster.length} Spieler`, currentManager);
                 window.showModal(`Roster mit ${newRoster.length} Spielern importiert!`);
@@ -882,16 +883,13 @@
 
         async function handleAddPlayer() {
             if (!window.isManager) return;
-            const name = prompt("Name des neuen Spielers:", "NeuerSpieler"); // Keeping prompt for input simplicity
+            const name = prompt("Name des neuen Spielers:", "NeuerSpieler");
             if (!name) return;
-
             const newPlayer = { id: crypto.randomUUID(), name: name, class: 'WARRIOR', roles: ['DPS'] };
             const docSnap = await getDoc(rosterDocRef);
             const roster = docSnap.exists() ? docSnap.data().roster || [] : [];
             roster.push(newPlayer);
-
             await setDoc(rosterDocRef, { roster: roster }, { merge: true });
-
             const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
             window.logHistory('Roster', `Spieler hinzugefügt`, name, currentManager);
             window.showModal(`Spieler '${name}' wurde hinzugefügt.`);
@@ -909,58 +907,26 @@
             }
         }
 
-        // Define the mapping of buff names to providing classes
-        // Note: Pet classes are mapped to HUNTER. Spell/ability names are for tooltip clarity.
+        // ============== RAID BUFF LOGIK ==============
         const raidBuffsClassesMap = {
             // Offensive Buffs
-            "5% Stärke, Beweglichkeit, Intelligenz": {
-                classes: { "PALADIN": "Segen der Könige", "DRUID": "Mal der Wildnis", "MONK": "Vermächtnis des Kaisers", "HUNTER": "Umarmung der Schieferkrabbe (Pet)" }
-            },
-            "10% Angriffskraft": {
-                classes: { "DEATHKNIGHT": "Horn des Winters", "HUNTER": "Trueshot Aura", "WARRIOR": "Kampfruf" }
-            },
-            "10% Angriffsgeschwindigkeit": {
-                classes: { "DEATHKNIGHT": "Unholy Aura", "HUNTER": ["Kicherndes Heulen (Hyänen-Pet)", "Schlangenschnelligkeit (Schlangen-Pet)"], "ROGUE": "List des Schnellklinglers", "SHAMAN": "Entfesselte Wut" }
-            },
-            "3000 Meisterschaft": {
-                classes: { "HUNTER": ["Brüllen des Mutes (Katzen-Pet)", "Segen des Geisterbestien (Geisterbestien-Pet)"], "PALADIN": "Segen der Macht", "SHAMAN": "Anmut der Luft" }
-            },
-            "5% Kritische Trefferchance": {
-                classes: { "DRUID": "Anführer der Meute", "HUNTER": ["Furchterregendes Brüllen (Wolfs-Pet)", "Ruhiges Wasser (Wasserläufer-Pet)"], "MAGE": "Arkane Brillanz", "MONK": "Vermächtnis des Weißen Tigers", "PRIEST": "Inneres Feuer" } // Priest added based on common buffing
-            },
-            "10% Zaubermacht": {
-                classes: { "HUNTER": "Ruhiges Wasser (Wasserläufer-Pet)", "MAGE": "Arkane Brillanz", "SHAMAN": "Brennender Zorn", "WARLOCK": "Dunkle Absicht" }
-            },
-            "5% Zaubertempo": {
-                classes: { "DRUID": "Mondkingestalt", "HUNTER": "Gedankenstärkung (Sporebat-Pet)", "PRIEST": "Schattenform", "SHAMAN": "Elementarer Eid" }
-            },
-
+            "5% Stärke, Beweglichkeit, Intelligenz": { classes: { "PALADIN": "Segen der Könige", "DRUID": "Mal der Wildnis", "MONK": "Vermächtnis des Kaisers", "HUNTER": "Umarmung der Schieferkrabbe (Pet)" } },
+            "10% Angriffskraft": { classes: { "DEATHKNIGHT": "Horn des Winters", "HUNTER": "Trueshot Aura", "WARRIOR": "Kampfruf" } },
+            "10% Angriffsgeschwindigkeit": { classes: { "DEATHKNIGHT": "Unholy Aura", "HUNTER": ["Kicherndes Heulen (Hyänen-Pet)", "Schlangenschnelligkeit (Schlangen-Pet)"], "ROGUE": "List des Schnellklinglers", "SHAMAN": "Entfesselte Wut" } },
+            "3000 Meisterschaft": { classes: { "HUNTER": ["Brüllen des Mutes (Katzen-Pet)", "Segen des Geisterbestien (Geisterbestien-Pet)"], "PALADIN": "Segen der Macht", "SHAMAN": "Anmut der Luft" } },
+            "5% Kritische Trefferchance": { classes: { "DRUID": "Anführer der Meute", "HUNTER": ["Furchterregendes Brüllen (Wolfs-Pet)", "Ruhiges Wasser (Wasserläufer-Pet)"], "MAGE": "Arkane Brillanz", "MONK": "Vermächtnis des Weißen Tigers", "PRIEST": "Inneres Feuer" } },
+            "10% Zaubermacht": { classes: { "HUNTER": "Ruhiges Wasser (Wasserläufer-Pet)", "MAGE": "Arkane Brillanz", "SHAMAN": "Brennender Zorn", "WARLOCK": "Dunkle Absicht" } },
+            "5% Zaubertempo": { classes: { "DRUID": "Mondkingestalt", "HUNTER": "Gedankenstärkung (Sporebat-Pet)", "PRIEST": "Schattenform", "SHAMAN": "Elementarer Eid" } },
             // Defensive Buffs
-            "10% Ausdauer": {
-                classes: { "HUNTER": "Qiraji-Standhaftigkeit (Silithiden-Pet)", "PRIEST": "Machtwort: Seelenstärke", "WARLOCK": "Dunkle Absicht", "WARRIOR": "Befehlsruf" }
-            },
-            "-10% physischer Schaden (Weakened Blows)": { // Updated name for clarity
-                classes: { "DEATHKNIGHT": "Scharlachrotes Fieber (Blut)", "DRUID": "Verwüsten", "HUNTER": ["Demoralisierendes Gebrüll (Bären-Pet)", "Demoralisierender Schrei (Aasvogel-Pet)"], "MONK": "Fass-Sturm (Braumeister)", "PALADIN": "Hammer des Rechtschaffenen (Schutz/Vergeltung)", "SHAMAN": "Erdbeben (Elementar/Verstärkung)", "WARLOCK": "Fluch der Entkräftung", "WARRIOR": "Donnerknall" }
-            },
-
+            "10% Ausdauer": { classes: { "HUNTER": "Qiraji-Standhaftigkeit (Silithiden-Pet)", "PRIEST": "Machtwort: Seelenstärke", "WARLOCK": "Dunkle Absicht", "WARRIOR": "Befehlsruf" } },
+            "-10% physischer Schaden (Weakened Blows)": { classes: { "DEATHKNIGHT": "Scharlachrotes Fieber (Blut)", "DRUID": "Verwüsten", "HUNTER": ["Demoralisierendes Gebrüll (Bären-Pet)", "Demoralisierender Schrei (Aasvogel-Pet)"], "MONK": "Fass-Sturm (Braumeister)", "PALADIN": "Hammer des Rechtschaffenen (Schutz/Vergeltung)", "SHAMAN": "Erdbeben (Elementar/Verstärkung)", "WARLOCK": "Fluch der Entkräftung", "WARRIOR": "Donnerknall" } },
             // Debuffs (für Gegner)
-            "+4% erlittener physischer Schaden (Physical Vulnerability)": {
-                classes: { "DEATHKNIGHT": ["Spröde Knochen (Frost/Unheilig)", "Ebonplaguesprenger (Frost/Unheilig)"], "HUNTER": ["Gore (Eber-Pet)", "Stampede (Nashorn-Pet)", "Säurespucke (Wurm-Pet)", "Verwüsten (Schreiter-Pet)"], "PALADIN": "Urteile des Kühnen (Vergeltung)", "WARRIOR": "Kolossales Zerschmettern (Waffen/Furor)" }
-            },
-            "-4% Rüstung (Weakened Armor)": {
-                classes: { "DRUID": "Feenfeuer", "HUNTER": ["Rüstung zerreißen (Raptoren-Pet)", "Staubwolke (Langbein-Pet)"], "ROGUE": "Rüstung zerreißen", "WARRIOR": ["Rüstung zerreißen (Waffen/Furor)", "Verwüsten (Schutz)"] }
-            },
-            "+5% erlittener Zauberschaden": {
-                classes: { "HUNTER": ["Feueratem (Drachenfalken-Pet)", "Blitzatem (Windnatter-Pet)"], "ROGUE": "Meistergiftmischer", "WARLOCK": "Fluch der Elemente" }
-            },
-            "Heilungsreduktion (Mortal Wounds)": {
-                classes: { "HUNTER": ["Witwengift", "Monströser Biss (Teufelssaurier-Pet)"], "MONK": "Aufsteigende Sonnenkick (Windläufer)", "ROGUE": "Wundgift", "WARRIOR": ["Tödlicher Stoß (Waffen/Furor)", "Wilder Stoß (Waffen/Furor)"] }
-            },
-            "Zaubergeschwindigkeitsreduktion": {
-                classes: { "DEATHKNIGHT": "Nekrotischer Stoß", "HUNTER": ["Lava-Atem (Kernhund-Pet)", "Sporenwolke (Sporebat-Pet)"], "MAGE": "Verlangsamen (Arkan)", "ROGUE": "Gedankenbenebelndes Gift", "WARLOCK": "Fluch der Entkräftung" }
-            },
-
-            // Raid Cooldowns (Hier bleiben die Namen meist direkt, da sie oft spezifische Fähigkeiten sind)
+            "+4% erlittener physischer Schaden (Physical Vulnerability)": { classes: { "DEATHKNIGHT": ["Spröde Knochen (Frost/Unheilig)", "Ebonplaguesprenger (Frost/Unheilig)"], "HUNTER": ["Gore (Eber-Pet)", "Stampede (Nashorn-Pet)", "Säurespucke (Wurm-Pet)", "Verwüsten (Schreiter-Pet)"], "PALADIN": "Urteile des Kühnen (Vergeltung)", "WARRIOR": "Kolossales Zerschmettern (Waffen/Furor)" } },
+            "-4% Rüstung (Weakened Armor)": { classes: { "DRUID": "Feenfeuer", "HUNTER": ["Rüstung zerreißen (Raptoren-Pet)", "Staubwolke (Langbein-Pet)"], "ROGUE": "Rüstung zerreißen", "WARRIOR": ["Rüstung zerreißen (Waffen/Furor)", "Verwüsten (Schutz)"] } },
+            "+5% erlittener Zauberschaden": { classes: { "HUNTER": ["Feueratem (Drachenfalken-Pet)", "Blitzatem (Windnatter-Pet)"], "ROGUE": "Meistergiftmischer", "WARLOCK": "Fluch der Elemente" } },
+            "Heilungsreduktion (Mortal Wounds)": { classes: { "HUNTER": ["Witwengift", "Monströser Biss (Teufelssaurier-Pet)"], "MONK": "Aufsteigende Sonnenkick (Windläufer)", "ROGUE": "Wundgift", "WARRIOR": ["Tödlicher Stoß (Waffen/Furor)", "Wilder Stoß (Waffen/Furor)"] } },
+            "Zaubergeschwindigkeitsreduktion": { classes: { "DEATHKNIGHT": "Nekrotischer Stoß", "HUNTER": ["Lava-Atem (Kernhund-Pet)", "Sporenwolke (Sporebat-Pet)"], "MAGE": "Verlangsamen (Arkan)", "ROGUE": "Gedankenbenebelndes Gift", "WARLOCK": "Fluch der Entkräftung" } },
+            // Raid Cooldowns
             "Blutdurst/Heldentum": { classes: { "SHAMAN": "Blutdurst", "MAGE": "Zeitkrümmung", "HUNTER": "Uralte Hysterie (Exotisches Kernelementar-Pet)" } },
             "Schädelfahne": { classes: { "WARRIOR": "Schädelfahne" } },
             "Sturmhagel-Totem": { classes: { "SHAMAN": "Sturmhagel-Totem" } },
@@ -973,36 +939,31 @@
             "Geisterverbindungstotem": { classes: { "SHAMAN": "Geisterverbindungstotem" } }
         };
 
-        // This function will be called from initCompPage in index.html
         window.updateRaidBuffsDisplay = function(roster) {
-            if (!roster) return; // Ensure roster data is available
+            if (!roster) return;
 
-            // Create a map of class counts from the current roster
             const rosterClassCounts = {};
             roster.forEach(player => {
                 const playerClass = player.class.toUpperCase();
                 rosterClassCounts[playerClass] = (rosterClassCounts[playerClass] || 0) + 1;
             });
 
-            // Iterate through all buff items and update their display
             document.querySelectorAll('.buff-item').forEach(buffItem => {
                 const buffName = buffItem.dataset.buffName;
                 const buffData = raidBuffsClassesMap[buffName];
                 const buffInfoSpan = buffItem.querySelector('.buff-info');
+                if (!buffInfoSpan) return;
 
                 let availableCount = 0;
-                let tooltipLines = []; // Array to build tooltip HTML lines
+                let tooltipLines = [];
 
                 if (buffData && buffData.classes) {
                     for (const className in buffData.classes) {
                         const countInRoster = rosterClassCounts[className] || 0;
                         if (countInRoster > 0) {
-                            availableCount += countInRoster; // Count total players of this class
-                            
+                            availableCount += countInRoster;
                             const classAbility = buffData.classes[className];
                             const abilityNames = Array.isArray(classAbility) ? classAbility : [classAbility];
-
-                            // Add class name with color and abilities to tooltip
                             const color = window.classColors[className] || '#FFFFFF';
                             abilityNames.forEach(abilityName => {
                                  tooltipLines.push(`<span style="color: ${color};">${className.charAt(0).toUpperCase() + className.slice(1).toLowerCase()}</span>: ${abilityName}`);
@@ -1011,51 +972,32 @@
                     }
                 }
 
-                // Update display
                 if (availableCount > 0) {
-                    buffItem.classList.remove('opacity-50'); // Make it active
+                    buffItem.classList.remove('opacity-50');
                     buffItem.style.fontWeight = 'bold';
-                    buffItem.style.color = 'inherit'; // Use inherited color for active state
+                    buffItem.style.color = 'inherit';
                     buffInfoSpan.textContent = ` (${availableCount})`;
                 } else {
-                    buffItem.classList.add('opacity-50'); // Grey out
+                    buffItem.classList.add('opacity-50');
                     buffItem.style.fontWeight = 'normal';
-                    buffItem.style.color = '#a0aec0'; // Ensure greyed out color
+                    buffItem.style.color = '#a0aec0';
                     buffInfoSpan.textContent = ` (0)`;
                 }
 
-                // Add tooltip functionality
-                buffItem.style.position = 'relative'; // For tooltip positioning
-                buffItem.style.cursor = 'help'; // Indicate hoverable
-
-                // Create or update tooltip div
+                buffItem.style.position = 'relative';
+                buffItem.style.cursor = 'help';
+                
                 let tooltipDiv = buffItem.querySelector('.buff-tooltip');
                 if (!tooltipDiv) {
                     tooltipDiv = document.createElement('div');
-                    tooltipDiv.className = 'buff-tooltip absolute z-10 p-2 text-xs text-gray-100 bg-gray-800 rounded-md shadow-lg hidden';
+                    tooltipDiv.className = 'buff-tooltip hidden';
                     buffItem.appendChild(tooltipDiv);
                 }
-                tooltipDiv.innerHTML = tooltipLines.join('<br>'); // Join lines with <br>
+                tooltipDiv.innerHTML = tooltipLines.join('<br>');
 
                 buffItem.onmouseover = () => {
                     if (tooltipLines.length > 0) {
                         tooltipDiv.classList.remove('hidden');
-                        // Position tooltip to the right or below, prevent overflow
-                        const rect = buffItem.getBoundingClientRect();
-                        const tooltipRect = tooltipDiv.getBoundingClientRect();
-
-                        // Try to position to the right
-                        let leftPos = '100%';
-                        let topPos = '0';
-
-                        // If tooltip overflows right, try to position below
-                        if (rect.right + tooltipRect.width > window.innerWidth) {
-                            leftPos = '0';
-                            topPos = 'calc(100% + 5px)'; // 5px below the item
-                        }
-
-                        tooltipDiv.style.left = leftPos;
-                        tooltipDiv.style.top = topPos;
                     }
                 };
                 buffItem.onmouseout = () => {
