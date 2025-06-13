@@ -208,6 +208,33 @@
         .modal-buttons .cancel-btn:hover {
             background-color: #dc2626 !important;
         }
+		.player-details {
+			display: flex;
+			flex-direction: column; /* ÄNDERUNG: Stellt die Elemente untereinander dar */
+			align-items: flex-start; /* ÄNDERUNG: Richtet sie linksbündig aus */
+			gap: 0.25rem; /* Fügt einen kleinen Abstand zwischen Name und Klasse hinzu */
+			min-width: 0; 
+		}
+		.editable-name, .editable-class-select {
+			width: 160px; /* Gibt beiden Elementen eine feste Breite */
+		}
+		
+		/* Responsive Anpassung für den Roster auf kleinen Bildschirmen */
+		@media (max-width: 767px) {
+			.player-row-container {
+				flex-direction: column; /* Stellt die Elemente untereinander dar */
+				align-items: flex-start; /* Richtet alles linksbündig aus */
+				gap: 0.5rem; /* Fügt einen kleinen Abstand hinzu */
+				padding-bottom: 0.75rem;
+				border-bottom: 1px solid var(--color-gold-border-light);
+			}
+			.player-row-container:last-child {
+				border-bottom: none; /* Entfernt den Rand beim letzten Element */
+			}
+			.player-row-container .player-details {
+				width: 100%; /* Sektion mit Name/Klasse soll volle Breite nutzen */
+			}
+		}
 	</style>
 </head>
 <body>
@@ -779,16 +806,16 @@
 		
 			function createPlayerElement(player) {
 				const playerDiv = document.createElement('div');
-				playerDiv.className = 'flex justify-between items-center';
+				// Die Klasse für die responsive Anpassung bleibt erhalten
+				playerDiv.className = 'flex justify-between items-center player-row-container'; 
 				playerDiv.dataset.playerId = player.id;
-		
-				// NEU: Ordnet den Rollen die gewünschten Symbole zu
+			
 				const roleIcons = {
 					TANK: '🛡️',
 					HEALER: '❤️',
 					DPS: '⚔️'
 				};
-		
+			
 				playerDiv.innerHTML = `
 					<div class="player-details">
 						<input type="text" value="${player.name}" class="editable-name" style="color: ${window.classColors[player.class.toUpperCase()] || '#FFFFFF'};" ${!window.isManager ? 'disabled' : ''}>
