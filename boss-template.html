@@ -1,0 +1,85 @@
+
+<main class="space-y-6">
+    <section class="bg-slate-850 p-6 rounded-lg">
+        <h2 class="text-2xl font-semibold text-center text-blue-450 mb-4">Bossname - Taktik & Einteilungen</h2>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-gray-400 mt-4 text-center">
+            Hier kann eine kurze Zusammenfassung der wichtigsten Mechaniken oder der allgemeinen Strategie stehen.
+        </p>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg">
+        <h3 class="text-xl font-semibold mb-4 text-blue-450">Einteilungen</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">🛡️ Tank-Zuweisungen</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-center justify-between">
+                        <span>Haupt-Tank:</span>
+                        <select data-assignment-id="bossname-tank-main" class="assignment-select w-64"></select>
+                    </li>
+                    <li class="flex items-center justify-between">
+                        <span>Off-Tank:</span>
+                        <select data-assignment-id="bossname-tank-off" class="assignment-select w-64"></select>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">❤️ Heiler-Cooldowns</h4>
+                <ul class="space-y-3">
+                     <li class="flex items-center justify-between">
+                        <span>CD 1 (z.B. bei 25%):</span>
+                        <select data-assignment-id="bossname-healer-cd-1" class="assignment-select w-64"></select>
+                    </li>
+                     <li class="flex items-center justify-between">
+                        <span>CD 2 (z.B. bei 50%):</span>
+                        <select data-assignment-id="bossname-healer-cd-2" class="assignment-select w-64"></select>
+                    </li>
+                     <li class="flex items-center justify-between">
+                        <span>CD 3 (z.B. bei 75%):</span>
+                        <select data-assignment-id="bossname-healer-cd-3" class="assignment-select w-64"></select>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">⚔️ Unterbrechungs-Rotation</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-center justify-between">
+                        <span>Kick 1:</span>
+                        <select data-assignment-id="bossname-kick-1" class="assignment-select w-64"></select>
+                    </li>
+                    <li class="flex items-center justify-between">
+                        <span>Kick 2:</span>
+                        <select data-assignment-id="bossname-kick-2" class="assignment-select w-64"></select>
+                    </li>
+                    <li class="flex items-center justify-between">
+                        <span>Kick 3 (Backup):</span>
+                        <select data-assignment-id="bossname-kick-3" class="assignment-select w-64"></select>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">🏃 Spezialaufgabe</h4>
+                <p class="text-sm text-gray-400 mb-2">Spieler, die für das Kiten der Adds zuständig sind.</p>
+                <ul class="space-y-3">
+                    <li class="flex items-center justify-between">
+                        <span>Kiter 1:</span>
+                        <select data-assignment-id="bossname-special-kiter-1" class="assignment-select w-64"></select>
+                    </li>
+                    <li class="flex items-center justify-between">
+                        <span>Kiter 2:</span>
+                        <select data-assignment-id="bossname-special-kiter-2" class="assignment-select w-64"></select>
+                    </li>
+                </ul>
+            </div>
+
+             </div>
+    </section>
+</main>
