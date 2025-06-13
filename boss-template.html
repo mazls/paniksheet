@@ -1,85 +1,137 @@
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Bossname</h1>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
 
-<main class="space-y-6">
-    <section class="bg-slate-850 p-6 rounded-lg">
-        <h2 class="text-2xl font-semibold text-center text-blue-450 mb-4">Bossname - Taktik & Einteilungen</h2>
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <p class="text-gray-400 mt-4 text-center">
-            Hier kann eine kurze Zusammenfassung der wichtigsten Mechaniken oder der allgemeinen Strategie stehen.
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+        <p class="mb-4">
+            Hier kommt die allgemeine Beschreibung des Kampfes hin. Erkläre kurz, worum es geht, wie viele Phasen der Kampf hat und was die wichtigste Kernmechanik ist.
+        </p>
+        <p>
+            Im 10-Spieler-Modus müsst ihr auf <span data-size="10" class="tactic-content"><strong>dies</strong></span><span data-size="25" class="tactic-content" style="display: none;"><strong>das</strong></span> achten.
         </p>
     </section>
 
-    <section class="bg-slate-850 p-6 rounded-lg">
-        <h3 class="text-xl font-semibold mb-4 text-blue-450">Einteilungen</h3>
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Fähigkeiten im Detail</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="mb-6">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">Phase 1 (100% - 66%)</h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-300">
+                <li>
+                    <strong>Fähigkeit 1 (z.B. Debuff auf dem Tank):</strong> Beschreibe hier, was die Fähigkeit tut.
+                    <span data-size="10" class="tactic-content">Verursacht X Schaden (10er).</span>
+                    <span data-size="25" class="tactic-content" style="display: none;">Verursacht Y Schaden (25er).</span>
+                </li>
+                <li><strong>Fähigkeit 2 (z.B. Raidweiter Schaden):</strong> Beschreibe hier die nächste Fähigkeit.</li>
+            </ul>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">Phase 2 (66% - 33%)</h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-300">
+                <li><strong>Fähigkeit 3:</strong> Beschreibung für Phase 2.</li>
+            </ul>
+        </div>
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h4 class="text-lg font-bold text-red-400">Heroische Anpassungen</h4>
+            <p class="text-gray-300 mt-2">Hier eine kurze Beschreibung der Änderungen im heroischen Modus.</p>
+            <ul class="list-disc list-inside text-gray-300 mt-2">
+                <li>Zusätzliche Fähigkeit oder veränderte Mechanik.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">🛡️ Tank-Zuweisungen</h4>
-                <ul class="space-y-3">
-                    <li class="flex items-center justify-between">
-                        <span>Haupt-Tank:</span>
-                        <select data-assignment-id="bossname-tank-main" class="assignment-select w-64"></select>
-                    </li>
-                    <li class="flex items-center justify-between">
-                        <span>Off-Tank:</span>
-                        <select data-assignment-id="bossname-tank-off" class="assignment-select w-64"></select>
-                    </li>
-                </ul>
+            <div class="space-y-6">
+                
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">🛡️ Tank-Zuweisungen</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center justify-between">
+                            <span>Haupt-Tank:</span>
+                            <select data-assignment-id="bossname-tank-main" class="assignment-select w-64"></select>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <span>Off-Tank:</span>
+                            <select data-assignment-id="bossname-tank-off" class="assignment-select w-64"></select>
+                        </li>
+                        <li data-size="25" class="tactic-content flex items-center justify-between">
+                            <span>Tank 3 (nur 25er):</span>
+                            <select data-assignment-id="bossname-tank-3" class="assignment-select w-64"></select>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">❤️ Heiler-Cooldowns</h4>
+                    <ul class="space-y-3">
+                         <li class="flex items-center justify-between">
+                             <span>CD 1 (z.B. bei Fähigkeit X):</span>
+                             <select data-assignment-id="bossname-healer-cd-1" class="assignment-select w-64"></select>
+                         </li>
+                         <li class="flex items-center justify-between">
+                             <span>CD 2 (z.B. bei Fähigkeit Y):</span>
+                             <select data-assignment-id="bossname-healer-cd-2" class="assignment-select w-64"></select>
+                         </li>
+                         <li class="flex items-center justify-between">
+                             <span>CD 3 (z.B. bei 20% HP):</span>
+                             <select data-assignment-id="bossname-healer-cd-3" class="assignment-select w-64"></select>
+                         </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">⚔️ Unterbrechungs-Rotation</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center justify-between">
+                            <span>Kick 1:</span>
+                            <select data-assignment-id="bossname-kick-1" class="assignment-select w-64"></select>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <span>Kick 2:</span>
+                            <select data-assignment-id="bossname-kick-2" class="assignment-select w-64"></select>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <span>Kick 3 (Backup):</span>
+                            <select data-assignment-id="bossname-kick-3" class="assignment-select w-64"></select>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
 
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">❤️ Heiler-Cooldowns</h4>
-                <ul class="space-y-3">
-                     <li class="flex items-center justify-between">
-                        <span>CD 1 (z.B. bei 25%):</span>
-                        <select data-assignment-id="bossname-healer-cd-1" class="assignment-select w-64"></select>
-                    </li>
-                     <li class="flex items-center justify-between">
-                        <span>CD 2 (z.B. bei 50%):</span>
-                        <select data-assignment-id="bossname-healer-cd-2" class="assignment-select w-64"></select>
-                    </li>
-                     <li class="flex items-center justify-between">
-                        <span>CD 3 (z.B. bei 75%):</span>
-                        <select data-assignment-id="bossname-healer-cd-3" class="assignment-select w-64"></select>
-                    </li>
-                </ul>
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                    <h4 class="text-lg font-semibold">Positionierung für Mechanik X</h4>
+                    <p class="text-gray-400 text-sm mb-2">Eine kurze Erklärung zur Positionierung.</p>
+                    <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500 border border-slate-600">
+                        Platz für ein Positionierungs-Bild
+                    </div>
+                </div>
+                 <div>
+                    <h4 class="text-xl font-bold text-gold mt-4 mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe
+                            src="https://www.youtube-nocookie.com/embed/VIDEO_ID_HIER_EINFUEGEN" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
             </div>
-
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">⚔️ Unterbrechungs-Rotation</h4>
-                <ul class="space-y-3">
-                    <li class="flex items-center justify-between">
-                        <span>Kick 1:</span>
-                        <select data-assignment-id="bossname-kick-1" class="assignment-select w-64"></select>
-                    </li>
-                    <li class="flex items-center justify-between">
-                        <span>Kick 2:</span>
-                        <select data-assignment-id="bossname-kick-2" class="assignment-select w-64"></select>
-                    </li>
-                    <li class="flex items-center justify-between">
-                        <span>Kick 3 (Backup):</span>
-                        <select data-assignment-id="bossname-kick-3" class="assignment-select w-64"></select>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">🏃 Spezialaufgabe</h4>
-                <p class="text-sm text-gray-400 mb-2">Spieler, die für das Kiten der Adds zuständig sind.</p>
-                <ul class="space-y-3">
-                    <li class="flex items-center justify-between">
-                        <span>Kiter 1:</span>
-                        <select data-assignment-id="bossname-special-kiter-1" class="assignment-select w-64"></select>
-                    </li>
-                    <li class="flex items-center justify-between">
-                        <span>Kiter 2:</span>
-                        <select data-assignment-id="bossname-special-kiter-2" class="assignment-select w-64"></select>
-                    </li>
-                </ul>
-            </div>
-
-             </div>
+        </div>
     </section>
 </main>
