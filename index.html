@@ -307,7 +307,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc, getDoc, serverTimestamp, query, orderBy, addDoc, updateDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
+		
         // ============== INITIALISIERUNG & GLOBALE VARIABLEN ==============
         const firebaseConfig = {
             apiKey: "AIzaSyBmqCCIOKq0OQOTEgJJ7Lj8CYlLihVBVSU",
@@ -329,6 +329,9 @@
 		let lootDatesUnsubscribe = null;
         let selectedLootDateUnsubscribe = null;
         let heartbeatIntervalId = null;
+		let allLootDocuments = [];
+		let playerSummaryState = {};
+		let summarySortState = { column: 'total', direction: 'desc' };
 
         const DATA_COLLECTION = "raid-tool-data";
         const HISTORY_COLLECTION = "raid-tool-history";
@@ -734,7 +737,6 @@
             });
         }
 		
-		// --- Logik für loot.html ---
 		function initLootPage() {
 			const importSection = document.getElementById('loot-import-section');
 			const importBtn = document.getElementById('import-loot-btn');
@@ -743,6 +745,15 @@
 				importSection.style.display = 'block';
 				importBtn?.addEventListener('click', handleLootImport);
 			}
+
+            // NEU: Event listener für den Zusammenfassungs-Button
+            document.getElementById('show-player-summary-btn')?.addEventListener('click', showPlayerSummaryView);
+
+            // Alle Loot-Daten einmalig beim Laden der Seite abrufen
+            const allLootQuery = query(lootCollectionRef, orderBy("raidDate", "desc"));
+            getDocs(allLootQuery).then(snapshot => {
+                allLootDocuments = snapshot.docs.map(doc => ({ id: doc.id, data: doc.data().lootData }));
+            });
 
 			const q = query(lootCollectionRef, orderBy("raidDate", "desc"));
 			lootDatesUnsubscribe = onSnapshot(q, (snapshot) => {
@@ -764,6 +775,7 @@
 					dateButton.onclick = () => {
 						document.querySelectorAll('#loot-dates-list button').forEach(btn => btn.classList.remove('active-tab'));
 						dateButton.classList.add('active-tab');
+						// Diese Funktion schaltet automatisch zurück zur Einzelansicht
 						displayLootForDate(date);
 					};
 					datesList.appendChild(dateButton);
@@ -805,6 +817,8 @@ function displayLootForDate(dateId) {
 			if (selectedLootDateUnsubscribe) {
 				selectedLootDateUnsubscribe();
 			}
+			const viewTitle = document.getElementById('loot-view-title');
+            if(viewTitle) viewTitle.textContent = "Loot-Details";
 
 			const lootDocRef = doc(db, LOOT_COLLECTION, dateId);
 			const displayContainer = document.getElementById('loot-details-display');
@@ -1239,6 +1253,297 @@ function displayLootForDate(dateId) {
                 };
             });
         };
+        function showPlayerSummaryView() {
+            const displayContainer = document.getElementById('loot-details-display');
+            const viewTitle = document.getElementById('loot-view-title');
+            if (!displayContainer || !viewTitle) return;
+
+            viewTitle.textContent = "Spieler-Zusammenfassung";
+            playerSummaryState = {}; // Zustand zurücksetzen
+            summarySortState = { column: 'total', direction: 'desc' };
+
+
+            if (allLootDocuments.length === 0) {
+                displayContainer.innerHTML = '<p class="text-gray-500">Keine Loot-Daten zum Auswerten vorhanden.</p>';
+                return;
+            }
+
+            const datesHtml = allLootDocuments.map(doc => `
+                <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-slate-700 cursor-pointer transition-colors duration-150">
+                    <input type="checkbox" data-date-id="${doc.id}" class="summary-date-checkbox form-checkbox h-5 w-5 rounded bg-slate-900 border-slate-600 text-jade-400 focus:ring-jade-400">
+                    <span>${new Date(doc.id + 'T12:00:00Z').toLocaleDateString('de-DE', { month: 'long', day: 'numeric' })}</span>
+                </label>
+            `).join('');
+
+            displayContainer.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-gray-400">Wähle die Daten aus, die einbezogen werden sollen.</p>
+                    <div class="flex gap-2">
+                        <button id="summary-select-all-btn" class="text-sm py-1 px-3 rounded-md bg-blue-600 hover:bg-blue-700">Alle</button>
+                        <button id="summary-deselect-all-btn" class="text-sm py-1 px-3 rounded-md bg-slate-600 hover:bg-slate-500">Keine</button>
+                    </div>
+                </div>
+                <div id="summary-dates-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-6 p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+                    ${datesHtml}
+                </div>
+                <div id="player-summary-results">
+                    <p class="text-gray-500 text-center py-4">Bitte mindestens ein Datum auswählen.</p>
+                </div>
+            `;
+            
+            // KORREKTUR: Der Listener wird präziser gesetzt, um das Bubbling-Problem zu beheben.
+            document.getElementById('summary-dates-grid').addEventListener('change', (event) => {
+                if (event.target.classList.contains('summary-date-checkbox')) {
+                    handleSummaryDateSelection();
+                }
+            });
+            document.getElementById('summary-select-all-btn')?.addEventListener('click', () => toggleAllSummaryCheckboxes(true));
+            document.getElementById('summary-deselect-all-btn')?.addEventListener('click', () => toggleAllSummaryCheckboxes(false));
+        }
+
+        function toggleAllSummaryCheckboxes(select) {
+            document.querySelectorAll('.summary-date-checkbox').forEach(cb => cb.checked = select);
+            handleSummaryDateSelection();
+        }
+
+function handleSummaryDateSelection() {
+            const selectedDates = Array.from(document.querySelectorAll('.summary-date-checkbox:checked'))
+                                       .map(cb => cb.dataset.dateId);
+
+            const oldState = { ...playerSummaryState }; // Den alten Zustand für die offenen Menüs sichern
+            playerSummaryState = {}; 
+
+            if (selectedDates.length > 0) {
+                const filteredLootItems = allLootDocuments
+                    .filter(doc => selectedDates.includes(doc.id))
+                    .flatMap(doc => doc.data);
+
+                filteredLootItems.forEach(item => {
+                    if (!item.received || !item.checksum) return; // Sicherstellen, dass ein Checksum vorhanden ist
+                    
+                    const winner = item.awardedTo.split('-')[0];
+                    let rollTypeSource = '';
+
+                    if (item.winningRollType) {
+                        rollTypeSource = item.winningRollType;
+                    } else {
+                        const winningRoll = item.Rolls.find(roll => roll.player === winner);
+                        if (winningRoll && winningRoll.classification) {
+                            rollTypeSource = winningRoll.classification;
+                        } else { return; }
+                    }
+
+                    const rollType = rollTypeSource.toUpperCase();
+                    let category;
+                    if (rollType === 'MS') category = 'ms';
+                    else if (rollType === 'OS') category = 'os';
+                    else if (['T-MOG', 'TRANSMOG', 'STYLE'].includes(rollType)) category = 'transmog';
+                    else return;
+
+                    if (!playerSummaryState[winner]) {
+                        playerSummaryState[winner] = { items: [], isDetailsOpen: oldState[winner]?.isDetailsOpen || false };
+                    }
+                    
+                    playerSummaryState[winner].items.push({
+                        name: item.itemLink.replace(/[\[\]]/g, ''),
+                        id: item.itemID,
+                        // KORREKTUR: Wir verwenden item.checksum statt item.itemGUID
+                        uniqueId: item.checksum, 
+                        category: category,
+                        included: true
+                    });
+                });
+            }
+            
+            drawPlayerSummaryTable();
+        }
+
+function renderPlayerSummary(selectedDates) {
+            const resultsContainer = document.getElementById('player-summary-results');
+            if (selectedDates.length === 0) {
+                resultsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Bitte mindestens ein Datum auswählen.</p>';
+                return;
+            }
+
+            const playerStats = {};
+            const filteredLootItems = allLootDocuments
+                .filter(doc => selectedDates.includes(doc.id))
+                .flatMap(doc => doc.data);
+
+            filteredLootItems.forEach(item => {
+                if (!item.received) return;
+                
+                const winner = item.awardedTo.split('-')[0];
+                let rollTypeSource = '';
+
+                // --- NEUE, INTELLIGENTERE LOGIK ---
+                // 1. Versuche, den direkten Typ zu verwenden
+                if (item.winningRollType) {
+                    rollTypeSource = item.winningRollType;
+                } 
+                // 2. Wenn das Feld fehlt, finde den Wurf des Gewinners und nutze dessen Klassifizierung
+                else {
+                    const winningRoll = item.Rolls.find(roll => roll.player === winner);
+                    if (winningRoll && winningRoll.classification) {
+                        rollTypeSource = winningRoll.classification;
+                    } else {
+                        // Wenn wir den Typ nicht bestimmen können, überspringe das Item.
+                        return;
+                    }
+                }
+                // --- ENDE DER NEUEN LOGIK ---
+
+                const rollType = rollTypeSource.toUpperCase();
+                let category;
+                if (rollType === 'MS') {
+                    category = 'ms';
+                } else if (rollType === 'OS') {
+                    category = 'os';
+                } else if (['T-MOG', 'TRANSMOG', 'STYLE'].includes(rollType)) {
+                    category = 'transmog';
+                } else {
+                    return;
+                }
+
+                if (!playerStats[winner]) {
+                    playerStats[winner] = { ms: 0, os: 0, transmog: 0, total: 0 };
+                }
+
+                playerStats[winner][category]++;
+                playerStats[winner].total++;
+            });
+
+            const statsArray = Object.entries(playerStats).map(([name, stats]) => ({ name, ...stats }));
+            statsArray.sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+
+            const tableRows = statsArray.map(player => `
+                <tr class="border-b border-slate-700 hover:bg-slate-750/50">
+                    <td class="px-4 py-3 font-medium">${player.name}</td>
+                    <td class="px-4 py-3 text-center">${player.ms}</td>
+                    <td class="px-4 py-3 text-center">${player.os}</td>
+                    <td class="px-4 py-3 text-center">${player.transmog}</td>
+                    <td class="px-4 py-3 text-center font-bold text-gold">${player.total}</td>
+                </tr>
+            `).join('');
+
+            resultsContainer.innerHTML = `
+                <div class="overflow-x-auto rounded-lg border border-slate-700">
+                    <table class="min-w-full text-sm text-left text-gray-300">
+                        <thead class="text-xs text-gray-400 uppercase bg-slate-700">
+                            <tr>
+                                <th scope="col" class="px-4 py-3">Spieler</th>
+                                <th scope="col" class="px-4 py-3 text-center">MS</th>
+                                <th scope="col" class="px-4 py-3 text-center">OS</th>
+                                <th scope="col" class="px-4 py-3 text-center">Transmog</th>
+                                <th scope="col" class="px-4 py-3 text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700">
+                            ${tableRows.length > 0 ? tableRows : '<tr><td colspan="5" class="text-center p-4 text-gray-500">Keine zählbaren Loot-Daten für die Auswahl gefunden.</td></tr>'}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+function drawPlayerSummaryTable() {
+            const resultsContainer = document.getElementById('player-summary-results');
+            const players = Object.keys(playerSummaryState);
+
+            if (players.length === 0) {
+                resultsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">Bitte mindestens ein Datum auswählen.</p>';
+                return;
+            }
+
+            const statsArray = players.map(name => {
+                const includedItems = playerSummaryState[name].items.filter(item => item.included);
+                return {
+                    name: name,
+                    ms: includedItems.filter(item => item.category === 'ms').length,
+                    os: includedItems.filter(item => item.category === 'os').length,
+                    transmog: includedItems.filter(item => item.category === 'transmog').length,
+                    total: includedItems.length
+                };
+            });
+            
+            // --- NEU: Sortierlogik ---
+            const { column, direction } = summarySortState;
+            statsArray.sort((a, b) => {
+                if (a[column] !== b[column]) {
+                    return direction === 'desc' ? b[column] - a[column] : a[column] - b[column];
+                }
+                // Sekundäre Sortierung nach Total, dann nach Name
+                if (b.total !== a.total) return b.total - a.total;
+                return a.name.localeCompare(b.name);
+            });
+            // --- ENDE Sortierlogik ---
+
+            const tableRows = statsArray.map(player => {
+                const itemsHtml = playerSummaryState[player.name].items.map(item => {
+                    const wowheadUrl = `https://www.wowhead.com/mop-classic/item=${item.id}`;
+                    return `<div class="flex items-center gap-2 px-2 py-1"><input type="checkbox" class="item-inclusion-checkbox" data-player-name="${player.name}" data-item-id="${item.uniqueId}" ${item.included ? 'checked' : ''}><a href="${wowheadUrl}" target="_blank" rel="noopener noreferrer" class="hover:underline text-sm">[${item.name}]</a><span class="text-xs uppercase bg-slate-600 px-1.5 py-0.5 rounded-full">${item.category}</span></div>`;
+                }).join('');
+                const isHidden = playerSummaryState[player.name].isDetailsOpen ? '' : 'hidden';
+                const rotation = playerSummaryState[player.name].isDetailsOpen ? 'rotate-90' : '';
+                return `<tr class="border-b border-slate-700 hover:bg-slate-750/50"><td class="px-4 py-3 font-medium"><button class="toggle-details-btn flex items-center gap-2" data-player-name="${player.name}">${player.name} <span class="text-xs text-gray-400 transition-transform ${rotation}">▶</span></button></td><td class="px-4 py-3 text-center">${player.ms}</td><td class="px-4 py-3 text-center">${player.os}</td><td class="px-4 py-3 text-center">${player.transmog}</td><td class="px-4 py-3 text-center font-bold text-gold">${player.total}</td></tr><tr class="item-details-row ${isHidden} bg-slate-800"><td colspan="5" class="p-2"><div class="flex flex-col gap-1">${itemsHtml}</div></td></tr>`;
+            }).join('');
+
+            // --- NEU: Dynamische Kopfzeile mit Sortier-Buttons ---
+            const sortableColumns = { 'MS': 'ms', 'OS': 'os', 'Transmog': 'transmog', 'Total': 'total' };
+            const headerHtml = Object.entries(sortableColumns).map(([title, key]) => {
+                const isActive = summarySortState.column === key;
+                const indicator = isActive ? (summarySortState.direction === 'desc' ? '▼' : '▲') : '';
+                return `<th scope="col" class="px-4 py-3 text-center"><button class="sort-btn font-bold uppercase ${isActive ? 'text-gold' : 'text-gray-400'}" data-sort-column="${key}">${title} <span class="indicator w-4 inline-block">${indicator}</span></button></th>`;
+            }).join('');
+
+            resultsContainer.innerHTML = `<div class="overflow-x-auto rounded-lg border border-slate-700"><table class="min-w-full text-sm text-left text-gray-300"><thead class="text-xs uppercase bg-slate-700"><tr><th scope="col" class="px-4 py-3">Spieler</th>${headerHtml}</tr></thead><tbody class="divide-y divide-slate-700">${tableRows}</tbody></table></div>`;
+            
+            // Event Listener hinzufügen
+            resultsContainer.querySelectorAll('.toggle-details-btn').forEach(btn => btn.addEventListener('click', handleToggleDetails));
+            resultsContainer.querySelectorAll('.item-inclusion-checkbox').forEach(cb => cb.addEventListener('change', handleItemInclusionChange));
+            resultsContainer.querySelectorAll('.sort-btn').forEach(btn => btn.addEventListener('click', handleSummarySort));
+        }
+		function handleSummarySort(event) {
+            const newColumn = event.currentTarget.dataset.sortColumn;
+            if (summarySortState.column === newColumn) {
+                // Wenn die selbe Spalte geklickt wird, Richtung umkehren
+                summarySortState.direction = summarySortState.direction === 'desc' ? 'asc' : 'desc';
+            } else {
+                // Bei Klick auf eine neue Spalte, diese als aktiv setzen und Standardrichtung (desc) wählen
+                summarySortState.column = newColumn;
+                summarySortState.direction = 'desc';
+            }
+            // Tabelle mit neuer Sortierung neu zeichnen
+            drawPlayerSummaryTable();
+        }
+
+        // ZWEI WEITERE NEUE FUNKTIONEN
+function handleToggleDetails(event) {
+            const button = event.currentTarget;
+            // KORREKTUR: Spielername wird aus data-Attribut gelesen (sicherer)
+            const playerName = button.dataset.playerName;
+            
+            if (playerSummaryState[playerName]) {
+                // Den Zustand im State-Objekt umschalten
+                playerSummaryState[playerName].isDetailsOpen = !playerSummaryState[playerName].isDetailsOpen;
+            }
+            
+            // Tabelle neu zeichnen, um die Änderung (offen/geschlossen) anzuzeigen
+            drawPlayerSummaryTable();
+        }
+
+function handleItemInclusionChange(event) {
+            const checkbox = event.target;
+            const playerName = checkbox.dataset.playerName;
+            // KORREKTUR: Wir lesen das data-item-id Attribut
+            const itemId = checkbox.dataset.itemId;
+
+            // KORREKTUR: Wir finden das Item anhand der neuen uniqueId Eigenschaft
+            const item = playerSummaryState[playerName]?.items.find(i => i.uniqueId === itemId);
+            if (item) {
+                item.included = checkbox.checked;
+            }
+            drawPlayerSummaryTable();
+        }
     </script>
 </body>
 </html>
