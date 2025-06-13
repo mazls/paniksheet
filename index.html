@@ -75,7 +75,7 @@
         #raid-selector, .assignment-select {
             background-color: rgba(10, 20, 15, 0.7) !important;
             border: 1px solid var(--color-gold-border) !important;
-            color: var(--color-parchment) !important;
+            color: var(--color-parchment);
             border-radius: 0.25rem;
         }
         
@@ -123,13 +123,35 @@
         .login-modal-content input { background-color: rgba(10, 20, 15, 0.7) !important; border: 1px solid var(--color-gold-border) !important; color: var(--color-parchment) !important; border-radius: 0.25rem; padding: 0.5rem; width: 100%; margin-bottom: 1rem; }
         .login-modal-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
 
-        /* KORREKTUR: Roster-Button Farben */
-        .role-btn { border: 1px solid var(--color-gold-border-light); background-color: transparent; color: rgba(204, 163, 76, 0.7); opacity: 0.7; }
-        .role-btn:not(:disabled):hover { opacity: 1; border-color: #ca8a04; }
-        .role-btn.active { opacity: 1; font-weight: bold; color: #ffffff !important; }
-        .role-btn.role-tank.active { background-color: #2563eb !important; border-color: #60a5fa !important; }
-        .role-btn.role-healer.active { background-color: #059669 !important; border-color: #34d399 !important; }
-        .role-btn.role-dps.active { background-color: #dc2626 !important; border-color: #f87171 !important; }
+		/* KORREKTUR: Roster-Button Farben und Hervorhebung */
+		.role-btn { 
+			border: 2px solid transparent; /* Transparenter Rand, um Layout-Sprünge zu vermeiden */
+			background-color: rgba(0,0,0,0.2); 
+			color: rgba(204, 163, 76, 0.7); 
+			opacity: 0.7; 
+			border-radius: 6px;
+		}
+		.role-btn:not(:disabled):hover { 
+			opacity: 1;
+			border-color: #ca8a04;
+		}
+		.role-btn.active { 
+			opacity: 1; 
+			transform: scale(1.1); /* Aktives Icon leicht vergrößern */
+			background-color: transparent !important; /* Sicherstellen, dass der Hintergrund weg ist */
+		}
+		.role-btn.role-tank.active { 
+			border-color: #60a5fa !important;
+			box-shadow: 0 0 8px #60a5fa;
+		}
+		.role-btn.role-healer.active { 
+			border-color: #34d399 !important; 
+			box-shadow: 0 0 8px #34d399;
+		}
+		.role-btn.role-dps.active { 
+			border-color: #f87171 !important; 
+			box-shadow: 0 0 8px #f87171;
+		}
 
         /* Originale Klassen zur Sicherheit beibehalten und überschreiben */
         .text-gray-200, .text-white { color: var(--color-parchment); }
@@ -750,56 +772,73 @@
             return { name: playerEntry.name, class: playerClass, roles: [role], id: crypto.randomUUID() };
         }
 
-        function displayRoster(roster) {
-            const lists = { TANK: document.getElementById('tanks-list'), HEALER: document.getElementById('healers-list'), DPS: document.getElementById('dps-list') };
-            if (!lists.TANK) return;
-            Object.values(lists).forEach(list => list.innerHTML = '');
-
-            function createPlayerElement(player) {
-                const playerDiv = document.createElement('div');
-                playerDiv.className = 'flex justify-between items-center';
-                playerDiv.dataset.playerId = player.id;
-                playerDiv.innerHTML = `
-                    <div class="player-details">
-                        <input type="text" value="${player.name}" class="editable-name" style="color: ${window.classColors[player.class.toUpperCase()] || '#FFFFFF'};" ${!window.isManager ? 'disabled' : ''}>
-                        <select class="editable-class-select" ${!window.isManager ? 'disabled' : ''}>
-                            ${wowClasses.map(c => `<option value="${c}" ${player.class === c ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="flex gap-1">
-                        ${['TANK', 'HEALER', 'DPS'].map(role => `<button class="role-btn role-${role.toLowerCase()} ${player.roles.includes(role) ? 'active' : ''}" data-role="${role}" ${!window.isManager ? 'disabled' : ''}>${role.charAt(0)}</button>`).join('')}
-                    </div>`;
-                return playerDiv;
-            }
-
-            roster.forEach(player => {
-                const playerElement = createPlayerElement(player);
-                if (player.roles.includes('TANK')) lists.TANK.appendChild(playerElement.cloneNode(true));
-                if (player.roles.includes('HEALER')) lists.HEALER.appendChild(playerElement.cloneNode(true));
-                if (player.roles.includes('DPS')) lists.DPS.appendChild(playerElement.cloneNode(true));
-            });
-
-            roster.forEach(player => {
-                 document.querySelectorAll(`[data-player-id="${player.id}"]`).forEach(element => {
-                    const nameInput = element.querySelector('.editable-name');
-                    nameInput?.addEventListener('blur', (e) => handlePlayerUpdate(e, player.id, 'name'));
+		function displayRoster(roster) {
+			const lists = { TANK: document.getElementById('tanks-list'), HEALER: document.getElementById('healers-list'), DPS: document.getElementById('dps-list') };
+			if (!lists.TANK) return;
+			Object.values(lists).forEach(list => list.innerHTML = '');
+		
+			function createPlayerElement(player) {
+				const playerDiv = document.createElement('div');
+				playerDiv.className = 'flex justify-between items-center';
+				playerDiv.dataset.playerId = player.id;
+		
+				// NEU: Ordnet den Rollen die gewünschten Symbole zu
+				const roleIcons = {
+					TANK: '🛡️',
+					HEALER: '❤️',
+					DPS: '⚔️'
+				};
+		
+				playerDiv.innerHTML = `
+					<div class="player-details">
+						<input type="text" value="${player.name}" class="editable-name" style="color: ${window.classColors[player.class.toUpperCase()] || '#FFFFFF'};" ${!window.isManager ? 'disabled' : ''}>
+						<select class="editable-class-select" ${!window.isManager ? 'disabled' : ''}>
+							${wowClasses.map(c => `<option value="${c}" ${player.class === c ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()}</option>`).join('')}
+						</select>
+					</div>
+					<div class="flex gap-1">
+						${['TANK', 'HEALER', 'DPS'].map(role => `
+							<button 
+								class="role-btn role-${role.toLowerCase()} ${player.roles.includes(role) ? 'active' : ''}" 
+								data-role="${role}" 
+								${!window.isManager ? 'disabled' : ''}
+								style="font-size: 1.25rem; line-height: 1; padding: 0.25rem;"
+							>
+								${roleIcons[role]} 
+							</button>
+						`).join('')}
+					</div>`;
+				return playerDiv;
+			}
+		
+			roster.forEach(player => {
+				const playerElement = createPlayerElement(player);
+				if (player.roles.includes('TANK')) lists.TANK.appendChild(playerElement.cloneNode(true));
+				if (player.roles.includes('HEALER')) lists.HEALER.appendChild(playerElement.cloneNode(true));
+				if (player.roles.includes('DPS')) lists.DPS.appendChild(playerElement.cloneNode(true));
+			});
+		
+			roster.forEach(player => {
+				document.querySelectorAll(`[data-player-id="${player.id}"]`).forEach(element => {
+					const nameInput = element.querySelector('.editable-name');
+					nameInput?.addEventListener('blur', (e) => handlePlayerUpdate(e, player.id, 'name'));
 					nameInput?.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        event.target.blur(); // Simuliert das Verlassen des Feldes
-                    }
-                });
-                    const classSelect = element.querySelector('.editable-class-select');
-                    classSelect?.addEventListener('change', (e) => handlePlayerUpdate(e, player.id, 'class'));
-                    element.querySelectorAll('.role-btn').forEach(btn => btn.addEventListener('click', () => togglePlayerRole(player.id, btn.dataset.role)));
-                });
-            });
-
-            ['TANK', 'HEALER', 'DPS'].forEach(role => {
-                if(lists[role] && lists[role].children.length === 0) lists[role].innerHTML = `<p class="text-gray-500">Keine ${role.toLowerCase()}s zugewiesen.</p>`;
-            });
-            window.toggleCompEditability();
-        }
+						if (event.key === 'Enter') {
+							event.preventDefault();
+							event.target.blur(); // Simuliert das Verlassen des Feldes
+						}
+					});
+					const classSelect = element.querySelector('.editable-class-select');
+					classSelect?.addEventListener('change', (e) => handlePlayerUpdate(e, player.id, 'class'));
+					element.querySelectorAll('.role-btn').forEach(btn => btn.addEventListener('click', () => togglePlayerRole(player.id, btn.dataset.role)));
+				});
+			});
+		
+			['TANK', 'HEALER', 'DPS'].forEach(role => {
+				if(lists[role] && lists[role].children.length === 0) lists[role].innerHTML = `<p class="text-gray-500">Keine ${role.toLowerCase()}s zugewiesen.</p>`;
+			});
+			window.toggleCompEditability();
+		}
 
         window.toggleSelectEditability = function() {
             document.querySelectorAll('.assignment-select').forEach(el => { el.disabled = !window.isManager; });
