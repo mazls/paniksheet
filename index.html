@@ -231,6 +231,26 @@
 				border-bottom: none;
 			}
 		}
+		.border-gold-faded {
+			border-color: var(--color-gold-border);
+		}
+		/* Stile für responsive YouTube-Videos */
+		.video-container {
+			position: relative;
+			overflow: hidden;
+			width: 100%;
+			padding-top: 56.25%; /* 16:9 Seitenverhältnis */
+			border: 1px solid var(--color-gold-border);
+			border-radius: 0.5rem;
+		}
+		
+		.video-container iframe {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
 	</style>
 </head>
 <body>
@@ -264,7 +284,13 @@
 
         <main id="content-container">
             </main>
+
     </div>
+			
+		<footer class="text-center text-sm text-gray-400 py-4 font-sans">
+
+		</footer>
+		
 
     <div id="login-modal-overlay" class="login-modal-overlay hidden">
         <div class="login-modal-content">
@@ -652,11 +678,18 @@
         };
 
         // ============== SEITEN-INITIALISIERUNG ==============
-        function initializePage(pageId) {
-            if (pageId === 'comp') initCompPage();
-            else if (pageId === 'history') initHistoryPage();
-            else initBossPage(pageId);
-        }
+		function initializePage(pageId) {
+			if (pageId === 'comp') {
+				initCompPage();
+			} else if (pageId === 'history') {
+				initHistoryPage();
+			} else if (pageId === 'impressum' || pageId === 'datenschutz') {
+				// Für diese einfachen Text-Seiten ist keine weitere Javascript-Aktion nötig.
+				// Der Inhalt wurde bereits geladen, wir sind hier fertig.
+			} else {
+				initBossPage(pageId);
+			}
+		}
 
         // --- Logik für comp.html ---
         function initCompPage() {
