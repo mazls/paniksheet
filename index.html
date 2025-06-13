@@ -94,7 +94,7 @@
              border: 1px solid var(--color-gold-border) !important;
              color: var(--color-parchment) !important;
         }
-        #json-input { background-color: rgba(10, 20, 15, 0.7) !important; border: 1px solid var(--color-gold-border) !important; color: #a0aec0 !important; }
+        #json-input, #loot-json-input { background-color: rgba(10, 20, 15, 0.7) !important; border: 1px solid var(--color-gold-border) !important; color: #a0aec0 !important; }
 
         #background-video { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -100; object-fit: cover; filter: brightness(0.4); }
         .content-wrapper { position: relative; z-index: 2; }
@@ -326,11 +326,14 @@
         let currentRosterUnsubscribe = null;
         let historyUnsubscribe = null;
         let assignmentUnsubscribe = null;
+		let lootDatesUnsubscribe = null;
+        let selectedLootDateUnsubscribe = null;
         let heartbeatIntervalId = null;
 
         const DATA_COLLECTION = "raid-tool-data";
         const HISTORY_COLLECTION = "raid-tool-history";
         const USER_PROFILES_COLLECTION = "user_profiles";
+		const LOOT_COLLECTION = "raid-tool-loot";
 
         const raidData = {
             mogushan: {
@@ -408,6 +411,7 @@
         const rosterDocRef = doc(db, DATA_COLLECTION, "currentRoster");
         const historyCollectionRef = collection(db, HISTORY_COLLECTION);
         const userProfilesCollectionRef = collection(db, USER_PROFILES_COLLECTION);
+		const lootCollectionRef = collection(db, LOOT_COLLECTION);
 
         // ============== MODAL-FUNKTION (global verfügbar) ==============
         window.showModal = function(message, isConfirm = false) {
@@ -599,7 +603,8 @@
                 const pageId = `${raidId}/${boss.id}`;
                 navHTML += `<a href="#${pageId}" data-page-id="${pageId}" class="nav-link hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">${boss.name}</a>`;
             });
-
+			
+			navHTML += `<a href="#loot" data-page-id="loot" class="nav-link text-white font-bold py-2 px-4 rounded-md transition-colors duration-200" style="background-color: #7c3aed; border-color: transparent;">Loot</a>`;
             navHTML += `<a href="#history" data-page-id="history" class="nav-link bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Änderungsverlauf</a>`;
             bossNav.innerHTML = navHTML;
         }
@@ -608,6 +613,8 @@
             if (currentRosterUnsubscribe) { currentRosterUnsubscribe(); currentRosterUnsubscribe = null; }
             if (historyUnsubscribe) { historyUnsubscribe(); historyUnsubscribe = null; }
             if (assignmentUnsubscribe) { assignmentUnsubscribe(); assignmentUnsubscribe = null; }
+			if (lootDatesUnsubscribe) { lootDatesUnsubscribe(); lootDatesUnsubscribe = null; }
+			if (selectedLootDateUnsubscribe) { selectedLootDateUnsubscribe(); selectedLootDateUnsubscribe = null; }
 
             const filePath = pageId.includes('/') ? `${pageId}.html` : `${pageId}.html`;
 
@@ -648,11 +655,6 @@
             setupAuthUI();
 
             raidSelector.addEventListener('change', () => {
-                // ++ KORRIGIERTE LOGIK ++
-                // Wenn der User den Raid wechselt, soll zur #comp Seite navigiert werden.
-                // Wenn wir schon auf #comp sind, würde das `hashchange` Event nicht feuern.
-                // Deshalb rufen wir in diesem Fall die Render-Funktion manuell auf.
-                // Andernfalls setzen wir den Hash, was das Event automatisch auslöst.
                 if (window.location.hash === '#comp' || window.location.hash === '') {
                     renderCurrentState();
                 } else {
@@ -662,7 +664,6 @@
 
             window.addEventListener('hashchange', renderCurrentState);
             
-            // Initialer Seitenaufbau
             renderCurrentState();
         });
         
@@ -683,9 +684,10 @@
 				initCompPage();
 			} else if (pageId === 'history') {
 				initHistoryPage();
+			} else if (pageId === 'loot') {
+				initLootPage();
 			} else if (pageId === 'impressum' || pageId === 'datenschutz') {
-				// Für diese einfachen Text-Seiten ist keine weitere Javascript-Aktion nötig.
-				// Der Inhalt wurde bereits geladen, wir sind hier fertig.
+				// No JS needed
 			} else {
 				initBossPage(pageId);
 			}
@@ -731,6 +733,144 @@
                 });
             });
         }
+		
+		// --- Logik für loot.html ---
+		function initLootPage() {
+			const importSection = document.getElementById('loot-import-section');
+			const importBtn = document.getElementById('import-loot-btn');
+
+			if (window.isManager) {
+				importSection.style.display = 'block';
+				importBtn?.addEventListener('click', handleLootImport);
+			}
+
+			const q = query(lootCollectionRef, orderBy("raidDate", "desc"));
+			lootDatesUnsubscribe = onSnapshot(q, (snapshot) => {
+				const datesList = document.getElementById('loot-dates-list');
+				if (!datesList) return;
+
+				if (snapshot.empty) {
+					datesList.innerHTML = '<p class="text-gray-500">Keine Loot-Daten gefunden.</p>';
+					return;
+				}
+
+				datesList.innerHTML = '';
+				snapshot.forEach(doc => {
+					const date = doc.id;
+					const dateButton = document.createElement('button');
+					dateButton.className = 'w-full text-left p-2 rounded-md nav-link';
+					dateButton.textContent = new Date(date + 'T12:00:00Z').toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' });
+					dateButton.dataset.dateId = date;
+					dateButton.onclick = () => {
+						document.querySelectorAll('#loot-dates-list button').forEach(btn => btn.classList.remove('active-tab'));
+						dateButton.classList.add('active-tab');
+						displayLootForDate(date);
+					};
+					datesList.appendChild(dateButton);
+				});
+			});
+		}
+
+		async function handleLootImport() {
+			if (!window.isManager) return;
+			const jsonString = document.getElementById('loot-json-input').value;
+			if (!jsonString) return window.showModal("Bitte JSON einfügen.");
+			
+			try {
+				const data = JSON.parse(jsonString);
+				if (!Array.isArray(data) || data.length === 0) {
+					throw new Error("JSON muss ein Array von Loot-Objekten sein und darf nicht leer sein.");
+				}
+
+				const firstTimestamp = data[0].timestamp;
+				if (!firstTimestamp) throw new Error("Erstes Objekt im JSON hat keinen 'timestamp'.");
+
+				const raidDate = new Date(firstTimestamp * 1000).toISOString().split('T')[0]; // Format: YYYY-MM-DD
+				
+				const lootDocRef = doc(db, LOOT_COLLECTION, raidDate);
+				await setDoc(lootDocRef, { lootData: data, raidDate: raidDate });
+				
+				const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+				window.logHistory('Loot', `Importiert für ${raidDate}`, `${data.length} Items`, currentManager);
+				window.showModal(`Loot für den ${new Date(raidDate + 'T12:00:00Z').toLocaleDateString('de-DE')} wurde erfolgreich importiert!`);
+				document.getElementById('loot-json-input').value = '';
+
+			} catch (error) {
+				window.showModal("Fehler beim Verarbeiten des JSON: " + error.message);
+				console.error(error);
+			}
+		}
+
+function displayLootForDate(dateId) {
+			if (selectedLootDateUnsubscribe) {
+				selectedLootDateUnsubscribe();
+			}
+
+			const lootDocRef = doc(db, LOOT_COLLECTION, dateId);
+			const displayContainer = document.getElementById('loot-details-display');
+			displayContainer.innerHTML = '<p class="text-gray-400">Lade Loot-Daten...</p>';
+
+			selectedLootDateUnsubscribe = onSnapshot(lootDocRef, (docSnap) => {
+				if (!docSnap.exists()) {
+					displayContainer.innerHTML = '<p class="text-red-400">Fehler: Loot-Daten für dieses Datum nicht gefunden.</p>';
+					return;
+				}
+
+				const lootData = docSnap.data().lootData;
+				lootData.sort((a, b) => a.timestamp - b.timestamp);
+				
+				let html = '';
+				lootData.forEach(item => {
+					const awardedTo = item.awardedTo.split('-')[0];
+					const winnerRoll = item.Rolls.find(r => r.player === awardedTo);
+					const winnerClass = winnerRoll ? winnerRoll.class.toUpperCase() : 'UNKNOWN';
+					const winnerColor = window.classColors[winnerClass] || '#FFFFFF';
+
+					const rollsHtml = item.Rolls
+						.sort((a, b) => b.amount - a.amount)
+						.map(roll => {
+							const rollType = roll.classification;
+							let maxRoll = 100;
+							if (rollType === 'OS') maxRoll = 50;
+							else if (rollType === 'T-Mog') maxRoll = 25;
+							
+							const playerColor = window.classColors[roll.class.toUpperCase()] || '#FFFFFF';
+							const isWinner = roll.player === awardedTo;
+							const fontWeight = isWinner ? 'font-bold text-lg' : 'font-normal';
+							const rollColor = isWinner ? 'text-yellow-400' : 'text-gray-300';
+
+							return `<span class="whitespace-nowrap ${fontWeight}"><span style="color:${playerColor}">${roll.player}</span>: <span class="${rollColor}">${roll.amount}</span> <span class="text-xs text-gray-500">(${rollType}/${maxRoll})</span></span>`;
+						}).join('&nbsp; ');
+
+					// --- NEU: Wowhead-Link erstellen ---
+                    // Item-Namen aus "[Item Name]" extrahieren
+                    const itemName = item.itemLink.replace(/[\[\]]/g, ''); 
+                    // Wowhead-URL für MoP Classic zusammenbauen
+                    const wowheadUrl = `https://www.wowhead.com/mop-classic/item=${item.itemID}`;
+                    // Das komplette <a>-Tag für den Link erstellen
+                    const itemLinkHtml = `<a href="${wowheadUrl}" target="_blank" rel="noopener noreferrer" class="hover:underline">${itemName}</a>`;
+					// --- Ende der neuen Sektion ---
+
+					html += `
+						<div class="bg-slate-750 p-4 rounded-lg mb-4">
+							<div class="flex justify-between items-start">
+								 <h4 class="text-lg font-bold" style="color: var(--color-gold);">${itemLinkHtml}</h4>
+								 <span class="text-sm text-gray-400">${new Date(item.timestamp * 1000).toLocaleTimeString('de-DE')}</span>
+							</div>
+							<p class="mt-1">Vergeben an: <strong style="color: ${winnerColor};">${awardedTo}</strong></p>
+							<div class="mt-2 text-sm">
+								<p class="font-semibold">Würfe:</p>
+								<div class="flex flex-wrap gap-x-4 gap-y-1 mt-1">
+									${rollsHtml}
+								</div>
+							</div>
+						</div>
+					`;
+				});
+
+				displayContainer.innerHTML = html || '<p>Keine Items für dieses Datum gefunden.</p>';
+			});
+		}
 
         // --- Logik für Boss-Seiten ---
         function initBossPage(pageId) {
@@ -835,7 +975,6 @@
 		
 			function createPlayerElement(player) {
 				const playerDiv = document.createElement('div');
-				// Die Klasse für die responsive Anpassung bleibt erhalten
 				playerDiv.className = 'flex justify-between items-center player-row-container'; 
 				playerDiv.dataset.playerId = player.id;
 			
@@ -881,7 +1020,7 @@
 					nameInput?.addEventListener('keydown', (event) => {
 						if (event.key === 'Enter') {
 							event.preventDefault();
-							event.target.blur(); // Simuliert das Verlassen des Feldes
+							event.target.blur(); 
 						}
 					});
 					const classSelect = element.querySelector('.editable-class-select');
