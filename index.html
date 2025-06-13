@@ -208,31 +208,27 @@
         .modal-buttons .cancel-btn:hover {
             background-color: #dc2626 !important;
         }
+
 		.player-details {
 			display: flex;
-			flex-direction: column; /* ÄNDERUNG: Stellt die Elemente untereinander dar */
-			align-items: flex-start; /* ÄNDERUNG: Richtet sie linksbündig aus */
-			gap: 0.25rem; /* Fügt einen kleinen Abstand zwischen Name und Klasse hinzu */
+			flex-direction: column; /* Stellt Name und Klasse untereinander dar */
+			align-items: flex-start;
+			gap: 0.25rem;
 			min-width: 0; 
 		}
 		.editable-name, .editable-class-select {
-			width: 160px; /* Gibt beiden Elementen eine feste Breite */
+			width: 160px; /* Gibt beiden eine feste Breite für einheitliches Aussehen */
 		}
-		
-		/* Responsive Anpassung für den Roster auf kleinen Bildschirmen */
-		@media (max-width: 767px) {
+		@media (max-width: 1200px) {
 			.player-row-container {
-				flex-direction: column; /* Stellt die Elemente untereinander dar */
+				flex-direction: column; /* Stellt Details und Symbole untereinander dar */
 				align-items: flex-start; /* Richtet alles linksbündig aus */
-				gap: 0.5rem; /* Fügt einen kleinen Abstand hinzu */
+				gap: 0.75rem; /* Abstand zwischen den Elementen */
 				padding-bottom: 0.75rem;
 				border-bottom: 1px solid var(--color-gold-border-light);
 			}
 			.player-row-container:last-child {
-				border-bottom: none; /* Entfernt den Rand beim letzten Element */
-			}
-			.player-row-container .player-details {
-				width: 100%; /* Sektion mit Name/Klasse soll volle Breite nutzen */
+				border-bottom: none;
 			}
 		}
 	</style>
