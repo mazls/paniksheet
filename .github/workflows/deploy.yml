@@ -5,7 +5,8 @@ name: Build and Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Läuft bei jedem Push auf den "main"-Branch.
+      - main
+  workflow_dispatch: # Diese Zeile fügt den manuellen Start-Knopf hinzu
 
 # Berechtigungen für den Workflow, um auf GitHub Pages zu veröffentlichen
 permissions:
