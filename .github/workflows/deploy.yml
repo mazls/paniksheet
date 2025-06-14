@@ -1,0 +1,45 @@
+# Name des Workflows
+name: Build and Deploy to GitHub Pages
+
+# Trigger: Wann soll der Workflow laufen?
+on:
+  push:
+    branches:
+      - main  # Läuft bei jedem Push auf den "main"-Branch.
+
+# Berechtigungen für den Workflow, um auf GitHub Pages zu veröffentlichen
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Definiert die Aufgaben (Jobs), die ausgeführt werden
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Schritt: Code aus dem Repository auschecken
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Schritt: Platzhalter in der HTML-Datei mit den Secrets ersetzen
+      # WICHTIG: Passe den Dateinamen "impressum.html" an, falls deine Datei anders heißt.
+      - name: Replace placeholders
+        run: |
+          sed -i "s|IMPRESSUM_NAME|${{ secrets.IMPRESSUM_NAME }}|g" impressum.html
+          sed -i "s|IMPRESSUM_ADRESS|${{ secrets.IMPRESSUM_ADRESS }}|g" impressum.html
+          sed -i "s|IMPRESSUM_TOWN|${{ secrets.IMPRESSUM_TOWN }}|g" impressum.html
+          sed -i "s|IMPRESSUM_MAIL|${{ secrets.IMPRESSUM_MAIL }}|g" impressum.html
+
+      # 3. Schritt: Die bearbeiteten Dateien als Artefakt für die Veröffentlichung vorbereiten
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.' # Lade das gesamte Verzeichnis hoch
+
+      # 4. Schritt: Das Artefakt auf GitHub Pages veröffentlichen
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
