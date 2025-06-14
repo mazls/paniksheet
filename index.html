@@ -47,17 +47,10 @@
       src: url('static/fonts/inter-v19-latin-700.woff2') format('woff2');
     }
 
-    /* --- ENDE DES NEUEN CODES --- */
-
-
-    /* FINALES "MISTS OF PANDARIA" THEMA MIT ALLEN FEHLERBEHEBUNGEN */
     :root {
         --color-gold: #fcd34d;
-        /* ... dein restliches CSS ... */
     }
-    /* ... */
-
-        /* FINALES "MISTS OF PANDARIA" THEMA MIT ALLEN FEHLERBEHEBUNGEN */
+        /* FINALES "MISTS OF PANDARIA" THEMA */
         :root {
             --color-gold: #fcd34d;
             --color-jade: #5eead4;
@@ -226,10 +219,20 @@
             width: 90%;
             max-width: 450px;
         }
-        .modal-content h3 {
+        .modal-content h1 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
             color: var(--color-gold);
+        }
+	.modal-content h2 {
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+            color: var(--color-jade);
+        }
+	.modal-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--color-parchment);
         }
         .modal-content p {
             margin-bottom: 1.5rem;
@@ -300,6 +303,41 @@
 			width: 100%;
 			height: 100%;
 		}
+.login-modal-buttons button {
+    padding: 0.6rem 1.5rem;          /* Etwas mehr vertikales Padding für eine bessere Klickfläche */
+    border: 1px solid transparent;   /* Initial kein sichtbarer Rand */
+    border-radius: 0.25rem;          /* Abgerundete Ecken wie bei den Inputs */
+    font-family: 'Cinzel', serif;    /* Deine definierte Schriftart für Buttons */
+    font-weight: bold;               /* Fetter Text für bessere Lesbarkeit */
+    text-transform: uppercase;       /* Sorgt für einen einheitlichen Look */
+    letter-spacing: 0.05em;          /* Etwas mehr Zeichenabstand */
+    cursor: pointer;
+    transition: all 0.2s ease-in-out; /* Weicher Übergang für Hover-Effekte */
+}
+
+/* Spezifisches Styling für den "Login"-Button (Bestätigungs-Aktion) */
+#login-modal-submit-btn {
+    background-color: #ca8a04;        /* Gold-gelbe Hintergrundfarbe (wie .bg-blue-600) */
+    color: var(--color-dark-text);   /* Dunkler Text für Kontrast */
+    border-color: #eab308;           /* Etwas hellerer Rand für einen dezenten 3D-Effekt */
+}
+
+#login-modal-submit-btn:hover {
+    background-color: #eab308;        /* Hellerer Gold-Ton beim Hover */
+    box-shadow: 0 0 10px rgba(252, 211, 77, 0.4); /* Leucht-Effekt beim Hover */
+}
+
+/* Spezifisches Styling für den "Abbrechen"-Button */
+#login-modal-cancel-btn {
+    background-color: #b91c1c;        /* Rote Farbe aus deiner .cancel-btn Klasse */
+    color: var(--color-parchment);   /* Heller Text für Kontrast */
+    border-color: #dc2626;           /* Etwas hellerer roter Rand */
+}
+
+#login-modal-cancel-btn:hover {
+    background-color: #dc2626;        /* Helleres Rot beim Hover */
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); /* Roter Leucht-Effekt beim Hover */
+}
 	</style>
 </head>
 <body>
