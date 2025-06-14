@@ -279,7 +279,8 @@
                 <option value="siegeoforgrimmar">Schlacht um Orgrimmar</option>
             </select>
         </div>
-        <nav id="boss-nav" class="flex flex-wrap justify-center gap-2 mb-8">
+        <nav id="main-nav" class="flex flex-wrap justify-center gap-2 mb-4"></nav>
+		<nav id="boss-nav" class="flex flex-wrap justify-center gap-2 mb-8"></nav>
             </nav>
 
         <main id="content-container">
@@ -593,23 +594,32 @@
         const bossNav = document.getElementById('boss-nav');
         const raidSelector = document.getElementById('raid-selector');
 
-        function updateBossNav(raidId) {
+		function updateBossNav(raidId) {
+            const mainNav = document.getElementById('main-nav');
+            const bossNav = document.getElementById('boss-nav');
             const raid = raidData[raidId];
-            if (!raid) {
+
+            // 1. Die Hauptnavigation - Padding (py-2 px-4) wieder hinzugefügt
+            const mainNavHTML = `
+                <a href="#comp" data-page-id="comp" class="nav-link bg-green-700 hover:bg-green-600 rounded-md py-2 px-4">Übersicht & Comp</a>
+                <a href="#loot" data-page-id="loot" class="nav-link rounded-md py-2 px-4" style="background-color: #7c3aed;">Lootverlauf</a>
+                <a href="#history" data-page-id="history" class="nav-link bg-indigo-600 hover:bg-indigo-500 rounded-md py-2 px-4">Änderungsverlauf</a>
+            `;
+            mainNav.innerHTML = mainNavHTML;
+
+            // 2. Die Boss-Navigation - Padding (py-2 px-4) wieder hinzugefügt
+            if (!raid || !raid.bosses) {
                 bossNav.innerHTML = '';
                 return;
             }
             
-            let navHTML = `<a href="#comp" data-page-id="comp" class="nav-link bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Übersicht & Comp</a>`;
-            
-            raid.bosses.forEach(boss => {
+            const bossNavHTML = raid.bosses.map(boss => {
                 const pageId = `${raidId}/${boss.id}`;
-                navHTML += `<a href="#${pageId}" data-page-id="${pageId}" class="nav-link hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">${boss.name}</a>`;
-            });
-			
-			navHTML += `<a href="#loot" data-page-id="loot" class="nav-link text-white font-bold py-2 px-4 rounded-md transition-colors duration-200" style="background-color: #7c3aed; border-color: transparent;">Loot</a>`;
-            navHTML += `<a href="#history" data-page-id="history" class="nav-link bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">Änderungsverlauf</a>`;
-            bossNav.innerHTML = navHTML;
+                // Hier wurde 'py-2 px-4' hinzugefügt
+                return `<a href="#${pageId}" data-page-id="${pageId}" class="nav-link rounded-md py-2 px-4">${boss.name}</a>`;
+            }).join('');
+
+            bossNav.innerHTML = bossNavHTML;
         }
 
         async function loadContent(pageId) {
@@ -649,7 +659,7 @@
             
             loadContent(pageId);
 
-            document.querySelectorAll('#boss-nav .nav-link').forEach(link => {
+            document.querySelectorAll('#main-nav .nav-link, #boss-nav .nav-link').forEach(link => {
                 link.classList.toggle('active-tab', link.dataset.pageId === pageId);
             });
         }
