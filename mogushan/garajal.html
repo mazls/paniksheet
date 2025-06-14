@@ -36,15 +36,46 @@
     
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
         <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
-        <p class="mb-4">Gara'jal der Geisterbinder ist der dritte Boss im Mogu'shangewölbe. Der Kampf erinnert an Valiona und Theralion im heroischen Modus der Bastion des Zwielichts und gliedert sich in eine Hauptphase, die zwischen der realen Welt und einer Geisterwelt wechselt. Der Kampf ist ein harter DPS-Check mit einem 6-minütigen Enrage-Timer. Die Koordination zwischen den Spielern in der normalen Welt und der Geisterwelt ist entscheidend.</p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Voodoopuppen:</strong> Gara'jal fixiert den Tank und mehrere weitere zufällige Helden. Erhält der fixierte Tank Schaden, kopiert er 70% des Schadens auf die anderen Voodoopuppen. Dieser Debuff verschwindet, wenn der Tank stirbt oder in die Geisterwelt verbannt wird. Die betroffenen Spieler können nicht über das Geistertotem in die Geisterwelt wechseln.</li>
-            <li><strong>Geisterwelt:</strong> Spieler müssen regelmäßig über <strong class="text-cyan-400">Geistertotems</strong> in die Geisterwelt wechseln, um dort <strong class="text-purple-300">Schattenhafte Diener</strong> zu töten. Diese verursachen sonst massiven Raidschaden in der realen Welt.</li>
-            <li><strong>Bannung:</strong> Ist ein Tank in der Schattenwelt, muss er dort als einziger einen Seelentrenner angreifen und binnen 30 Sekunden töten, um zurück in die normale Welt zu gelangen. Gelingt ihm dies nicht, stirbt er.</li>
-            <li><strong>Geistertotem & Übertreten:</strong> Der Boss erschafft in regelmäßigen Abständen ein Geistertotem. Wird dieses vernichtet, werden die nächsten 3 (10-Spieler) bzw. 5 (25-Spieler) Charaktere im Umkreis von sechs Metern in die Geisterwelt teleportiert und verlieren 70% ihrer aktuellen Gesundheit.</li>
-            <li><strong>Revitalisierter Geist & Seelenrückkehr:</strong> Um aus der Geisterwelt zurückzukehren, müssen sich die Spieler einmal vollständig heilen lassen. Sie erhalten dann einen Extra-Knopf ("Seelenrückkehr"), mit dem sie sofort zurückkehren können. Bei vollständiger Heilung stellt sich kurzzeitig ihre Ressource schneller wieder her. Spieler können maximal 30 Sekunden in der Geisterwelt bleiben, bevor sie sterben.</li>
-            <li><strong>Wutanfall (Soft Enrage):</strong> Ab 20% seiner verbleibenden Gesundheit hört Gara'jal auf, Geistertotems zu erschaffen. Außerdem erhöht sich sein verursachter Schaden um 25% sowie seine Angriffsgeschwindigkeit um 50%. Der Kampf muss nach sechs Minuten beendet sein.</li>
-        </ul>
+        <div>
+            <div>
+                <p class="mb-4">Gara'jal der Geisterbinder ist ein intensiver DPS-Check mit einem harten 6-Minuten-Enrage-Timer. Der Kampf findet gleichzeitig in der realen Welt und in der Geisterwelt statt. Die Koordination zwischen den Spielern in beiden Welten ist entscheidend für den Erfolg.</p>
+                <ul class="list-disc list-inside space-y-2 text-gray-300">
+                    <li><strong>Zwei Welten:</strong> Spieler müssen regelmäßig über <strong class="text-cyan-400">Geistertotems</strong> in die Geisterwelt wechseln, um dort <strong class="text-purple-300">Schattenhafte Diener</strong> zu töten. Diese verursachen sonst massiven, steigenden Raidschaden in der realen Welt.</li>
+                    <li><strong>Voodoopuppen:</strong> Gara'jal verbindet den aktiven Tank mit mehreren Spielern. 70% des Schadens, den der Tank erleidet, wird auf die anderen Puppen kopiert. Dies ist die Hauptquelle für hohen Raid-Schaden.</li>
+                    <li><strong>Bannung & Tank-Wechsel:</strong> Der Voodoopuppen-Debuff endet, wenn Gara'jal den Tank in die Geisterwelt verbannt. Dort muss der Tank einen Seelentrenner besiegen, um zurückzukehren. Dies erzwingt einen Tank-Wechsel in der realen Welt.</li>
+                    <li><strong>Wutanfall (Soft Enrage):</strong> Ab 20% Gesundheit hört Gara'jal auf, Geistertotems zu erschaffen. Sein Schaden und seine Angriffsgeschwindigkeit erhöhen sich drastisch. Dies ist die finale Burn-Phase.</li>
+                </ul>
+            </div>
+            <div class="mt-6">
+                <h3 class="text-xl font-semibold text-blue-450 mb-2">Raid-Zusammensetzung</h3>
+                <div data-size="10" class="tactic-content" style="display: none;">
+                   <ul class="list-disc list-inside text-gray-300">
+                       <li><strong>10-Spieler (Normal/Heroisch):</strong> 2 Tanks, 2-3 Heiler, 5-6 DPS</li>
+                   </ul>
+               </div>
+               <div data-size="25" class="tactic-content" style="display: block;">
+                   <ul class="list-disc list-inside text-gray-300">
+                        <li><strong>25-Spieler (Normal/Heroisch):</strong> 2 Tanks, 5-6 Heiler, 17-18 DPS</li>
+                   </ul>
+               </div>
+           </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-850 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Strategie und Ablauf</h2>
+        <h4 class="text-lg font-semibold mt-4 text-blue-450">Die reale Welt</h4>
+        <p class="text-gray-300 mb-4">
+            In der realen Welt liegt der Fokus auf maximalem Schaden auf Gara'jal und dem Überleben des <strong class="text-red-500">Voodoopuppen</strong>-Schadens. Der Tank sollte defensive Cooldowns rotieren, um den Schaden auf die anderen Puppen zu minimieren. Heiler müssen die Voodoopuppen-Ziele priorisieren. Wenn ein <strong class="text-cyan-400">Geistertotem</strong> erscheint, müssen die eingeteilten Spieler es zerstören, um in die Geisterwelt zu gelangen. Spieler, die von Voodoopuppen betroffen sind, können nicht wechseln.
+        </p>
+        <h4 class="text-lg font-semibold mt-4 text-blue-450">Die Geisterwelt</h4>
+        <p class="text-gray-300 mb-4">
+            Spieler haben 30 Sekunden Zeit, um so viele <strong class="text-purple-300">Schattenhafte Diener</strong> wie möglich zu töten. Der mitgereiste Heiler muss alle Gruppenmitglieder schnell vollheilen, damit diese per Extra-Button (<strong class="text-green-400">Seelenrückkehr</strong>) die Geisterwelt verlassen können. Wer nach 30 Sekunden nicht zurückkehrt, stirbt.
+        </p>
+         <h4 class="text-lg font-semibold mt-4 text-blue-450">Die Wutanfall-Phase (ab 20%)</h4>
+        <p class="text-gray-300">
+            Dies ist ein reiner Wettlauf mit der Zeit. Es kommen keine Spieler mehr in die Geisterwelt, wodurch der Schaden durch die Diener stetig ansteigt. Zündet hier <strong class="text-red-500">Kampfrausch/Heldentum</strong> und alle verbleibenden Cooldowns, um den Boss zu besiegen, bevor der Raid überwältigt wird.
+        </p>
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
@@ -55,74 +86,47 @@
                 <div class="space-y-4">
                     <div>
                         <label for="garajal-tank1" class="block font-semibold mb-1">Tank 1:</label>
-                        <div class="flex items-center">
-                            <select id="garajal-tank1" class="assignment-select" data-assignment-id="garajal-tank1"></select>
-                        </div>
+                        <select id="garajal-tank1" class="assignment-select" data-assignment-id="garajal-tank1"></select>
                     </div>
                     <div>
                         <label for="garajal-tank2" class="block font-semibold mb-1">Tank 2:</label>
-                        <div class="flex items-center">
-                            <select id="garajal-tank2" class="assignment-select" data-assignment-id="garajal-tank2"></select>
-                        </div>
+                        <select id="garajal-tank2" class="assignment-select" data-assignment-id="garajal-tank2"></select>
                     </div>
                 </div>
 
-                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Geisterwelt-Teams</h3>
-                <p class="text-gray-400 mb-4">Es müssen feste Teams (inkl. Backups) eingeteilt werden. Pro Totem geht 1 Heiler mit den DDs.</p>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-8">Geisterwelt-Teams</h3>
+                <p class="text-gray-400 mb-4">Feste Teams mit Backups sind Pflicht! Pro Totem: 1 Heiler + <span data-size="10" class="tactic-content">2 DPS</span><span data-size="25" class="tactic-content" style="display:inline">4 DPS</span>.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-4">
-                        <h4 class="text-lg font-semibold text-blue-450">Team 1 (Erstes, drittes, ... Totem)</h4>
-                        <div>
-                            <label for="garajal-spiritTeam1Heal" class="block font-semibold mb-1">Heiler:</label>
-                            <div class="flex items-center">
-                                <select id="garajal-spiritTeam1Heal" class="assignment-select" data-assignment-id="garajal-spiritTeam1Heal"></select>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="garajal-spiritTeam1Dps1" class="block font-semibold mb-1">DPS 1:</label>
-                            <div class="flex items-center">
-                                <select id="garajal-spiritTeam1Dps1" class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps1"></select>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="garajal-spiritTeam1Dps2" class="block font-semibold mb-1">DPS 2:</label>
-                            <div class="flex items-center">
-                                <select id="garajal-spiritTeam1Dps2" class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps2"></select>
-                            </div>
-                        </div>
+                    <div class="space-y-2">
+                        <h4 class="text-lg font-semibold text-blue-450">Team 1 (1., 3., ... Totem)</h4>
+                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Heal" title="Heiler"></select>
+                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps1" title="DPS 1"></select>
+                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps2" title="DPS 2"></select>
                         <div data-size="25" class="tactic-content" style="display: block;">
-                            <label for="garajal-spiritTeam1Dps3" class="block font-semibold mb-1">DPS 3 (nur 25er):</label>
-                            <div class="flex items-center">
-                                <select id="garajal-spiritTeam1Dps3" class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps3"></select>
-                            </div>
+                            <select class="assignment-select mt-2" data-assignment-id="garajal-spiritTeam1Dps3" title="DPS 3"></select>
+                            <select class="assignment-select mt-2" data-assignment-id="garajal-spiritTeam1Dps4" title="DPS 4"></select>
                         </div>
                     </div>
-                    <div class="space-y-4">
-                        <h4 class="text-lg font-semibold text-blue-450">Team 2 (Zweites, viertes, ... Totem)</h4>
-                        <div>
-                            <label for="garajal-spiritTeam2Heal" class="block font-semibold mb-1">Heiler:</label>
-                            <div class="flex items-center">
-                                <select id="garajal-spiritTeam2Heal" class="assignment-select" data-assignment-id="garajal-spiritTeam2Heal"></select>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="garajal-spiritTeam2Dps1" class="block font-semibold mb-1">DPS 1:</label>
-                            <div class="flex items-center">
-                                <select id="garajal-spiritTeam2Dps1" class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps1"></select>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="garajal-spiritTeam2Dps2" class="block font-semibold mb-1">DPS 2:</label>
-                            <div class="flex items-center">
-                                <select id="garajal-spiritTeam2Dps2" class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps2"></select>
-                            </div>
-                        </div>
+                    <div class="space-y-2">
+                        <h4 class="text-lg font-semibold text-blue-450">Team 2 (2., 4., ... Totem)</h4>
+                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Heal" title="Heiler"></select>
+                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps1" title="DPS 1"></select>
+                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps2" title="DPS 2"></select>
                         <div data-size="25" class="tactic-content" style="display: block;">
-                            <label for="garajal-spiritTeam2Dps3" class="block font-semibold mb-1">DPS 3 (nur 25er):</label>
-                            <div class="flex items-center">
-                                <select id="garajal-spiritTeam2Dps3" class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps3"></select>
-                            </div>
+                             <select class="assignment-select mt-2" data-assignment-id="garajal-spiritTeam2Dps3" title="DPS 3"></select>
+                             <select class="assignment-select mt-2" data-assignment-id="garajal-spiritTeam2Dps4" title="DPS 4"></select>
                         </div>
+                    </div>
+                </div>
+                 <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-8">Heil-CD Einteilung</h3>
+                 <div class="space-y-4">
+                    <div>
+                        <label class="block font-semibold mb-1">CD für hohen Voodoo-Schaden:</label>
+                        <select class="assignment-select" data-assignment-id="garajal-heal-cd-voodoo"></select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">CD für Wutanfall-Phase (20%):</label>
+                        <select class="assignment-select" data-assignment-id="garajal-heal-cd-enrage"></select>
                     </div>
                 </div>
             </div>
@@ -131,9 +135,10 @@
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 <div class="space-y-6">
                     <div>
-                        <h4 class="text-lg font-semibold">Positionierung für "Voodoopuppe"</h4>
+                        <h4 class="text-lg font-semibold">Positionierung</h4>
                         <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
-                                                   </div>
+                           [Hier Aufstellungsbild einfügen]
+                        </div>
                     </div>
                      <div>
                         <h4 class="text-xl font-bold text-gold mt-4 mb-2">Video-Guide</h4>
@@ -141,7 +146,7 @@
 							<iframe
 								width="560" 
 								height="315" 
-								src="https://www.youtube-nocookie.com/embed/jV5tNFOgA3U?hl=en" 
+								src="https://www.youtube-nocookie.com/embed/jV5tNFOgA3U?hl=de" 
 								title="YouTube video player" 
 								frameborder="0" 
 								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -155,37 +160,37 @@
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Boss-Fähigkeiten und Schadenswerte</h2>
-
-        <!-- Allgemeine Fähigkeiten -->
-        <div class="mb-4">
-            <h3 class="text-xl font-bold text-white">Gara'jal der Geisterbinder (Phasenübergreifend)</h3>
-            <ul class="list-disc list-inside space-y-1 text-gray-300 mt-2">
-                <li><strong>Voodoopuppen:</strong> Der aktuelle Tank sowie <span data-size="10" class="tactic-content">zwei weitere Charaktere</span><span data-size="25" class="tactic-content" style="display: inline-block;">drei weitere Charaktere</span> erhalten diesen Schwächungszauber. 70% des erhaltenen Schadens wird auf die anderen Voodoopuppen kopiert. Der Tank kann keine Bedrohung verlieren. Verschwindet beim Tod oder wenn der Tank in die Schattenwelt verbannt wird.</li>
-                <li><strong>Bannung:</strong> Tank muss den Seelentrenner binnen 30 Sekunden vernichten, um zurück in die normale Welt zu gelangen. Gelingt dies nicht, stirbt der Tank.</li>
-                <li><strong>Übertreten:</strong> Tötet man ein Geistertotem, treten die nächsten <span data-size="10" class="tactic-content">drei</span><span data-size="25" class="tactic-content" style="display: inline-block;">fünf</span> Charaktere innerhalb von sechs Metern in die Geisterwelt über. Sie verlieren 70% ihrer aktuellen Trefferpunkte und müssen die Geisterwelt innerhalb von 30 Sekunden verlassen, um nicht zu sterben.</li>
-                <li><strong>Revitalisierter Geist:</strong> Werden Charaktere in der Geisterwelt vollständig geheilt, können sie über "Seelenrückkehr" zurückkehren. Sie erhalten über zwölf Sekunden einen klassen- und spezialisierungsabhängigen Buff zur schnelleren Ressourcenregeneration.</li>
-                <li><strong>Wutanfall:</strong> Bei 20% Gesundheit hört Gara'jal auf, Geistertotems zu erschaffen. Sein verursachter Schaden erhöht sich um 25% und seine Angriffsgeschwindigkeit um 50%.</li>
-            </ul>
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Fähigkeiten im Detail</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-white">Gara'jal (Reale Welt)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Voodoopuppen:</strong> Verbindet Tank + <span data-size="10" class="tactic-content">2</span><span data-size="25" class="tactic-content" style="display:inline">3</span> Spieler. 70% des Tankschadens wird auf die anderen kopiert.</li>
+                    <li><strong>Bannung:</strong> Bannt den Tank nach Ablauf der Voodoopuppen in die Geisterwelt.</li>
+                    <li><strong>Geistertotem:</strong> Zerstörung schickt die nächsten <span data-size="10" class="tactic-content">3</span><span data-size="25" class="tactic-content" style="display:inline">5</span> Spieler in die Geisterwelt.</li>
+                    <li><strong>Wutanfall (20%):</strong> +25% Schaden, +50% Angriffstempo, keine Totems mehr.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-purple-400">Geisterwelt</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Schattenhafter Diener:</strong> Muss in der Geisterwelt getötet werden.
+                        <ul class="list-circle list-inside ml-4">
+                           <li><strong>Spirituelle Umklammerung:</strong> Verursacht <span data-size="10" class="tactic-content">~48.000</span><span data-size="25" class="tactic-content" style="display:inline">~70.000</span> Schattenschaden an Spielern in der realen Welt.</li>
+                           <li><strong>Schattenblitz:</strong> Verursacht <span data-size="10" class="tactic-content">~20.000</span><span data-size="25" class="tactic-content" style="display:inline">~22.000</span> Schattenschaden an Spielern in der Geisterwelt.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Seelentrenner:</strong> Muss vom gebannten Tank innerhalb von 30 Sek. getötet werden.</li>
+                </ul>
+            </div>
         </div>
-
-        <!-- Fähigkeiten Schattenhafter Diener -->
-        <div class="mb-4">
-            <h3 class="text-xl font-bold text-white">Schattenhafter Diener (in der Geisterwelt)</h3>
-            <ul class="list-disc list-inside space-y-1 text-gray-300 mt-2">
-                <li><strong>Spirituelle Umklammerung:</strong> Fügt einem zufällig gewählten Charakter in der normalen Welt <span data-size="10" class="tactic-content">43.200 bis 52.800</span><span data-size="25" class="tactic-content" style="display: inline-block;">63.000 bis 77.000</span> Punkte Schattenschaden zu.</li>
-                <li><strong>Schattenblitz:</strong> Verursacht an einem zufällig gewählten Charakter in der Schattenwelt <span data-size="10" class="tactic-content">18.500 bis 21.500</span><span data-size="25" class="tactic-content" style="display: inline-block;">20.350 bis 23.650</span> Punkte Schattenschaden.</li>
-            </ul>
-        </div>
-
-        <!-- Heroische Anpassungen -->
         <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-400">Heroische Anpassungen (10- & 25-Spieler)</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2">
-                <li>Nach dem Entkommen aus der Schattenwelt kann man für 30 Sekunden nicht erneut in diese. Eine strikte Rotation bei den Totems ist Pflicht.</li>
-                <li>Bei der "Bannung" erscheinen drei Seelentrenner: Einer ist nur für den Tank angreifbar, die anderen beiden können von allen Charakteren in der Schattenwelt angegriffen werden.</li>
-                <li>Stirbt ein Seelentrenner, erleidet ein zufällig gewählter Charakter in der normalen Welt Schattenschaden, der auch in einem kleinen Umkreis spürbar ist.</li>
-                <li>Alle Fähigkeiten haben erhöhten Schaden und erhöhte Gesundheitswerte der Bosse.</li>
+            <h3 class="text-xl font-bold text-red-400">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Schwache Seele:</strong> Nach Verlassen der Geisterwelt kann man 30 Sek. lang nicht erneut hinein. Dies erzwingt eine strikte Rotation der Geister-Teams.</li>
+                <li><strong>Mehr Seelentrenner:</strong> Bei der Bannung erscheinen drei Seelentrenner. Zwei davon können vom Geister-Team angegriffen werden und müssen priorisiert werden.</li>
+                <li><strong>Seelenexplosion:</strong> Stirbt ein Seelentrenner, explodiert er und verursacht Schaden an einem zufälligen Spieler in der realen Welt.</li>
+                <li>Alle Fähigkeiten verursachen deutlich mehr Schaden.</li>
             </ul>
         </div>
     </section>

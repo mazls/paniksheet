@@ -28,7 +28,7 @@
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Die Steinwache</h1>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
         <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
@@ -36,33 +36,54 @@
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
         <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
-        <p class="mb-4">
-            Der Kampf gegen die Steinwache ist ein "Council"-Kampf mit geteilter Lebensleiste. Es sind <span data-size="10" class="tactic-content"><strong>drei</strong></span><span data-size="25" class="tactic-content" style="display: inline-block;"><strong>vier</strong></span> Wachen gleichzeitig aktiv. Der gesamte Kampf dreht sich um das Management ihrer Energie und das korrekte Positionieren der Wachen.
-        </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Energie & Überladen:</strong> Jede Wache gewinnt Energie, wenn sie in der Nähe einer anderen Wache steht. Bei 100 Energie wirkt sie <strong class="text-red-500">Versteinern</strong>, was den Raid sofort tötet. Die einzige Möglichkeit, dies zu verhindern, ist, dass die Tanks die Wachen so übereinander positionieren, dass sie sich gegenseitig mit der Fähigkeit <strong class="text-green-400">Überladen</strong> treffen. Dies setzt die Energie aller getroffenen Wachen zurück.</li>
-            <li><strong>Geteilte Lebensleiste:</strong> Alle Wachen teilen sich einen Lebenspool. Schaden auf eine Wache schadet allen, daher ist die Priorität das Überleben und die korrekte Positionierung, nicht das Fokussieren eines bestimmten Ziels.</li>
-        </ul>
+        <div>
+            <div>
+                <p class="mb-4">
+                    Der Kampf gegen die Steinwache ist ein "Council"-Kampf mit einer geteilten Lebensleiste. Es sind <span data-size="10" class="tactic-content" style="display: none;"><strong>drei</strong></span><span data-size="25" class="tactic-content" style="display: inline;"><strong>vier</strong></span> Wachen gleichzeitig aktiv. Der gesamte Kampf dreht sich um das Management ihrer Energie und die korrekte Positionierung, um zu kontrollieren, welche Wache ihre ultimative Fähigkeit einsetzt.
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-gray-300">
+                    <li><strong>Energie & Überladen:</strong> Jede Wache gewinnt Energie, wenn sie sich innerhalb von 12 Metern zu einer anderen Wache befindet. Bei 100 Energie wirkt sie ihre <strong class="text-red-500">Überladung</strong>, einen raidweiten Angriff.</li>
+                    <li><strong>Versteinerung:</strong> Gleichzeitig versucht immer eine Wache, den Raid zu versteinern, was Spieler zunehmend verlangsamt. Erreicht die Leiste 100, wird der Raid handlungsunfähig, was einem Wipe gleichkommt.</li>
+                    <li><strong>Schutz-Effekt:</strong> Die versteinernde Wache gewährt einen Schutz von 90% gegen ihre eigene Schadensart. Ziel ist es, immer die gerade versteinernde Wache ihre Überladung wirken zu lassen, um den Schaden zu minimieren.</li>
+                </ul>
+            </div>
+            <div class="mt-6">
+                 <h3 class="text-xl font-semibold text-blue-450 mb-2">Raid-Zusammensetzung</h3>
+                 <div data-size="10" class="tactic-content" style="display: none;">
+                    <ul class="list-disc list-inside text-gray-300">
+                        <li><strong>Normal:</strong> 2 Tanks, 3 Heiler, 5 DPS</li>
+                        <li><strong>Heroisch:</strong> 2 Tanks, 3 Heiler, 5 DPS</li>
+                    </ul>
+                </div>
+                <div data-size="25" class="tactic-content" style="display: block;">
+                    <ul class="list-disc list-inside text-gray-300">
+                        <li><strong>Normal:</strong> 3 Tanks, 7 Heiler, 15 DPS</li>
+                        <li><strong>Heroisch:</strong> 3 Tanks, 6 Heiler, 16 DPS</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Fähigkeiten der Wachen im Detail</h2>
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Fähigkeiten der Wachen</h2>
+        <p class="mb-4 text-gray-400">Jede Wache hat eine einzigartige Fähigkeit, auf die der Raid reagieren muss.</p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-purple-400">Amethystwache</h3>
-                <p class="mt-2"><strong class="text-purple-300">Amethyst-Pfütze:</strong> Erzeugt eine violette Schadensfläche unter einem zufälligen Spieler. Hält lange an und muss sofort verlassen werden.</p>
+                <p class="mt-2"><strong class="text-purple-300">Amethystteich:</strong> Erzeugt eine violette Schadensfläche unter einem zufälligen Spieler. Spieler müssen sofort aus der Fläche laufen. </p>
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-blue-400">Kobaltwache</h3>
-                <p class="mt-2"><strong class="text-blue-300">Kobaltmine:</strong> Platziert eine Mine, die nach 3 Sekunden scharf wird. Bei Auslösung (7m Radius) erleiden alle nahen Spieler Schaden und werden für 6s gewurzelt.</p>
+                <p class="mt-2"><strong class="text-blue-300">Kobaltmine:</strong> Platziert eine Mine, die nach 3 Sekunden scharf wird. Bei Auslösung (7m Radius) erleiden nahe Spieler Schaden und werden für 6s gewurzelt. Sollte nur während der Kobalt-Versteinerung ausgelöst werden.</p>
             </div>
-             <div class="bg-slate-750 p-4 rounded-lg">
+            <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-green-400">Jadewache</h3>
-                <p class="mt-2"><strong class="text-green-300">Jadesplitter:</strong> Ein unvermeidbarer, raidweiter Naturschaden, der alle 10 Sekunden gewirkt wird. Hauptquelle für konstanten Heildruck.</p>
+                <p class="mt-2"><strong class="text-green-300">Jadesplitter:</strong> Verursacht unvermeidbaren, raidweiten Naturschaden. Dies ist die Hauptquelle für konstanten Heildruck.</p>
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-orange-400">Jaspiswache</h3>
-                <p class="mt-2"><strong class="text-orange-300">Jaspisketten:</strong> Verbindet zwei Spieler. Stehen sie mehr als 10m auseinander, erleiden beide Feuerschaden, der pro Sekunde ansteigt.</p>
+                <p class="mt-2"><strong class="text-orange-300">Jaspisketten:</strong> Verbindet zwei Spieler. Stehen sie mehr als 10m auseinander, erleiden beide steigenden Feuerschaden. Betroffene Spieler müssen zusammenlaufen.</p>
             </div>
         </div>
     </section>
@@ -72,54 +93,51 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
+                <p class="text-sm text-gray-400 mb-4">Die Tanks müssen die Wachen so positionieren und spotten, dass immer die aktive (versteinernde) Wache Energie sammelt, während die anderen möglichst keine Energie bekommen.</p>
                 <div class="space-y-4">
                     <div>
                         <label for="tank1" class="block font-semibold mb-1">Tank 1:</label>
-                        <div class="flex items-center">
-                            <select id="tank1" class="assignment-select" data-assignment-id="steinwache-tank1"></select>
-                            
-                        </div>
+                        <select id="tank1" class="assignment-select" data-assignment-id="steinwache-tank1"></select>
                     </div>
                     <div>
                         <label for="tank2" class="block font-semibold mb-1">Tank 2:</label>
-                        <div class="flex items-center">
-                            <select id="tank2" class="assignment-select" data-assignment-id="steinwache-tank2"></select>
-                            
-                        </div>
+                        <select id="tank2" class="assignment-select" data-assignment-id="steinwache-tank2"></select>
                     </div>
                     <div data-size="25" class="tactic-content" style="display: block;">
                         <label for="tank3" class="block font-semibold mb-1">Tank 3 (nur 25er):</label>
-                         <div class="flex items-center">
-                            <select id="tank3" class="assignment-select" data-assignment-id="steinwache-tank3"></select>
-                            
-                        </div>
+                        <select id="tank3" class="assignment-select" data-assignment-id="steinwache-tank3"></select>
+                    </div>
+                </div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-8">Heil-CD Einteilung</h3>
+                <p class="text-sm text-gray-400 mb-4">Heil-CDs sollten für die unvermeidbaren Überladungen rotiert werden, insbesondere falls eine falsche Wache überlädt.</p>
+                 <div class="space-y-4">
+                    <div>
+                        <label class="block font-semibold mb-1">CD für Überladung / Notfall 1:</label>
+                        <select class="assignment-select" data-assignment-id="steinwache-heal-cd-overload1"></select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">CD für Überladung / Notfall 2:</label>
+                        <select class="assignment-select" data-assignment-id="steinwache-heal-cd-overload2"></select>
+                    </div>
+                     <div>
+                        <label class="block font-semibold mb-1">CD für Jadesplitter-Rotation:</label>
+                        <select class="assignment-select" data-assignment-id="steinwache-heal-cd-jade"></select>
                     </div>
                 </div>
             </div>
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="text-lg font-semibold">Positionierung für "Überladen"</h4>
-                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
-                            fabric.Image.fromURL('DEIN-BILDURL', ...)
-
-                        </div>
+                <div>
+                    <h4 class="text-lg font-semibold">Positionierung für "Überladen"</h4>
+                    <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
+                        [Hier Aufstellungsbild einfügen]
                     </div>
-                     <div>
-                        <h4 class="text-xl font-bold text-gold mt-4 mb-2">Video-Guide</h4>
-						<div class="video-container my-4 rounded-lg shadow-lg">
-							<iframe 
-								width="560" 
-								height="315" 
-								src="https://www.youtube-nocookie.com/embed/G2LUbK7Zd_w?hl=en" 
-								title="YouTube video player" 
-								frameborder="0" 
-								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-								allowfullscreen>
-							</iframe>
-						</div>
-                        </div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/G2LUbK7Zd_w?hl=de" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+                        </iframe>
                     </div>
                 </div>
             </div>
@@ -127,127 +145,100 @@
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Boss-Fähigkeiten und Schadenswerte</h2>
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Boss-Fähigkeiten im Detail</h2>
 
-        <!-- General Mechanics applicable to all sizes -->
-        <div class="mb-4">
-            <h3 class="text-xl font-bold text-white">Allgemeine Kampfmechaniken</h3>
-            <ul class="list-disc list-inside space-y-1 text-gray-300 mt-2">
-                <li><strong>Energie & Überladung:</strong> Jede Steinwache hat eine eigene Energieleiste mit maximal 100 Energiepunkten. Füllt sich die Energieleiste auf 100 Punkte, wirkt die Steinwache eine Überladung. Dies richtet 250.000 Schadenspunkte in der jeweiligen Magieart an und setzt die Energieleiste zurück. Durch den Versteinerungs-Schutz erleidet man dabei nur 10% des eigentlichen Schadens.</li>
-                <li><strong>"In Stein verwandelt":</strong> Befindet sich keine andere Steinwache näher als zwölf Meter, verringert sich langsam die Energie. Die Wache erleidet jedoch auch 90% geringeren Schaden.</li>
-                <li><strong>Versteinerungs-Leiste:</strong> Füllt sich langsam. Je voller sie ist, desto langsamer werden alle Spieler. Ist sie vollständig gefüllt, erstarren alle Spieler zu Stein und der Kampf ist verloren. Wenn der Versteinerungs-Effekt einer Wache aktiv ist, erleidet Ihr 90% reduzierten Schaden des jeweiligen Elements dieser Wache. Nach einer Überladung wechselt die Versteinerungs-Leiste zu einer neuen Steinwache.</li>
-                <li><strong>Fleisch zerreißen:</strong> Schwächungszauber auf dem Tank, der über 15 Sekunden jede Sekunde Schaden verursacht. (Werte variieren nach Modus)</li>
-            </ul>
-        </div>
-
-        <!-- 10-Spieler Modus -->
-        <div data-size="10" class="tactic-content">
-            <h3 class="text-xl font-semibold text-blue-450 mb-3">10-Spieler-Modus (3 aktive Wachen)</h3>
+        <div data-size="10" class="tactic-content" style="display: none;">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">10-Spieler Normal</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Amethystwächter -->
                 <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-purple-400">Amethystwächter (Schatten)</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Amethystteich:</strong> Richtet an Helden jede Sekunde 60.000 Punkte Schattenschaden an. Ein Teich hält eine Minute an.</li>
-                        <li><strong>Amethystüberladung:</strong> Fügt Euch 250.000 Punkte Schattenschaden zu.</li>
-                        <li><strong>Amethystversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Schattenschaden.</li>
-                        <li><strong>Fleisch zerreißen:</strong> 50.000 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    <h4 class="text-lg font-bold text-purple-400">Amethystwache (Schatten)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Amethystteich:</strong> Verursacht 60.000 Schattenschaden pro Sekunde.</li>
+                        <li><strong>Amethystüberladung:</strong> Fügt dem Raid 250.000 Schattenschaden zu.</li>
+                        <li><strong>Fleisch zerreißen:</strong> Verursacht 50.000 physischen Schaden pro Sekunde für 15 Sekunden am Tank.</li>
                     </ul>
                 </div>
-                <!-- Kobaltwächter -->
                 <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-blue-400">Kobaltwächter (Arkan)</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Kobaltmine:</strong> Scharf nach 3 Sekunden. Detoniert bei Annäherung (&lt;7m), verursacht 170.625-179.375 Arkanschaden und wurzelt betroffene Charaktere für 6 Sekunden fest.</li>
-                        <li><strong>Kobaltüberladung:</strong> Fügt Euch 250.000 Punkte Arkanschaden zu.</li>
-                        <li><strong>Kobaltversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Arkanschaden.</li>
-                        <li><strong>Fleisch zerreißen:</strong> 50.000 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    <h4 class="text-lg font-bold text-blue-400">Kobaltwache (Arkan)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Kobaltmine:</strong> Detonation verursacht ~175.000 Arkanschaden und wurzelt für 6s.</li>
+                        <li><strong>Kobaltüberladung:</strong> Fügt dem Raid 250.000 Arkanschaden zu.</li>
+                        <li><strong>Fleisch zerreißen:</strong> Verursacht 50.000 physischen Schaden pro Sekunde für 15 Sekunden am Tank.</li>
                     </ul>
                 </div>
-                <!-- Jadewächter -->
                 <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-green-400">Jadewächter (Natur)</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Jadesplitter:</strong> Richtet an allen Charakteren 47.500-52.500 Naturschaden an.</li>
-                        <li><strong>Jadeüberladung:</strong> Fügt Euch 250.000 Punkte Naturschaden zu.</li>
-                        <li><strong>Jadeversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Naturschaden.</li>
-                        <li><strong>Fleisch zerreißen:</strong> 50.000 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    <h4 class="text-lg font-bold text-green-400">Jadewache (Natur)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Jadesplitter:</strong> Verursacht ~50.000 Naturschaden am gesamten Raid.</li>
+                        <li><strong>Jadeüberladung:</strong> Fügt dem Raid 250.000 Naturschaden zu.</li>
+                        <li><strong>Fleisch zerreißen:</strong> Verursacht 50.000 physischen Schaden pro Sekunde für 15 Sekunden am Tank.</li>
                     </ul>
                 </div>
-                <!-- Jaspiswächter -->
                 <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-orange-400">Jaspiswächter (Feuer)</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Jaspisketten:</strong> Verbindet zwei Charaktere. Erhalten jede Sekunde 35.000 Punkte Feuerschaden, der sich pro Sekunde um 10% erhöht, sofern sie &gt;10m auseinander stehen. Die Ketten brechen, sobald die Charaktere länger als 15 Sekunden auseinanderstehen.</li>
-                        <li><strong>Jaspisüberladung:</strong> Fügt Euch 250.000 Punkte Feuerschaden zu.</li>
-                        <li><strong>Jaspisversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Feuerschaden.</li>
-                        <li><strong>Fleisch zerreißen:</strong> 50.000 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    <h4 class="text-lg font-bold text-orange-400">Jaspiswache (Feuer)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Jaspisketten:</strong> Verursacht 35.000 Feuerschaden, der um 15% pro Sekunde steigt, wenn Spieler >10m auseinander stehen.</li>
+                        <li><strong>Jaspisüberladung:</strong> Fügt dem Raid 250.000 Feuerschaden zu.</li>
+                         <li><strong>Fleisch zerreißen:</strong> Verursacht 50.000 physischen Schaden pro Sekunde für 15 Sekunden am Tank.</li>
                     </ul>
                 </div>
             </div>
-            <!-- Heroische Anpassungen für 10-Spieler -->
             <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-                <h4 class="text-lg font-bold text-red-400">Heroische Anpassungen (10-Spieler)</h4>
-                <p class="text-gray-300 mt-2">Zusätzlich zu den oben genannten Fähigkeiten müsst ihr im heroischen Modus auf die von den Wächtern abgesonderten Kristalle achten. Diese können eingesammelt werden, verursachen aber Schaden. Durch das Stehen auf bestimmten Steinplatten im Raum mit energetisierten Kristallen erhält die gesamte Gruppe mehr Schaden und Willenskraft.</p>
-                <ul class="list-disc list-inside text-gray-300 mt-2">
-                    <li>Alle Fähigkeiten haben erhöhten Schaden und erhöhte Gesundheitswerte der Bosse.</li>
-                    <li>Die Werte für "Fleisch zerreißen" bleiben wie im normalen 10-Spieler-Modus bei 50.000 Schaden/Sek.</li>
+                <h4 class="text-lg font-bold text-red-400">Änderungen im Heroischen Modus (10-Spieler)</h4>
+                <p class="text-gray-300 mt-2">Zusätzlich zu erhöhtem Schaden und Leben der Bosse kommt eine neue Mechanik hinzu:</p>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Kristalle & Energie:</strong> An der Position jeder Wache erscheint ein Kristall. Klickt ein Spieler diesen, erhält er einen Debuff, der Schaden verursacht.</li>
+                    <li><strong>Bodenplatten energetisieren:</strong> Läuft ein Spieler mit diesem Debuff über die weißen Bodenplatten, werden diese "energetisiert". Jede Platte gewährt dem Raid 1% mehr Schaden und Willenskraft.</li>
+                    <li>Der Buff wird bei 75% und 40% Bossleben zurückgesetzt und die Platten müssen neu energetisiert werden.</li>
+                    <li>Der Schaden von <strong>Fleisch zerreißen</strong> bleibt unverändert zum normalen Modus.</li>
                 </ul>
             </div>
         </div>
 
-        <!-- 25-Spieler Modus -->
         <div data-size="25" class="tactic-content" style="display: block;">
-            <h3 class="text-xl font-semibold text-blue-450 mb-3">25-Spieler-Modus (4 aktive Wachen)</h3>
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">25-Spieler Normal</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Amethystwächter -->
-                <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-purple-400">Amethystwächter (Schatten)</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Amethystteich:</strong> Richtet an Charakteren jede Sekunde 60.000 Punkte Schattenschaden an. Ein Teich hält eine Minute an.</li>
-                        <li><strong>Amethystüberladung:</strong> Fügt Euch 250.000 Punkte Schattenschaden zu.</li>
-                        <li><strong>Amethystversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Schattenschaden.</li>
-                        <li><strong>Fleisch zerreißen:</strong> 66.500 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                 <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-purple-400">Amethystwache (Schatten)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Amethystteich:</strong> Verursacht 60.000 Schattenschaden pro Sekunde.</li>
+                        <li><strong>Amethystüberladung:</strong> Fügt dem Raid 250.000 Schattenschaden zu.</li>
+                        <li><strong>Fleisch zerreißen:</strong> Verursacht 66.650 physischen Schaden pro Sekunde für 15 Sekunden am Tank.</li>
                     </ul>
                 </div>
-                <!-- Kobaltwächter -->
                 <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-blue-400">Kobaltwächter (Arkan)</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Kobaltmine:</strong> Scharf nach 3 Sekunden. Detoniert bei Annäherung (&lt;7m), verursacht 170.625-179.375 Arkanschaden und wurzelt betroffene Charaktere für 6 Sekunden fest.</li>
-                        <li><strong>Kobaltüberladung:</strong> Fügt Euch 250.000 Punkte Arkanschaden zu.</li>
-                        <li><strong>Kobaltversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Arkanschaden.</li>
-                        <li><strong>Fleisch zerreißen:</strong> 66.500 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    <h4 class="text-lg font-bold text-blue-400">Kobaltwache (Arkan)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Kobaltmine:</strong> Detonation verursacht ~175.000 Arkanschaden und wurzelt für 6s.</li>
+                        <li><strong>Kobaltüberladung:</strong> Fügt dem Raid 250.000 Arkanschaden zu.</li>
+                        <li><strong>Fleisch zerreißen:</strong> Verursacht 66.650 physischen Schaden pro Sekunde für 15 Sekunden am Tank.</li>
                     </ul>
                 </div>
-                <!-- Jadewächter -->
                 <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-green-400">Jadewächter (Natur)</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Jadesplitter:</strong> Richtet an allen Charakteren 47.500-52.500 Naturschaden an.</li>
-                        <li><strong>Jadeüberladung:</strong> Fügt Euch 250.000 Punkte Naturschaden zu.</li>
-                        <li><strong>Jadeversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Naturschaden.</li>
-                        <li><strong>Fleisch zerreißen:</strong> 66.500 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    <h4 class="text-lg font-bold text-green-400">Jadewache (Natur)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Jadesplitter:</strong> Verursacht ~50.000 Naturschaden am gesamten Raid.</li>
+                        <li><strong>Jadeüberladung:</strong> Fügt dem Raid 250.000 Naturschaden zu.</li>
+                        <li><strong>Fleisch zerreißen:</strong> Verursacht 66.650 physischen Schaden pro Sekunde für 15 Sekunden am Tank.</li>
                     </ul>
                 </div>
-                <!-- Jaspiswächter -->
                 <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-orange-400">Jaspiswächter (Feuer)</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Jaspisketten:</strong> Verbindet zwei Charaktere. Erhalten jede Sekunde 35.000 Punkte Feuerschaden, der sich pro Sekunde um 10% erhöht, sofern sie &gt;10m auseinander stehen. Die Ketten brechen, sobald die Spieler länger als 15 Sekunden auseinanderstehen.</li>
-                        <li><strong>Jaspisüberladung:</strong> Fügt Euch 250.000 Punkte Feuerschaden zu.</li>
-                        <li><strong>Jaspisversteinerung:</strong> Verlangsamt Eure Bewegungsgeschwindigkeit. Ihr erleidet 90% geringeren Feuerschaden.</li>
-                        <li><strong>Fleisch zerreißen:</strong> 62.500 Schadenspunkte pro Sekunde über 15 Sekunden auf dem Tank.</li>
+                    <h4 class="text-lg font-bold text-orange-400">Jaspiswache (Feuer)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Jaspisketten:</strong> Verursacht 35.000 Feuerschaden, der um 15% pro Sekunde steigt, wenn Spieler >10m auseinander stehen.</li>
+                        <li><strong>Jaspisüberladung:</strong> Fügt dem Raid 250.000 Feuerschaden zu.</li>
+                         <li><strong>Fleisch zerreißen:</strong> Verursacht 62.500 physischen Schaden pro Sekunde für 15 Sekunden am Tank.</li>
                     </ul>
                 </div>
             </div>
-            <!-- Heroische Anpassungen für 25-Spieler -->
             <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-                <h4 class="text-lg font-bold text-red-400">Heroische Anpassungen (25-Spieler)</h4>
-                <p class="text-gray-300 mt-2">Zusätzlich zu den oben genannten Fähigkeiten müsst ihr im heroischen Modus auf die von den Wächtern abgesonderten Kristalle achten. Diese können eingesammelt werden, verursachen aber Schaden. Durch das Stehen auf bestimmten Steinplatten im Raum mit energetisierten Kristallen erhält die gesamte Gruppe mehr Schaden und Willenskraft.</p>
-                <ul class="list-disc list-inside text-gray-300 mt-2">
-                    <li>Alle Fähigkeiten haben erhöhten Schaden und erhöhte Gesundheitswerte der Bosse.</li>
-                    <li>Die Werte für "Fleisch zerreißen" bleiben wie im normalen 25-Spieler-Modus (66.500 für Amethyst, Kobalt, Jade; 62.500 für Jaspis) Schaden/Sek.</li>
+                <h4 class="text-lg font-bold text-red-400">Änderungen im Heroischen Modus (25-Spieler)</h4>
+                 <p class="text-gray-300 mt-2">Zusätzlich zu erhöhtem Schaden und Leben der Bosse kommt eine neue Mechanik hinzu:</p>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Kristalle & Energie:</strong> An der Position jeder Wache erscheint ein Kristall. Klickt ein Spieler diesen, erhält er einen Debuff, der Schaden verursacht.</li>
+                    <li><strong>Bodenplatten energetisieren:</strong> Läuft ein Spieler mit diesem Debuff über die weißen Bodenplatten, werden diese "energetisiert". Jede Platte gewährt dem Raid 1% mehr Schaden und Willenskraft.</li>
+                    <li>Der Buff wird bei 75% und 40% Bossleben zurückgesetzt und die Platten müssen neu energetisiert werden.</li>
+                    <li>Der Schaden von <strong>Fleisch zerreißen</strong> bleibt unverändert zum normalen Modus.</li>
                 </ul>
             </div>
         </div>
