@@ -4,10 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raid Sheet - PÄNIK</title>
-	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+    /* cinzel-regular - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Cinzel';
+      font-style: normal;
+      font-weight: 400;
+      src: url('../static/fonts/cinzel-v25-latin-regular.woff2') format('woff2');
+    }
+    /* cinzel-700 - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Cinzel';
+      font-style: normal;
+      font-weight: 700;
+      src: url('../static/fonts/cinzel-v25-latin-700.woff2') format('woff2');
+    }
+    /* inter-regular - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      src: url('../static/fonts/inter-v19-latin-regular.woff2') format('woff2');
+    }
+    /* inter-600 - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 600;
+      src: url('../static/fonts/inter-v19-latin-600.woff2') format('woff2');
+    }
+    /* inter-700 - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 700;
+      src: url('../static/fonts/inter-v19-latin-700.woff2') format('woff2');
+    }
+
+    /* --- ENDE DES NEUEN CODES --- */
+
+
+    /* FINALES "MISTS OF PANDARIA" THEMA MIT ALLEN FEHLERBEHEBUNGEN */
+    :root {
+        --color-gold: #fcd34d;
+        /* ... dein restliches CSS ... */
+    }
+    /* ... */
+
         /* FINALES "MISTS OF PANDARIA" THEMA MIT ALLEN FEHLERBEHEBUNGEN */
         :root {
             --color-gold: #fcd34d;
@@ -254,6 +303,7 @@
 	</style>
 </head>
 <body>
+<body class="pt-4">
 <video autoplay muted loop playsinline id="background-video">
     <source src="static/background.webm" type="video/webm">
 </video>
@@ -288,9 +338,11 @@
 
     </div>
 			
-		<footer class="text-center text-sm text-gray-400 py-4 font-sans">
-
-		</footer>
+<footer class="text-center text-sm text-gray-400 py-4 font-sans space-y-1">
+  <p>© 2025 PÄNIK Raidtools – erstellt von Marcel</p>
+  <p>Veröffentlicht unter <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" target="_blank" rel="noopener noreferrer" class="hover:underline">CC BY-NC-SA 4.0</a></p>
+  <a href="#impressum" class="hover:underline">Impressum & Datenschutz</a>
+</footer>
 		
 
     <div id="login-modal-overlay" class="login-modal-overlay hidden">
