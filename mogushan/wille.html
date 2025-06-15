@@ -48,121 +48,116 @@
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="wille-tankJanxi" class="block font-semibold mb-1">Tank für Jan-xi:</label>
-                        <div class="flex items-center">
-                            <select id="wille-tankJanxi" class="assignment-select" data-assignment-id="wille-tankJanxi"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="wille-tankQinxi" class="block font-semibold mb-1">Tank für Qin-xi:</label>
-                        <div class="flex items-center">
-                            <select id="wille-tankQinxi" class="assignment-select" data-assignment-id="wille-tankQinxi"></select>
-                        </div>
-                    </div>
-                    <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="wille-tankMut" class="block font-semibold mb-1">Tank für Mut des Kaisers (nur 25er):</label>
-                        <div class="flex items-center">
-                            <select id="wille-tankMut" class="assignment-select" data-assignment-id="wille-tankMut"></select>
-                        </div>
-                    </div>
-                </div>
+<h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Heiler-Einteilung</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="wille-healer1" class="block font-semibold mb-1">Heiler 1:</label>
-                        <div class="flex items-center">
-                            <select id="wille-healer1" class="assignment-select" data-assignment-id="wille-healer1"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="wille-healer2" class="block font-semibold mb-1">Heiler 2:</label>
-                        <div class="flex items-center">
-                            <select id="wille-healer2" class="assignment-select" data-assignment-id="wille-healer2"></select>
-                        </div>
-                    </div>
-                    <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="wille-healer3" class="block font-semibold mb-1">Heiler 3 (nur 25er):</label>
-                        <div class="flex items-center">
-                            <select id="wille-healer3" class="assignment-select" data-assignment-id="wille-healer3"></select>
-                        </div>
-                    </div>
-                    <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="wille-healer4" class="block font-semibold mb-1">Heiler 4 (nur 25er):</label>
-                        <div class="flex items-center">
-                            <select id="wille-healer4" class="assignment-select" data-assignment-id="wille-healer4"></select>
-                        </div>
-                    </div>
-                </div>
+    <div>
 
-                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">DPS-Einteilungen & Aufgaben</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="wille-cdGas1" class="block font-semibold mb-1">Heiler-CD für 1. Titangas:</label>
-                        <div class="flex items-center">
-                            <select id="wille-cdGas1" class="assignment-select" data-assignment-id="wille-cdGas1"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="wille-cdGas2" class="block font-semibold mb-1">Heiler-CD für 2. Titangas:</label>
-                        <div class="flex items-center">
-                            <select id="wille-cdGas2" class="assignment-select" data-assignment-id="wille-cdGas2"></select>
-                        </div>
-                    </div>
-                    <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="wille-cdGas3" class="block font-semibold mb-1">Heiler-CD für 3. Titangas (nur 25er):</label>
-                        <div class="flex items-center">
-                            <select id="wille-cdGas3" class="assignment-select" data-assignment-id="wille-cdGas3"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="wille-kiterZorn1" class="block font-semibold mb-1">Kiter für Zorn des Kaisers 1:</label>
-                        <div class="flex items-center">
-                            <select id="wille-kiterZorn1" class="assignment-select" data-assignment-id="wille-kiterZorn1"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="wille-kiterZorn2" class="block font-semibold mb-1">Kiter für Zorn des Kaisers 2:</label>
-                        <div class="flex items-center">
-                            <select id="wille-kiterZorn2" class="assignment-select" data-assignment-id="wille-kiterZorn2"></select>
-                        </div>
-                    </div>
-                    <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="wille-kiterZorn3" class="block font-semibold mb-1">Kiter für Zorn des Kaisers 3 (nur 25er):</label>
-                        <div class="flex items-center">
-                            <select id="wille-kiterZorn3" class="assignment-select" data-assignment-id="wille-kiterZorn3"></select>
-                        </div>
-                    </div>
-                </div>
-
-                <h3 class="text-xl font-semibold text-red-400 mb-4 mt-6">Heroisch: Titanfunken-Soaker</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="wille-soaker1" class="block font-semibold mb-1">Soaker 1:</label>
-                        <div class="flex items-center">
-                            <select id="wille-soaker1" class="assignment-select" data-assignment-id="wille-soaker1"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="wille-soaker2" class="block font-semibold mb-1">Soaker 2:</label>
-                        <div class="flex items-center">
-                            <select id="wille-soaker2" class="assignment-select" data-assignment-id="wille-soaker2"></select>
-                        </div>
-                    </div>
-                     <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="wille-soaker3" class="block font-semibold mb-1">Soaker 3 (nur 25er):</label>
-                        <div class="flex items-center">
-                            <select id="wille-soaker3" class="assignment-select" data-assignment-id="wille-soaker3"></select>
-                        </div>
-                    </div>
-                </div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
             </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Tank für Jan-xi:</span>
+                    <select id="wille-tankJanxi" class="assignment-select" data-assignment-id="wille-tankJanxi"></select>
+                </li>
+                <li>
+                    <span>Tank für Qin-xi:</span>
+                    <select id="wille-tankQinxi" class="assignment-select" data-assignment-id="wille-tankQinxi"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Tank für Mut des Kaisers (nur 25er):</span>
+                    <select id="wille-tankMut" class="assignment-select" data-assignment-id="wille-tankMut"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">❤️ Heiler-Einteilung</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Heiler 1:</span>
+                    <select id="wille-healer1" class="assignment-select" data-assignment-id="wille-healer1"></select>
+                </li>
+                <li>
+                    <span>Heiler 2:</span>
+                    <select id="wille-healer2" class="assignment-select" data-assignment-id="wille-healer2"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Heiler 3 (nur 25er):</span>
+                    <select id="wille-healer3" class="assignment-select" data-assignment-id="wille-healer3"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Heiler 4 (nur 25er):</span>
+                    <select id="wille-healer4" class="assignment-select" data-assignment-id="wille-healer4"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">⚔️ DPS-Einteilungen & Aufgaben</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Heiler-CD für 1. Titangas:</span>
+                    <select id="wille-cdGas1" class="assignment-select" data-assignment-id="wille-cdGas1"></select>
+                </li>
+                <li>
+                    <span>Heiler-CD für 2. Titangas:</span>
+                    <select id="wille-cdGas2" class="assignment-select" data-assignment-id="wille-cdGas2"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Heiler-CD für 3. Titangas (nur 25er):</span>
+                    <select id="wille-cdGas3" class="assignment-select" data-assignment-id="wille-cdGas3"></select>
+                </li>
+                <li>
+                    <span>Kiter für Zorn des Kaisers 1:</span>
+                    <select id="wille-kiterZorn1" class="assignment-select" data-assignment-id="wille-kiterZorn1"></select>
+                </li>
+                <li>
+                    <span>Kiter für Zorn des Kaisers 2:</span>
+                    <select id="wille-kiterZorn2" class="assignment-select" data-assignment-id="wille-kiterZorn2"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Kiter für Zorn des Kaisers 3 (nur 25er):</span>
+                    <select id="wille-kiterZorn3" class="assignment-select" data-assignment-id="wille-kiterZorn3"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-red-400">🔥 Heroisch: Titanfunken-Soaker</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Soaker 1:</span>
+                    <select id="wille-soaker1" class="assignment-select" data-assignment-id="wille-soaker1"></select>
+                </li>
+                <li>
+                    <span>Soaker 2:</span>
+                    <select id="wille-soaker2" class="assignment-select" data-assignment-id="wille-soaker2"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Soaker 3 (nur 25er):</span>
+                    <select id="wille-soaker3" class="assignment-select" data-assignment-id="wille-soaker3"></select>
+                </li>
+            </ul>
+        </div>
+    </div>
+
 
             <div>
                  <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>

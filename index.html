@@ -338,6 +338,69 @@
     background-color: #dc2626;        /* Helleres Rot beim Hover */
     box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); /* Roter Leucht-Effekt beim Hover */
 }
+/* NEUE STILE FÜR DAS TABELLEN-LAYOUT DER EINTEILUNGEN */
+
+/* Der Haupt-Container für einen Einteilungs-Block (z.B. "Tank-Zuweisungen") */
+.assignment-block {
+    background-color: var(--color-medium-green-bg); /* Hintergrund vom alten .bg-slate-750 */
+    border: 1px solid var(--color-gold-border-light);
+    border-radius: 0.5rem; /* Abgerundete Ecken für den ganzen Block */
+    padding: 0.3rem; /* Etwas Innenabstand */
+    margin-bottom: 0.3rem; /* Abstand zum nächsten Block */
+}
+
+/* Der Titel über der Tabelle (z.B. "Tank-Zuweisungen") */
+.assignment-block h4 {
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.3rem;
+    border-bottom: 1px solid var(--color-gold-border-light);
+}
+
+/* Die Kopfzeile der Tabelle ("Aufgabe", "Spieler") */
+.assignment-header,
+.assignment-list li {
+    display: grid; /* Wir benutzen CSS Grid für die Spalten */
+    grid-template-columns: 1fr 1.2fr; /* 1. Spalte kleiner, 2. Spalte größer */
+    align-items: center;
+    gap: 0.5rem; /* Abstand zwischen den Spalten */
+    padding: 0.5rem 0.25rem; /* Kompakterer vertikaler Abstand */
+}
+
+/* Nur die Kopfzeile extra stylen */
+.assignment-header {
+    font-weight: bold;
+    color: var(--color-gold);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--color-gold-border);
+}
+
+/* Die Liste selbst (entfernt Standard-Listen-Stile) */
+.assignment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Jede Zeile in der Liste bekommt eine untere Trennlinie */
+.assignment-list li {
+    border-bottom: 1px solid rgba(204, 163, 76, 0.1); /* Sehr dezente Trennlinie */
+}
+
+/* Die letzte Zeile bekommt keine Trennlinie */
+.assignment-list li:last-child {
+    border-bottom: none;
+}
+
+/* Zebra-Streifen für bessere Lesbarkeit (wie in Sheets) */
+.assignment-list li:nth-child(even) {
+    background-color: rgba(10, 20, 15, 0.3); /* Etwas dunklerer Hintergrund für jede zweite Zeile */
+}
+
+/* Das Dropdown-Menü soll die ganze Breite der Spalte füllen */
+.assignment-list .assignment-select {
+    width: 100%;
+}
 	</style>
 </head>
 <body>
@@ -1004,7 +1067,7 @@ function displayLootForDate(dateId) {
                 const defaultSizeButton = document.querySelector(`#size-toggle button[data-size="25"]`);
                 if (defaultSizeButton) defaultSizeButton.classList.add('active-size-btn');
                 document.querySelectorAll('.tactic-content').forEach(content => {
-                    content.style.display = content.dataset.size === '25' ? (content.tagName === 'SPAN' ? 'inline' : 'block') : 'none';
+                    content.style.display = content.dataset.size === '25' ? (content.tagName === 'SPAN' ? 'inline' : 'grid') : 'none';
                 });
             }
 

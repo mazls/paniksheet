@@ -80,49 +80,72 @@
         </div>
     </section>
     
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="feng-tankNullification" class="block font-semibold mb-1">Tank mit Nullifikationsbarriere:</label>
-                        <select id="feng-tankNullification" class="assignment-select" data-assignment-id="feng-tankNullification"></select>
-                    </div>
-                    <div>
-                        <label for="feng-tankReversal" class="block font-semibold mb-1">Tank mit Schleier der Umkehrung:</label>
-                        <select id="feng-tankReversal" class="assignment-select" data-assignment-id="feng-tankReversal"></select>
-                    </div>
-                </div>
+<section class="bg-slate-850 p-6 rounded-lg mb-6">
+    <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div>
 
-                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-8">Heil-CD Einteilung</h3>
-                <p class="text-sm text-gray-400 mb-4">Starke Raid-CDs sind bei den großen Schadensspitzen der jeweiligen Phasen überlebenswichtig.</p>
-                <div class="space-y-4">
-                    <div>
-                        <label for="feng-heal-epicenter" class="block font-semibold mb-1">CD für Epizentrum (Phase 1):</label>
-                        <select id="feng-heal-epicenter" class="assignment-select" data-assignment-id="feng-heal-epicenter"></select>
-                    </div>
-                    <div>
-                        <label for="feng-heal-drawflame" class="block font-semibold mb-1">CD für Macht der Flamme ziehen (P2):</label>
-                        <select id="feng-heal-drawflame" class="assignment-select" data-assignment-id="feng-heal-drawflame"></select>
-                    </div>
-                    <div>
-                        <label for="feng-heal-velocity" class="block font-semibold mb-1">CD für Arkane Geschwindigkeit (P3):</label>
-                        <select id="feng-heal-velocity" class="assignment-select" data-assignment-id="feng-heal-velocity"></select>
-                    </div>
+            <div class="assignment-block">
+                <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                <div class="assignment-header">
+                    <span>Aufgabe</span>
+                    <span>Spieler</span>
                 </div>
-                
-                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-8">DPS-Einteilung</h3>
-                 <p class="text-sm text-gray-400 mb-4">Spezielle Aufgaben für DPS, z.B. absichtlich <strong>Blitzende Fäuste</strong> abfangen für den Tank.</p>
-                <div class="space-y-4">
-                    <div>
-                        <label for="feng-dps1" class="block font-semibold mb-1">Spieler für Blitzende Fäuste:</label>
-                        <select id="feng-dps1" class="assignment-select" data-assignment-id="feng-dps-fists"></select>
-                    </div>
-                </div>
+                <ul class="assignment-list">
+                    <li>
+                        <span>Tank mit Nullifikationsbarriere:</span>
+                        <select id="feng-tankNullification" class="assignment-select" data-assignment-id="feng-tankNullification"></select>
+                    </li>
+                    <li>
+                        <span>Tank mit Schleier der Umkehrung:</span>
+                        <select id="feng-tankReversal" class="assignment-select" data-assignment-id="feng-tankReversal"></select>
+                    </li>
+                </ul>
             </div>
 
+            <div class="assignment-block">
+                <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                <p class="text-sm text-gray-400 mb-4">Starke Raid-CDs sind bei den großen Schadensspitzen der jeweiligen Phasen überlebenswichtig.</p>
+                <div class="assignment-header">
+                    <span>Aufgabe</span>
+                    <span>Spieler</span>
+                </div>
+                <ul class="assignment-list">
+                    <li>
+                        <span>CD für Epizentrum (Phase 1):</span>
+                        <select id="feng-heal-epicenter" class="assignment-select" data-assignment-id="feng-heal-epicenter"></select>
+                    </li>
+                    <li>
+                        <span>CD für Macht der Flamme ziehen (P2):</span>
+                        <select id="feng-heal-drawflame" class="assignment-select" data-assignment-id="feng-heal-drawflame"></select>
+                    </li>
+                    <li>
+                        <span>CD für Arkane Geschwindigkeit (P3):</span>
+                        <select id="feng-heal-velocity" class="assignment-select" data-assignment-id="feng-heal-velocity"></select>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="assignment-block">
+                <h4 class="text-lg font-bold">⚔️ DPS-Einteilung</h4>
+                <p class="text-sm text-gray-400 mb-4">Spezielle Aufgaben für DPS, z.B. absichtlich <strong>Blitzende Fäuste</strong> abfangen für den Tank.</p>
+                <div class="assignment-header">
+                    <span>Aufgabe</span>
+                    <span>Spieler</span>
+                </div>
+                <ul class="assignment-list">
+                    <li>
+                        <span>Spieler für Blitzende Fäuste:</span>
+                        <select id="feng-dps1" class="assignment-select" data-assignment-id="feng-dps-fists"></select>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+
+        
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 <div class="space-y-6">

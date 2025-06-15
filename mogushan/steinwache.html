@@ -95,34 +95,48 @@
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
                 <p class="text-sm text-gray-400 mb-4">Die Tanks müssen die Wachen so positionieren und spotten, dass immer die aktive (versteinernde) Wache Energie sammelt, während die anderen möglichst keine Energie bekommen.</p>
                 <div class="space-y-4">
-                    <div>
-                        <label for="tank1" class="block font-semibold mb-1">Tank 1:</label>
-                        <select id="tank1" class="assignment-select" data-assignment-id="steinwache-tank1"></select>
-                    </div>
-                    <div>
-                        <label for="tank2" class="block font-semibold mb-1">Tank 2:</label>
-                        <select id="tank2" class="assignment-select" data-assignment-id="steinwache-tank2"></select>
-                    </div>
-                    <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="tank3" class="block font-semibold mb-1">Tank 3 (nur 25er):</label>
-                        <select id="tank3" class="assignment-select" data-assignment-id="steinwache-tank3"></select>
-                    </div>
-                </div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-8">Heil-CD Einteilung</h3>
-                <p class="text-sm text-gray-400 mb-4">Heil-CDs sollten für die unvermeidbaren Überladungen rotiert werden, insbesondere falls eine falsche Wache überlädt.</p>
-                 <div class="space-y-4">
-                    <div>
-                        <label class="block font-semibold mb-1">CD für Überladung / Notfall 1:</label>
-                        <select class="assignment-select" data-assignment-id="steinwache-heal-cd-overload1"></select>
-                    </div>
-                    <div>
-                        <label class="block font-semibold mb-1">CD für Überladung / Notfall 2:</label>
-                        <select class="assignment-select" data-assignment-id="steinwache-heal-cd-overload2"></select>
-                    </div>
-                     <div>
-                        <label class="block font-semibold mb-1">CD für Jadesplitter-Rotation:</label>
-                        <select class="assignment-select" data-assignment-id="steinwache-heal-cd-jade"></select>
-                    </div>
+					<div class="assignment-block">
+						<h4 class="text-lg font-bold">🛡️ Tank-Zuweisungen</h4>
+						<div class="assignment-header">
+							<span>Aufgabe</span>
+							<span>Spieler</span>
+						</div>
+						<ul class="assignment-list">
+							<li>
+								<span>Tank1:</span>
+								<select data-assignment-id="steinwache-tank1" class="assignment-select"></select>
+							</li>
+							<li>
+								<span>Tank2:</span>
+								<select data-assignment-id="steinwache-tank2" class="assignment-select"></select>
+							</li>
+							<li>
+								<span>Tank3:</span>
+								<select data-assignment-id="steinwache-tank3" class="assignment-select"></select>
+							</li>
+							</ul>
+					</div>
+					<div class="assignment-block">
+						<h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+						<div class="assignment-header">
+							<span>Aufgabe</span>
+							<span>Spieler</span>
+						</div>
+						<ul class="assignment-list">
+							<li>
+								<span>CD für Überladung / Notfall 1:</span>
+								<select data-assignment-id="steinwache-heal-cd-overload1" class="assignment-select"></select>
+							</li>
+							<li>
+								<span>CD für Überladung / Notfall 2:</span>
+								<select data-assignment-id="steinwache-heal-cd-overload2" class="assignment-select"></select>
+							</li>
+							<li>
+								<span>CD für Überladung / Notfall 1:</span>
+								<select data-assignment-id="steinwache-heal-cd-overload3" class="assignment-select"></select>
+							</li>
+							</ul>
+					</div>
                 </div>
             </div>
             <div>

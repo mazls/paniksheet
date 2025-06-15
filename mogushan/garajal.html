@@ -79,58 +79,112 @@
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="garajal-tank1" class="block font-semibold mb-1">Tank 1:</label>
-                        <select id="garajal-tank1" class="assignment-select" data-assignment-id="garajal-tank1"></select>
-                    </div>
-                    <div>
-                        <label for="garajal-tank2" class="block font-semibold mb-1">Tank 2:</label>
-                        <select id="garajal-tank2" class="assignment-select" data-assignment-id="garajal-tank2"></select>
-                    </div>
-                </div>
+<h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    
+    <div>
 
-                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-8">Geisterwelt-Teams</h3>
-                <p class="text-gray-400 mb-4">Feste Teams mit Backups sind Pflicht! Pro Totem: 1 Heiler + <span data-size="10" class="tactic-content">2 DPS</span><span data-size="25" class="tactic-content" style="display:inline">4 DPS</span>.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <h4 class="text-lg font-semibold text-blue-450">Team 1 (1., 3., ... Totem)</h4>
-                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Heal" title="Heiler"></select>
-                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps1" title="DPS 1"></select>
-                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps2" title="DPS 2"></select>
-                        <div data-size="25" class="tactic-content" style="display: block;">
-                            <select class="assignment-select mt-2" data-assignment-id="garajal-spiritTeam1Dps3" title="DPS 3"></select>
-                            <select class="assignment-select mt-2" data-assignment-id="garajal-spiritTeam1Dps4" title="DPS 4"></select>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <h4 class="text-lg font-semibold text-blue-450">Team 2 (2., 4., ... Totem)</h4>
-                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Heal" title="Heiler"></select>
-                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps1" title="DPS 1"></select>
-                        <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps2" title="DPS 2"></select>
-                        <div data-size="25" class="tactic-content" style="display: block;">
-                             <select class="assignment-select mt-2" data-assignment-id="garajal-spiritTeam2Dps3" title="DPS 3"></select>
-                             <select class="assignment-select mt-2" data-assignment-id="garajal-spiritTeam2Dps4" title="DPS 4"></select>
-                        </div>
-                    </div>
-                </div>
-                 <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-8">Heil-CD Einteilung</h3>
-                 <div class="space-y-4">
-                    <div>
-                        <label class="block font-semibold mb-1">CD für hohen Voodoo-Schaden:</label>
-                        <select class="assignment-select" data-assignment-id="garajal-heal-cd-voodoo"></select>
-                    </div>
-                    <div>
-                        <label class="block font-semibold mb-1">CD für Wutanfall-Phase (20%):</label>
-                        <select class="assignment-select" data-assignment-id="garajal-heal-cd-enrage"></select>
-                    </div>
-                </div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
             </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Tank 1:</span>
+                    <select id="garajal-tank1" class="assignment-select" data-assignment-id="garajal-tank1"></select>
+                </li>
+                <li>
+                    <span>Tank 2:</span>
+                    <select id="garajal-tank2" class="assignment-select" data-assignment-id="garajal-tank2"></select>
+                </li>
+            </ul>
+        </div>
 
+        <h3 class="text-xl font-semibold text-blue-450 mb-2 mt-6">👻 Geisterwelt-Teams</h3>
+        <p class="text-gray-400 mb-4">Feste Teams mit Backups sind Pflicht! Pro Totem: 1 Heiler + <span data-size="10" class="tactic-content">2 DPS</span><span data-size="25" class="tactic-content" style="display:inline">4 DPS</span>.</p>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">Team 1 (1., 3., ... Totem)</h4>
+            <div class="assignment-header">
+                <span>Rolle</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Heiler:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Heal"></select>
+                </li>
+                <li>
+                    <span>DPS 1:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps1"></select>
+                </li>
+                <li>
+                    <span>DPS 2:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps2"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>DPS 3 (25er):</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps3"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>DPS 4 (25er):</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps4"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">Team 2 (2., 4., ... Totem)</h4>
+            <div class="assignment-header">
+                <span>Rolle</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Heiler:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Heal"></select>
+                </li>
+                <li>
+                    <span>DPS 1:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps1"></select>
+                </li>
+                <li>
+                    <span>DPS 2:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps2"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>DPS 3 (25er):</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps3"></select>
+                </li>
+                 <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>DPS 4 (25er):</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps4"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>CD für hohen Voodoo-Schaden:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-heal-cd-voodoo"></select>
+                </li>
+                <li>
+                    <span>CD für Wutanfall-Phase (20%):</span>
+                    <select class="assignment-select" data-assignment-id="garajal-heal-cd-enrage"></select>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div>
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 <div class="space-y-6">

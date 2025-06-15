@@ -50,91 +50,110 @@
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="elegon-tank1" class="block font-semibold mb-1">Tank 1:</label>
-                        <div class="flex items-center">
-                            <select id="elegon-tank1" class="assignment-select" data-assignment-id="elegon-tank1"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="elegon-tank2" class="block font-semibold mb-1">Tank 2 (für Adds/Säulen):</label>
-                        <div class="flex items-center">
-                            <select id="elegon-tank2" class="assignment-select" data-assignment-id="elegon-tank2"></select>
-                        </div>
-                    </div>
-                </div>
+<h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">Heiler-Einteilung</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="elegon-healer1" class="block font-semibold mb-1">Heiler 1 (Innerer Ring):</label>
-                        <div class="flex items-center">
-                            <select id="elegon-healer1" class="assignment-select" data-assignment-id="elegon-healer1"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="elegon-healer2" class="block font-semibold mb-1">Heiler 2 (Äußerer Ring / Adds):</label>
-                        <div class="flex items-center">
-                            <select id="elegon-healer2" class="assignment-select" data-assignment-id="elegon-healer2"></select>
-                        </div>
-                    </div>
-                    <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="elegon-healer3" class="block font-semibold mb-1">Heiler 3 (nur 25er):</label>
-                        <div class="flex items-center">
-                            <select id="elegon-healer3" class="assignment-select" data-assignment-id="elegon-healer3"></select>
-                        </div>
-                    </div>
-                     <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="elegon-healer4" class="block font-semibold mb-1">Heiler 4 (nur 25er):</label>
-                        <div class="flex items-center">
-                            <select id="elegon-healer4" class="assignment-select" data-assignment-id="elegon-healer4"></select>
-                        </div>
-                    </div>
-                </div>
+    <div>
 
-                 <h3 class="text-xl font-semibold text-blue-450 mb-4 mt-6">DPS-Einteilungen</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="elegon-chargeGroup1" class="block font-semibold mb-1">Gruppe für Energieladungen (Links):</label>
-                        <div class="flex items-center">
-                            <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup1"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="elegon-chargeGroup2" class="block font-semibold mb-1">Gruppe für Energieladungen (Rechts):</label>
-                        <div class="flex items-center">
-                            <select id="elegon-chargeGroup2" class="assignment-select" data-assignment-id="elegon-chargeGroup2"></select>
-                        </div>
-                    </div>
-                </div>
-
-                <h3 class="text-xl font-semibold text-red-400 mb-4 mt-6">Heroisch: Soak-Rotation</h3>
-                <div class="space-y-4">
-                    <div>
-                        <label for="elegon-soakGroup1" class="block font-semibold mb-1">Soak-Gruppe 1:</label>
-                        <div class="flex items-center">
-                            <select id="elegon-soakGroup1" class="assignment-select" data-assignment-id="elegon-soakGroup1"></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="elegon-soakGroup2" class="block font-semibold mb-1">Soak-Gruppe 2:</label>
-                        <div class="flex items-center">
-                            <select id="elegon-soakGroup2" class="assignment-select" data-assignment-id="elegon-soakGroup2"></select>
-                        </div>
-                    </div>
-                     <div data-size="25" class="tactic-content" style="display: block;">
-                        <label for="elegon-soakGroup3" class="block font-semibold mb-1">Soak-Gruppe 3 (nur 25er):</label>
-                        <div class="flex items-center">
-                            <select id="elegon-soakGroup3" class="assignment-select" data-assignment-id="elegon-soakGroup3"></select>
-                        </div>
-                    </div>
-                </div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
             </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Tank 1:</span>
+                    <select id="elegon-tank1" class="assignment-select" data-assignment-id="elegon-tank1"></select>
+                </li>
+                <li>
+                    <span>Tank 2 (für Adds/Säulen):</span>
+                    <select id="elegon-tank2" class="assignment-select" data-assignment-id="elegon-tank2"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">❤️ Heiler-Einteilung</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Heiler 1 (Innerer Ring):</span>
+                    <select id="elegon-healer1" class="assignment-select" data-assignment-id="elegon-healer1"></select>
+                </li>
+                <li>
+                    <span>Heiler 2 (Äußerer Ring / Adds):</span>
+                    <select id="elegon-healer2" class="assignment-select" data-assignment-id="elegon-healer2"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Heiler 3 (nur 25er):</span>
+                    <select id="elegon-healer3" class="assignment-select" data-assignment-id="elegon-healer3"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Heiler 4 (nur 25er):</span>
+                    <select id="elegon-healer4" class="assignment-select" data-assignment-id="elegon-healer4"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">⚔️ DPS-Einteilungen</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Gruppe für Energieladungen (Links):</span>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup1"></select>
+                </li>
+                <li>
+                    <span>Gruppe für Energieladungen (Rechts):</span>
+                    <select id="elegon-chargeGroup2" class="assignment-select" data-assignment-id="elegon-chargeGroup2"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-red-400">🔥 Heroisch: Soak-Rotation</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Soak-Gruppe 1:</span>
+                    <select id="elegon-soakGroup1" class="assignment-select" data-assignment-id="elegon-soakGroup1-1"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Soak-Gruppe 1 (nur 25er):</span>
+                    <select id="elegon-soakGroup3" class="assignment-select" data-assignment-id="elegon-soakGroup1-3"></select>
+                </li>
+				<li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Soak-Gruppe 1 (nur 25er):</span>
+                    <select id="elegon-soakGroup3" class="assignment-select" data-assignment-id="elegon-soakGroup2-1"></select>
+                </li>
+				<li>
+                    <span>Soak-Gruppe 2:</span>
+                    <select id="elegon-soakGroup2" class="assignment-select" data-assignment-id="elegon-soakGroup1-2"></select>
+                </li>
+				 <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Soak-Gruppe 2 (nur 25er):</span>
+                    <select id="elegon-soakGroup3" class="assignment-select" data-assignment-id="elegon-soakGroup2-1"></select>
+                </li>
+				<li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Soak-Gruppe 2 (nur 25er):</span>
+                    <select id="elegon-soakGroup3" class="assignment-select" data-assignment-id="elegon-soakGroup2-1"></select>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div>
+        
 
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
