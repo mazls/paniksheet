@@ -496,8 +496,69 @@
         const HISTORY_COLLECTION = "raid-tool-history";
         const USER_PROFILES_COLLECTION = "user_profiles";
 		const LOOT_COLLECTION = "raid-tool-loot";
+				
+		// ============== URL IMPORT FUNKTION ==============
+		async function handleImportFromUrl() {
+			if (!window.isManager) return;
+			const urlInput = document.getElementById('json-url-input');
+			const userInputUrl = urlInput.value.trim();
 		
+			if (!userInputUrl) {
+				window.showModal("Bitte eine Raid-Helper URL einfügen.");
+				return;
+			}
 		
+			let raidHelperApiUrl = '';
+			const planPath = '/raidplan/';
+			const apiPath = '/api/raidplan/';
+		
+			if (userInputUrl.includes(planPath)) {
+				raidHelperApiUrl = userInputUrl.replace(planPath, apiPath);
+			} else if (userInputUrl.includes(apiPath)) {
+				raidHelperApiUrl = userInputUrl;
+			} else {
+				window.showModal("Ungültige URL. Bitte gib eine Standard-URL von Raid-Helper ein, die '/raidplan/' enthält.");
+				return;
+			}
+		
+			// Wir nutzen einen kostenlosen CORS-Proxy, um die Anfrage zu ermöglichen.
+			const proxyUrl = 'https://api.allorigins.win/raw?url=';
+			const finalUrl = proxyUrl + encodeURIComponent(raidHelperApiUrl);
+		
+			const loadingModal = window.showModal("Lade Daten über Proxy von der Raid-Helper API...", false);
+		
+			try {
+				const response = await fetch(finalUrl);
+				if (!response.ok) {
+					throw new Error(`Proxy- oder API-Antwort war nicht ok. Status: ${response.status}`);
+				}
+				
+				const data = await response.json();
+				const jsonStringForDisplay = JSON.stringify(data, null, 2);
+		
+				if (!data.raidDrop || !Array.isArray(data.raidDrop)) {
+					throw new Error("Die API-Daten haben nicht das erwartete Format ('raidDrop'-Array fehlt).");
+				}
+				
+				const newRoster = data.raidDrop.filter(p => p && p.name).map(getPlayerInfoFromEntry);
+				await setDoc(rosterDocRef, { roster: newRoster, rawJson: jsonStringForDisplay });
+		
+				const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+				window.logHistory('Roster', `Importiert von Raid-Helper URL`, `${newRoster.length} Spieler`, currentManager);
+				
+				// Modal-Handling: Warten, bis das Promise des Modals aufgelöst ist, um den DOM-Knoten zu entfernen.
+				loadingModal.then(() => {}); // Das Promise muss konsumiert werden, um den Modal zu schließen.
+				window.showModal(`Roster mit ${newRoster.length} Spielern erfolgreich importiert!`);
+				
+				document.getElementById('json-input').value = jsonStringForDisplay;
+				urlInput.value = '';
+		
+			} catch (error) {
+				console.error("Fehler beim Import von Raid-Helper URL:", error);
+				loadingModal.then(() => {});
+				window.showModal(`Fehler beim Import: ${error.message}. Überprüfe, ob die URL korrekt ist.`);
+			}
+		}
 		
         const raidData = {
             mogushan: {
@@ -718,35 +779,42 @@
 			}
 		}
         // ============== MODAL-FUNKTION (global verfügbar) ==============
-        window.showModal = function(message, isConfirm = false) {
-            return new Promise((resolve) => {
-                const modalOverlay = document.createElement('div');
-                modalOverlay.className = 'modal-overlay';
-                modalOverlay.innerHTML = `
-                    <div class="modal-content">
-                        <h3>Nachricht</h3>
-                        <p>${message}</p>
-                        <div class="modal-buttons">
-                            ${isConfirm ? `<button id="modal-cancel-btn" class="cancel-btn">Abbrechen</button>` : ''}
-                            <button id="modal-ok-btn">OK</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modalOverlay);
-
-                document.getElementById('modal-ok-btn').addEventListener('click', () => {
-                    document.body.removeChild(modalOverlay);
-                    resolve(true);
-                });
-
-                if (isConfirm) {
-                    document.getElementById('modal-cancel-btn').addEventListener('click', () => {
-                        document.body.removeChild(modalOverlay);
-                        resolve(false);
-                    });
-                }
-            });
-        };
+		window.showModal = function(message, isConfirm = false) {
+			// Entferne zuerst ein eventuell bereits existierendes Modal
+			const existingModal = document.querySelector('.modal-overlay');
+			if (existingModal) {
+				document.body.removeChild(existingModal);
+			}
+		
+			return new Promise((resolve) => {
+				const modalOverlay = document.createElement('div');
+				modalOverlay.className = 'modal-overlay';
+				modalOverlay.innerHTML = `
+					<div class="modal-content">
+						<h3>Nachricht</h3>
+						<p>${message}</p>
+						<div class="modal-buttons">
+							${isConfirm ? `<button id="modal-cancel-btn" class="cancel-btn">Abbrechen</button>` : ''}
+							<button id="modal-ok-btn">OK</button>
+						</div>
+					</div>
+				`;
+				document.body.appendChild(modalOverlay);
+		
+				const okButton = modalOverlay.querySelector('#modal-ok-btn');
+				const cancelButton = modalOverlay.querySelector('#modal-cancel-btn');
+		
+				const close = (value) => {
+					document.body.removeChild(modalOverlay);
+					resolve(value);
+				};
+		
+				okButton.addEventListener('click', () => close(true));
+				if (cancelButton) {
+					cancelButton.addEventListener('click', () => close(false));
+				}
+			});
+		};
         
         // ============== LOGIN MODAL FUNKTION ==============
         function showLoginModal() {
@@ -1011,7 +1079,7 @@
             document.getElementById('import-btn')?.addEventListener('click', handleImportRoster);
             document.getElementById('add-player-btn')?.addEventListener('click', handleAddPlayer);
             document.getElementById('clear-roster-btn')?.addEventListener('click', handleClearRoster);
-			
+			document.getElementById('import-url-btn')?.addEventListener('click', handleImportFromUrl);
 			
 			const snapshotSection = document.getElementById('snapshot-section');
 			if (window.isManager && snapshotSection) {
@@ -1377,7 +1445,7 @@ function displayLootForDate(dateId) {
         };
         window.toggleCompEditability = function() {
             if(!document.getElementById('import-btn')) return;
-            document.querySelectorAll('#import-btn, #add-player-btn, #clear-roster-btn, .editable-name, .editable-class-select, .role-btn').forEach(el => { el.disabled = !window.isManager; });
+            document.querySelectorAll('#import-btn, #add-player-btn, #clear-roster-btn, #import-url-btn, .editable-name, .editable-class-select, .role-btn').forEach(el => { el.disabled = !window.isManager; });
         };
 
         async function handlePlayerUpdate(event, playerId, field) {
@@ -1442,7 +1510,7 @@ function displayLootForDate(dateId) {
             try {
                 const data = JSON.parse(jsonString);
                 if (!data.raidDrop || !Array.isArray(data.raidDrop)) throw new Error("Ungültiges JSON: 'raidDrop' Array fehlt.");
-                const newRoster = data.raidDrop.map(getPlayerInfoFromEntry);
+                const newRoster = data.raidDrop.filter(p => p && p.name).map(getPlayerInfoFromEntry);
                 await setDoc(rosterDocRef, { roster: newRoster, rawJson: jsonString });
                 const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
                 window.logHistory('Roster', `Importiert`, `${newRoster.length} Spieler`, currentManager);

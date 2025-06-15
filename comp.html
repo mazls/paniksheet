@@ -10,7 +10,7 @@
         <p class="text-gray-400 mb-4">Nur Gildenräte können die Aufstellung importieren und bearbeiten.</p>
         
         <textarea id="json-input" class="w-full h-32 bg-slate-900 text-gray-300 p-3 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder='{"_id":"...", "raidDrop":[...]}'></textarea>
-        <div class="flex flex-wrap gap-4 mt-4">
+		<div class="flex flex-wrap gap-4 mt-4">
             <button id="import-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                 Aufstellung importieren & speichern
             </button>
@@ -20,6 +20,16 @@
             <button id="clear-roster-btn" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                 Roster leeren
             </button>
+		</div>
+		<div>
+		<h4 class="text-lg font-semibold mb-2 text-blue-450">Import via URL</h4>
+		<p class="text-gray-400 mb-2 text-sm">Füge hier die URL der comp ein.</p>
+		<div class="flex flex-wrap gap-2">
+			<input type="url" id="json-url-input" class="flex-grow bg-slate-900 text-gray-300 p-2 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://raid-helper.dev/raidplan/XXXXXXXXX">
+			<button id="import-url-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+				Laden & Importieren
+			</button>
+		</div>
         </div>
 
         <div id="snapshot-section" class="mt-6 pt-6 border-t border-slate-650" style="display: none;">
