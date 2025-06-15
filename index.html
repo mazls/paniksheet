@@ -475,7 +475,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-
+		const SNAPSHOTS_COLLECTION = "raid-tool-snapshots";
+		
+		const snapshotsCollectionRef = collection(db, SNAPSHOTS_COLLECTION);
+		let allBossIds = [];
+		
         window.isManager = false;
         let currentRosterUnsubscribe = null;
         let historyUnsubscribe = null;
@@ -487,11 +491,14 @@
 		let playerSummaryState = {};
 		let summarySortState = { column: 'total', direction: 'desc' };
 
+		
         const DATA_COLLECTION = "raid-tool-data";
         const HISTORY_COLLECTION = "raid-tool-history";
         const USER_PROFILES_COLLECTION = "user_profiles";
 		const LOOT_COLLECTION = "raid-tool-loot";
-
+		
+		
+		
         const raidData = {
             mogushan: {
                 name: "Mogu'shangewölbe",
@@ -569,7 +576,147 @@
         const historyCollectionRef = collection(db, HISTORY_COLLECTION);
         const userProfilesCollectionRef = collection(db, USER_PROFILES_COLLECTION);
 		const lootCollectionRef = collection(db, LOOT_COLLECTION);
+		// ============== NEUE SNAPSHOT FUNKTIONEN ==============
+		
+		async function saveSnapshot() {
+			if (!window.isManager) return;
+			const snapshotName = prompt("Bitte gib einen Namen für den Snapshot ein (z.B. 'Progress-Setup KW25'):");
+			if (!snapshotName || snapshotName.trim() === '') {
+				window.showModal("Speichern abgebrochen. Kein Name angegeben.");
+				return;
+			}
+		
+			try {
+				// 1. Aktuelles Roster holen
+				const rosterSnap = await getDoc(rosterDocRef);
+				const rosterData = rosterSnap.exists() ? rosterSnap.data() : {};
+		
+				// 2. Alle Boss-Einteilungen holen
+				const bossAssignments = {};
+				for (const raidId in raidData) {
+					for (const boss of raidData[raidId].bosses) {
+						const bossDocRef = doc(db, DATA_COLLECTION, `boss-${boss.id}`);
+						const bossSnap = await getDoc(bossDocRef);
+						if (bossSnap.exists()) {
+							bossAssignments[`boss-${boss.id}`] = bossSnap.data();
+						}
+					}
+				}
+		
+				// 3. Snapshot-Dokument erstellen
+				const snapshotDoc = {
+					name: snapshotName,
+					createdAt: serverTimestamp(),
+					editor: sessionStorage.getItem('currentManager') || 'Unbekannt',
+					roster: rosterData,
+					assignments: bossAssignments
+				};
+		
+				// 4. In der neuen Collection speichern
+				await addDoc(snapshotsCollectionRef, snapshotDoc);
+				window.showModal(`Snapshot '${snapshotName}' wurde erfolgreich gespeichert!`);
+				populateSnapshotSelector(); // Liste aktualisieren
+			} catch (error) {
+				console.error("Fehler beim Speichern des Snapshots:", error);
+				window.showModal("Ein Fehler ist aufgetreten. Der Snapshot konnte nicht gespeichert werden.");
+			}
+		}
 
+		async function loadSnapshot() {
+			if (!window.isManager) return;
+			const snapshotId = document.getElementById('snapshot-selector').value;
+			if (!snapshotId) {
+				window.showModal("Bitte wähle zuerst einen Snapshot aus der Liste aus.");
+				return;
+			}
+		
+			const confirmed = await window.showModal(
+				"Achtung! Das Laden dieses Snapshots überschreibt die aktuelle Aufstellung und alle Boss-Einteilungen. Fortfahren?",
+				true // Bestätigungsdialog anzeigen
+			);
+		
+			if (!confirmed) return;
+		
+			try {
+				// 1. Ausgewählten Snapshot holen
+				const snapshotDocRef = doc(db, SNAPSHOTS_COLLECTION, snapshotId);
+				const snapshotSnap = await getDoc(snapshotDocRef);
+		
+				if (!snapshotSnap.exists()) {
+					throw new Error("Snapshot nicht gefunden.");
+				}
+				const snapshotData = snapshotSnap.data();
+		
+				// 2. Live-Roster überschreiben
+				if (snapshotData.roster) {
+					await setDoc(rosterDocRef, snapshotData.roster);
+				}
+		
+				// 3. Alle Live-Boss-Einteilungen überschreiben
+				if (snapshotData.assignments) {
+					for (const docId in snapshotData.assignments) {
+						const liveDocRef = doc(db, DATA_COLLECTION, docId);
+						await setDoc(liveDocRef, snapshotData.assignments[docId]);
+					}
+				}
+				
+				window.showModal(`Snapshot '${snapshotData.name}' wurde erfolgreich geladen.`);
+				// Ein Neuladen der Seite stellt sicher, dass alle Listener die neuen Daten korrekt anzeigen
+				location.reload();
+		
+			} catch (error) {
+				console.error("Fehler beim Laden des Snapshots:", error);
+				window.showModal("Ein Fehler ist aufgetreten. Der Snapshot konnte nicht geladen werden.");
+			}
+		}
+		
+		async function deleteSnapshot() {
+			if (!window.isManager) return;
+			const selector = document.getElementById('snapshot-selector');
+			const snapshotId = selector.value;
+			if (!snapshotId) {
+				window.showModal("Bitte wähle zuerst einen Snapshot aus, der gelöscht werden soll.");
+				return;
+			}
+		
+			const snapshotName = selector.options[selector.selectedIndex].text;
+			const confirmed = await window.showModal(
+				`Soll der Snapshot '${snapshotName}' wirklich endgültig gelöscht werden?`,
+				true // Bestätigungsdialog anzeigen
+			);
+		
+			if (!confirmed) return;
+		
+			try {
+				await deleteDoc(doc(db, SNAPSHOTS_COLLECTION, snapshotId));
+				window.showModal(`Snapshot '${snapshotName}' wurde gelöscht.`);
+				populateSnapshotSelector(); // Liste aktualisieren
+			} catch (error) {
+				console.error("Fehler beim Löschen des Snapshots:", error);
+				window.showModal("Ein Fehler ist aufgetreten. Der Snapshot konnte nicht gelöscht werden.");
+			}
+		}
+		
+		async function populateSnapshotSelector() {
+			const selector = document.getElementById('snapshot-selector');
+			if (!selector) return;
+		
+			try {
+				const q = query(snapshotsCollectionRef, orderBy("createdAt", "desc"));
+				const snapshotSnaps = await getDocs(q);
+		
+				selector.innerHTML = '<option value="">-- Snapshot auswählen --</option>'; // Zurücksetzen
+				snapshotSnaps.forEach(snap => {
+					const data = snap.data();
+					const option = document.createElement('option');
+					option.value = snap.id;
+					option.textContent = data.name;
+					selector.appendChild(option);
+				});
+			} catch (error) {
+				console.error("Fehler beim Laden der Snapshot-Liste:", error);
+			}
+		}
         // ============== MODAL-FUNKTION (global verfügbar) ==============
         window.showModal = function(message, isConfirm = false) {
             return new Promise((resolve) => {
@@ -864,7 +1011,20 @@
             document.getElementById('import-btn')?.addEventListener('click', handleImportRoster);
             document.getElementById('add-player-btn')?.addEventListener('click', handleAddPlayer);
             document.getElementById('clear-roster-btn')?.addEventListener('click', handleClearRoster);
-
+			
+			
+			const snapshotSection = document.getElementById('snapshot-section');
+			if (window.isManager && snapshotSection) {
+				snapshotSection.style.display = 'block'; // Snapshot-Bereich nur für Manager anzeigen
+				document.getElementById('save-snapshot-btn')?.addEventListener('click', saveSnapshot);
+				document.getElementById('load-snapshot-btn')?.addEventListener('click', loadSnapshot);
+				document.getElementById('delete-snapshot-btn')?.addEventListener('click', deleteSnapshot);
+				
+				// Füllt die Snapshot-Liste beim Laden der Seite
+				populateSnapshotSelector();
+			}
+			
+			
             currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
                 const jsonInput = document.getElementById('json-input');
                 const currentRosterData = docSnap.exists() ? docSnap.data().roster || [] : [];
