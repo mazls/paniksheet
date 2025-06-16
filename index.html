@@ -363,7 +363,7 @@
     grid-template-columns: 1fr 1.2fr; /* 1. Spalte kleiner, 2. Spalte größer */
     align-items: center;
     gap: 0.5rem; /* Abstand zwischen den Spalten */
-    padding: 0.5rem 0.25rem; /* Kompakterer vertikaler Abstand */
+    padding: 0.1rem 0.1em; /* Kompakterer vertikaler Abstand */
 }
 
 /* Nur die Kopfzeile extra stylen */
@@ -1658,12 +1658,12 @@ function displayLootForDate(dateId) {
         const raidBuffsClassesMap = {
             // Offensive Buffs
             "5% Stärke, Beweglichkeit, Intelligenz": { classes: { "PALADIN": "Segen der Könige", "DRUID": "Mal der Wildnis", "MONK": "Vermächtnis des Kaisers", "HUNTER": "Umarmung der Schieferkrabbe (Pet)" } },
-            "10% Angriffskraft": { classes: { "DEATHKNIGHT": "Horn des Winters", "HUNTER": "Trueshot Aura", "WARRIOR": "Kampfruf" } },
-            "10% Angriffsgeschwindigkeit": { classes: { "DEATHKNIGHT": "Unholy Aura", "HUNTER": ["Kicherndes Heulen (Hyänen-Pet)", "Schlangenschnelligkeit (Schlangen-Pet)"], "ROGUE": "List des Schnellklinglers", "SHAMAN": "Entfesselte Wut" } },
+            "10% Angriffskraft": { classes: { "DEATHKNIGHT": "Horn des Winters", "HUNTER": "Volltreffer Aura", "WARRIOR": "Kampfruf" } },
+            "10% Angriffsgeschwindigkeit": { classes: { "DEATHKNIGHT": "Unheilige Aura", "HUNTER": ["Kicherndes Heulen (Hyänen-Pet)", "Schlangenschnelligkeit (Schlangen-Pet)"], "ROGUE": "List des Schnellklinglers", "SHAMAN": "Entfesselte Wut" } },
             "3000 Meisterschaft": { classes: { "HUNTER": ["Brüllen des Mutes (Katzen-Pet)", "Segen des Geisterbestien (Geisterbestien-Pet)"], "PALADIN": "Segen der Macht", "SHAMAN": "Anmut der Luft" } },
-            "5% Kritische Trefferchance": { classes: { "DRUID": "Anführer der Meute", "HUNTER": ["Furchterregendes Brüllen (Wolfs-Pet)", "Ruhiges Wasser (Wasserläufer-Pet)"], "MAGE": "Arkane Brillanz", "MONK": "Vermächtnis des Weißen Tigers", "PRIEST": "Inneres Feuer" } },
+            "5% Kritische Trefferchance": { classes: { "DRUID": "Rudelführer", "HUNTER": ["Furchterregendes Brüllen (Wolfs-Pet)", "Ruhiges Wasser (Wasserläufer-Pet)"], "MAGE": "Arkane Brillanz", "MONK": "Vermächtnis des Weißen Tigers", "PRIEST": "Inneres Feuer" } },
             "10% Zaubermacht": { classes: { "HUNTER": "Ruhiges Wasser (Wasserläufer-Pet)", "MAGE": "Arkane Brillanz", "SHAMAN": "Brennender Zorn", "WARLOCK": "Dunkle Absicht" } },
-            "5% Zaubertempo": { classes: { "DRUID": "Mondkingestalt", "HUNTER": "Gedankenstärkung (Sporebat-Pet)", "PRIEST": "Schattenform", "SHAMAN": "Elementarer Eid" } },
+            "5% Zaubertempo": { classes: { "DRUID": "Mondkingestalt", "HUNTER": "Gedankenstärkung (Sporensegler-Pet)", "PRIEST": "Schattenform", "SHAMAN": "Elementar" } },
             // Defensive Buffs
             "10% Ausdauer": { classes: { "HUNTER": "Qiraji-Standhaftigkeit (Silithiden-Pet)", "PRIEST": "Machtwort: Seelenstärke", "WARLOCK": "Dunkle Absicht", "WARRIOR": "Befehlsruf" } },
             "-10% physischer Schaden (Weakened Blows)": { classes: { "DEATHKNIGHT": "Scharlachrotes Fieber (Blut)", "DRUID": "Verwüsten", "HUNTER": ["Demoralisierendes Gebrüll (Bären-Pet)", "Demoralisierender Schrei (Aasvogel-Pet)"], "MONK": "Fass-Sturm (Braumeister)", "PALADIN": "Hammer des Rechtschaffenen (Schutz/Vergeltung)", "SHAMAN": "Erdbeben (Elementar/Verstärkung)", "WARLOCK": "Fluch der Entkräftung", "WARRIOR": "Donnerknall" } },
@@ -1674,14 +1674,14 @@ function displayLootForDate(dateId) {
             "Heilungsreduktion (Mortal Wounds)": { classes: { "HUNTER": ["Witwengift", "Monströser Biss (Teufelssaurier-Pet)"], "MONK": "Aufsteigende Sonnenkick (Windläufer)", "ROGUE": "Wundgift", "WARRIOR": ["Tödlicher Stoß (Waffen/Furor)", "Wilder Stoß (Waffen/Furor)"] } },
             "Zaubergeschwindigkeitsreduktion": { classes: { "DEATHKNIGHT": "Nekrotischer Stoß", "HUNTER": ["Lava-Atem (Kernhund-Pet)", "Sporenwolke (Sporebat-Pet)"], "MAGE": "Verlangsamen (Arkan)", "ROGUE": "Gedankenbenebelndes Gift", "WARLOCK": "Fluch der Entkräftung" } },
             // Raid Cooldowns
-            "Blutdurst/Heldentum": { classes: { "SHAMAN": "Blutdurst", "MAGE": "Zeitkrümmung", "HUNTER": "Uralte Hysterie (Exotisches Kernelementar-Pet)" } },
-            "Schädelfahne": { classes: { "WARRIOR": "Schädelfahne" } },
-            "Sturmhagel-Totem": { classes: { "SHAMAN": "Sturmhagel-Totem" } },
+            "Blutdurst/Heldentum": { classes: { "SHAMAN": "Heldentum", "MAGE": "Zeitkrümmung", "HUNTER": "Uralte Hysterie (Exotisches Kernelementar-Pet)" } },
+            "Schädelfahne": { classes: { "WARRIOR": "Schädelbanner" } },
+            "Sturmhagel-Totem": { classes: { "SHAMAN": "Totem der Sturmpeitsche" } },
             "Antimagische Zone": { classes: { "DEATHKNIGHT": "Antimagische Zone" } },
-            "Demoralisierende Standarte": { classes: { "WARRIOR": "Demoralisierende Standarte" } },
+            "Demoralisierende Standarte": { classes: { "WARRIOR": "Demoralisierendes Banner" } },
             "Hingabe-Aura": { classes: { "PALADIN": "Hingabe-Aura" } },
             "Machtwort: Barriere": { classes: { "PRIEST": "Machtwort: Barriere" } },
-            "Sammelruf": { classes: { "WARRIOR": "Sammelruf" } },
+            "Sammelruf": { classes: { "WARRIOR": "Schlachtruf" } },
             "Rauchbombe": { classes: { "ROGUE": "Rauchbombe" } },
             "Geisterverbindungstotem": { classes: { "SHAMAN": "Geisterverbindungstotem" } }
         };
