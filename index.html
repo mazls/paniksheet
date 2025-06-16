@@ -446,17 +446,20 @@
 </footer>
 		
 
-    <div id="login-modal-overlay" class="login-modal-overlay hidden">
-        <div class="login-modal-content">
-            <h3>Gildenrat-Login</h3>
-            <input type="text" id="login-username" placeholder="Benutzername" required>
-            <input type="password" id="login-password" placeholder="Passwort" required>
-            <div class="login-modal-buttons">
-                <button id="login-modal-cancel-btn" class="cancel-btn">Abbrechen</button>
-                <button id="login-modal-submit-btn">Login</button>
-            </div>
-        </div>
-    </div>
+	<div id="login-modal-overlay" class="login-modal-overlay hidden">
+		<div class="login-modal-content">
+			<h3>Gildenrat-Login</h3>
+			<form id="login-form" autocomplete="on">
+				<input type="text" id="login-username" placeholder="Benutzername" required autocomplete="username">
+				<input type="password" id="login-password" placeholder="Passwort" required autocomplete="current-password">
+				
+				<div class="login-modal-buttons">
+					<button type="button" id="login-modal-cancel-btn" class="cancel-btn">Abbrechen</button>
+					<button type="submit" id="login-modal-submit-btn">Login</button>
+				</div>
+			</form>
+		</div>
+	</div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc, getDoc, serverTimestamp, query, orderBy, addDoc, updateDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -496,6 +499,10 @@
         const HISTORY_COLLECTION = "raid-tool-history";
         const USER_PROFILES_COLLECTION = "user_profiles";
 		const LOOT_COLLECTION = "raid-tool-loot";
+		const rosterDocRef = doc(db, DATA_COLLECTION, "currentRoster");
+        const historyCollectionRef = collection(db, HISTORY_COLLECTION);
+        const userProfilesCollectionRef = collection(db, USER_PROFILES_COLLECTION);
+		const lootCollectionRef = collection(db, LOOT_COLLECTION);
 				
 		// ============== URL IMPORT FUNKTION ==============
 		async function handleImportFromUrl() {
@@ -633,10 +640,90 @@
 
         window.classColors = { 'DEATHKNIGHT': '#C41F3B', 'DK': '#C41F3B', 'DRUID': '#FF7D0A', 'HUNTER': '#AAD372', 'MAGE': '#3FC7EB', 'MONK': '#00FF96', 'PALADIN': '#F48CBA', 'PRIEST': '#FFFFFF', 'ROGUE': '#FFF569', 'SHAMAN': '#0070DD', 'WARLOCK': '#8788EE', 'WARRIOR': '#C69B6D', 'TANK': '#A3A3A3' };
         const wowClasses = ['WARRIOR', 'PALADIN', 'HUNTER', 'ROGUE', 'PRIEST', 'DEATHKNIGHT', 'SHAMAN', 'MAGE', 'WARLOCK', 'MONK', 'DRUID'];
-        const rosterDocRef = doc(db, DATA_COLLECTION, "currentRoster");
-        const historyCollectionRef = collection(db, HISTORY_COLLECTION);
-        const userProfilesCollectionRef = collection(db, USER_PROFILES_COLLECTION);
-		const lootCollectionRef = collection(db, LOOT_COLLECTION);
+		const healerCooldowns = [
+			{ name: "Machtwort: Barriere (Disz)", class: "PRIEST" },
+			{ name: "Gotteshymne", class: "PRIEST" },
+			{ name: "Schutzgeist (Holy)", class: "PRIEST" },
+			{ name: "Schmerzunterdrücken (Disz)", class: "PRIEST" },
+			{ name: "Aurenmeisterschaft (Holy)", class: "PALADIN" },
+			{ name: "Handauflegung", class: "PALADIN" },
+			{ name: "Hand der Aufopferung", class: "PALADIN" },
+			{ name: "Geistverbindungstotem (Resto)", class: "SHAMAN" },
+			{ name: "Heilflut-Totem (Resto)", class: "SHAMAN" },
+			{ name: "Aszendenz (Heilung)", class: "SHAMAN" },
+			{ name: "Gelassenheit", class: "DRUID" },
+			{ name: "Anregen", class: "DRUID" },
+			{ name: "Überlebens Instinkte", class: "DRUID" },
+			{ name: "Beleben (MW)", class: "MONK" },
+			{ name: "Lebenskokon (MW)", class: "MONK" },
+			
+			// ----- Tank-CDs -----
+			{ name: "Schildwall", class: "WARRIOR" },
+			{ name: "Letztes Gefecht", class: "WARRIOR" },
+			{ name: "Göttlicher Schutz", class: "PALADIN" },
+			{ name: "Wächter der uralten Könige", class: "PALADIN" },
+			{ name: "Vampirblut", class: "DEATHKNIGHT" },
+			{ name: "Knochenschild", class: "DEATHKNIGHT" },
+			{ name: "Tanzende Runenwaffe", class: "DEATHKNIGHT" },
+			{ name: "Eisige Gegenwehr", class: "DEATHKNIGHT" },
+			{ name: "Eisenborke", class: "DRUID" },
+			{ name: "Überlebensinstinkte", class: "DRUID" },
+			{ name: "Stärkendes Gebräu", class: "MONK" },
+			{ name: "Schaden dämpfen", class: "MONK" },
+			{ name: "Zen-Meditation", class: "MONK" },
+			
+			// ----- Raid-Utility CDs -----
+			{ name: "Rauchbombe", class: "ROGUE" },
+			{ name: "Anspornender Schrei", class: "WARRIOR" },
+			{ name: "Demoralisierendes Banner", class: "WARRIOR" },
+			{ name: "Anti-Magische Zone", class: "DEATHKNIGHT" },
+			{ name: "Antimagische Hülle", class: "DEATHKNIGHT" }
+			
+		];
+		const cooldownIconMap = {
+		// Priester
+		"Machtwort: Barriere": "spell_holy_powerwordbarrier.jpg",
+		"Gotteshymne": "spell_holy_divinehymn.jpg",
+		"Schutzgeist": "spell_holy_guardianspirit.jpg",
+		"Schmerzunterdrückung": "spell_holy_painsupression.jpg",
+		// Paladin
+		"Aurenmeisterschaft": "spell_holy_auramastery.jpg",
+		"Handauflegung": "spell_holy_layonhands.jpg",
+		"Hand der Aufopferung": "spell_holy_handofsacrifice.jpg",
+		"Göttlicher Schutz": "spell_holy_divineprotection.jpg",
+		"Wächter der uralten Könige": "spell_paladin_guardianofancientkings.jpg",
+		// Schamane
+		"Geistverbindungstotem": "spell_shaman_spiritlinktotem.jpg",
+		"Heilflut-Totem": "spell_shaman_healingtide.jpg",
+		"Aszendenz (Heilung)": "spell_fire_elementaldevastation.jpg",
+		// Druide
+		"Gelassenheit": "spell_nature_tranquility.jpg",
+		"Anregen": "spell_nature_lightning.jpg",
+		"Eisenborke": "ability_druid_ironbark.jpg",
+		"Überlebensinstinkte": "ability_druid_tigersroar.jpg",
+		// Mönch
+		"Beleben": "ability_monk_revival.jpg",
+		"Lebenskokon": "ability_monk_lifecocoon.jpg",
+		"Stärkendes Gebräu": "ability_monk_fortifyingale.jpg",
+		"Schaden dämpfen": "ability_monk_dampenharm.jpg",
+		"Zen-Meditation": "ability_monk_zenmeditation.jpg",
+		// Krieger
+		"Schildwall": "ability_warrior_shieldwall.jpg",
+		"Letztes Gefecht": "spell_holy_ashestoashes.jpg",
+		"Anspornender Schrei": "ability_warrior_rallyingcry.jpg",
+		"Demoralisierendes Banner": "ability_warrior_demoralizingbanner.jpg",
+		// Todesritter
+		"Anti-Magische Zone": "spell_deathknight_antimagiczone.jpg",
+		"Eisige Gegenwehr": "spell_deathknight_iceboundfortitude.jpg",
+		"Antimagische Hülle": "spell_shadow_antimagicshell.jpg",
+		"Vampirblut": "spell_deathknight_vampiricblood.jpg",
+		"Knochenschild": "ability_deathknight_boneshield.jpg",
+		"Tanzende Runenwaffe": "inv_sword_62.jpg",
+		// Schurke
+		"Rauchbombe": "ability_rogue_smokebomb.jpg"
+	};
+		const wowheadIconUrlBase = "https://wow.zamimg.com/images/wow/icons/small/";
+
 		// ============== NEUE SNAPSHOT FUNKTIONEN ==============
 		
 		async function saveSnapshot() {
@@ -815,89 +902,81 @@
 				}
 			});
 		};
-        
-        // ============== LOGIN MODAL FUNKTION ==============
-        function showLoginModal() {
-             return new Promise((resolve) => {
-                const loginModalOverlay = document.getElementById('login-modal-overlay');
-                const loginUsernameInput = document.getElementById('login-username');
-                const loginPasswordInput = document.getElementById('login-password');
-                const loginSubmitBtn = document.getElementById('login-modal-submit-btn');
-                const loginCancelBtn = document.getElementById('login-modal-cancel-btn');
-
-                loginUsernameInput.value = '';
-                loginPasswordInput.value = '';
-                loginModalOverlay.classList.remove('hidden');
-
-                const handleSubmit = async () => {
-                    const username = loginUsernameInput.value;
-                    const password = loginPasswordInput.value;
-
-                    if (!username || !password) {
-                        window.showModal("Bitte Benutzername und Passwort eingeben.");
-                        return;
-                    }
-
-                    try {
-                        const q = query(userProfilesCollectionRef, where("username", "==", username));
-                        const querySnapshot = await getDocs(q);
-
-                        if (querySnapshot.empty) {
-                            window.showModal("Benutzername nicht gefunden.");
-                            return;
-                        }
-
-                        const userProfile = querySnapshot.docs[0].data();
-                        const email = userProfile.email;
-                        const isManagerFlag = userProfile.isManager || false;
-                        
-                        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-                        if (isManagerFlag) {
-                            sessionStorage.setItem('currentManager', username);
-                            loginModalOverlay.classList.add('hidden');
-                            location.reload();
-                            resolve(true);
-                        } else {
-                            await signOut(auth);
-                            window.showModal("Dieses Konto ist keinem Gildenrat-Status zugeordnet.");
-                            resolve(false);
-                        }
-                    } catch (error) {
-                        console.error("Login-Fehler:", error);
-                        let errorMessage = "Unbekannter Login-Fehler.";
-                        if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                            errorMessage = "Falscher Benutzername oder falsches Passwort.";
-                        } else if (error.code === 'auth/invalid-email') {
-                            errorMessage = "Ungültiges E-Mail-Format (interner Fehler).";
-                        }
-                        window.showModal(errorMessage);
-                        resolve(false);
-                    }
-                };
-
-                const handleCancel = () => {
-                    loginModalOverlay.classList.add('hidden');
-                    resolve(false);
-                };
-				const handleKeydown = (event) => {
-								if (event.key === 'Enter') {
-									event.preventDefault();
-									handleSubmit();
-								}
-							};
-				loginUsernameInput.addEventListener('keydown', handleKeydown);
-				loginPasswordInput.addEventListener('keydown', handleKeydown);
-                loginSubmitBtn.addEventListener('click', handleSubmit);
-                loginCancelBtn.addEventListener('click', handleCancel);
-
-                loginModalOverlay.addEventListener('click', function clickOutside(event) {
-                    if (event.target === loginModalOverlay) {
-                        handleCancel();
-                    }
-                });
-            });
-        }
+				
+				// ============== LOGIN MODAL FUNKTION ==============
+		function showLoginModal() {
+			return new Promise((resolve) => {
+				const loginModalOverlay = document.getElementById('login-modal-overlay');
+				const loginForm = document.getElementById('login-form');
+				const loginUsernameInput = document.getElementById('login-username');
+				const loginPasswordInput = document.getElementById('login-password');
+				const loginCancelBtn = document.getElementById('login-modal-cancel-btn');
+		
+				loginUsernameInput.value = '';
+				loginPasswordInput.value = '';
+				loginModalOverlay.classList.remove('hidden');
+				loginUsernameInput.focus();
+		
+				const handleSubmit = async (event) => {
+					// Verhindert das Neuladen der Seite, was das Standardverhalten eines Formulars ist.
+					event.preventDefault(); 
+		
+					const username = loginUsernameInput.value;
+					const password = loginPasswordInput.value;
+		
+					if (!username || !password) {
+						window.showModal("Bitte Benutzername und Passwort eingeben.");
+						return;
+					}
+		
+					try {
+						// Die Logik zum Anmelden bei Firebase bleibt hier exakt gleich.
+						const q = query(userProfilesCollectionRef, where("username", "==", username));
+						const querySnapshot = await getDocs(q);
+		
+						if (querySnapshot.empty) {
+							window.showModal("Benutzername nicht gefunden.");
+							return;
+						}
+						const userProfile = querySnapshot.docs[0].data();
+						const userCredential = await signInWithEmailAndPassword(auth, userProfile.email, password);
+		
+						if (userProfile.isManager) {
+							sessionStorage.setItem('currentManager', username);
+							location.reload();
+						} else {
+							await signOut(auth);
+							window.showModal("Dieses Konto ist keinem Gildenrat-Status zugeordnet.");
+						}
+					} catch (error) {
+						console.error("Login-Fehler:", error);
+						window.showModal("Falscher Benutzername oder falsches Passwort.");
+					}
+				};
+		
+				const handleCancel = () => {
+					cleanupAndResolve(false);
+				};
+		
+				// Hilfsfunktion, um alle Event-Listener wieder zu entfernen und das Modal zu schließen
+				const cleanupAndResolve = (value) => {
+					loginForm.removeEventListener('submit', handleSubmit);
+					loginCancelBtn.removeEventListener('click', handleCancel);
+					loginModalOverlay.classList.add('hidden');
+					resolve(value);
+				}
+		
+				// Wir lauschen jetzt auf das 'submit'-Ereignis des Formulars
+				loginForm.addEventListener('submit', handleSubmit);
+				loginCancelBtn.addEventListener('click', handleCancel);
+		
+				loginModalOverlay.addEventListener('click', function clickOutside(event) {
+					if (event.target === loginModalOverlay) {
+						handleCancel();
+					}
+				});
+			});
+		}
         
         // ============== AUTHENTIFIZIERUNG & PRESENCE ==============
         async function setupAuthUI() {
@@ -1235,16 +1314,24 @@ function displayLootForDate(dateId) {
 						.sort((a, b) => b.amount - a.amount)
 						.map(roll => {
 							const rollType = roll.classification;
-							let maxRoll = 100;
-							if (rollType === 'OS') maxRoll = 50;
-							else if (rollType === 'T-Mog') maxRoll = 25;
+							let maxRoll = 100; // Standard für MS
 							
+							// NEUE, ROBUSTERE PRÜFUNG
+							const upperCaseRollType = rollType.toUpperCase();
+							if (upperCaseRollType === 'OS') {
+								maxRoll = 50;
+							} else if (['T-MOG', 'TRANSMOG', 'STYLE'].includes(upperCaseRollType)) {
+								maxRoll = 25;
+							}
 							const playerColor = window.classColors[roll.class.toUpperCase()] || '#FFFFFF';
 							const isWinner = roll.player === awardedTo;
 							const fontWeight = isWinner ? 'font-bold text-lg' : 'font-normal';
 							const rollColor = isWinner ? 'text-yellow-400' : 'text-gray-300';
+							
+							const srIndicator = roll.sr ? ' <span class="text-xs text-cyan-400 font-bold">(SR)</span>' : '';
+							
 
-							return `<span class="whitespace-nowrap ${fontWeight}"><span style="color:${playerColor}">${roll.player}</span>: <span class="${rollColor}">${roll.amount}</span> <span class="text-xs text-gray-500">(${rollType}/${maxRoll})</span></span>`;
+							return `<span class="whitespace-nowrap ${fontWeight}"><span style="color:${playerColor}">${roll.player}</span>: <span class="${rollColor}">${roll.amount}</span> <span class="text-xs text-gray-500">(${rollType}/${maxRoll})</span>${srIndicator}</span>`;
 						}).join('&nbsp; ');
 
 					// --- NEU: Wowhead-Link erstellen ---
@@ -1321,23 +1408,44 @@ function displayLootForDate(dateId) {
                         const option = document.createElement('option');
                         const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
                         option.value = player.name;
-                        option.textContent = `${player.name} (${player.class})`;
+                        option.textContent = `${player.name}`;
                         option.style.color = color;
                         option.dataset.color = color;
                         selectElement.appendChild(option);
                     });
                 }
                 
-                document.querySelectorAll('.assignment-select').forEach(select => {
-                    select.addEventListener('change', handleAssignmentChange);
-                    const assignmentId = select.dataset.assignmentId.toLowerCase();
-                    let playersForDropdown = [];
-                    if (assignmentId.includes('tank')) playersForDropdown = rosterData.filter(p => p.roles.includes('TANK'));
-                    else if (assignmentId.includes('healer')) playersForDropdown = rosterData.filter(p => p.roles.includes('HEALER'));
-                    else if (assignmentId.includes('dps') || assignmentId.includes('dd')) playersForDropdown = rosterData.filter(p => p.roles.includes('DPS'));
-                    else playersForDropdown = rosterData;
-                    populateDropdownOptions(select, playersForDropdown);
-                });
+				document.querySelectorAll('.assignment-select').forEach(select => {
+					select.addEventListener('change', handleAssignmentChange);
+					const assignmentId = select.dataset.assignmentId.toLowerCase();
+				
+					// NEU: Prüfen, ob es ein Cooldown-Dropdown ist
+					if (assignmentId.includes('cooldown')) {
+						// Cooldown-Dropdown mit der neuen Objekt-Liste füllen
+						select.innerHTML = '<option value="">-- Cooldown wählen --</option>';
+						healerCooldowns.forEach(cd => {
+							const option = document.createElement('option');
+							const color = window.classColors[cd.class] || '#FFFFFF'; // Farbe aus der Klasse des Cooldowns holen
+							option.value = cd.name;      // Der Wert ist der Name des CDs
+							option.textContent = cd.name;  // Der Text ist auch der Name des CDs
+							option.dataset.color = color;
+							option.style.color = color;    // Die Farbe für den Text setzen
+							select.appendChild(option);
+						});
+					} else {
+						let playersForDropdown = [];
+						if (assignmentId.includes('tank')) {
+							playersForDropdown = rosterData.filter(p => p.roles.includes('TANK'));
+						} else if (assignmentId.includes('healer')) {
+							playersForDropdown = rosterData.filter(p => p.roles.includes('HEALER'));
+						} else if (assignmentId.includes('dps') || assignmentId.includes('dd')) {
+							playersForDropdown = rosterData.filter(p => p.roles.includes('DPS'));
+						} else {
+							playersForDropdown = rosterData;
+						}
+						populateDropdownOptions(select, playersForDropdown);
+					}
+				});
 
                 assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
                     const assignments = docSnap.exists() ? docSnap.data() : {};

@@ -114,7 +114,7 @@
             <ul class="assignment-list">
                 <li>
                     <span>Heiler:</span>
-                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Heal"></select>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Healer></select>
                 </li>
                 <li>
                     <span>DPS 1:</span>
@@ -144,7 +144,7 @@
             <ul class="assignment-list">
                 <li>
                     <span>Heiler:</span>
-                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Heal"></select>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Healer"></select>
                 </li>
                 <li>
                     <span>DPS 1:</span>
@@ -167,18 +167,23 @@
 
         <div class="assignment-block">
             <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
-            <div class="assignment-header">
+            <div class="assignment-header" style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
                 <span>Aufgabe</span>
                 <span>Spieler</span>
+				<span>Cooldown</span>
             </div>
             <ul class="assignment-list">
                 <li>
+					<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
                     <span>CD für hohen Voodoo-Schaden:</span>
-                    <select class="assignment-select" data-assignment-id="garajal-heal-cd-voodoo"></select>
+					<select data-assignment-id="garajal-healer-cd-voodoo" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-voodoo-cooldown" class="assignment-select"></select>
                 </li>
                 <li>
+					<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
                     <span>CD für Wutanfall-Phase (20%):</span>
-                    <select class="assignment-select" data-assignment-id="garajal-heal-cd-enrage"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage-cooldown" class="assignment-select"></select>
                 </li>
             </ul>
         </div>

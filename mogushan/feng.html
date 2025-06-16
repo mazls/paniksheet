@@ -108,22 +108,29 @@
             <div class="assignment-block">
                 <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
                 <p class="text-sm text-gray-400 mb-4">Starke Raid-CDs sind bei den großen Schadensspitzen der jeweiligen Phasen überlebenswichtig.</p>
-                <div class="assignment-header">
+                <div class="assignment-header" style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
                     <span>Aufgabe</span>
                     <span>Spieler</span>
+					<span>Cooldown</span>
                 </div>
                 <ul class="assignment-list">
                     <li>
+						<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
                         <span>CD für Epizentrum (Phase 1):</span>
-                        <select id="feng-heal-epicenter" class="assignment-select" data-assignment-id="feng-heal-epicenter"></select>
+						<select data-assignment-id="feng-heal-epicenter" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-epicenter-cooldown" class="assignment-select"></select>
                     </li>
                     <li>
+						<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
                         <span>CD für Macht der Flamme ziehen (P2):</span>
-                        <select id="feng-heal-drawflame" class="assignment-select" data-assignment-id="feng-heal-drawflame"></select>
+						<select data-assignment-id="feng-healer-drawflame" class="assignment-select"></select>
+						<select data-assignment-id="feng-healer-drawflame-cooldown" class="assignment-select"></select>
                     </li>
                     <li>
+						<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
                         <span>CD für Arkane Geschwindigkeit (P3):</span>
-                        <select id="feng-heal-velocity" class="assignment-select" data-assignment-id="feng-heal-velocity"></select>
+						<select data-assignment-id="feng-heal-velocity" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-velocity-cooldown" class="assignment-select"></select>
                     </li>
                 </ul>
             </div>
