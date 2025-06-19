@@ -303,6 +303,14 @@
 			width: 100%;
 			height: 100%;
 		}
+.positioning-btn {
+    transition: background-color 0.3s, color 0.3s;
+}
+.active-position-btn {
+    background-color: #ca8a04 !important; /* Goldener Hintergrund für aktiven Button */
+    color: var(--color-dark-text) !important;
+    font-weight: 600;
+}
 .login-modal-buttons button {
     padding: 0.6rem 1.5rem;          /* Etwas mehr vertikales Padding für eine bessere Klickfläche */
     border: 1px solid transparent;   /* Initial kein sichtbarer Rand */
@@ -1384,6 +1392,29 @@ function displayLootForDate(dateId) {
                 document.querySelectorAll('.tactic-content').forEach(content => {
                     content.style.display = content.dataset.size === '25' ? (content.tagName === 'SPAN' ? 'inline' : 'grid') : 'none';
                 });
+			const positioningToggle = document.getElementById('positioning-toggle');
+				if (positioningToggle) {
+					positioningToggle.addEventListener('click', (event) => {
+						if (event.target.matches('.positioning-btn')) {
+							const selectedPhase = event.target.dataset.phase;
+			
+							// Alle Buttons de-aktivieren, dann den geklickten aktivieren
+							document.querySelectorAll('.positioning-btn').forEach(btn => btn.classList.remove('active-position-btn'));
+							event.target.classList.add('active-position-btn');
+			
+							// Alle Bilder ausblenden, dann das richtige einblenden
+							document.querySelectorAll('.positioning-image, .positioning-text').forEach(element => {
+								element.style.display = element.dataset.phase === selectedPhase ? 'block' : 'none';
+							});
+						}
+					});
+			
+					// Standardmäßig Phase 1 beim Laden der Seite aktivieren
+					const defaultPhaseButton = positioningToggle.querySelector('button[data-phase="1"]');
+					if (defaultPhaseButton) {
+						defaultPhaseButton.click();
+					}
+				}
             }
 
             async function handleAssignmentChange(event) {
