@@ -185,13 +185,14 @@ Erstelle eine neue Datei im Hauptverzeichnis mit dem Namen `feng.html`. Der Inha
 -   **Automatisches Befüllen:** Du musst die `<option>`-Tags nicht manuell hinzufügen. Das JavaScript in `index.html` findet alle Elemente mit der Klasse `assignment-select`, liest die aktuelle Spielerliste aus der Datenbank und füllt die Dropdowns automatisch.
 -   **Speicherung:** Wenn ein Gildenrat eine Auswahl trifft, wird die Zuweisung automatisch in Firestore gespeichert.
 
-## 📜 Lizenz
+## Lizenzierung 📜
 
-Dieses Projekt steht unter der **Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)** Lizenz.
+Dieses Projekt wird unter einem Dual-Licensing-Modell angeboten.
 
-Das bedeutet:
--   **Namensnennung** — Du musst angemessene Urheber- und Rechteangaben machen.
--   **Nicht kommerziell** — Du darfst das Material nicht für kommerzielle Zwecke nutzen.
--   **Weitergabe unter gleichen Bedingungen** — Wenn du das Material remixt, veränderst oder anderweitig direkt darauf aufbaust, musst du deine Beiträge unter der gleichen Lizenz wie das Original verbreiten.
+**1. Open Source (AGPLv3)**
+Für Open-Source-Projekte und nicht-kommerzielle Nutzung steht dieses Projekt unter der AGPLv3 zur Verfügung. Die Lizenzdetails finden Sie in der `LICENSE`-Datei. Beachten Sie, dass alle abgeleiteten Werke, die über ein Netzwerk angeboten werden, ebenfalls ihren Quellcode unter der AGPLv3 veröffentlichen müssen.
 
-[Den vollständigen Lizenztext findest du hier.](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de)
+**2. Kommerzielle Lizenz**
+Wenn die Bedingungen der AGPLv3 nicht zu Ihrem Vorhaben passen, müssen Sie eine kommerzielle Lizenz erwerben. Diese gewährt Ihnen mehr Flexibilität und befreit Sie von den Pflichten der AGPLv3.
+
+Für Anfragen zu einer kommerziellen Lizenz kontaktieren Sie mich bitte unter: **mazlsuffl@gmx.de**
