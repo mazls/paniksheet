@@ -409,6 +409,40 @@
 .assignment-list .assignment-select {
     width: 100%;
 }
+.lightbox-overlay {
+    position: fixed; /* Bleibt an einer festen Position im Fenster */
+    inset: 0; /* Füllt den gesamten Bildschirm (top:0, right:0, bottom:0, left:0) */
+    background-color: rgba(0, 0, 0, 0.85); /* Halbtransparenter schwarzer Hintergrund */
+    display: none; /* Standardmäßig unsichtbar */
+    justify-content: center; /* Zentriert den Inhalt horizontal */
+    align-items: center; /* Zentriert den Inhalt vertikal */
+    z-index: 5000; /* Stellt sicher, dass es über allem anderen liegt */
+    cursor: pointer; /* Zeigt an, dass man klicken kann (zum Schließen) */
+}
+
+.lightbox-content {
+    max-width: 90vw;  /* Maximale Breite ist 90% der Fensterbreite */
+    max-height: 90vh; /* Maximale Höhe ist 90% der Fensterhöhe */
+    display: block;   /* Verhält sich wie ein Bild */
+    border: 3px solid var(--color-gold); /* Goldener Rahmen */
+    border-radius: 0.5rem; /* Abgerundete Ecken */
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.lightbox-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 3rem; /* Macht das '×' schön groß */
+    font-weight: bold;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.lightbox-close-btn:hover {
+    color: var(--color-gold); /* Gold beim Darüberfahren */
+}
 	</style>
 </head>
 <body>
@@ -452,7 +486,10 @@
   <p>Veröffentlicht unter <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" target="_blank" rel="noopener noreferrer" class="hover:underline">CC BY-NC-SA 4.0</a></p>
   <a href="#impressum" class="hover:underline">Impressum & Datenschutz</a>
 </footer>
-		
+<div id="image-lightbox" class="lightbox-overlay">
+    <span id="lightbox-close-btn" class="lightbox-close-btn">&times;</span>
+    <img id="lightbox-image" src="" alt="Vergrößerte Ansicht" class="lightbox-content">
+</div>		
 
 	<div id="login-modal-overlay" class="login-modal-overlay hidden">
 		<div class="login-modal-content">
@@ -1134,6 +1171,34 @@
             
             renderCurrentState();
         });
+		const lightbox = document.getElementById('image-lightbox');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const lightboxCloseBtn = document.getElementById('lightbox-close-btn');
+
+        // Funktion zum Öffnen der Lightbox
+        window.openLightbox = function(src) {
+            if (lightbox && lightboxImage) {
+                lightboxImage.src = src;
+                lightbox.style.display = 'flex';
+            }
+        }
+
+        // Funktion zum Schließen der Lightbox
+        const closeLightbox = () => {
+            if (lightbox) {
+                lightbox.style.display = 'none';
+            }
+        }
+
+        // Event-Listener zum Schließen
+        lightboxCloseBtn?.addEventListener('click', closeLightbox);
+        lightbox?.addEventListener('click', (event) => {
+            // Schließt die Lightbox nur, wenn auf den dunklen Hintergrund geklickt wird,
+            // nicht auf das Bild selbst.
+            if (event.target === lightbox) {
+                closeLightbox();
+            }
+        });
         
         // ============== LOGGING-FUNKTION ==============
         window.logHistory = async function(boss, assignment, player, editor) {
@@ -1414,7 +1479,14 @@ function displayLootForDate(dateId) {
 					if (defaultPhaseButton) {
 						defaultPhaseButton.click();
 					}
+					    document.querySelectorAll('.lightbox-trigger').forEach(img => {
+						img.addEventListener('click', (event) => {
+							event.stopPropagation(); // Verhindert, dass der Klick die Lightbox sofort wieder schließt
+							window.openLightbox(img.src);
+						});
+					});
 				}
+				
             }
 
             async function handleAssignmentChange(event) {
