@@ -1403,7 +1403,7 @@ function displayLootForDate(dateId) {
 							const fontWeight = isWinner ? 'font-bold text-lg' : 'font-normal';
 							const rollColor = isWinner ? 'text-yellow-400' : 'text-gray-300';
 							
-							const srIndicator = roll.sr ? ' <span class="text-xs text-cyan-400 font-bold">(SR)</span>' : '';
+							const srIndicator = (isWinner && item.SR) ? ' <span class="text-xs text-cyan-400 font-bold">(SR)</span>' : '';
 							
 
 							return `<span class="whitespace-nowrap ${fontWeight}"><span style="color:${playerColor}">${roll.player}</span>: <span class="${rollColor}">${roll.amount}</span> <span class="text-xs text-gray-500">(${rollType}/${maxRoll})</span>${srIndicator}</span>`;
