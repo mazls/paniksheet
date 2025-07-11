@@ -25,6 +25,29 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+
+	.assignment-list li:last-child {
+		border-bottom: none;
+	}
+	
+	.assignment-list .list-subheader {
+		grid-column: 1 / -1; /* Nimmt die volle Breite ein */
+		font-weight: bold;
+		color: var(--color-jade); /* Jade-Farbe für die Überschrift */
+		padding: 0.5rem 0.2rem 0.2rem; /* Etwas Abstand */
+		background-color: transparent !important; /* Kein Zebra-Streifen */
+		border-bottom: 1px solid var(--color-gold-border-light);
+		margin-top: 0.5rem;
+	}
+	.assignment-list .list-subheader:first-child {
+		margin-top: 0;
+	}
+	
+	
+	/* Zebra-Streifen für bessere Lesbarkeit (wie in Sheets) */
+	.assignment-list li:nth-child(even) {
+		background-color: rgba(10, 20, 15, 0.3); /* Etwas dunklerer Hintergrund für jede zweite Zeile */
+	}
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Die Steinwache</h1>
@@ -62,7 +85,18 @@
                     </ul>
                 </div>
             </div>
+
         </div>
+		<div class="mt-6">
+		<h3 class="text-xl font-semibold text-blue-450 mb-4">ABC: Always be cleaving!!</h3>
+		</div>
+		<div class="mt-6">
+			<h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Vereinfachte Taktik</h2>
+			<p class="mb-4">
+				Alle Wachen zusammenziehen und tanken. Bei 85 Energie an einen Punkt ziehen, der Raid stackt dort und zieht die eingeteilten CDs, um die 1,55 Mio Schaden der <strong class="text-red-500">Überladung</strong> zu überleben. Danach die Wachen wieder wegziehen, den <strong class="text-red-500">Sammelpunkt</strong> freihalten und weiter Schaden auf die Wachen machen.
+			</p>
+			
+		</div>
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
@@ -71,21 +105,22 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-purple-400">Amethystwache</h3>
-                <p class="mt-2"><strong class="text-purple-300">Amethystteich:</strong> Erzeugt eine violette Schadensfläche unter einem zufälligen Spieler. Spieler müssen sofort aus der Fläche laufen. </p>
+                <p class="mt-2"><strong class="text-purple-300">Amethystteich:</strong> Erzeugt eine violette Pfützen unter einem zufälligen Spieler. Spieler müssen sofort aus der Fläche laufen. </p>
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-blue-400">Kobaltwache</h3>
-                <p class="mt-2"><strong class="text-blue-300">Kobaltmine:</strong> Platziert eine Mine, die nach 3 Sekunden scharf wird. Bei Auslösung (7m Radius) erleiden nahe Spieler Schaden und werden für 6s gewurzelt. Sollte nur während der Kobalt-Versteinerung ausgelöst werden.</p>
+                <p class="mt-2"><strong class="text-blue-300">Kobaltmine:</strong> Platziert eine Mine, die nach 3 Sekunden scharf wird. Bei Auslösung (7m Radius) erleiden nahe Spieler Schaden und werden für 6s gewurzelt. Sollte nur während der Kobalt-Versteinerung ausgelöst werden oder von Hunter/Mages/Rogue/Paladin/Deathknight mit CDs.</p>
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-green-400">Jadewache</h3>
-                <p class="mt-2"><strong class="text-green-300">Jadesplitter:</strong> Verursacht unvermeidbaren, raidweiten Naturschaden. Dies ist die Hauptquelle für konstanten Heildruck.</p>
+                <p class="mt-2"><strong class="text-green-300">Jadesplitter:</strong> Verursacht unvermeidbaren, raidweiten Naturschaden.</p>
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-orange-400">Jaspiswache</h3>
-                <p class="mt-2"><strong class="text-orange-300">Jaspisketten:</strong> Verbindet zwei Spieler. Stehen sie mehr als 10m auseinander, erleiden beide steigenden Feuerschaden. Betroffene Spieler müssen zusammenlaufen.</p>
+                <p class="mt-2"><strong class="text-orange-300">Jaspisketten:</strong> Verbindet alle 20 Sekunden zwei Spieler. Stehen sie mehr als 10m auseinander, erleiden beide steigenden Feuerschaden. Betroffene Spieler müssen zusammenlaufen.</p>
             </div>
         </div>
+		
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
@@ -93,131 +128,178 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
-                <p class="text-sm text-gray-400 mb-4">Die Tanks müssen die Wachen so positionieren und spotten, dass immer die aktive (versteinernde) Wache Energie sammelt, während die anderen möglichst keine Energie bekommen.</p>
                 <div class="space-y-4">
 					<div class="assignment-block">
 						<h4 class="text-lg font-bold">🛡️ Tank-Zuweisungen</h4>
-						<div class="assignment-header">
+						<p class="text-sm text-gray-400 mb-4">Rechts beide Wachen aufteilen auf zwei Tanks (je nach Taktik)</p>
+						<div class="assignment-header" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
 							<span>Aufgabe</span>
-							<span>Spieler</span>
+							<span>Rechts</span>
+							<span>Links</span>
 						</div>
 						<ul class="assignment-list">
-							<li>
-								<span>Tank1:</span>
+							<li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+								<span>Tanks:</span>
 								<select data-assignment-id="steinwache-tank1" class="assignment-select"></select>
-							</li>
-							<li>
-								<span>Tank2:</span>
 								<select data-assignment-id="steinwache-tank2" class="assignment-select"></select>
 							</li>
-							<li>
+							<li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
 								<span>Tank3:</span>
 								<select data-assignment-id="steinwache-tank3" class="assignment-select"></select>
 							</li>
 							</ul>
-					</div>
+						</div>
 					<div class="assignment-block">
-						<h4 class="text-lg font-bold">🎨️ Painter</h4>
-						<p class="text-sm text-gray-400 mb-4">Kristall anklicken und die Kacheln am Boden bemalen!</p>
-						<div class="assignment-header">
+						<h4 class="text-lg font-bold">❤️ Heiler-Zuweisungen</h4>
+						<div class="assignment-header" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
 							<span>Aufgabe</span>
 							<span>Spieler</span>
-						</div>
-						<ul class="assignment-list">
-							<li>
-								<span>Painter 1:</span>
-								<select data-assignment-id="steinwache-painter1" class="assignment-select"></select>
-							</li>
-							<li>
-								<span>Painter 2:</span>
-								<select data-assignment-id="steinwache-painter2" class="assignment-select"></select>
-							</li>
-							<li>
-								<span>Painter 3:</span>
-								<select data-assignment-id="steinwache-painter3" class="assignment-select"></select>
-							</li>
-							<li>
-								<span>Painter 4:</span>
-								<select data-assignment-id="steinwache-painter4" class="assignment-select"></select>
-							</li>
-							<li>
-								<span>Painter 5:</span>
-								<select data-assignment-id="steinwache-painter5" class="assignment-select"></select>
-							</li>
-							</ul>
-					</div>
-					<div class="assignment-block">
-						<h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
-						<p class="text-sm text-gray-400 mb-4">Starke Raid-CDs zusammen ziehen - damit die 1.55mio DMG absorbiert werden beim Überladen!</p>
-						<div class="assignment-header" style="grid-template-columns: 1fr 1.2fr;"> 
-							
 							<span>Spieler</span>
-							<span>Cooldown</span> </div>
+						</div>
 						<ul class="assignment-list">
-							<li>
-								<li style="grid-template-columns: 1fr 0.7fr 1.2fr;">
-								<span>CD für Überladung 1:</span>
+							<li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+								<span>Heiler 1/2:</span>
+								<select data-assignment-id="steinwache-heal1" class="assignment-select"></select>
+								<select data-assignment-id="steinwache-heal2" class="assignment-select"></select>
 							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload1.1" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-1.1-cooldown" class="assignment-select w-full"></select>
+							<li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+								<span>Heiler 3/4:</span>
+								<select data-assignment-id="steinwache-heal3" class="assignment-select"></select>
+								<select data-assignment-id="steinwache-heal4" class="assignment-select"></select>
 							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload1.2" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-1.2-cooldown" class="assignment-select w-full"></select>
-							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload1.3" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-1.3-cooldown" class="assignment-select w-full"></select>
-							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload1.4" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-1.4-cooldown" class="assignment-select w-full"></select>
-							</li>
-							</li>
-							<li>
-								<li style="grid-template-columns: 1fr 0.7fr 1.2fr;">
-								<span>CD für Überladung 2:</span>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload2.1" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-2.1-cooldown" class="assignment-select w-full"></select>
-							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload2.2" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-2.2-cooldown" class="assignment-select w-full"></select>
-							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload2.3" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-2.3-cooldown" class="assignment-select w-full"></select>
-							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload2.4" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-2.4-cooldown" class="assignment-select w-full"></select>
-							</li>
-							</li>
-							<li>
-								<li style="grid-template-columns: 1fr 0.7fr 1.2fr;">
-								<span>CD für Überladung 3:</span>
-							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload3.1" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-3.1-cooldown" class="assignment-select w-full"></select>
-							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload3.2" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-3.2-cooldown" class="assignment-select w-full"></select>
-							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload3.3" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-3.3-cooldown" class="assignment-select w-full"></select>
-							</li>
-							<li class="assignment-row">
-								<select data-assignment-id="steinwache-healer-cd-overload3.4" class="assignment-select"></select>
-								<select data-assignment-id="steinwache-healer-cd-3.4-cooldown" class="assignment-select w-full"></select>
-							</li>
+							<li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+								<span>Heiler 5/6:</span>
+								<select data-assignment-id="steinwache-heal5" class="assignment-select"></select>
+								<select data-assignment-id="steinwache-heal6" class="assignment-select"></select>
 							</li>
 							</ul>
 						</div>
+<div class="assignment-block">
+    <h4 class="text-lg font-bold">🎨️ Painter-Einteilung (HC)</h4>
+    <p class="text-sm text-gray-400 mb-4">Kristall anklicken und die Kacheln am Boden bemalen. Pro Seite gibt es einen Haupt- und einen Backup-Painter.</p>
+    
+    <div class="assignment-header" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+        <span>Aufgabe</span>
+        <span>Blaue Seite (Rechts)</span>
+        <span>Lila Seite (Links)</span>
+    </div>
+    <ul class="assignment-list">
+        <li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+            <span>Painter 1</span>
+            <select data-assignment-id="steinwache-painter-blue-1" class="assignment-select"></select>
+            <select data-assignment-id="steinwache-painter-purple-1" class="assignment-select"></select>
+        </li>
+        <li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+            <span>Painter 2</span>
+            <select data-assignment-id="steinwache-painter-blue-2" class="assignment-select"></select>
+            <select data-assignment-id="steinwache-painter-purpe-2" class="assignment-select"></select>
+        </li>
+        <li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+            <span>Painter 3</span>
+            <select data-assignment-id="steinwache-painter-blue-3" class="assignment-select"></select>
+            <select data-assignment-id="steinwache-painter-purple-3" class="assignment-select"></select>
+        </li>
+        <li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+            <span>Painter 4</span>
+            <select data-assignment-id="steinwache-painter-blue-4" class="assignment-select"></select>
+            <select data-assignment-id="steinwache-painter-purple-4" class="assignment-select"></select>
+        </li>
+        <li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+            <span>Painter 5</span>
+            <select data-assignment-id="steinwache-painter-blue-5" class="assignment-select"></select>
+            <select data-assignment-id="steinwache-painter-purple-5" class="assignment-select"></select>
+        </li>
+		 <li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+            <span>Painter 6 (Extra)</span>
+            <select data-assignment-id="steinwache-painter-blue-6" class="assignment-select"></select>
+            <select data-assignment-id="steinwache-painter-purple-6" class="assignment-select"></select>
+        </li>
+		<li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+            <span>Painter 7 (Extra)</span>
+            <select data-assignment-id="steinwache-painter-blue-7" class="assignment-select"></select>
+            <select data-assignment-id="steinwache-painter-purple-7" class="assignment-select"></select>
+        </li>
+    </ul>
+
+</div>
+				
+				<div class="assignment-block">
+					<h4 class="text-lg font-bold">❤️ Raid-CD Einteilung</h4>
+					<p class="text-sm text-gray-400 mb-4">Starke Raid-CDs zusammen ziehen - damit die 1.55mio DMG absorbiert werden beim Überladen!</p>
+					
+					<div class="assignment-header" style="grid-template-columns: 1.2fr 1fr;"> 
+						<span>Cooldown</span>
+						<span>Spieler</span>
+					</div>
+				
+					<ul class="assignment-list">
+						<li class="list-subheader"><span>Überladung 1</span></li>
+						<li style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-1.1-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload1.1" class="assignment-select"></select>
+						</li>
+						<li style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-1.2-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload1.2" class="assignment-select"></select>
+						</li>
+						<li style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-1.3-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload1.3" class="assignment-select"></select>
+						</li>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-1.4-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload1.4" class="assignment-select"></select>
+						</li>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-1.5-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload1.5" class="assignment-select"></select>
+						</li>
+				
+						<li class="list-subheader"><span>Überladung 2</span></li>
+						<li style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-2.1-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload2.1" class="assignment-select"></select>
+						</li>
+						<li style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-2.2-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload2.2" class="assignment-select"></select>
+						</li>
+						<li style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-2.3-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload2.3" class="assignment-select"></select>
+						</li>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-2.4-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload2.4" class="assignment-select"></select>
+						</li>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-2.5-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload2.5" class="assignment-select"></select>
+						</li>
+				
+						<li class="list-subheader"><span>Überladung 3</span></li>
+						<li style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-3.1-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload3.1" class="assignment-select"></select>
+						</li>
+						<li style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-3.2-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload3.2" class="assignment-select"></select>
+						</li>
+						<li style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-3.3-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload3.3" class="assignment-select"></select>
+						</li>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-3.4-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload3.4" class="assignment-select"></select>
+						</li>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 1.2fr 1fr;">
+							<select data-assignment-id="steinwache-healer-cd-3.5-cooldown" class="assignment-select"></select>
+							<select data-assignment-id="steinwache-healer-cd-overload3.5" class="assignment-select"></select>
+						</li>
+					</ul>
+				</div>
 					</div>
 				</div>
             
@@ -229,12 +311,12 @@
 				
 			
 					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-						<button data-phase="1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1</button>
-						<button data-phase="2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 2</button>
+						<button data-phase="1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Speed Strat</button>
+						<button data-phase="2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Slow Strat</button>
 					</div>
 					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]"> <p class="positioning-text" data-phase="1">Bla Bla Bla</p>
-						<p class="positioning-text" data-phase="2" style="display: none;">Noch mehr Bla und Bla Bla!</p>
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]"> <p class="positioning-text" data-phase="1">Stack Punkt freihalten! Nur bei Überladen dort stacken!</p>
+						<p class="positioning-text" data-phase="2" style="display: none;">Nur zwei Wachen werden zusammen gezogen, um das Überladen zu kontrollieren</p>
 					</div>
 					</div>
 					<div class="mt-2">

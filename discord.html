@@ -1,0 +1,83 @@
+<div class="flex justify-center items-start w-full p-4">
+
+  <div class="bg-slate-850 p-6 rounded-lg shadow-2xl w-full max-w-md border border-gold-faded">
+
+    <header class="text-center pb-4 mb-4 border-b border-gold-faded">
+      <h2 id="discord-server-name" class="text-3xl font-bold text-gold">Lade Server...</h2>
+      <p id="discord-online-count" class="text-lg text-gray-300 opacity-0 transition-opacity duration-500">
+        <span class="font-bold">--</span> Mitglieder online
+      </p>
+    </header>
+    
+    <div class="mb-6 text-center">
+        <a id="discord-invite-link" href="#" class="inline-block bg-blue-600 text-dark-text font-bold py-3 px-8 rounded-md text-lg transition-all duration-300 opacity-25 pointer-events-none hover:bg-yellow-400" target="_blank" rel="noopener noreferrer">
+            Server beitreten
+        </a>
+    </div>
+
+    <div>
+      <h4 class="text-xl font-semibold text-blue-450 mb-3 text-center">Verfügbare Kanäle</h4>
+      <ul id="discord-channels-list" class="space-y-2 text-parchment">
+        <li class="text-center text-sm text-gray-500">Lade Kanalliste...</li>
+      </ul>
+    </div>
+    
+    <p id="discord-error" class="text-red-400 mt-4 h-4 text-sm text-center"></p>
+
+  </div>
+</div>
+
+<script>
+  (async function () {
+    // Die originale Discord API URL
+    const discordApiUrl = 'https://discord.com/api/guilds/1066683639456346123/widget.json';
+
+    // *** DAS IST DIE LÖSUNG ***
+    // Wir leiten die Anfrage durch einen CORS-Proxy, um Browser-Beschränkungen zu umgehen.
+    // 'encodeURIComponent' sorgt dafür, dass die URL korrekt an den Proxy übergeben wird.
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(discordApiUrl)}`;
+
+    // HTML-Elemente für die spätere Befüllung auswählen
+    const nameElement = document.getElementById('discord-server-name');
+    const countElement = document.getElementById('discord-online-count');
+    const inviteElement = document.getElementById('discord-invite-link');
+    const channelsElement = document.getElementById('discord-channels-list');
+    const errorElement = document.getElementById('discord-error');
+
+    try {
+      // Wir rufen jetzt die Proxy-URL anstatt der direkten Discord-URL auf.
+      const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error('Der Proxy-Dienst konnte die Discord-API nicht erreichen.');
+      
+      // Der Proxy gibt den Text der originalen Antwort zurück, den wir in JSON umwandeln.
+      const data = await response.json();
+      if (!data.instant_invite) throw new Error('Im Discord-Widget muss ein Einladekanal festgelegt sein.');
+
+      // Ab hier ist alles wie gehabt: HTML-Elemente mit den Livedaten befüllen.
+      nameElement.textContent = data.name;
+      countElement.innerHTML = `<span class="font-bold">${data.presence_count}</span> Mitglieder online`;
+      inviteElement.href = data.instant_invite;
+
+      countElement.style.opacity = '1';
+      inviteElement.style.opacity = '1';
+      inviteElement.classList.remove('pointer-events-none');
+
+      channelsElement.innerHTML = '';
+      if (data.channels && data.channels.length > 0) {
+        data.channels.forEach(channel => {
+          const li = document.createElement('li');
+          li.className = 'bg-slate-900/50 p-2 rounded-md text-center';
+          li.textContent = channel.name;
+          channelsElement.appendChild(li);
+        });
+      } else {
+        channelsElement.innerHTML = '<li class="text-center text-sm text-gray-500">Keine öffentlichen Kanäle gefunden.</li>';
+      }
+
+    } catch (error) {
+      console.error('Fehler beim Laden des Discord-Widgets via Proxy:', error);
+      nameElement.textContent = 'Laden fehlgeschlagen';
+      errorElement.textContent = error.message;
+    }
+  })();
+</script>
