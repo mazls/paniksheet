@@ -66,8 +66,9 @@
                 </p>
                 <ul class="list-disc list-inside space-y-2 text-gray-300">
                     <li><strong>Energie & Überladen:</strong> Jede Wache gewinnt Energie, wenn sie sich innerhalb von 12 Metern zu einer anderen Wache befindet. Bei 100 Energie wirkt sie ihre <strong class="text-red-500">Überladung</strong>, einen raidweiten Angriff.</li>
-                    <li><strong>Versteinerung:</strong> Gleichzeitig versucht immer eine Wache, den Raid zu versteinern, was Spieler zunehmend verlangsamt. Erreicht die Leiste 100, wird der Raid handlungsunfähig, was einem Wipe gleichkommt.</li>
+                    <li><strong>Versteinerung (Aktive Wache):</strong> Gleichzeitig versucht immer eine Wache, den Raid zu versteinern, was Spieler zunehmend verlangsamt. Erreicht die Leiste 100, wird der Raid handlungsunfähig, was einem Wipe gleichkommt.</li>
                     <li><strong>Schutz-Effekt:</strong> Die versteinernde Wache gewährt einen Schutz von 90% gegen ihre eigene Schadensart. Ziel ist es, immer die gerade versteinernde Wache ihre Überladung wirken zu lassen, um den Schaden zu minimieren.</li>
+					<li><strong><strong class="text-red-500">HC Painter:</strong></strong> Spieler klicken auf den Kristall und laufen über die Kacheln am Boden und aktivieren diese. Jede aktivierte Kachel gibt 1% DMG und 1% Willenskraft als Raid-Buff. Wird bei 75% und 40% zurück gesetzt.</li>
                 </ul>
             </div>
             <div class="mt-6">
@@ -93,7 +94,7 @@
 		<div class="mt-6">
 			<h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Vereinfachte Taktik</h2>
 			<p class="mb-4">
-				Alle Wachen zusammenziehen und tanken. Bei 85 Energie an einen Punkt ziehen, der Raid stackt dort und zieht die eingeteilten CDs, um die 1,55 Mio Schaden der <strong class="text-red-500">Überladung</strong> zu überleben. Danach die Wachen wieder wegziehen, den <strong class="text-red-500">Sammelpunkt</strong> freihalten und weiter Schaden auf die Wachen machen.
+				Alle Wachen zusammenziehen und tanken. Bei 85 Energie an einen Punkt ziehen, der Raid stackt dort und zieht die eingeteilten CDs, um den Schaden der <strong class="text-red-500">Überladung</strong> zu überleben. Danach die Wachen wieder wegziehen, den <strong class="text-red-500">Sammelpunkt</strong> freihalten und weiter Schaden auf die Wachen machen.
 			</p>
 			
 		</div>
@@ -109,7 +110,7 @@
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-blue-400">Kobaltwache</h3>
-                <p class="mt-2"><strong class="text-blue-300">Kobaltmine:</strong> Platziert eine Mine, die nach 3 Sekunden scharf wird. Bei Auslösung (7m Radius) erleiden nahe Spieler Schaden und werden für 6s gewurzelt. Sollte nur während der Kobalt-Versteinerung ausgelöst werden oder von Hunter/Mages/Rogue/Paladin/Deathknight mit CDs.</p>
+                <p class="mt-2"><strong class="text-blue-300">Kobaltmine:</strong> Platziert eine Mine, die nach 3 Sekunden scharf wird. Bei Auslösung (7m Radius) erleiden nahe Spieler Schaden und werden für 6s gewurzelt (dispellbar). Sollte nur während der Kobalt-Versteinerung ausgelöst werden oder von Hunter, Mages, Rogue, Paladin, Deathknight mit Self-CDs.</p>
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-green-400">Jadewache</h3>
@@ -117,7 +118,7 @@
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-orange-400">Jaspiswache</h3>
-                <p class="mt-2"><strong class="text-orange-300">Jaspisketten:</strong> Verbindet alle 20 Sekunden zwei Spieler. Stehen sie mehr als 10m auseinander, erleiden beide steigenden Feuerschaden. Betroffene Spieler müssen zusammenlaufen.</p>
+                <p class="mt-2"><strong class="text-orange-300">Jaspisketten:</strong> Verbindet alle 20 Sekunden zwei Spieler. Stehen sie mehr als 10m auseinander, erleiden beide steigenden Feuerschaden. Betroffene Spieler müssen zusammenlaufen. Wenn beide Spieler 15 Sekunden außeinander stehen, brechen die Ketten.</p>
             </div>
         </div>
 		
@@ -148,7 +149,7 @@
 								<select data-assignment-id="steinwache-tank3" class="assignment-select"></select>
 							</li>
 							</ul>
-						</div>
+					</div>
 					<div class="assignment-block">
 						<h4 class="text-lg font-bold">❤️ Heiler-Zuweisungen</h4>
 						<div class="assignment-header" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
@@ -173,7 +174,7 @@
 								<select data-assignment-id="steinwache-healer6" class="assignment-select"></select>
 							</li>
 							</ul>
-						</div>
+					</div>
 <div class="assignment-block">
     <h4 class="text-lg font-bold">🎨️ Painter-Einteilung (HC)</h4>
     <p class="text-sm text-gray-400 mb-4">Kristall anklicken und die Kacheln am Boden bemalen. Es gibt eine Blaue und eine Lila Seite und zusätzliche Painter. Jede Kachel gibt 1% DMG und 1% Willenskraft!</p>
@@ -307,16 +308,13 @@
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
 			<div>
 				<h4 class="text-lg font-semibold">Positionierung/Aufstellung</h4>
-			
-				
-			
 					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
 						<button data-phase="1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Speed Strat</button>
 						<button data-phase="2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Slow Strat</button>
 					</div>
 					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
 					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]"> <p class="positioning-text" data-phase="1">Stack Punkt freihalten! Nur bei Überladen dort stacken!</p>
-						<p class="positioning-text" data-phase="2" style="display: none;">Nur zwei Wachen werden zusammen gezogen, um das Überladen zu kontrollieren</p>
+						<p class="positioning-text" data-phase="2" style="display: none;">Nur zwei Wachen werden zusammen gezogen, um das Überladen zu kontrollieren. Die aktive Wache muss hin und her gespottet werden zu einer inaktiven Wache.</p>
 					</div>
 					</div>
 					<div class="mt-2">
@@ -327,8 +325,6 @@
 						<img src="mogushan/Steinwache_Phase2.png" alt="Positionierung Phase 2" 
 							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
 							data-phase="2" style="display: none;">
-					
-					
 				</div>
 			</div>
                 <div>

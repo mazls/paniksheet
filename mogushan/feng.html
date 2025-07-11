@@ -25,6 +25,42 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+		.assignment-list li:last-child {
+		border-bottom: none;
+	}
+	
+	.assignment-list .list-subheader {
+		grid-column: 1 / -1; /* Nimmt die volle Breite ein */
+		font-weight: bold;
+		color: var(--color-jade); /* Jade-Farbe für die Überschrift */
+		padding: 0.5rem 0.2rem 0.2rem; /* Etwas Abstand */
+		background-color: transparent !important; /* Kein Zebra-Streifen */
+		border-bottom: 1px solid var(--color-gold-border-light);
+		margin-top: 0.5rem;
+	}
+	.assignment-list .list-subheader:first-child {
+		margin-top: 0;
+	}
+	
+	
+	/* Zebra-Streifen für bessere Lesbarkeit (wie in Sheets) */
+	.assignment-list li:nth-child(even) {
+		background-color: rgba(10, 20, 15, 0.3); /* Etwas dunklerer Hintergrund für jede zweite Zeile */
+	}
+	pre,
+code {
+    font-family: 'Courier New', Courier, monospace; /* Klassische Schriftart für Code */
+}
+
+pre {
+    background-color: rgba(10, 20, 15, 0.7); /* Dunkler, durchsichtiger Hintergrund */
+    border: 1px solid var(--color-gold-border); /* Goldener Rahmen, passend zum Theme */
+    border-radius: 0.5rem; /* Abgerundete Ecken */
+    padding: 1rem; /* Innenabstand */
+    color: var(--color-parchment); /* Helle Schriftfarbe */
+    white-space: pre-wrap;       /* Sorgt für Zeilenumbrüche bei langen Zeilen */
+    overflow-x: auto;          /* Fügt eine Scrollbar hinzu, falls eine Zeile zu lang ist */
+}
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Feng der Verfluchte</h1>
@@ -39,10 +75,10 @@
         <div>
             <div>
                 <p class="mb-4">
-                    Feng der Verfluchte ist der zweite Boss im Mogu'shangewölbe. Der Kampf besteht aus drei Phasen, die bei 66 % und 33 % seiner Lebenspunkte wechseln. In jeder Phase absorbiert Feng die Essenz einer anderen Mogu-Statue und erhält neue Fähigkeiten. Eine Besonderheit sind zwei Runen, die zu Kampfbeginn erscheinen und von den Tanks aufgenommen werden können:
+                    Feng der Verfluchte ist der zweite Boss im Mogu'shangewölbe. Der Kampf besteht aus drei Phasen, die bei 66 % und 33 % seiner Lebenspunkte wechseln. Im HC 4 Phasen 75%-50%-25%. In jeder Phase absorbiert Feng die Essenz einer anderen Mogu-Statue und erhält neue Fähigkeiten. Eine Besonderheit sind zwei Runen, die zu Kampfbeginn erscheinen und von den Tanks aufgenommen werden können:
                 </p>
                 <ul class="list-disc list-inside space-y-2 text-gray-300">
-                    <li><strong>Nullifikationsbarriere:</strong> Erzeugt eine 6-sekündige Kuppel, die Verbündete darin vor magischem Schaden schützt und schädliche Effekte vom Boss entfernen kann.</li>
+                    <li><strong>Nullifikationsbarriere:</strong> Erzeugt eine 6-sekündige Kuppel, die Verbündete darin vor magischem Schaden schützt und schädliche Effekte vom Boss entfernen kann. <strong>Achtung: Die Barriere wird Kanalisiert = nicht bewegen!</strong></li>
                     <li><strong>Schleier der Umkehrung:</strong> Ermöglicht es dem Tank, eine schädliche Fähigkeit, die auf einen verbündeten Spieler gewirkt wird, zu kopieren und gegen Feng einzusetzen.</li>
                 </ul>
             </div>
@@ -50,20 +86,27 @@
                  <h3 class="text-xl font-semibold text-blue-450 mb-2">Raid-Zusammensetzung</h3>
                  <div data-size="10" class="tactic-content" style="display: none;">
                     <ul class="list-disc list-inside text-gray-300">
-                        <li><strong>10-Spieler (Normal/Heroisch):</strong> 2 Tanks, 3 Heiler, 5 DPS</li>
+                        <li><strong>10-Spieler (Normal/Heroisch):</strong> 2 Tanks, 2-3 Heiler, 5-6 DPS</li>
                     </ul>
                 </div>
                 <div data-size="25" class="tactic-content" style="display: block;">
                     <ul class="list-disc list-inside text-gray-300">
-                         <li><strong>25-Spieler (Normal/Heroisch):</strong> 2 Tanks, 6 Heiler, 17 DPS</li>
+                         <li><strong>25-Spieler (Normal/Heroisch):</strong> 2 Tanks, 4-6 Heiler, 17-19 DPS</li>
                     </ul>
                 </div>
+			</div>
+			</div>
+			<div class="mt-6">
+			<h3 class="text-xl font-semibold text-blue-450 mb-4">Tank Makro Schleier der Umkehr</h3>
+<pre><code>/target tanksnamehere
+/click ExtraActionButton1
+/targetlasttarget</code></pre>
             </div>
-        </div>
+        
     </section>
 
     <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Phasenübersicht</h2>
+        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Phasenübersicht (NH)</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-green-400">Phase 1: Geist der Faust (Natur)</h3>
@@ -71,7 +114,7 @@
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-orange-400">Phase 2: Geist des Speers (Feuer)</h3>
-                <p class="mt-2">Feng nutzt Feuerangriffe. Spieler müssen Feuerflächen (<strong>Wildfeuer</strong>) korrekt ablegen und der Raid muss hohen Gruppenschaden überleben.</p>
+                <p class="mt-2">Feng nutzt Feuerangriffe. Spieler müssen Feuerflächen (<strong>Wildfeuer</strong>) korrekt ablegen und der Raid muss hohen Gruppenschaden überleben. Die Feuer laufen in gerader Linie zurück zum Boss.</p>
             </div>
              <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-purple-400">Phase 3: Geist des Stabs (Arkan)</h3>
@@ -86,52 +129,109 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         
         <div>
+		        <h3 class="text-xl font-semibold text-blue-450 mb-4">Tank-Einteilung</h3>
+                <div class="space-y-4">
+					<div class="assignment-block">
+						<h4 class="text-lg font-bold">🛡️ Tank-Zuweisungen</h4>
+						<p class="text-sm text-gray-400 mb-4">Tanks mit Buff</p>
+						<div class="assignment-header" style="grid-template-columns: 0.7fr 1.2fr 1.2fr;">
+							<span>Aufgabe</span>
+							<span>Nullifikationsbarriere</span>
+							<span>Schleier der Umkehr</span>
+						</div>
+						<ul class="assignment-list">
+							<li style="grid-template-columns: 0.7fr 1.2fr 1.2fr;">
+								<span>Tanks:</span>
+								<select data-assignment-id="feng-tankNullification" class="assignment-select"></select>
+								<select data-assignment-id="feng-tankReversal" class="assignment-select"></select>
+							</li>
+							</ul>
+					</div>
+					<div class="assignment-block">
+						<h4 class="text-lg font-bold">❤️ Heiler-Zuweisungen</h4>
+						<div class="assignment-header" style="grid-template-columns: 0.7fr 1.2fr 1.2fr;">
+							<span>Aufgabe</span>
+							<span>Spieler</span>
+							<span>Spieler</span>
+						</div>
+						<ul class="assignment-list">
+							<li style="grid-template-columns: 0.7fr 1.2fr 1.2fr;">
+								<span>Heiler 1/2:</span>
+								<select data-assignment-id="feng-healer1" class="assignment-select"></select>
+								<select data-assignment-id="feng-healer2" class="assignment-select"></select>
+							</li>
+							<li style="grid-template-columns: 0.7fr 1.2fr 1.2fr;">
+								<span>Heiler 3/4:</span>
+								<select data-assignment-id="feng-healer3" class="assignment-select"></select>
+								<select data-assignment-id="feng-healer4" class="assignment-select"></select>
+							</li>
+							<li data-size="25" class="tactic-content" style="grid-template-columns: 0.7fr 1.2fr 1.2fr;">
+								<span>Heiler 5/6:</span>
+								<select data-assignment-id="feng-healer5" class="assignment-select"></select>
+								<select data-assignment-id="feng-healer6" class="assignment-select"></select>
+							</li>
+							</ul>
+					</div>
+
 
             <div class="assignment-block">
-                <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
-                <div class="assignment-header">
-                    <span>Aufgabe</span>
-                    <span>Spieler</span>
-                </div>
-                <ul class="assignment-list">
-                    <li>
-                        <span>Tank mit Nullifikationsbarriere:</span>
-                        <select id="feng-tankNullification" class="assignment-select" data-assignment-id="feng-tankNullification"></select>
-                    </li>
-                    <li>
-                        <span>Tank mit Schleier der Umkehrung:</span>
-                        <select id="feng-tankReversal" class="assignment-select" data-assignment-id="feng-tankReversal"></select>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="assignment-block">
-                <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                <h4 class="text-lg font-bold">❤️ Raid-CD Einteilung</h4>
                 <p class="text-sm text-gray-400 mb-4">Starke Raid-CDs sind bei den großen Schadensspitzen der jeweiligen Phasen überlebenswichtig.</p>
-                <div class="assignment-header" style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
-                    <span>Aufgabe</span>
+                <div class="assignment-header" style="grid-template-columns: 0.7fr 0.7fr;"> 
                     <span>Spieler</span>
 					<span>Cooldown</span>
                 </div>
                 <ul class="assignment-list">
-                    <li>
-						<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
-                        <span>CD für Epizentrum (Phase 1):</span>
-						<select data-assignment-id="feng-heal-epicenter" class="assignment-select"></select>
-						<select data-assignment-id="feng-heal-epicenter-cooldown" class="assignment-select"></select>
+				    <li>
+						<li class="list-subheader"><span>CDs Arkane Geschwindigkeit (Stab)</span></li>
+						<li style="grid-template-columns: 0.7fr 0.7fr;"> 
+						<select data-assignment-id="feng-heal-velocity1.1" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-velocity-cooldown1.1" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-velocity1.2" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-velocity-cooldown1.2" class="assignment-select"></select>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 0.7fr 0.7fr;">
+						<select data-assignment-id="feng-heal-velocity1.3" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-velocity-cooldown1.3" class="assignment-select"></select>
+						</li>
                     </li>
-                    <li>
-						<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
-                        <span>CD für Macht der Flamme ziehen (P2):</span>
-						<select data-assignment-id="feng-healer-drawflame" class="assignment-select"></select>
-						<select data-assignment-id="feng-healer-drawflame-cooldown" class="assignment-select"></select>
+					<li>
+						<li class="list-subheader"><span>CDs Macht der Flammen (Speer)</span></li>
+						<li style="grid-template-columns: 0.7fr 0.7fr;"> 
+						<select data-assignment-id="feng-healer-drawflame1.1" class="assignment-select"></select>
+						<select data-assignment-id="feng-healer-drawflame-cooldown1.1" class="assignment-select"></select>
+						<select data-assignment-id="feng-healer-drawflame1.2" class="assignment-select"></select>
+						<select data-assignment-id="feng-healer-drawflame-cooldown1.2" class="assignment-select"></select>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 0.7fr 0.7fr;">
+						<select data-assignment-id="feng-healer-drawflame1.3" class="assignment-select"></select>
+						<select data-assignment-id="feng-healer-drawflame-cooldown1.3" class="assignment-select"></select>
+						</li>
                     </li>
-                    <li>
-						<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
-                        <span>CD für Arkane Geschwindigkeit (P3):</span>
-						<select data-assignment-id="feng-heal-velocity" class="assignment-select"></select>
-						<select data-assignment-id="feng-heal-velocity-cooldown" class="assignment-select"></select>
+					<li>
+						<li class="list-subheader"><span>CDs Geist des Schildes (Schild)</span></li>
+						<li style="grid-template-columns: 0.7fr 0.7fr;"> 
+						<select data-assignment-id="feng-heal-velocity1.1" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-velocity-cooldown1.1" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-velocity1.2" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-velocity-cooldown1.2" class="assignment-select"></select>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 0.7fr 0.7fr;">
+						<select data-assignment-id="feng-heal-velocity1.3" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-velocity-cooldown1.3" class="assignment-select"></select>
+						</li>
                     </li>
+					<li>
+						<li class="list-subheader"><span>CDs Epizentrum (Fäuste)</span></li>
+						<li style="grid-template-columns: 0.7fr 0.7fr;"> 
+						<select data-assignment-id="feng-heal-epicenter1.1" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-epicenter-cooldown1.1" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-epicenter1.2" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-epicenter-cooldown1.2" class="assignment-select"></select>
+						<li data-size="25" class="tactic-content" style="grid-template-columns: 0.7fr 0.7fr;">
+						<select data-assignment-id="feng-heal-epicenter1.3" class="assignment-select"></select>
+						<select data-assignment-id="feng-heal-epicenter-cooldown1.3" class="assignment-select"></select>
+						</li>
+                    </li>
+
+
                 </ul>
             </div>
             
@@ -146,22 +246,45 @@
                     <li>
                         <span>Spieler für Blitzende Fäuste:</span>
                         <select id="feng-dps1" class="assignment-select" data-assignment-id="feng-dps-fists"></select>
+						<span>Backup:</span>
+						<select id="feng-dps2" class="assignment-select" data-assignment-id="feng-dps-fists2"></select>
                     </li>
                 </ul>
             </div>
-            
-        </div>
-
-        
+           </div>
+		   </div>
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 <div class="space-y-6">
-                    <div>
-                        <h4 class="text-lg font-semibold">Positionierung für "Arkane Resonanz"</h4>
-                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
-                           [Hier Aufstellungsbild einfügen]
-                        </div>
-                    </div>
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="fists1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Fäuste</button>
+						<button data-phase="staff1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Stab</button>
+						<button data-phase="schield1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Schild(HC)</button>
+						<button data-phase="spear1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Speer</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]"> 
+						<p class="positioning-text" data-phase="fists1">Stacken und Raid CDs ziehen</p>
+						<p class="positioning-text" data-phase="staff1" style="display: none;"> Wechsel zwischen Stacken in der Mitte und Außen spreaden wegen AOE Debuff.</p>
+						<p class="positioning-text" data-phase="schield1">Am Boss Stacken und bei Schild-Wurf Geister töten - Heilen den Boss um je 5%</p>
+						<p class="positioning-text" data-phase="spear1">Ranges+Heal in der Mitte Stacken und Melees am Boss - Wildflammen bei Stab Position am Rand ablegen</p>
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="mogushan/Feng_Fists1.png" alt="Positionierung Phase Fäuste" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="fists1">
+						<img src="mogushan/Feng_Staff1.png" alt="Positionierung Phase Stab" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="staff1" style="display: none;">
+						<img src="mogushan/Feng_Schield1.png" alt="Positionierung Phase Schild" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="schield1" style="display: none;">
+						<img src="mogushan/Feng_Spear1.png" alt="Positionierung Phase Speer" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="spear1" style="display: none;">
+				</div>
+				</div>
                      <div>
                         <h4 class="text-xl font-bold text-gold mt-4 mb-2">Video-Guide</h4>
 						<div class="video-container my-4 rounded-lg shadow-lg">
@@ -190,7 +313,7 @@
                 <h4 class="text-lg font-bold text-green-400">Phase 1: Geist der Faust</h4>
                 <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
                     <li><strong>Blitzpeitsche:</strong> Initialer Hieb (25% Waffenschaden) + DoT (~30.000 Naturschaden alle 2s). Tanks bei 2-3 Stacks spotten.</li>
-                    <li><strong>Blitzende Fäuste:</strong> Verursacht 250.000 Naturschaden und betäubt für 3s. Ausweichen oder für Taktik nutzen.</li>
+                    <li><strong>Blitzende Fäuste:</strong> Verursacht 250.000 Naturschaden und betäubt für 3s. Ausweichen oder für Schleier der Umkehr nutzen.</li>
                     <li><strong>Epizentrum:</strong> Raidweiter Naturschaden. Weit weg vom Boss stehen.</li>
                 </ul>
             </div>
@@ -245,6 +368,7 @@
             <p class="text-gray-300 mt-2">Die heroischen Änderungen gelten für den gesamten Kampf:</p>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
                 <li><strong>Freie Phasenwahl:</strong> Die Raidgruppe kann die Reihenfolge der Phasen bestimmen, indem sie den Boss zur entsprechenden Statue zieht.</li>
+				<li><strong>Empfohlene Reihenfolge:</strong> 1.Stab - 2. Speer - 3. Schild - 4. Fäuste</li>
                 <li><strong>Phase 4: Geist des Schilds:</strong> Eine zusätzliche Phase mit Schatten-Fähigkeiten. <strong>Schild aussaugen</strong> beschwört Seelenfragmente, die den Boss heilen und schnell getötet werden müssen.</li>
                 <li><strong>Stärke des Geistes:</strong> Mit jeder neuen Phase erhält Feng einen permanenten Buff von +5% auf seinen verursachten Schaden.</li>
             </ul>
