@@ -1,0 +1,560 @@
+
+    <title>PÄNIK Boss Guide Editor v1.0</title>
+    <style>
+        :root {
+            --color-gold: #fcd34d; --color-jade: #5eead4; --color-parchment: #f5f2e8;
+            --color-dark-green-bg: rgba(25, 42, 35, 0.92); --color-medium-green-bg: rgba(36, 61, 51, 0.88);
+            --color-dark-text: #102a23; --color-gold-border: rgba(204, 163, 76, 0.4);
+            --color-gold-border-light: rgba(204, 163, 76, 0.2);
+            --color-red-error: #ef4444; --color-blue-accent: #60a5fa;
+        }
+        body { font-family: 'Inter', sans-serif; color: var(--color-parchment); background-color: var(--color-dark-text); }
+        h1, h2, h3, h4, .font-cinzel { font-family: 'Cinzel', serif; letter-spacing: 0.05em; }
+        .main-container { background-color: var(--color-dark-green-bg); border: 1px solid var(--color-gold-border); }
+        .btn { font-family: 'Cinzel', serif; font-weight: bold; transition: all 0.2s ease-in-out; border: 1px solid var(--color-gold-border); background-color: rgba(10, 20, 15, 0.7); color: var(--color-parchment); }
+        .btn:hover:not(:disabled) { background-color: var(--color-gold); color: var(--color-dark-text); box-shadow: 0 0 10px var(--color-gold); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .editor-grid { display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem; }
+        #toolbox { background-color: var(--color-medium-green-bg); border: 1px solid var(--color-gold-border-light); }
+        .draggable-item { cursor: grab; border: 1px solid var(--color-gold-border-light); transition: all 0.2s; }
+        .draggable-item:hover { background-color: rgba(10,20,15,0.7); border-color: var(--color-gold); }
+        .draggable-item i { color: var(--color-jade); }
+        
+        #editor-canvas { background-color: rgba(10, 20, 15, 0.5); border: 2px dashed var(--color-gold-border); min-height: 80vh; padding: 1rem; border-radius: 0.5rem; }
+        #editor-canvas:empty::before { content: "Ziehe Elemente hierher"; display: flex; justify-content: center; align-items: center; height: 75vh; color: var(--color-gold-border); font-family: 'Cinzel', serif; font-size: 1.5rem; }
+        .sortable-ghost { background: var(--color-medium-green-bg); opacity: 0.5; border-radius: 0.5rem; }
+        .dropzone.drag-enter { border-color: var(--color-jade); }
+        
+        #inspector { background-color: var(--color-medium-green-bg); position: sticky; top: 1rem; max-height: 90vh; overflow-y: auto; }
+        #inspector h3 { color: var(--color-jade); }
+        .inspector-label { color: var(--color-gold); }
+        .inspector-input, .inspector-select { width: 100%; background-color: rgba(10, 20, 15, 0.7); border: 1px solid var(--color-gold-border); color: var(--color-parchment); padding: 0.35rem; border-radius: 0.25rem; }
+        
+        .editor-element { position: relative; padding: 0.1rem; border: 1px solid transparent; }
+        .editor-element.selected { border-color: var(--color-jade); box-shadow: 0 0 0 2px var(--color-jade); }
+        .element-controls { position: absolute; top: -1px; right: -1px; background-color: var(--color-dark-text); padding: 2px 5px; border-radius: 0 0 0 5px; z-index: 10; display: none; gap: 8px; border: 1px solid var(--color-jade); }
+        .editor-element:hover > .element-controls { display: flex; }
+        .control-btn { background: none; border: none; color: var(--color-parchment); cursor: pointer; }
+        .control-btn.delete:hover { color: var(--color-red-error); }
+        .control-btn.duplicate:hover { color: var(--color-blue-accent); }
+
+        [contenteditable="true"]:hover, [contenteditable="true"]:focus { outline: 2px dashed var(--color-jade); background-color: rgba(94, 234, 212, 0.1); }
+        
+        .bg-slate-850, .bg-slate-750 { background-color: var(--color-medium-green-bg) !important; border: 1px solid var(--color-gold-border-light) !important; }
+        .text-blue-450 { color: var(--color-gold); }
+        .border-slate-650 { border-color: var(--color-gold-border); }
+        .assignment-block { background-color: rgba(10, 20, 15, 0.5); border: 1px solid var(--color-gold-border-light); border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; }
+        .assignment-header, .assignment-list li { display: grid; align-items: center; gap: 0.5rem; padding: 0.5rem; }
+        .assignment-header { font-weight: bold; color: var(--color-gold); font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--color-gold-border); }
+        .assignment-list { list-style: none; padding: 0; margin: 0; }
+        .assignment-list li { border-bottom: 1px solid rgba(204, 163, 76, 0.1); }
+        .assignment-list .list-subheader { grid-column: 1 / -1; font-weight: bold; color: var(--color-jade); padding: 0.5rem 0.2rem 0.2rem; background-color: transparent !important; border-bottom: 1px solid var(--color-gold-border-light); margin-top: 0.5rem; }
+        .size-toggle-btn.active-size-btn, .positioning-btn.active-position-btn { background-color: #16a34a !important; color: #ffffff !important; }
+        .assignment-select { background-color: #2d3748; border: 1px solid #4a5568; border-radius: 4px; padding: 4px 8px; width: 100%; color: white; }
+        .tactic-content[data-size="25"] { border-left: 3px solid var(--color-blue-accent); padding-left: 5px; }
+    </style>
+
+    <div class="max-w-screen-xl mx-auto main-container p-6 rounded-lg shadow-2xl">
+        <header class="text-center pb-4 mb-6">
+            <h1 class="text-4xl md:text-5xl font-bold text-gold">PÄNIK Boss Guide Editor V1.0</h1>
+            <div class="flex justify-center flex-wrap gap-4 mt-4">
+                <button id="new-btn" class="btn p-2 rounded-md"><i class="fas fa-file mr-2"></i>Neuer Guide</button>
+                <button id="load-btn" class="btn p-2 rounded-md"><i class="fas fa-upload mr-2"></i>Guide laden</button>
+                <button id="save-btn" class="btn p-2 rounded-md"><i class="fas fa-save mr-2"></i>Guide speichern</button>
+                <input type="file" id="file-input" class="hidden" accept=".html">
+            </div>
+        </header>
+
+        <div id="toolbox" class="flex flex-wrap gap-2 p-4 rounded-lg mb-8 justify-center"></div>
+
+        <div class="editor-grid">
+            <main id="editor-canvas" class="dropzone"></main>
+            <aside id="inspector" class="p-4 rounded-lg hidden">
+                <h3 class="text-2xl font-semibold text-center mb-4 font-cinzel">Inspektor</h3>
+                <div id="inspector-content" class="space-y-4"></div>
+            </aside>
+        </div>
+    </div>
+
+<script>
+
+    const toolbox = document.getElementById('toolbox');
+    const canvas = document.getElementById('editor-canvas');
+    const inspector = document.getElementById('inspector');
+    const inspectorContent = document.getElementById('inspector-content');
+    const fileInput = document.getElementById('file-input');
+    let selectedElement = null;
+    let activeSubElement = null;
+
+    const components = [
+        { type: 'section', icon: 'fas fa-box-open', label: 'Sektion (Container)' },
+        { type: 'grid-2', icon: 'fas fa-columns', label: '2 Spalten Layout' },
+        { type: 'h1', icon: 'fas fa-heading', label: 'Titel (H1)' },
+        { type: 'h2', icon: 'fas fa-heading', label: 'Überschrift (H2)' },
+        { type: 'paragraph', icon: 'fas fa-paragraph', label: 'Textblock' },
+        { type: 'ul', icon: 'fas fa-list-ul', label: 'Liste' },
+        { type: 'size-toggle', icon: 'fas fa-users', label: '10/25 Umschalter' },
+        { type: 'phase-toggle', icon: 'fas fa-images', label: 'Phasen-Umschalter' },
+        { type: 'video', icon: 'fas fa-video', label: 'Video-Einbettung'},
+        { type: 'assignment-block', icon: 'fas fa-clipboard-list', label: 'Einteilungs-Block' },
+        { type: 'heroic-box', icon: 'fas fa-star-of-life', label: 'Heroic-Info Box' },
+        { type: 'code-block', icon: 'fas fa-code', label: 'Code Block'},
+    ];
+
+    // --- Toolbox & Drag-n-Drop Initialization ---
+    components.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'draggable-item p-2 rounded-lg bg-black bg-opacity-20 flex items-center gap-2';
+        item.dataset.type = c.type;
+        item.innerHTML = `<i class="${c.icon} w-5 text-center"></i><span>${c.label}</span>`;
+        toolbox.appendChild(item);
+    });
+
+    new Sortable(toolbox, { group: { name: 'shared', pull: 'clone', put: false }, sort: false });
+    const initSortable = (el) => {
+        if (el.classList.contains('sortable-initialized')) return;
+        el.classList.add('sortable-initialized');
+        new Sortable(el, {
+            group: 'shared', animation: 150, ghostClass: 'sortable-ghost',
+            onAdd: (evt) => {
+                const type = evt.item.dataset.type;
+                const newEl = createElement(type);
+                evt.item.replaceWith(newEl);
+                selectElement(newEl);
+            },
+        });
+    };
+    initSortable(canvas);
+
+    // --- Element Factory ---
+    function createElement(type) {
+        const elWrapper = document.createElement('div');
+        elWrapper.className = 'editor-element';
+        elWrapper.dataset.componentType = type;
+        
+        let content = '';
+        switch (type) {
+            case 'h1': content = `<h1 class="text-3xl font-bold text-center text-blue-450 mb-2" contenteditable="true">Taktik: Bossname</h1>`; break;
+            case 'h2': content = `<h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2" contenteditable="true">Abschnittsüberschrift</h2>`; break;
+            case 'paragraph': content = `<p class="mb-4" contenteditable="true">Beschreibungstext. Nutze &lt;strong&gt; für <strong>fett</strong> und &lt;span class="text-red-500"&gt; für <span class="text-red-500">roten Text</span>.</p>`; break;
+            case 'ul': content = `<ul class="list-disc list-inside space-y-2 text-gray-300"><li contenteditable="true">Listenpunkt 1</li><li contenteditable="true">Listenpunkt 2</li></ul>`; break;
+            case 'section': content = `<section class="bg-slate-850 p-6 rounded-lg mb-6 dropzone"></section>`; break;
+            case 'grid-2': content = `<div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="dropzone"></div><div class="dropzone"></div></div>`; break;
+            case 'size-toggle': content = `<div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto"><button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button><button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button></div>`; break;
+            case 'phase-toggle': content = `<div class="positioning-container">
+                                                <div id="positioning-toggle" class="flex justify-center flex-wrap mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                                                    <button data-phase="1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md active-position-btn">Phase 1</button>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <img src="https://placehold.co/800x400/102a23/fcd34d?text=Bild+Phase+1" alt="Positionierung" data-phase="1" class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600">
+                                                </div>
+                                             </div>`; break;
+            case 'video': content = `<div class="video-container my-4 rounded-lg shadow-lg">
+                                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                     </div>`; break;
+			case 'assignment-block': 
+				content = `<div class="assignment-block">
+								<h4 class="text-lg font-bold" contenteditable="true">🛡️ Einteilungs-Titel</h4>
+								<p class="text-sm text-gray-400 mb-4" contenteditable="true">Beschreibung der Einteilung.</p>
+								<div class="assignment-header" style="grid-template-columns: 1fr 1.2fr;">
+									<span contenteditable="true">Aufgabe</span>
+									<span contenteditable="true">Spieler</span>
+								</div>
+								<ul class="assignment-list">
+									<li style="grid-template-columns: 1fr 1.2fr;">
+										<span contenteditable="true">Tank 1:</span>
+										<select data-assignment-id="boss-tank1" class="assignment-select"></select>
+									</li>
+								</ul>
+							</div>`; 
+				break;
+
+            case 'heroic-box': content = `<div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500"><h4 class="text-lg font-bold text-red-400" contenteditable="true">Änderungen im Heroischen Modus</h4><ul class="list-disc list-inside text-gray-300 mt-2 space-y-1"><li contenteditable="true">Hier die HC-Mechanik beschreiben.</li></ul></div>`; break;
+            case 'code-block': content = `<pre><code contenteditable="true">/macro text here</code></pre>`; break;
+            default: return document.createElement('div');
+        }
+        elWrapper.innerHTML = content;
+        initNewElement(elWrapper);
+        return elWrapper;
+    }
+
+    function initNewElement(el) {
+        el.querySelectorAll('.dropzone').forEach(dz => initSortable(dz));
+        if (!el.matches('.editor-element .editor-element')) {
+            const controls = document.createElement('div');
+            controls.className = 'element-controls';
+            controls.innerHTML = `<button class="control-btn duplicate" title="Duplizieren"><i class="fas fa-copy"></i></button><button class="control-btn delete" title="Löschen"><i class="fas fa-trash-alt"></i></button>`;
+            controls.querySelector('.delete').onclick = e => { e.stopPropagation(); if (selectedElement === el) { selectElement(null); } el.remove(); };
+            controls.querySelector('.duplicate').onclick = e => { e.stopPropagation(); const clone = el.cloneNode(true); initNewElement(clone); el.after(clone); };
+            el.prepend(controls);
+        }
+    }
+    
+    // --- Element Selection & Inspector Logic ---
+    function selectElement(el) {
+        if (selectedElement === el) return;
+        if (selectedElement) selectedElement.classList.remove('selected');
+        if (el && (!selectedElement || selectedElement.closest('.editor-element') !== el.closest('.editor-element'))) {
+            activeSubElement = null;
+        }
+        selectedElement = el;
+        if (selectedElement) {
+            selectedElement.classList.add('selected');
+            inspector.classList.remove('hidden');
+            updateInspector();
+        } else {
+            inspector.classList.add('hidden');
+        }
+    }
+
+	canvas.addEventListener('click', e => {
+		e.stopPropagation();
+		const cell = e.target.closest('.assignment-list li > *');
+		const element = e.target.closest('.editor-element');
+	
+		if (cell && element && element.dataset.componentType === 'assignment-block') {
+			// Eine Zelle wurde geklickt, markiere sie speziell
+			if (activeSubElement) activeSubElement.style.outline = '';
+			activeSubElement = cell;
+			activeSubElement.style.outline = '2px dashed var(--color-jade)';
+			selectElement(element); // Wähle den übergeordneten Block aus
+		} else {
+			// Ein normaler Block wurde geklickt
+			selectElement(element);
+		}
+	});
+function updateInspector() {
+    if (!selectedElement) { inspector.classList.add('hidden'); inspectorContent.innerHTML = ''; return; }
+    const componentType = selectedElement.dataset.componentType;
+    let html = `<div class="border-b border-gold-border-light pb-2"><span class="inspector-label">Typ:</span> <span class="font-bold">${componentType || 'Container'}</span></div>`;
+    const is25Only = selectedElement.classList.contains('tactic-content');
+    html += `<div class="pt-2"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="visible-25-check" class="form-checkbox" ${is25Only ? 'checked' : ''}><span class="inspector-label text-sm">Nur im 25er Modus sichtbar</span></label></div>`;
+    
+    const target = selectedElement.querySelector(':scope > *:not(.element-controls)');
+    if (!target) { inspectorContent.innerHTML = html; return; }
+
+    switch(componentType) {
+case 'video':
+    const iframe = target.querySelector('iframe');
+    if (iframe) {
+        // Extrahiert die reine Video-ID aus der URL
+        const videoId = iframe.src.match(/embed\/([^?]+)/)?.[1] || '';
+        html += `<div class="mt-4">
+                    <label class="inspector-label">YouTube Video ID</label>
+                    <input type="text" value="${videoId}" class="inspector-input" data-target-prop="videoId">
+                 </div>`;
+    }
+    break;
+        
+        case 'assignment-block':
+            const header = target.querySelector('.assignment-header');
+            if (!header) { html += `<p class="text-red-500 mt-4">Fehler: .assignment-header nicht gefunden!</p>`; break; }
+            const colCount = header.children.length;
+            html += `<div class="mt-4"><label class="inspector-label">Spalten</label><input type="number" min="1" max="5" value="${colCount}" class="inspector-input" data-target-prop="assignment-columns"></div>`;
+            html += `<button class="btn p-2 mt-2 w-full" data-action="add-assignment-row">Zeile hinzufügen</button>`;
+            html += `<button class="btn p-2 mt-2 w-full" data-action="add-assignment-subheader">Unter-Überschrift hinzufügen</button>`;
+            
+            // Logik für die Anzeige der Zellen-Optionen
+            if (activeSubElement && activeSubElement.parentElement.matches('.assignment-list li')) {
+                const isSelect = activeSubElement.matches('select');
+                html += `<div class="p-2 mt-4 border-t border-jade"><h4 class="font-bold text-jade">Zellen-Einstellungen</h4>`;
+                html += `<p class="text-xs text-gray-400 mb-2">Aktueller Typ: ${isSelect ? 'Dropdown' : 'Text'}</p>`;
+                html += `<button class="btn p-2 mt-2 w-full" data-action="toggle-cell-type">Typ ändern</button>`;
+                
+                // Nur wenn die Zelle ein Dropdown ist, zeigen wir die ID- und Filter-Optionen an
+                if (isSelect) {
+                    html += `<div class="mt-2">
+                                <label class="inspector-label">Assignment ID</label>
+                                <input type="text" value="${activeSubElement.dataset.assignmentId || ''}" class="inspector-input" data-target-prop="select-assignment-id">
+                             </div>`;
+					html += `<div class="mt-2">
+									<label class="inspector-label">Namens-Hilfe (für Filter)</label>
+									<select class="inspector-select id-helper-select">
+										<option value="">(Kein Filter)</option>
+										<option value="tank">Tank</option>
+										<option value="healer">Healer</option>
+										<option value="dps">DPS</option>
+										<option value="cooldown">Cooldown</option>
+									</select>
+								</div>`;
+                }
+                html += `</div>`;
+            }
+            break;
+		case 'phase-toggle':
+    html += `<button class="btn p-2 mt-4 w-full" data-action="add-phase">Phase hinzufügen</button>`;
+    
+    // Geht durch jede existierende Phase und erstellt die passenden Eingabefelder
+    target.querySelectorAll('.positioning-btn').forEach(btn => {
+        const phase = btn.dataset.phase;
+        const img = target.querySelector(`img[data-phase="${phase}"]`);
+        html += `<div class="p-2 border border-gold-border-light rounded-md mt-2">
+                    <p class="font-bold text-sm flex justify-between">
+                        Phase ${phase}
+                        <i class="fas fa-trash-alt text-red-500 cursor-pointer" data-action="delete-phase" data-phase="${phase}"></i>
+                    </p>
+                    <div>
+                        <label class="inspector-label text-xs">Button Text</label>
+                        <input type="text" value="${btn.textContent}" class="inspector-input text-xs" data-target-prop="phase-btn-text" data-phase="${phase}">
+                    </div>
+                    <div>
+                        <label class="inspector-label text-xs">Bild URL</label>
+                        <input type="text" value="${img?.src || ''}" class="inspector-input text-xs" data-target-prop="phase-img-src" data-phase="${phase}">
+                    </div>
+                </div>`;
+    });
+    break;
+    }
+    inspectorContent.innerHTML = html;
+}
+
+    // --- Inspector Event Listeners ---
+    inspector.addEventListener('input', e => {
+    if (!selectedElement) return;
+    const prop = e.target.dataset.targetProp;
+    const targetEl = selectedElement.querySelector(':scope > *:not(.element-controls)');
+    if (!targetEl) return;
+
+        switch(prop) {
+            case 'videoId':
+                const iframe = targetEl.querySelector('iframe');
+                if(iframe) iframe.src = `https://www.youtube-nocookie.com/embed/${e.target.value}`;
+                break;
+            case 'assignment-columns':
+                 const count = parseInt(e.target.value, 10);
+                 const header = targetEl.querySelector('.assignment-header');
+                 const list = targetEl.querySelector('.assignment-list');
+                 if(!header || !list || isNaN(count) || count < 1) return;
+
+                 const currentCount = header.children.length;
+                 const diff = count - currentCount;
+                 if (diff > 0) {
+                     for(let i=0; i<diff; i++) {
+                         header.insertAdjacentHTML('beforeend', `<span contenteditable="true">Neue Spalte</span>`);
+                         list.querySelectorAll('li:not(.list-subheader)').forEach(row => row.insertAdjacentHTML('beforeend', `<span contenteditable="true">Neuer Text</span>`));
+                     }
+                 } else if (diff < 0) {
+                     for(let i=0; i<Math.abs(diff); i++) {
+                         header.lastElementChild.remove();
+                         list.querySelectorAll('li:not(.list-subheader)').forEach(row => row.lastElementChild.remove());
+                     }
+                 }
+                 const newGridCols = '1fr '.repeat(count).trim();
+                 header.style.gridTemplateColumns = newGridCols;
+                 list.querySelectorAll('li:not(.list-subheader)').forEach(li => li.style.gridTemplateColumns = newGridCols);
+                break;
+			case 'select-assignment-id':
+				if(activeSubElement && activeSubElement.matches('.assignment-select')) {
+					activeSubElement.dataset.assignmentId = e.target.value;
+				}
+				break;
+			case 'select-filter':
+				if(activeSubElement && activeSubElement.matches('.assignment-select')) {
+					activeSubElement.dataset.filter = e.target.value.toLowerCase().trim();
+				}
+				break;
+			
+        case 'videoId': { 
+            const iframe = targetEl.querySelector('iframe');
+            if(iframe) iframe.src = `https://www.youtube-nocookie.com/embed/${e.target.value}`;
+            break;
+        } 
+
+        case 'phase-btn-text': { 
+            const btnToChange = targetEl.querySelector(`.positioning-btn[data-phase="${e.target.dataset.phase}"]`);
+            if (btnToChange) btnToChange.textContent = e.target.value;
+            break;
+        } 
+
+        case 'phase-img-src': { 
+            const imgToChange = targetEl.querySelector(`img[data-phase="${e.target.dataset.phase}"]`);
+            if (imgToChange) imgToChange.src = e.target.value;
+            break;
+        } 
+        }
+    });
+
+    inspector.addEventListener('change', e => {
+        if (!selectedElement) return;
+        if (e.target.id === 'visible-25-check') {
+            selectedElement.classList.toggle('tactic-content', e.target.checked);
+            if (e.target.checked) selectedElement.dataset.size = "25"; else selectedElement.removeAttribute('data-size');
+        }
+    });
+
+    inspector.addEventListener('click', e => {
+        if (!selectedElement) return;
+        const action = e.target.dataset.action;
+    const targetEl = selectedElement.querySelector(':scope > *:not(.element-controls)');
+    if(!targetEl) return;
+        
+        switch(action) {
+            case 'add-assignment-row':
+                 const list = targetEl.querySelector('.assignment-list');
+                 const header = targetEl.querySelector('.assignment-header');
+                 if(!list || !header) return;
+                 const colCount = header.children.length;
+                 const gridCols = '1fr '.repeat(colCount).trim();
+                 let newRowHtml = `<li style="grid-template-columns: ${gridCols};">`;
+                 for(let i=0; i<colCount; i++) { newRowHtml += `<select data-assignment-id="" class="assignment-select"></select>`; }
+                 newRowHtml += `</li>`;
+                 list.insertAdjacentHTML('beforeend', newRowHtml);
+                break;
+            case 'add-assignment-subheader':
+                 const subheaderList = targetEl.querySelector('.assignment-list');
+                 if(subheaderList) subheaderList.insertAdjacentHTML('beforeend', `<li class="list-subheader"><span contenteditable="true">Neue Unter-Überschrift</span></li>`);
+                break;
+			case 'toggle-cell-type':
+				if (!activeSubElement) return;
+				const isSelect = activeSubElement.matches('select');
+				const newCell = document.createElement(isSelect ? 'span' : 'select');
+			
+				if (isSelect) {
+					newCell.contentEditable = "true";
+					newCell.textContent = "Neuer Text";
+				} else {
+					newCell.className = "assignment-select";
+					newCell.dataset.assignmentId = "";
+				}
+				
+				activeSubElement.replaceWith(newCell);
+				activeSubElement = newCell; // Referenz auf das neue Element aktualisieren
+				activeSubElement.style.outline = '2px dashed var(--color-jade)';
+				updateInspector(); // Inspektor neu zeichnen
+				break;
+case 'add-phase': { // Die geschweiften Klammern sind für die Übersichtlichkeit
+    // targetEl IST bereits der .positioning-container. Wir suchen nicht erneut darin.
+    const newNum = (targetEl.querySelectorAll('.positioning-btn').length || 0) + 1;
+    
+    // Finde den korrekten Container für die Buttons
+    const buttonContainer = targetEl.querySelector('#positioning-toggle');
+    if (buttonContainer) {
+        buttonContainer.insertAdjacentHTML('beforeend', 
+            `<button data-phase="${newNum}" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase ${newNum}</button>`);
+    }
+    
+    // Finde den korrekten Container für die Bilder
+    const imageContainer = targetEl.querySelector('.mt-2');
+    if (imageContainer) {
+        imageContainer.insertAdjacentHTML('beforeend', 
+            `<img src="https://placehold.co/800x400/102a23/fcd34d?text=Bild+Phase+${newNum}" alt="Positionierung" data-phase="${newNum}" class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" style="display: none;">`);
+    }
+    
+    updateInspector(); // Wichtig, um den Inspektor neu zu zeichnen
+    break;
+}
+
+case 'delete-phase':
+    const phaseToDelete = e.target.dataset.phase;
+    targetEl.querySelector(`.positioning-btn[data-phase="${phaseToDelete}"]`)?.remove();
+    targetEl.querySelector(`img[data-phase="${phaseToDelete}"]`)?.remove();
+    updateInspector(); // Inspektor neu zeichnen
+    break;
+        }
+    });
+inspector.addEventListener('change', e => {
+    if (!selectedElement || !activeSubElement || !activeSubElement.matches('.assignment-select')) return;
+
+    // Logik für die neue Namens-Hilfe
+    if (e.target.matches('.id-helper-select')) {
+        const idInput = inspector.querySelector('input[data-target-prop="select-assignment-id"]');
+        if (!idInput) return;
+
+        let currentId = idInput.value;
+        const filterWord = e.target.value; // z.B. 'tank'
+
+        // Zuerst alle möglichen Filter-Schlüsselwörter entfernen, um Duplikate zu vermeiden
+        ['tank', 'healer', 'dps', 'dd', 'cooldown'].forEach(word => {
+            // Ersetzt Vorkommen wie "-tank", "-healer" etc. am Ende oder in der Mitte
+            const regex = new RegExp(`-${word}`, 'g');
+            currentId = currentId.replace(regex, '');
+        });
+
+        // Das neue Schlüsselwort anhängen, falls eines ausgewählt wurde
+        if (filterWord) {
+            currentId += `-${filterWord}`;
+        }
+
+        // Das Textfeld und das data-Attribut des Dropdowns aktualisieren
+        idInput.value = currentId;
+        activeSubElement.dataset.assignmentId = currentId;
+    }
+});
+    
+canvas.addEventListener('focusin', e => {
+    if (e.target.matches('.assignment-select')) {
+        const parentElement = e.target.closest('.editor-element');
+        if (selectedElement !== parentElement) {
+            selectElement(parentElement);
+        }
+        activeSubElement = e.target;
+        updateInspector();
+    }
+});
+
+    // --- File I/O ---
+    document.getElementById('save-btn').onclick = () => {
+        const clone = canvas.cloneNode(true);
+        clone.querySelectorAll('.editor-element, .selected, .sortable-ghost, .sortable-initialized, .element-controls').forEach(el => {
+            el.classList.remove('editor-element', 'selected', 'sortable-ghost', 'sortable-initialized');
+            if (el.matches('.element-controls')) el.remove();
+        });
+        clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+        const bossName = prompt("Gib den Boss-Identifier ein (z.B. 'steinwache'):", "boss-template");
+        if (!bossName) return;
+        let finalHtml = '';
+        clone.querySelectorAll(':scope > .editor-element').forEach(wrapper => { finalHtml += wrapper.innerHTML; });
+        const blob = new Blob([finalHtml], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${bossName}.html`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+    };
+    document.getElementById('new-btn').onclick = () => {
+        if (confirm('Möchtest du wirklich einen neuen, leeren Guide anfangen? Alle nicht gespeicherten Änderungen gehen verloren.')) {
+            canvas.innerHTML = ''; // Leert die Arbeitsfläche
+            selectElement(null);   // Hebt die Auswahl auf und blendet den Inspektor aus
+        }
+    };
+    
+    document.getElementById('load-btn').onclick = () => fileInput.click();
+    fileInput.onchange = e => {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = event => {
+            const doc = new DOMParser().parseFromString(event.target.result, 'text/html');
+            const mainContent = doc.querySelector('main') || doc.body; 
+            if (mainContent) {
+                canvas.innerHTML = '';
+                [...mainContent.children].forEach(child => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'editor-element';
+                    wrapper.dataset.componentType = detectComponentType(child);
+                    wrapper.appendChild(child);
+                    canvas.appendChild(wrapper);
+                });
+                canvas.querySelectorAll('.editor-element').forEach(el => {
+                    initNewElement(el);
+                    el.querySelectorAll('h1,h2,h3,h4,p,span,li,code').forEach(ce => ce.setAttribute('contenteditable', 'true'));
+                });
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    };
+
+    function detectComponentType(element) {
+        if (element.matches('h1')) return 'h1'; if (element.matches('h2')) return 'h2';
+        if (element.matches('p')) return 'paragraph'; if (element.matches('ul')) return 'ul';
+        if (element.matches('pre')) return 'code-block'; if (element.matches('section')) return 'section';
+        if (element.querySelector('.assignment-block')) return 'assignment-block';
+        if (element.querySelector('#size-toggle')) return 'size-toggle';
+        if (element.querySelector('.positioning-container')) return 'phase-toggle';
+        if (element.querySelector('.video-container')) return 'video';
+        if (element.matches('.grid')) return 'grid-2';
+        return 'container';
+    }
+
+</script>
