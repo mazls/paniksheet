@@ -257,29 +257,34 @@ pre {
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 <div class="space-y-6">
 					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="start" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Start</button>
 						<button data-phase="fists1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Fäuste</button>
 						<button data-phase="staff1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Stab</button>
-						<button data-phase="schield1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Schild(HC)</button>
+						<button data-phase="shield1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Schild(HC)</button>
 						<button data-phase="spear1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Speer</button>
 					</div>
 					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]"> 
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="start">Ausgangsposition</p>
 						<p class="positioning-text" data-phase="fists1">Stacken und Raid CDs ziehen</p>
 						<p class="positioning-text" data-phase="staff1" style="display: none;"> Wechsel zwischen Stacken in der Mitte und Außen spreaden wegen AOE Debuff.</p>
-						<p class="positioning-text" data-phase="schield1">Am Boss Stacken und bei Schild-Wurf Geister töten - Heilen den Boss um je 5%</p>
+						<p class="positioning-text" data-phase="shield1">Am Boss Stacken und bei Schild-Wurf Geister töten - Heilen den Boss um je 5%</p>
 						<p class="positioning-text" data-phase="spear1">Ranges+Heal in der Mitte Stacken und Melees am Boss - Wildflammen bei Stab Position am Rand ablegen</p>
 					</div>
 					</div>
 					<div class="mt-2">
+						<img src="mogushan/Feng_start.png" alt="Positionierung Start" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="start">
 						<img src="mogushan/Feng_Fists1.png" alt="Positionierung Phase Fäuste" 
 							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
 							data-phase="fists1">
 						<img src="mogushan/Feng_Staff1.png" alt="Positionierung Phase Stab" 
 							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
 							data-phase="staff1" style="display: none;">
-						<img src="mogushan/Feng_Schield1.png" alt="Positionierung Phase Schild" 
+						<img src="mogushan/Feng_Shield1.png" alt="Positionierung Phase Schild" 
 							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-							data-phase="schield1" style="display: none;">
+							data-phase="shield1" style="display: none;">
 						<img src="mogushan/Feng_Spear1.png" alt="Positionierung Phase Speer" 
 							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
 							data-phase="spear1" style="display: none;">
