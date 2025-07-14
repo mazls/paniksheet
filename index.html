@@ -9,6 +9,18 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
+	.invalid-assignment {
+		border: 5px solid #ef4444 !important; /* Roter, auffälliger Rahmen */
+		background-color: rgba(185, 28, 28, 0.2) !important; /* Leichter roter Hintergrund */
+		box-shadow: 0 0 22px rgba(239, 68, 68, 0.5); /* Rotes Leuchten */
+	}
+	
+	/* Stil für die temporär hinzugefügte, ungültige Option im Dropdown */
+	.invalid-option {
+		color: #fca5a5 !important; /* Helleres Rot für die Schrift, gut lesbar */
+		font-style: italic;
+		background-color: rgba(185, 28, 28, 0.3);
+	}
     /* cinzel-regular - latin */
     @font-face {
       font-display: swap;
@@ -1563,16 +1575,21 @@ function displayLootForDate(dateId) {
 				
             }
 
-            async function handleAssignmentChange(event) {
+			async function handleAssignmentChange(event) {
                 if (!window.isManager) return;
                 const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
                 const select = event.target;
                 const assignmentId = select.dataset.assignmentId;
-                const playerName = select.value || "Niemand";
-                await setDoc(assignmentsDocRef, { [assignmentId]: { player: playerName, editor: currentManager, timestamp: serverTimestamp() } }, { merge: true });
+
+                // KORREKTUR: Wir trennen den zu speichernden Wert vom Wert für den Log.
+                const playerToSave = select.value; // Speichert den echten Wert (kann auch leer sein: '').
+                const playerForLog = select.value || "Niemand"; // Benutzt "Niemand" nur für den Log-Text.
+
+                await setDoc(assignmentsDocRef, { [assignmentId]: { player: playerToSave, editor: currentManager, timestamp: serverTimestamp() } }, { merge: true });
+                
                 const bossName = pageId.charAt(0).toUpperCase() + pageId.slice(1);
                 const assignmentName = assignmentId.replace(pageId + '-', '').replace(/([A-Z])/g, ' $1').trim();
-                window.logHistory(bossName, `Einteilung: ${assignmentName}`, playerName, currentManager);
+                window.logHistory(bossName, `Einteilung: ${assignmentName}`, playerForLog, currentManager);
             }
 
             (async () => {
@@ -1581,6 +1598,8 @@ function displayLootForDate(dateId) {
                 
                 function populateDropdownOptions(selectElement, players) {
                     selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
+					const divider = new Option('--X--', ''); 
+					selectElement.appendChild(divider);
                     players.forEach(player => {
                         const option = document.createElement('option');
                         const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
@@ -1624,15 +1643,39 @@ function displayLootForDate(dateId) {
 					}
 				});
 
-                assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
+				assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
                     const assignments = docSnap.exists() ? docSnap.data() : {};
+                    // Eine einfache Liste aller Namen aus dem aktuellen Roster erstellen
+                    const rosterPlayerNames = rosterData.map(p => p.name);
+
                     document.querySelectorAll('.assignment-select').forEach(select => {
-                        const id = select.dataset.assignmentId;
-                        const assignment = assignments[id];
+                        const assignmentId = select.dataset.assignmentId;
+                        const assignment = assignments[assignmentId];
                         const assignedPlayerName = assignment ? assignment.player : "";
-                        select.value = assignedPlayerName;
-                        const selectedOption = Array.from(select.options).find(o => o.value === assignedPlayerName);
-                        select.style.color = selectedOption ? selectedOption.dataset.color : '#FFFFFF';
+
+                        // Vorherige "Ungültig"-Markierungen entfernen, um den Zustand zurückzusetzen
+                        select.classList.remove('invalid-assignment');
+                        const oldInvalidOption = select.querySelector('.invalid-option');
+                        if (oldInvalidOption) oldInvalidOption.remove();
+
+                        // KERNLOGIK: Prüfen, ob ein Spieler zugewiesen ist, aber NICHT im aktuellen Roster existiert.
+                        if (assignedPlayerName && !rosterPlayerNames.includes(assignedPlayerName) && !select.dataset.assignmentId.includes('cooldown')) {
+                            // JA, UNGÜLTIG -> Dropdown hervorheben
+                            select.classList.add('invalid-assignment');
+
+                            // Erstelle eine temporäre Option, damit man sieht, wer hier mal eingeteilt war.
+                            const invalidOption = new Option(`❌ ${assignedPlayerName} (Nicht im Roster)`, assignedPlayerName);
+                            invalidOption.className = 'invalid-option';
+                            invalidOption.selected = true;
+                            invalidOption.disabled = true; // Optional: Verhindert, dass man es erneut auswählt
+                            select.appendChild(invalidOption);
+
+                        } else {
+                            // ALLES OK -> Dropdown normal darstellen
+                            select.value = assignedPlayerName;
+                            const selectedOption = Array.from(select.options).find(o => o.value === assignedPlayerName);
+                            select.style.color = selectedOption ? selectedOption.dataset.color : '#FFFFFF';
+                        }
                     });
                     window.toggleSelectEditability();
                 });
