@@ -585,6 +585,33 @@
     box-shadow: 0 0 15px rgba(94, 234, 212, 0.4);
     transform: translateY(-2px);
 }
+.text-like-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    background-color: transparent !important;
+    border: none !important;                 
+    padding: 0 4px;
+    margin: 0;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.text-like-select:hover {
+    background-color: rgba(204, 163, 76, 0.15); /* Dezenter goldener Hover-Effekt */
+}
+
+/* Wichtig, um den Standard-Fokus-Ring zu entfernen */
+.text-like-select:focus {
+    outline: none;
+    background-color: rgba(204, 163, 76, 0.2);
+}
+.text-like-select option {
+    background: var(--color-dark-green-bg);
+}
 	</style>
 </head>
 <body>
@@ -683,6 +710,17 @@
 		let allLootDocuments = [];
 		let playerSummaryState = {};
 		let summarySortState = { column: 'total', direction: 'desc' };
+
+const offensiveBuffsForAssignment = {
+    "5% Stärke, Beweglichkeit, Intelligenz": ["DRUID", "MONK", "PALADIN"],
+    "10% Angriffskraft": ["DEATHKNIGHT", "HUNTER", "WARRIOR"],
+    "10% Angriffsgeschwindigkeit": ["DEATHKNIGHT", "ROGUE", "SHAMAN"],
+    "3000 Meisterschaft": ["PALADIN", "SHAMAN"],
+    "5% Kritische Trefferchance": ["DRUID", "MAGE", "MONK"],
+    "10% Zaubermacht": ["MAGE", "SHAMAN", "WARLOCK"],
+    "5% Zaubertempo": ["DRUID", "PRIEST", "SHAMAN"],
+    "10% Ausdauer": ["PRIEST", "WARLOCK", "WARRIOR"]
+};
 
 		
         const DATA_COLLECTION = "raid-tool-data";
@@ -1446,19 +1484,25 @@ mainNav.innerHTML = mainNavHTML;
 			}
 			
 			
-            currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
-                const jsonInput = document.getElementById('json-input');
-                const currentRosterData = docSnap.exists() ? docSnap.data().roster || [] : [];
-                displayRoster(currentRosterData);
-                if (window.updateRaidBuffsDisplay) {
-                    window.updateRaidBuffsDisplay(currentRosterData);
-                }
-                if(jsonInput && jsonInput.value === ''){
-                     jsonInput.value = docSnap.data().rawJson || '';
-                }
-            });
-            window.toggleCompEditability();
-        }
+currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
+    const jsonInput = document.getElementById('json-input');
+    const currentRosterData = docSnap.exists() ? docSnap.data().roster || [] : [];
+    
+    // Reihenfolge der Aufrufe:
+    displayRoster(currentRosterData);
+    initBuffAssignments(currentRosterData);
+    initSoulstoneAssignments(currentRosterData); // <-- NEUER AUFRUF
+
+    if (window.updateRaidBuffsDisplay) {
+        window.updateRaidBuffsDisplay(currentRosterData);
+    }
+    
+    if (jsonInput && jsonInput.value === '' && docSnap.data()?.rawJson) {
+        jsonInput.value = docSnap.data().rawJson;
+    }
+
+});
+        }        
 
         // --- Logik für history.html ---
         function initHistoryPage() {
@@ -2024,6 +2068,210 @@ function initBossPage(pageId) {
                 window.showModal("Roster wurde geleert.");
             }
         }
+async function initBuffAssignments(roster) {
+    const container = document.getElementById('offensive-buff-assignments');
+    if (!container) return;
+
+    const assignmentsDocRef = doc(db, DATA_COLLECTION, "comp-buff-assignments");
+    const assignmentsSnap = await getDoc(assignmentsDocRef);
+    const assignments = assignmentsSnap.exists() ? assignmentsSnap.data() : {};
+
+    let html = '';
+    for (const buffName in offensiveBuffsForAssignment) {
+        const availableClasses = offensiveBuffsForAssignment[buffName];
+        const eligiblePlayers = roster.filter(p => availableClasses.includes(p.class));
+        const selectedPlayerName = assignments[`${buffName}_player`] || '';
+
+        const optionsHtml = eligiblePlayers.map(player => {
+            const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
+            return `<option value="${player.name}" style="color: ${color};" ${player.name === selectedPlayerName ? 'selected' : ''}>${player.name}</option>`;
+        }).join('');
+
+        html += `
+            <div class="assignment-block">
+                <ul class="assignment-list">
+                    <li style="grid-template-columns: 1.5fr 1.2fr 1fr;">
+                        <span class="font-semibold text-gray-300">${buffName}</span>
+                        <select class="assignment-select buff-player-select text-like-select" data-buff-name="${buffName}" ${!window.isManager ? 'disabled' : ''}>
+                            <option value="">-- Spieler wählen --</option>
+                            ${optionsHtml}
+                        </select>
+                        <span class="buff-source-text text-sm text-gray-400 pl-2"></span>
+                    </li>
+                </ul>
+            </div>
+        `;
+    }
+    container.innerHTML = html;
+
+    // Nach dem Erstellen der HTML-Struktur, die Zustände wiederherstellen
+    container.querySelectorAll('.buff-player-select').forEach(select => {
+        select.addEventListener('change', (e) => handleBuffPlayerChange(e, roster));
+        
+        // Initialen Zustand (Farbe und Buff-Quelle) setzen
+        const selectedOption = select.options[select.selectedIndex];
+        if (selectedOption && selectedOption.value) {
+            const player = roster.find(p => p.name === selectedOption.value);
+            if (player) {
+                const buffName = select.dataset.buffName;
+                const buffSource = getBuffSource(buffName, player.class);
+                const sourceSpan = select.nextElementSibling;
+                sourceSpan.textContent = `(${buffSource})`;
+                select.style.color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
+            }
+        } else {
+             select.style.color = '#FFFFFF';
+        }
+    });
+}
+
+async function handleBuffPlayerChange(event, roster) {
+    if (!window.isManager) return;
+    const select = event.target;
+    const buffName = select.dataset.buffName;
+    const playerName = select.value;
+
+    // 1. Zuweisung speichern
+    const assignmentsDocRef = doc(db, DATA_COLLECTION, "comp-buff-assignments");
+    await setDoc(assignmentsDocRef, { [`${buffName}_player`]: playerName }, { merge: true });
+
+    // 2. Buff-Quelle und Farbe aktualisieren
+    const sourceSpan = select.nextElementSibling;
+    if (playerName) {
+        const player = roster.find(p => p.name === playerName);
+        if (player) {
+            sourceSpan.textContent = `(${getBuffSource(buffName, player.class)})`;
+            select.style.color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
+        }
+    } else {
+        sourceSpan.textContent = '';
+        select.style.color = '#FFFFFF';
+    }
+}
+async function initSoulstoneAssignments(roster) {
+    const container = document.getElementById('soulstone-assignments');
+    if (!container) return;
+
+    const warlocks = roster.filter(p => p.class === 'WARLOCK');
+
+    if (warlocks.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const assignmentsDocRef = doc(db, DATA_COLLECTION, "comp-soulstone-assignments");
+    const assignmentsSnap = await getDoc(assignmentsDocRef);
+    const assignments = assignmentsSnap.exists() ? assignmentsSnap.data() : {};
+
+    let warlockRowsHtml = '';
+    warlocks.forEach(warlock => {
+        const assignmentId = `soulstone_for_${warlock.name.replace(/\s/g, '_')}`;
+        const selectedTargetName = assignments[assignmentId] || '';
+
+        // Dropdown mit ALLEN Spielern als Ziel und mit Klassenfarben füllen
+        const targetOptionsHtml = roster.map(player => {
+            const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
+            return `<option value="${player.name}" style="color: ${color};" ${player.name === selectedTargetName ? 'selected' : ''}>${player.name}</option>`;
+        }).join('');
+
+        warlockRowsHtml += `
+            <li style="grid-template-columns: 1fr 2fr; align-items: baseline;">
+                <span style="color: ${window.classColors.WARLOCK};">${warlock.name}'s Seelenstein:</span>
+                
+                <select class="assignment-select soulstone-target-select text-like-select" data-assignment-id="${assignmentId}" ${!window.isManager ? 'disabled' : ''}>
+                    <option value="" style="color: #FFFFFF;">-- Ziel wählen --</option>
+                    ${targetOptionsHtml}
+                </select>
+            </li>
+        `;
+    });
+    
+    container.innerHTML = `
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">Seelenstein-Vergabe</h4>
+            <ul class="assignment-list">${warlockRowsHtml}</ul>
+        </div>
+    `;
+
+    // Nach dem Erstellen der HTML-Struktur die Zustände (Farbe) wiederherstellen
+    container.querySelectorAll('.soulstone-target-select').forEach(select => {
+        select.addEventListener('change', (e) => handleSoulstoneAssignmentChange(e, roster));
+        
+        const selectedOption = select.options[select.selectedIndex];
+        if (selectedOption && selectedOption.value) {
+            const player = roster.find(p => p.name === selectedOption.value);
+            select.style.color = player ? (window.classColors[player.class.toUpperCase()] || '#FFFFFF') : '#FFFFFF';
+        } else {
+             select.style.color = '#FFFFFF';
+        }
+    });
+}
+
+async function handleSoulstoneAssignmentChange(event, roster) {
+    if (!window.isManager) return;
+    const select = event.target;
+    const playerName = select.value;
+    const assignmentId = select.dataset.assignmentId;
+    
+    // 1. Zuweisung speichern
+    const assignmentsDocRef = doc(db, DATA_COLLECTION, "comp-soulstone-assignments");
+    await setDoc(assignmentsDocRef, { [assignmentId]: playerName }, { merge: true });
+
+    // 2. Farbe des Select-Elements aktualisieren
+    if (playerName) {
+        const player = roster.find(p => p.name === playerName);
+        select.style.color = player ? (window.classColors[player.class.toUpperCase()] || '#FFFFFF') : '#FFFFFF';
+    } else {
+        select.style.color = '#FFFFFF';
+    }
+}
+function getBuffSource(buffName, playerClass) {
+    const buffData = raidBuffsClassesMap[buffName];
+    if (buffData && buffData.classes && buffData.classes[playerClass]) {
+        // Gibt den ersten verfügbaren Buff-Namen für die Klasse zurück (für den Fall, dass es mal mehrere gäbe)
+        const source = buffData.classes[playerClass];
+        return Array.isArray(source) ? source[0] : source;
+    }
+    return playerClass.toLowerCase(); // Fallback
+}
+function updateBuffPlayerDropdown(buffName, selectedClass, roster, selectedPlayer = '') {
+    const playerSelect = document.querySelector(`.buff-player-select[data-buff-name="${buffName}"]`);
+    if (!playerSelect) return;
+
+    playerSelect.innerHTML = '<option value="">-- Spieler --</option>';
+    if (!selectedClass) return;
+
+    const playersOfClass = roster.filter(p => p.class === selectedClass);
+    playersOfClass.forEach(player => {
+        const option = new Option(player.name, player.name);
+        if (player.name === selectedPlayer) {
+            option.selected = true;
+        }
+        playerSelect.appendChild(option);
+    });
+}
+async function handleBuffAssignmentChange(buffName, field, value) {
+    if (!window.isManager) return;
+    const assignmentsDocRef = doc(db, DATA_COLLECTION, "comp-buff-assignments");
+    const key = `${buffName}_${field}`;
+
+    await setDoc(assignmentsDocRef, { [key]: value }, { merge: true });
+    
+    // Wenn die Klasse geändert wird, wird die Spielerauswahl zurückgesetzt
+    if (field === 'class') {
+        await setDoc(assignmentsDocRef, { [`${buffName}_player`]: "" }, { merge: true });
+    }
+}
+
+// Hilfsfunktionen für die Event Listener
+function handleBuffClassChange(event, roster) {
+    const select = event.target;
+    const buffName = select.dataset.buffName;
+    const selectedClass = select.value;
+    updateBuffPlayerDropdown(buffName, selectedClass, roster);
+    handleBuffAssignmentChange(buffName, 'class', selectedClass);
+}
+
 
         // ============== RAID BUFF LOGIK ==============
         const raidBuffsClassesMap = {
