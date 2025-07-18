@@ -32,10 +32,7 @@
     // Die originale Discord API URL
     const discordApiUrl = 'https://discord.com/api/guilds/1066683639456346123/widget.json';
 
-    // *** DAS IST DIE LÖSUNG ***
-    // Wir leiten die Anfrage durch einen CORS-Proxy, um Browser-Beschränkungen zu umgehen.
-    // 'encodeURIComponent' sorgt dafür, dass die URL korrekt an den Proxy übergeben wird.
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(discordApiUrl)}`;
+    const proxyUrl2 = `https://corsproxy.io/?${encodeURIComponent(discordApiUrl)}`;
 
     // HTML-Elemente für die spätere Befüllung auswählen
     const nameElement = document.getElementById('discord-server-name');
@@ -46,7 +43,7 @@
 
     try {
       // Wir rufen jetzt die Proxy-URL anstatt der direkten Discord-URL auf.
-      const response = await fetch(proxyUrl);
+      const response = await fetch(proxyUrl2);
       if (!response.ok) throw new Error('Der Proxy-Dienst konnte die Discord-API nicht erreichen.');
       
       // Der Proxy gibt den Text der originalen Antwort zurück, den wir in JSON umwandeln.
