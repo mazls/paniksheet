@@ -1315,9 +1315,7 @@ mainNav.innerHTML = mainNavHTML;
 
             bossNav.innerHTML = bossNavHTML;
         }
-
-		// NEUE, KORRIGIERTE VERSION für index.html
-		async function loadContent(pageId) {
+		async function loadContent(pageId, sectionId = null) {
 			// Unsubscribe von allen alten Listenern
 			if (currentRosterUnsubscribe) { currentRosterUnsubscribe(); currentRosterUnsubscribe = null; }
 			if (historyUnsubscribe) { historyUnsubscribe(); historyUnsubscribe = null; }
@@ -1366,7 +1364,7 @@ mainNav.innerHTML = mainNavHTML;
 		
 				// 6. Die seiten-spezifische Initialisierungsfunktion aufrufen.
 				const actualPageIdForInit = pageId.includes('/') ? pageId.split('/')[1] : pageId;
-				initializePage(actualPageIdForInit);
+				initializePage(actualPageIdForInit, sectionId);
 		
 			} catch (error) {
 				console.error("Fehler beim Laden des Inhalts:", error);
@@ -1378,8 +1376,12 @@ mainNav.innerHTML = mainNavHTML;
             const currentRaidId = raidSelector.value;
             updateBossNav(currentRaidId);
 
-            let pageId = window.location.hash.substring(1) || 'comp';
-            
+            // NEU: Hash-Parsing erweitert
+            const fullHash = window.location.hash.substring(1) || 'comp';
+            const hashParts = fullHash.split('&');
+            const pageId = hashParts[0];
+            const sectionId = hashParts.length > 1 ? hashParts[1] : null;
+
             if (pageId.includes('/')) {
                 const raidOfPage = pageId.split('/')[0];
                 if (raidData[raidOfPage] && raidSelector.value !== raidOfPage) {
@@ -1388,10 +1390,13 @@ mainNav.innerHTML = mainNavHTML;
                 }
             }
             
-            loadContent(pageId);
+            // Die Sektions-ID wird jetzt an loadContent übergeben
+            loadContent(pageId, sectionId);
 
             document.querySelectorAll('#main-nav .nav-link, #boss-nav .nav-link').forEach(link => {
-                link.classList.toggle('active-tab', link.dataset.pageId === pageId);
+                const linkPageId = link.dataset.pageId;
+                // Prüft nur den ersten Teil des Hashes für den aktiven Tab
+                link.classList.toggle('active-tab', linkPageId === pageId);
             });
         }
 
@@ -1451,7 +1456,7 @@ mainNav.innerHTML = mainNavHTML;
         };
 
         // ============== SEITEN-INITIALISIERUNG ==============
-		function initializePage(pageId) {
+		function initializePage(pageId, sectionId = null) {
 			if (pageId === 'comp') {
 				initCompPage();
 			} else if (pageId === 'history') {
@@ -1461,7 +1466,7 @@ mainNav.innerHTML = mainNavHTML;
 			} else if (pageId === 'impressum' || pageId === 'datenschutz') {
 				// No JS needed
 			} else {
-				initBossPage(pageId);
+				initBossPage(pageId, sectionId);
 			}
 		}
 
@@ -1491,7 +1496,7 @@ currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
     // Reihenfolge der Aufrufe:
     displayRoster(currentRosterData);
     initBuffAssignments(currentRosterData);
-    initSoulstoneAssignments(currentRosterData); // <-- NEUER AUFRUF
+    initSoulstoneAssignments(currentRosterData);
 
     if (window.updateRaidBuffsDisplay) {
         window.updateRaidBuffsDisplay(currentRosterData);
@@ -1634,7 +1639,6 @@ function displayLootForDate(dateId) {
 							const rollType = roll.classification;
 							let maxRoll = 100; // Standard für MS
 							
-							// NEUE, ROBUSTERE PRÜFUNG
 							const upperCaseRollType = rollType.toUpperCase();
 							if (upperCaseRollType === 'OS') {
 								maxRoll = 50;
@@ -1683,7 +1687,7 @@ function displayLootForDate(dateId) {
 		}
 
         // --- Logik für Boss-Seiten ---
-function initBossPage(pageId) {
+function initBossPage(pageId, sectionId = null) {
     // --- Logik für Sprungmarken und einklappbare Sektionen ---
     const quickNavLinks = document.querySelectorAll('.quick-nav-bar a');
     const sections = document.querySelectorAll('.collapsible-section');
@@ -1787,6 +1791,27 @@ function initBossPage(pageId) {
                 window.openLightbox(img.src);
             });
         });
+    }
+         if (sectionId) {
+         setTimeout(() => {
+             const targetElement = document.getElementById(sectionId);
+             if (targetElement) {
+                 const parentSection = targetElement.closest('.collapsible-section');
+                 if (parentSection) {
+                     const header = parentSection.querySelector('.collapsible-header');
+                     const content = parentSection.querySelector('.collapsible-content');
+                     if (header && content && content.classList.contains('collapsed')) {
+                         header.classList.add('active');
+                         content.classList.remove('collapsed');
+                     }
+                 }
+                 
+                 window.scrollTo({
+                     top: targetElement.offsetTop - 120, // 120px Abstand von oben
+                     behavior: 'smooth'
+                 });
+             }
+         }, 100); // Eine kleine Verzögerung, damit alles geladen ist
     }
 
     // --- Logik zum Laden der Einteilungen (Datenbank) ---
