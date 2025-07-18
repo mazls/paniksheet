@@ -64,14 +64,25 @@ pre {
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Feng der Verfluchte</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#phases">Phasen</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+    </nav>
 
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
         <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+
+    <div class="collapsible-content">
         <div>
             <div>
                 <p class="mb-4">
@@ -102,11 +113,15 @@ pre {
 /click ExtraActionButton1
 /targetlasttarget</code></pre>
             </div>
-        
+        </div>
     </section>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Phasenübersicht (NH)</h2>
+    <section id="phases" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Phasenübersicht (NH)
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h3 class="text-xl font-bold text-green-400">Phase 1: Geist der Faust (Natur)</h3>
@@ -121,11 +136,15 @@ pre {
                 <p class="mt-2">Feng kämpft mit arkaner Magie. Ein ständiger Wechsel zwischen verteiltem Stehen (<strong>Arkane Resonanz</strong>) und engem Zusammenlaufen (<strong>Arkane Geschwindigkeit</strong>) ist nötig.</p>
             </div>
         </div>
+        </div>
     </section>
     
-<section class="bg-slate-850 p-6 rounded-lg mb-6">
-    <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
-    
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         
         <div>
@@ -307,11 +326,15 @@ pre {
                 </div>
             </div>
         </div>
+        </div>
     </section>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Boss-Fähigkeiten im Detail</h2>
-
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Boss-Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
         <div data-size="10" class="tactic-content" style="display: none;">
             <h3 class="text-xl font-semibold text-blue-450 mb-3">10-Spieler Normal</h3>
             <div class="bg-slate-750 p-4 rounded-lg mb-4">
@@ -378,5 +401,6 @@ pre {
                 <li><strong>Stärke des Geistes:</strong> Mit jeder neuen Phase erhält Feng einen permanenten Buff von +5% auf seinen verursachten Schaden.</li>
             </ul>
         </div>
+         </div>
     </section>
 </main>

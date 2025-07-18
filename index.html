@@ -21,6 +21,62 @@
 		font-style: italic;
 		background-color: rgba(185, 28, 28, 0.3);
 	}
+    /* In der Datei: index.html im <style>-Bereich */
+
+/* ... dein bisheriges CSS ... */
+
+/* Stile für die neue Sprungmarken-Navigation */
+.quick-nav-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: rgba(10, 20, 15, 0.7);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-gold-border);
+}
+.quick-nav-bar a {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    color: var(--color-parchment);
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.quick-nav-bar a:hover {
+    background-color: var(--color-jade);
+    color: var(--color-dark-text);
+}
+
+/* Stile für die einklappbaren Sektionen */
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: margin-bottom 0.3s ease; /* Fügt Abstand hinzu, wenn Sektion geschlossen */
+}
+.collapsible-header:not(.active) {
+    margin-bottom: 0 !important;
+}
+.toggle-icon {
+    transition: transform 0.3s ease-in-out;
+    font-size: 1.5rem;
+    color: var(--color-gold);
+}
+.collapsible-header:not(.active) .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.collapsible-content {
+    max-height: 5000px; /* Eine ausreichend große Höhe, damit nichts abgeschnitten wird */
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+.collapsible-content.collapsed {
+    max-height: 0;
+}
     /* cinzel-regular - latin */
     @font-face {
       font-display: swap;
@@ -1508,180 +1564,200 @@ function displayLootForDate(dateId) {
 		}
 
         // --- Logik für Boss-Seiten ---
-        function initBossPage(pageId) {
-            const assignmentsDocRef = doc(db, DATA_COLLECTION, "boss-" + pageId);
-            const sizeToggle = document.getElementById('size-toggle');
-			if (sizeToggle) {
-				// Beim Laden der Seite die gespeicherte Größe auslesen (oder '25' als Standard)
-				const savedSize = sessionStorage.getItem('raidSize') || '25';
-	
-				// Den entsprechenden Button aktivieren und die Anzeige aktualisieren
-				document.querySelectorAll('.size-toggle-btn').forEach(button => {
-					const isCorrectSize = button.dataset.size === savedSize;
-					button.classList.toggle('active-size-btn', isCorrectSize);
-				});
-				document.querySelectorAll('.tactic-content').forEach(content => {
-					const displayStyle = content.dataset.size === savedSize ? (content.tagName === 'SPAN' ? 'inline' : (content.tagName === 'LI' ? 'grid' : 'block')) : 'none';
-					content.style.display = displayStyle;
-				});
-	
-				// Event-Listener, um die Auswahl zu speichern
-				sizeToggle.addEventListener('click', function(event) {
-					if (event.target.matches('.size-toggle-btn')) {
-						const selectedSize = event.target.dataset.size;
-						
-						// NEU: Die Auswahl im sessionStorage speichern
-						sessionStorage.setItem('raidSize', selectedSize);
-	
-						document.querySelectorAll('.size-toggle-btn').forEach(button => button.classList.remove('active-size-btn'));
-						event.target.classList.add('active-size-btn');
-						
-						document.querySelectorAll('.tactic-content').forEach(content => {
-							// Diese Zeile wurde leicht angepasst, damit 'li' Elemente auch als 'grid' angezeigt werden
-							const displayStyle = content.dataset.size === selectedSize ? (content.tagName === 'SPAN' ? 'inline' : (content.tagName === 'LI' ? 'grid' : 'block')) : 'none';
-							content.style.display = displayStyle;
-						});
-					}
-				});
-			const positioningToggle = document.getElementById('positioning-toggle');
-				if (positioningToggle) {
-					positioningToggle.addEventListener('click', (event) => {
-						if (event.target.matches('.positioning-btn')) {
-							const selectedPhase = event.target.dataset.phase;
-			
-							// Alle Buttons de-aktivieren, dann den geklickten aktivieren
-							document.querySelectorAll('.positioning-btn').forEach(btn => btn.classList.remove('active-position-btn'));
-							event.target.classList.add('active-position-btn');
-			
-							// Alle Bilder ausblenden, dann das richtige einblenden
-							document.querySelectorAll('.positioning-image, .positioning-text').forEach(element => {
-								element.style.display = element.dataset.phase === selectedPhase ? 'block' : 'none';
-							});
-						}
-					});
-			
-					// Standardmäßig Phase 1 beim Laden der Seite aktivieren
-					const defaultPhaseButton = positioningToggle.querySelector('.positioning-btn');
-					if (defaultPhaseButton) {
-						defaultPhaseButton.click();
-					}
-					    document.querySelectorAll('.lightbox-trigger').forEach(img => {
-						img.addEventListener('click', (event) => {
-							event.stopPropagation(); // Verhindert, dass der Klick die Lightbox sofort wieder schließt
-							window.openLightbox(img.src);
-						});
-					});
-				}
-				
-            }
+function initBossPage(pageId) {
+    // --- Logik für Sprungmarken und einklappbare Sektionen ---
+    const quickNavLinks = document.querySelectorAll('.quick-nav-bar a');
+    const sections = document.querySelectorAll('.collapsible-section');
 
-			async function handleAssignmentChange(event) {
-                if (!window.isManager) return;
-                const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-                const select = event.target;
-                const assignmentId = select.dataset.assignmentId;
-
-                // KORREKTUR: Wir trennen den zu speichernden Wert vom Wert für den Log.
-                const playerToSave = select.value; // Speichert den echten Wert (kann auch leer sein: '').
-                const playerForLog = select.value || "Niemand"; // Benutzt "Niemand" nur für den Log-Text.
-
-                await setDoc(assignmentsDocRef, { [assignmentId]: { player: playerToSave, editor: currentManager, timestamp: serverTimestamp() } }, { merge: true });
-                
-                const bossName = pageId.charAt(0).toUpperCase() + pageId.slice(1);
-                const assignmentName = assignmentId.replace(pageId + '-', '').replace(/([A-Z])/g, ' $1').trim();
-                window.logHistory(bossName, `Einteilung: ${assignmentName}`, playerForLog, currentManager);
-            }
-
-            (async () => {
-                const rosterSnap = await getDoc(rosterDocRef);
-                const rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
-                
-                function populateDropdownOptions(selectElement, players) {
-                    selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
-					const divider = new Option('--X--', ''); 
-					selectElement.appendChild(divider);
-                    players.forEach(player => {
-                        const option = document.createElement('option');
-                        const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
-                        option.value = player.name;
-                        option.textContent = `${player.name}`;
-                        option.style.color = color;
-                        option.dataset.color = color;
-                        selectElement.appendChild(option);
-                    });
-                }
-                
-				document.querySelectorAll('.assignment-select').forEach(select => {
-					select.addEventListener('change', handleAssignmentChange);
-					const assignmentId = select.dataset.assignmentId.toLowerCase();
-				
-					// NEU: Prüfen, ob es ein Cooldown-Dropdown ist
-					if (assignmentId.includes('cooldown')) {
-						// Cooldown-Dropdown mit der neuen Objekt-Liste füllen
-						select.innerHTML = '<option value="">-- Cooldown wählen --</option>';
-						healerCooldowns.forEach(cd => {
-							const option = document.createElement('option');
-							const color = window.classColors[cd.class] || '#FFFFFF'; // Farbe aus der Klasse des Cooldowns holen
-							option.value = cd.name;      // Der Wert ist der Name des CDs
-							option.textContent = cd.name;  // Der Text ist auch der Name des CDs
-							option.dataset.color = color;
-							option.style.color = color;    // Die Farbe für den Text setzen
-							select.appendChild(option);
-						});
-					} else {
-						let playersForDropdown = [];
-						if (assignmentId.includes('tank')) {
-							playersForDropdown = rosterData.filter(p => p.roles.includes('TANK'));
-						} else if (assignmentId.includes('healer')) {
-							playersForDropdown = rosterData.filter(p => p.roles.includes('HEALER'));
-						} else if (assignmentId.includes('dps') || assignmentId.includes('dd')) {
-							playersForDropdown = rosterData.filter(p => p.roles.includes('DPS'));
-						} else {
-							playersForDropdown = rosterData;
-						}
-						populateDropdownOptions(select, playersForDropdown);
-					}
-				});
-
-				assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
-                    const assignments = docSnap.exists() ? docSnap.data() : {};
-                    // Eine einfache Liste aller Namen aus dem aktuellen Roster erstellen
-                    const rosterPlayerNames = rosterData.map(p => p.name);
-
-                    document.querySelectorAll('.assignment-select').forEach(select => {
-                        const assignmentId = select.dataset.assignmentId;
-                        const assignment = assignments[assignmentId];
-                        const assignedPlayerName = assignment ? assignment.player : "";
-
-                        // Vorherige "Ungültig"-Markierungen entfernen, um den Zustand zurückzusetzen
-                        select.classList.remove('invalid-assignment');
-                        const oldInvalidOption = select.querySelector('.invalid-option');
-                        if (oldInvalidOption) oldInvalidOption.remove();
-
-                        // KERNLOGIK: Prüfen, ob ein Spieler zugewiesen ist, aber NICHT im aktuellen Roster existiert.
-                        if (assignedPlayerName && !rosterPlayerNames.includes(assignedPlayerName) && !select.dataset.assignmentId.includes('cooldown')) {
-                            // JA, UNGÜLTIG -> Dropdown hervorheben
-                            select.classList.add('invalid-assignment');
-
-                            // Erstelle eine temporäre Option, damit man sieht, wer hier mal eingeteilt war.
-                            const invalidOption = new Option(`❌ ${assignedPlayerName} (Nicht im Roster)`, assignedPlayerName);
-                            invalidOption.className = 'invalid-option';
-                            invalidOption.selected = true;
-                            invalidOption.disabled = true; // Optional: Verhindert, dass man es erneut auswählt
-                            select.appendChild(invalidOption);
-
-                        } else {
-                            // ALLES OK -> Dropdown normal darstellen
-                            select.value = assignedPlayerName;
-                            const selectedOption = Array.from(select.options).find(o => o.value === assignedPlayerName);
-                            select.style.color = selectedOption ? selectedOption.dataset.color : '#FFFFFF';
-                        }
-                    });
-                    window.toggleSelectEditability();
-                });
-                window.toggleSelectEditability();
-            })();
+    // Macht alle Sektionen initial einklappbar und setzt sie als aktiv (offen).
+    sections.forEach((section) => {
+        const header = section.querySelector('.collapsible-header');
+        const content = section.querySelector('.collapsible-content');
+        if (header && content) {
+            header.classList.add('active'); // Alle Sektionen sind standardmäßig offen
+            header.addEventListener('click', () => {
+                header.classList.toggle('active');
+                content.classList.toggle('collapsed');
+            });
         }
+    });
+
+    // Fügt die "Smooth-Scroll"-Funktionalität zu den Sprungmarken hinzu.
+    quickNavLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                const parentSection = targetElement.closest('.collapsible-section') || targetElement;
+                const header = parentSection.querySelector('.collapsible-header');
+                const content = parentSection.querySelector('.collapsible-content');
+                if (header && content && content.classList.contains('collapsed')) {
+                    header.classList.add('active');
+                    content.classList.remove('collapsed');
+                }
+                window.scrollTo({
+                    top: targetElement.offsetTop - 120,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // --- Logik für 10/25-Spieler Umschalter ---
+    const sizeToggle = document.getElementById('size-toggle');
+    if (sizeToggle) {
+        const savedSize = sessionStorage.getItem('raidSize') || '25';
+        document.querySelectorAll('.size-toggle-btn').forEach(button => {
+            button.classList.toggle('active-size-btn', button.dataset.size === savedSize);
+        });
+        document.querySelectorAll('.tactic-content').forEach(content => {
+            let displayStyle = 'none';
+            if (content.dataset.size === savedSize) {
+                switch (content.tagName.toUpperCase()) {
+                    case 'SPAN': displayStyle = 'inline'; break;
+                    case 'LI': displayStyle = 'grid'; break;
+                    case 'BUTTON': displayStyle = 'inline-block'; break;
+                    default: displayStyle = 'block';
+                }
+            }
+            content.style.display = displayStyle;
+        });
+        sizeToggle.addEventListener('click', function(event) {
+            if (event.target.matches('.size-toggle-btn')) {
+                const selectedSize = event.target.dataset.size;
+                sessionStorage.setItem('raidSize', selectedSize);
+                document.querySelectorAll('.size-toggle-btn').forEach(button => button.classList.remove('active-size-btn'));
+                event.target.classList.add('active-size-btn');
+                document.querySelectorAll('.tactic-content').forEach(content => {
+                    let displayStyle = 'none';
+                    if (content.dataset.size === selectedSize) {
+                       switch (content.tagName.toUpperCase()) {
+                           case 'SPAN': displayStyle = 'inline'; break;
+                           case 'LI': displayStyle = 'grid'; break;
+                           case 'BUTTON': displayStyle = 'inline-block'; break;
+                           default: displayStyle = 'block';
+                       }
+                    }
+                    content.style.display = displayStyle;
+                });
+            }
+        });
+    }
+    
+    // --- Logik für Positions-Bilder Umschalter ---
+    const positioningToggle = document.getElementById('positioning-toggle');
+    if (positioningToggle) {
+        positioningToggle.addEventListener('click', (event) => {
+            if (event.target.matches('.positioning-btn')) {
+                const selectedPhase = event.target.dataset.phase;
+                document.querySelectorAll('.positioning-btn').forEach(btn => btn.classList.remove('active-position-btn'));
+                event.target.classList.add('active-position-btn');
+                document.querySelectorAll('.positioning-image, .positioning-text').forEach(element => {
+                    element.style.display = element.dataset.phase === selectedPhase ? 'block' : 'none';
+                });
+            }
+        });
+        const defaultPhaseButton = positioningToggle.querySelector('.positioning-btn');
+        if (defaultPhaseButton) {
+            defaultPhaseButton.click();
+        }
+        document.querySelectorAll('.lightbox-trigger').forEach(img => {
+            img.addEventListener('click', (event) => {
+                event.stopPropagation();
+                window.openLightbox(img.src);
+            });
+        });
+    }
+
+    // --- Logik zum Laden der Einteilungen (Datenbank) ---
+    const assignmentsDocRef = doc(db, DATA_COLLECTION, "boss-" + pageId);
+    async function handleAssignmentChange(event) {
+        if (!window.isManager) return;
+        const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+        const select = event.target;
+        const assignmentId = select.dataset.assignmentId;
+        const playerToSave = select.value;
+        const playerForLog = select.value || "Niemand";
+        await setDoc(assignmentsDocRef, { [assignmentId]: { player: playerToSave, editor: currentManager, timestamp: serverTimestamp() } }, { merge: true });
+        const bossName = pageId.charAt(0).toUpperCase() + pageId.slice(1);
+        const assignmentName = assignmentId.replace(pageId + '-', '').replace(/([A-Z])/g, ' $1').trim();
+        window.logHistory(bossName, `Einteilung: ${assignmentName}`, playerForLog, currentManager);
+    }
+    (async () => {
+        const rosterSnap = await getDoc(rosterDocRef);
+        const rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
+        function populateDropdownOptions(selectElement, players) {
+            selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
+            const divider = new Option('──────────', '');
+            selectElement.appendChild(divider);
+            players.forEach(player => {
+                const option = document.createElement('option');
+                const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
+                option.value = player.name;
+                option.textContent = `${player.name}`;
+                option.style.color = color;
+                option.dataset.color = color;
+                selectElement.appendChild(option);
+            });
+        }
+        document.querySelectorAll('.assignment-select').forEach(select => {
+            select.addEventListener('change', handleAssignmentChange);
+            const assignmentId = select.dataset.assignmentId.toLowerCase();
+            if (assignmentId.includes('cooldown')) {
+                select.innerHTML = '<option value="">-- Cooldown wählen --</option>';
+                healerCooldowns.forEach(cd => {
+                    const option = document.createElement('option');
+                    const color = window.classColors[cd.class] || '#FFFFFF';
+                    option.value = cd.name;
+                    option.textContent = cd.name;
+                    option.dataset.color = color;
+                    option.style.color = color;
+                    select.appendChild(option);
+                });
+            } else {
+                let playersForDropdown = [];
+                if (assignmentId.includes('tank')) {
+                    playersForDropdown = rosterData.filter(p => p.roles.includes('TANK'));
+                } else if (assignmentId.includes('healer')) {
+                    playersForDropdown = rosterData.filter(p => p.roles.includes('HEALER'));
+                } else if (assignmentId.includes('dps') || assignmentId.includes('dd')) {
+                    playersForDropdown = rosterData.filter(p => p.roles.includes('DPS'));
+                } else {
+                    playersForDropdown = rosterData;
+                }
+                populateDropdownOptions(select, playersForDropdown);
+            }
+        });
+        assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
+            const assignments = docSnap.exists() ? docSnap.data() : {};
+            const rosterPlayerNames = rosterData.map(p => p.name);
+            document.querySelectorAll('.assignment-select').forEach(select => {
+                const assignmentId = select.dataset.assignmentId;
+                const assignment = assignments[assignmentId];
+                const assignedPlayerName = assignment ? assignment.player : "";
+                select.classList.remove('invalid-assignment');
+                const oldInvalidOption = select.querySelector('.invalid-option');
+                if (oldInvalidOption) oldInvalidOption.remove();
+                if (assignedPlayerName && assignedPlayerName !== "Niemand" && !rosterPlayerNames.includes(assignedPlayerName) && !select.dataset.assignmentId.includes('cooldown')) {
+                    select.classList.add('invalid-assignment');
+                    const invalidOption = new Option(`❌ ${assignedPlayerName} (Nicht im Roster)`, assignedPlayerName);
+                    invalidOption.className = 'invalid-option';
+                    invalidOption.selected = true;
+                    invalidOption.disabled = true;
+                    select.appendChild(invalidOption);
+                } else {
+                    select.value = assignedPlayerName;
+                    const selectedOption = Array.from(select.options).find(o => o.value === assignedPlayerName);
+                    select.style.color = selectedOption ? selectedOption.dataset.color : '#FFFFFF';
+                }
+            });
+            generateWeakAuraCode(pageId);
+            window.toggleSelectEditability();
+        });
+        window.toggleSelectEditability();
+    })();
+}
 
         // ============== COMP LOGIK (HELFERFUNKTIONEN) ==============
         function getPlayerInfoFromEntry(playerEntry) {

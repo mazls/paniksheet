@@ -28,16 +28,25 @@
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Gara'jal der Geisterbinder</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#strategy">Strategie</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+    </nav>
 
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
         <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
     
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
         <div>
-            <div>
                 <p class="mb-4">Gara'jal der Geisterbinder ist ein intensiver DPS-Check mit einem harten 6-Minuten-Enrage-Timer. Der Kampf findet gleichzeitig in der realen Welt und in der Geisterwelt statt. Die Koordination zwischen den Spielern in beiden Welten ist entscheidend für den Erfolg.</p>
                 <ul class="list-disc list-inside space-y-2 text-gray-300">
                     <li><strong>Zwei Welten:</strong> Spieler müssen regelmäßig über <strong class="text-cyan-400">Geistertotems</strong> in die Geisterwelt wechseln, um dort <strong class="text-purple-300">Schattenhafte Diener</strong> zu töten. Diese verursachen sonst massiven, steigenden Raidschaden in der realen Welt.</li>
@@ -60,10 +69,15 @@
                </div>
            </div>
         </div>
+        </div>
     </section>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Strategie und Ablauf</h2>
+<section id="strategy" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Strategie und Ablauf
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content"
         <h4 class="text-lg font-semibold mt-4 text-blue-450">Die reale Welt</h4>
         <p class="text-gray-300 mb-4">
             In der realen Welt liegt der Fokus auf maximalem Schaden auf Gara'jal und dem Überleben des <strong class="text-red-500">Voodoopuppen</strong>-Schadens. Der Tank sollte defensive Cooldowns rotieren, um den Schaden auf die anderen Puppen zu minimieren. Heiler müssen die Voodoopuppen-Ziele priorisieren. Wenn ein <strong class="text-cyan-400">Geistertotem</strong> erscheint, müssen die eingeteilten Spieler es zerstören, um in die Geisterwelt zu gelangen. Spieler, die von Voodoopuppen betroffen sind, können nicht wechseln.
@@ -76,10 +90,15 @@
         <p class="text-gray-300">
             Dies ist ein reiner Wettlauf mit der Zeit. Es kommen keine Spieler mehr in die Geisterwelt, wodurch der Schaden durch die Diener stetig ansteigt. Zündet hier <strong class="text-red-500">Kampfrausch/Heldentum</strong> und alle verbleibenden Cooldowns, um den Boss zu besiegen, bevor der Raid überwältigt wird.
         </p>
+    </div>
     </section>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-<h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     
     <div >
@@ -216,10 +235,15 @@
                 </div>
             </div>
         </div>
+</div>
     </section>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Fähigkeiten im Detail</h2>
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-slate-750 p-4 rounded-lg">
                 <h4 class="text-lg font-bold text-white">Gara'jal (Reale Welt)</h4>
@@ -252,5 +276,6 @@
                 <li>Alle Fähigkeiten verursachen deutlich mehr Schaden.</li>
             </ul>
         </div>
+    </div>
     </section>
 </main>

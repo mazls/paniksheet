@@ -28,14 +28,23 @@
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Elegon</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+</nav>
     
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
         <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Kampfübersicht & Kernmechaniken</h2>
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
         <p class="mb-4">Elegon ist der vorletzte Boss im Mogu'shangewölbe. Der Kampf mit dem Drachen gliedert sich in insgesamt drei Phasen, die Ihr bewältigen müsst und sich in einem Zyklus wiederholen.</p>
         <ul class="list-disc list-inside space-y-2 text-gray-300">
             <li><strong>Phase 1 (Boss-Phase):</strong> Bekämpft Elegon und seine <strong class="text-white">Himmlischen Beschützer</strong>. Der Energievortex in der Mitte erhöht euren Schaden/Heilung, aber ihr erhaltet auch den stapelbaren <strong class="text-red-400">Überladen</strong>-Debuff.</li>
@@ -47,10 +56,15 @@
         <p class="mb-2"><strong>Phase 2:</strong> Nahkämpfer positionieren sich in der Mitte, Fernkämpfer verteilen sich am Rand des Vortex, um die <strong class="text-yellow-400">Energieladungen</strong> schnell zu töten. Ziel ist es, möglichst viele Wellen zu besiegen, um Elegon anfälliger für Schaden zu machen.</p>
         <p class="mb-2"><strong>Phase 3:</strong> Der Raid teilt sich auf, um die <strong class="text-white">Himmlischen Fokusse</strong> zu zerstören. Achtet auf die <strong class="text-red-500">Energieleiter</strong> und die <strong class="text-blue-400">Energiekaskaden</strong>. Tanks sammeln die daraus entstehenden Adds ein. Nach Zerstörung aller Fokusse beginnt Phase 1 von Neuem.</p>
         <p class="mb-4">Der Kampf endet nach 9 Minuten und 45 Sekunden mit einem Soft-Enrage.</p>
+    </div>
     </section>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-<h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Einteilungen & Taktische Hilfen</h2>
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
     <div>
@@ -171,11 +185,15 @@
                 </div>
             </div>
         </div>
+</div>
     </section>
 
-    <section class="bg-slate-850 p-6 rounded-lg mb-6">
-        <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">Boss-Fähigkeiten und Schadenswerte</h2>
-
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Boss-Fähigkeiten und Schadenswerte
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
         <!-- 10-Spieler Modus -->
         <div data-size="10" class="tactic-content">
             <h3 class="text-xl font-semibold text-blue-450 mb-3">10-Spieler-Modus</h3>
@@ -251,5 +269,6 @@
                 <li>Getroffene Charaktere durch "Totale Vernichtung" sind zudem noch betäubt und verlieren regelmäßig Trefferpunkte. Ihr könnt den Effekt nur aufheben, wenn Ihr sie über 80% der Trefferpunkte bringt.</li>
             </ul>
         </div>
+    </div>
     </section>
 </main>
