@@ -110,6 +110,10 @@
                     <span>Heiler 4 (nur 25er):</span>
                     <select id="elegon-healer4" class="assignment-select" data-assignment-id="elegon-healer4"></select>
                 </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Heiler 5 (nur 25er):</span>
+                    <select id="elegon-healer4" class="assignment-select" data-assignment-id="elegon-healer5"></select>
+                </li>
             </ul>
         </div>
 
@@ -120,13 +124,41 @@
                 <span>Spieler</span>
             </div>
             <ul class="assignment-list">
+                <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Kreuz) Rechte Seite:</span></li>
                 <li>
-                    <span>Gruppe für Energieladungen (Links):</span>
-                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup1"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup1.1"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup1.2"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup1.3"></select>
                 </li>
+                <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Dreieck) Rechte Seite:</span></li>
                 <li>
-                    <span>Gruppe für Energieladungen (Rechts):</span>
-                    <select id="elegon-chargeGroup2" class="assignment-select" data-assignment-id="elegon-chargeGroup2"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup2.1"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup2.2"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup2.3"></select>
+                </li>
+                <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Kreis) Rechte Seite:</span></li>
+                <li>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup3.1"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup3.2"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup3.3"></select>
+                </li>
+                <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Stern) Linke Seite:</span></li>
+                <li>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup4.1"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup4.2"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup4.3"></select>
+                </li>
+                <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Diamant) Links Seite:</span></li>
+                <li>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup5.1"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup5.2"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup5.3"></select>
+                </li>
+                <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Quadrat) Linke Seite:</span></li>
+                <li>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup6.1"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup6.2"></select>
+                    <select id="elegon-chargeGroup1" class="assignment-select" data-assignment-id="elegon-chargeGroup6.3"></select>
                 </li>
             </ul>
         </div>
@@ -169,19 +201,27 @@
     <div>
         
 
-            <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 <div class="space-y-6">
-                    <div>
-                        <h4 class="text-lg font-semibold">Positionierung für Energieladungen</h4>
-                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
-                                                    </div>
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="elegon" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Elegon</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="elegon">Elegon</p>
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="mogushan/elegon.png" alt="Elegon" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="elegon">
+				</div>
+                <div>
+                    <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Fv1PTxqoq9M?hl=en" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
-                     <div>
-                        <h4 class="text-lg font-semibold">Video Guide</h4>
-                        <div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500">
-                                                    </div>
-                    </div>
+                </div>
                 </div>
             </div>
         </div>

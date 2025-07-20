@@ -21,9 +21,6 @@
 		font-style: italic;
 		background-color: rgba(185, 28, 28, 0.3);
 	}
-    /* In der Datei: index.html im <style>-Bereich */
-
-/* ... dein bisheriges CSS ... */
 
 /* Stile für die neue Sprungmarken-Navigation */
 .quick-nav-bar {
@@ -211,8 +208,7 @@
 
         #background-video { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -100; object-fit: cover; filter: brightness(0.4); }
         .content-wrapper { position: relative; z-index: 2; }
-        
-        /* KORREKTUR: Login Modal Overlay Styling */
+
         .login-modal-overlay {
             position: fixed;
             inset: 0;
@@ -611,6 +607,40 @@
 }
 .text-like-select option {
     background: var(--color-dark-green-bg);
+}
+    	.assignment-list li:last-child {
+		border-bottom: none;
+	}
+	
+	.assignment-list .list-subheader {
+		grid-column: 1 / -1; /* Nimmt die volle Breite ein */
+		font-weight: bold;
+		color: var(--color-jade); /* Jade-Farbe für die Überschrift */
+		padding: 0.5rem 0.2rem 0.2rem; /* Etwas Abstand */
+		background-color: transparent !important; /* Kein Zebra-Streifen */
+		border-bottom: 1px solid var(--color-gold-border-light);
+		margin-top: 0.5rem;
+	}
+	.assignment-list .list-subheader:first-child {
+		margin-top: 0;
+	}
+    	/* Zebra-Streifen für bessere Lesbarkeit (wie in Sheets) */
+	.assignment-list li:nth-child(even) {
+		background-color: rgba(10, 20, 15, 0.3); /* Etwas dunklerer Hintergrund für jede zweite Zeile */
+	}
+	pre,
+code {
+    font-family: 'Courier New', Courier, monospace; /* Klassische Schriftart für Code */
+}
+
+pre {
+    background-color: rgba(10, 20, 15, 0.7); /* Dunkler, durchsichtiger Hintergrund */
+    border: 1px solid var(--color-gold-border); /* Goldener Rahmen, passend zum Theme */
+    border-radius: 0.5rem; /* Abgerundete Ecken */
+    padding: 1rem; /* Innenabstand */
+    color: var(--color-parchment); /* Helle Schriftfarbe */
+    white-space: pre-wrap;       /* Sorgt für Zeilenumbrüche bei langen Zeilen */
+    overflow-x: auto;          /* Fügt eine Scrollbar hinzu, falls eine Zeile zu lang ist */
 }
 	</style>
 </head>

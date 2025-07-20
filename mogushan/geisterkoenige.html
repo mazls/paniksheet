@@ -67,15 +67,15 @@
             </div>
             <div>
                 <h3 class="text-xl font-bold text-yellow-400">2. Meng der Irre (Nahkämpfer)</h3>
-                <p>Verfügt über eine Energieleiste. Im <strong>Wahnsinnigkeitsmodus</strong> verursacht er immer höheren Schaden, bei 100 Energie wechselt er in den <strong>Feigheitsmodus</strong> und läuft planlos umher, reflektiert aber Schaden auf den Angreifer. <strong>Irrer Einfall</strong> erhöht Energie und ist unterbrechbar.<br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-red-500">Wahnsinniger Schrei</strong> - Macht alle Charaktere feindselig. Der Effekt endet, wenn man 40.000 Schaden von anderen Charakteren erhalten hat.</p>
+                <p>Verfügt über eine Energieleiste. Im <strong>Wahnsinnigkeitsmodus</strong> verursacht er immer höheren Schaden, bei 100 Energie wechselt er in den <strong>Feigheitsmodus</strong> und läuft planlos umher, reflektiert aber Schaden auf den Angreifer. <strong>Irrer Einfall</strong> erhöht Energie und ist unterbrechbar.<br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-red-500">Wahnsinniger Schrei</strong> - Macht alle Charaktere feindselig. Der Effekt endet, wenn man 60.000 Schaden von anderen Charakteren erhalten hat.</p>
             </div>
             <div>
                 <h3 class="text-xl font-bold text-yellow-400">3. Zian des endlosen Schattens (Zauberer)</h3>
-                <p><strong>Schattenschlag</strong> ist unterbrechbar. <strong>Aufgeladene Schatten</strong> betreffen nur Heiler und Fernkämpfer und springen auf nahe Recken über. Daher ist Verteilen wichtig.<br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-purple-400">Unsterbliche Schatten</strong> - Verfolgt einen zufällig gewählten Charakter. Wenn er zerstört wird, bildet sich ein Schattenteich, aus dem nach 15 Sekunden ein neuer Schatten entsteht.</p>
+                <p><strong>Schattenschlag</strong> ist unterbrechbar. <strong>Aufgeladene Schatten</strong> betreffen nur Heiler und Fernkämpfer und springen auf nahe Spieler über. Daher ist Verteilen wichtig.<br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-purple-400">Unsterbliche Schatten</strong> - Verfolgt den Spieler, der am nähsten am Spawnpunkt steht. Wenn er zerstört wird, bildet sich ein Schattenteich, aus dem nach 15 Sekunden ein neuer Schatten entsteht. Der Schädel kann weggekickt werden!</p>
             </div>
             <div>
                 <h3 class="text-xl font-bold text-yellow-400">4. Subetai der Schnelle (Jäger)</h3>
-                <p><strong>Pfeilregen</strong> beschießt einen zufälligen Charakter und spiesset ihn fest. Andere müssen den Pfeil zerstören, um ihn zu befreien. <strong>Salve</strong> besteht aus drei Feuerstößen in denselben Bereich mit zunehmendem Schaden und kleiner werdendem Kegel.<br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-orange-400">Plündern</strong> - Stürmt auf einen Charakter zu und beraubt ihn seiner Habseligkeiten, was Schaden/Heilung reduziert und den physischen Schaden erhöht.</p>
+                <p><strong>Pfeilregen</strong> beschießt einen zufälligen Charakter und spiesset ihn fest. Andere müssen den Pfeil zerstören, um ihn zu befreien. <strong>Salve</strong> besteht aus drei Feuerstößen in denselben Bereich mit zunehmendem Schaden und kleiner werdendem Kegel.<br/><strong>Behaltene Fähigkeit:</strong> <strong class="text-orange-400">Plündern</strong> Der Effekt 'Geplündert' verringert verursachten Schaden und Heilung um 50% und erhöht den erlittenen körperlichen Schaden um 50%.</p>
             </div>
         </div>
         </div>
@@ -102,38 +102,38 @@
                     <span>Tank 1:</span>
                     <select id="geisterkoenige-tank1" class="assignment-select" data-assignment-id="geisterkoenige-tank1"></select>
                 </li>
-                <li>
-                    <span>Tank 2:</span>
-                    <select id="geisterkoenige-tank2" class="assignment-select" data-assignment-id="geisterkoenige-tank2"></select>
-                </li>
             </ul>
         </div>
 
-        <div class="assignment-block">
-            <h4 class="text-lg font-bold">❤️ Heiler-Einteilung</h4>
-            <div class="assignment-header">
-                <span>Aufgabe</span>
-                <span>Spieler</span>
-            </div>
-            <ul class="assignment-list">
-                <li>
-                    <span>Heiler 1:</span>
-                    <select id="geisterkoenige-healer1" class="assignment-select" data-assignment-id="geisterkoenige-healer1"></select>
-                </li>
-                <li>
-                    <span>Heiler 2:</span>
-                    <select id="geisterkoenige-healer2" class="assignment-select" data-assignment-id="geisterkoenige-healer2"></select>
-                </li>
-                <li data-size="25" class="tactic-content" style="display: block;">
-                    <span>Heiler 3 (nur 25er):</span>
-                    <select id="geisterkoenige-healer3" class="assignment-select" data-assignment-id="geisterkoenige-healer3"></select>
-                </li>
-                <li data-size="25" class="tactic-content" style="display: block;">
-                    <span>Heiler 4 (nur 25er):</span>
-                    <select id="geisterkoenige-healer4" class="assignment-select" data-assignment-id="geisterkoenige-healer4"></select>
-                </li>
-            </ul>
-        </div>
+            <div class="assignment-block">
+                        <h4 class="text-lg font-bold">❤️ Heiler-Zuweisungen</h4>
+                        <div class="assignment-header" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                            <span>Aufgabe</span>
+                            <span>Spieler</span>
+                            <span>Spieler</span>
+                        </div>
+                        <ul class="assignment-list">
+                            <li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 1/2:</span>
+                                <select data-assignment-id="geisterkoenige-healer1" class="assignment-select"></select>
+                                <select data-assignment-id="geisterkoenige-healer2" class="assignment-select"></select>
+                            </li>
+                            <li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 3/4:</span>
+                                <select data-assignment-id="geisterkoenige-healer3" class="assignment-select"></select>
+                                <select data-assignment-id="geisterkoenige-healer4" class="assignment-select"></select>
+                            </li>
+                            <li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 5/6:</span>
+                                <select data-assignment-id="geisterkoenige-healer5" class="assignment-select"></select>
+                                <select data-assignment-id="geisterkoenige-healer6" class="assignment-select"></select>
+                            </li>
+                            <li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 7:</span>
+                                <select data-assignment-id="geisterkoenige-healer7" class="assignment-select"></select>
+                            </li>
+                        </ul>
+                </div>
 
         <div class="assignment-block">
             <h4 class="text-lg font-bold">⚙️ Allgemeine Aufgaben</h4>
@@ -142,28 +142,35 @@
                 <span>Spieler</span>
             </div>
             <ul class="assignment-list">
+                <li class="list-subheader"><span>Unterbrecher-Rotation für Zian:</span></li>
                 <li>
-                    <span>Unterbrecher-Rotation für Zian:</span>
+                    
+                    <select id="geisterkoenige-interruptZian" class="assignment-select" data-assignment-id="geisterkoenige-interruptZian"></select>
+                    <select id="geisterkoenige-interruptZian" class="assignment-select" data-assignment-id="geisterkoenige-interruptZian"></select>
+                    <select id="geisterkoenige-interruptZian" class="assignment-select" data-assignment-id="geisterkoenige-interruptZian"></select>
                     <select id="geisterkoenige-interruptZian" class="assignment-select" data-assignment-id="geisterkoenige-interruptZian"></select>
                 </li>
+                <li class="list-subheader"><span>Leichter AoE für Meng's Schrei:</span></li>
                 <li>
-                    <span>Leichter AoE für Meng's Schrei:</span>
+                    <select id="geisterkoenige-aoeMeng" class="assignment-select" data-assignment-id="geisterkoenige-aoeMeng"></select>
+                    <select id="geisterkoenige-aoeMeng" class="assignment-select" data-assignment-id="geisterkoenige-aoeMeng"></select>
                     <select id="geisterkoenige-aoeMeng" class="assignment-select" data-assignment-id="geisterkoenige-aoeMeng"></select>
                 </li>
+                <li class="list-subheader"><span>Dispel für Zian's Schild (Heroisch):</span></li>
                 <li>
-                    <span>Dispel für Zian's Schild (Heroisch):</span>
                     <select id="geisterkoenige-dispelZian" class="assignment-select" data-assignment-id="geisterkoenige-dispelZian"></select>
                 </li>
+                <li class="list-subheader"><span>Enrage-Dispel für Meng (Heroisch):</span></li>
                 <li>
-                    <span>Enrage-Dispel für Meng (Heroisch):</span>
                     <select id="geisterkoenige-dispelMeng" class="assignment-select" data-assignment-id="geisterkoenige-dispelMeng"></select>
                 </li>
-                <li data-size="25" class="tactic-content" style="display: block;">
-                    <span>Schatten Kiter 1 (nur 25er):</span>
+                <li class="list-subheader"><span>Kiter</span></li>
+                <li>
+                    <span>Schatten Kiter 1:</span>
                     <select id="geisterkoenige-spiritkite1" class="assignment-select" data-assignment-id="geisterkoenige-spiritkite1"></select>
                 </li>
-                <li data-size="25" class="tactic-content" style="display: block;">
-                    <span>Schatten Kiter 2 (nur 25er):</span>
+                <li>
+                    <span>Schatten Kiter 2:</span>
                     <select id="geisterkoenige-spiritkite2" class="assignment-select" data-assignment-id="geisterkoenige-spiritkite2"></select>
                 </li>
             </ul>
@@ -172,15 +179,36 @@
     
     <div>
 
-
-            <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 <div class="space-y-6">
-                    <div>
-                        <h4 class="text-lg font-semibold">Positionierung für "Flankenangriffsbefehl"</h4>
-                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
-                                                    </div>
-                    </div>
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="quiang" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Quiang</button>
+						<button data-phase="meng" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Meng</button>
+						<button data-phase="subetai" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Subetai</button>
+						<button data-phase="zian" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Zian</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="quiang">Quiang</p>
+						<p class="positioning-text" data-phase="meng">Meng</p>
+						<p class="positioning-text" data-phase="subetai"> Subetai</p>
+						<p class="positioning-text" data-phase="zian">Zian</p>
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="mogushan/Quiang.png" alt="Quiang" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="quiang">
+						<img src="mogushan/Meng.png" alt="meng" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="meng">
+						<img src="mogushan/Subetai.png" alt="subetai" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="subetai" style="display: none;">
+						<img src="mogushan/Zian.png" alt="ziang" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="zian" style="display: none;">
+				</div>
                      <div>
                         <h4 class="text-xl font-bold text-gold mt-4 mb-2">Video-Guide</h4>
 						<div class="video-container my-4 rounded-lg shadow-lg">

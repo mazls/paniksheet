@@ -25,6 +25,40 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+    	.assignment-list li:last-child {
+		border-bottom: none;
+	}
+	
+	.assignment-list .list-subheader {
+		grid-column: 1 / -1; /* Nimmt die volle Breite ein */
+		font-weight: bold;
+		color: var(--color-jade); /* Jade-Farbe für die Überschrift */
+		padding: 0.5rem 0.2rem 0.2rem; /* Etwas Abstand */
+		background-color: transparent !important; /* Kein Zebra-Streifen */
+		border-bottom: 1px solid var(--color-gold-border-light);
+		margin-top: 0.5rem;
+	}
+	.assignment-list .list-subheader:first-child {
+		margin-top: 0;
+	}
+    	/* Zebra-Streifen für bessere Lesbarkeit (wie in Sheets) */
+	.assignment-list li:nth-child(even) {
+		background-color: rgba(10, 20, 15, 0.3); /* Etwas dunklerer Hintergrund für jede zweite Zeile */
+	}
+	pre,
+code {
+    font-family: 'Courier New', Courier, monospace; /* Klassische Schriftart für Code */
+}
+
+pre {
+    background-color: rgba(10, 20, 15, 0.7); /* Dunkler, durchsichtiger Hintergrund */
+    border: 1px solid var(--color-gold-border); /* Goldener Rahmen, passend zum Theme */
+    border-radius: 0.5rem; /* Abgerundete Ecken */
+    padding: 1rem; /* Innenabstand */
+    color: var(--color-parchment); /* Helle Schriftfarbe */
+    white-space: pre-wrap;       /* Sorgt für Zeilenumbrüche bei langen Zeilen */
+    overflow-x: auto;          /* Fügt eine Scrollbar hinzu, falls eine Zeile zu lang ist */
+}
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Gara'jal der Geisterbinder</h1>
@@ -49,8 +83,8 @@
         <div>
                 <p class="mb-4">Gara'jal der Geisterbinder ist ein intensiver DPS-Check mit einem harten 6-Minuten-Enrage-Timer. Der Kampf findet gleichzeitig in der realen Welt und in der Geisterwelt statt. Die Koordination zwischen den Spielern in beiden Welten ist entscheidend für den Erfolg.</p>
                 <ul class="list-disc list-inside space-y-2 text-gray-300">
-                    <li><strong>Zwei Welten:</strong> Spieler müssen regelmäßig über <strong class="text-cyan-400">Geistertotems</strong> in die Geisterwelt wechseln, um dort <strong class="text-purple-300">Schattenhafte Diener</strong> zu töten. Diese verursachen sonst massiven, steigenden Raidschaden in der realen Welt.</li>
-                    <li><strong>Voodoopuppen:</strong> Gara'jal verbindet den aktiven Tank mit mehreren Spielern. 70% des Schadens, den der Tank erleidet, wird auf die anderen Puppen kopiert. Dies ist die Hauptquelle für hohen Raid-Schaden.</li>
+                    <li><strong>Zwei Welten:</strong> Spieler müssen regelmäßig über <strong class="text-cyan-400">Geistertotems</strong> in die Geisterwelt wechseln, um dort <strong class="text-purple-300">Schattenhafte Diener</strong> zu töten. Diese verursachen sonst massiven, steigenden Raidschaden in der realen Welt. Die Spieler müssen am Totem stehen, wenn das getötet wird. <strong class="text-red-300"> <br>Achtung:</strong> In der Geisterwelt startet ihr mit 30% HP und braucht mindestens 90% HP, um den Button zu drücken!</li>
+                    <li><strong>Voodoopuppen:</strong> Gara'jal verbindet den aktiven Tank mit mehreren Spielern. 70% des Schadens, den der Tank erleidet, wird auf die anderen Puppen kopiert. Dies ist die Hauptquelle für hohen Raid-Schaden. Verbundene Spieler können <strong class="text-red-300"> nicht </strong> in die Geisterwelt!</li>
                     <li><strong>Bannung & Tank-Wechsel:</strong> Der Voodoopuppen-Debuff endet, wenn Gara'jal den Tank in die Geisterwelt verbannt. Dort muss der Tank einen Seelentrenner besiegen, um zurückzukehren. Dies erzwingt einen Tank-Wechsel in der realen Welt.</li>
                     <li><strong>Wutanfall (Soft Enrage):</strong> Ab 20% Gesundheit hört Gara'jal auf, Geistertotems zu erschaffen. Sein Schaden und seine Angriffsgeschwindigkeit erhöhen sich drastisch. Dies ist die finale Burn-Phase.</li>
                 </ul>
@@ -77,21 +111,24 @@
         Strategie und Ablauf
         <span class="toggle-icon">▼</span>
     </h2>
-    <div class="collapsible-content"
+    <div class="collapsible-content">
         <h4 class="text-lg font-semibold mt-4 text-blue-450">Die reale Welt</h4>
         <p class="text-gray-300 mb-4">
-            In der realen Welt liegt der Fokus auf maximalem Schaden auf Gara'jal und dem Überleben des <strong class="text-red-500">Voodoopuppen</strong>-Schadens. Der Tank sollte defensive Cooldowns rotieren, um den Schaden auf die anderen Puppen zu minimieren. Heiler müssen die Voodoopuppen-Ziele priorisieren. Wenn ein <strong class="text-cyan-400">Geistertotem</strong> erscheint, müssen die eingeteilten Spieler es zerstören, um in die Geisterwelt zu gelangen. Spieler, die von Voodoopuppen betroffen sind, können nicht wechseln.
+            In der realen Welt liegt der Fokus auf maximalem Schaden auf Gara'jal und dem Überleben des <strong class="text-red-500">Voodoopuppen</strong>-Schadens. Der Tank sollte defensive Cooldowns rotieren, um den Schaden auf die anderen Puppen zu minimieren. Heiler müssen die Voodoopuppen-Ziele priorisieren. Wenn ein <strong class="text-cyan-400">Geistertotem</strong> erscheint, müssen die eingeteilten Spieler es zerstören, um in die Geisterwelt zu gelangen. Spieler, die von Voodoopuppen betroffen sind, können nicht wechseln. Backup Spieler müssen bereit sein!
         </p>
         <h4 class="text-lg font-semibold mt-4 text-blue-450">Die Geisterwelt</h4>
         <p class="text-gray-300 mb-4">
-            Spieler haben 30 Sekunden Zeit, um so viele <strong class="text-purple-300">Schattenhafte Diener</strong> wie möglich zu töten. Der mitgereiste Heiler muss alle Gruppenmitglieder schnell vollheilen, damit diese per Extra-Button (<strong class="text-green-400">Seelenrückkehr</strong>) die Geisterwelt verlassen können. Wer nach 30 Sekunden nicht zurückkehrt, stirbt.
+            Spieler haben 30 Sekunden Zeit, um so viele <strong class="text-purple-300">Schattenhafte Diener</strong> wie möglich zu töten. Der mitgereiste Heiler muss alle Gruppenmitglieder schnell vollheilen (min 90%), damit diese per Extra-Button (<strong class="text-green-400">Seelenrückkehr</strong>) die Geisterwelt verlassen können. Wer nach 30 Sekunden nicht zurückkehrt, stirbt.
         </p>
          <h4 class="text-lg font-semibold mt-4 text-blue-450">Die Wutanfall-Phase (ab 20%)</h4>
         <p class="text-gray-300">
             Dies ist ein reiner Wettlauf mit der Zeit. Es kommen keine Spieler mehr in die Geisterwelt, wodurch der Schaden durch die Diener stetig ansteigt. Zündet hier <strong class="text-red-500">Kampfrausch/Heldentum</strong> und alle verbleibenden Cooldowns, um den Boss zu besiegen, bevor der Raid überwältigt wird.
         </p>
+        <h4 class="text-lg font-semibold mt-4 text-blue-450">Extra Action Button Makro</h3>
+            <pre><code>/stopcasting
+/click ExtraActionButton1</code></pre>
     </div>
-    </section>
+</section>
 
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
@@ -120,12 +157,36 @@
                 </li>
             </ul>
         </div>
-
+            <div class="assignment-block">
+                        <h4 class="text-lg font-bold">❤️ Heiler-Zuweisungen</h4>
+                        <div class="assignment-header" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                            <span>Aufgabe</span>
+                            <span>Spieler</span>
+                            <span>Spieler</span>
+                        </div>
+                        <ul class="assignment-list">
+                            <li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 1/2:</span>
+                                <select data-assignment-id="garajal-healer1" class="assignment-select"></select>
+                                <select data-assignment-id="garajal-healer2" class="assignment-select"></select>
+                            </li>
+                            <li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 3/4:</span>
+                                <select data-assignment-id="garajal-healer3" class="assignment-select"></select>
+                                <select data-assignment-id="garajal-healer4" class="assignment-select"></select>
+                            </li>
+                            <li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 5/6:</span>
+                                <select data-assignment-id="garajal-healer5" class="assignment-select"></select>
+                                <select data-assignment-id="garajal-healer6" class="assignment-select"></select>
+                            </li>
+                        </ul>
+                </div>
         <h3 class="text-xl font-semibold text-blue-450 mb-2 mt-6">👻 Geisterwelt-Teams</h3>
         <p class="text-gray-400 mb-4">Feste Teams mit Backups sind Pflicht! Pro Totem: 1 Heiler + <span data-size="10" class="tactic-content">2 DPS</span><span data-size="25" class="tactic-content" style="display:inline">4 DPS</span>.</p>
 
         <div class="assignment-block">
-            <h4 class="text-lg font-bold">Team 1 (1., 3., ... Totem)</h4>
+            <h4 class="text-lg font-bold">Team 1 (3., 5., ... Totem)</h4>
             <div class="assignment-header">
                 <span>Rolle</span>
                 <span>Spieler</span>
@@ -133,7 +194,7 @@
             <ul class="assignment-list">
                 <li>
                     <span>Heiler:</span>
-                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Healer></select>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Healer"></select>
                 </li>
                 <li>
                     <span>DPS 1:</span>
@@ -151,11 +212,19 @@
                     <span>DPS 4 (25er):</span>
                     <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps4"></select>
                 </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #1:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps5"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #2:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps6"></select>
+                </li>
             </ul>
         </div>
 
         <div class="assignment-block">
-            <h4 class="text-lg font-bold">Team 2 (2., 4., ... Totem)</h4>
+            <h4 class="text-lg font-bold">Team 2 (6., 8., ... Totem)</h4>
             <div class="assignment-header">
                 <span>Rolle</span>
                 <span>Spieler</span>
@@ -181,29 +250,65 @@
                     <span>DPS 4 (25er):</span>
                     <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps4"></select>
                 </li>
+                                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #1:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps5"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #2:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps6"></select>
+                </li>
             </ul>
         </div>
 
         <div class="assignment-block">
             <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
-            <div class="assignment-header" style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
+            <div class="assignment-header" style="grid-template-columns: 0.5fr 1fr 1.2fr;"> 
                 <span>Aufgabe</span>
                 <span>Spieler</span>
 				<span>Cooldown</span>
             </div>
             <ul class="assignment-list">
-                <li>
-					<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
-                    <span>CD für hohen Voodoo-Schaden:</span>
-					<select data-assignment-id="garajal-healer-cd-voodoo" class="assignment-select"></select>
-					<select data-assignment-id="garajal-healer-cd-voodoo-cooldown" class="assignment-select"></select>
-                </li>
-                <li>
-					<li style="grid-template-columns: 1fr 0.7fr 1.2fr;"> 
-                    <span>CD für Wutanfall-Phase (20%):</span>
-					<select data-assignment-id="garajal-healer-cd-enrage" class="assignment-select"></select>
-					<select data-assignment-id="garajal-healer-cd-enrage-cooldown" class="assignment-select"></select>
-                </li>
+                    <li class="list-subheader"><span>CD für hohen Voodoo-Schaden:</span></li>
+					<li style="grid-template-columns: 0.5fr 1fr 1.2fr;"> 
+                    <span>#1</span>
+					<select data-assignment-id="garajal-healer-cd-voodoo1" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-voodoo-cooldown1" class="assignment-select"></select>
+                    <span>#2</span>
+					<select data-assignment-id="garajal-healer-cd-voodoo2" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-voodoo-cooldown2" class="assignment-select"></select>
+                    <span>#3</span>
+					<select data-assignment-id="garajal-healer-cd-voodoo3" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-voodoo-cooldown3" class="assignment-select"></select>
+            </ul>
+             <ul class="assignment-list">
+                    <li class="list-subheader"><span>CD für Wutanfall-Phase (20%):</span></li>
+					<li style="grid-template-columns: 0.5fr 1fr 1.2fr;"> 
+                    <span>20%</span>
+					<select data-assignment-id="garajal-healer-cd-enrage1.1" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage-cooldown1.1" class="assignment-select"></select>
+                    <span>20%</span>
+                    <select data-assignment-id="garajal-healer-cd-enrage1.2" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage-cooldown1.2" class="assignment-select"></select>
+                    <span>15%</span>
+                    <select data-assignment-id="garajal-healer-cd-enrage1.3" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage-cooldown1.3" class="assignment-select"></select>
+                    <span>15%</span>
+                    <select data-assignment-id="garajal-healer-cd-enrage1.4" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage-cooldown1.4" class="assignment-select"></select>
+                    <span>10%</span>
+                    <select data-assignment-id="garajal-healer-cd-enrage1.5" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage-cooldown1.5" class="assignment-select"></select>
+                    <span>10%</span>
+                    <select data-assignment-id="garajal-healer-cd-enrage1.6" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage-cooldown1.6" class="assignment-select"></select>
+                    <span>5%</span>
+                    <select data-assignment-id="garajal-healer-cd-enrage1.7" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage-cooldown1.7" class="assignment-select"></select>
+                    <span>5%</span>
+                    <select data-assignment-id="garajal-healer-cd-enrage1.8" class="assignment-select"></select>
+					<select data-assignment-id="garajal-healer-cd-enrage-cooldown1.8" class="assignment-select"></select>
+                
             </ul>
         </div>
     </div>
@@ -212,12 +317,24 @@
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 <div class="space-y-6">
-                    <div>
-                        <h4 class="text-lg font-semibold">Positionierung</h4>
-                        <div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500">
-                           [Hier Aufstellungsbild einfügen]
-                        </div>
-                    </div>
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="start" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Start</button>
+						<button data-phase="tank-add" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Tank-Add</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="start">Totem-Teams gehen in die Totems, die ersten beiden Totems können ignoriert werden.</p>
+						<p class="positioning-text" data-phase="tank-add">Dieses Add kann nur der Tank sehen. Es hat rot leuchtende Hände.</p>
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="mogushan/Garajal_start.png" alt="Positionierung Start" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="start">
+						<img src="mogushan/Garajal-Tank-Add.png" alt="Garajal Tank Add" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="tank-add">
+				</div>
                      <div>
                         <h4 class="text-xl font-bold text-gold mt-4 mb-2">Video-Guide</h4>
 						<div class="video-container my-4 rounded-lg shadow-lg">
