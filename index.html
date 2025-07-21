@@ -1926,6 +1926,9 @@ function initBossPage(pageId, sectionId = null) {
                     select.style.color = selectedOption ? selectedOption.dataset.color : '#FFFFFF';
                 }
             });
+            if (typeof window.initializePageSpecificCode === 'function') {
+                window.initializePageSpecificCode(assignments);
+            }
             
             window.toggleSelectEditability();
         });

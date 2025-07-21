@@ -352,6 +352,19 @@ pre {
                 </div>
             </div>
         </div>
+        </div>
+    </div> <div class="mt-6">
+    <div class="assignment-block">
+        <h4 class="text-lg font-bold">WeakAura Code für Geisterwelt-Teams</h4>
+        <p class="text-sm text-gray-400 mb-2">Dieser Code wird automatisch basierend auf den obigen Einteilungen generiert.</p>
+        <div class="relative">
+            <button id="copy-spirit-teams-code-btn" class="absolute top-2 right-2 p-1.5 rounded-md bg-slate-600 hover:bg-slate-500" title="In die Zwischenablage kopieren">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+            </button>
+            <pre><code id="spirit-teams-weakaura-output">-- Bitte Spieler zuweisen...</code></pre>
+        </div>
+    </div>
+</div>
 </div>
     </section>
 
@@ -395,4 +408,52 @@ pre {
         </div>
     </div>
     </section>
+    <script>
+    // Diese Funktion wird von index.html aufgerufen, nachdem die Zuweisungen geladen wurden.
+    window.initializePageSpecificCode = function(assignments) {
+        
+        // Funktion, die den WeakAura-Code basierend auf den Zuweisungen generiert
+        function updateGarajalWeakAura(currentAssignments) {
+            const outputElement = document.getElementById('spirit-teams-weakaura-output');
+            if (!outputElement) return;
+
+            const team1Ids = ['garajal-spiritTeam1Healer', 'garajal-spiritTeam1Dps1', 'garajal-spiritTeam1Dps2', 'garajal-spiritTeam1Dps3', 'garajal-spiritTeam1Dps4', 'garajal-spiritTeam1Dps5', 'garajal-spiritTeam1Dps6'];
+            const team2Ids = ['garajal-spiritTeam2Healer', 'garajal-spiritTeam2Dps1', 'garajal-spiritTeam2Dps2', 'garajal-spiritTeam2Dps3', 'garajal-spiritTeam2Dps4', 'garajal-spiritTeam2Dps5', 'garajal-spiritTeam2Dps6'];
+
+            const getAssignedPlayers = (ids) => ids
+                .map(id => currentAssignments[id]?.player)
+                .filter(name => name && name !== "Niemand" && name !== "");
+
+            const team1Players = getAssignedPlayers(team1Ids);
+            const team2Players = getAssignedPlayers(team2Ids);
+
+            const outputString = 
+`Team 1 (3., 5., etc. Totem)
+${team1Players.join('\n')}
+
+Team 2 (6., 8., etc. Totem)
+${team2Players.join('\n')}`;
+            outputElement.textContent = outputString;
+        }
+
+        // Event-Listener für den Kopieren-Button
+        const copySpiritBtn = document.getElementById('copy-spirit-teams-code-btn');
+        if (copySpiritBtn) {
+            copySpiritBtn.addEventListener('click', () => {
+                const codeContent = document.getElementById('spirit-teams-weakaura-output').textContent;
+                navigator.clipboard.writeText(codeContent).then(() => {
+                    copySpiritBtn.classList.add('copy-feedback');
+                    copySpiritBtn.title = "Kopiert!";
+                    setTimeout(() => {
+                        copySpiritBtn.classList.remove('copy-feedback');
+                        copySpiritBtn.title = "In die Zwischenablage kopieren";
+                    }, 2000);
+                });
+            });
+        }
+        
+        // Die Funktion sofort aufrufen, um den initialen Code zu generieren
+        updateGarajalWeakAura(assignments);
+    };
+</script>
 </main>
