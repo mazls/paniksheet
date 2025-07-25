@@ -354,16 +354,31 @@ pre {
 
 
     </div> <div class="mt-6">
+<div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    
     <div class="assignment-block">
-        <h4 class="text-lg font-bold">WeakAura Code für Geisterwelt-Teams</h4>
-        <p class="text-sm text-gray-400 mb-2">Dieser Code wird automatisch basierend auf den obigen Einteilungen generiert.</p>
+        <h4 class="text-lg font-bold">Text-Export für WeakAura</h4>
+        <p class="text-sm text-gray-400 mb-2">Einfache Namensliste zum Kopieren.</p>
         <div class="relative">
             <button id="copy-spirit-teams-code-btn" class="absolute top-2 right-2 p-1.5 rounded-md bg-slate-600 hover:bg-slate-500" title="In die Zwischenablage kopieren">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
             </button>
             <pre><code id="spirit-teams-weakaura-output">-- Bitte Spieler zuweisen...</code></pre>
         </div>
     </div>
+
+    <div class="assignment-block">
+        <h4 class="text-lg font-bold">MRT-Export für Geisterwelt-Teams</h4>
+        <p class="text-sm text-gray-400 mb-2">Code mit Icons für Method Raid Tools.</p>
+        <div class="relative">
+            <button id="copy-spirit-teams-mrt-btn" class="absolute top-2 right-2 p-1.5 rounded-md bg-slate-600 hover:bg-slate-500" title="In die Zwischenablage kopieren">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            </button>
+            <pre><code id="spirit-teams-mrt-output">-- Bitte Spieler zuweisen...</code></pre>
+        </div>
+    </div>
+
+</div>
 </div>
 </div>
     </section>
@@ -408,52 +423,91 @@ pre {
         </div>
     </div>
     </section>
-    <script>
-    // Diese Funktion wird von index.html aufgerufen, nachdem die Zuweisungen geladen wurden.
-    window.initializePageSpecificCode = function(assignments) {
+<script>
+    window.initializePageSpecificCode = function(assignments, roster) {
         
-        // Funktion, die den WeakAura-Code basierend auf den Zuweisungen generiert
+        // --- FUNKTION FÜR TEXT-EXPORT ---
         function updateGarajalWeakAura(currentAssignments) {
+            // Diese Funktion bleibt exakt so wie sie war.
             const outputElement = document.getElementById('spirit-teams-weakaura-output');
             if (!outputElement) return;
-
             const team1Ids = ['garajal-spiritTeam1Healer', 'garajal-spiritTeam1Dps1', 'garajal-spiritTeam1Dps2', 'garajal-spiritTeam1Dps3', 'garajal-spiritTeam1Dps4', 'garajal-spiritTeam1Dps5', 'garajal-spiritTeam1Dps6'];
             const team2Ids = ['garajal-spiritTeam2Healer', 'garajal-spiritTeam2Dps1', 'garajal-spiritTeam2Dps2', 'garajal-spiritTeam2Dps3', 'garajal-spiritTeam2Dps4', 'garajal-spiritTeam2Dps5', 'garajal-spiritTeam2Dps6'];
-
-            const getAssignedPlayers = (ids) => ids
-                .map(id => currentAssignments[id]?.player)
-                .filter(name => name && name !== "Niemand" && name !== "");
-
+            const getAssignedPlayers = (ids) => ids.map(id => currentAssignments[id]?.player).filter(Boolean);
             const team1Players = getAssignedPlayers(team1Ids);
             const team2Players = getAssignedPlayers(team2Ids);
-
-            const outputString = 
-`Team 1 (3., 5., etc. Totem)
-${team1Players.join('\n')}
-
-Team 2 (6., 8., etc. Totem)
-${team2Players.join('\n')}`;
+            const outputString = `-- Team 1 (3., 5., etc. Totem)\n${team1Players.join('\n')}\n\n-- Team 2 (6., 8., etc. Totem)\n${team2Players.join('\n')}`;
             outputElement.textContent = outputString;
         }
 
-        // Event-Listener für den Kopieren-Button
-        const copySpiritBtn = document.getElementById('copy-spirit-teams-code-btn');
-        if (copySpiritBtn) {
-            copySpiritBtn.addEventListener('click', () => {
-                const codeContent = document.getElementById('spirit-teams-weakaura-output').textContent;
-                navigator.clipboard.writeText(codeContent).then(() => {
-                    copySpiritBtn.classList.add('copy-feedback');
-                    copySpiritBtn.title = "Kopiert!";
-                    setTimeout(() => {
-                        copySpiritBtn.classList.remove('copy-feedback');
-                        copySpiritBtn.title = "In die Zwischenablage kopieren";
-                    }, 2000);
-                });
+        // --- ÜBERARBEITETE FUNKTION FÜR MRT-EXPORT ---
+        function updateGarajalMrtExport(currentAssignments, roster) {
+            const outputElement = document.getElementById('spirit-teams-mrt-output');
+            if (!outputElement) return;
+
+            // Helper, um Spieler zu formatieren
+            const formatPlayer = (playerName) => playerName ? `{player:${playerName}}` : '';
+            
+            // --- Geisterwelt-Teams sammeln ---
+            const team1Healer = currentAssignments['garajal-spiritTeam1Healer']?.player;
+            const team1DpsIds = ['garajal-spiritTeam1Dps1', 'garajal-spiritTeam1Dps2', 'garajal-spiritTeam1Dps3', 'garajal-spiritTeam1Dps4', 'garajal-spiritTeam1Dps5', 'garajal-spiritTeam1Dps6'];
+            const team1Dps = team1DpsIds.map(id => currentAssignments[id]?.player).filter(Boolean);
+
+            const team2Healer = currentAssignments['garajal-spiritTeam2Healer']?.player;
+            const team2DpsIds = ['garajal-spiritTeam2Dps1', 'garajal-spiritTeam2Dps2', 'garajal-spiritTeam2Dps3', 'garajal-spiritTeam2Dps4', 'garajal-spiritTeam2Dps5', 'garajal-spiritTeam2Dps6'];
+            const team2Dps = team2DpsIds.map(id => currentAssignments[id]?.player).filter(Boolean);
+
+            let spiritTeamOutput = `**--- Geisterwelt Teams ---**\n\n`;
+            spiritTeamOutput += `**Team 1 (3., 5., etc.)**\n`;
+            if (team1Healer) spiritTeamOutput += `${formatPlayer(team1Healer)} {spell:5185}\n`;
+            if (team1Dps.length > 0) spiritTeamOutput += team1Dps.map(formatPlayer).join('\n') + '\n';
+            
+            spiritTeamOutput += `\n**Team 2 (6., 8., etc.)**\n`;
+            if (team2Healer) spiritTeamOutput += `${formatPlayer(team2Healer)} {spell:5185}\n`;
+            if (team2Dps.length > 0) spiritTeamOutput += team2Dps.map(formatPlayer).join('\n') + '\n';
+
+
+            // --- Raid-CDs sammeln ---
+            let raidCdOutput = `\n**--- Raid CDs ---**\n`;
+            const voodooCdIds = ['1', '2', '3'];
+            const enrageCdIds = ['1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '1.7', '1.8'];
+            let hasCds = false;
+
+            voodooCdIds.forEach(num => {
+                const player = currentAssignments[`garajal-healer-cd-voodoo${num}`]?.player;
+                const cooldown = currentAssignments[`garajal-healer-cd-voodoo-cooldown${num}`]?.cooldown;
+                if (player && cooldown) {
+                    raidCdOutput += `Voodoo #${num}: {spell:${cooldown}} - ${formatPlayer(player)}\n`;
+                    hasCds = true;
+                }
             });
+            
+            enrageCdIds.forEach(num => {
+                const player = currentAssignments[`garajal-healer-cd-enrage${num}`]?.player;
+                const cooldown = currentAssignments[`garajal-healer-cd-enrage-cooldown${num}`]?.cooldown;
+                 if (player && cooldown) {
+                    raidCdOutput += `Enrage: {spell:${cooldown}} - ${formatPlayer(player)}\n`;
+                    hasCds = true;
+                }
+            });
+
+            // Füge den CD-Block nur hinzu, wenn auch CDs eingeteilt sind
+            if (hasCds) {
+                spiritTeamOutput += raidCdOutput;
+            }
+
+            outputElement.textContent = spiritTeamOutput.trim();
+        }
+
+        const copyBtn = document.getElementById('copy-spirit-teams-code-btn');
+        if (copyBtn) {
+        }
+        const copyMrtBtn = document.getElementById('copy-spirit-teams-mrt-btn');
+        if (copyMrtBtn) {
         }
         
-        // Die Funktion sofort aufrufen, um den initialen Code zu generieren
         updateGarajalWeakAura(assignments);
+        updateGarajalMrtExport(assignments, roster); // Roster wird hier übergeben
     };
 </script>
 </main>

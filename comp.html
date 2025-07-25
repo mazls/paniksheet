@@ -77,6 +77,69 @@
     </div>
 </section>
 
+<section id="cooldown-editor-section" class="bg-slate-850 p-6 rounded-lg" style="display: none;">
+    <h3 class="text-xl font-semibold mb-3 text-blue-450">Cooldown Editor</h3>
+    <details>
+        <summary class="text-xl font-semibold text-blue-450 cursor-pointer">
+            Cooldown-Datenbank verwalten (klicken zum Öffnen)
+        </summary>
+        
+        <div class="mt-4 pt-4 border-t border-slate-650 grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <div>
+                <h4 id="cooldown-form-title" class="text-lg font-bold mb-3 text-gold">Neuen Cooldown hinzufügen</h4>
+                <form id="cooldown-form" class="space-y-4">
+                    <input type="hidden" id="cooldown-id-input">
+                    
+                    <div>
+                        <label for="cooldown-name-input" class="block text-sm font-medium text-gray-300">Name des Cooldowns</label>
+                        <input type="text" id="cooldown-name-input" required class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
+                    </div>
+                    <div>
+                        <label for="cooldown-class-select" class="block text-sm font-medium text-gray-300">Klasse</label>
+                        <select id="cooldown-class-select" required class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
+                            </select>
+                    </div>
+                    <div>
+                        <label for="cooldown-type-select" class="block text-sm font-medium text-gray-300">Typ</label>
+                        <select id="cooldown-type-select" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
+                            <option value="Raid CD">Raid CD</option>
+                            <option value="Tank External">Tank External</option>
+                            <option value="Utility">Utility</option>
+                            <option value="Personal">Personal</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label for="cooldown-order-input" class="block text-sm font-medium text-gray-300">Sortier-Reihenfolge (kleine Zahl = weiter oben)-</br> --- Trennzeichen</br> 1-50 Raid-CD</br> 51-100 Tank External</br> 101-150 Utility</br> 151-200 Personal </label>
+                        <input type="number" id="cooldown-order-input" value="100" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
+                    </div>
+                    <div class="flex gap-4">
+                        <button type="submit" id="cooldown-save-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-md">Speichern</button>
+                        <button type="button" id="cooldown-cancel-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-md" style="display: none;">Abbrechen</button>
+                    </div>
+                </form>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-bold mb-3 text-gold">Vorhandene Cooldowns</h4>
+                <div class="overflow-y-auto max-h-96 pr-2">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-400 uppercase bg-slate-900/50">
+                            <tr>
+                                <th class="px-4 py-2">Name</th>
+                                <th class="px-4 py-2">Klasse</th>
+                                <th class="px-4 py-2">Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cooldowns-table-body" class="divide-y divide-slate-700">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </details>
+</section>
+
     <section class="bg-slate-850 p-6 rounded-lg">
         <h3 class="text-xl font-semibold mb-3 text-blue-450">Raid Buffs & Cooldowns (Mists of Pandaria)</h3>
         <p class="text-gray-400 mb-4">Übersicht der wichtigen Schlachtzugsbuffs und Cooldowns, die eure Gruppe mitbringen sollte.</p>
