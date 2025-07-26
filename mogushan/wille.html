@@ -175,8 +175,21 @@
 
             <div>
                  <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                 <div class="space-y-6">
-                    <div><h4 class="text-lg font-semibold">Boss-Positionierung</h4><div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500"></div></div>
+                <div class="space-y-6">
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="elegon" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Wille des Kaisers</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="elegon">Wille des Kaisers</p>
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="mogushan/wille.png" alt="Wille des Kaisers" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="elegon">
+				</div>
+                <div>
                     <div><h4 class="text-lg font-semibold">Video Guide</h4><div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500"></div></div>
                 </div>
             </div>
