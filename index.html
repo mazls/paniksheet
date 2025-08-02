@@ -1811,7 +1811,26 @@ function initBossPage(pageId, sectionId = null) {
              }
          }, 100); // Eine kleine Verzögerung, damit alles geladen ist
     }
+document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+    const video = wrapper.querySelector('video');
+    const controlsOverlay = wrapper.querySelector('.video-controls');
+    const playPauseIcon = controlsOverlay.querySelector('.play-pause-btn i');
 
+    const togglePlay = () => {
+        if (video.paused) {
+            video.play();
+            playPauseIcon.className = 'fas fa-pause'; // Ändert Icon zu Pause
+            wrapper.classList.add('is-playing');
+        } else {
+            video.pause();
+            playPauseIcon.className = 'fas fa-play'; // Ändert Icon zu Play
+            wrapper.classList.remove('is-playing');
+        }
+    };
+    
+    // Klick auf das Overlay startet/stoppt das Video
+    controlsOverlay.addEventListener('click', togglePlay);
+});
     // --- Logik zum Laden der Einteilungen (Datenbank) ---
     const assignmentsDocRef = doc(db, DATA_COLLECTION, "boss-" + pageId);
     async function handleAssignmentChange(event) {
@@ -2114,6 +2133,7 @@ function initBossPage(pageId, sectionId = null) {
                 window.showModal("Roster wurde geleert.");
             }
         }
+
 async function initBuffAssignments(roster) {
     const container = document.getElementById('offensive-buff-assignments');
     if (!container) return;

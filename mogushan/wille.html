@@ -25,6 +25,16 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+    /* In der Datei: index.html */
+
+/* Versteckt den Play-Button, wenn das Video läuft */
+.video-wrapper.is-playing .video-controls {
+    opacity: 0;
+}
+/* Zeigt den Play-Button wieder an, wenn man über das laufende Video hovert */
+.video-wrapper.is-playing:hover .video-controls {
+    opacity: 1;
+}
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Wille des Kaisers</h1>
@@ -134,17 +144,32 @@
                     <span>Heiler-CD für 3. Titangas (nur 25er):</span>
                     <select id="wille-cdGas3" class="assignment-select" data-assignment-id="wille-cdGas3"></select>
                 </li>
+                <li class="list-subheader"><span>CC Zorn des Kaisers</span></li>
                 <li>
-                    <span>Kiter für Zorn des Kaisers 1:</span>
+                    <span>CC für Zorn des Kaisers 1:</span>
                     <select id="wille-kiterZorn1" class="assignment-select" data-assignment-id="wille-kiterZorn1"></select>
                 </li>
                 <li>
-                    <span>Kiter für Zorn des Kaisers 2:</span>
+                    <span>CC für Zorn des Kaisers 2:</span>
                     <select id="wille-kiterZorn2" class="assignment-select" data-assignment-id="wille-kiterZorn2"></select>
                 </li>
                 <li data-size="25" class="tactic-content" style="display: block;">
-                    <span>Kiter für Zorn des Kaisers 3 (nur 25er):</span>
+                    <span>CC für Zorn des Kaisers 3 (Backup):</span>
                     <select id="wille-kiterZorn3" class="assignment-select" data-assignment-id="wille-kiterZorn3"></select>
+                </li>
+            <li class="list-subheader"><span>Kiter Mut des Kaisers</span></li>
+            <p class="text-sm text-gray-400 mb-4">Am weitesten vom Spawn entfernt stehen.</p>
+                <li>
+                    <span>Kiter für Mut des Kaisers 1:</span>
+                    <select id="wille-kiterMut1" class="assignment-select" data-assignment-id="wille-kiterMut1"></select>
+                </li>
+                <li>
+                    <span>Kiter für Mut des Kaisers 2:</span>
+                    <select id="wille-kiterMut2" class="assignment-select" data-assignment-id="wille-kiterMut2"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Kiter für Mut des Kaisers 3 (Backup):</span>
+                    <select id="wille-kiterMut3" class="assignment-select" data-assignment-id="wille-kiterMut3"></select>
                 </li>
             </ul>
         </div>
@@ -175,9 +200,42 @@
 
             <div>
                  <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                 <div class="space-y-6">
-                    <div><h4 class="text-lg font-semibold">Boss-Positionierung</h4><div class="bg-slate-900 mt-2 rounded-lg h-48 flex items-center justify-center text-gray-500"></div></div>
-                    <div><h4 class="text-lg font-semibold">Video Guide</h4><div class="bg-slate-900 mt-2 rounded-lg aspect-video w-full flex items-center justify-center text-gray-500"></div></div>
+                <div class="space-y-6">
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="wille" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Wille des Kaisers</button>
+                        <button data-phase="combo-video" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Combo Ausweichen (Video)</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="wille">Wille des Kaisers</p>
+                        <p class="positioning-text" data-phase="combo-video" style="display: none;">Video, das die Bewegung bei der Vernichtenden Combo zeigt. Auf die blauen linien Achten!</p>
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="mogushan/wille.png" alt="Wille des Kaisers" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="wille">
+<div data-phase="combo-video" 
+         class="positioning-image video-wrapper relative w-full h-auto rounded-lg border border-slate-600" 
+         style="display: none;">
+        
+        <video src="mogushan/Tank-Combo-Wille.webm" 
+               class="w-full h-auto rounded-lg" 
+               loop muted playsinline>
+        </video>
+
+        <div class="video-controls absolute inset-0 flex justify-center items-center bg-black/30 transition-opacity opacity-100 cursor-pointer">
+            <button class="play-pause-btn text-white text-5xl pointer-events-none">
+                <i class="fas fa-play"></i>
+            </button>
+        </div>
+    </div>
+				</div>
+                <div>
+                    <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Df0nIb2bzLY?hl=en" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
                 </div>
             </div>
         </div>
