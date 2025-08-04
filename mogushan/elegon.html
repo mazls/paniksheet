@@ -87,35 +87,37 @@
             </ul>
         </div>
 
-        <div class="assignment-block">
-            <h4 class="text-lg font-bold">❤️ Heiler-Einteilung</h4>
-            <div class="assignment-header">
-                <span>Aufgabe</span>
-                <span>Spieler</span>
-            </div>
-            <ul class="assignment-list">
-                <li>
-                    <span>Heiler 1 (Innerer Ring):</span>
-                    <select id="elegon-healer1" class="assignment-select" data-assignment-id="elegon-healer1"></select>
-                </li>
-                <li>
-                    <span>Heiler 2 (Äußerer Ring / Adds):</span>
-                    <select id="elegon-healer2" class="assignment-select" data-assignment-id="elegon-healer2"></select>
-                </li>
-                <li data-size="25" class="tactic-content" style="display: block;">
-                    <span>Heiler 3 (nur 25er):</span>
-                    <select id="elegon-healer3" class="assignment-select" data-assignment-id="elegon-healer3"></select>
-                </li>
-                <li data-size="25" class="tactic-content" style="display: block;">
-                    <span>Heiler 4 (nur 25er):</span>
-                    <select id="elegon-healer4" class="assignment-select" data-assignment-id="elegon-healer4"></select>
-                </li>
-                <li data-size="25" class="tactic-content" style="display: block;">
-                    <span>Heiler 5 (nur 25er):</span>
-                    <select id="elegon-healer4" class="assignment-select" data-assignment-id="elegon-healer5"></select>
-                </li>
-            </ul>
-        </div>
+            <div class="assignment-block">
+                        <h4 class="text-lg font-bold">❤️ Heiler-Zuweisungen</h4>
+                        <div class="assignment-header" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                            <span>Aufgabe</span>
+                            <span>Spieler</span>
+                            <span>Spieler</span>
+                        </div>
+                        <ul class="assignment-list">
+                            <p class="text-sm text-gray-400 mb-4">Heiler 1/2 in P2 bei <strong class="text-purple-400">Diamant</strong> aufstellen</p>
+                            <li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 1/2:</span>
+                                <select data-assignment-id="elegon-healer1" class="assignment-select"></select>
+                                <select data-assignment-id="elegon-healer2" class="assignment-select"></select>
+                            </li>
+                            <p class="text-sm text-gray-400 mb-4">Heiler 3/4 in P2 bei <strong class="text-green-400">Dreieck</strong> aufstellen</p>
+                            <li style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 3/4:</span>
+                                <select data-assignment-id="elegon-healer3" class="assignment-select"></select>
+                                <select data-assignment-id="elegon-healer4" class="assignment-select"></select>
+                            </li>
+                            <li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 5/6:</span>
+                                <select data-assignment-id="elegon-healer5" class="assignment-select"></select>
+                                <select data-assignment-id="elegon-healer6" class="assignment-select"></select>
+                            </li>
+                            <li data-size="25" class="tactic-content" style="grid-template-columns: 1fr 1.2fr 1.2fr;">
+                                <span>Heiler 7:</span>
+                                <select data-assignment-id="elegon-healer7" class="assignment-select"></select>
+                            </li>
+                        </ul>
+                </div>
 
 <div class="assignment-block">
     <h4 class="text-lg font-bold">⚔️ DPS-Einteilungen</h4>
@@ -124,42 +126,42 @@
         <span>Spieler</span>
     </div>
     <ul class="assignment-list">
-        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Kreuz) Rechte Seite:</span></li>
+        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen <strong class="text-red-400">(Kreuz)</strong> Rechte Seite:</span></li>
         <li>
             <select data-assignment-id="elegon-chargeGroup1.1" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup1.2" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup1.3" class="assignment-select"></select>
         </li>
         
-        <li data-size="25" class="tactic-content list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Dreieck) Rechte Seite:</span></li>
-        <li data-size="25" class="tactic-content">
+        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen <strong class="text-green-400">(Dreieck)</strong> Rechte Seite:</span></li>
+        <li>
             <select data-assignment-id="elegon-chargeGroup2.1" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup2.2" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup2.3" class="assignment-select"></select>
         </li>
 
-        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Kreis) Rechte Seite:</span></li>
+        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen <strong class="text-orange-400">(Kreis)</strong> Rechte Seite:</span></li>
         <li>
             <select data-assignment-id="elegon-chargeGroup3.1" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup3.2" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup3.3" class="assignment-select"></select>
         </li>
 
-        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Stern) Linke Seite:</span></li>
+        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen <strong class="text-yellow-400">(Stern)</strong> Linke Seite:</span></li>
         <li>
             <select data-assignment-id="elegon-chargeGroup4.1" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup4.2" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup4.3" class="assignment-select"></select>
         </li>
         
-        <li data-size="25" class="tactic-content list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Diamant) Links Seite:</span></li>
-        <li data-size="25" class="tactic-content">
+        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen <strong class="text-purple-400">(Diamant)</strong>  Links Seite:</span></li>
+        <li>  
             <select data-assignment-id="elegon-chargeGroup5.1" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup5.2" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup5.3" class="assignment-select"></select>
         </li>
 
-        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen (Quadrat) Linke Seite:</span></li>
+        <li class="list-subheader" style="display: block;"><span>Gruppe für Energieladungen <strong class="text-blue-400">(Quadrat)</strong> Linke Seite:</span></li>
         <li>
             <select data-assignment-id="elegon-chargeGroup6.1" class="assignment-select"></select>
             <select data-assignment-id="elegon-chargeGroup6.2" class="assignment-select"></select>
