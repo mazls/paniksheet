@@ -21,7 +21,24 @@
 		font-style: italic;
 		background-color: rgba(185, 28, 28, 0.3);
 	}
+#toggle-video-btn {
+    background-color: rgba(10, 20, 15, 0.7);
+    border: 1px solid var(--color-gold-border);
+    color: var(--color-parchment);
+    width: 44px;  /* Etwas größer für bessere Klickbarkeit */
+    height: 44px;
+    border-radius: 50%; /* Macht den Button rund */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
+#toggle-video-btn:hover {
+    background-color: rgba(36, 61, 51, 0.9);
+    border-color: var(--color-gold);
+}
 /* Stile für die neue Sprungmarken-Navigation */
 .quick-nav-bar {
     display: flex;
@@ -132,6 +149,7 @@
         body { 
             font-family: 'Inter', sans-serif;
             color: var(--color-parchment);
+            background-color: #101815;
         }
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Cinzel', serif;
@@ -1392,8 +1410,31 @@ mainNav.innerHTML = mainNavHTML;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchAllCooldowns(); 
-            await setupAuthUI(); // NEU: "await" stellt die richtige Reihenfolge sicher
-        
+            await setupAuthUI(); // "await" stellt die richtige Reihenfolge sicher
+            const videoBtn = document.getElementById('toggle-video-btn');
+            const videoBtnIcon = videoBtn.querySelector('i');
+            const backgroundVideo = document.getElementById('background-video');
+
+            function updateVideoState() {
+                const videoState = localStorage.getItem('backgroundVideoState') || 'on'; // Standard ist 'on'
+
+                if (videoState === 'on') {
+                    backgroundVideo.style.display = 'block';
+                    backgroundVideo.play().catch(e => console.log("Autoplay wurde vom Browser blockiert."));
+                    videoBtnIcon.className = 'fas fa-video';
+                } else {
+                    backgroundVideo.pause();
+                    backgroundVideo.style.display = 'none';
+                    videoBtnIcon.className = 'fas fa-video-slash'; // Durchgestrichenes Icon
+                }
+            }
+            videoBtn.addEventListener('click', () => {
+                const currentState = localStorage.getItem('backgroundVideoState') || 'on';
+                const newState = currentState === 'on' ? 'off' : 'on';
+                localStorage.setItem('backgroundVideoState', newState);
+                updateVideoState();
+            });
+            updateVideoState();
             raidSelector.addEventListener('change', () => {
                 if (window.location.hash === '#comp' || window.location.hash === '') {
                     renderCurrentState();
@@ -1831,6 +1872,53 @@ document.querySelectorAll('.video-wrapper').forEach(wrapper => {
     // Klick auf das Overlay startet/stoppt das Video
     controlsOverlay.addEventListener('click', togglePlay);
 });
+
+function updateAssignmentPools() {
+    const pools = {};
+    document.querySelectorAll('[data-assignment-pool]').forEach(select => {
+        const poolName = select.dataset.assignmentPool;
+        if (!pools[poolName]) {
+            pools[poolName] = [];
+        }
+        pools[poolName].push(select);
+    });
+
+    for (const poolName in pools) {
+        const selectsInPool = pools[poolName];
+        const assignmentsMap = new Map();
+
+        // 1. Setze zuerst alle Optionen in diesem Pool zurück
+        selectsInPool.forEach(select => {
+            select.querySelectorAll('option').forEach(option => {
+                option.disabled = false;
+                // Entfernt einen eventuell vorhandenen gelben Punkt
+                if (option.textContent.startsWith('🟡 ')) {
+                    option.textContent = option.textContent.substring(2);
+                }
+            });
+        });
+        
+        // 2. Finde heraus, wer wo eingeteilt ist
+        selectsInPool.forEach(select => {
+            if (select.value) {
+                const groupName = select.closest('[data-group-name]')?.dataset.groupName || 'Unbekannt';
+                assignmentsMap.set(select.value, groupName);
+            }
+        });
+
+        // 3. Markiere die bereits eingeteilten Spieler mit einem Punkt
+        selectsInPool.forEach(currentSelect => {
+            currentSelect.querySelectorAll('option').forEach(option => {
+                const playerName = option.value;
+                // Prüft, ob der Spieler in einer ANDEREN Gruppe eingeteilt ist
+                if (assignmentsMap.has(playerName) && currentSelect.value !== playerName) {
+                    // Spieler wird NICHT mehr deaktiviert
+                    option.textContent = `🟡 ${option.textContent}`;
+                }
+            });
+        });
+    }
+}
     // --- Logik zum Laden der Einteilungen (Datenbank) ---
     const assignmentsDocRef = doc(db, DATA_COLLECTION, "boss-" + pageId);
     async function handleAssignmentChange(event) {
@@ -1938,8 +2026,11 @@ document.querySelectorAll('.video-wrapper').forEach(wrapper => {
             }
             
             window.toggleSelectEditability();
+            updateAssignmentPools();
         });
+        
         window.toggleSelectEditability();
+        
     })();
 }
 
@@ -2852,5 +2943,8 @@ async function handleDeleteCooldown(cooldownId, cooldownName) {
 }
 
     </script>
+<button id="toggle-video-btn" title="Hintergrundvideo an/aus" class="fixed bottom-4 right-4 z-50">
+        <i class="fas fa-video"></i>
+</button>
 </body>
 </html>
