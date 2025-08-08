@@ -1,0 +1,197 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Windfürst Mel'jarak</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+</nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Windfürst Mel'jarak ist ein einphasiger Kampf, der sich um das Management von neun Adds dreht. Die zentrale Mechanik ist das strategische Ausschalten dieser Adds durch Crowd Control (CC) und gezielten Schaden.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Die Adds:</strong> Es gibt drei Add-Gruppen: <strong class="text-amber-400">Sra'thik Bernsteinformer</strong> (Spieler einfangen, Flächen legen), <strong class="text-green-400">Zar'thik Schlachtheiler</strong> (heilen, Buffs verteilen) und <strong class="text-red-400">Kor'thik Eliteklingenmeister</strong> (hoher Einzelzielschaden). Adds desselben Typs teilen sich einen Lebensbalken.</li>
+            <li><strong>Crowd Control (CC):</strong> Die Anzahl der Adds, die gleichzeitig kontrolliert werden können, hängt von der Gesamtzahl der lebenden Adds ab:
+                <ul class="list-disc list-inside ml-6 mt-2 space-y-1">
+                    <li>9 lebende Adds → max. 4 im CC</li>
+                    <li>6 lebende Adds → max. 2 im CC</li>
+                    <li>3 lebende Adds → kein CC mehr möglich</li>
+                </ul>
+            </li>
+            <li><strong>Boss-Buff (<strong class="text-red-500">Tollkühnheit</strong>):</strong> Jedes Mal, wenn eine Dreiergruppe von Adds stirbt, erhält Mel'jarak einen permanenten Buff, der seinen ausgeteilten Schaden um 50%, aber auch seinen erlittenen Schaden um 33% erhöht.</li>
+            <li><strong>Boss-Fähigkeiten:</strong> Mel'jarak greift mit <strong class="text-cyan-400">Wirbelnde Klinge</strong> (Waffe fliegt durch den Raum), <strong class="text-gray-400">Klingenregen</strong> (AoE-Schaden) und ab 75% <strong class="text-yellow-400">Windbombe</strong> (dauerhafte Bomben auf dem Feld) an.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2">Die Strategie hängt von der gewählten CC- und Tötungsreihenfolge ab. Generell gilt: Boss und aktive Adds zusammen tanken. Der Raid verteilt sich kreisförmig, um <strong class="text-cyan-400">Wirbelnde Klinge</strong> und <strong class="text-amber-400">Bernstein-Fallen</strong> zu minimieren. Schlachtheiler müssen unterbrochen, ihre Buffs dispellt und gefangene Spieler befreit werden. Der Schlüssel ist, Add-Gruppen auf niedrige HP zu bringen und dann gezielt zu töten, um die Phasen mit wenigen oder keinen CC-Möglichkeiten zu verkürzen.</p>
+    </div>
+</section>
+
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <p class="text-sm text-gray-400 mb-2">Die Tanks teilen den Boss und die aktiven Adds unter sich auf.</p>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Tank 1 (Boss & Adds):</span>
+                    <select class="assignment-select" data-assignment-id="meljarak-tank1"></select>
+                </li>
+                <li>
+                    <span>Tank 2 (Adds):</span>
+                    <select class="assignment-select" data-assignment-id="meljarak-tank2"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-cyan-400">🥶 Crowd Control Zuweisung</h4>
+            <p class="text-sm text-gray-400 mb-2">Weist Spieler zu, die die Adds kontrollieren. Speere am Rand des Raumes können dafür genutzt werden.</p>
+            <ul class="assignment-list">
+                <li class="list-subheader"><span>Phase 1 (max. 4 CCs)</span></li>
+                <li><span>CC 1 (z.B. Heiler):</span><select data-assignment-id="meljarak-cc1.1" class="assignment-select"></select></li>
+                <li><span>CC 2 (z.B. Heiler):</span><select data-assignment-id="meljarak-cc1.2" class="assignment-select"></select></li>
+                <li><span>CC 3 (z.B. Klingenmeister):</span><select data-assignment-id="meljarak-cc1.3" class="assignment-select"></select></li>
+                <li><span>CC 4 (z.B. Bernsteinformer):</span><select data-assignment-id="meljarak-cc1.4" class="assignment-select"></select></li>
+                <li class="list-subheader"><span>Phase 2 (max. 2 CCs)</span></li>
+                <li><span>CC 1:</span><select data-assignment-id="meljarak-cc2.1" class="assignment-select"></select></li>
+                <li><span>CC 2:</span><select data-assignment-id="meljarak-cc2.2" class="assignment-select"></select></li>
+            </ul>
+        </div>
+        
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-green-400">🛑 Interrupt-Rotation (Schlachtheiler)</h4>
+            <p class="text-sm text-gray-400 mb-2">Die Heilung (<strong class="text-green-400">Besserung</strong>) muss zuverlässig unterbrochen werden.</p>
+            <ul class="assignment-list">
+                 <li>
+                    <span>Unterbrecher 1:</span>
+                    <select data-assignment-id="meljarak-interrupt1" class="assignment-select"></select>
+                </li>
+                 <li>
+                    <span>Unterbrecher 2:</span>
+                    <select data-assignment-id="meljarak-interrupt2" class="assignment-select"></select>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+        <div>
+            <h4 class="text-lg font-semibold">Positionierung</h4>
+            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                <p class="text-gray-400 text-sm">Die ideale Positionierung ist ein weiter Kreis um den Boss. Dies minimiert den Schaden durch die <strong class="text-cyan-400">Wirbelnde Klinge</strong> und verhindert, dass mehrere Spieler gleichzeitig vom <strong class="text-amber-400">Bernstein-Gefängnis</strong> getroffen werden. Spieler mit <strong class="text-yellow-500">Ätzendes Harz</strong> sollten die daraus entstehenden Flächen am Rand des Raumes ablegen.</p>
+            </div>
+            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
+                <p>Kein Taktikbild verfügbar.</p>
+            </div>
+        </div>
+        <div>
+            <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+            <div class="video-container my-4 rounded-lg shadow-lg">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Hau3hGg4w2s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Windfürst Mel'jarak</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Wirbelnde Klinge:</strong> Wirft Waffe auf einen Spieler, die auf dem Hin- und Rückweg schadet.</li>
+                    <li><strong>Klingenregen:</strong> 6s lang AoE-Schaden an allen Spielern.</li>
+                    <li><strong>Windbombe:</strong> Platziert eine Bombe, die nach 3s scharf wird und bei Annäherung explodiert und hohen Raidschaden verursacht. Bleibt liegen.</li>
+                    <li><strong>Tollkühnheit:</strong> Für jede getötete Add-Gruppe +50% Schaden und +33% erlittener Schaden.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-amber-400">Sra'thik Bernsteinformer</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Bernstein-Gefängnis:</strong> Fängt einen Spieler und alle im Umkreis von 2m in Bernstein ein. Muss von anderen Spielern befreit werden.</li>
+                    <li><strong>Rückstand:</strong> Debuff für 115s, der das Befreien anderer Spieler verhindert.</li>
+                    <li><strong>Ätzendes Harz:</strong> DoT auf einem Spieler. Jede Bewegung konsumiert einen Stapel und hinterlässt eine schädliche Fläche.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-green-400">Zar'thik Schlachtheiler</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Besserung:</strong> Unterbrechbare Heilung, die ein Add um 25% seiner maximalen Gesundheit heilt.</li>
+                    <li><strong>Beschleunigung:</strong> Dispellbarer Buff, der den Schaden und das Angriffstempo aller Adds 15s lang um 25% erhöht. Stapelbar.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-red-400">Kor'thik Eliteklingenmeister</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Kor'thik-Schlag:</strong> Alle drei Klingenmeister schlagen gleichzeitig auf dasselbe zufällige Ziel ein und verursachen hohen physischen Schaden.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li>Es können maximal 3 Adds gleichzeitig kontrolliert werden (statt 4).</li>
+                <li><strong>Adds spawnen nach:</strong> 45 Sekunden nach dem Tod einer Add-Gruppe erscheint diese erneut.</li>
+                <li><strong>Geänderte Tollkühnheit:</strong> Der Buff ist nicht mehr permanent und stapelbar. Stattdessen hält er 30 Sekunden an und erhöht den von Mel'jarak erlittenen Schaden um 600%. Der ausgeteilte Schaden wird weiterhin um 50% erhöht.</li>
+                <li><strong>Strategieänderung:</strong> Die Taktik wechselt zu einer Rotations-Strategie: Eine Add-Gruppe töten, den Boss für 30 Sekunden mit allen Cooldowns angreifen, dann die nächste Add-Gruppe fokussieren, während die erste nachspawnt. Es wird empfohlen, die Bernsteinformer permanent im CC zu halten.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

@@ -1,0 +1,169 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Lei Shi</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+</nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Lei Shi ist ein einphasiger Kampf mit einem strengen Enrage-Timer. Die Schwierigkeit liegt darin, mit ihren unvorhersehbaren Fähigkeiten umzugehen, während derer sie oft nicht direkt angreifbar ist, was den DPS-Anforderungen zusätzlich erschwert.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Tank-Mechanik (<strong class="text-cyan-400">Spray</strong>):</strong> Lei Shi greift nicht im Nahkampf an, sondern wirkt konstant <strong class="text-cyan-400">Spray</strong> auf ihren Tank. Dies verursacht Frostschaden und hinterlässt einen stapelbaren Debuff, der den erlittenen Frostschaden erhöht, was einen Tankwechsel erzwingt.</li>
+            <li><strong>Schutz-Phasen (<strong class="text-yellow-400">Beschützen</strong>):</strong> Bei 80%, 60%, 40% und 20% Gesundheit wird Lei Shi immun und beschwört hart zuschlagende Adds (<strong class="text-yellow-500">Animierte Beschützer</strong>). Sobald ein Add stirbt, verschwinden die anderen und Lei Shi ist wieder angreifbar.</li>
+            <li><strong>Spezialfähigkeiten:</strong> Gelegentlich wird Lei Shi unsichtbar (<strong class="text-gray-400">Verstecken</strong>) und muss durch AoE-Schaden aufgedeckt werden. Ein anderes Mal teleportiert sie sich in die Mitte und stößt alle Spieler von sich weg (<strong class="text-purple-400">Weg da!</strong>), was unterbrochen werden muss, indem man ihr 4% ihrer Gesundheit als Schaden zufügt.</li>
+            <li><strong>Soft-Enrage (<strong class="text-red-500">Verängstigt</strong>):</strong> Mit jedem Verlust von 10% ihrer Gesundheit erhöht sich Lei Shis Zaubergeschwindigkeit permanent um 8%, was den Tank-Schaden im Verlauf des Kampfes stark ansteigen lässt.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Positionierung:</strong> Tanks stehen auf Abstand zueinander, der Raid bildet eine dritte Gruppe, sodass eine Dreiecksformation um den Boss entsteht. Dies verhindert, dass der <strong class="text-cyan-400">Spray</strong> auf mehrere Ziele überspringt.</p>
+        <p class="mb-2"><strong>Add-Phasen:</strong> Ein Add fokussieren und schnell töten. Die anderen Adds sollten per CC kontrolliert oder vom Off-Tank gehalten werden.</p>
+        <p class="mb-2"><strong>Spezialfähigkeiten:</strong> Bei <strong class="text-gray-400">Verstecken</strong> schnell verteilen, um sie zu finden. Bei <strong class="text-purple-400">Weg da!</strong> gegen den Wind laufen und mit Instants Schaden machen, um den Kanal zu brechen.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <p class="text-sm text-gray-400 mb-2">Tanks spotten, um die Stapel von <strong class="text-cyan-400">Spray</strong> niedrig zu halten.</p>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Tank 1:</span>
+                    <select class="assignment-select" data-assignment-id="leishi-tank1"></select>
+                </li>
+                <li>
+                    <span>Tank 2:</span>
+                    <select class="assignment-select" data-assignment-id="leishi-tank2"></select>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">Add-Management (Beschützen-Phase)</h4>
+            <p class="text-sm text-gray-400 mb-2">Fokussiert ein Ziel, während die anderen kontrolliert werden.</p>
+            <ul class="assignment-list">
+                <li class="list-subheader"><span>Fokus-Ziel</span></li>
+                <li><span>Totenkopf (💀):</span><select data-assignment-id="leishi-add-focus" class="assignment-select"></select></li>
+                <li class="list-subheader"><span>Crowd Control</span></li>
+                <li><span>CC 1 (z.B. Eisfalle):</span><select data-assignment-id="leishi-add-cc1" class="assignment-select"></select></li>
+                <li><span>CC 2 (z.B. Polymorph):</span><select data-assignment-id="leishi-add-cc2" class="assignment-select"></select></li>
+                <li data-size="25" class="tactic-content"><span>CC 3 (4. Add):</span><select data-assignment-id="leishi-add-cc3" class="assignment-select"></select></li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-red-500">Heroisch: Gruseliger Nebel Rotation</h4>
+            <p class="text-sm text-gray-400 mb-2">Spieler rotieren, um den Schadensbuff auf Lei Shi aufrechtzuerhalten.</p>
+             <ul class="assignment-list">
+                <li><span>Nebel-Soaker 1:</span><select data-assignment-id="leishi-hc-fog1" class="assignment-select"></select></li>
+                <li><span>Nebel-Soaker 2:</span><select data-assignment-id="leishi-hc-fog2" class="assignment-select"></select></li>
+                <li><span>Nebel-Soaker 3 (Backup):</span><select data-assignment-id="leishi-hc-fog3" class="assignment-select"></select></li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+        <div>
+            <h4 class="text-lg font-semibold">Positionierung</h4>
+            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                <p class="text-gray-400 text-sm">Der Raid sollte eine Dreiecksformation einnehmen: Main-Tank an einer Ecke, Off-Tank an einer anderen und der Rest des Raids gestackt an der dritten Ecke. Lei Shi bleibt in der Mitte. Dies stellt sicher, dass der <strong class="text-cyan-400">Spray</strong>-Debuff nicht überspringt. Bei <strong class="text-gray-400">Verstecken</strong> verteilt sich der Raid, um sie zu finden.</p>
+            </div>
+            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
+                <p>Kein Taktikbild verfügbar.</p>
+            </div>
+        </div>
+        <div>
+            <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+            <div class="video-container my-4 rounded-lg shadow-lg">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/5-Ur715v-hA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Hauptfähigkeiten</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Spray:</strong> Konstant gewirkter Angriff auf den Tank. Verursacht Frostschaden in einem 2,5m-Bereich und appliziert einen stapelbaren Debuff, der den erlittenen Frostschaden um 16% pro Stapel erhöht.</li>
+                    <li><strong>Verängstigt:</strong> Pro 10% verlorener Gesundheit erhöht sich Lei Shis Zaubergeschwindigkeit um 8%.</li>
+                    <li><strong>Beschützen:</strong> Bei 80, 60, 40 und 20% HP wird Lei Shi immun und ruft 3-4 <strong class="text-yellow-500">Animierte Beschützer</strong>. Sie wird wieder angreifbar, sobald ein Add stirbt.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-purple-400">Spezialfähigkeiten</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Verstecken:</strong> Lei Shi wird unsichtbar und kann nicht anvisiert werden, wirkt aber weiterhin <strong class="text-cyan-400">Spray</strong> auf zufällige Spieler. Muss durch AoE-Schaden aufgedeckt werden.</li>
+                    <li><strong>Weg da!:</strong> Teleportiert in die Mitte und kanalisiert einen 30s langen Rückstoß, der Schattenschaden verursacht. Spieler, die auf sie zulaufen, erleiden nur halben Schaden. Der Kanal bricht, wenn sie 4% ihrer maximalen Gesundheit als Schaden erleidet.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Gruseliger Nebel:</strong> Spieler, die sich nicht in einem 10m-Radius um Lei Shi aufhalten, erhalten einen stapelbaren DoT.</li>
+                <li>Jeder Stapel des Nebels bewirkt außerdem, dass alle Ziele (freundlich und feindlich) in der Nähe des betroffenen Spielers 10% mehr Schaden erleiden.</li>
+                <li><strong>Strategieänderung:</strong> Der Großteil des Raids muss extrem nah an Lei Shi stehen, um den Nebel zu vermeiden. Einige designierte Spieler stehen absichtlich außerhalb, um Stapel zu sammeln und rotieren dann an den Boss, um dessen erlittenen Schaden massiv zu erhöhen.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

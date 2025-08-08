@@ -1,0 +1,215 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Garalon</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+</nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Garalon ist ein einphasiger Kampf, bei dem der Boss selbst nicht direkt getankt, sondern gekitet wird. Der Schlüssel zum Erfolg liegt in der Kontrolle über den <strong class="text-yellow-400">Pheromon</strong>-Debuff, dem Zerstören seiner vier Beine und dem korrekten Positionieren, um massiven Schaden zu vermeiden.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Pheromon-Kiting:</strong> Ein Spieler erhält zu Beginn den <strong class="text-yellow-400">Pheromon</strong>-Debuff, der bestimmt, wen Garalon verfolgt. Dieser Spieler muss den Boss kiten und hinterlässt eine schädliche <strong class="text-green-400">Pheromonspur</strong>. Der Debuff kann durch Kontakt an andere Spieler weitergegeben werden, was aber einen raidweiten <strong class="text-red-500">Zermalmen</strong>-Angriff auslöst.</li>
+            <li><strong>Beine Zerstören:</strong> Garalon hat vier angreifbare Beine. Das Zerstören eines Beins fügt Garalon 3% seiner maximalen Gesundheit als Schaden zu und verlangsamt ihn um 15%. Alle Beine müssen permanent zerstört werden. Spieler, die nahe an einem Bein stehen, erhalten den <strong class="text-cyan-400">Schwachpunkt</strong>-Buff, der ihren Schaden am Bein um 100% erhöht.</li>
+            <li><strong>Tanks & Zermalmen:</strong> Tanks haben die Aufgabe, den frontalen <strong class="text-orange-400">Wütenden Hieb</strong> abzufangen. Mindestens zwei Spieler müssen getroffen werden, sonst erhält der Boss einen Schadensbuff. Die größte Gefahr ist <strong class="text-red-500">Zermalmen</strong>, das ausgelöst wird, wenn jemand unter den Boss läuft oder (im Normal-Modus) die Pheromone weitergegeben werden.</li>
+            <li><strong>Heroisch:</strong> In Phase 2 (ab 33%) muss Garalon normal getankt werden und bewegt sich sehr viel schneller. <strong class="text-red-500">Zermalmen</strong> ist hier auf einem festen Timer.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Kiten:</strong> Der Pheromon-Träger kitet Garalon am Rand des Raumes entlang. Die Pheromonspur sollte überlappend gelegt werden, um Platz zu sparen. Der Debuff wird bei ca. 20 Stacks an den nächsten Spieler in der Rotation weitergegeben.</p>
+        <p class="mb-2"><strong>Tanks:</strong> Stellt euch immer vor den Boss, um <strong class="text-orange-400">Wütender Hieb</strong> abzufangen. Bewegt euch mit dem Kiter mit.</p>
+        <p class="mb-2"><strong>DPS:</strong> Fokussiert euch auf die Beine. Nutzt den <strong class="text-cyan-400">Schwachpunkt</strong>-Buff, indem ihr in Nahkampfreichweite der Beine steht, aber achtet darauf, nicht unter den Boss (innerhalb des Kreises) zu geraten.</p>
+    </div>
+    </section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung (Wütender Hieb)</h4>
+            <p class="text-sm text-gray-400 mb-2">Die beiden Tanks (oder Schurken mit 'Finte') müssen immer vor dem Boss stehen, um den Hieb abzufangen.</p>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Soaker 1:</span>
+                    <select class="assignment-select" data-assignment-id="garalon-tank1"></select>
+                </li>
+                <li>
+                    <span>Soaker 2:</span>
+                    <select class="assignment-select" data-assignment-id="garalon-tank2"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-yellow-400">🏃 Kiter-Rotation (Pheromone)</h4>
+            <p class="text-sm text-gray-400 mb-2">Der Debuff wird bei ca. 20 Stacks an den nächsten Spieler weitergegeben.</p>
+            <div class="assignment-header" style="grid-template-columns: 0.5fr 1fr;">
+                <span>#</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li><span>1</span><select data-assignment-id="garalon-kiter1" class="assignment-select"></select></li>
+                <li><span>2</span><select data-assignment-id="garalon-kiter2" class="assignment-select"></select></li>
+                <li><span>3</span><select data-assignment-id="garalon-kiter3" class="assignment-select"></select></li>
+                <li data-size="25" class="tactic-content"><span>4</span><select data-assignment-id="garalon-kiter4" class="assignment-select"></select></li>
+                <li data-size="25" class="tactic-content"><span>5</span><select data-assignment-id="garalon-kiter5" class="assignment-select"></select></li>
+                <li data-size="25" class="tactic-content"><span>6</span><select data-assignment-id="garalon-kiter6" class="assignment-select"></select></li>
+            </ul>
+        </div>
+        
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+             <p class="text-sm text-gray-400 mb-2">Defensive Cooldowns für <strong class="text-red-500">Zermalmen</strong> (bei Pheromon-Übergabe oder im HC-Timer).</p>
+            <ul class="assignment-list">
+                <li class="list-subheader"><span>1. Zermalmen:</span></li>
+                <li>
+                    <select data-assignment-id="garalon-heal-cd1.1" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd-cooldown1.1" class="assignment-select"></select>
+                </li>
+                <li class="list-subheader"><span>2. Zermalmen:</span></li>
+                <li> 
+                    <select data-assignment-id="garalon-heal-cd2.1" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd-cooldown2.1" class="assignment-select"></select>
+                </li>
+                <li class="list-subheader"><span>3. Zermalmen:</span></li>
+                <li> 
+                    <select data-assignment-id="garalon-heal-cd3.1" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd-cooldown3.1" class="assignment-select"></select>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+        <div>
+            <h4 class="text-lg font-semibold">Positionierung & Kiting</h4>
+            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                <p class="text-gray-400 text-sm">Der Kiter läuft an der Außenwand des Raumes entlang, um Garalon im Kreis zu führen. Die Tanks bleiben immer vor dem Boss. DPS-Spieler greifen das Bein an, das dem Rest des Raids am nächsten ist, und achten darauf, nicht in den lila Kreis unter dem Boss zu laufen. Der Raid hält sich generell in der Mitte des Raumes auf, um allen Beinen nahe zu sein.</p>
+            </div>
+            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
+                <p>Kein Taktikbild verfügbar.</p>
+            </div>
+        </div>
+        <div>
+            <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+            <div class="video-container my-4 rounded-lg shadow-lg">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/5k5yYyYh2wU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Boss-Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div data-size="10" class="tactic-content">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">10-Spieler-Modus (Garalon: 218M, Beine: 6.5M)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-yellow-400">Pheromon-Mechaniken</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Pheromone:</strong> Debuff, der bestimmt, wen Garalon verfolgt. Verursacht steigenden Raidschaden. Kann durch Kontakt weitergegeben werden.</li>
+                        <li><strong>Beißen:</strong> Stacking-Debuff auf dem Pheromon-Träger, erhöht den Raidschaden von Pheromonen um 10% pro Stapel.</li>
+                        <li><strong>Pheromonspur:</strong> Der Träger hinterlässt schädliche Flächen.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-red-500">Angriffe & Beine</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Zermalmen:</strong> Wird ausgelöst, wenn Pheromone weitergegeben werden oder ein Spieler unter Garalon steht. Verursacht hohen Raidschaden und betäubt für 2s.</li>
+                        <li><strong>Wütender Hieb:</strong> Frontaler Kegelangriff, der von mindestens 2 Spielern (Tanks) abgefangen werden muss.</li>
+                        <li><strong>Beine:</strong> Können zerstört werden, um Garalon zu verlangsamen und ihm Schaden zuzufügen. Bein reparieren belebt ein Bein wieder.</li>
+                        <li><strong>Schwachpunkte:</strong> Spieler nahe einem Bein erhalten 100% mehr Schaden auf dieses Bein.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div data-size="25" class="tactic-content" style="display: block;">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">25-Spieler-Modus (Garalon: 654M, Beine: 20M)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-yellow-400">Pheromon-Mechaniken</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Pheromone:</strong> Debuff, der bestimmt, wen Garalon verfolgt. Verursacht steigenden Raidschaden. Kann durch Kontakt weitergegeben werden.</li>
+                        <li><strong>Beißen:</strong> Stacking-Debuff auf dem Pheromon-Träger, erhöht den Raidschaden von Pheromonen um 10% pro Stapel.</li>
+                        <li><strong>Pheromonspur:</strong> Der Träger hinterlässt schädliche Flächen.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-red-500">Angriffe & Beine</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Zermalmen:</strong> Wird ausgelöst, wenn Pheromone weitergegeben werden oder ein Spieler unter Garalon steht. Verursacht hohen Raidschaden und betäubt für 2s.</li>
+                        <li><strong>Wütender Hieb:</strong> Frontaler Kegelangriff, der von mindestens 2 Spielern (Tanks) abgefangen werden muss.</li>
+                        <li><strong>Beine:</strong> Können zerstört werden, um Garalon zu verlangsamen und ihm Schaden zuzufügen. Bein reparieren belebt ein Bein wieder.</li>
+                        <li><strong>Schwachpunkte:</strong> Spieler nahe einem Bein erhalten 100% mehr Schaden auf dieses Bein.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-400">Heroische Anpassungen (10- & 25-Spieler)</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li>Alle Fähigkeiten verursachen deutlich mehr Schaden und der Enrage-Timer ist kürzer (7 Minuten).</li>
+                <li><strong>Zermalmen:</strong> Wird nicht mehr durch die Weitergabe von Pheromonen ausgelöst, sondern regelmäßig alle 35 Sekunden gewirkt.</li>
+                <li><strong>Beißen:</strong> Der Debuff hält deutlich länger (<span data-size="10" class="tactic-content">4 Minuten</span><span data-size="25" class="tactic-content">6 Minuten</span>), was die Kiter-Rotation erschwert.</li>
+                <li><strong>Sub-33%-Phase:</strong> Bei 33% Gesundheit hört Garalon auf, dem Kiter zu folgen. Er wird viel schneller und muss normal getankt werden. Alle anderen Fähigkeiten bleiben aktiv.</li>
+            </ul>
+        </div>
+    </div>
+    </section>
+</main>

@@ -1,0 +1,212 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Klingenfürst Ta'yak</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+</nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Klingenfürst Ta'yak ist ein reiner Einzelziel-Kampf, der sich über zwei Phasen erstreckt. Er testet die Fähigkeit des Raids, koordiniert zwischen "verteilen" und "zusammenlaufen" zu wechseln. Zwei Soft-Enrage-Mechaniken erhöhen den Druck im Kampfverlauf.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Phase 1 (100% - 20%):</strong> Der Raid muss sich für den <strong class="text-yellow-400">Windschritt</strong> verteilen, aber für den <strong class="text-red-500">Unsichtbaren Schlag</strong> schnell zusammenlaufen, um den massiven Schaden zu teilen. Währenddessen müssen die Tanks wegen des <strong class="text-orange-400">Überwältigenden Angriffs</strong> regelmäßig spotten und der Raid Tornados ausweichen. Die Anzahl der Tornados nimmt stetig zu.</li>
+            <li><strong>Phase 2 (ab 20%):</strong> Ta'yak teleportiert den Raid ans Ende eines langen Korridors und greift von der gegenüberliegenden Seite an. Der gesamte Raid muss durch eine Wand aus herannahenden Tornados laufen, um zum Boss zu gelangen. Bei 10% Leben wechselt der Boss die Seite und der "Spießrutenlauf" beginnt von vorn.</li>
+            <li><strong>Soft-Enrage:</strong> Ta'yak erhält durch <strong class="text-red-400">Intensivieren</strong> alle 60 Sekunden (in P2 alle 10s) einen Buff, der seinen Schaden und sein Tempo um 5% erhöht.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Phase 1:</strong> Grundsätzlich 8 Meter voneinander entfernt stehen. Bei <strong class="text-red-500">Unsichtbarer Schlag</strong> an einem markierten Punkt eng zusammenlaufen. Sofort danach wieder verteilen. Tanks spotten nach jedem <strong class="text-orange-400">Überwältigenden Angriff</strong>. Fernkämpfer und Heiler legen Tornados an den Rändern des Raumes ab.</p>
+        <p class="mb-2"><strong>Phase 2:</strong> Den drei Bahnen von Tornados ausweichen und schnell zum Boss gelangen. Heiler müssen während der Bewegung heilen. Bei 10% wiederholt sich der Vorgang. Kampfrausch/Heldentum in Phase 1 nutzen, da Phase 2 zu bewegungsintensiv ist.</p>
+    </div>
+    </section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+    <div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <p class="text-sm text-gray-400 mb-2">Die Tanks müssen nach jedem <strong class="text-orange-400">Überwältigenden Angriff</strong> spotten.</p>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Tank 1:</span>
+                    <select class="assignment-select" data-assignment-id="tayak-tank1"></select>
+                </li>
+                <li>
+                    <span>Tank 2:</span>
+                    <select class="assignment-select" data-assignment-id="tayak-tank2"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-red-500">💥 Schadens-Einteilung</h4>
+            <div class="assignment-header" style="grid-template-columns: 1fr 1.2fr;">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Stack-Punkt für Unsichtbarer Schlag</span>
+                    <select data-assignment-id="tayak-stackpoint" class="assignment-select"></select>
+                </li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+             <p class="text-sm text-gray-400 mb-2">Starke Heil-CDs für den Schaden durch den <strong class="text-red-500">Unsichtbaren Schlag</strong>.</p>
+            <ul class="assignment-list">
+                    <li class="list-subheader"><span>1. Unsichtbarer Schlag:</span></li>
+					<li>
+                        <select data-assignment-id="tayak-heal-cd1.1" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd-cooldown1.1" class="assignment-select"></select>
+                    </li>
+                    <li class="list-subheader"><span>2. Unsichtbarer Schlag:</span></li>
+                    <li> 
+                        <select data-assignment-id="tayak-heal-cd2.1" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd-cooldown2.1" class="assignment-select"></select>
+                    </li>
+                    <li class="list-subheader"><span>Weitere Schläge nach Bedarf:</span></li>
+                     <li> 
+                        <select data-assignment-id="tayak-heal-cd3.1" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd-cooldown3.1" class="assignment-select"></select>
+                    </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div>
+        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+        <div>
+            <h4 class="text-lg font-semibold">Positionierung in Phase 1</h4>
+            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                <p class="text-gray-400 text-sm">Der Tank positioniert den Boss in einer der Nischen. Fernkämpfer und Heiler verteilen sich mit 8m Abstand an den Wänden, um Tornados dort abzulegen. Wenn eine Nische voll ist, wird der Boss zur nächsten gezogen. Für den <strong class="text-red-500">Unsichtbaren Schlag</strong> läuft der gesamte Raid auf einen markierten Spieler (z.B. ein Nahkämpfer) zusammen.</p>
+            </div>
+             <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
+                <p>Kein Taktikbild verfügbar.</p>
+             </div>
+        </div>
+        <div>
+            <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+            <div class="video-container my-4 rounded-lg shadow-lg">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ACKk-p2B_a4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Boss-Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div data-size="10" class="tactic-content">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">10-Spieler-Modus (130M Leben)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-cyan-300">Phase 1 (100% - 20%)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Überwältigender Angriff:</strong> Hoher Schaden am Tank und hinterlässt einen Debuff, der den Schaden des nächsten Angriffs 45s lang um 100% erhöht.</li>
+                        <li><strong>Windschritt:</strong> Blinkt alle 30s zu einem Spieler und verursacht einen Blutungs-Effekt bei allen Spielern im Umkreis von 8 Metern.</li>
+                        <li><strong>Unsichtbarer Schlag:</strong> Verschwindet alle 60s und schlägt nach 5s in einem Kegel auf einen markierten Spieler ein. Der Schaden (~3.000.000) muss vom gesamten Raid geteilt werden.</li>
+                        <li><strong>Sturmschlag:</strong> Erzeugt alle 20-30s einen Tornado am Standort eines Fernkämpfers.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-gray-400">Phase 2 (ab 20%)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Tornado-Korridor:</strong> Ta'yak teleportiert alle Spieler an ein Ende des Raumes und beschwört Tornados am anderen Ende, die auf den Raid zurollen.</li>
+                        <li><strong>Dauerhafter Schaden:</strong> Verursacht moderaten Naturschaden an allen Spielern.</li>
+                        <li><strong>Intensivieren:</strong> Erhält alle 10 Sekunden einen Stapel (5% mehr Schaden und Tempo).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div data-size="25" class="tactic-content" style="display: block;">
+            <h3 class="text-xl font-semibold text-blue-450 mb-3">25-Spieler-Modus (451M Leben)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-cyan-300">Phase 1 (100% - 20%)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Überwältigender Angriff:</strong> Hoher Schaden am Tank und hinterlässt einen Debuff, der den Schaden des nächsten Angriffs 45s lang um 100% erhöht.</li>
+                        <li><strong>Windschritt:</strong> Blinkt alle 30s zu einem Spieler und verursacht einen Blutungs-Effekt bei allen Spielern im Umkreis von 8 Metern.</li>
+                        <li><strong>Unsichtbarer Schlag:</strong> Verschwindet alle 60s und schlägt nach 5s in einem Kegel auf einen markierten Spieler ein. Der Schaden (~6.000.000) muss vom gesamten Raid geteilt werden.</li>
+                        <li><strong>Sturmschlag:</strong> Erzeugt alle 20-30s einen Tornado am Standort eines Fernkämpfers.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-gray-400">Phase 2 (ab 20%)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Tornado-Korridor:</strong> Ta'yak teleportiert alle Spieler an ein Ende des Raumes und beschwört Tornados am anderen Ende, die auf den Raid zurollen.</li>
+                        <li><strong>Dauerhafter Schaden:</strong> Verursacht moderaten Naturschaden an allen Spielern.</li>
+                        <li><strong>Intensivieren:</strong> Erhält alle 10 Sekunden einen Stapel (5% mehr Schaden und Tempo).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-400">Heroische Anpassungen (10- & 25-Spieler)</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2">
+                <li>Alle Fähigkeiten verursachen deutlich mehr Schaden.</li>
+                <li><strong>NEU: Klingensturm:</strong> In Phase 1 zieht Ta'yak alle 60s den gesamten Raid zu sich und beginnt nach wenigen Sekunden für 7s zu wirbeln. Alle Spieler in einem 7-Meter-Radius erleiden massiven physischen Schaden und müssen schnell weglaufen.</li>
+                <li>Der Schaden durch <strong class="text-red-500">Unsichtbarer Schlag</strong> ist noch kritischer. Von ihm in einen Tornado gestoßen zu werden, ist oft tödlich.</li>
+            </ul>
+        </div>
+    </div>
+    </section>
+</main>

@@ -1,0 +1,175 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Tsulong</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+</nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Tsulong ist ein einzigartiger zweiphasiger Kampf, der auf einem festen Timer basiert. Die Phasen wechseln alle zwei Minuten. Um den Boss zu besiegen, muss der Raid ihn entweder in der Nachtphase auf 0% Leben bringen oder in der Tagphase auf 100% Leben heilen.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Gesundheits-Invertierung:</strong> Zu Beginn jeder Phase wird Tsulongs Gesundheit invertiert. Wenn er am Ende der Nachtphase 70% Leben hat, startet er mit 30% Leben in die Tagphase.</li>
+            <li><strong>Nachtphase (DPS-Phase):</strong> Tsulong ist feindselig. Der Raid muss ihm Schaden zufügen und gleichzeitig mit mehreren Fähigkeiten umgehen. Die wichtigste Mechanik ist der stapelbare Raid-DoT <strong class="text-purple-400">Schreckensschatten</strong>, der in einem <strong class="text-yellow-400">Sonnenstrahl</strong> zurückgesetzt werden muss.</li>
+            <li><strong>Tagphase (Heil-Phase):</strong> Tsulong wird freundlich und muss vom Raid geheilt werden. Gleichzeitig erscheinen Adds, die Tsulong angreifen und vom Raid getötet werden müssen. Heiler können sich durch Tsulongs <strong class="text-yellow-400">Sonnenatem</strong> einen massiven Heilungsbuff holen.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Nachtphase:</strong> Tanks spotten nach jedem <strong class="text-gray-400">Schattenatem</strong>. Der Raid steht mit 8m Abstand verteilt, um <strong class="text-purple-500">Albträumen</strong> auszuweichen. Spieler laufen abwechselnd und kurz in den <strong class="text-yellow-400">Sonnenstrahl</strong>, um ihre <strong class="text-purple-400">Schreckensschatten</strong>-Stapel zurückzusetzen.</p>
+        <p class="mb-2"><strong>Tagphase:</strong> Heiler positionieren sich vor Tsulong, um den <strong class="text-yellow-400">Sonnenatem</strong>-Buff zu erhalten und den Boss zu heilen. DPS fokussiert die Adds in folgender Priorität: <strong class="text-gray-400">Instabile Shas</strong> > <strong class="text-red-500">Verkörperter Schrecken</strong> > <strong class="text-red-400">Schreckensbrut</strong>. Tanks positionieren die Adds vor dem Boss, damit der Sonnenatem sie trifft.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Tank 1:</span>
+                    <select class="assignment-select" data-assignment-id="tsulong-tank1"></select>
+                </li>
+                <li>
+                    <span>Tank 2:</span>
+                    <select class="assignment-select" data-assignment-id="tsulong-tank2"></select>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">Nachtphase: Sonnenstrahl-Rotation</h4>
+            <p class="text-sm text-gray-400 mb-2">Gruppen laufen nacheinander in den Strahl, um ihre <strong class="text-purple-400">Schreckensschatten</strong>-Stapel bei ca. 15 Stacks zu entfernen.</p>
+            <ul class="assignment-list">
+                <li class="list-subheader"><span>Rotation pro Sonnenstrahl</span></li>
+                <li><span>Gruppe 1 (z.B. Melees):</span><select data-assignment-id="tsulong-sunbeam1" class="assignment-select"></select></li>
+                <li><span>Gruppe 2 (z.B. Ranges):</span><select data-assignment-id="tsulong-sunbeam2" class="assignment-select"></select></li>
+                <li><span>Gruppe 3 (z.B. Heiler):</span><select data-assignment-id="tsulong-sunbeam3" class="assignment-select"></select></li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">Tagphase: Add-Prioritäten</h4>
+            <p class="text-sm text-gray-400 mb-2">Alle DDs müssen sich an diese Prioritäten halten, um Tsulong zu schützen.</p>
+             <ol class="list-decimal list-inside text-gray-200 mt-2 space-y-1">
+                <li><strong class="text-gray-400">Instabile Shas</strong> (bevor sie Tsulong erreichen)</li>
+                <li><strong class="text-red-500">Verkörperter Schrecken</strong></li>
+                <li><strong class="text-red-400">Schreckensbrut</strong></li>
+            </ol>
+        </div>
+        
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-red-500">Heroisch: Add-Killer (Nachtphase)</h4>
+            <p class="text-sm text-gray-400 mb-2">Diese Spieler sind dafür verantwortlich, die <strong class="text-gray-200">Dunkelheit der Nacht</strong>-Adds zu töten, bevor sie den Sonnenstrahl erreichen.</p>
+             <ul class="assignment-list">
+                <li><span>Add-Killer 1:</span><select data-assignment-id="tsulong-hc-killer1" class="assignment-select"></select></li>
+                <li><span>Add-Killer 2:</span><select data-assignment-id="tsulong-hc-killer2" class="assignment-select"></select></li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+        <div>
+            <h4 class="text-lg font-semibold">Positionierung</h4>
+            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                <p class="text-gray-400 text-sm"><strong>Nachtphase:</strong> Der Raid verteilt sich im Halbkreis mit 8m Abstand hinter dem Boss. Der Boss wird bei Bedarf gedreht, damit der <strong class="text-yellow-400">Sonnenstrahl</strong> für alle erreichbar ist. <br><strong>Tagphase:</strong> Die Tanks ziehen die Adds vor Tsulong, damit sie von seinem <strong class="text-yellow-400">Sonnenatem</strong> getroffen werden. Heiler stehen direkt im Atem. DDs positionieren sich, um schnell die <strong class="text-gray-400">Instabilen Shas</strong> abzufangen.</p>
+            </div>
+            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
+                <p>Kein Taktikbild verfügbar.</p>
+            </div>
+        </div>
+        <div>
+            <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+            <div class="video-container my-4 rounded-lg shadow-lg">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/gLCoPl8cl3k" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-gray-300">Nachtphase (DPS)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Schattenatem:</strong> Frontaler Kegel, verursacht hohen Schattenschaden und stapelt einen Debuff (+100% erlittener Schattenschaden). Erzwingt Tankwechsel.</li>
+                    <li><strong>Schreckensschatten:</strong> Stapelbarer DoT auf dem gesamten Raid.</li>
+                    <li><strong>Sonnenstrahl:</strong> Eine Lichtfläche erscheint, die bei Betreten die <strong class="text-purple-400">Schreckensschatten</strong>-Stapel entfernt, aber dabei schrumpft.</li>
+                    <li><strong>Albträume:</strong> Trifft einen zufälligen Spielerstandort, verursacht Schaden und Furcht im Umkreis von 8m.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-yellow-300">Tagphase (Heilung)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Sonnenatem:</strong> Freundlicher Atem, der Adds schädigt und Spielern den <strong class="text-yellow-400">In Licht getaucht</strong>-Buff gibt (+500% Heilung, 25% Manareg.).</li>
+                    <li><strong>Verkörperter Schrecken:</strong> Großes Add, das einen dispellbaren DoT (<strong class="text-purple-400">Terrorisieren</strong>) auf Spieler und Tsulong wirkt.</li>
+                    <li><strong>Schreckensbrut:</strong> Kleine Adds, die aus dem großen Add spawnen. Wirken einen Furcht-Effekt (<strong class="text-purple-500">Schrecken</strong>).</li>
+                    <li><strong>Instabiler Sha:</strong> Adds, die auf Tsulong zulaufen und ihm bei Ankunft massiven Schaden zufügen. Müssen vorher sterben.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Dunkelheit der Nacht (Nachtphase):</strong> Adds spawnen und laufen auf den <strong class="text-yellow-400">Sonnenstrahl</strong> zu. Erreichen sie ihn, wird der Strahl zerstört. Die Adds müssen schnell getötet werden.</li>
+                <li><strong>Licht des Tages (Tagphase):</strong> Lichtkugeln erscheinen, die von Heilern angeklickt werden können. Sie gewähren einen starken Heilungs- und Manaregenerationsbuff, der nicht mit dem <strong class="text-yellow-400">Sonnenatem</strong>-Buff stapelbar ist.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

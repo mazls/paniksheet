@@ -1,0 +1,196 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Die Beschützer des Endlosen</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+</nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen die Beschützer des Endlosen ist ein "Council"-Kampf gegen drei Jinyu-Bosse: **Beschützer Kaolan**, **Ältester Regail** und **Ältester Asani**. Die Mechanik des Kampfes ändert sich jedes Mal, wenn ein Boss besiegt wird, da die verbleibenden Bosse zu voller Gesundheit geheilt werden und neue, stärkere Fähigkeiten erhalten.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Phasenstruktur:</strong> Der Kampf hat drei Phasen, die durch den Tod eines Bosses ausgelöst werden.
+                <ul class="list-disc list-inside ml-6 mt-2 space-y-1">
+                    <li>**Phase 1:** Alle drei Bosse sind aktiv.</li>
+                    <li>**Phase 2:** Die verbleibenden zwei Bosse sind aktiv, werden voll geheilt und erhalten +25% Schaden sowie eine neue Fähigkeit.</li>
+                    <li>**Phase 3:** Der letzte Boss ist aktiv, wird voll geheilt und erhält weitere +25% Schaden sowie eine letzte Fähigkeit.</li>
+                </ul>
+            </li>
+            <li><strong>Reihenfolge des Tötens (Kill Order):</strong> Die Reihenfolge, in der die Bosse getötet werden, bestimmt die Schwierigkeit des Kampfes. Die einfachste Reihenfolge ist <strong class="text-cyan-400">Kaolan → Regail → Asani</strong>.</li>
+            <li><strong>Hauptaufgaben:</strong> Der Kampf erfordert konstantes Unterbrechen, schnelles Dispellen, koordiniertes Bewegen und hohe Heilung, um die verschiedenen DoTs und Schadensspitzen zu überleben.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung, einfachste Reihenfolge)</h3>
+        <p class="mb-2"><strong>Phase 1 (Alle 3):</strong> Ein Tank nimmt Kaolan, der andere Regail und Asani. Fokussiert allen Schaden auf **Kaolan**. Unterbrecht die Zauber der beiden Ältesten, dispellt <strong class="text-yellow-400">Blitzgefängnis</strong> und bewegt die Bosse aus den <strong class="text-blue-400">Reinigenden Wassern</strong>. Der Raid steht verteilt.</li>
+        <p class="mb-2"><strong>Phase 2 (Regail & Asani):</strong> Fokussiert allen Schaden auf **Regail**. Weicht dem <strong class="text-yellow-400">Blitzsturm</strong> aus, indem ihr zwischen den Ringen hin und her lauft. Tötet die <strong class="text-purple-400">Verderbten Wasser</strong>-Kugeln, um den Tempobuff für den Raid zu erhalten.</li>
+        <p class="mb-2"><strong>Phase 3 (Nur Asani):</strong> Zündet Kampfrausch/Heldentum. Tötet weiterhin die <strong class="text-purple-400">Verderbten Wasser</strong>-Kugeln für den Buff. Der Raid erleidet steigenden Schaden durch <strong class="text-red-500">Überwältigende Verderbnis</strong>, daher muss der Boss schnell sterben.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Tank 1 (Kaolan):</span>
+                    <select class="assignment-select" data-assignment-id="protectors-tank1"></select>
+                </li>
+                <li>
+                    <span>Tank 2 (Regail & Asani):</span>
+                    <select class="assignment-select" data-assignment-id="protectors-tank2"></select>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🎯 Kill Order & Fokus</h4>
+            <p class="text-sm text-gray-400 mb-2">Die empfohlene, einfachste Reihenfolge. Jeglicher Schaden sollte auf das aktuelle Ziel konzentriert werden.</p>
+             <ol class="list-decimal list-inside text-gray-200 mt-2 space-y-1">
+                <li>Beschützer Kaolan</li>
+                <li>Ältester Regail</li>
+                <li>Ältester Asani</li>
+            </ol>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛑 Interrupt & Dispel</h4>
+            <ul class="assignment-list">
+                <li class="list-subheader"><span>Interrupt-Rotation (Regail & Asani):</span></li>
+                <li><span>Unterbrecher 1:</span><select data-assignment-id="protectors-interrupt1" class="assignment-select"></select></li>
+                <li><span>Unterbrecher 2:</span><select data-assignment-id="protectors-interrupt2" class="assignment-select"></select></li>
+                <li class="list-subheader"><span>Dispel-Zuweisung (Blitzgefängnis):</span></li>
+                <li><span>Dispel 1:</span><select data-assignment-id="protectors-dispel1" class="assignment-select"></select></li>
+                <li><span>Dispel 2:</span><select data-assignment-id="protectors-dispel2" class="assignment-select"></select></li>
+            </ul>
+        </div>
+        
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-red-500">Heroisch: Minion-Gruppen</h4>
+            <p class="text-sm text-gray-400 mb-2">Gruppen rotieren, um den <strong class="text-red-400">Verderbte Essenz</strong>-Buff zu sammeln, ohne 10 Stapel zu erreichen.</p>
+             <ul class="assignment-list">
+                <li><span>Gruppe 1 (Top DPS):</span><select data-assignment-id="protectors-hc-group1" class="assignment-select"></select></li>
+                <li><span>Gruppe 2:</span><select data-assignment-id="protectors-hc-group2" class="assignment-select"></select></li>
+                <li><span>Gruppe 3:</span><select data-assignment-id="protectors-hc-group3" class="assignment-select"></select></li>
+                <li><span>Gruppe 4:</span><select data-assignment-id="protectors-hc-group4" class="assignment-select"></select></li>
+                <li><span>Gruppe 5 (Tanks/Heiler):</span><select data-assignment-id="protectors-hc-group5" class="assignment-select"></select></li>
+            </ul>
+        </div>
+
+    </div>
+    <div>
+        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+        <div>
+            <h4 class="text-lg font-semibold">Positionierung</h4>
+            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                <p class="text-gray-400 text-sm">Der Raid sollte sich generell mit mindestens 7 Metern Abstand zueinander verteilen, um den Schaden von <strong class="text-yellow-400">Blitzgefängnis</strong> und <strong class="text-blue-400">Wasserblitz</strong> zu minimieren. Bei <strong class="text-yellow-500">Blitzsturm</strong> müssen die Spieler schnell zwischen den sicheren Zonen wechseln. Für den <strong class="text-purple-400">Gereinigt</strong>-Buff von Asanis Kugel muss der Raid kurz zusammenlaufen.</p>
+            </div>
+            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
+                <p>Kein Taktikbild verfügbar.</p>
+            </div>
+        </div>
+        <div>
+            <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+            <div class="video-container my-4 rounded-lg shadow-lg">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/jZ02w7b1MOo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Beschützer Kaolan</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Phase 1:</strong> <strong class="text-purple-400">Berührung des Sha</strong> (Nicht dispellbarer DoT auf zufälligen Spielern, hält bis Kaolan stirbt).</li>
+                    <li><strong>Phase 2:</strong> Erhält <strong class="text-gray-400">Besudelter Boden</strong> (Permanente Void-Zonen).</li>
+                    <li><strong>Phase 3:</strong> Erhält <strong class="text-red-500">Verderbnis ausstoßen</strong> (Permanente Schadens-Aura um eine Kugel).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-yellow-400">Ältester Regail</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Phase 1:</strong> <strong class="text-yellow-400">Blitzblitz</strong> (Unterbrechbar), <strong class="text-yellow-500">Blitzgefängnis</strong> (Dispellbarer Stun mit AoE-Schaden).</li>
+                    <li><strong>Phase 2:</strong> Erhält <strong class="text-yellow-400">Blitzsturm</strong> (Großflächiger AoE in Ringen).</li>
+                    <li><strong>Phase 3:</strong> Erhält <strong class="text-red-500">Überwältigende Verderbnis</strong> (Stapelbarer, raidweiter DoT).</li>
+                </ul>
+            </div>
+             <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-blue-400">Ältester Asani</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Phase 1:</strong> <strong class="text-blue-400">Wasserblitz</strong> (Unterbrechbar), <strong class="text-blue-500">Reinigendes Wasser</strong> (Heil-Kugel für Bosse).</li>
+                    <li><strong>Phase 2:</strong> Erhält <strong class="text-purple-400">Verderbtes Wasser</strong> (Kugel, die Bosse bufft; bei Zerstörung erhält der Raid einen Tempobuff).</li>
+                    <li><strong>Phase 3:</strong> Erhält <strong class="text-red-500">Überwältigende Verderbnis</strong> (Stapelbarer, raidweiter DoT).</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Diener der Furcht:</strong> Alle 15 Sekunden spawnt ein Add, das langsam auf den Boss mit den wenigsten HP zuläuft.</li>
+                <li>Das Add muss getötet werden, bevor es den Boss erreicht, sonst erhält der Boss einen stapelbaren Schadensbuff (bei 5 Stapeln Wipe).</li>
+                <li><strong>Verderbte Essenz:</strong> Beim Tod eines Dieners erhalten die <span data-size="10" class="tactic-content">2</span><span data-size="25" class="tactic-content">5</span> nächststehenden Spieler einen stapelbaren, 2-minütigen Schadensbuff.</li>
+                <li>Bei 10 Stapeln explodiert der Spieler und verursacht hohen Raidschaden.</li>
+                <li><strong>Strategie:</strong> Der Raid muss in Gruppen rotieren, um die Buffs der sterbenden Diener aufzunehmen, ohne dass ein Spieler 10 Stapel erreicht.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

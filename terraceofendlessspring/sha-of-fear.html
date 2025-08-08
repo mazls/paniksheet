@@ -1,0 +1,173 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Sha der Angst</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+</nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen den Sha der Angst ist ein langer, ausdauernder Encounter, der auf zwei Schauplätzen stattfindet: einer Hauptplattform, auf der der Sha bekämpft wird, und drei Nebenplattformen, auf die regelmäßig Gruppen von Spielern teleportiert werden.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Hauptplattform (Kampf gegen den Sha):</strong> Der stationäre Sha muss von einem Tank in einem Lichtkreis positioniert werden, um eine V-förmige Schutzzone, die <strong class="text-yellow-400">Mauer des Lichts</strong>, zu erzeugen. Diese Zone schützt vor dem tödlichen <strong class="text-purple-500">Atem der Furcht</strong>. Währenddessen müssen DDs aus der Zone herauslaufen, um <strong class="text-gray-400">Schreckensbrut</strong>-Adds von hinten anzugreifen.</li>
+            <li><strong>Nebenplattformen (Kampf gegen Wächter):</strong> Regelmäßig wird eine Gruppe aus 1 Tank, 1 Heiler und 3 DDs auf eine Nebenplattform teleportiert, um einen <strong class="text-cyan-400">Terrassenwächter</strong> zu besiegen. Dort müssen die Spieler Zauber per Line-of-Sight vermeiden und Kugeln einsammeln, um den Wächter am Heilen zu hindern. Nach dem Sieg kehrt die Gruppe mit einem starken Buff zurück.</li>
+            <li><strong>Heroische Phase (ab 66%):</strong> Der Kampf verlagert sich in eine neue Arena, die "Schreckensweite". Hier erhält der Sha komplett neue Fähigkeiten und der Raid muss mit einem speziellen Buff, dem <strong class="text-yellow-200">Reinen Licht</strong>, umgehen, um Furchteffekte zu brechen und spezielle Adds zu kiten.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Hauptplattform:</strong> Tank im Lichtkreis stehen lassen, um die <strong class="text-yellow-400">Mauer des Lichts</strong> aktiv zu halten. Der Rest des Raids steht in der Mauer, außer DDs, die zwischen den <strong class="text-purple-500">Atem der Furcht</strong>-Casts rauslaufen, um Adds zu töten.</p>
+        <p class="mb-2"><strong>Nebenplattform:</strong> Der Wächter-Tank hält die Aggro. DDs und Heiler verteilen sich, sammeln Kugeln und verstecken sich hinter Säulen, wenn der Wächter <strong class="text-red-500">Todesblüte</strong> wirkt. Nach dem Sieg schnell zur Hauptplattform zurückkehren.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Main Tank (Sha):</span>
+                    <select class="assignment-select" data-assignment-id="sha-of-fear-tank1"></select>
+                </li>
+                <li>
+                    <span>Off-Tank (Terrassenwächter):</span>
+                    <select class="assignment-select" data-assignment-id="sha-of-fear-tank2"></select>
+                </li>
+                 <li data-size="25" class="tactic-content">
+                    <span>Tank 3 (Terrassenwächter):</span>
+                    <select class="assignment-select" data-assignment-id="sha-of-fear-tank3"></select>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🎯 DD-Zuweisungen</h4>
+            <p class="text-sm text-gray-400 mb-2">Fernkämpfer sind primär für die <strong class="text-gray-400">Schreckensbrut</strong>-Adds zuständig.</p>
+            <ul class="assignment-list">
+                <li class="list-subheader"><span>Schreckensbrut-Killer</span></li>
+                <li><span>Gruppe 1:</span><select data-assignment-id="sha-of-fear-addkiller1" class="assignment-select"></select></li>
+                <li><span>Gruppe 2:</span><select data-assignment-id="sha-of-fear-addkiller2" class="assignment-select"></select></li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-red-500">Heroisch: Reines Licht Rotation (P2)</h4>
+            <p class="text-sm text-gray-400 mb-2">Spieler passen sich den Licht-Buff zu, um Furcht zu brechen und die <strong class="text-red-400">Schreckensbrut</strong> zu kiten.</p>
+             <ul class="assignment-list">
+                <li><span>Kiter 1:</span><select data-assignment-id="sha-of-fear-hc-kiter1" class="assignment-select"></select></li>
+                <li><span>Kiter 2:</span><select data-assignment-id="sha-of-fear-hc-kiter2" class="assignment-select"></select></li>
+                <li><span>Kiter 3:</span><select data-assignment-id="sha-of-fear-hc-kiter3" class="assignment-select"></select></li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+        <div>
+            <h4 class="text-lg font-semibold">Positionierung</h4>
+            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                <p class="text-gray-400 text-sm"><strong>Hauptplattform:</strong> Der Sha-Tank steht im Lichtkreis. Der Raid steht locker verteilt in der V-förmigen <strong class="text-yellow-400">Mauer des Lichts</strong>. <br><strong>Nebenplattform:</strong> Die Gruppe verteilt sich um den Wächter in der Mitte. Jeder nutzt die Säulen am Rand, um sich vor <strong class="text-red-500">Todesblüte</strong> zu verstecken.</p>
+            </div>
+             <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
+                <p>Kein Taktikbild verfügbar.</p>
+             </div>
+        </div>
+        <div>
+            <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+            <div class="video-container my-4 rounded-lg shadow-lg">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/5FdjJ5y3__Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Hauptplattform (Sha der Angst)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Mauer des Lichts:</strong> Safe-Zone, die der Tank erzeugt. Schützt vor <strong class="text-purple-500">Atem der Furcht</strong>.</li>
+                    <li><strong>Dreschen:</strong> Nach 3 Nahkampfangriffen schlägt der Sha beim 4. Mal dreifach zu.</li>
+                    <li><strong>Unheimlicher Schädel:</strong> Spambare Fähigkeit, die Schaden auf ein Ziel und Spieler im Umkreis von 2m verursacht.</li>
+                    <li><strong>Atem der Furcht:</strong> Alle 30s; verursacht massiven Schaden und Furcht bei allen Spielern außerhalb der Mauer des Lichts.</li>
+                    <li><strong>Schreckensbrut:</strong> Adds, die nur von hinten Schaden erleiden und einen ausweichbaren AoE (<strong class="text-purple-400">Durchdringender Blitz</strong>) wirken.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-green-400">Nebenplattform (Terrassenwächter)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Schießen:</strong> Standardangriff auf den Tank.</li>
+                    <li><strong>Schreckensspray:</strong> Verschießt 8s lang Projektile in einem bestimmten Muster. Zwei Treffer führen zu Furcht.</li>
+                    <li><strong>Todesblüte:</strong> Tödlicher kanalisierter Zauber. Muss hinter Säulen per Line-of-Sight vermieden werden.</li>
+                    <li><strong>Sha-Kugeln:</strong> Kugeln, die eingesammelt werden müssen, um den Wächter an der Heilung zu hindern und Ressourcen wiederherzustellen.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen (ab 66% HP)</h3>
+            <p class="text-gray-300 mt-2">Der Kampf verlagert sich in die <strong class="text-purple-300">Schreckensweite</strong>. Der Raid wird voll geheilt, Cooldowns werden zurückgesetzt.</p>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Reines Licht:</strong> Ein Spieler erhält einen Buff (Furcht-Immunität, Schadensreduktion), den er an andere weitergeben kann.</li>
+                <li><strong>Nackt und verängstigt:</strong> Tank-Debuff, der Rüstung und Parieren um 100% reduziert. Erzwingt Tankwechsel.</li>
+                <li><strong>In Terror kauern:</strong> Furchteffekt auf mehreren Spielern, der nur durch den <strong class="text-yellow-200">Reines Licht</strong>-Buff gebrochen werden kann.</li>
+                <li><strong>Untertauchen & Schreckensbrut:</strong> Der Sha taucht unter und erscheint an einer neuen Position, wobei er <strong class="text-red-400">Schreckensbrut</strong>-Adds beschwört. Diese Adds fixieren den Spieler mit dem <strong class="text-yellow-200">Reinen Licht</strong> und müssen gekitet und getötet werden.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

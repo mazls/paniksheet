@@ -1,0 +1,191 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Bernformer Un'sok</h1>
+    <nav class="quick-nav-bar mb-6">
+    <a href="#overview">Übersicht</a>
+    <a href="#assignments">Einteilungen</a>
+    <a href="#details">Details</a>
+</nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Bernformer Un'sok ist ein komplexer, dreiphasiger Kampf. Die zentrale Mechanik ist die Verwandlung von Spielern in ein <strong class="text-orange-400">Mutiertes Konstrukt</strong>, eine Art "Fahrzeug", das kontrolliert werden muss, um den Boss zu besiegen.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Das Mutierte Konstrukt:</strong> Regelmäßig verwandelt Un'sok Spieler. Das Konstrukt hat eine eigene Ressource (<strong class="text-cyan-400">Willenskraft</strong>), die langsam abläuft. Läuft sie aus, stirbt der Spieler. Um sich zu befreien, muss der Schlachtzug das Konstrukt auf unter 20% Leben bringen. Das Konstrukt kann den Schaden auf Zielen mit <strong class="text-red-500">Destabilisieren</strong> erhöhen und gegnerische Zauber unterbrechen.</li>
+            <li><strong>Phase 1 (100% - 70%):</strong> Der Raid kämpft gegen Un'sok und kleine <strong class="text-amber-400">Lebender Bernstein</strong>-Adds. Nur Tanks werden in Konstrukte verwandelt.</li>
+            <li><strong>Phase 2 (70% - Tod des Adds):</strong> Un'sok wird immun und ruft eine große <strong class="text-yellow-400">Bernstein-Monstrosität</strong>. Der Kampf fokussiert sich auf das Töten dieses Adds, während alle Mechaniken aus Phase 1 weiterlaufen. Jeder Spieler kann nun verwandelt werden.</li>
+            <li><strong>Phase 3 (Tod des Adds - Tod des Bosses):</strong> Eine intensive Burn-Phase. Un'sok erleidet mehr Schaden, teilt aber auch mehr aus. Er verwandelt Spieler viel häufiger in Konstrukte.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Konstrukt spielen:</strong> Als Konstrukt den <strong class="text-red-500">Destabilisieren</strong>-Debuff auf dem Hauptziel (Boss/Monstrosität) aufrechterhalten und dessen <strong class="text-red-500">Bernsteinexplosion</strong> unterbrechen. Die eigene Explosion immer mit <strong class="text-cyan-400">Kampf um die Kontrolle</strong> unterbrechen.</p>
+        <p class="mb-2"><strong>Raid-Aufgaben:</strong> Das Konstrukt schnell auf unter 20% HP bringen, damit der Spieler sich befreien kann. <strong class="text-amber-400">Lebender Bernstein</strong>-Adds gezielt töten und dem <strong class="text-yellow-400">Bernsteinskarpell</strong>-Strahl ausweichen.</p>
+        <p class="mb-2"><strong>Phasenwechsel:</strong> In Phase 2 vollen Schaden auf die Monstrosität. In Phase 3 Kampfrausch zünden und den Boss verbrennen, während die Konstrukte sich selbst am Leben halten, indem sie Bernsteinfelder konsumieren.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+            <p class="text-sm text-gray-400 mb-2">Ein Tank für Un'sok (P1/P3) und die Monstrosität (P2). Der andere Tank ist bereit, zu übernehmen, wenn der erste verwandelt oder weggeschleudert wird.</p>
+            <div class="assignment-header">
+                <span>Aufgabe</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li>
+                    <span>Main Tank:</span>
+                    <select class="assignment-select" data-assignment-id="unsok-tank1"></select>
+                </li>
+                <li>
+                    <span>Off-Tank:</span>
+                    <select class="assignment-select" data-assignment-id="unsok-tank2"></select>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold text-red-500">🎯 DPS-Prioritäten</h4>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Priorität 1:</strong> <strong class="text-orange-400">Mutiertes Konstrukt</strong> unter 20% bringen.</li>
+                <li><strong>Priorität 2:</strong> <strong class="text-amber-400">Lebender Bernstein</strong>-Adds töten.</li>
+                <li><strong>Priorität 3 (P1/P3):</strong> Schaden auf Un'sok.</li>
+                <li><strong>Priorität 3 (P2):</strong> Schaden auf <strong class="text-yellow-400">Bernstein-Monstrosität</strong>.</li>
+            </ul>
+        </div>
+
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+            <p class="text-sm text-gray-400 mb-2">Defensive Cooldowns für Spieler mit <strong class="text-green-500">Parasitäres Wachstum</strong>, da diese nur sparsam geheilt werden dürfen.</p>
+            <ul class="assignment-list">
+                <li class="list-subheader"><span>Rotation für Parasitäres Wachstum:</span></li>
+                <li>
+                    <span>Spieler 1 Schutz:</span>
+                    <select data-assignment-id="unsok-heal-cd1.1" class="assignment-select"></select>
+                    <select data-assignment-id="unsok-heal-cd-cooldown1.1" class="assignment-select"></select>
+                </li>
+                <li>
+                    <span>Spieler 2 Schutz:</span>
+                    <select data-assignment-id="unsok-heal-cd2.1" class="assignment-select"></select>
+                    <select data-assignment-id="unsok-heal-cd-cooldown2.1" class="assignment-select"></select>
+                </li>
+                 <li class="list-subheader"><span>Phase 3 Notfall-CDs:</span></li>
+                 <li>
+                    <select data-assignment-id="unsok-heal-cd3.1" class="assignment-select"></select>
+                    <select data-assignment-id="unsok-heal-cd-cooldown3.1" class="assignment-select"></select>
+                 </li>
+            </ul>
+        </div>
+
+    </div>
+    <div>
+        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+        <div>
+            <h4 class="text-lg font-semibold">Positionierung</h4>
+            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                <p class="text-gray-400 text-sm">Der Schlachtzug sollte sich locker verteilt aufstellen, um den <strong class="text-yellow-400">Bernsteinskarpell</strong>-Strahl gut kiten zu können. Der betroffene Spieler läuft an den Rand des Raumes. <strong class="text-amber-400">Lebender Bernstein</strong> sollte abseits der Gruppe getötet werden, um die Explosion zu umgehen. In Phase 2 müssen Fernkämpfer 15 Meter Abstand zur Monstrosität halten, um dem <strong class="text-orange-500">Massiven Stampfer</strong> zu entgehen.</p>
+            </div>
+            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
+                <p>Kein Taktikbild verfügbar.</p>
+            </div>
+        </div>
+        <div>
+            <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+            <div class="video-container my-4 rounded-lg shadow-lg">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/g2Jd4nJ2N3Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-orange-400">Mutiertes Konstrukt</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Leben umformen:</strong> Verwandelt einen Spieler.</li>
+                    <li><strong>Bernsteinschlag:</strong> Hauptangriff, stapelt +10% Schadensbuff auf dem Ziel, unterbricht Zauber.</li>
+                    <li><strong>Bernstein konsumieren:</strong> Frisst eine Bernsteinfäche, um Willenskraft wiederherzustellen. Heilt sich dabei.</li>
+                    <li><strong>Kampf um die Kontrolle:</strong> Unterbricht die eigene <strong class="text-red-500">Bernsteinexplosion</strong>.</li>
+                    <li><strong>Befreien:</strong> Verlässt das Konstrukt (nur <20% HP).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Phase 1 & 2 Fähigkeiten</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Bernsteinskarpell:</strong> Laserstrahl, der einen Spieler verfolgt und Flächen sowie <strong class="text-amber-400">Lebender Bernstein</strong>-Adds hinterlässt.</li>
+                    <li><strong>Parasitäres Wachstum:</strong> DoT, der stärker wird, wenn das Ziel geheilt wird.</li>
+                    <li><strong>Bernstein-Monstrosität (nur P2):</strong> Großes Add mit drei Fähigkeiten: <strong class="text-red-500">Bernsteinexplosion</strong> (muss unterbrochen werden), <strong class="text-orange-500">Massiver Stampfer</strong> (AoE-Knockback) und <strong class="text-purple-400">Schleudern</strong> (wirft den Tank).</li>
+                </ul>
+            </div>
+             <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-red-500">Phase 3 Fähigkeiten</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Konzentrierte Mutation:</strong> Bufft Un'soks Schaden und Angriffstempo um 50%.</li>
+                    <li><strong>Leben umformen:</strong> Wird viel häufiger gewirkt.</li>
+                    <li><strong>Instabiler Bernstein:</strong> Lässt bestehende Bernsteinfelder explodieren und Geschosse auf den Raid abfeuern.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Wiedergeburt:</strong> Getötete <strong class="text-amber-400">Lebender Bernstein</strong>-Adds spawnen nach 30 Sekunden wieder, solange ihre Bernsteinfäche nicht von einem Konstrukt konsumiert wurde.</li>
+                <li><strong>NEU: Bernsteinkügelchen (P3):</strong> Zwei Adds fixieren Spieler und bewegen sich auf sie zu. Erreichen sie ihr Ziel, explodieren sie tödlich. Werden sie zusammengekitet, lösen sie sich auf.</li>
+                <li><strong>Strategieänderung:</strong> Die Hauptstrategie besteht darin, den <strong class="text-red-500">Destabilisieren</strong>-Debuff über alle Phasen hinweg aufrechtzuerhalten. Dafür müssen die Konstrukte durch das Konsumieren von Flächen länger überleben, was gleichzeitig das Nachspawnen der Adds verhindert.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>
