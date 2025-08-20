@@ -132,19 +132,25 @@
     </div>
     <div>
         <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-        <div>
-            <h4 class="text-lg font-semibold">Positionierung</h4>
-            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                <p class="text-gray-400 text-sm"><strong>Phase 1:</strong> Der Raid verteilt sich mit 5m Abstand um den Boss. Die <strong class="text-yellow-400">Dissonanzfelder</strong> spawnen an festen Positionen. <br><strong>Phase 2:</strong> Der Raum wird in zwei Hälften geteilt, jede mit einem Tank, einem Verwüster und drei Windklingen. Fallen werden in der Mitte gebaut. <br><strong>Phase 3:</strong> Ähnlich wie Phase 1, aber mit mehr Bewegung, um den Fähigkeiten auszuweichen.</p>
-            </div>
-            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
-                <p>Kein Taktikbild verfügbar.</p>
-            </div>
-        </div>
+                        <div class="space-y-6">
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="shekzeer" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Shekzeer</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="shekzeer"><strong>Phase 1:</strong> Der Raid verteilt sich mit 5m Abstand um den Boss. Die <strong class="text-yellow-400">Dissonanzfelder</strong> spawnen an festen Positionen. <br><strong>Phase 2:</strong> Der Raum wird in zwei Hälften geteilt, jede mit einem Tank, einem Verwüster und drei Windklingen. Fallen werden in der Mitte gebaut. <br><strong>Phase 3:</strong> Ähnlich wie Phase 1, aber mit mehr Bewegung, um den Fähigkeiten auszuweichen.</p>
+						
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="heartoffear/shekzeer.png" alt="Positionierung Start" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="shekzeer">
+				</div>
         <div>
             <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
             <div class="video-container my-4 rounded-lg shadow-lg">
-                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/SdojSwG6E1I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/RnMV3ECX-sA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </div>
     </div>

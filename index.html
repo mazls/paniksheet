@@ -1922,6 +1922,7 @@ function updateAssignmentPools() {
     // --- Logik zum Laden der Einteilungen (Datenbank) ---
     const assignmentsDocRef = doc(db, DATA_COLLECTION, "boss-" + pageId);
     async function handleAssignmentChange(event) {
+        if (window._suspendAssignListeners) return;
         if (!window.isManager) return;
         const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
         const select = event.target;
@@ -1939,6 +1940,45 @@ function updateAssignmentPools() {
         const assignmentName = assignmentId.replace(pageId + '-', '').replace(/([A-Z])/g, ' $1').trim();
         window.logHistory(bossName, `Einteilung: ${assignmentName}`, playerForLog, currentManager);
     }
+    // Globale Sperre, um Change-Handler während Bulk-Updates zu pausieren
+window._suspendAssignListeners = false;
+
+// Einmalig viele Zuweisungen speichern und UI aktualisieren
+async function applyAssignmentsBulk(updatesObj) {
+  try {
+    window._suspendAssignListeners = true;
+
+    const editor = sessionStorage.getItem('currentManager') || 'Unbekannt';
+    const ts = serverTimestamp();
+
+    // Firestore-Payload zusammensetzen
+    const payload = {};
+    Object.entries(updatesObj).forEach(([assignmentId, value]) => {
+      const isCooldown = assignmentId.toLowerCase().includes('cooldown');
+      payload[assignmentId] = isCooldown
+        ? { cooldown: value || "", editor, timestamp: ts }
+        : { player: value || "", editor, timestamp: ts };
+
+      // DOM-Select ohne Event-Feuerwerk setzen
+      const sel = document.querySelector(`select[data-assignment-id="${assignmentId}"]`);
+      if (sel) {
+        sel.value = value || "";
+        const opt = sel.options[sel.selectedIndex];
+        sel.style.color = (opt && opt.dataset && opt.dataset.color) ? opt.dataset.color : '#FFFFFF';
+      }
+    });
+
+    // Ein (!) Write statt viele
+    await setDoc(assignmentsDocRef, payload, { merge: true });
+
+  } finally {
+    window._suspendAssignListeners = false;
+    // Pools/Farben einmal aktualisieren
+    updateAssignmentPools?.();
+  }
+}
+window.applyAssignmentsBulk = applyAssignmentsBulk;
+
     (async () => {
         const rosterSnap = await getDoc(rosterDocRef);
         const rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
@@ -1956,6 +1996,103 @@ function updateAssignmentPools() {
                 selectElement.appendChild(option);
             });
         }
+        function wireAssignmentSelect(select) {
+  if (!select || select.dataset._wired === "1") return;
+  select.dataset._wired = "1";
+
+  // 1) Change-Handler für DB-Save
+  select.addEventListener('change', handleAssignmentChange);
+
+  // 2) Optionen befüllen (wie bisherige Logik)
+  const assignmentIdLower = (select.dataset.assignmentId || '').toLowerCase();
+  if (assignmentIdLower.includes('cooldown')) {
+    // Cooldown-Dropdowns: hier unverändert (aus deinem bestehenden Code)
+    select.innerHTML = '<option value="">-- Cooldown wählen --</option>';
+    allCooldowns.forEach(cd => {
+      const option = document.createElement('option');
+      if (cd.name.startsWith('---')) {
+        option.textContent = cd.name;
+        option.disabled = true;
+        option.style.fontWeight = 'bold';
+        option.style.color = 'var(--color-gold)';
+        option.style.backgroundColor = 'var(--color-dark-green-bg)';
+      } else {
+        const color = window.classColors[cd.class] || '#FFFFFF';
+        option.value = cd.name;
+        option.textContent = cd.name;
+        option.dataset.color = color;
+        option.style.color = color;
+      }
+      select.appendChild(option);
+    });
+  } else {
+    // Spieler-Dropdowns (Rollenfilter wie gehabt)
+    let playersForDropdown = [];
+    if (assignmentIdLower.includes('tank')) {
+      playersForDropdown = rosterData.filter(p => p.roles.includes('TANK'));
+    } else if (assignmentIdLower.includes('healer')) {
+      playersForDropdown = rosterData.filter(p => p.roles.includes('HEALER'));
+    } else if (assignmentIdLower.includes('dps') || assignmentIdLower.includes('dd')) {
+      playersForDropdown = rosterData.filter(p => p.roles.includes('DPS'));
+    } else {
+      playersForDropdown = rosterData;
+    }
+    populateDropdownOptions(select, playersForDropdown);
+  }
+
+  // 3) Pool-Indikator (🟡) wird vom bestehenden updateAssignmentPools() gesetzt
+  //    Farbe initialisieren:
+  const selOpt = select.options[select.selectedIndex];
+  select.style.color = selOpt ? (selOpt.dataset.color || '#FFFFFF') : '#FFFFFF';
+}
+
+// --- A) Vorhandene Selects jetzt mit der neuen Funktion verdrahten
+document.querySelectorAll('.assignment-select').forEach(wireAssignmentSelect);
+
+// --- B) Observer: wenn deine Boss-Seite später dynamisch Selects hinzufügt,
+//           werden diese automatisch nachverdrahtet und speichern dann einzeln.
+const assignmentObserver = new MutationObserver(mutations => {
+  mutations.forEach(m => {
+    m.addedNodes.forEach(node => {
+      if (node.nodeType !== 1) return; // nur Elemente
+      if (node.matches?.('.assignment-select')) wireAssignmentSelect(node);
+      node.querySelectorAll?.('.assignment-select').forEach(wireAssignmentSelect);
+    });
+  });
+});
+assignmentObserver.observe(document.body, { childList: true, subtree: true });
+
+// --- C) onSnapshot bleibt wie gehabt; es setzt Werte in alle Selects.
+//         Danach ruhig Pools/Farbe aktualisieren:
+assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
+  const assignments = docSnap.exists() ? docSnap.data() : {};
+  const rosterPlayerNames = rosterData.map(p => p.name);
+  document.querySelectorAll('.assignment-select').forEach(select => {
+    const assignmentId = select.dataset.assignmentId;
+    const assignment = assignments[assignmentId];
+    const assignedValue = assignment ? (assignment.cooldown || assignment.player) : "";
+    select.classList.remove('invalid-assignment');
+    const oldInvalidOption = select.querySelector('.invalid-option'); if (oldInvalidOption) oldInvalidOption.remove();
+
+    if (assignedValue && assignedValue !== "Niemand" && !rosterPlayerNames.includes(assignedValue)
+        && !select.dataset.assignmentId.includes('cooldown')) {
+      select.classList.add('invalid-assignment');
+      const invalidOption = new Option(`❌ ${assignedValue} (Nicht im Roster)`, assignedValue);
+      invalidOption.className = 'invalid-option';
+      select.appendChild(invalidOption);
+    } else {
+      select.value = assignedValue;
+      const selectedOption = Array.from(select.options).find(o => o.value === assignedValue);
+      select.style.color = selectedOption ? (selectedOption.dataset.color || '#FFFFFF') : '#FFFFFF';
+    }
+  });
+
+  if (typeof window.initializePageSpecificCode === 'function') {
+    window.initializePageSpecificCode(assignments, rosterData);
+  }
+  window.toggleSelectEditability?.();
+  updateAssignmentPools?.();
+});
         document.querySelectorAll('.assignment-select').forEach(select => {
             select.addEventListener('change', handleAssignmentChange);
             const assignmentId = select.dataset.assignmentId.toLowerCase();

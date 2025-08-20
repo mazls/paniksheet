@@ -278,7 +278,20 @@
                     </div>
                 </div>
                 </div>
+                <div class="mt-3">
+  <div class="flex items-center gap-2 mb-2">
+    <button id="copy-elegon-soak-code-btn" class="px-3 py-1 rounded bg-slate-700 hover:bg-slate-600">
+      In die Zwischenablage kopieren
+    </button>
+    <span class="text-xs text-gray-400">WeakAura-Textexport</span>
+  </div>
+  <pre class="bg-slate-900 p-3 rounded border border-slate-700 max-h-64 overflow-auto">
+<code id="elegon-soak-weakaura-output">-- Bitte Soak-Gruppen zuweisen…</code>
+  </pre>
+</div>
+
             </div>
+            
         </div>
 </div>
     </section>
@@ -366,4 +379,84 @@
         </div>
     </div>
     </section>
+    <script>
+  // Page-spezifische Initialisierung – wird von deinem gemeinsamen Code aufgerufen
+  window.initializePageSpecificCode = function(assignments, roster) {
+    const GROUP_LABELS = {
+      "elegon-soakGroup1": "Soak-Gruppe 1",
+      "elegon-soakGroup2": "Soak-Gruppe 2"
+    };
+
+    // Keys einsammeln und pro Gruppe sortieren (…-1/…-2/…-3)
+    function collectSoakGroups(currentAssignments) {
+      const groups = {};
+      Object.keys(currentAssignments).forEach(key => {
+        // Erwartetes Format: elegon-soakGroup1-1, elegon-soakGroup2-3, …
+        const m = key.match(/^(elegon-soakGroup[12])-(\d)$/);
+        if (!m) return;
+        const gKey = m[1];
+        const idx = parseInt(m[2], 10);
+        const player = currentAssignments[key]?.player;
+        if (!player) return;
+        if (!groups[gKey]) groups[gKey] = [];
+        groups[gKey].push({ idx, name: player });
+      });
+
+      // numerisch nach -1/-2/-3 sortieren
+      Object.keys(groups).forEach(g => {
+        groups[g].sort((a, b) => a.idx - b.idx);
+      });
+      return groups;
+    }
+
+    // Ausgabe generieren
+    function updateElegonSoakWeakAura(currentAssignments) {
+      const outEl = document.getElementById("elegon-soak-weakaura-output");
+      if (!outEl) return;
+
+      const groups = collectSoakGroups(currentAssignments);
+      const order = ["elegon-soakGroup1", "elegon-soakGroup2"];
+      const blocks = [];
+
+      order.forEach(gKey => {
+        const entries = groups[gKey] || [];
+        if (entries.length === 0) return;
+        const header = GROUP_LABELS[gKey] || gKey;
+
+        // Zeilenweise Namen; in 25er hast du bis zu drei Slots, im 10er meist nur -1 belegt
+        const names = entries.map(e => e.name).join("\n");
+        blocks.push(`-- ${header}\n${names}`);
+      });
+
+      // Optionaler Rotations-Hint am Ende (kannst du rausnehmen)
+      const hint = `\n-- Rotation: Explosionen im Wechsel 1 → 2 → 1 → 2 (Self-CDs nutzen)`;
+      outEl.textContent = blocks.length ? blocks.join("\n\n") + hint : "-- Bitte Soak-Gruppen zuweisen…";
+    }
+
+    // Kopier-Button
+    const copyBtn = document.getElementById("copy-elegon-soak-code-btn");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", async () => {
+        const outEl = document.getElementById("elegon-soak-weakaura-output");
+        if (!outEl) return;
+        try {
+          await navigator.clipboard.writeText(outEl.textContent || "");
+          copyBtn.setAttribute("title", "Kopiert!");
+          copyBtn.classList.add("ring-2", "ring-green-500");
+          setTimeout(() => {
+            copyBtn.setAttribute("title", "In die Zwischenablage kopieren");
+            copyBtn.classList.remove("ring-2", "ring-green-500");
+          }, 1200);
+        } catch (e) {
+          console.error("Clipboard error:", e);
+        }
+      });
+    }
+
+    // Initial render & optional Re-Export-Hook
+    updateElegonSoakWeakAura(assignments);
+    window.updateElegonSoakWeakAura = () => updateElegonSoakWeakAura(assignments);
+  };
+</script>
+
 </main>

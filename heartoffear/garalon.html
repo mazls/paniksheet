@@ -25,6 +25,7 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+    .kiter-hidden { display: none !important; }
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Garalon</h1>
@@ -88,22 +89,51 @@
             </ul>
         </div>
 
-        <div class="assignment-block">
-            <h4 class="text-lg font-bold text-yellow-400">🏃 Kiter-Rotation (Pheromone)</h4>
-            <p class="text-sm text-gray-400 mb-2">Der Debuff wird bei ca. 20 Stacks an den nächsten Spieler weitergegeben.</p>
-            <div class="assignment-header" style="grid-template-columns: 0.5fr 1fr;">
-                <span>#</span>
-                <span>Spieler</span>
-            </div>
-            <ul class="assignment-list">
-                <li><span>1</span><select data-assignment-id="garalon-kiter1" class="assignment-select"></select></li>
-                <li><span>2</span><select data-assignment-id="garalon-kiter2" class="assignment-select"></select></li>
-                <li><span>3</span><select data-assignment-id="garalon-kiter3" class="assignment-select"></select></li>
-                <li data-size="25" class="tactic-content"><span>4</span><select data-assignment-id="garalon-kiter4" class="assignment-select"></select></li>
-                <li data-size="25" class="tactic-content"><span>5</span><select data-assignment-id="garalon-kiter5" class="assignment-select"></select></li>
-                <li data-size="25" class="tactic-content"><span>6</span><select data-assignment-id="garalon-kiter6" class="assignment-select"></select></li>
-            </ul>
-        </div>
+<div class="assignment-block">
+  <h4 class="text-lg font-bold text-yellow-400">🏃 Kiter-Rotation (Pheromone)</h4>
+  <p class="text-sm text-gray-400 mb-2">
+    Der Debuff wird bei ca. <strong>10 Stacks</strong> an den nächsten Spieler weitergegeben.
+  </p>
+
+  <div class="flex gap-2 mb-3">
+    <button id="garalon-kiter-autofill" class="tactic-content bg-green-700 px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed" data-size="10">Auto-füllen (10)</button>
+    <button id="garalon-kiter-autofill-25" class="tactic-content bg-green-700 px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed" data-size="25" style="display:inline-block">Auto-füllen (25)</button>
+  </div>
+
+  <div class="assignment-header" style="grid-template-columns:0.5fr 1fr;">
+    <span>#</span><span>Spieler</span>
+  </div>
+  <ul id="garalon-kiter-list" class="assignment-list"></ul>
+</div>
+
+<div class="assignment-block">
+  <h4 class="text-lg font-bold">🦵 Beine-Einteilung</h4>
+  <p class="text-sm text-gray-400 mb-2">Jedes Bein: 6 Spieler. (Totenkopf, Kreuz, Quadrat, Dreieck)</p>
+
+<div class="flex gap-2 mb-3">
+  <button id="garalon-legs-autofill" class="bg-green-700 px-3 py-1 rounded">
+    Auto-füllen
+  </button>
+</div>
+
+  <ul id="garalon-legs" class="assignment-list">
+    <li class="list-subheader" style="display:block;"><span>Totenkopf</span></li>
+    <li data-group-name="Totenkopf">
+      <!-- 6 Slots werden vom Script erzeugt -->
+    </li>
+
+    <li class="list-subheader" style="display:block;"><span>Kreuz</span></li>
+    <li data-group-name="Kreuz"></li>
+
+    <li class="list-subheader" style="display:block;"><span>Quadrat</span></li>
+    <li data-group-name="Quadrat"></li>
+
+    <li class="list-subheader" style="display:block;"><span>Dreieck</span></li>
+    <li data-group-name="Dreieck"></li>
+  </ul>
+</div>
+
+
         
         <div class="assignment-block">
             <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
@@ -129,19 +159,26 @@
     </div>
     <div>
         <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                <div class="space-y-6">
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="garalon" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="garalon">Der Kiter läuft an der Außenwand des Raumes entlang, um Garalon im Kreis zu führen. Die Tanks bleiben immer vor dem Boss. DPS-Spieler greifen das Bein an, das dem Rest des Raids am nächsten ist, und achten darauf, nicht in den lila Kreis unter dem Boss zu laufen. Der Raid hält sich generell in der Mitte des Raumes auf, um allen Beinen nahe zu sein.</p>
+						
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="heartoffear/garalon.png" alt="Positionierung Start" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="garalon">
+				</div>
         <div>
-            <h4 class="text-lg font-semibold">Positionierung & Kiting</h4>
-            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                <p class="text-gray-400 text-sm">Der Kiter läuft an der Außenwand des Raumes entlang, um Garalon im Kreis zu führen. Die Tanks bleiben immer vor dem Boss. DPS-Spieler greifen das Bein an, das dem Rest des Raids am nächsten ist, und achten darauf, nicht in den lila Kreis unter dem Boss zu laufen. Der Raid hält sich generell in der Mitte des Raumes auf, um allen Beinen nahe zu sein.</p>
-            </div>
-            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
-                <p>Kein Taktikbild verfügbar.</p>
-            </div>
-        </div>
         <div>
             <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
             <div class="video-container my-4 rounded-lg shadow-lg">
-                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/5k5yYyYh2wU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/uHNYb_cz_MQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </div>
     </div>
@@ -212,4 +249,169 @@
         </div>
     </div>
     </section>
+<script>
+const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : '25');
+
+  // Map für Bein-Gruppen (deutsches Label -> Pool-Suffix)
+  const LEG_GROUP_MAP = {
+    'totenkopf': 'skull',
+    'kreuz':     'cross',
+    'quadrat':   'square',
+    'dreieck':   'triangle'
+  };
+
+  function getRosterNames(roster) {
+    // roster kann global (window.rosterData) oder als Param kommen
+    const src = Array.isArray(roster) && roster.length ? roster : (window.rosterData || []);
+    return src.map(p => (typeof p === 'string' ? p : p?.name)).filter(Boolean);
+  }
+
+  // =========================
+  // Kiter: 25 Slots einmalig bauen, Sichtbarkeit je Größe togglen
+  // =========================
+  function applyKiterVisibility() {
+    const is10 = getRaidSize() === '10';
+    for (let i = 1; i <= 25; i++) {
+      const li = document.querySelector(`#garalon-kiter-list li[data-kiter-idx="${i}"]`);
+      if (!li) continue;
+      if (is10 && i > 10) li.classList.add('kiter-hidden');
+      else li.classList.remove('kiter-hidden');
+    }
+  }
+
+  function buildKiterListOnce() {
+    const list = document.getElementById('garalon-kiter-list');
+    if (!list) return;
+    if (list.dataset._built === '1') { applyKiterVisibility(); return; }
+
+    list.dataset._built = '1';
+    list.innerHTML = '';
+
+    // Immer 25 Selects erzeugen – Optionsbefüllung & DB-Save macht index.html
+    for (let i = 1; i <= 25; i++) {
+      const li = document.createElement('li');
+      li.dataset.kiterIdx = String(i);
+      li.style.gridTemplateColumns = '0.5fr 1fr';
+
+      const label = document.createElement('span');
+      label.textContent = i;
+
+      const sel = document.createElement('select');
+      sel.className = 'assignment-select';
+      sel.dataset.assignmentId   = `garalon-kiter${i}`;
+      sel.dataset.assignmentPool = 'garalon-kiter';
+
+      li.appendChild(label);
+      li.appendChild(sel);
+      list.appendChild(li);
+    }
+
+    applyKiterVisibility();
+
+    // Größen-Toggle: nur Sichtbarkeit umschalten, kein Rebuild
+    document.getElementById('size-toggle')?.addEventListener('click', (e) => {
+      if (e.target.matches('.size-toggle-btn')) {
+        setTimeout(applyKiterVisibility, 0);
+      }
+    });
+  }
+
+  // =========================
+  // Beine: je Gruppe 6 Slots erzeugen (einmalig)
+  // Erwartet im HTML einen Container mit <ul id="garalon-legs"> und darin
+  // <li class="list-subheader"><span>Totenkopf</span></li>
+  // <li data-group-name="Totenkopf"></li>  ... analog für Kreuz/Quadrat/Dreieck
+  // =========================
+  function ensureLegSlotsOnce() {
+    const root = document.getElementById('garalon-legs');
+    if (!root || root.dataset._built === '1') return;
+
+    root.dataset._built = '1';
+    root.querySelectorAll('li[data-group-name]').forEach(li => {
+      if (li.querySelector('select')) return; // bereits vorhanden
+      const groupName = (li.dataset.groupName || '').trim();
+      const poolSuffix = LEG_GROUP_MAP[groupName.toLowerCase()] || groupName.toLowerCase();
+
+      for (let i = 1; i <= 6; i++) {
+        const sel = document.createElement('select');
+        sel.className = 'assignment-select';
+        // eigener Pool je Bein, damit deine UI die Belegung klar zeigt
+        sel.dataset.assignmentPool = `garalon-legs-${poolSuffix}`;
+        // ID bleibt sprechend mit deutschem Label wie bisher:
+        sel.dataset.assignmentId   = `garalon-leg-${groupName}-${i}`;
+        li.appendChild(sel);
+      }
+    });
+  }
+
+  // =========================
+  // Bulk-Aktionen (nutzt index.html: window.applyAssignmentsBulk)
+  // =========================
+  function autofillKiterAlways25(roster) {
+    const names = getRosterNames(roster);
+    const updates = {};
+    for (let i = 1; i <= 25; i++) {
+      updates[`garalon-kiter${i}`] = names[i - 1] || ""; // fehlende bleiben leer
+    }
+    window.applyAssignmentsBulk?.(updates);
+  }
+
+  function clearKiterAll25() {
+    const updates = {};
+    for (let i = 1; i <= 25; i++) updates[`garalon-kiter${i}`] = "";
+    window.applyAssignmentsBulk?.(updates);
+  }
+
+  function autofillLegs(roster) {
+    const perGroup = 6;
+    const names = getRosterNames(roster).slice(); // Kopie
+    const labels = ['Totenkopf', 'Kreuz', 'Quadrat', 'Dreieck'];
+    const updates = {};
+
+    labels.forEach(label => {
+      for (let i = 1; i <= perGroup; i++) {
+        updates[`garalon-leg-${label}-${i}`] = names.shift() || "";
+      }
+    });
+    window.applyAssignmentsBulk?.(updates);
+  }
+
+  function clearLegs() {
+    const updates = {};
+    ['Totenkopf', 'Kreuz', 'Quadrat', 'Dreieck'].forEach(label => {
+      for (let i = 1; i <= 6; i++) {
+        updates[`garalon-leg-${label}-${i}`] = "";
+      }
+    });
+    window.applyAssignmentsBulk?.(updates);
+  }
+
+  // =========================
+  // Page-Hook: von index.html aufgerufen
+  // =========================
+  window.initializePageSpecificCode = function(assignments, roster) {
+    // 1) UI einmalig aufbauen
+    buildKiterListOnce();
+    ensureLegSlotsOnce();
+
+    // 2) Buttons verdrahten (einmalig)
+    const wired = document.body.dataset._garalonButtonsWired === '1';
+    if (!wired) {
+      document.body.dataset._garalonButtonsWired = '1';
+
+      // Kiter: immer 25 befüllen/leeren; Anzeige folgt dem Size-Toggle
+      document.getElementById('garalon-kiter-autofill')?.addEventListener('click', () => autofillKiterAlways25(roster));
+      document.getElementById('garalon-kiter-autofill-25')?.addEventListener('click', () => autofillKiterAlways25(roster));
+      document.getElementById('garalon-kiter-clear')?.addEventListener('click', clearKiterAll25);
+
+      // Beine
+      document.getElementById('garalon-legs-autofill')?.addEventListener('click', () => autofillLegs(roster));
+      document.getElementById('garalon-legs-clear')?.addEventListener('click', clearLegs);
+    }
+
+    // 3) Nach jedem Snapshot Pools ggf. einmal aktualisieren (leichtgewichtig)
+    window.updateAssignmentPools?.();
+  };
+</script>
+
 </main>

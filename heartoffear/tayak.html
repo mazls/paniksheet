@@ -109,16 +109,28 @@
 					<li>
                         <select data-assignment-id="tayak-heal-cd1.1" class="assignment-select"></select>
                         <select data-assignment-id="tayak-heal-cd-cooldown1.1" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd1.2" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd-cooldown1.2" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd1.3" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd-cooldown1.3" class="assignment-select"></select>
                     </li>
                     <li class="list-subheader"><span>2. Unsichtbarer Schlag:</span></li>
                     <li> 
                         <select data-assignment-id="tayak-heal-cd2.1" class="assignment-select"></select>
                         <select data-assignment-id="tayak-heal-cd-cooldown2.1" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd2.2" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd-cooldown2.3" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd2.3" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd-cooldown2.3" class="assignment-select"></select>
                     </li>
                     <li class="list-subheader"><span>Weitere Schläge nach Bedarf:</span></li>
                      <li> 
                         <select data-assignment-id="tayak-heal-cd3.1" class="assignment-select"></select>
                         <select data-assignment-id="tayak-heal-cd-cooldown3.1" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd3.2" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd-cooldown3.2" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd3.3" class="assignment-select"></select>
+                        <select data-assignment-id="tayak-heal-cd-cooldown3.3" class="assignment-select"></select>
                     </li>
             </ul>
         </div>
@@ -127,19 +139,61 @@
 
     <div>
         <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+        <style>
+  .raidflow { display:flex; align-items:center; justify-content:center; gap:.5rem; flex-wrap:wrap; }
+  .raidicon { width:36px; height:36px; object-fit:contain; image-rendering:auto; }
+  .arrow-badge {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:9999px;
+    background:#d4b106; /* gold */
+    border:1px solid rgba(0,0,0,.35);
+    font-weight:700; color:#222; line-height:1;
+  }
+  @media (min-width: 768px) { .raidicon{ width:40px; height:40px; } .arrow-badge{ width:28px; height:28px; } }
+</style>
+
+<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+  <h4 class="text-lg font-semibold flex items-center gap-2">
+    Tempest Slash Movement
+  </h4>
+  <div class="raidflow mt-2">
+    <img class="raidicon" src="raidicons/square.png"   alt="Square">
+    <span class="arrow-badge">→</span>
+    <img class="raidicon" src="raidicons/triangle.png" alt="Triangle">
+    <span class="arrow-badge">→</span>
+    <img class="raidicon" src="raidicons/star.png"     alt="Star">
+    <span class="arrow-badge">→</span>
+    <img class="raidicon" src="raidicons/diamond.png"  alt="Diamond">
+    <span class="arrow-badge">→</span>
+    <img class="raidicon" src="raidicons/moon.png"     alt="Moon">
+    <span class="arrow-badge">→</span>
+    <img class="raidicon" src="raidicons/cross.png"    alt="Cross">
+  </div>
+  <p class="text-xs text-gray-400 mt-2 text-center">
+    Reihenfolge: Quadrat → Dreieck → Stern → Diamant → Mond → Kreuz
+  </p>
+</div>
+                        <div class="space-y-6">
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="tayak" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="tayak">Der Tank positioniert den Boss in einer der Nischen. Fernkämpfer und Heiler verteilen sich mit 8m Abstand an den Wänden, um Tornados dort abzulegen. Wenn eine Nische voll ist, wird der Boss zur nächsten gezogen. Für den <strong class="text-red-500">Unsichtbaren Schlag</strong> läuft der gesamte Raid auf einen markierten Spieler (z.B. ein Nahkämpfer) zusammen.</p>
+						
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="heartoffear/tayak.png" alt="Positionierung Start" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="tayak">
+				</div>
         <div>
-            <h4 class="text-lg font-semibold">Positionierung in Phase 1</h4>
-            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                <p class="text-gray-400 text-sm">Der Tank positioniert den Boss in einer der Nischen. Fernkämpfer und Heiler verteilen sich mit 8m Abstand an den Wänden, um Tornados dort abzulegen. Wenn eine Nische voll ist, wird der Boss zur nächsten gezogen. Für den <strong class="text-red-500">Unsichtbaren Schlag</strong> läuft der gesamte Raid auf einen markierten Spieler (z.B. ein Nahkämpfer) zusammen.</p>
-            </div>
-             <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
-                <p>Kein Taktikbild verfügbar.</p>
-             </div>
-        </div>
+        
         <div>
             <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
             <div class="video-container my-4 rounded-lg shadow-lg">
-                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ACKk-p2B_a4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/wPt7SXs42Uc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </div>
     </div>

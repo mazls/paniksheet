@@ -125,19 +125,25 @@
     </div>
     <div>
         <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-        <div>
-            <h4 class="text-lg font-semibold">Positionierung</h4>
-            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                <p class="text-gray-400 text-sm">Die ideale Positionierung ist ein weiter Kreis um den Boss. Dies minimiert den Schaden durch die <strong class="text-cyan-400">Wirbelnde Klinge</strong> und verhindert, dass mehrere Spieler gleichzeitig vom <strong class="text-amber-400">Bernstein-Gefängnis</strong> getroffen werden. Spieler mit <strong class="text-yellow-500">Ätzendes Harz</strong> sollten die daraus entstehenden Flächen am Rand des Raumes ablegen.</p>
-            </div>
-            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
-                <p>Kein Taktikbild verfügbar.</p>
-            </div>
-        </div>
+                <div class="space-y-6">
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="meljarak" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Meljarak</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="meljarak">Die ideale Positionierung ist ein weiter Kreis um den Boss. Dies minimiert den Schaden durch die <strong class="text-cyan-400">Wirbelnde Klinge</strong> und verhindert, dass mehrere Spieler gleichzeitig vom <strong class="text-amber-400">Bernstein-Gefängnis</strong> getroffen werden. Spieler mit <strong class="text-yellow-500">Ätzendes Harz</strong> sollten die daraus entstehenden Flächen am Rand des Raumes ablegen.</p>
+						
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="heartoffear/meljarak.png" alt="Positionierung Start" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="meljarak">
+				</div>
         <div>
             <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
             <div class="video-container my-4 rounded-lg shadow-lg">
-                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Hau3hGg4w2s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/0lxENpj5bgY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </div>
     </div>

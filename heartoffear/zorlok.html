@@ -49,7 +49,7 @@
         <ul class="list-disc list-inside space-y-2 text-gray-300">
             <li><strong>Phase 1 (Plattform-Phase, 100%-40%):</strong> Zor'lok fliegt nacheinander drei Plattformen an (bei 80% und 60% Leben). Jede Plattform hat eine einzigartige Fähigkeit. Der Boden des Raumes ist mit <strong class="text-green-400">Pheromonen des Eifers</strong> gefüllt, einem Gas, das schadet und zum Schweigen bringt.
                 <ul class="list-decimal list-inside ml-6 mt-2 space-y-1">
-                    <li>Plattform 1 (Süd-West): <strong class="text-yellow-400">Macht und Schwung</strong> - Raidweiter Schaden, der durch Schilde reduziert werden muss.</li>
+                    <li>Plattform 1 (Süd-West): <strong class="text-yellow-400">Kraft und Schwung</strong> - Raidweiter Schaden, der durch Schilde reduziert werden muss.</li>
                     <li>Plattform 2 (Nord-Ost): <strong class="text-cyan-400">Dämpfung</strong> - Der Raid muss zufällig spawnenden Schallwellen ausweichen.</li>
                     <li>Plattform 3 (Süd-Ost): <strong class="text-purple-400">Bekehrung</strong> - Mehrere Spieler werden übernommen und müssen auf 50% Leben gebracht werden, um den Effekt zu brechen.</li>
                 </ul>
@@ -59,7 +59,7 @@
         <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
         <p class="mb-2"><strong>Allgemein:</strong> Der Tank muss immer den Strahl von <strong class="text-red-400">Ausatmen</strong> abfangen. Der Raid muss schnell zwischen den Plattformen wechseln, um <strong class="text-orange-400">Gesang der Kaiserin</strong> zu vermeiden.</p>
         <p class="mb-2"><strong>Phase 1:</strong> Auf der ersten Plattform in die zugewiesenen Schilde laufen. Auf der zweiten Plattform weiträumig verteilen und den Schallwellen ausweichen. Auf der dritten Plattform schnell die übernommenen Spieler befreien.</p>
-        <p class="mb-2"><strong>Phase 2:</strong> In der Mitte des Raumes verteilen, aber nah genug zusammenbleiben, um bei <strong class="text-yellow-400">Macht und Schwung</strong> schnell in die Schilde zu kommen. Kampfrausch/Heldentum hier zünden, um die intensive Phase zu verkürzen.</p>
+        <p class="mb-2"><strong>Phase 2:</strong> In der Mitte des Raumes verteilen, aber nah genug zusammenbleiben, um bei <strong class="text-yellow-400">Kraft und Schwung</strong> schnell in die Schilde zu kommen. Kampfrausch/Heldentum hier zünden, um die intensive Phase zu verkürzen.</p>
         <p class="mb-4">Der Kampf endet nach 11 Minuten mit einem Soft-Enrage.</p>
     </div>
     </section>
@@ -92,76 +92,136 @@
         </div>
 
         <div class="assignment-block">
-            <h4 class="text-lg font-bold text-yellow-400">🛡️ Schild-Einteilung (Macht & Schwung)</h4>
+            <h4 class="text-lg font-bold text-yellow-400">🛡️ Schild-Einteilung (Kraft & Schwung)</h4>
             <p class="text-sm text-gray-400 mb-2">Jeder Schild hat eine begrenzte Kapazität (<span data-size="10" class="tactic-content">4 Spieler</span><span data-size="25" class="tactic-content">9 Spieler</span>). Stellt euch in die zugewiesenen Gruppen auf.</p>
             <ul class="assignment-list">
-                <li class="list-subheader"><span>Gruppe 1 (Nahkampf/Tank)</span></li>
+                <li class="list-subheader"><span>Gruppe 1 (Unter dem Boss)</span></li>
                 <li>
-                    <select data-assignment-id="zorlok-shield1.1" class="assignment-select"></select>
-                    <select data-assignment-id="zorlok-shield1.2" class="assignment-select"></select>
-                    <select data-assignment-id="zorlok-shield1.3" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield1.1" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield1.2" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield1.3" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield1.4" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield1.5" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield1.6" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield1.7" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield1.8" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield1.9" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
                 </li>
                 
-                <li class="list-subheader"><span>Gruppe 2 (Fernkampf/Heiler)</span></li>
+                <li class="list-subheader"><span>Gruppe 2 (Nah am Boss)</span></li>
                 <li>
-                    <select data-assignment-id="zorlok-shield2.1" class="assignment-select"></select>
-                    <select data-assignment-id="zorlok-shield2.2" class="assignment-select"></select>
-                    <select data-assignment-id="zorlok-shield2.3" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield2.1" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield2.2" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield2.3" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield2.4" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield2.5" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield2.6" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield2.7" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield2.8" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield2.9" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
                 </li>
 
-                <li class="list-subheader"><span>Gruppe 3 (Fernkampf/Heiler)</span></li>
+                <li class="list-subheader"><span>Gruppe 3 (Mittig)</span></li>
                 <li>
-                    <select data-assignment-id="zorlok-shield3.1" class="assignment-select"></select>
-                    <select data-assignment-id="zorlok-shield3.2" class="assignment-select"></select>
-                    <select data-assignment-id="zorlok-shield3.3" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield3.1" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield3.2" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield3.3" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield3.4" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield3.5" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield3.6" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield3.7" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield3.8" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield3.9" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                </li>
+                <li class="list-subheader"><span>Gruppe 4 (HC Außen)</span></li>
+                <li>
+                    <select data-assignment-id="zorlok-shield4.1" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield4.2" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield4.3" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield4.4" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield4.5" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield4.6" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
+                    <select data-assignment-id="zorlok-shield4.7" data-assignment-pool="zorlok-shield" class="assignment-select"></select>
                 </li>
             </ul>
         </div>
         
         <div class="assignment-block">
             <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
-             <p class="text-sm text-gray-400 mb-2">Defensive Cooldowns für die <strong class="text-yellow-400">Macht und Schwung</strong>-Phase.</p>
+             <p class="text-sm text-gray-400 mb-2">Defensive Cooldowns für die <strong class="text-yellow-400">Kraft und Schwung</strong>-Phase.</p>
             <ul class="assignment-list">
-                    <li class="list-subheader"><span>1. Macht & Schwung:</span></li>
+                    <li class="list-subheader"><span>1. Kraft & Schwung (Echo):</span></li>
 					<li>
                         <select data-assignment-id="zorlok-heal-cd1.1" class="assignment-select"></select>
                         <select data-assignment-id="zorlok-heal-cd-cooldown1.1" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd1.2" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd-cooldown1.2" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd1.3" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd-cooldown1.3" class="assignment-select"></select>
                     </li>
-                    <li class="list-subheader"><span>2. Macht & Schwung:</span></li>
+                    <li class="list-subheader"><span>2. Kraft & Schwung (Echo):</span></li>
                     <li> 
                         <select data-assignment-id="zorlok-heal-cd2.1" class="assignment-select"></select>
                         <select data-assignment-id="zorlok-heal-cd-cooldown2.1" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd2.2" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd-cooldown2.2" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd2.3" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd-cooldown2.3" class="assignment-select"></select>
                     </li>
                     <li class="list-subheader"><span>Phase 2 Cooldowns:</span></li>
                      <li> 
                         <select data-assignment-id="zorlok-heal-cd3.1" class="assignment-select"></select>
                         <select data-assignment-id="zorlok-heal-cd-cooldown3.1" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd3.2" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd-cooldown3.2" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd3.3" class="assignment-select"></select>
+                        <select data-assignment-id="zorlok-heal-cd-cooldown3.3" class="assignment-select"></select>
                     </li>
             </ul>
         </div>
-
     </div>
-
-    <div>
-        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-        <div>
-            <h4 class="text-lg font-semibold">Positionierung</h4>
-            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                <p class="text-gray-400 text-sm">Der Kampf findet auf drei separaten Plattformen und schließlich im Zentrum statt. Stellt sicher, dass ihr euch schnell bewegt und die spezifischen Mechaniken jeder Plattform beachtet. Im HC-Modus müssen Gruppen aufgeteilt werden, um die Echos zu besiegen.</p>
-            </div>
-            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
-                <p>Kein Taktikbild verfügbar.</p>
-             </div>
-        </div>
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                <div class="space-y-6">
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="zorlok_p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1+2</button>
+						<button data-phase="zorlok_p3" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 3</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="zorlok_p1">Der Kampf findet auf drei separaten Plattformen und schließlich im Zentrum statt. Stellt sicher, dass ihr euch schnell bewegt und die spezifischen Mechaniken jeder Plattform beachtet. Im HC-Modus müssen Gruppen aufgeteilt werden, um die Echos zu besiegen.</p>
+						<p class="positioning-text" data-phase="zorlok_p3">Alle Fähigkeiten gleichzeitig aktiv</p>
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="heartoffear/zorlok_p1.png" alt="Positionierung Start" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="zorlok_p1">
+						<img src="heartoffear/zorlok_p3.png" alt="Positionierung Phase Fäuste" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="zorlok_p3">
+				</div>
         <div>
             <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
             <div class="video-container my-4 rounded-lg shadow-lg">
-                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/JQV_A-WkoXw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/LRru_umnqck" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </div>
     </div>
+        <div class="assignment-block">
+        <h4 class="text-lg font-bold">Text-Export für WeakAura</h4>
+        <p class="text-sm text-gray-400 mb-2">Einfache Namensliste zum Kopieren.</p>
+        <div class="relative">
+            <button id="copy-zorlok-shield-code-btn" class="absolute top-2 right-2 p-1.5 rounded-md bg-slate-600 hover:bg-slate-500" title="In die Zwischenablage kopieren">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            </button>
+            <pre><code id="zorlok-shield-weakaura-output">-- Bitte Spieler zuweisen...</code></pre>
+        </div>
+    </div>
 </div>
+
 </div>
+
     </section>
 
 <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
@@ -185,7 +245,7 @@
                 <div class="bg-slate-750 p-4 rounded-lg">
                     <h4 class="text-lg font-bold text-gray-400">Plattform-Fähigkeiten</h4>
                     <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Macht und Schwung (P1.1):</strong> Kanalisiert 10s lang hohen physischen Raidschaden. Muss in einem von 3 Schutzschilden (max. 4 Spieler pro Schild) überlebt werden.</li>
+                        <li><strong>Kraft und Schwung (P1.1):</strong> Kanalisiert 10s lang hohen physischen Raidschaden. Muss in einem von 3 Schutzschilden (max. 4 Spieler pro Schild) überlebt werden.</li>
                         <li><strong>Dämpfung (P1.2):</strong> Zor'lok verschießt 9s lang Schallwellen, denen ausgewichen werden muss.</li>
                         <li><strong>Bekehrung (P1.3):</strong> Übernimmt 2 Spieler. Müssen auf 50% HP gebracht werden, um den Effekt zu brechen.</li>
                     </ul>
@@ -208,7 +268,7 @@
                  <div class="bg-slate-750 p-4 rounded-lg">
                     <h4 class="text-lg font-bold text-gray-400">Plattform-Fähigkeiten</h4>
                     <ul class="list-disc list-inside text-gray-300 mt-2">
-                        <li><strong>Macht und Schwung (P1.1):</strong> Kanalisiert 10s lang hohen physischen Raidschaden. Muss in einem von 3 Schutzschilden (max. 9 Spieler pro Schild) überlebt werden.</li>
+                        <li><strong>Kraft und Schwung (P1.1):</strong> Kanalisiert 10s lang hohen physischen Raidschaden. Muss in einem von 3 Schutzschilden (max. 9 Spieler pro Schild) überlebt werden.</li>
                         <li><strong>Dämpfung (P1.2):</strong> Zor'lok verschießt 9s lang Schallwellen, denen ausgewichen werden muss.</li>
                         <li><strong>Bekehrung (P1.3):</strong> Übernimmt 5 Spieler. Müssen auf 50% HP gebracht werden, um den Effekt zu brechen.</li>
                     </ul>
@@ -220,11 +280,11 @@
             <h3 class="text-xl font-bold text-red-400">Heroische Anpassungen (10- & 25-Spieler)</h3>
             <ul class="list-disc list-inside text-gray-300 mt-2">
                 <li>Alle Fähigkeiten verursachen deutlich mehr Schaden.</li>
-                <li><strong>Macht und Schwung:</strong> Es erscheinen 4 Schilde, die aber weniger Spieler schützen (<span data-size="10" class="tactic-content">3 Spieler</span><span data-size="25" class="tactic-content">7 Spieler</span> pro Schild).</li>
+                <li><strong>Kraft und Schwung:</strong> Es erscheinen 4 Schilde, die aber weniger Spieler schützen (<span data-size="10" class="tactic-content">3 Spieler</span><span data-size="25" class="tactic-content">7 Spieler</span> pro Schild).</li>
                 <li><strong>Dämpfung:</strong> Zusätzliche <strong class="text-red-400">Schallimpulse</strong> bewegen sich in geraden Linien vom Boss weg und müssen ebenfalls gemieden werden.</li>
                 <li><strong>NEU: Echos von Zor'lok:</strong>
                     <ul class="list-decimal list-inside ml-6 mt-2">
-                        <li>Bei 80% HP erscheint ein <strong class="text-yellow-400">Echo von Macht und Schwung</strong> auf der ersten Plattform. Es muss getankt und schnell getötet werden.</li>
+                        <li>Bei 80% HP erscheint ein <strong class="text-yellow-400">Echo von Kraft und Schwung</strong> auf der ersten Plattform. Es muss getankt und schnell getötet werden.</li>
                         <li>Bei 60% HP erscheint ein <strong class="text-cyan-400">Echo der Dämpfung</strong> auf der zweiten Plattform.</li>
                         <li>In Phase 2 erscheint ein weiteres <strong class="text-cyan-400">Echo der Dämpfung</strong>, das abseits vom Raid getankt werden muss.</li>
                         <li>Alle Echos wirken die Fähigkeit ihres Namensgebers und müssen in Nahkampfreichweite gehalten werden.</li>
@@ -234,4 +294,91 @@
         </div>
     </div>
     </section>
+    <script>
+  // Wird von deinem gemeinsamen Code mit (assignments, roster) aufgerufen – wie bei garajal.html
+  window.initializePageSpecificCode = function(assignments, roster) {
+    // --- Mapping der Gruppenlabels wie in deinem HTML-Layout ---
+    const GROUP_LABELS = {
+      "zorlok-shield1": "Gruppe 1 (Unter dem Boss)",
+      "zorlok-shield2": "Gruppe 2 (Nah am Boss)",
+      "zorlok-shield3": "Gruppe 3 (Mittig)",
+      "zorlok-shield4": "Gruppe 4 (HC Außen)"
+    };
+
+    // Alle Schild-Zuweisungen aus dem assignments-Objekt sammeln und nach Gruppen sortieren
+    function collectShieldGroups(currentAssignments) {
+      const groups = {};
+      Object.keys(currentAssignments).forEach(key => {
+        if (!key.startsWith("zorlok-shield")) return;
+        // key-Format z.B. "zorlok-shield2.7"  -> groupKey="zorlok-shield2", slot=7
+        const match = key.match(/^(zorlok-shield\d+)\.(\d+)$/);
+        if (!match) return;
+        const groupKey = match[1];
+        const slotNum = parseInt(match[2], 10);
+        const player = currentAssignments[key]?.player;
+        if (!player) return;
+
+        if (!groups[groupKey]) groups[groupKey] = [];
+        groups[groupKey].push({ slot: slotNum, name: player });
+      });
+
+      // Slots pro Gruppe numerisch sortieren
+      Object.keys(groups).forEach(g => {
+        groups[g].sort((a, b) => a.slot - b.slot);
+      });
+      return groups;
+    }
+
+    // Erzeugt die WeakAura-Textausgabe
+    function updateZorlokShieldWeakAura(currentAssignments) {
+      const outEl = document.getElementById("zorlok-shield-weakaura-output");
+      if (!outEl) return;
+
+      const groups = collectShieldGroups(currentAssignments);
+
+      // Reihenfolge 1 -> 4 ausgeben
+      const order = ["zorlok-shield1", "zorlok-shield2", "zorlok-shield3", "zorlok-shield4"];
+      const blocks = [];
+
+      order.forEach(groupKey => {
+        const entries = groups[groupKey] || [];
+        // Nur Gruppen ausgeben, in denen mind. 1 Spieler steht
+        if (entries.length === 0) return;
+
+        const header = GROUP_LABELS[groupKey] || groupKey;
+        const names = entries.map(e => e.name).join("\n");
+        blocks.push(`-- ${header}\n${names}`);
+      });
+
+      outEl.textContent = blocks.length ? blocks.join("\n\n") : "-- Bitte Spieler zuweisen...";
+    }
+
+    // Kopier-Button aktivieren
+    const copyBtn = document.getElementById("copy-zorlok-shield-code-btn");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", async () => {
+        const outEl = document.getElementById("zorlok-shield-weakaura-output");
+        if (!outEl) return;
+        try {
+          await navigator.clipboard.writeText(outEl.textContent || "");
+          copyBtn.setAttribute("title", "Kopiert!");
+          // Optional: kleines visuelles Feedback
+          copyBtn.classList.add("ring-2", "ring-green-500");
+          setTimeout(() => {
+            copyBtn.setAttribute("title", "In die Zwischenablage kopieren");
+            copyBtn.classList.remove("ring-2", "ring-green-500");
+          }, 1200);
+        } catch (e) {
+          console.error("Clipboard error:", e);
+        }
+      });
+    }
+
+    // Initial render
+    updateZorlokShieldWeakAura(assignments);
+
+    window.updateZorlokShieldWeakAura = () => updateZorlokShieldWeakAura(assignments);
+  };
+</script>
+
 </main>
