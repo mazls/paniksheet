@@ -90,20 +90,27 @@
         </div>
 
 <div class="assignment-block">
-  <h4 class="text-lg font-bold text-yellow-400">🏃 Kiter-Rotation (Pheromone)</h4>
-  <p class="text-sm text-gray-400 mb-2">
-    Der Debuff wird bei ca. <strong>10 Stacks</strong> an den nächsten Spieler weitergegeben.
-  </p>
-
+    <h4 class="text-lg font-bold text-yellow-400">🏃 Kiter-Rotation (Pheromone)</h4>
+    <p class="text-sm text-gray-400 mb-2">
+      Der Debuff wird bei ca. <strong>10 Stacks</strong> an den nächsten Spieler weitergegeben.
+    </p>
+    <div id="garalon-kiter-compact" class="mt-2 text-sm text-gray-300"></div>
   <div class="flex gap-2 mb-3">
     <button id="garalon-kiter-autofill" class="tactic-content bg-green-700 px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed" data-size="10">Auto-füllen (10)</button>
     <button id="garalon-kiter-autofill-25" class="tactic-content bg-green-700 px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed" data-size="25" style="display:inline-block">Auto-füllen (25)</button>
   </div>
+  
+<div id="kiter-list-toggle" class="assignment-header collapsible-header">
+    <div style="display: grid; grid-template-columns: 0.5fr 1fr; width: 100%;">
+        <span>#</span>
+        <span>Spieler</span>
+    </div>
+    <span class="toggle-icon">▼</span>
+</div>
 
-  <div class="assignment-header" style="grid-template-columns:0.5fr 1fr;">
-    <span>#</span><span>Spieler</span>
-  </div>
-  <ul id="garalon-kiter-list" class="assignment-list"></ul>
+    <div class="collapsible-content collapsed">
+        <ul id="garalon-kiter-list" class="assignment-list"></ul>
+    </div>
 </div>
 
 <div class="assignment-block">
@@ -117,18 +124,18 @@
 </div>
 
   <ul id="garalon-legs" class="assignment-list">
-    <li class="list-subheader" style="display:block;"><span>Totenkopf</span></li>
+    <li class="list-subheader" style="display:block;"><span>Totenkopf</span><img class="raidicon" src="raidicons/skull.png"></li>
     <li data-group-name="Totenkopf">
       <!-- 6 Slots werden vom Script erzeugt -->
     </li>
 
-    <li class="list-subheader" style="display:block;"><span>Kreuz</span></li>
+    <li class="list-subheader" style="display:block;"><span>Kreuz</span><img class="raidicon" src="raidicons/cross.png"></li>
     <li data-group-name="Kreuz"></li>
 
-    <li class="list-subheader" style="display:block;"><span>Quadrat</span></li>
+    <li class="list-subheader" style="display:block;"><span>Quadrat</span><img class="raidicon" src="raidicons/square.png"></li>
     <li data-group-name="Quadrat"></li>
 
-    <li class="list-subheader" style="display:block;"><span>Dreieck</span></li>
+    <li class="list-subheader" style="display:block;"><span>Dreieck</span><img class="raidicon" src="raidicons/triangle.png"></li>
     <li data-group-name="Dreieck"></li>
   </ul>
 </div>
@@ -143,16 +150,28 @@
                 <li>
                     <select data-assignment-id="garalon-heal-cd1.1" class="assignment-select"></select>
                     <select data-assignment-id="garalon-heal-cd-cooldown1.1" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd1.2" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd-cooldown1.2" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd1.3" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd-cooldown1.3" class="assignment-select"></select>
                 </li>
                 <li class="list-subheader"><span>2. Zermalmen:</span></li>
                 <li> 
                     <select data-assignment-id="garalon-heal-cd2.1" class="assignment-select"></select>
                     <select data-assignment-id="garalon-heal-cd-cooldown2.1" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd2.2" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd-cooldown2.2" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd2.3" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd-cooldown2.3" class="assignment-select"></select>
                 </li>
                 <li class="list-subheader"><span>3. Zermalmen:</span></li>
                 <li> 
                     <select data-assignment-id="garalon-heal-cd3.1" class="assignment-select"></select>
                     <select data-assignment-id="garalon-heal-cd-cooldown3.1" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd3.2" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd-cooldown3.2" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd3.3" class="assignment-select"></select>
+                    <select data-assignment-id="garalon-heal-cd-cooldown3.3" class="assignment-select"></select>
                 </li>
             </ul>
         </div>
@@ -183,6 +202,25 @@
         </div>
     </div>
 </div>
+<!-- WeakAura-Export: Kiter-Rotation -->
+<div class="mt-4">
+  <div class="flex items-center gap-2 mb-2">
+    <button id="copy-garalon-kiter-code-btn"
+            class="px-3 py-1 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+      WeakAura-Export kopieren
+    </button>
+    <span class="text-xs text-gray-400">Kiter-Rotation (Wechsel bei ~10 Stacks)</span>
+  </div>
+
+  <!-- Nur Zeilenliste für WeakAura -->
+  <pre class="bg-slate-900 p-3 rounded border border-slate-700 max-h-64 overflow-auto">
+<code id="garalon-kiter-weakaura-output">-- Bitte Kiter zuweisen…</code>
+  </pre>
+
+  <!-- Kompaktansicht (normaler Text, mit Klassenfarbe) -->
+  <div id="garalon-kiter-compact" class="mt-2 text-sm text-gray-300"></div>
+</div>
+
 </div>
 </section>
 
@@ -250,6 +288,25 @@
     </div>
     </section>
 <script>
+let _lastAssignments = null;
+    window.initializePageSpecificCode = function(assignments, roster, firebase) {
+        // Die Firebase-Funktionen lokal verfügbar machen
+        const { doc, updateDoc, db } = firebase;
+        _lastAssignments = assignments;
+
+        // UI-Elemente initial aufbauen (erstellt die Dropdowns)
+        buildKiterListOnce();
+        ensureLegSlotsOnce();
+
+        // Buttons mit den Autofill-Funktionen verbinden
+        wireButtonsOnce(assignments, roster);
+
+        // Die Export-Anzeigen (WeakAura, Kompakt) mit den neuen Daten aktualisieren
+        renderAllExports(assignments, roster);
+
+        // Den Status der "Schon vergeben"-Anzeige aktualisieren
+        window.updateAssignmentPools?.();
+    };
 const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : '25');
 
   // Map für Bein-Gruppen (deutsches Label -> Pool-Suffix)
@@ -278,7 +335,14 @@ const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : 
       else li.classList.remove('kiter-hidden');
     }
   }
-
+    const kiterToggle = document.getElementById('kiter-list-toggle');
+    if (kiterToggle) {
+        const kiterContent = kiterToggle.nextElementSibling;
+        kiterToggle.addEventListener('click', () => {
+            kiterToggle.classList.toggle('active');
+            kiterContent.classList.toggle('collapsed');
+        });
+    }
   function buildKiterListOnce() {
     const list = document.getElementById('garalon-kiter-list');
     if (!list) return;
@@ -348,6 +412,7 @@ const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : 
   // Bulk-Aktionen (nutzt index.html: window.applyAssignmentsBulk)
   // =========================
   function autofillKiterAlways25(roster) {
+    if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
     const names = getRosterNames(roster);
     const updates = {};
     for (let i = 1; i <= 25; i++) {
@@ -357,12 +422,14 @@ const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : 
   }
 
   function clearKiterAll25() {
+    if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
     const updates = {};
     for (let i = 1; i <= 25; i++) updates[`garalon-kiter${i}`] = "";
     window.applyAssignmentsBulk?.(updates);
   }
 
   function autofillLegs(roster) {
+    if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
     const perGroup = 6;
     const names = getRosterNames(roster).slice(); // Kopie
     const labels = ['Totenkopf', 'Kreuz', 'Quadrat', 'Dreieck'];
@@ -377,6 +444,7 @@ const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : 
   }
 
   function clearLegs() {
+    if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
     const updates = {};
     ['Totenkopf', 'Kreuz', 'Quadrat', 'Dreieck'].forEach(label => {
       for (let i = 1; i <= 6; i++) {
@@ -413,5 +481,109 @@ const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : 
     window.updateAssignmentPools?.();
   };
 </script>
+<script>
+(() => {
+  let _lastAssignments = null, _lastRoster = null;
+
+  function getShownNames(assignments) {
+    const all = [];
+    for (let i = 1; i <= 25; i++) {
+      const n = assignments?.[`garalon-kiter${i}`]?.player || "";
+      if (n) all.push(n);
+    }
+    const size = (sessionStorage.getItem('raidSize') === '10') ? 10 : 25;
+    return all.slice(0, size);
+  }
+
+  function renderLinesForWA(names) {
+    const outEl = document.getElementById('garalon-kiter-weakaura-output');
+    if (!outEl) return;
+    outEl.textContent = names.length ? names.join("\n") : "-- Bitte Kiter zuweisen…";
+  }
+
+  function renderCompactColored(names, roster) {
+    const host = document.getElementById('garalon-kiter-compact');
+    if (!host) return;
+    host.innerHTML = "";
+
+    if (!names.length) { host.textContent = ""; return; }
+
+    // Map: Name -> CLASS (aus roster)
+    const byName = new Map();
+    (Array.isArray(roster) ? roster : []).forEach(p => {
+      const name = (typeof p === "string" ? p : p?.name);
+      const cls = (typeof p === "string" ? null : p?.class);
+      if (name) byName.set(name, cls);
+    });
+
+    const wrap = document.createElement("div");
+    wrap.className = "flex flex-wrap items-center gap-2";
+
+    names.forEach((n, idx) => {
+      const cls = (byName.get(n) || "").toUpperCase();
+      const color = (window.classColors && window.classColors[cls]) || "#FFFFFF";
+
+      const span = document.createElement("span");
+      span.textContent = n;
+      span.style.color = color;
+      span.style.fontWeight = "600";
+      wrap.appendChild(span);
+
+      if (idx < names.length - 1) {
+        const arrow = document.createElement("span");
+        arrow.textContent = "→";
+        arrow.className = "opacity-70";
+        wrap.appendChild(arrow);
+      }
+    });
+
+    // Labelzeile
+    const label = document.createElement("div");
+    label.className = "text-xs text-gray-400 mb-1";
+    label.textContent = "Kompakt:";
+
+    host.appendChild(label);
+    host.appendChild(wrap);
+  }
+
+  function renderAll(assignments, roster) {
+    const names = getShownNames(assignments);
+    renderLinesForWA(names);
+    renderCompactColored(names, roster);
+  }
+
+  function wireCopyBtnOnce() {
+    const btn = document.getElementById('copy-garalon-kiter-code-btn');
+    if (!btn || btn.dataset._wired === '1') return;
+    btn.dataset._wired = '1';
+    btn.addEventListener('click', async () => {
+      const outEl = document.getElementById('garalon-kiter-weakaura-output');
+      try {
+        await navigator.clipboard.writeText(outEl?.textContent || "");
+        const old = btn.textContent; btn.textContent = "Kopiert!";
+        setTimeout(() => btn.textContent = old, 1200);
+      } catch (e) { console.error(e); }
+    });
+  }
+
+  // Hook an deine bestehende Seite (read-only)
+  const origInit = window.initializePageSpecificCode;
+  window.initializePageSpecificCode = function(assignments, roster) {
+    if (typeof origInit === 'function') origInit(assignments, roster);
+    _lastAssignments = assignments;
+    _lastRoster = roster;
+    renderAll(_lastAssignments, _lastRoster);
+    wireCopyBtnOnce();
+  };
+
+  // 10/25-Umschalter neu rendern
+  document.getElementById('size-toggle')?.addEventListener('click', (ev) => {
+    if (ev.target.matches('.size-toggle-btn')) {
+      setTimeout(() => _lastAssignments && renderAll(_lastAssignments, _lastRoster), 0);
+    }
+  });
+})();
+</script>
+
 
 </main>

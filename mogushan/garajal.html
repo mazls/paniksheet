@@ -214,11 +214,27 @@ pre {
                 </li>
                 <li data-size="25" class="tactic-content" style="display: block;">
                     <span>Backup #1:</span>
-                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps5" data-assignment-pool="garajal-spirit"></select>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Healer2" data-assignment-pool="garajal-spirit"></select>
                 </li>
                 <li data-size="25" class="tactic-content" style="display: block;">
                     <span>Backup #2:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps5" data-assignment-pool="garajal-spirit"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #3:</span>
                     <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps6" data-assignment-pool="garajal-spirit"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #4:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps7" data-assignment-pool="garajal-spirit"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #5:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps8" data-assignment-pool="garajal-spirit"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #6:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam1Dps9" data-assignment-pool="garajal-spirit"></select>
                 </li>
             </ul>
         </div>
@@ -249,15 +265,31 @@ pre {
                  <li data-size="25" class="tactic-content" style="display: block;">
                     <span>DPS 4 (25er):</span>
                     <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps4" data-assignment-pool="garajal-spirit"></select>
-                </li>
-                                <li data-size="25" class="tactic-content" style="display: block;">
+                <li data-size="25" class="tactic-content" style="display: block;">
                     <span>Backup #1:</span>
-                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps5" data-assignment-pool="garajal-spirit"></select>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Healer2" data-assignment-pool="garajal-spirit"></select>
                 </li>
                 <li data-size="25" class="tactic-content" style="display: block;">
                     <span>Backup #2:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps5" data-assignment-pool="garajal-spirit"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #3:</span>
                     <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps6" data-assignment-pool="garajal-spirit"></select>
                 </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #4:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps7" data-assignment-pool="garajal-spirit"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #5:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps8" data-assignment-pool="garajal-spirit"></select>
+                </li>
+                <li data-size="25" class="tactic-content" style="display: block;">
+                    <span>Backup #6:</span>
+                    <select class="assignment-select" data-assignment-id="garajal-spiritTeam2Dps9" data-assignment-pool="garajal-spirit"></select>
+                </li>
+            </ul>
             </ul>
         </div>
 
@@ -377,7 +409,7 @@ pre {
             <pre><code id="spirit-teams-weakaura-output">-- Bitte Spieler zuweisen...</code></pre>
         </div>
     </div>
-
+<!--
     <div class="assignment-block">
         <h4 class="text-lg font-bold">MRT-Export für Geisterwelt-Teams</h4>
         <p class="text-sm text-gray-400 mb-2">Code mit Icons für Method Raid Tools.</p>
@@ -388,7 +420,7 @@ pre {
             <pre><code id="spirit-teams-mrt-output">-- Bitte Spieler zuweisen...</code></pre>
         </div>
     </div>
-
+-->
 </div>
 </div>
 </div>
@@ -442,8 +474,8 @@ pre {
             // Diese Funktion bleibt exakt so wie sie war.
             const outputElement = document.getElementById('spirit-teams-weakaura-output');
             if (!outputElement) return;
-            const team1Ids = ['garajal-spiritTeam1Healer', 'garajal-spiritTeam1Dps1', 'garajal-spiritTeam1Dps2', 'garajal-spiritTeam1Dps3', 'garajal-spiritTeam1Dps4', 'garajal-spiritTeam1Dps5', 'garajal-spiritTeam1Dps6'];
-            const team2Ids = ['garajal-spiritTeam2Healer', 'garajal-spiritTeam2Dps1', 'garajal-spiritTeam2Dps2', 'garajal-spiritTeam2Dps3', 'garajal-spiritTeam2Dps4', 'garajal-spiritTeam2Dps5', 'garajal-spiritTeam2Dps6'];
+            const team1Ids = ['garajal-spiritTeam1Healer', 'garajal-spiritTeam1Dps1', 'garajal-spiritTeam1Dps2', 'garajal-spiritTeam1Dps3', 'garajal-spiritTeam1Dps4','garajal-spiritTeam1Healer2', 'garajal-spiritTeam1Dps5', 'garajal-spiritTeam1Dps6', 'garajal-spiritTeam1Dps7', 'garajal-spiritTeam1Dps8', 'garajal-spiritTeam1Dps9'];
+            const team2Ids = ['garajal-spiritTeam2Healer', 'garajal-spiritTeam2Dps1', 'garajal-spiritTeam2Dps2', 'garajal-spiritTeam2Dps3', 'garajal-spiritTeam2Dps4', 'garajal-spiritTeam2Healer2',, 'garajal-spiritTeam2Dps5', 'garajal-spiritTeam2Dps6', 'garajal-spiritTeam2Dps7', 'garajal-spiritTeam2Dps8', 'garajal-spiritTeam2Dps9'];
             const getAssignedPlayers = (ids) => ids.map(id => currentAssignments[id]?.player).filter(Boolean);
             const team1Players = getAssignedPlayers(team1Ids);
             const team2Players = getAssignedPlayers(team2Ids);

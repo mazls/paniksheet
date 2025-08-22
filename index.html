@@ -659,6 +659,11 @@ pre {
     color: var(--color-parchment); /* Helle Schriftfarbe */
     white-space: pre-wrap;       /* Sorgt für Zeilenumbrüche bei langen Zeilen */
     overflow-x: auto;          /* Fügt eine Scrollbar hinzu, falls eine Zeile zu lang ist */
+
+}
+.assignment-header.collapsible-header {
+    display: flex !important; /* Stellt sicher, dass Flexbox immer gewinnt */
+    gap: 1rem; /* Fügt einen schönen Abstand zwischen Text und Pfeil hinzu */
 }
 	</style>
 </head>
@@ -1981,7 +1986,7 @@ window.applyAssignmentsBulk = applyAssignmentsBulk;
 
     (async () => {
         const rosterSnap = await getDoc(rosterDocRef);
-        const rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
+        window.rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
         function populateDropdownOptions(selectElement, players) {
             selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
             const divider = new Option('──────────', '');
