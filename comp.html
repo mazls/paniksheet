@@ -90,7 +90,12 @@
                 <h4 id="cooldown-form-title" class="text-lg font-bold mb-3 text-gold">Neuen Cooldown hinzufügen</h4>
                 <form id="cooldown-form" class="space-y-4">
                     <input type="hidden" id="cooldown-id-input">
-                    
+            
+            <div>
+                <label for="cooldown-spellid-input" class="block text-sm font-medium text-gray-300">Spell-ID (für MRT-Export)</label>
+                <input type="text" id="cooldown-spellid-input" placeholder="z.B. 98008" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
+            </div>
+
                     <div>
                         <label for="cooldown-name-input" class="block text-sm font-medium text-gray-300">Name des Cooldowns</label>
                         <input type="text" id="cooldown-name-input" required class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
@@ -129,6 +134,7 @@
                                 <th class="px-4 py-2">Name</th>
                                 <th class="px-4 py-2">Klasse</th>
                                 <th class="px-4 py-2">Aktionen</th>
+                                <th class="px-4 py-2">Spell ID</th>
                             </tr>
                         </thead>
                         <tbody id="cooldowns-table-body" class="divide-y divide-slate-700">

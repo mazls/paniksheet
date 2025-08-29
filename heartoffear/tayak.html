@@ -196,6 +196,15 @@
                 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/wPt7SXs42Uc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </div>
+            <div class="mt-4 pt-4 border-t border-slate-700">
+        <div class="flex justify-between items-center">
+            <h4 class="text-lg font-bold">MRT-Export (Heil-CDs)</h4>
+            <button id="copy-tayak-healcd-mrt-btn" class="text-sm py-1 px-3 rounded-md bg-slate-600 hover:bg-slate-500" title="In die Zwischenablage kopieren">
+                Kopieren
+            </button>
+        </div>
+        <pre class="mt-2 max-h-64 overflow-auto"><code id="tayak-healcd-mrt-output">-- Bitte CDs zuweisen...</code></pre>
+    </div>
     </div>
 </div>
 </div>
@@ -263,4 +272,67 @@
         </div>
     </div>
     </section>
+    <script>
+    window.initializePageSpecificCode = function(assignments, roster, firebase, allCooldowns) {
+        
+        // Funktion, die den MRT-Code für die Heil-CDs bei "Unsichtbarer Schlag" generiert
+        function updateTayakHealCdMrtExport(currentAssignments, currentRoster, allCooldownsData) {
+            const outputElement = document.getElementById('tayak-healcd-mrt-output');
+            if (!outputElement) return;
+
+            const playerClassMap = new Map((currentRoster || []).map(p => [p.name, p.class]));
+            const cooldownMap = new Map((allCooldownsData || []).map(cd => [cd.name, cd]));
+
+            let outputString = `{spell:122949} CDs Unsichtbarer Schlag {spell:122949}\n\n`;
+            let hasAssignments = false;
+
+            // Wir gehen durch die 3 Phasen/Gruppen für den Unsichtbaren Schlag
+            for (let i = 1; i <= 3; i++) {
+                const phaseAssignments = [];
+                // Und durch die 3 Slots pro Phase
+                for (let j = 1; j <= 3; j++) {
+                    const player = currentAssignments[`tayak-heal-cd${i}.${j}`]?.player;
+                    const cooldownName = currentAssignments[`tayak-heal-cd-cooldown${i}.${j}`]?.cooldown;
+
+                    if (player && cooldownName) {
+                        const playerClass = playerClassMap.get(player) || 'UNKNOWN';
+                        const hexColor = (window.classColors[playerClass] || 'FFFFFF').substring(1);
+                        const cooldown = cooldownMap.get(cooldownName);
+                        const spellIdentifier = (cooldown && cooldown.spellId) ? cooldown.spellId : cooldownName;
+
+                        phaseAssignments.push(`{spell:${spellIdentifier}} |cff${hexColor}${player}|r`+'\n');
+                        hasAssignments = true;
+                    }
+                }
+
+                if (phaseAssignments.length > 0) {
+                    const phaseTitle = (i === 3) ? "Weitere Schläge" : `${i}. Unsichtbarer Schlag`;
+                    outputString += `**${phaseTitle}**\n`;
+                    outputString += phaseAssignments.join(' ') + '\n\n';
+                }
+            }
+            
+            outputElement.textContent = hasAssignments ? outputString.trim() : "-- Bitte CDs zuweisen...";
+        }
+
+        // Event-Listener für den neuen Kopieren-Button
+        const copyMrtBtn = document.getElementById('copy-tayak-healcd-mrt-btn');
+        if (copyMrtBtn) {
+            copyMrtBtn.addEventListener('click', () => {
+                const codeContent = document.getElementById('tayak-healcd-mrt-output').textContent;
+                navigator.clipboard.writeText(codeContent).then(() => {
+                    copyMrtBtn.classList.add('copy-feedback');
+                    copyMrtBtn.textContent = "Kopiert!";
+                    setTimeout(() => {
+                        copyMrtBtn.classList.remove('copy-feedback');
+                        copyMrtBtn.textContent = "Kopieren";
+                    }, 2000);
+                });
+            });
+        }
+        
+        // Die Funktion sofort aufrufen, um den initialen Code zu generieren
+        updateTayakHealCdMrtExport(assignments, roster, allCooldowns);
+    };
+</script>
 </main>

@@ -400,7 +400,7 @@ const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : 
         const sel = document.createElement('select');
         sel.className = 'assignment-select';
         // eigener Pool je Bein, damit deine UI die Belegung klar zeigt
-        sel.dataset.assignmentPool = `garalon-legs-${poolSuffix}`;
+        sel.dataset.assignmentPool = `garalon-legs`;
         // ID bleibt sprechend mit deutschem Label wie bisher:
         sel.dataset.assignmentId   = `garalon-leg-${groupName}-${i}`;
         li.appendChild(sel);

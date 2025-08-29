@@ -122,6 +122,57 @@
                 </li>
             </ul>
         </div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+             <p class="text-sm text-gray-400 mb-2">Starke Heil-CDs für den Schaden durch den <strong class="text-red-500">Klingenregen</strong>.</p>
+            <ul class="assignment-list">
+                    <li class="list-subheader"><span>1. Klingenregen:</span></li>
+					<li>
+                        <select data-assignment-id="meljarak-heal-cd1.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown1.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd1.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown1.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd1.3" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown1.3" class="assignment-select"></select>
+                    </li>
+                    <li class="list-subheader"><span>2. Klingenregen:</span></li>
+                    <li> 
+                        <select data-assignment-id="meljarak-heal-cd2.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown2.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd2.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown2.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd2.3" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown2.3" class="assignment-select"></select>
+                    </li>
+                    <li class="list-subheader"><span>3. Klingenregen:</span></li>
+                     <li> 
+                        <select data-assignment-id="meljarak-heal-cd3.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown3.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd3.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown3.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd3.3" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown3.3" class="assignment-select"></select>
+                    </li>
+                    <li class="list-subheader"><span>4. Klingenregen:</span></li>
+                     <li> 
+                        <select data-assignment-id="meljarak-heal-cd4.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown4.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd4.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown4.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd4.3" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown4.3" class="assignment-select"></select>
+                    </li>
+                    <li class="list-subheader"><span>5. Klingenregen:</span></li>
+                     <li> 
+                        <select data-assignment-id="meljarak-heal-cd5.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown5.1" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd5.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown5.2" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd5.3" class="assignment-select"></select>
+                        <select data-assignment-id="meljarak-heal-cd-cooldown5.3" class="assignment-select"></select>
+                    </li>
+            </ul>
+        </div>
     </div>
     <div>
         <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
@@ -147,7 +198,17 @@
             </div>
         </div>
     </div>
+        <div class="mt-4 pt-4 border-t border-slate-700">
+        <div class="flex justify-between items-center">
+            <h4 class="text-lg font-bold">MRT-Export</h4>
+            <button id="copy-meljarak-healcd-mrt-btn" class="text-sm py-1 px-3 rounded-md bg-slate-600 hover:bg-slate-500" title="In die Zwischenablage kopieren">
+                Kopieren
+            </button>
+        </div>
+        <pre class="mt-2 max-h-64 overflow-auto"><code id="meljarak-healcd-mrt-output">-- Bitte CDs zuweisen...</code></pre>
+    </div>
 </div>
+
 </div>
 </section>
 
@@ -200,4 +261,76 @@
         </div>
     </div>
 </section>
+<script>
+    window.initializePageSpecificCode = function(assignments, roster, firebase, allCooldowns) {
+        
+        // Helfer-Funktion, die den MRT-Code für die Heil-CDs generiert
+        function updateMeljarakHealCdMrtExport(currentAssignments, currentRoster, allCooldownsData) {
+            const outputElement = document.getElementById('meljarak-healcd-mrt-output');
+            if (!outputElement) return;
+
+            // ZUM DEBUGGEN: Entferne die '//' am Anfang der nächsten Zeile, um im Browser-Log (F12) zu sehen, welche Cooldown-Daten ankommen.
+            // console.log("Verfügbare Cooldown-Daten für Mel'jarak:", allCooldownsData);
+
+            // 1. Helfer-Maps für schnellen Zugriff erstellen
+            const playerClassMap = new Map((currentRoster || []).map(p => [p.name, p.class]));
+            // Wir speichern das ganze Cooldown-Objekt, nicht nur die ID
+            const cooldownMap = new Map((allCooldownsData || []).map(cd => [cd.name, cd]));
+
+            let outputString = `{spell:122407} Klingenregen CDs {spell:122407}\n\n`;
+            let hasAssignments = false;
+
+            // 2. Durch alle 5 Klingenregen-Phasen iterieren
+            for (let i = 1; i <= 5; i++) {
+                const phaseAssignments = [];
+                // Und durch alle 3 Slots pro Phase
+                for (let j = 1; j <= 3; j++) {
+                    const player = currentAssignments[`meljarak-heal-cd${i}.${j}`]?.player;
+                    const cooldownName = currentAssignments[`meljarak-heal-cd-cooldown${i}.${j}`]?.cooldown;
+
+                    if (player && cooldownName) {
+                        const playerClass = playerClassMap.get(player) || 'UNKNOWN';
+                        const hexColor = (window.classColors[playerClass] || 'FFFFFF').substring(1);
+                        
+                        // Finde das komplette Cooldown-Objekt in unserer Map
+                        const cooldown = cooldownMap.get(cooldownName);
+                        
+                        // NEUE, SICHERERE PRÜFUNG:
+                        // Benutze die spellId, wenn sie existiert und nicht leer ist. Ansonsten nimm den Namen.
+                        const spellIdentifier = (cooldown && cooldown.spellId) ? cooldown.spellId : cooldownName;
+
+                        phaseAssignments.push(`{spell:${spellIdentifier}} |cff${hexColor}${player}|r`);
+                        hasAssignments = true;
+                    }
+                }
+
+                if (phaseAssignments.length > 0) {
+                    outputString += `${i}. Klingenregen:\n`;
+                    outputString += phaseAssignments.join(' ') + '\n\n';
+                }
+            }
+            
+            outputElement.textContent = hasAssignments ? outputString.trim() : "-- Bitte CDs zuweisen...";
+        }
+
+        // Event-Listener für den Kopieren-Button (unverändert)
+        const copyMrtBtn = document.getElementById('copy-meljarak-healcd-mrt-btn');
+        if (copyMrtBtn) {
+            copyMrtBtn.addEventListener('click', () => {
+                const codeContent = document.getElementById('meljarak-healcd-mrt-output').textContent;
+                navigator.clipboard.writeText(codeContent).then(() => {
+                    copyMrtBtn.classList.add('copy-feedback');
+                    copyMrtBtn.textContent = "Kopiert!";
+                    setTimeout(() => {
+                        copyMrtBtn.classList.remove('copy-feedback');
+                        copyMrtBtn.textContent = "Kopieren";
+                    }, 2000);
+                });
+            });
+        }
+        
+        // Die Funktion sofort aufrufen, um den initialen Code zu generieren
+        updateMeljarakHealCdMrtExport(assignments, roster, allCooldowns);
+    };
+</script>
 </main>

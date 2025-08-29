@@ -2093,8 +2093,8 @@ assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
   });
 
   if (typeof window.initializePageSpecificCode === 'function') {
-    window.initializePageSpecificCode(assignments, rosterData);
-  }
+      window.initializePageSpecificCode(assignments, rosterData, { doc, updateDoc, db }, allCooldowns);
+    }
   window.toggleSelectEditability?.();
   updateAssignmentPools?.();
 });
@@ -3002,6 +3002,7 @@ async function displayCooldowns() {
         row.innerHTML = `
             <td class="px-4 py-2">${cd.name}</td>
             <td class="px-4 py-2" style="color: ${window.classColors[cd.class] || '#FFFFFF'};">${cd.class}</td>
+            <td class="px-4 py-2 text-gray-400">${cd.spellId || ''}</td> <td class="px-4 py-2">
             <td class="px-4 py-2">
                 <button class="text-sm text-blue-400 hover:underline edit-cd-btn" data-id="${doc.id}">Edit</button>
                 <button class="text-sm text-red-500 hover:underline delete-cd-btn ml-2" data-id="${doc.id}">X</button>
@@ -3028,6 +3029,7 @@ async function handleCooldownFormSubmit(event) {
         class: document.getElementById('cooldown-class-select').value,
         type: document.getElementById('cooldown-type-select').value,
         order: parseInt(document.getElementById('cooldown-order-input').value) || 100,
+        spellId: document.getElementById('cooldown-spellid-input').value || "",
     };
 
     try {
@@ -3069,6 +3071,7 @@ async function populateCooldownFormForEdit(cooldownId) {
     document.getElementById('cooldown-class-select').value = cd.class;
     document.getElementById('cooldown-type-select').value = cd.type;
     document.getElementById('cooldown-order-input').value = cd.order;
+    document.getElementById('cooldown-spellid-input').value = cd.spellId || '';
 
     document.getElementById('cooldown-form-title').textContent = 'Cooldown bearbeiten';
     document.getElementById('cooldown-save-btn').textContent = 'Aktualisieren';
