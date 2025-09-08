@@ -411,15 +411,67 @@ const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : 
   // =========================
   // Bulk-Aktionen (nutzt index.html: window.applyAssignmentsBulk)
   // =========================
-  function autofillKiterAlways25(roster) {
+
+function autofillKiterAlways25(roster) {
     if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
-    const names = getRosterNames(roster);
-    const updates = {};
-    for (let i = 1; i <= 25; i++) {
-      updates[`garalon-kiter${i}`] = names[i - 1] || ""; // fehlende bleiben leer
+    
+    const assignments = window._lastAssignments || {};
+    const raidSize = (sessionStorage.getItem('raidSize') || '25') === '10' ? 10 : 25;
+
+    let orderedKiterList = [];
+    const addedPlayers = new Set();
+
+    // 1. Finde den besten Starter (Schurke oder Jäger)
+    const starters = (roster || []).filter(p => (p.class === "ROGUE" || p.class === "HUNTER") && !p.roles.includes('TANK'));
+    if (starters.length > 0) {
+        const bestStarter = starters[0]; // Nimm den ersten gefundenen
+        orderedKiterList.push(bestStarter);
+        addedPlayers.add(bestStarter.name);
     }
+
+    // 2. Füge die beiden Tanks hinzu
+    const assignedTanks = [assignments['garalon-tank1']?.player, assignments['garalon-tank2']?.player].filter(Boolean);
+    assignedTanks.forEach(tankName => {
+        if (!addedPlayers.has(tankName)) {
+            const tankPlayer = (roster || []).find(p => p.name === tankName);
+            if (tankPlayer) {
+                orderedKiterList.push(tankPlayer);
+                addedPlayers.add(tankName);
+            }
+        }
+    });
+
+    // 3. Füge alle Range-DPS hinzu, die noch nicht in der Liste sind
+    const rangeDpsClasses = ["WARLOCK", "MAGE", "PRIEST", "SHAMAN", "HUNTER"];
+    const rangeDps = (roster || [])
+        .filter(p => rangeDpsClasses.includes(p.class) && p.roles.includes('DPS') && !addedPlayers.has(p.name));
+    rangeDps.forEach(p => {
+        orderedKiterList.push(p);
+        addedPlayers.add(p.name);
+    });
+
+    // 4. Füge den gesamten Rest hinzu (Melees, Heiler etc.), die noch nicht in der Liste sind
+    const rest = (roster || []).filter(p => !addedPlayers.has(p.name));
+    rest.forEach(p => {
+        orderedKiterList.push(p);
+        addedPlayers.add(p.name);
+    });
+    
+    if (orderedKiterList.length === 0) {
+        return window.showModal("Keine Spieler im Roster gefunden.");
+    }
+
+    const kiterNames = orderedKiterList.map(p => p.name);
+    const updates = {};
+
+    // 5. Fülle die Kiter-Rotation mit der neuen, sortierten Liste
+    for (let i = 1; i <= raidSize; i++) {
+        updates[`garalon-kiter${i}`] = kiterNames[(i - 1) % kiterNames.length];
+    }
+    
     window.applyAssignmentsBulk?.(updates);
-  }
+    window.showModal("Kiter-Rotation wurde nach Priorität gefüllt!");
+}
 
   function clearKiterAll25() {
     if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");

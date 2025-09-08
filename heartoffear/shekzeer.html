@@ -25,6 +25,13 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+.raidicon-small {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+}
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Großkaiserin Shek'zeer</h1>
@@ -86,19 +93,6 @@
                 </li>
             </ul>
         </div>
-        
-        <div class="assignment-block">
-            <h4 class="text-lg font-bold">Phase 1: Dissonanzfelder</h4>
-             <p class="text-sm text-gray-400 mb-2">Spieler mit <strong class="text-purple-400">Schrei des Schreckens</strong> gehen in das markierte Feld. Der Rest des Raids castet normal weiter.</p>
-            <div class="assignment-header">
-                <span>Heil-CDs für Feld-Explosionen</span>
-                <span>Spieler</span>
-            </div>
-            <ul class="assignment-list">
-                <li><span>Explosion 1:</span><select data-assignment-id="shekzeer-cd-explo1" class="assignment-select"></select></li>
-                <li><span>Explosion 2:</span><select data-assignment-id="shekzeer-cd-explo2" class="assignment-select"></select></li>
-            </ul>
-        </div>
 
         <div class="assignment-block">
             <h4 class="text-lg font-bold">Phase 2: Add-Management</h4>
@@ -110,22 +104,97 @@
             <ul class="assignment-list">
                 <li><span>Fallenbauer 1:</span><select data-assignment-id="shekzeer-trap1" class="assignment-select"></select></li>
                 <li><span>Fallenbauer 2:</span><select data-assignment-id="shekzeer-trap2" class="assignment-select"></select></li>
-                 <li class="list-subheader"><span>Interrupts für Windklingen:</span></li>
-                <li><span>Gruppe Links:</span><select data-assignment-id="shekzeer-interrupt-left" class="assignment-select"></select></li>
-                <li><span>Gruppe Rechts:</span><select data-assignment-id="shekzeer-interrupt-right" class="assignment-select"></select></li>
+                </ul>
+        </div>
+        <div class="assignment-block">
+    <h4 class="text-lg font-bold">🛑 Interrupt-Rotation (Windklingen in P2)</h4>
+    <p class="text-sm text-gray-400 mb-2">Feste Zuweisungen, wer welche Windklinge unterbricht, um <strong class="text-green-400">Verteilung</strong> zu verhindern.</p>
+    <div class="assignment-header" style="grid-template-columns: 0.5fr 1fr;">
+        <span>Mark</span>
+        <span>Spieler</span>
+    </div>
+    <ul class="assignment-list">
+        <li style="grid-template-columns: 0.5fr 1fr;">
+            <span><img src="raidicons/skull.png" class="raidicon-small" alt="Totenkopf"></span>
+            <select data-assignment-id="shekzeer-interrupt-skull" class="assignment-select"></select>
+            <span><img src="raidicons/skull.png" class="raidicon-small" alt="Totenkopf"></span>
+            <select data-assignment-id="shekzeer-interrupt-skull2" class="assignment-select"></select>
+        </li>
+        <li style="grid-template-columns: 0.5fr 1fr;">
+            <span><img src="raidicons/cross.png" class="raidicon-small" alt="Kreuz"></span>
+            <select data-assignment-id="shekzeer-interrupt-cross" class="assignment-select"></select>
+            <span><img src="raidicons/cross.png" class="raidicon-small" alt="Kreuz"></span>
+            <select data-assignment-id="shekzeer-interrupt-cross2" class="assignment-select"></select>
+        </li>
+        <li style="grid-template-columns: 0.5fr 1fr;">
+            <span><img src="raidicons/moon.png" class="raidicon-small" alt="Mond"></span>
+            <select data-assignment-id="shekzeer-interrupt-moon" class="assignment-select"></select>
+            <span><img src="raidicons/moon.png" class="raidicon-small" alt="Mond"></span>
+            <select data-assignment-id="shekzeer-interrupt-moon2" class="assignment-select"></select>
+        </li>
+        <li style="grid-template-columns: 0.5fr 1fr;">
+            <span><img src="raidicons/triangle.png" class="raidicon-small" alt="Dreieck"></span>
+            <select data-assignment-id="shekzeer-interrupt-triangle" class="assignment-select"></select>
+            <span><img src="raidicons/triangle.png" class="raidicon-small" alt="Dreieck"></span>
+            <select data-assignment-id="shekzeer-interrupt-triangle2" class="assignment-select"></select>
+        </li>
+        <li style="grid-template-columns: 0.5fr 1fr;">
+            <span><img src="raidicons/diamond.png" class="raidicon-small" alt="Diamant"></span>
+            <select data-assignment-id="shekzeer-interrupt-diamond" class="assignment-select"></select>
+            <span><img src="raidicons/diamond.png" class="raidicon-small" alt="Diamant"></span>
+            <select data-assignment-id="shekzeer-interrupt-diamond2" class="assignment-select"></select>
+        </li>
+        <li style="grid-template-columns: 0.5fr 1fr;">
+            <span><img src="raidicons/square.png" class="raidicon-small" alt="Quadrat"></span>
+            <select data-assignment-id="shekzeer-interrupt-square" class="assignment-select"></select>
+            <span><img src="raidicons/square.png" class="raidicon-small" alt="Quadrat"></span>
+            <select data-assignment-id="shekzeer-interrupt-square2" class="assignment-select"></select>
+        </li>
+    </ul>
+</div>
+        <div class="assignment-block">
+            <h4 class="text-lg font-bold">👻 Totem-Rotation (Fear in P3)</h4>
+            <p class="text-sm text-gray-400 mb-2">Rotation für das <strong class="text-purple-400">Totem des erzürnten Steins</strong>, um den <strong class="text-red-500">Verzehrenden Schrecken</strong> zu kontern.</p>
+            <div class="assignment-header">
+                <span>#</span>
+                <span>Spieler</span>
+            </div>
+            <ul class="assignment-list">
+                <li><span>Totem 1:</span><select data-assignment-id="shekzeer-totem1" class="assignment-select"></select></li>
+                <li><span>Totem 2:</span><select data-assignment-id="shekzeer-totem2" class="assignment-select"></select></li>
+                <li><span>Totem 3:</span><select data-assignment-id="shekzeer-totem3" class="assignment-select"></select></li>
+                <li><span>Totem 4:</span><select data-assignment-id="shekzeer-totem4" class="assignment-select"></select></li>
             </ul>
         </div>
         
         <div class="assignment-block">
-            <h4 class="text-lg font-bold">Phase 3: Überleben</h4>
-            <p class="text-sm text-gray-400 mb-2">Heiler müssen <strong class="text-purple-400">Visionen des Untergangs</strong> schnell dispellen.</p>
-            <div class="assignment-header">
-                <span>Heil-CDs für P3</span>
-                <span>Spieler</span>
-            </div>
-             <ul class="assignment-list">
-                <li><span>Heil-CD 1:</span><select data-assignment-id="shekzeer-cd-p3-1" class="assignment-select"></select></li>
-                <li><span>Heil-CD 2:</span><select data-assignment-id="shekzeer-cd-p3-2" class="assignment-select"></select></li>
+            <h4 class="text-lg font-bold">❤️ Allgemeine Heil-CDs</h4>
+            <p class="text-sm text-gray-400 mb-2">Zusätzliche Cooldowns für hohen Gruppenschaden in allen Phasen.</p>
+            <ul class="assignment-list">
+                <li>
+                    <select data-assignment-id="shekzeer-cd1-player" class="assignment-select"></select>
+                    <select data-assignment-id="shekzeer-cd1-cooldown" class="assignment-select"></select>
+                </li>
+                <li>
+                    <select data-assignment-id="shekzeer-cd2-player" class="assignment-select"></select>
+                    <select data-assignment-id="shekzeer-cd2-cooldown" class="assignment-select"></select>
+                </li>
+                <li>
+                    <select data-assignment-id="shekzeer-cd3-player" class="assignment-select"></select>
+                    <select data-assignment-id="shekzeer-cd3-cooldown" class="assignment-select"></select>
+                </li>
+                <li>
+                    <select data-assignment-id="shekzeer-cd4-player" class="assignment-select"></select>
+                    <select data-assignment-id="shekzeer-cd4-cooldown" class="assignment-select"></select>
+                </li>
+                <li>
+                    <select data-assignment-id="shekzeer-cd5-player" class="assignment-select"></select>
+                    <select data-assignment-id="shekzeer-cd5-cooldown" class="assignment-select"></select>
+                </li>
+                <li>
+                    <select data-assignment-id="shekzeer-cd6-player" class="assignment-select"></select>
+                    <select data-assignment-id="shekzeer-cd6-cooldown" class="assignment-select"></select>
+                </li>
             </ul>
         </div>
 

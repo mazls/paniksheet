@@ -25,6 +25,13 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+    .raidicon-small {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+}
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Tsulong</h1>
@@ -59,83 +66,118 @@
     </div>
 </section>
 
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div>
-        <div class="assignment-block">
-            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
-            <div class="assignment-header">
-                <span>Aufgabe</span>
-                <span>Spieler</span>
+<div class="collapsible-content">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <div class="space-y-6">
+            <div class="assignment-block">
+                <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                <ul class="assignment-list">
+                    <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="tsulong-tank1"></select></li>
+                    <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="tsulong-tank2"></select></li>
+                </ul>
             </div>
-            <ul class="assignment-list">
-                <li>
-                    <span>Tank 1:</span>
-                    <select class="assignment-select" data-assignment-id="tsulong-tank1"></select>
-                </li>
-                <li>
-                    <span>Tank 2:</span>
-                    <select class="assignment-select" data-assignment-id="tsulong-tank2"></select>
-                </li>
-            </ul>
-        </div>
-        
-        <div class="assignment-block">
-            <h4 class="text-lg font-bold">Nachtphase: Sonnenstrahl-Rotation</h4>
-            <p class="text-sm text-gray-400 mb-2">Gruppen laufen nacheinander in den Strahl, um ihre <strong class="text-purple-400">Schreckensschatten</strong>-Stapel bei ca. 15 Stacks zu entfernen.</p>
-            <ul class="assignment-list">
-                <li class="list-subheader"><span>Rotation pro Sonnenstrahl</span></li>
-                <li><span>Gruppe 1 (z.B. Melees):</span><select data-assignment-id="tsulong-sunbeam1" class="assignment-select"></select></li>
-                <li><span>Gruppe 2 (z.B. Ranges):</span><select data-assignment-id="tsulong-sunbeam2" class="assignment-select"></select></li>
-                <li><span>Gruppe 3 (z.B. Heiler):</span><select data-assignment-id="tsulong-sunbeam3" class="assignment-select"></select></li>
-            </ul>
+            
+            <div class="assignment-block">
+                <h4 class="text-lg font-bold">🎯 Gruppen-Einteilung (Adds)</h4>
+                <ul class="assignment-list">
+                    <li class="list-subheader"><span><img src="raidicons/cross.png" class="raidicon-small" alt="Kreuz"> Gruppe Kreuz</span></li>
+                    <li class="grid-cols-3">
+                        <select data-assignment-id="tsulong-group-cross1" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-cross2" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-cross3" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-cross4" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-cross5" class="assignment-select"></select>
+                    </li>
+                    <li class="list-subheader"><span><img src="raidicons/square.png" class="raidicon-small" alt="Quadrat"> Gruppe Quadrat</span></li>
+                    <li class="grid-cols-3">
+                        <select data-assignment-id="tsulong-group-square1" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-square2" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-square3" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-square4" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-square5" class="assignment-select"></select>
+                    </li>
+                    <li class="list-subheader"><span><img src="raidicons/diamond.png" class="raidicon-small" alt="Diamant"> Gruppe Diamant</span></li>
+                    <li class="grid-cols-3">
+                        <select data-assignment-id="tsulong-group-diamond1" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-diamond2" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-diamond3" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-diamond4" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-diamond5" class="assignment-select"></select>
+                    </li>
+                    <li class="list-subheader"><span><img src="raidicons/triangle.png" class="raidicon-small" alt="Dreieck"> Gruppe Dreieck</span></li>
+                    <li class="grid-cols-3">
+                        <select data-assignment-id="tsulong-group-triangle1" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-triangle2" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-triangle3" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-triangle4" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-group-triangle5" class="assignment-select"></select>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="assignment-block">
+                <h4 class="text-lg font-bold">✨ Dispel-Rotation (Terrorisieren)</h4>
+                <ul class="assignment-list">
+                    <li><span>Dispel 1:</span><select data-assignment-id="tsulong-dispel1" class="assignment-select"></select></li>
+                    <li><span>Dispel 2:</span><select data-assignment-id="tsulong-dispel2" class="assignment-select"></select></li>
+                    <li><span>Dispel 3 (Backup):</span><select data-assignment-id="tsulong-dispel3" class="assignment-select"></select></li>
+                </ul>
+            </div>
+            
+            <div class="assignment-block">
+                <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                <ul class="assignment-list">
+                    <li>
+                        <select data-assignment-id="tsulong-cd1-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd1-cooldown" class="assignment-select"></select>
+                    </li>
+                    <li>
+                        <select data-assignment-id="tsulong-cd2-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd2-cooldown" class="assignment-select"></select>
+                    </li>
+                    <li>
+                        <select data-assignment-id="tsulong-cd3-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd3-cooldown" class="assignment-select"></select>
+                    </li>
+                    <li>
+                        <select data-assignment-id="tsulong-cd4-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd4-cooldown" class="assignment-select"></select>
+                    </li>
+                    <li>
+                        <select data-assignment-id="tsulong-cd5-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd5-cooldown" class="assignment-select"></select>
+                    </li>
+                    <li>
+                        <select data-assignment-id="tsulong-cd6-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd6-cooldown" class="assignment-select"></select>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <div class="assignment-block">
-            <h4 class="text-lg font-bold">Tagphase: Add-Prioritäten</h4>
-            <p class="text-sm text-gray-400 mb-2">Alle DDs müssen sich an diese Prioritäten halten, um Tsulong zu schützen.</p>
-             <ol class="list-decimal list-inside text-gray-200 mt-2 space-y-1">
-                <li><strong class="text-gray-400">Instabile Shas</strong> (bevor sie Tsulong erreichen)</li>
-                <li><strong class="text-red-500">Verkörperter Schrecken</strong></li>
-                <li><strong class="text-red-400">Schreckensbrut</strong></li>
-            </ol>
+        <div>
+            <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+            <div>
+                <h4 class="text-lg font-semibold">Positionierung</h4>
+                <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                    <p class="text-gray-400 text-sm"><strong>Nachtphase:</strong> Der Raid verteilt sich im Halbkreis mit 8m Abstand hinter dem Boss. <br><strong>Tagphase:</strong> Die Tanks ziehen die Adds vor Tsulong, damit sie von seinem <strong class="text-yellow-400">Sonnenatem</strong> getroffen werden.</p>
+                </div>
+                <div class="mt-2">
+                    <img src="terraceofendlessspring/tsulong.png" alt="Positionierung Tsulong" 
+                         class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600">
+                </div>
+            </div>
+            <div>
+                <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
+                <div class="video-container my-4 rounded-lg shadow-lg">
+                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/O6RHmO4_2Vc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
         </div>
         
-        <div class="assignment-block">
-            <h4 class="text-lg font-bold text-red-500">Heroisch: Add-Killer (Nachtphase)</h4>
-            <p class="text-sm text-gray-400 mb-2">Diese Spieler sind dafür verantwortlich, die <strong class="text-gray-200">Dunkelheit der Nacht</strong>-Adds zu töten, bevor sie den Sonnenstrahl erreichen.</p>
-             <ul class="assignment-list">
-                <li><span>Add-Killer 1:</span><select data-assignment-id="tsulong-hc-killer1" class="assignment-select"></select></li>
-                <li><span>Add-Killer 2:</span><select data-assignment-id="tsulong-hc-killer2" class="assignment-select"></select></li>
-            </ul>
-        </div>
     </div>
-    <div>
-        <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-        <div>
-            <h4 class="text-lg font-semibold">Positionierung</h4>
-            <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                <p class="text-gray-400 text-sm"><strong>Nachtphase:</strong> Der Raid verteilt sich im Halbkreis mit 8m Abstand hinter dem Boss. Der Boss wird bei Bedarf gedreht, damit der <strong class="text-yellow-400">Sonnenstrahl</strong> für alle erreichbar ist. <br><strong>Tagphase:</strong> Die Tanks ziehen die Adds vor Tsulong, damit sie von seinem <strong class="text-yellow-400">Sonnenatem</strong> getroffen werden. Heiler stehen direkt im Atem. DDs positionieren sich, um schnell die <strong class="text-gray-400">Instabilen Shas</strong> abzufangen.</p>
-            </div>
-            <div class="mt-2 text-center text-gray-500 bg-slate-900/50 p-8 rounded-lg border border-slate-700">
-                <p>Kein Taktikbild verfügbar.</p>
-            </div>
-        </div>
-        <div>
-            <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
-            <div class="video-container my-4 rounded-lg shadow-lg">
-                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/gLCoPl8cl3k" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </div>
-        </div>
     </div>
-</div>
-</div>
-</section>
 
 <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">

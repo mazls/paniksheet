@@ -91,6 +91,32 @@
 .collapsible-content.collapsed {
     max-height: 0;
 }
+/* In der Datei: index.html */
+
+/* ================================================= */
+/* NEU: Stile für editierbare Text-Inputs in Listen  */
+/* ================================================= */
+.assignment-text-input {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    color: var(--color-jade); /* Selbe Farbe wie die list-subheader */
+    font-weight: bold;
+    padding: 0.2rem 0.4rem; /* Etwas Padding für leichtere Klickbarkeit */
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.assignment-text-input:hover:not(:disabled),
+.assignment-text-input:focus:not(:disabled) {
+    background-color: rgba(10, 20, 15, 0.5);
+    outline: none;
+}
+
+.assignment-text-input:disabled {
+    cursor: default;
+    background-color: transparent !important; /* Sicherstellen, dass kein Hover-Effekt bleibt */
+}
     /* cinzel-regular - latin */
     @font-face {
       font-display: swap;
@@ -1945,6 +1971,22 @@ function updateAssignmentPools() {
         const assignmentName = assignmentId.replace(pageId + '-', '').replace(/([A-Z])/g, ' $1').trim();
         window.logHistory(bossName, `Einteilung: ${assignmentName}`, playerForLog, currentManager);
     }
+    async function handleTextInputChange(event) {
+        if (!window.isManager) return;
+        const input = event.target;
+        const assignmentId = input.dataset.assignmentId;
+        const textToSave = input.value;
+        const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+        
+        // Wir speichern den Wert im Feld 'text' in der Datenbank
+        const dataToSave = { text: textToSave, editor: currentManager, timestamp: serverTimestamp() };
+        await setDoc(assignmentsDocRef, { [assignmentId]: dataToSave }, { merge: true });
+        
+        // Logging für den Änderungsverlauf
+        const bossName = pageId.charAt(0).toUpperCase() + pageId.slice(1);
+        const assignmentName = `Header: ${assignmentId.replace(pageId + '-', '')}`;
+        window.logHistory(bossName, assignmentName, textToSave || "Leer", currentManager);
+    }
     // Globale Sperre, um Change-Handler während Bulk-Updates zu pausieren
 window._suspendAssignListeners = false;
 
@@ -2054,16 +2096,54 @@ window.applyAssignmentsBulk = applyAssignmentsBulk;
 // --- A) Vorhandene Selects jetzt mit der neuen Funktion verdrahten
 document.querySelectorAll('.assignment-select').forEach(wireAssignmentSelect);
 
+document.querySelectorAll('.assignment-text-input').forEach(input => {
+  if (input.dataset._textWired) return;
+  input.dataset._textWired = '1';
+  input.addEventListener('change', handleTextInputChange);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+  });
+});
+
 // --- B) Observer: wenn deine Boss-Seite später dynamisch Selects hinzufügt,
 //           werden diese automatisch nachverdrahtet und speichern dann einzeln.
+// MutationObserver, um dynamisch hinzugefügte Elemente zu "verdrahten"
 const assignmentObserver = new MutationObserver(mutations => {
-  mutations.forEach(m => {
-    m.addedNodes.forEach(node => {
-      if (node.nodeType !== 1) return; // nur Elemente
-      if (node.matches?.('.assignment-select')) wireAssignmentSelect(node);
-      node.querySelectorAll?.('.assignment-select').forEach(wireAssignmentSelect);
+    mutations.forEach(m => {
+        m.addedNodes.forEach(node => {
+            if (node.nodeType !== 1) return; // nur Elemente
+
+            // 1. Neue Dropdowns (.assignment-select) finden und verdrahten
+            if (node.matches?.('.assignment-select')) {
+                wireAssignmentSelect(node);
+            }
+            node.querySelectorAll?.('.assignment-select').forEach(wireAssignmentSelect);
+
+            // 2. Helfer-Funktion, um Text-Inputs zu verdrahten
+            const wireTextInput = (input) => {
+                // Verhindert, dass Listener mehrfach hinzugefügt werden
+                if (input.dataset._textWired) return;
+                input.dataset._textWired = '1';
+
+                // Speichert beim Verlassen des Feldes
+                input.addEventListener('change', handleTextInputChange);
+                
+                // Speichert bei Drücken der Enter-Taste
+                input.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault(); // Verhindert Standard-Aktion
+                        input.blur();         // Löst das 'change'-Event und somit das Speichern aus
+                    }
+                });
+            };
+
+            // 3. Neue Text-Inputs (.assignment-text-input) finden und verdrahten
+            if (node.matches?.('.assignment-text-input')) {
+                wireTextInput(node);
+            }
+            node.querySelectorAll?.('.assignment-text-input').forEach(wireTextInput);
+        });
     });
-  });
 });
 assignmentObserver.observe(document.body, { childList: true, subtree: true });
 
@@ -2162,6 +2242,10 @@ assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
                     const selectedOption = Array.from(select.options).find(o => o.value === assignedValue);
                     select.style.color = selectedOption ? selectedOption.dataset.color : '#FFFFFF';
                 }
+            });
+            document.querySelectorAll('.assignment-text-input').forEach(input => {
+                const assignmentId = input.dataset.assignmentId;
+                input.value = assignments[assignmentId]?.text || '';
             });
             if (typeof window.initializePageSpecificCode === 'function') {
                  window.initializePageSpecificCode(assignments, rosterData);;
