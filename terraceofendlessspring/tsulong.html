@@ -129,28 +129,34 @@
                 <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
                 <ul class="assignment-list">
                     <li>
-                        <select data-assignment-id="tsulong-cd1-player" class="assignment-select"></select>
-                        <select data-assignment-id="tsulong-cd1-cooldown" class="assignment-select"></select>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tsulong-cd-header1" placeholder="z.B. 1. Beschützen-Phase"></li>
+                        <li><select data-assignment-id="tsulong-cd1-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd1-cooldown" class="assignment-select"></select></li>
                     </li>
                     <li>
-                        <select data-assignment-id="tsulong-cd2-player" class="assignment-select"></select>
-                        <select data-assignment-id="tsulong-cd2-cooldown" class="assignment-select"></select>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tsulong-cd-header2" placeholder="z.B. 1. Beschützen-Phase"></li>
+                        <li><select data-assignment-id="tsulong-cd2-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd2-cooldown" class="assignment-select"></select></li>
                     </li>
                     <li>
-                        <select data-assignment-id="tsulong-cd3-player" class="assignment-select"></select>
-                        <select data-assignment-id="tsulong-cd3-cooldown" class="assignment-select"></select>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tsulong-cd-header3" placeholder="z.B. 1. Beschützen-Phase"></li>
+                        <li><select data-assignment-id="tsulong-cd3-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd3-cooldown" class="assignment-select"></select></li>
                     </li>
                     <li>
-                        <select data-assignment-id="tsulong-cd4-player" class="assignment-select"></select>
-                        <select data-assignment-id="tsulong-cd4-cooldown" class="assignment-select"></select>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tsulong-cd-header4" placeholder="z.B. 1. Beschützen-Phase"></li>
+                    <li><select data-assignment-id="tsulong-cd4-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd4-cooldown" class="assignment-select"></select></li>
                     </li>
                     <li>
-                        <select data-assignment-id="tsulong-cd5-player" class="assignment-select"></select>
-                        <select data-assignment-id="tsulong-cd5-cooldown" class="assignment-select"></select>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tsulong-cd-header5" placeholder="z.B. 1. Beschützen-Phase"></li>
+                        <li><select data-assignment-id="tsulong-cd5-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd5-cooldown" class="assignment-select"></select></li>
                     </li>
                     <li>
-                        <select data-assignment-id="tsulong-cd6-player" class="assignment-select"></select>
-                        <select data-assignment-id="tsulong-cd6-cooldown" class="assignment-select"></select>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tsulong-cd-header6" placeholder="z.B. 1. Beschützen-Phase"></li>
+                        <li><select data-assignment-id="tsulong-cd6-player" class="assignment-select"></select>
+                        <select data-assignment-id="tsulong-cd6-cooldown" class="assignment-select"></select></li>
                     </li>
                 </ul>
             </div>
@@ -158,16 +164,21 @@
 
         <div>
             <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-            <div>
-                <h4 class="text-lg font-semibold">Positionierung</h4>
-                <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                    <p class="text-gray-400 text-sm"><strong>Nachtphase:</strong> Der Raid verteilt sich im Halbkreis mit 8m Abstand hinter dem Boss. <br><strong>Tagphase:</strong> Die Tanks ziehen die Adds vor Tsulong, damit sie von seinem <strong class="text-yellow-400">Sonnenatem</strong> getroffen werden.</p>
-                </div>
-                <div class="mt-2">
-                    <img src="terraceofendlessspring/tsulong.png" alt="Positionierung Tsulong" 
-                         class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600">
-                </div>
-            </div>
+                            <div class="space-y-6">
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="tsulong" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Positionierung</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="tsulong"><strong>Nachtphase:</strong> Der Raid verteilt sich im Halbkreis mit 8m Abstand hinter dem Boss. <br><strong>Tagphase:</strong> Die Tanks ziehen die Adds vor Tsulong, damit sie von seinem <strong class="text-yellow-400">Sonnenatem</strong> getroffen werden.</p>
+						
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="terraceofendlessspring/tsulong.png" alt="Positionierung Start" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="tsulong">
+				</div>
             <div>
                 <h4 class="text-xl font-bold text-gold mt-6 mb-2">Video-Guide</h4>
                 <div class="video-container my-4 rounded-lg shadow-lg">

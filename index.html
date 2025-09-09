@@ -114,7 +114,7 @@
 }
 
 .assignment-text-input:disabled {
-    cursor: default;
+    cursor: not-allowed;
     background-color: transparent !important; /* Sicherstellen, dass kein Hover-Effekt bleibt */
 }
     /* cinzel-regular - latin */
@@ -519,6 +519,9 @@
 /* Das Dropdown-Menü soll die ganze Breite der Spalte füllen */
 .assignment-list .assignment-select {
     width: 100%;
+}
+.assignment-text-input:disabled {
+    cursor: not-allowed;
 }
 .lightbox-overlay {
     position: fixed; /* Bleibt an einer festen Position im Fenster */

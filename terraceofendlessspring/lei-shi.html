@@ -36,15 +36,8 @@
     transition: background-color 0.2s ease;
 }
 
-.assignment-text-input:hover:not(:disabled),
-.assignment-text-input:focus:not(:disabled) {
-    background-color: rgba(10, 20, 15, 0.5);
-    outline: none;
-}
 
-.assignment-text-input:disabled {
-    cursor: default;
-}
+
     .raidicon-small {
     width: 24px;
     height: 24px;
@@ -183,17 +176,21 @@
 <div>
     <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
     
-    <div>
-        <h4 class="text-lg font-semibold">Positionierung</h4>
-        <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-            <p class="text-gray-400 text-sm">Tanks stehen auf Abstand, der Raid bildet eine dritte Gruppe. Dies verhindert, dass der <strong class="text-cyan-400">Spray</strong> überspringt.</p>
-        </div>
-        <div class="mt-2">
-            <img src="terraceofendlessspring/lei-shi.png" alt="Positionierung Lei Shi" 
-                 class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600">
-        </div>
-    </div>
-
+                            <div class="space-y-6">
+					<div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+						<button data-phase="lei-shi" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Positionierung</button>
+					</div>
+					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+						<p class="positioning-text" data-phase="lei-shi">Tanks stehen auf Abstand, der Raid bildet eine dritte Gruppe. Dies verhindert, dass der <strong class="text-cyan-400">Spray</strong> überspringt.</p>
+						
+					</div>
+					</div>
+					<div class="mt-2">
+						<img src="terraceofendlessspring/lei-shi.png" alt="Positionierung Start" 
+							class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+							data-phase="lei-shi">
+				</div>
     <div class="mt-6">
         <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
         <div class="video-container my-4 rounded-lg shadow-lg">
