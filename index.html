@@ -3100,8 +3100,16 @@ function drawPlayerSummaryTable() {
                 }).join('');
                 const isHidden = playerSummaryState[player.name].isDetailsOpen ? '' : 'hidden';
                 const rotation = playerSummaryState[player.name].isDetailsOpen ? 'rotate-90' : '';
-                return `<tr class="border-b border-slate-700 hover:bg-slate-750/50"><td class="px-4 py-3 font-medium"><button class="toggle-details-btn flex items-center gap-2" data-player-name="${player.name}">${player.name} <span class="text-xs text-gray-400 transition-transform ${rotation}">▶</span></button></td><td class="px-4 py-3 text-center">${player.ms}</td><td class="px-4 py-3 text-center">${player.os}</td><td class="px-4 py-3 text-center">${player.transmog}</td><td class="px-4 py-3 text-center font-bold text-gold">${player.total}</td></tr><tr class="item-details-row ${isHidden} bg-slate-800"><td colspan="5" class="p-2"><div class="flex flex-col gap-1">${itemsHtml}</div></td></tr>`;
-            }).join('');
+                return `<tr class="border-b border-slate-700 hover:bg-slate-750/50">
+                                <td class="px-4 py-3 font-medium"><button class="toggle-details-btn flex items-center gap-2" data-player-name="${player.name}">${player.name} <span class="text-xs text-gray-400 transition-transform ${rotation}">▶</span></button></td>
+                                <td class="px-4 py-3 text-center">${player.ms}</td>
+                                <td class="px-4 py-3 text-center">${player.os}</td>
+                                <td class="px-4 py-3 text-center">${player.transmog}</td>
+                                <td class="px-4 py-3 text-center">${player.bonusroll}</td> <td class="px-4 py-3 text-center font-bold text-gold">${player.total}</td>
+                            </tr>
+                            <tr class="item-details-row ${isHidden} bg-slate-800">
+                                <td colspan="6" class="p-2"><div class="flex flex-col gap-1">${itemsHtml}</div></td> </tr>`;
+                }).join('');
 
             // --- NEU: Dynamische Kopfzeile mit Sortier-Buttons ---
             const sortableColumns = { 'MS': 'ms', 'OS': 'os', 'Transmog': 'transmog', 'Bonus': 'bonusroll', 'Total': 'total' };
