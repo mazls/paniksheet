@@ -813,6 +813,7 @@ const offensiveBuffsForAssignment = {
         const historyCollectionRef = collection(db, HISTORY_COLLECTION);
         const userProfilesCollectionRef = collection(db, USER_PROFILES_COLLECTION);
 		const lootCollectionRef = collection(db, LOOT_COLLECTION);
+        const denylistCollectionRef = collection(db, "snapshot_player_denylist");
 				
 		// ============== URL IMPORT FUNKTION ==============
 async function handleImportFromUrl() {
@@ -1575,6 +1576,7 @@ mainNav.innerHTML = mainNavHTML;
             editorSection.style.display = 'block';
             initCooldownEditor();
         }
+        initSnapshotPlayerAdder();
     }
 			
 			
@@ -1711,10 +1713,136 @@ currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
 			}
 		}
 
-// In der Datei: index.html
 
-// In der Datei: index.html
+async function initSnapshotPlayerAdder() {
+    const playerSelector = document.getElementById('snapshot-player-selector');
+    const addButton = document.getElementById('add-from-snapshot-btn');
+    const deleteButton = document.getElementById('delete-from-snapshot-btn'); // Neuer Button
+    if (!playerSelector || !addButton || !deleteButton) return;
 
+    try {
+        // 1. Lade die Deny-List
+        const denylistSnapshot = await getDocs(denylistCollectionRef);
+        const denylist = new Set(denylistSnapshot.docs.map(doc => doc.id));
+
+        // 2. Lade alle Snapshots
+        const querySnapshot = await getDocs(snapshotsCollectionRef);
+        const uniquePlayers = new Map();
+
+        // 3. Sammle Spieler und filtere sie gegen die Deny-List
+        querySnapshot.forEach(doc => {
+            const rosterData = doc.data().roster?.roster;
+            if (rosterData && Array.isArray(rosterData)) {
+                rosterData.forEach(player => {
+                    // Füge den Spieler nur hinzu, wenn er NICHT auf der Deny-List steht
+                    if (!denylist.has(player.name) && !uniquePlayers.has(player.name)) {
+                        uniquePlayers.set(player.name, player);
+                    }
+                });
+            }
+        });
+
+        const sortedPlayers = Array.from(uniquePlayers.values()).sort((a, b) => a.name.localeCompare(b.name));
+
+        // 4. Dropdown füllen
+        playerSelector.innerHTML = '<option value="">-- Spieler aus Snapshot wählen --</option>';
+        sortedPlayers.forEach(player => {
+            const option = document.createElement('option');
+            option.value = player.name;
+            option.textContent = player.name;
+            option.dataset.playerInfo = JSON.stringify(player);
+            playerSelector.appendChild(option);
+        });
+
+        // 5. Event Listener anpassen
+        playerSelector.addEventListener('change', () => {
+            const hasSelection = !!playerSelector.value;
+            addButton.disabled = !hasSelection;
+            deleteButton.disabled = !hasSelection; // Auch den Löschen-Button steuern
+        });
+
+        addButton.addEventListener('click', handleAddPlayerFromSnapshot);
+        deleteButton.addEventListener('click', handleDeletePlayerFromSnapshotList); // Listener für den neuen Button
+
+    } catch (error) {
+        console.error("Fehler beim Laden der Spieler aus Snapshots:", error);
+        playerSelector.innerHTML = '<option value="">Fehler beim Laden</option>';
+    }
+}
+
+
+async function handleDeletePlayerFromSnapshotList() {
+    if (!window.isManager) return;
+    
+    const playerSelector = document.getElementById('snapshot-player-selector');
+    const playerName = playerSelector.value;
+    
+    if (!playerName) return;
+
+    const confirmed = await window.showModal(
+        `Soll der Spieler '${playerName}' wirklich permanent aus allen zukünftigen Snapshot-Importlisten entfernt werden? Die originalen Snapshots bleiben unberührt.`,
+        true // Bestätigungsdialog
+    );
+
+    if (!confirmed) return;
+
+    try {
+        // Füge den Spielernamen zur Deny-List hinzu. Wir benutzen den Namen als ID des Dokuments.
+        const playerDocRef = doc(denylistCollectionRef, playerName);
+        await setDoc(playerDocRef, { 
+            deletedBy: sessionStorage.getItem('currentManager') || 'Unbekannt',
+            deletedAt: serverTimestamp() 
+        });
+
+        window.showModal(`'${playerName}' wird in Zukunft nicht mehr in der Liste angezeigt.`);
+
+        // Lade die Liste neu, um den entfernten Spieler sofort auszublenden
+        initSnapshotPlayerAdder();
+
+    } catch (error) {
+        console.error("Fehler beim Hinzufügen zur Deny-List:", error);
+        window.showModal("Ein Fehler ist aufgetreten. Der Spieler konnte nicht gelöscht werden.");
+    }
+}
+
+async function handleAddPlayerFromSnapshot() {
+    if (!window.isManager) return;
+    
+    const playerSelector = document.getElementById('snapshot-player-selector');
+    const selectedOption = playerSelector.options[playerSelector.selectedIndex];
+    
+    if (!selectedOption || !selectedOption.value) return;
+
+    const playerData = JSON.parse(selectedOption.dataset.playerInfo);
+
+    const docSnap = await getDoc(rosterDocRef);
+    const roster = docSnap.exists() ? docSnap.data().roster || [] : [];
+
+    // Prüfen, ob der Spieler bereits im aktuellen Roster ist
+    if (roster.some(p => p.name === playerData.name)) {
+        window.showModal(`Spieler '${playerData.name}' ist bereits in der aktuellen Aufstellung.`);
+        return;
+    }
+
+    // Einen neuen Spieler erstellen, aber mit einer NEUEN, einzigartigen ID
+    const newPlayer = {
+        id: crypto.randomUUID(),
+        name: playerData.name,
+        class: playerData.class,
+        roles: playerData.roles || ['DPS'] // Fallback, falls Rollen fehlen
+    };
+
+    roster.push(newPlayer);
+    await setDoc(rosterDocRef, { roster: roster }, { merge: true });
+
+    const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+    window.logHistory('Roster', `Spieler aus Snapshot hinzugefügt`, newPlayer.name, currentManager);
+    window.showModal(`Spieler '${newPlayer.name}' wurde zum Roster hinzugefügt.`);
+
+    // Auswahl zurücksetzen
+    playerSelector.value = '';
+    document.getElementById('add-from-snapshot-btn').disabled = true;
+}
 function displayLootForDate(dateId) {
     if (selectedLootDateUnsubscribe) {
         selectedLootDateUnsubscribe();
@@ -2386,7 +2514,7 @@ assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
                 const classFromSpec = specToClassMap[spec];
                 if (classFromSpec) playerClass = classFromSpec;
             }
-            const tankSpecs = ['Guardian', 'Blood_Tank', 'Protection', 'Protection1', 'Brewmaster'];
+            const tankSpecs = ['Guardian', 'Blood_Tank', 'Protection', 'Protection1', 'Brewmaster','Blood'];
             const healerSpecs = ['Restoration', 'Restoration1', 'Discipline', 'Holy', 'Holy1', 'Mistweaver'];
             let role = 'DPS';
             if (tankSpecs.includes(spec)) role = 'TANK';
