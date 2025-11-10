@@ -1,0 +1,265 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Horridon</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+<p class="mb-4">
+            Der Kampf gegen Horridon ist ein langer Add-Kampf, der sich über 5 Phasen erstreckt. In den ersten vier Phasen muss der Raid nacheinander vier Tore schließen, aus denen Trolle eines bestimmten Stammes strömen. Der Boss wird dabei von Tor zu Tor gezogen. Phase 5 ist die Endphase, in der der Boss selbst und ein Kriegsgott besiegt werden müssen.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Tank-Mechanik (<strong class="text-red-400">Dreifachstich</strong>):</strong> Horridon belegt seinen Tank mit einem stapelbaren Debuff, der den erlittenen Schaden durch diese Fähigkeit erhöht. Dies erzwingt einen Tankwechsel, idealerweise nach jeder geschlossenen Tür.</li>
+            <li><strong>Positionierung (<strong class="text-yellow-400">Doppelfeger</strong>):</strong> Der Boss darf <strong class="text-yellow-400">NIEMALS</strong> in den Raid schauen oder mit dem Schwanz zum Raid stehen. Alle Spieler, einschließlich der Tanks, müssen immer an der <strong class="text-yellow-400">Seite</strong> von Horridon stehen.</li>
+            <li><strong>Add-Wellen (4 Tore):</strong> Jedes Tor hat einzigartige Adds mit Fähigkeiten, die gekickt, dispellt oder kontrolliert werden müssen. Die Reihenfolge ist: Farraki (Sandfallen), Gurubashi (Gift), Drakkari (Seuche/Frostkugeln), Amani (Magie/Totems).</li>
+            <li><strong>Tor-Mechanik (<strong class="text-green-400">Zandalari Dinomant</strong>):</strong> Nach ca. 1 Minute an einem Tor erscheint ein Dinomant. Er muss unterbrochen (`Saurierheilung`) und schnell getötet werden. Er lässt eine <strong class="text-purple-400">Kugel der Kontrolle</strong> fallen. Ein Spieler klickt die Kugel, wodurch Horridon das Tor rammt und es schließt.</li>
+            <li><strong>Schadens-Buff (<strong class="text-green-400">Gesprungener Panzer</strong>):</strong> Jedes Mal, wenn Horridon ein Tor rammt, erleidet er 50% mehr Schaden (stapelbar).</li>
+            <li><strong>Endphase (<strong class="text-red-500">Kriegsgott Jalak</strong>):</strong> Nachdem alle 4 Tore geschlossen sind, springt Jalak in die Arena. Er muss getankt und getötet werden. Sobald Jalak stirbt, bekommt Horridon einen Enrage-Buff (<strong class="text-red-500">Toben</strong>) und muss schnell besiegt werden.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Positionierung:</strong> Beginnt am Farraki-Tor (Norden). Zieht den Boss nach jedem Ramm-Stoß im Uhrzeigersinn zum nächsten Tor. Der Raid steht <strong>immer</strong> an Horridons linker oder rechter Flanke.</p>
+        <p class="mb-2"><strong>Add-Kontrolle:</strong> Ein Tank hält Horridon, der andere sammelt die Adds ein. DDs müssen die Add-Prioritäten (siehe Einteilungen) strikt einhalten. Kicks und Dispels sind überlebenswichtig.</p>
+        <p class="mb-2"><strong>Dinomant:</strong> Sobald der Dinomant erscheint, ist er das absolute Top-Ziel. Alle DDs wechseln auf ihn, unterbrechen die Heilung und töten ihn schnell. Ein zugewielter Spieler (z.B. Tank) klickt die Kugel.</p>
+        <p class="mb-2"><strong>Endphase:</strong> KR/HT ziehen, wenn <strong class="text-red-500">Kriegsgott Jalak</strong> erscheint. Fokussiert Jalak, bis er tot ist (Raid-Schaden durch <strong class="text-red-400">Bestialisches Gebrüll</strong>). Sobald er stirbt, alle CDs auf Horridon und den Boss töten.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Horridon-Tank:</span><select class="assignment-select" data-assignment-id="horridon-tank-boss"></select></li>
+                        <li><span>Add-Tank:</span><select class="assignment-select" data-assignment-id="horridon-tank-adds"></select></li>
+                        <li><span>Kugel-Klicker:</span><select class="assignment-select" data-assignment-id="horridon-orb-clicker"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛑 Interrupt-Rotation</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Saurierheilung (Dinomant)</span></li>
+                        <li><span>Kick 1:</span><select data-assignment-id="horridon-dino-kick1" class="assignment-select"></select></li>
+                        <li><span>Kick 2:</span><select data-assignment-id="horridon-dino-kick2" class="assignment-select"></select></li>
+                        <li class="list-subheader"><span>Giftblitzsalve (Gurubashi)</span></li>
+                        <li><span>Kick 3:</span><select data-assignment-id="horridon-gurubashi-kick1" class="assignment-select"></select></li>
+                        <li><span>Kick 4:</span><select data-assignment-id="horridon-gurubashi-kick2" class="assignment-select"></select></li>
+                        <li data-size="25" class="tactic-content list-subheader"><span>Feuerball (Amani)</span></li>
+                        <li data-size="25" class="tactic-content"><span>Kick 5:</span><select data-assignment-id="horridon-amani-kick1" class="assignment-select"></select></li>
+                        <li data-size="25" class="tactic-content"><span>Kick 6:</span><select data-assignment-id="horridon-amani-kick2" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">✨ Dispel & CC</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Dispel - Magie (Gurubashi)</span></li>
+                        <li><span>Dispel 1:</span><select data-assignment-id="horridon-gurubashi-dispel1" class="assignment-select"></select></li>
+                        <li><span>Dispel 2:</span><select data-assignment-id="horridon-gurubashi-dispel2" class="assignment-select"></select></li>
+                        <li class="list-subheader"><span>Dispel - Krankheit (Drakkari)</span></li>
+                        <li><span>Dispel 3:</span><select data-assignment-id="horridon-drakkari-dispel1" class="assignment-select"></select></li>
+                        <li><span>Dispel 4:</span><select data-assignment-id="horridon-drakkari-dispel2" class="assignment-select"></select></li>
+                        <li class="list-subheader"><span>Dispel - Fluch (Amani)</span></li>
+                        <li><span>Dispel 5:</span><select data-assignment-id="horridon-amani-dispel1" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header1" placeholder="z.B. Gurubashi-Phase (Gift)"></li>
+                        <li><select data-assignment-id="horridon-cd1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd1-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="horridon-cd1.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd1.1-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header2" placeholder="z.B. Drakkari-Phase (Seuche)"></li>
+                        <li><select data-assignment-id="horridon-cd2-player" class="assignment-select"></select><select data-assignment-id="horridon-cd2-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="horridon-cd2.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd2.1-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header3" placeholder="z.B. Amani-Phase (Blitznova)"></li>
+                        <li><select data-assignment-id="horridon-cd3-player" class="assignment-select"></select><select data-assignment-id="horridon-cd3-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="horridon-cd3.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd3.1-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header4" placeholder="Jalak (Bestial. Gebrüll)"></li>
+                        <li><select data-assignment-id="horridon-cd4-player" class="assignment-select"></select><select data-assignment-id="horridon-cd4-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="horridon-cd4.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd4.1-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header5" placeholder="Boss-Enrage (nach Jalak)"></li>
+                        <li><select data-assignment-id="horridon-cd5-player" class="assignment-select"></select><select data-assignment-id="horridon-cd5-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="horridon-cd5.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd5.1-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex flex-wrap justify-center mb-4 bg-slate-900 p-1 rounded-lg max-w-2xl mx-auto">
+                        <button data-phase="farraki" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Tor 1: Farraki</button>
+                        <button data-phase="gurubashi" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Tor 2: Gurubashi</button>
+                        <button data-phase="drakkari" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Tor 3: Drakkari</button>
+                        <button data-phase="amani" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Tor 4: Amani</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="farraki">Der Raid steht an der Flanke des Bosses am Farraki-Tor (Norden). Weicht den <strong class="text-yellow-400">Sandfallen</strong> aus.</p>
+                            <p class="positioning-text hidden" data-phase="gurubashi">Der Boss wird zum Gurubashi-Tor (Osten) gezogen. Weicht den <strong class="text-green-400">Lebenden Giftlachen</strong> aus.</p>
+                            <p class="positioning-text hidden" data-phase="drakkari">Der Boss wird zum Drakkari-Tor (Süden) gezogen. Weicht den <strong class="text-blue-400">Gefrorenen Kugeln</strong> aus.</p>
+                            <p class="positioning-text hidden" data-phase="amani">Der Boss wird zum Amani-Tor (Westen) gezogen. Weicht den <strong class="text-purple-400">Blitznova-Totems</strong> aus.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/horridon-farraki.png" alt="Positionierung Tor 1" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="farraki">
+                        <img src="throneofthunder/horridon-gurubashi.png" alt="Positionierung Tor 2" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="gurubashi">
+                        <img src="throneofthunder/horridon-drakkari.png" alt="Positionierung Tor 3" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="drakkari">
+                        <img src="throneofthunder/horridon-amani.png" alt="Positionierung Tor 4" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="amani">
+                    </div>
+                </div>
+
+                <div class="assignment-block mt-6">
+                    <h4 class="text-lg font-bold text-yellow-400">🎯 Add-Priorität (Fokus-Ziele)</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Tor 1: Farraki</span></li>
+                        <li>1. Sul'lithuz Steinstarrer (wegen Stun)</li>
+                        <li>2. Farraki Ödniswandler (wegen Sandfalle)</li>
+                        <li class="list-subheader"><span>Tor 2: Gurubashi</span></li>
+                        <li>1. Gurubashi Giftpriester (Kick!)</li>
+                        <li>2. Giftiger Ausstoß (Adds vom Priester)</li>
+                        <li class="list-subheader"><span>Tor 3: Drakkari</span></li>
+                        <li>1. Drakkari Gefrorener Kriegsfürst</li>
+                        <li>2. Gefrorene Kugeln (Adds vom Kriegsfürst)</li>
+                        <li class="list-subheader"><span>Tor 4: Amani</span></li>
+                        <li>1. Amani'shi Bestienschamane (sobald vom Bär)</li>
+                        <li>2. Amani'shi Flammenwirker (Kick!)</li>
+                    </ul>
+                </div>
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/aGCIHD2MvME" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Horridon & Steuerung</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Dreifachstich:</strong> Tank-Debuff, erzwingt Spott.</li>
+                    <li><strong>Doppelfeger:</strong> Kegelförmiger Angriff nach vorn *und* hinten. Immer seitlich stehen!</li>
+                    <li><strong>Sturmangriff:</strong> Sturmt einen Spieler an und wirkt `Doppelfeger`.</li>
+                    <li><strong>Zandalari Dinomant:</strong> Add, das `Saurierheilung` (Kick!) wirkt. Muss sterben, um die <strong class="text-purple-400">Kugel der Kontrolle</strong> zu erhalten.</li>
+                    <li><strong>Kugel der Kontrolle:</strong> Klick-Item, um Horridon in ein Tor zu steuern.</li>
+                    <li><strong>Gesprungener Panzer:</strong> Boss erleidet 50% mehr Schaden pro Tor (stapelbar).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-red-300">Endphase: Kriegsgott Jalak</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Kriegsgott Jalak:</strong> Spawnt, wenn alle Tore zu sind oder Boss < 30% HP.</li>
+                    <li><strong>Bestialisches Gebrüll:</strong> Raidweiter Schaden, der sich selbst stapelbar bufft. Die DPS-Renn-Mechanik der Endphase.</li>
+                    <li><strong>Toben:</strong> Sobald Jalak stirbt, dreht Horridon durch (+100% Schaden, +50% Tempo).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-yellow-300">Tor 1: Farraki (Sand)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Steinstarrer:</strong> Wirkt `Steinblick` (10s Stun, unterbrechbar).</li>
+                    <li><strong>Ödniswandler:</strong> Wirkt `Gleißendes Sonnenlicht` (Magie-DoT, dispel!) und `Sandfalle` (wachsende Voidzone).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-green-300">Tor 2: Gurubashi (Gift)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Giftpriester:</strong> Wirkt `Giftblitzsalve` (Raid-DoT, stapelbar, unterbrechen!) und beschwört `Giftiger Ausstoß`.</li>
+                    <li><strong>Giftiger Ausstoß:</strong> Add, das ebenfalls `Giftblitzsalve` wirkt und eine `Lebende Giftlache` (wandernde Pfütze) hinterlässt.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-blue-300">Tor 3: Drakkari (Untot/Frost)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Auferstandene Adds:</strong> Greifen zufällige Ziele an, verteilen `Tödliche Seuche` (Krankheit, dispel!).</li>
+                    <li><strong>Gefrorener Kriegsfürst:</strong> Wirkt `Tödlicher Stoß` (Heal-Reduce) auf den Tank und beschwört `Gefrorene Kugeln` (Adds, die slowen/Schaden).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-purple-300">Tor 4: Amani (Magie/Bestien)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Flammenwirker:</strong> Wirkt `Feuerball` (unterbrechbar).</li>
+                    <li><strong>Kriegsbär:</strong> Reittier, macht `Prankenhieb` (Frontal).</li>
+                    <li><strong>Bestienschamane:</strong> Wird frei, wenn Bär stirbt. Wirkt `Kettenblitzschlag` (spread 5m), `Verhexung der Konfusion` (Fluch, dispel!) und `Totem der Blitznova` (Totem zerstören!).</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Terrorgebrüll:</strong> Neuer Boss-Zauber (ca. alle 60s). Verursacht Raidschaden und bufft alle lebenden Adds (+50% Angriffstempo).</li>
+                <li><strong>Terrorhorngeist:</strong> Wird durch `Terrorgebrüll` beschworen. Fixiert einen Spieler (nur dieser Spieler kann ihn sehen/angreifen).</li>
+                <li><strong>Schwache Bindung:</strong> Der Geist wird bei *jedem* Treffer zurückgestoßen. Er darf den Spieler nie erreichen (One-Shot).</li>
+                <li><strong>Strategie:</strong> Jeder Spieler (erst Range/Heiler, dann Melees) muss sich um seinen eigenen Geist kümmern und ihn konstant mit Instants oder schnellen Zaubern zurückstoßen, während er die normalen Bossmechaniken spielt. Ein Makro (`/tar Terrorhorngeist`) ist essenziell.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

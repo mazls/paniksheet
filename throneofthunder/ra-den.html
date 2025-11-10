@@ -1,0 +1,199 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Ra-den</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Ra-den ist ein geheimer, reiner Heroic-Boss. Der Kampf ist ein komplexer Zweiphasen-Kampf, der sich um die Kontrolle von zwei verschiedenen Energieformen dreht: <strong class="text-red-400">Anima (Rot)</strong> und <strong class="text-blue-400">Vita (Blau)</strong>.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Kernmechanik (<strong class="text-yellow-400">Materialien der Schöpfung</strong>):</strong> Ra-den beschwört regelmäßig eine <strong class="text-red-400">Essenz von Anima</strong> und eine <strong class="text-blue-400">Essenz von Vita</strong>. Der Raid muss *eine* Essenz töten, bevor sie den Boss erreicht. Die andere Essenz, die ihn erreicht, bestimmt seine aktuellen Fähigkeiten (entweder Anima- oder Vita-Toolkit).</li>
+            <li><strong>Soft-Enrage (<strong class="text-red-500">Lingering Energies</strong>):</strong> Jedes Mal, wenn Ra-den eine Essenz absorbiert, erhält er einen stapelbaren Buff, der seinen Schaden um 10% erhöht.</li>
+            <li><strong>Anima-Phase (Rot):</strong> Aktiv, wenn er Anima absorbiert. Fokussiert sich auf Raid-AoE (<strong class="text-red-400">Ruin</strong>) und Stack-Mechaniken (<strong class="text-red-400">Unstable Anima</strong>).</li>
+            <li><strong>Vita-Phase (Blau):</strong> Aktiv, wenn er Vita absorbiert. Fokussiert sich auf Tank-Checks (<strong class="text-blue-400">Fatal Strike</strong>) und Spread-Mechaniken (<strong class="text-blue-400">Unstable Vita</strong>).</li>
+            <li><strong>Der Trick:</strong> Der Raid *muss* den <strong class="text-red-400">Unleashed Anima</strong>-Buff (verdoppelt max. HP, fügt DoT hinzu) aus der Anima-Phase erhalten, um den massiven Nuke <strong class="text-blue-400">Unleashed Vita</strong> (600k Schaden) in der Vita-Phase zu überleben. Dies erzwingt einen Wechsel der Phasen.</li>
+            <li><strong>Phase 2 (unter 40%):</strong> Ra-den korrumpiert die Essenzen. Der Raid muss von nun an *immer* die <strong class="text-red-400">Korrumpierte Anima</strong> töten und den Boss die <strong class="text-blue-400">Korrumpierte Vita</strong> absorbieren lassen. Dies ist ein Burn-Down-Phase.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Start (Phase 1a - Vita):</strong> Raid tötet die <strong class="text-red-400">Essenz von Anima</strong> (Rot). Ra-den absorbiert Vita (Blau). Tanks müssen <strong class="text-blue-400">Fatal Strike</strong> mit aktiver Mitigation (Schildblock etc.) überleben. Raid muss 8m verteilt stehen, um <strong class="text-blue-400">Unstable Vita</strong> zu managen. Add (<strong class="text-blue-400">Crackling Stalker</strong>) muss getötet werden.</p>
+        <p class="mb-2"><strong>Phasenwechsel (Phase 1b - Anima):</strong> Bei den nächsten Orbs tötet der Raid die <strong class="text-blue-400">Essenz von Vita</strong> (Blau). Ra-den absorbiert Anima (Rot). Der Raid stackt 8m (wegen <strong class="text-red-400">Unstable Anima</strong>). Heiler müssen den <strong class="text-red-400">Ruin</strong>-AoE gegenheilen. Add (<strong class="text-red-400">Sanguine Horror</strong>) muss getötet werden. Der Boss wirkt <strong class="text-red-400">Unleashed Anima</strong> und gibt dem Raid den HP-Buff.</p>
+        <p class="mb-2"><strong>Phasenwechsel (Phase 1c - Vita mit Buff):</strong> Bei den nächsten Orbs tötet der Raid wieder die <strong class="text-red-400">Essenz von Anima</strong> (Rot). Der Boss geht zurück in die Vita-Phase. Dank des HP-Buffs überlebt der Raid nun den <strong class="text-blue-400">Unleashed Vita</strong>-Nuke. Dieser Zyklus (Blau -> Rot -> Blau) wird wiederholt.</p>
+        <p class="mb-2"><strong>Phase 2 (Burn bei 40%):</strong> Der Raid tötet *immer* die <strong class="text-red-400">Korrumpierte Anima</strong> und lässt den Boss Vita absorbieren. KR/HT ziehen und Boss töten, bevor der Soft-Enrage (<strong class="text-red-500">Lingering Energies</strong>) den Schaden zu hoch treibt.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="raden-tank1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="raden-tank2"></select></li>
+                        <li class="list-subheader"><span><strong class="text-blue-400">Fatal Strike</strong> (Vita): Aktive Mitigation nutzen!</span></li>
+                        <li class="list-subheader"><span><strong class="text-red-400">Murderous Strike</strong> (Anima): Heal-CDs nutzen!</span></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🎯 Orb & Add DDs</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">DDs für Orbs und die spawnenden Adds.</p>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Rote Adds (Anima)</span></li>
+                        <li><span>DD 1:</span><select data-assignment-id="raden-dd-anima1" class="assignment-select" data-assignment-pool="raden-dds"></select></li>
+                        <li><span>DD 2:</span><select data-assignment-id="raden-dd-anima2" class="assignment-select" data-assignment-pool="raden-dds"></select></li>
+                        <li class="list-subheader"><span>Blaue Adds (Vita)</span></li>
+                        <li><span>DD 3:</span><select data-assignment-id="raden-dd-vita1" class="assignment-select" data-assignment-pool="raden-dds"></select></li>
+                        <li><span>DD 4:</span><select data-assignment-id="raden-dd-vita2" class="assignment-select" data-assignment-pool="raden-dds"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="raden-cd-header1" placeholder="z.B. Ruin (Rote Phase)"></li>
+                        <li><select data-assignment-id="raden-cd1a-player" class="assignment-select"></select><select data-assignment-id="raden-cd1a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="raden-cd1b-player" class="assignment-select"></select><select data-assignment-id="raden-cd1b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="raden-cd-header2" placeholder="z.B. Unleashed Vita (Blauer Nuke)"></li>
+                        <li><select data-assignment-id="raden-cd2a-player" class="assignment-select"></select><select data-assignment-id="raden-cd2a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="raden-cd2b-player" class="assignment-select"></select><select data-assignment-id="raden-cd2b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="raden-cd-header3" placeholder="z.B. Phase 2 (Burn)"></li>
+                        <li><select data-assignment-id="raden-cd3a-player" class="assignment-select"></select><select data-assignment-id="raden-cd3a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="raden-cd3b-player" class="assignment-select"></select><select data-assignment-id="raden-cd3b-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="raden-anima" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P1: Anima (Rot)</button>
+                        <button data-phase="raden-vita" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P1: Vita (Blau)</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="raden-anima">Raid muss 8m <strong class="text-red-400">gestackt</strong> stehen, um <strong class="text-red-400">Unstable Anima</strong> zu soaken.</p>
+                            <p class="positioning-text hidden" data-phase="raden-vita">Raid muss 8m <strong class="text-blue-400">verteilt</strong> stehen, damit <strong class="text-blue-400">Unstable Vita</strong> nicht überspringt.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/ra-den.png" alt="Positionierung Ra-den" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="raden-anima">
+                        <img src="throneofthunder/ra-den.png" alt="Positionierung Ra-den" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="raden-vita">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/y38qnes1mZI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="mb-4 bg-slate-750 p-4 rounded-lg border-l-4 border-yellow-400">
+            <h4 class="text-lg font-bold text-yellow-400">Kernmechanik: Materialien der Schöpfung</h4>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Materialien der Schöpfung:</strong> Beschwört eine <strong class="text-red-400">Essenz von Anima</strong> und eine <strong class="text-blue-400">Essenz von Vita</strong>. Je nachdem, welche absorbiert wird, wechselt Ra-den seine Fähigkeiten.</li>
+                <li><strong>Imbued with Anima (Rot):</strong> Erhält der Boss, wenn er Anima absorbiert.</li>
+                <li><strong>Imbued with Vita (Blau):</strong> Erhält der Boss, wenn er Vita absorbiert.</li>
+                <li><strong>Lingering Energies (Soft Enrage):</strong> Jede absorbierte Essenz erhöht Ra-dens Schaden permanent um 10% (stapelbar).</li>
+            </ul>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-red-400">Anima-Fähigkeiten (Rot)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Murderous Strike:</strong> Schlag gegen den Tank, der Schaden in Höhe der *aktuellen* HP des Tanks verursacht (tickt 10s lang alle 2s). Ignoriert die meisten Schadensreduktionen.</li>
+                    <li><strong>Ruin:</strong> Konstanter Raid-AoE-Schaden alle 2 Sekunden.</li>
+                    <li><strong>Unstable Anima:</strong> Verursacht 15s nach dem Debuff eine Explosion, die 2,5 Mio. Schaden auf alle Spieler in 8m aufteilt. (Zusammenlaufen!).</li>
+                    <li><strong>Summon Sanguine Horror:</strong> Beschwört ein Add, das <strong class="text-red-400">Sanguine Volley</strong> (Raid-AoE) wirkt. Muss getötet werden.</li>
+                    <li><strong>Unleashed Anima:</strong> Verdoppelt die max. HP aller Spieler, fügt aber auch einen schweren DoT zu. (Wird benötigt, um <strong class="text-blue-400">Unleashed Vita</strong> zu überleben).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-blue-400">Vita-Fähigkeiten (Blau)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Fatal Strike:</strong> Ein Schlag, der den Tank sofort tötet, wenn er keine aktive Mitigation (Schildblock, Schild der Rechtschaffenen, BlutSchild etc.) nutzt.</li>
+                    <li><strong>Unstable Vita:</strong> Debuff auf einem Spieler. Alle 5s springt der Debuff auf den am weitesten entfernten Spieler über und verursacht Schaden an allen auf dem Weg. Getroffene Spieler erhalten <strong class="text-blue-400">Vita Sensitivity</strong> (tödlich bei erneutem Treffer).</li>
+                    <li><strong>Summon Crackling Stalker:</strong> Beschwört ein Add, das <strong class="text-blue-400">Crackle</strong> (Kettenblitz) wirkt.</li>
+                    <li><strong>Unleashed Vita:</strong> Verursacht 600.000 Naturschaden an allen Spielern. (Nur mit dem <strong class="text-red-400">Unleashed Anima</strong> HP-Buff überlebbar).</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Phase 2 (unter 40% HP)</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li>Ra-den korrumpiert die Essenzen zu <strong class="text-red-400">Corrupted Anima</strong> und <strong class="text-blue-400">Corrupted Vita</strong>.</li>
+                <li>Der Raid muss ab jetzt *immer* die <strong class="text-red-400">Corrupted Anima</strong> töten.</li>
+                <li>Der Boss absorbiert die <strong class="text-blue-400">Corrupted Vita</strong>, was den Raid-Schaden erhöht.</li>
+                <li>Dies ist eine Burn-Phase bis zum Tod des Bosses.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

@@ -1,0 +1,236 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Eiserner Qon</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen den Eisernen Qon ist ein vierphasiger Kampf. In den ersten drei Phasen kämpft Qon auf dem Rücken eines seiner drei Qilen-Reittiere (Ro'shak, Quet'zal, Dam'ren). Jede Phase endet, wenn das Reittier besiegt ist (Heroic: bei 25% HP). In Phase 4 kämpft Qon zu Fuß.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Tank-Mechanik (<strong class="text-red-400">Durchbohren</strong>):</strong> Qon belegt seinen Tank während des gesamten Kampfes mit einem stapelbaren Blutungs-Debuff, der einen Tankwechsel erzwingt.</li>
+            <li><strong>Phase 1: Ro'shak (Feuer):</strong> Der Raid muss in Gruppen aufgeteilt werden, um <strong class="text-red-400">Entfesselte Flamme</strong> abzufangen. Dies kostet den Boss Energie und verhindert <strong class="text-red-500">Geschmolzene Überladung</strong> (starker Raid-AoE). Spieler müssen den <strong class="text-yellow-400">Brennenden Spänen</strong> (Feuerlinien) ausweichen.</li>
+            <li><strong>Phase 2: Quet'zal (Sturm):</strong> Der Boss wirft Speere, die <strong class="text-blue-400">Sturmwolken</strong> (Blitzlinien) erzeugen. Spieler müssen <strong class="text-yellow-400">Überspringender Blitz</strong> (Stun) von Mitspielern entfernen (anklicken/hinlaufen). Bei <strong class="text-gray-400">Windhose</strong> muss der gesamte Raid aus dem Zentrum der Arena fliehen.</li>
+            <li><strong>Phase 3: Dam'ren (Eis):</strong> Der Boss wirft Speere, die <strong class="text-blue-400">Gefrorenes Blut</strong> (Eislinien) erzeugen. Der Raid erleidet konstanten Schaden durch <strong class="text-blue-400">Gefrorene Abhärtung</strong> (Reflekt) und <strong class="text-blue-400">Einfrieren</strong> (Raid-AoE). Der Boss wird zeitweise immun gegen Angriffe von vorne/hinten (<strong class="text-gray-400">Totzone</strong>).</li>
+            <li><strong>Phase 4: Eiserner Qon:</strong> Qon kämpft zu Fuß. Er erhält einen stapelbaren Schadensbuff (<strong class="text-red-500">Aufkochender Zorn</strong>) und wirkt <strong class="text-red-400">Faustschlag</strong> (starker Raid-AoE). Dies ist ein Burn-Down.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Phase 1:</strong> Teilt den Raid in 2-3 Gruppen auf. Rotiert die Gruppen, um <strong class="text-red-400">Entfesselte Flamme</strong> abzufangen und den <strong class="text-yellow-400">Versengt</strong>-Debuff auslaufen zu lassen. Weicht Feuerlinien aus.</p>
+        <p class="mb-2"><strong>Phase 2:</strong> Verteilt stehen. Weicht Blitzlinien aus. Befreit Spieler schnell aus <strong class="text-yellow-400">Überspringender Blitz</strong>. Bei <strong class="text-gray-400">Windhose</strong> sofort aus der Mitte rauslaufen.</p>
+        <p class="mb-2"><strong>Phase 3:</strong> Weicht Eislinien aus. DDs müssen bei <strong class="text-gray-400">Totzone</strong> die Seite des Bosses wechseln. Heiler müssen den konstanten Raidschaden (Reflekt + AoE) gegenheilen.</p>
+        <p class="mb-2"><strong>Phase 4:</strong> KR/HT ziehen. Alle Spieler sammeln sich (außerhalb von verbleibenden Tornados) und töten den Boss so schnell wie möglich. Heil-CDs für <strong class="text-red-400">Faustschlag</strong> und steigenden Schaden durch <strong class="text-red-500">Aufkochender Zorn</strong>.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Wechsel nach 2-3 Stapeln <strong class="text-red-400">Durchbohren</strong>.</p>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="qon-tank1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="qon-tank2"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🔥 P1: Entfesselte Flamme (Soak-Rotation)</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Gruppe 1</span></li>
+                        <li class="grid-cols-3">
+                            <select data-assignment-id="qon-soak1-1" class="assignment-select" data-assignment-pool="qon-soak"></select>
+                            <select data-assignment-id="qon-soak1-2" class="assignment-select" data-assignment-pool="qon-soak"></select>
+                            <select data-assignment-id="qon-soak1-3" class="assignment-select" data-assignment-pool="qon-soak"></select>
+                        </li>
+                        <li class="list-subheader"><span>Gruppe 2</span></li>
+                        <li class="grid-cols-3">
+                            <select data-assignment-id="qon-soak2-1" class="assignment-select" data-assignment-pool="qon-soak"></select>
+                            <select data-assignment-id="qon-soak2-2" class="assignment-select" data-assignment-pool="qon-soak"></select>
+                            <select data-assignment-id="qon-soak2-3" class="assignment-select" data-assignment-pool="qon-soak"></select>
+                        </li>
+                        <li class="list-subheader"><span>Gruppe 3</span></li>
+                        <li class="grid-cols-3">
+                            <select data-assignment-id="qon-soak3-1" class="assignment-select" data-assignment-pool="qon-soak"></select>
+                            <select data-assignment-id="qon-soak3-2" class="assignment-select" data-assignment-pool="qon-soak"></select>
+                            <select data-assignment-id="qon-soak3-3" class="assignment-select" data-assignment-pool="qon-soak"></select>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">⚡ P2: Überspringender Blitz (Befreier)</h4>
+                    <ul class="assignment-list">
+                        <li><span>Befreier 1 (Range):</span><select data-assignment-id="qon-free1" class="assignment-select"></select></li>
+                        <li><span>Befreier 2 (Melee):</span><select data-assignment-id="qon-free2" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="qon-cd-header1" placeholder="z.B. P2: Windhose"></li>
+                        <li><select data-assignment-id="qon-cd1a-player" class="assignment-select"></select><select data-assignment-id="qon-cd1a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="qon-cd1b-player" class="assignment-select"></select><select data-assignment-id="qon-cd1b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="qon-cd-header2" placeholder="z.B. P3: Konstant-DMG"></li>
+                        <li><select data-assignment-id="qon-cd2a-player" class="assignment-select"></select><select data-assignment-id="qon-cd2a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="qon-cd2b-player" class="assignment-select"></select><select data-assignment-id="qon-cd2b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="qon-cd-header3" placeholder="z.B. P4: Faustschlag 1"></li>
+                        <li><select data-assignment-id="qon-cd3a-player" class="assignment-select"></select><select data-assignment-id="qon-cd3a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="qon-cd3b-player" class="assignment-select"></select><select data-assignment-id="qon-cd3b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="qon-cd-header4" placeholder="z.B. P4: Faustschlag 2"></li>
+                        <li><select data-assignment-id="qon-cd4a-player" class="assignment-select"></select><select data-assignment-id="qon-cd4a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="qon-cd4b-player" class="assignment-select"></select><select data-assignment-id="qon-cd4b-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="qon-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P1: Feuer</button>
+                        <button data-phase="qon-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P2: Sturm</button>
+                        <button data-phase="qon-p3" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P3: Eis</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="qon-p1">Raid teilt sich in Soak-Gruppen auf. Weicht den <strong class="text-red-400">Feuerlinien</strong> aus.</p>
+                            <p class="positioning-text hidden" data-phase="qon-p2">Raid verteilt sich. Bei <strong class="text-gray-400">Windhose</strong> zur markierten Position (z.B. Eingang) laufen. <strong class="text-blue-400">Blitzlinien</strong> ausweichen.</p>
+                            <p class="positioning-text hidden" data-phase="qon-p3">Raid verteilt sich leicht. <strong class="text-blue-400">Eislinien</strong> ausweichen. DDs wechseln die Seite bei <strong class="text-gray-400">Totzone</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/qon-p1.png" alt="Positionierung Qon P1" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="qon-p1">
+                        <img src="throneofthunder/qon-p2.png" alt="Positionierung Qon P2" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="qon-p2">
+                        <img src="throneofthunder/qon-p3.png" alt="Positionierung Qon P3" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="qon-p3">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ha_dfkZ9A7Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Allgemein (Alle Phasen)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Durchbohren:</strong> Stapelbarer Blutungs-Debuff auf dem Tank. Erzwingt Tankwechsel.</li>
+                    <li><strong>Speerwurf:</strong> Qon wirft seinen Speer auf einen Spieler, was die Phasen-spezifische Linien-Fähigkeit auslöst.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-red-400">P1: Ro'shak (Feuer)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Brennende Späne:</strong> Feuerlinien am Boden. (Ausweichen).</li>
+                    <li><strong>Entfesselte Flamme:</strong> Trifft die größte Spielergruppe (min. 3/5). Teilt Schaden, verbraucht Boss-Energie und gibt <strong class="text-yellow-400">Versengt</strong>-Debuff (erhöhter Feuerschaden).</li>
+                    <li><strong>Geschmolzene Überladung:</strong> Boss erreicht 100 Energie (wenn <strong class="text-red-400">Entfesselte Flamme</strong> nicht gesoakt wird). Verursacht massiven Raid-AoE. (Verhindern!).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-blue-400">P2: Quet'zal (Sturm)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Sturmwolke:</strong> Blitzlinien am Boden. 3 Stapel = 20s Stun. (Ausweichen).</li>
+                    <li><strong>Überspringender Blitz:</strong> Stunt einen Spieler, absorbiert Heilung und verursacht AoE-Schaden. Muss von einem Mitspieler befreit werden (anklicken/hinlaufen).</li>
+                    <li><strong>Windhose:</strong> Zieht alle Spieler in die Mitte, reduziert Dmg/Heal um 80% und erzeugt Tornados. (Sofort rauslaufen!).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-blue-300">P3: Dam'ren (Eis)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Gefrorenes Blut:</strong> Eislinien am Boden. Verursachen Schaden und stapelbaren Slow. (Ausweichen).</li>
+                    <li><strong>Totzone:</strong> Boss wird immun gegen Angriffe von vorne und einer Seite. (DDs müssen sich bewegen).</li>
+                    <li><strong>Gefrorene Abhärtung:</strong> 10% Schadensreflektion auf den Boss. (Konstante Heilung nötig).</li>
+                    <li><strong>Einfrieren:</strong> Raidweiter Frost-AoE nach 1-5 Sekunden.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg col-span-1 md:col-span-2">
+                <h4 class="text-lg font-bold text-red-500">P4: Eiserner Qon (Zu Fuß)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Aufkochender Zorn:</strong> Stapelbarer Schadensbuff (+10%) auf dem Boss alle 10s. (Soft-Enrage).</li>
+                    <li><strong>Faustschlag:</strong> 7.5s kanalisierter, schwerer Raid-AoE. (Heil-CDs).</li>
+                    <li><strong>Zyklon entzünden / einfrieren:</strong> Verwandelt verbleibende Tornados aus P2 in Feuer-AoE-Quellen oder Eis-Fallen.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Phasenübergänge:</strong> Die Qilen fliehen bei 25% HP, anstatt zu sterben.</li>
+                <li><strong>Zusätzliche Adds:</strong> In jeder Phase ist ein zweiter Qilen in der Luft aktiv und nutzt eine seiner Fähigkeiten (P1: Quet'zal mit Tornados/Blitz; P2: Dam'ren mit Stacheln; P3: Ro'shak mit <strong class="text-red-400">Entfesselte Flamme</strong>).</li>
+                <li><strong>Phase 4 (Heroic):</strong> Alle drei Qilen kehren bei 25% HP zurück und müssen getankt und getötet werden (Kill-Prio: Dam'ren > Ro'shak > Quet'zal), bevor Qon selbst angegriffen werden kann.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

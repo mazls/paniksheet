@@ -1,0 +1,262 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style><style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Lei Shen</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Lei Shen ist ein komplexer 3-Phasen-Kampf mit zwei Zwischenphasen. Die Kernmechanik sind die vier <strong class="text-yellow-400">Elektrischen Leitungen</strong> (Norden, Osten, Süden, Westen) an den Ecken der Plattform. Je nachdem, bei welcher Leitung der Boss getankt wird, erhält er eine neue Fähigkeit.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Leitungs-Mechanik:</strong> Der Boss muss immer bei einer Leitung getankt werden, sonst wirkt er <strong class="text-red-400">Entladene Energie</strong> (Raid-Wipe). Je länger er bei einer Leitung steht, desto stärker wird diese (Stufenaufstieg). Ziel ist es, die Leitungen kontrolliert aufzuladen.</li>
+            <li><strong>Phase 1 (100% - 65%):</strong> Boss nutzt <strong class="text-red-400">Enthaupten</strong> (Tank-Hit, Tank muss weglaufen, Spott) und <strong class="text-red-400">Donneraxt</strong> (massiver AoE, Raid muss weglaufen).</li>
+            <li><strong>Transition 1 (45s):</strong> Boss ist immun. Alle 4 Leitungen sind gleichzeitig aktiv. Der Raid muss sich aufteilen, um alle 4 Mechaniken zu bewältigen. Am Ende wird die Leitung mit der höchsten Energie zerstört.</li>
+            <li><strong>Phase 2 (65% - 30%):</strong> Der Quadrant der zerstörten Leitung ist nun tödlich (Voidzone). Boss nutzt <strong class="text-red-400">Fusionsschnitt</strong> (Tank-Wechsel), <strong class="text-yellow-400">Kugelblitz</strong> (Adds) und <strong class="text-yellow-400">Blitzpeitsche</strong> (Linien auf dem Boden).</li>
+            <li><strong>Transition 2 (45s):</strong> Boss ist immun. Die verbleibenden 3 Leitungen sind aktiv. Die Leitung mit der höchsten Energie wird am Ende zerstört.</li>
+            <li><strong>Phase 3 (30% - 0%):</strong> Zwei Quadranten sind tödlich. Boss nutzt <strong class="text-red-400">Überwältigende Kraft</strong> (Tank-Wechsel), <strong class="text-gray-400">Tosende Windböen</strong> (Raid-Pushback) und behält Fähigkeiten aus P1/P2. Dies ist ein Burn-Down.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Phase 1:</strong> Zieht den Boss von einer Leitung zur nächsten (z.B. im Uhrzeigersinn). Ziel ist, die "nervigste" Leitung (z.B. <strong class="text-purple-400">Diffusionskette/Ost</strong>) am höchsten aufzuladen, damit sie in T1 zerstört wird. Tanks spotten bei <strong class="text-red-400">Enthaupten</strong> (weglaufen!), Raid läuft bei <strong class="text-red-400">Donneraxt</strong> weg.</p>
+        <p class="mb-2"><strong>Transition 1:</strong> Raid auf 4 Ecken aufteilen. Jede Gruppe spielt "ihre" Mechanik: <strong class="text-red-400">Norden</strong> (Soaken), <strong class="text-purple-400">Osten</strong> (Verteilen, Adds töten), <strong class="text-green-400">Süden</strong> (Auf dem Spieler stacken), <strong class="text-yellow-400">Westen</strong> (Bolzen fangen).</p>
+        <p class="mb-2"><strong>Phase 2:</strong> Zieht den Boss zu den verbleibenden Leitungen. Ziel ist, die Leitung *neben* der bereits zerstörten am höchsten zu laden, um eine "sichere Hälfte" für P3 zu schaffen. <strong class="text-yellow-400">Kugelblitze</strong> (Adds) sofort töten. <strong class="text-yellow-400">Blitzpeitsche</strong> ausweichen.</p>
+        <p class="mb-2"><strong>Transition 2:</strong> Raid auf 3 Ecken aufteilen. Mechaniken wie in T1 spielen.</p>
+        <p class="mb-2"><strong>Phase 3:</strong> KR/HT ziehen. Alle Spieler versammeln sich in der sicheren Hälfte. Boss burnen. Auf <strong class="text-gray-400">Windböen</strong> (Pushback) achten. <strong class="text-yellow-400">Kugelblitze</strong> und <strong class="text-red-400">Donneraxt</strong> weiterhin ausweichen.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="leishen-tank1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="leishen-tank2"></select></li>
+                        <li class="list-subheader"><span>P1: Spott bei <strong class="text-red-400">Enthaupten</strong> (aktiv muss weglaufen)</span></li>
+                        <li class="list-subheader"><span>P2: Spott bei <strong class="text-red-400">Fusionsschnitt</strong></span></li>
+                        <li class="list-subheader"><span>P3: Spott bei <strong class="text-red-400">Überwältigende Kraft</strong> (10 Stacks)</span></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">⚡ Leitungs-Mechaniken (Transition)</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Nördliche Leitung (Elektroschock Soak)</span></li>
+                        <li class="grid-cols-3">
+                            <select data-assignment-id="leishen-soak-n1" class="assignment-select" data-assignment-pool="leishen-soak-n"></select>
+                            <select data-assignment-id="leishen-soak-n2" class="assignment-select" data-assignment-pool="leishen-soak-n"></select>
+                            <select data-assignment-id="leishen-soak-n3" class="assignment-select" data-assignment-pool="leishen-soak-n"></select>
+                        </li>
+                        <li class="list-subheader"><span>Westliche Leitung (Sprungblitz Soak)</span></li>
+                        <li class="grid-cols-3">
+                            <select data-assignment-id="leishen-soak-w1" class="assignment-select" data-assignment-pool="leishen-soak-w"></select>
+                            <select data-assignment-id="leishen-soak-w2" class="assignment-select" data-assignment-pool="leishen-soak-w"></select>
+                            <select data-assignment-id="leishen-soak-w3" class="assignment-select" data-assignment-pool="leishen-soak-w"></select>
+                        </li>
+                        <li class="list-subheader"><span>Südliche Leitung (Überladung Stack)</span></li>
+                        <li><span class="text-gray-400">Alle Spieler stacken *auf* dem Ziel.</span></li>
+                        <li class="list-subheader"><span>Östliche Leitung (Diffusionskette Spread)</span></li>
+                        <li><span class="text-gray-400">Alle Spieler 10m verteilen. Adds töten!</span></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="leishen-cd-header1" placeholder="z.B. Transition 1"></li>
+                        <li><select data-assignment-id="leishen-cd1a-player" class="assignment-select"></select><select data-assignment-id="leishen-cd1a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="leishen-cd1b-player" class="assignment-select"></select><select data-assignment-id="leishen-cd1b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="leishen-cd-header2" placeholder="z.B. Transition 2"></li>
+                        <li><select data-assignment-id="leishen-cd2a-player" class="assignment-select"></select><select data-assignment-id="leishen-cd2a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="leishen-cd2b-player" class="assignment-select"></select><select data-assignment-id="leishen-cd2b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="leishen-cd-header3" placeholder="z.B. Phase 3 (Windböen hoch)"></li>
+                        <li><select data-assignment-id="leishen-cd3a-player" class="assignment-select"></select><select data-assignment-id="leishen-cd3a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="leishen-cd3b-player" class="assignment-select"></select><select data-assignment-id="leishen-cd3b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="leishen-cd-header4" placeholder="z.B. Phase 3 (Donneraxt)"></li>
+                        <li><select data-assignment-id="leishen-cd4a-player" class="assignment-select"></select><select data-assignment-id="leishen-cd4a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="leishen-cd4b-player" class="assignment-select"></select><select data-assignment-id="leishen-cd4b-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="leishen-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P1: Positionierung</button>
+                        <button data-phase="leishen-t1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">T1: Transition</button>
+                        <button data-phase="leishen-p3" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P3: Endphase</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="leishen-p1">Boss wird von einer Leitung zur nächsten gezogen. Raid weicht <strong class="text-red-400">Donneraxt</strong> (großer Kreis) und <strong class="text-gray-400">Grollender Donner</strong> (Voidzones) aus.</p>
+                            <p class="positioning-text hidden" data-phase="leishen-t1">Der Raid teilt sich auf die 4 Quadranten auf, um die jeweilige Mechanik der Leitung zu spielen (Soak, Stack, Spread, Soak).</p>
+                            <p class="positioning-text hidden" data-phase="leishen-p3">Der Raid kämpft in der "sicheren" Hälfte. Weicht <strong class="text-red-400">Donneraxt</strong> und <strong class="text-yellow-400">Blitzpeitsche</strong> aus und kämpft gegen die <strong class="text-gray-400">Windböen</strong> an.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/leishen-p1.png" alt="Positionierung Lei Shen P1" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="leishen-p1">
+                        <img src="throneofthunder/leishen-t1.png" alt="Positionierung Lei Shen T1" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="leishen-t1">
+                        <img src="throneofthunder/leishen-p3.png" alt="Positionierung Lei Shen P3" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="leishen-p3">
+                    </div>
+                </div>
+
+                <div class="assignment-block mt-6">
+                    <h4 class="text-lg font-bold text-red-500">🔥 Heroisch: Helm des Befehls (Pushback)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler, die in Transitionsphasen zurückgepullt werden.</p>
+                    <ul class="assignment-list">
+                        <li><span>Grip 1:</span><select data-assignment-id="leishen-hc-grip1" class="assignment-select"></select></li>
+                        <li><span>Grip 2:</span><select data-assignment-id="leishen-hc-grip2" class="assignment-select"></select></li>
+                        <li><span>Grip 3:</span><select data-assignment-id="leishen-hc-grip3" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/2NtoFe46tMc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="mb-4 bg-slate-750 p-4 rounded-lg border-l-4 border-yellow-400">
+            <h4 class="text-lg font-bold text-yellow-400">Die 4 Leitungen (Fähigkeiten)</h4>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Nördliche Leitung: Elektroschock</strong><br>Debuff auf Spieler, explodiert nach 8s. Schaden muss geteilt werden. (Zusammenlaufen & Soaken).</li>
+                <li><strong>Östliche Leitung: Diffusionskette</strong><br>Kettenblitz. Springt auf Spieler (10m). Jeder Treffer spawnt ein Add (<strong class="text-purple-400">Diffusionsblitz</strong>). (10m verteilt stehen, Adds töten).</li>
+                <li><strong>Südliche Leitung: Überladung</strong><br>Debuff auf Spieler, wurzelt fest. Nach 6s explodiert ein Ring. *Nur* die Zone direkt am Spieler ist sicher. (Alle stacken *auf* dem Spieler).</li>
+                <li><strong>Westliche Leitung: Sprungblitz</strong><br>Blitze schlagen auf dem Boden ein (6m AoE). Schaden wird geteilt. Wenn kein Spieler getroffen wird, spawnt ein Add (<strong class="text-yellow-400">Ungezügelte Macht</strong>). (Bolzen soaken).</li>
+            </ul>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Phase 1 (100% - 65%)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Enthaupten:</strong> Massiver Tank-Hit. Schaden skaliert mit Entfernung. (Spott, Tank läuft sofort weg). Hinterlässt +100% Debuff.</li>
+                    <li><strong>Donneraxt:</strong> Wirft Axt auf einen Spieler. Massiver AoE-Schaden am Einschlagspunkt, skaliert mit Entfernung. (Alle weglaufen).</li>
+                    <li><strong>Grollender Donner:</strong> Permanente Voidzones. (Am Rand ablegen).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Phase 2 (65% - 30%)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Fusionsschnitt:</strong> Tank-Hit, verursacht Knockback und +100% Debuff. (Tankwechsel, nicht am Rand stehen).</li>
+                    <li><strong>Kugelblitz beschwören:</strong> Spawnt <strong class="text-yellow-400">Kugelblitz</strong>-Adds, die Spieler jagen. (Adds töten).</li>
+                    <li><strong>Blitzpeitsche:</strong> Linien-AoE auf dem Boden. (Ausweichen).</li>
+                </ul>
+            </div>
+             <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Phase 3 (30% - 0%)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Überwältigende Kraft:</strong> Stapelbarer Debuff auf Tank, erhöht Nahkampfschaden. (Tankwechsel bei ca. 10 Stacks).</li>
+                    <li><strong>Tosende Windböen:</strong> Konstanter Pushback-Effekt + stapelbarer Raid-DoT. (Gegenlaufen, Heil-CDs).</li>
+                    <li>Behält <strong class="text-red-400">Donneraxt</strong>, <strong class="text-yellow-400">Kugelblitz</strong> und <strong class="text-yellow-400">Blitzpeitsche</strong>.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Netzwerküberlastung (Heroic):</strong> Die Leitung wird *nicht* zerstört. Stattdessen wird ihre Fähigkeit für den Rest des Kampfes *permanent* aktiv.</li>
+                <li><strong>Helm des Befehls:</strong> In Transitionsphasen werden Spieler von der Plattform geschoben. (Gegenlaufen, Grips bereithalten).</li>
+                <li><strong>Diffusionsblitz (Heroic):</strong> Das Add fixiert nun den Spieler, durch den es entstanden ist.</li>
+                <li><strong>Kugelblitz (Heroic):</strong> Verursacht nun Schaden in 3m Umkreis um das Ziel, nicht nur auf das Ziel selbst. (Verteilt stehen).</li>
+                <li><strong>Strategie:</strong> Der Raid muss gezielt wählen, welche 2 Fähigkeiten (P1: <strong class="text-yellow-400">Sprungblitz</strong>, P2: <strong class="text-red-400">Elektroschock</strong>) er permanent aktiv haben möchte.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

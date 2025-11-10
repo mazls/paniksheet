@@ -1,0 +1,234 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Ji-Kun</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Ji-Kun findet auf einer großen Hauptplattform statt, auf der der Boss stationär bleibt. Um die Plattform herum befinden sich 5 untere und 5 obere Nester. Der Kampf dreht sich um das Management von Adds, die in diesen Nestern schlüpfen. Spieler müssen mittels eines Flug-Buffs zwischen den Plattformen wechseln.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Flug-Mechanik (<strong class="text-yellow-400">Dädalische Schwingen</strong>):</strong> Das Töten von <strong class="text-green-400">Küken</strong> in den unteren Nestern gewährt einen Feder-Buff. Dieser Buff gibt Spielern einen Extra-Aktionsbutton für <strong class="text-yellow-400">Flug</strong> (10s Dauer, 3-4 Aufladungen), der benötigt wird, um zu den oberen Nestern zu gelangen oder schnell zur Hauptplattform zurückzukehren.</li>
+            <li><strong>Add-Management (Nester):</strong> Nester werden nacheinander aktiv.
+                <ul class="list-disc list-inside ml-6 mt-1">
+                    <li><strong>Untere Nester:</strong> Spawnen <strong class="text-green-400">Küken</strong>. Diese müssen getötet werden, *bevor* Ji-Kun sie mit <strong class="text-green-400">Junge füttern</strong> trifft, sonst werden sie zu stärkeren <strong class="text-green-400">Nestlingen</strong>.</li>
+                    <li><strong>Obere Nester:</strong> Enthalten <strong class="text-red-400">Reife Eier</strong>. Diese müssen zerstört werden, bevor sie schlüpfen und <strong class="text-red-500">Jungvögel</strong> (sehr gefährlich) freilassen.</li>
+                </ul>
+            </li>
+            <li><strong>Plattform-Mechaniken:</strong> Der Raid auf der Hauptplattform muss mit <strong class="text-yellow-400">Krächzen</strong> (8m verteilen), <strong class="text-gray-400">Abwind</strong> (Gegenlaufen) und <strong class="text-red-400">Federkiele</strong> (Raid-AoE) umgehen.</li>
+            <li><strong>Futter-Mechanik:</strong> Wenn keine Küken aktiv sind, wirft Ji-Kun Futter auf die Hauptplattform, was <strong class="text-green-400">Futterpfützen</strong> (Voidzones) erzeugt. Diese müssen von Spielern aufgesaugt werden (verursacht stapelbaren DoT). Fliegende Spieler können das Futter für den <strong class="text-yellow-400">Futterdieb</strong>-Buff (Schaden & Heilung) abfangen.</li>
+            <li><strong>Tank-Mechanik:</strong> Ji-Kun belegt Tanks mit <strong class="text-red-400">Infizierte Krallen</strong> (DoT) und <strong class="text-red-400">Krallenreißen</strong> (Schadens-Debuff), was einen Tankwechsel erfordert.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Positionierung (Hauptplattform):</strong> Raid steht 8 Meter verteilt (wegen <strong class="text-yellow-400">Krächzen</strong>). Bei <strong class="text-gray-400">Abwind</strong> müssen alle Spieler gegen den Wind laufen, um nicht von der Plattform gestoßen zu werden. Heil-CDs für <strong class="text-red-400">Federkiele</strong> nutzen.</p>
+        <p class="mb-2"><strong>Nest-Teams:</strong> Teilt den Raid in 2-3 "Nest-Teams" (z.B. 1 Heiler, 3 DDs). Diese Teams springen zu den aktiven unteren Nestern, töten die <strong class="text-green-400">Küken</strong>, sammeln die Federn und fliegen dann zu den oberen Nestern, um die <strong class="text-red-400">Eier</strong> zu zerstören. Wegen des <strong class="text-gray-400">Lektion des Ikarus</strong>-Debuffs müssen die Teams rotieren.</p>
+        <p class="mb-2"><strong>Futter-Management:</strong> Zugewiesene Spieler (mit <strong class="text-yellow-400">Flug</strong>-Buff) fangen Futter in der Luft ab, um den <strong class="text-yellow-400">Futterdieb</strong>-Buff zu erhalten. Verbleibende <strong class="text-green-400">Futterpfützen</strong> auf dem Boden müssen von Spielern mit wenig <strong class="text-green-400">Vollgeschleimt</strong>-Debuffs aufgesaugt werden.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung (Hauptplattform)</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="jikun-tank1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="jikun-tank2"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🦅 Nest-Teams (Rotation)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Teams rotieren wegen des "Ikarus"-Debuffs.</p>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Team 1 (Grün)</span></li>
+                        <li class="grid-cols-4">
+                            <span>Heiler:</span><select data-assignment-id="jikun-nest1-heal" class="assignment-select" data-assignment-pool="jikun-nest"></select>
+                            <span>DD 1:</span><select data-assignment-id="jikun-nest1-dd1" class="assignment-select" data-assignment-pool="jikun-nest"></select>
+                            <span>DD 2:</span><select data-assignment-id="jikun-nest1-dd2" class="assignment-select" data-assignment-pool="jikun-nest"></select>
+                            <span data-size="25" class="tactic-content">DD 3:</span><select data-size="25" class="tactic-content assignment-select" data-assignment-id="jikun-nest1-dd3" data-assignment-pool="jikun-nest"></select>
+                        </li>
+                        <li class="list-subheader"><span>Team 2 (Blau)</span></li>
+                        <li class="grid-cols-4">
+                            <span>Heiler:</span><select data-assignment-id="jikun-nest2-heal" class="assignment-select" data-assignment-pool="jikun-nest"></select>
+                            <span>DD 1:</span><select data-assignment-id="jikun-nest2-dd1" class="assignment-select" data-assignment-pool="jikun-nest"></select>
+                            <span>DD 2:</span><select data-assignment-id="jikun-nest2-dd2" class="assignment-select" data-assignment-pool="jikun-nest"></select>
+                            <span data-size="25" class="tactic-content">DD 3:</span><select data-size="25" class="tactic-content assignment-select" data-assignment-id="jikun-nest2-dd3" data-assignment-pool="jikun-nest"></select>
+                        </li>
+                        <li class="list-subheader"><span>Team 3 (Rot)</span></li>
+                        <li class="grid-cols-4">
+                            <span>Heiler:</span><select data-assignment-id="jikun-nest3-heal" class="assignment-select" data-assignment-pool="jikun-nest"></select>
+                            <span>DD 1:</span><select data-assignment-id="jikun-nest3-dd1" class="assignment-select" data-assignment-pool="jikun-nest"></select>
+                            <span>DD 2:</span><select data-assignment-id="jikun-nest3-dd2" class="assignment-select" data-assignment-pool="jikun-nest"></select>
+                            <span data-size="25" class="tactic-content">DD 3:</span><select data-size="25" class="tactic-content assignment-select" data-assignment-id="jikun-nest3-dd3" data-assignment-pool="jikun-nest"></select>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung (Federkiele)</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jikun-cd-header1" placeholder="z.B. 1. Federkiele"></li>
+                        <li><select data-assignment-id="jikun-cd1a-player" class="assignment-select"></select><select data-assignment-id="jikun-cd1a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="jikun-cd1b-player" class="assignment-select"></select><select data-assignment-id="jikun-cd1b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jikun-cd-header2" placeholder="z.B. 2. Federkiele"></li>
+                        <li><select data-assignment-id="jikun-cd2a-player" class="assignment-select"></select><select data-assignment-id="jikun-cd2a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="jikun-cd2b-player" class="assignment-select"></select><select data-assignment-id="jikun-cd2b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jikun-cd-header3" placeholder="z.B. 3. Federkiele"></li>
+                        <li><select data-assignment-id="jikun-cd3a-player" class="assignment-select"></select><select data-assignment-id="jikun-cd3a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="jikun-cd3b-player" class="assignment-select"></select><select data-assignment-id="jikun-cd3b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jikun-cd-header4" placeholder="z.B. 4. Federkiele"></li>
+                        <li><select data-assignment-id="jikun-cd4a-player" class="assignment-select"></select><select data-assignment-id="jikun-cd4a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="jikun-cd4b-player" class="assignment-select"></select><select data-assignment-id="jikun-cd4b-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="jikun-main" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Plattform</button>
+                        <button data-phase="jikun-nests" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Nester</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="jikun-main">Raid verteilt sich 8m (wg. <strong class="text-yellow-400">Krächzen</strong>). Bei <strong class="text-gray-400">Abwind</strong> gegenlaufen. Pfützen soaken.</p>
+                            <p class="positioning-text hidden" data-phase="jikun-nests">Teams springen zu den unteren Nestern und fliegen von dort zu den oberen Nestern. Heroic: Tanks müssen die <strong class="text-red-500">Nestwächter</strong> abfangen.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/jikun.png" alt="Positionierung Ji-Kun Plattform" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="jikun-main">
+                        <img src="throneofthunder/jikun-nests.png" alt="Positionierung Ji-Kun Nester" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="jikun-nests">
+                    </div>
+                </div>
+
+                <div class="assignment-block mt-6">
+                    <h4 class="text-lg font-bold">🥦 Futterdieb-Rotation (Buff)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Fliegende Spieler, die Futter abfangen.</p>
+                    <ul class="assignment-list">
+                        <li><span>Abfänger 1:</span><select data-assignment-id="jikun-food1" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
+                        <li><span>Abfänger 2:</span><select data-assignment-id="jikun-food2" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
+                        <li data-size="25" class="tactic-content"><span>Abfänger 3:</span><select data-assignment-id="jikun-food3" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
+                        <li data-size="25" class="tactic-content"><span>Abfänger 4:</span><select data-assignment-id="jikun-food4" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
+                    </ul>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/71KLjndWA7M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Ji-Kun (Hauptplattform)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Infizierte Krallen:</strong> Stapelbarer Natur-DoT auf dem Tank.</li>
+                    <li><strong>Krallenreißen:</strong> Großer Tank-Hit, hinterlässt 1 Min. Debuff (erhöhter Schaden durch `Krallenreißen`). Erzwingt Spott.</li>
+                    <li><strong>Federkiele:</strong> 8s kanalisierter Raid-AoE. Trifft Hauptplattform und untere Nester.</li>
+                    <li><strong>Abwind:</strong> 8s Pushback von der Mitte der Plattform. Dagegen anlaufen.</li>
+                    <li><strong>Krächzen:</strong> Trifft 3 (10m) / 5 (25m) Spieler und verursacht 8m AoE-Schaden. (Verteilen!)</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-yellow-300">Flug- & Futter-Mechanik</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Dädalische Schwingen:</strong> Buff (3-4 Aufladungen) vom Töten eines Kükens.</li>
+                    <li><strong>Flug:</strong> Extra-Aktionsbutton, gewährt 10s Flug.</li>
+                    <li><strong>Lektion des Ikarus:</strong> 2-Minuten-Debuff, verhindert das Aufsammeln neuer Federn.</li>
+                    <li><strong>Junge füttern:</strong> Boss wirft Futter. Trifft Küken (-> werden Nestlinge) oder die Plattform (-> wird Futterpfütze).</li>
+                    <li><strong>Futterpfütze:</strong> Voidzone. Wird entfernt, wenn ein Spieler 3s darin steht. Verursacht `Vollgeschleimt`.</li>
+                    <li><strong>Futterdieb:</strong> Buff (+Schaden/Heilung) für fliegende Spieler, die Futter in der Luft abfangen.</li>
+                    <li><strong>Vollgeschleimt:</strong> Stapelbarer DoT (15s) vom Soaken oder Abfangen. Erhöht Schaden von zukünftigem `Vollgeschleimt`.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg col-span-1 md:col-span-2">
+                <h4 class="text-lg font-bold text-green-300">Adds & Nester</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Untere Nester (Junge Eier):</strong> Spawnen <strong class="text-green-400">Küken</strong>. Diese müssen sterben, bevor `Junge füttern` sie trifft.</li>
+                    <li><strong>Nestlinge:</strong> Entstehen aus gefütterten Küken. Legen `Reife Eier` auf der unteren Plattform.</li>
+                    <li><strong>Obere Nester (Reife Eier):</strong> Eier müssen zerstört werden, bevor der 20s Timer abläuft.</li>
+                    <li><strong>Jungvögel:</strong> Schlüpfen aus `Reifen Eiern`. Fliegen über dem Raid und spammen `Tschirpen` (Raid-Schaden). MÜSSEN VERHINDERT WERDEN.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Nestwächter:</strong> Ein großes Add, das auf manchen Nestern (unten & oben) spawnt. Muss von einem Tank aufgenommen werden.</li>
+                <li><strong>Krallenreißen (Wächter):</strong> Frontal-Cleave. Tank muss das Add vom Nest-Team weg drehen.</li>
+                <li><strong>Kreischen (Wächter):</strong> Raidweiter AoE mit Zauber-Interrupt und Cast-Slow-Debuff. Wird gewirkt, wenn niemand den Wächter tankt.</li>
+                <li><strong>Dädalische Schwingen:</strong> Gewährt nur noch 3 Aufladungen.</li>
+                <li><strong>Vollgeschleimt:</strong> Der erhöhte Schaden durch Stapel ist permanent. Management ist noch wichtiger.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

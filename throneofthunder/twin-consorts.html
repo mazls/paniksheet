@@ -1,0 +1,204 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Zwillingskonkubinen</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen die Zwillingskonkubinen (Lu'lin und Suen) ist ein vierphasiger Kampf, bei dem die Bosse keine gemeinsame Gesundheit haben. Die Phasen wechseln auf einem festen Zeitplan und konfrontieren den Raid mit unterschiedlichen Elementarfähigkeiten.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Phase 1: Nacht (3 Min.):</strong> Man kämpft hauptsächlich gegen <strong class="text-blue-400">Lu'lin (Frost/Arkan)</strong>. Suen erscheint nur kurz für AoE-Angriffe. Wichtige Mechaniken sind <strong class="text-blue-400">Mondlotus</strong> (Schlafsporen ausweichen), <strong class="text-purple-400">Kosmischer Beschuss</strong> (verteilen, um Schaden zu teilen) und die <strong class="text-purple-500">Alptraumbestie</strong> (Add, das nur der fixierte Tank sehen und angreifen kann).</li>
+            <li><strong>Phase 2: Tag (3 Min.):</strong> Man kämpft hauptsächlich gegen <strong class="text-red-400">Suen (Feuer)</strong>. Lu'lin erscheint nur, um <strong class="text-blue-400">Eiskometen</strong> zu beschwören. Suen erhält einen stapelbaren Schadensbuff (<strong class="text-red-400">Sengendes Strahlen</strong>), der nur zurückgesetzt wird, wenn sie nahe an einem <strong class="text-blue-400">Eiskometen</strong> getankt wird.</li>
+            <li><strong>Phase 3: Dämmerung (Bis ein Boss stirbt):</strong> Beide Boss-Damen sind gleichzeitig aktiv. Dies ist die intensivste Phase. Sie nutzen eine Auswahl ihrer Fähigkeiten.</li>
+            <li><strong>Phase 4: Nacht oder Tag:</strong> Je nachdem, welcher Boss in P3 zuerst stirbt, kämpft man gegen den verbleibenden Boss in einer finalen Nacht- oder Tag-Phase.</li>
+            <li><strong>Himmlische Beihilfe:</strong> Der Raid kann bis zu zweimal pro Boss (einmal vor P3, einmal in P3) die vier Himmlischen Erhabenen rufen, indem Spieler ein Sternenbild nachzeichnen. Diese gewähren starke Buffs (z.B. Niuzao für +HP, Yu'lon für Mana/Heilung).</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Phase 1 (Nacht):</strong> Tankt <strong class="text-blue-400">Lu'lin</strong>. Der Raid muss sich 8m verteilen (wegen <strong class="text-purple-400">Kosmischer Beschuss</strong>). Weicht den Sporen von <strong class="text-blue-400">Mondlotus</strong> aus. Der Tank, der *nicht* die <strong class="text-purple-500">Alptraumbestie</strong> hat, spottet den Boss. Heiler müssen den Bestien-Tank sparsam heilen (wegen <strong class="text-red-500">Verderbte Heilung</strong>-Debuff).</p>
+        <p class="mb-2"><strong>Phase 2 (Tag):</strong> Tankt <strong class="text-red-400">Suen</strong>. Der Raid muss Suen immer zu den frisch gespawnten <strong class="text-blue-400">Eiskometen</strong> ziehen, damit ihr <strong class="text-red-400">Sengendes Strahlen</strong>-Buff zurückgesetzt wird. Spieler nutzen den Schatten der Kometen (<strong class="text-blue-400">Eisige Schatten</strong>), um Feuerschaden zu reduzieren. Tanks spotten wegen <strong class="text-red-400">Flammenfächer</strong>.</p>
+        <p class="mb-2"><strong>Phase 3 (Dämmerung):</strong> KR/HT ziehen. Beide Bosse sind aktiv. Fokussiert allen Schaden auf <strong class="text-red-400">Suen</strong>, um sie so schnell wie möglich zu töten. Weicht <strong class="text-blue-400">Gezeitenkraft</strong> (Wasserwellen von Lu'lin) aus. Nutzt die Himmlischen Buffs (besonders Niuzao/Xuen) zum Überleben.</p>
+        <p class="mb-2"><strong>Phase 4 (Nacht):</strong> Tötet die verbleibende <strong class="text-blue-400">Lu'lin</strong>. Diese Phase ist deutlich einfacher.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="twins-tank1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="twins-tank2"></select></li>
+                        <li class="list-subheader"><span>P1: Alptraumbestie</span></li>
+                        <li><span>Bestie Tank (kann sich heilen):</span><select data-assignment-id="twins-beast-tank" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">✨ Himmlische Helfer (Sternbilder)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler, die die Sternbilder aktivieren.</p>
+                    <ul class="assignment-list">
+                        <li><span>Niuzao (Ausdauer):</span><select data-assignment-id="twins-celestial-niuzao" class="assignment-select"></select></li>
+                        <li><span>Chi-Ji (Schaden):</span><select data-assignment-id="twins-celestial-chiji" class="assignment-select"></select></li>
+                        <li><span>Yu'lon (Mana/Heilung):</span><select data-assignment-id="twins-celestial-yulon" class="assignment-select"></select></li>
+                        <li><span>Xuen (Slow-Effekt):</span><select data-assignment-id="twins-celestial-xuen" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="twins-cd-header1" placeholder="z.B. P1: Tränen der Sonne"></li>
+                        <li><select data-assignment-id="twins-cd1a-player" class="assignment-select"></select><select data-assignment-id="twins-cd1a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="twins-cd1b-player" class="assignment-select"></select><select data-assignment-id="twins-cd1b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="twins-cd-header2" placeholder="z.B. P2: Nukleares Inferno (HC)"></li>
+                        <li><select data-assignment-id="twins-cd2a-player" class="assignment-select"></select><select data-assignment-id="twins-cd2a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="twins-cd2b-player" class="assignment-select"></select><select data-assignment-id="twins-cd2b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="twins-cd-header3" placeholder="z.B. P3: Dämmerung Start"></li>
+                        <li><select data-assignment-id="twins-cd3a-player" class="assignment-select"></select><select data-assignment-id="twins-cd3a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="twins-cd3b-player" class="assignment-select"></select><select data-assignment-id="twins-cd3b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="twins-cd-header4" placeholder="z.B. P3: Dämmerung (Gezeiten)"></li>
+                        <li><select data-assignment-id="twins-cd4a-player" class="assignment-select"></select><select data-assignment-id="twins-cd4a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="twins-cd4b-player" class="assignment-select"></select><select data-assignment-id="twins-cd4b-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="twins-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P1: Nacht</button>
+                        <button data-phase="twins-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P2: Tag</button>
+                        <button data-phase="twins-p3" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P3: Dämmerung</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="twins-p1">Raid 8m verteilt. Weicht den <strong class="text-blue-400">Mondlotus</strong>-Sporen aus. Bestien-Tank hält Add abseits.</p>
+                            <p class="positioning-text hidden" data-phase="twins-p2">Tankt Suen an den <strong class="text-blue-400">Eiskometen</strong>. Raid steht im Schatten (<strong class="text-blue-400">Eisige Schatten</strong>).</p>
+                            <p class="positioning-text hidden" data-phase="twins-p3">Beide Bosse aktiv. Fokussiert Suen. Weicht <strong class="text-blue-400">Gezeitenkraft</strong> (Wasserwellen) aus.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/twins.png" alt="Positionierung Zwillinge" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="twins-p1">
+                        <img src="throneofthunder/twins.png" alt="Positionierung Zwillinge P2" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="twins-p2">
+                        <img src="throneofthunder/twins.png" alt="Positionierung Zwillinge P3" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="twins-p3">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/bKSzbjTgOyQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-blue-400">P1: Nacht (Fokus Lu'lin)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Mondlotus:</strong> Blume am Rand, verschießt Schlafsporen. (Ausweichen).</li>
+                    <li><strong>Kosmischer Beschuss:</strong> Sterne fixieren Spieler, schlagen nach 8s ein. Verursacht 8m AoE und Knockback. (8m verteilt stehen).</li>
+                    <li><strong>Alptraumbestie:</strong> Add fixiert einen Tank. Nur dieser Tank kann es angreifen.</li>
+                    <li><strong>Verderbte Heilung:</strong> Heiler, die das Ziel der Bestie heilen, erhalten einen stapelbaren Schaden-DoT. (Sparsam heilen!).</li>
+                    <li><strong>Suens Angriffe (Nacht):</strong> <strong class="text-red-400">Tränen der Sonne</strong> (Raid-AoE) und <strong class="text-red-400">Licht des Tages</strong> (8m AoE auf Spieler).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-red-400">P2: Tag (Fokus Suen)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Flammenfächer:</strong> Tank-Hit, +25% erlittener Feuerschaden (stapelbar). (Tankwechsel).</li>
+                    <li><strong>Flammen der Leidenschaft:</strong> Springt Spieler an, hinterlässt Feuerspur. (Ausweichen).</li>
+                    <li><strong>Sengendes Strahlen:</strong> Passiver Raid-AoE und stapelbarer Buff auf Suen (+5% Feuerschaden).</li>
+                    <li><strong>Lu'lins Angriffe (Tag): Eiskomet:</strong> Komet schlägt ein (6m AoE). Bleibt liegen.</li>
+                    <li><strong>Eisige Schatten:</strong> Buff im Schatten des Kometen. -60% Feuerschaden, aber -10% Tempo. (Raid steht drin). Suen verliert <strong class="text-red-400">Sengendes Strahlen</strong>-Stapel nahe Kometen.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg col-span-1 md:col-span-2">
+                <h4 class="text-lg font-bold text-purple-400">P3: Dämmerung (Beide aktiv)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Lu'lin (Fokus Suen):</strong> Lu'lin behält <strong class="text-blue-400">Eiskomet</strong> bei und wirkt <strong class="text-blue-400">Gezeitenkraft</strong> (Wasserwellen, ausweichen!). Sie ist währenddessen immun.</li>
+                    <li><strong>Suen (Töten!):</strong> Suen behält <strong class="text-red-400">Sengendes Strahlen</strong> und <strong class="text-red-400">Licht des Tages</strong> bei. Heroic: auch <strong class="text-red-500">Nukleares Inferno</strong> (starker Raid-AoE).</li>
+                    <li><strong>Boss-Tod:</strong> Stirbt Suen, wird es P4: Nacht. Stirbt Lu'lin, wird es P4: Tag (schwieriger!).</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Lauerer in der Nacht (P1):</strong> Unsichtbare Adds, die Raidschaden verursachen. Werden sichtbar, wenn Suen sie mit <strong class="text-red-400">Tränen der Sonne</strong> trifft.</li>
+                <li><strong>Nukleares Inferno (P2/P3):</strong> Suen kanalisiert 8s lang massiven Feuerschaden. Der Raid muss im Schatten eines <strong class="text-blue-400">Eiskometen</strong> stehen, um dies zu überleben.</li>
+                <li><strong>Strategie:</strong> In P1 müssen die <strong class="text-gray-400">Lauerer</strong> mit Suens Hilfe aufgedeckt und getötet werden. In P2 ist das Überleben von <strong class="text-red-500">Nukleares Inferno</strong> wichtiger als Suens Stapel zurückzusetzen (Kometen aufsparen!).</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

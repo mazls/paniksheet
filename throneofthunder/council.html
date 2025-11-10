@@ -1,0 +1,252 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Rat der Ältesten</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+<div class="collapsible-content">
+        <p class="mb-4">
+            Der Rat der Ältesten ist ein Council-Kampf gegen vier Trolle: <strong class="text-blue-400">Frostkönig Malakk</strong>, <strong class="text-gray-400">Kazra'jin</strong>, <strong class="text-yellow-400">Sul der Sandkriecher</strong> und <strong class="text-purple-400">Hohepriesterin Mar'li</strong>. Die Bosse teilen sich keine Gesundheit. Die Kernmechanik ist die <strong class="text-purple-500">Verstärkung (Empowerment)</strong> durch den Geist von Gara'jal.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Verstärkung (Empowerment):</strong> Gara'jals Geist verstärkt immer einen Boss (beginnend mit Malakk). Der Boss erhält neue Fähigkeiten und eine "Dunkle Energie"-Leiste.</li>
+            <li><strong>Verstärkung brechen:</strong> Um den Geist zum Springen zu zwingen, muss der Raid dem verstärkten Boss <strong>25% seiner maximalen Gesundheit</strong> als Schaden zufügen.</li>
+            <li><strong>Soft-Enrage (<strong class="text-red-500">Dunkle Macht</strong>):</strong> Erreicht ein Boss 100 Energie (nach ca. 67 Sek.), wirkt er `Dunkle Macht`, einen stapelbaren, raidweiten DoT, der schnell zum Wipe führt.</li>
+            <li><strong>Permanenter Buff (<strong class="text-red-400">Bleibende Berührung</strong>):</strong> Jeder Boss, der die Verstärkung verlässt, erhält einen permanenten Buff (+15% Schaden & schnellere Energiegewinnung).</li>
+            <li><strong>Kill-Reihenfolge:</strong> Es gibt keine feste Reihenfolge, aber aufgrund der Mechaniken (Treibsand, DPS-Reflekt) ist eine Priorisierung von <strong>Sul > Kazra'jin > Mar'li > Malakk</strong> empfohlen.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Positionierung:</strong> Der Raid muss <strong>5-7 Meter verteilt</strong> stehen, um Schaden von `Sandblitz` (Sul) und `Beißende Kälte` (Malakk) zu minimieren. Weicht `Tollkühner Ansturm` (Kazra'jin) und `Treibsand` (Sul) aus.</p>
+        <p class="mb-2"><strong>Tanks:</strong> Ein Tank hält Sul, der andere Mar'li. Beide Tanks müssen sich <strong class="text-blue-400">Frostkönig Malakk</strong> teilen und wegen `Kalte Angriffe` (15 Stapel = Stun) abspotten. Kazra'jin wird nicht getankt.</p>
+        <p class="mb-2"><strong>DPS-Fokus:</strong>
+            <ol class="list-decimal list-inside ml-4">
+                <li><strong>Adds:</strong> `Gesegneter Loa-Geist` (von Mar'li) und `Lebendiger Sand` (von Sul) haben <strong>absolute Priorität</strong>.</li>
+                <li><strong>Verstärkter Boss:</strong> Der verstärkte Boss muss 25% HP verlieren, um `Dunkle Macht` zu verhindern.</li>
+                <li><strong>DPS-Stopp:</strong> Wenn <strong class="text-gray-400">Kazra'jin</strong> verstärkt ist und `Entladung` (Reflekt-Schild) wirkt, muss der Schaden auf ihn <strong>gestoppt</strong> oder <strong>stark reduziert</strong> werden.</li>
+            </ol>
+        </p>
+        <p class="mb-2"><strong>Wichtige Aktionen:</strong> Unterbrecht `Sandblitz` (Sul) und `Zorn der Loa` (Mar'li). Wenn Malakk verstärkt ist, müssen <span data-size="10" class="tactic-content">2</span><span data-size="25" class="tactic-content">4</span> Spieler zum `Erfrieren`-Ziel laufen, um die Stapel zu entfernen.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1 (Sul & Malakk):</span><select class="assignment-select" data-assignment-id="council-tank1"></select></li>
+                        <li><span>Tank 2 (Mar'li & Malakk):</span><select class="assignment-select" data-assignment-id="council-tank2"></select></li>
+                        <li class="list-subheader"><span>(Kazra'jin wird nicht getankt)</span></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛑 Interrupt-Rotation</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Sandblitz (Sul)</span></li>
+                        <li><span>Kick 1:</span><select data-assignment-id="council-kick-sul1" class="assignment-select" data-assignment-pool="council-kicks"></select></li>
+                        <li><span>Kick 2:</span><select data-assignment-id="council-kick-sul2" class="assignment-select" data-assignment-pool="council-kicks"></select></li>
+                        <li class="list-subheader"><span>Zorn der Loa (Mar'li)</span></li>
+                        <li><span>Kick 3:</span><select data-assignment-id="council-kick-marli1" class="assignment-select" data-assignment-pool="council-kicks"></select></li>
+                        <li><span>Kick 4:</span><select data-assignment-id="council-kick-marli2" class="assignment-select" data-assignment-pool="council-kicks"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🥶 Erfrieren-Soak (Verst. Malakk)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler laufen zum Ziel, um Stapel zu entfernen.</p>
+                    <ul class="assignment-list">
+                        <li data-size="10" class="tactic-content list-subheader"><span>Team 1 (2 Spieler)</span></li>
+                        <li data-size="10" class="tactic-content">
+                            <select data-assignment-id="council-soak10-1" class="assignment-select" data-assignment-pool="council-soak"></select>
+                            <select data-assignment-id="council-soak10-2" class="assignment-select" data-assignment-pool="council-soak"></select>
+                        </li>
+                        <li data-size="25" class="tactic-content list-subheader"><span>Team 1 (4 Spieler)</span></li>
+                        <li data-size="25" class="tactic-content grid-cols-4">
+                            <select data-assignment-id="council-soak25-1a" class="assignment-select" data-assignment-pool="council-soak"></select>
+                            <select data-assignment-id="council-soak25-1b" class="assignment-select" data-assignment-pool="council-soak"></select>
+                            <select data-assignment-id="council-soak25-1c" class="assignment-select" data-assignment-pool="council-soak"></select>
+                            <select data-assignment-id="council-soak25-1d" class="assignment-select" data-assignment-pool="council-soak"></select>
+                        </li>
+                        <li data-size="25" class="tactic-content list-subheader"><span>Team 2 (4 Spieler)</span></li>
+                        <li data-size="25" class="tactic-content grid-cols-4">
+                            <select data-assignment-id="council-soak25-2a" class="assignment-select" data-assignment-pool="council-soak"></select>
+                            <select data-assignment-id="council-soak25-2b" class="assignment-select" data-assignment-pool="council-soak"></select>
+                            <select data-assignment-id="council-soak25-2c" class="assignment-select" data-assignment-pool="council-soak"></select>
+                            <select data-assignment-id="council-soak25-2d" class="assignment-select" data-assignment-pool="council-soak"></select>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="council-cd-header1" placeholder="z.B. Sandsturm (Sul)"></li>
+                        <li><select data-assignment-id="council-cd1-player" class="assignment-select"></select><select data-assignment-id="council-cd1-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="council-cd1.1-player" class="assignment-select"></select><select data-assignment-id="council-cd1.1-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="council-cd-header2" placeholder="z.B. Entladung (Kazra'jin)"></li>
+                        <li><select data-assignment-id="council-cd2-player" class="assignment-select"></select><select data-assignment-id="council-cd2-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="council-cd2.2-player" class="assignment-select"></select><select data-assignment-id="council-cd2.2-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="council-cd-header3" placeholder="z.B. Dunkle Macht (Notfall)"></li>
+                        <li><select data-assignment-id="council-cd3-player" class="assignment-select"></select><select data-assignment-id="council-cd3-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="council-cd3.1-player" class="assignment-select"></select><select data-assignment-id="council-cd3.1-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="council-cd-header4" placeholder="z.B. Heroic: Seelenfragment"></li>
+                        <li><select data-assignment-id="council-cd4-player" class="assignment-select"></select><select data-assignment-id="council-cd4-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="council-cd4.1-player" class="assignment-select"></select><select data-assignment-id="council-cd4.1-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="council" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Positionierung</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="council">Der Raid muss 5-7m verteilt stehen. Weicht <strong class="text-yellow-400">Treibsand</strong> (Pfützen) und <strong class="text-gray-400">Tollkühner Ansturm</strong> (Linie) aus. Lauft zu Spielern mit <strong class="text-blue-400">Erfrieren</strong>, um Stapel zu entfernen.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/council.png" alt="Positionierung Rat der Ältesten" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="council">
+                    </div>
+                </div>
+
+                <div class="assignment-block mt-6">
+                    <h4 class="text-lg font-bold text-red-500">🔥 Heroisch: Seelenfragment-Rotation</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Debuff bei ca. 5 Stapel weitergeben.</p>
+                    <ul class="assignment-list">
+                        <li><span>Spieler 1:</span><select data-assignment-id="council-soul1" class="assignment-select" data-assignment-pool="council-soul"></select></li>
+                        <li><span>Spieler 2:</span><select data-assignment-id="council-soul2" class="assignment-select" data-assignment-pool="council-soul"></select></li>
+                        <li><span>Spieler 3:</span><select data-assignment-id="council-soul3" class="assignment-select" data-assignment-pool="council-soul"></select></li>
+                        <li><span>Spieler 4:</span><select data-assignment-id="council-soul4" class="assignment-select" data-assignment-pool="council-soul"></select></li>
+                        <li><span>Spieler 5:</span><select data-assignment-id="council-soul5" class="assignment-select" data-assignment-pool="council-soul"></select></li>
+                        <li data-size="25" class="tactic-content"><span>Spieler 6:</span><select data-assignment-id="council-soul6" class="assignment-select" data-assignment-pool="council-soul"></select></li>
+                        <li data-size="25" class="tactic-content"><span>Spieler 7:</span><select data-assignment-id="council-soul7" class="assignment-select" data-assignment-pool="council-soul"></select></li>
+                        <li data-size="25" class="tactic-content"><span>Spieler 8:</span><select data-assignment-id="council-soul8" class="assignment-select" data-assignment-pool="council-soul"></select></li>
+                    </ul>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/a1RjTsbhh_M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="mb-4 bg-slate-750 p-4 rounded-lg border-l-4 border-purple-400">
+            <h4 class="text-lg font-bold text-purple-400">Geist von Gara'jal (Kernmechanik)</h4>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Verstärkung:</strong> Ein Boss wird verstärkt, erhält neue Skills und Energie. Muss 25% HP verlieren, damit der Geist springt.</li>
+                <li><strong>Dunkle Macht:</strong> Wirkt der Boss bei 100 Energie. Raidweiter, stapelbarer Schaden. Verhindern!</li>
+                <li><strong>Bleibende Berührung:</strong> Permanenter Buff (+15% Dmg, +15% Energie-Reg.) auf dem Boss, nachdem die Verstärkung gebrochen wurde.</li>
+            </ul>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-blue-400">Frostkönig Malakk (Tank-Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Kalte Angriffe:</strong> Stapelbarer Debuff auf dem Tank. Bei 15 Stapeln -> 15s Stun. Erzwingt Tankwechsel.</li>
+                    <li><strong>Beißende Kälte:</strong> DoT auf Spieler, fügt Verbündeten in 4m Schaden zu. (Normal: 4m verteilen).</li>
+                    <li><strong>Verstärkt: Erfrieren:</strong> Ersetzt `Beißende Kälte`. 5 Stapel. Fügt Verbündeten in 4m Schaden pro Stapel zu. Stapel werden entfernt, wenn Spieler in die 4m-Zone laufen (10m: 2 Stapel/Spieler, 25m: 1 Stapel/Spieler).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-gray-400">Kazra'jin (Positioning-Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Tollkühner Ansturm:</strong> Sturmt einen Spieler an, verursacht Schaden auf dem Weg und stößt am Ziel zurück. (Aus der Linie weichen).</li>
+                    <li><strong>Verstärkt: Entladung:</strong> Nach dem Ansturm betäubt er sich selbst und reflektiert 5% (Heroic: 5%, Normal: 50%) des erlittenen Schadens an den gesamten Raid. (DPS STOPPEN/REDUZIEREN).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-yellow-400">Sul der Sandkriecher (Add/Interrupt-Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Sandblitz:</strong> Nuke auf Spieler + 5m AoE. (5m verteilen, UNTERBRECHEN).</li>
+                    <li><strong>Treibsand:</strong> Erzeugt Voidzone, die slowt. Bei 5 Stapeln wird man 30s gerootet. (Rauslaufen).</li>
+                    <li><strong>Verstärkt: Sandsturm:</strong> Verwandelt alle `Treibsand`-Pfützen in `Lebendiger Sand` (Adds). Adds müssen sterben, bevor der nächste `Sandsturm` sie heilt und bufft (`Gefestigt`).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-purple-400">Hohepriesterin Mar'li (Add/Interrupt-Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Zorn der Loa:</strong> Nuke auf Spieler. (UNTERBRECHEN).</li>
+                    <li><strong>Gesegneter Loa-Geist:</strong> Add läuft zum Boss mit den wenigsten HP und heilt ihn um 10%. (HÖCHSTE PRIO: Slowen, rooten, töten).</li>
+                    <li><strong>Verstärkt (Normal): Schattiger Loa-Geist:</strong> Add fixiert einen Spieler und tötet ihn bei Kontakt. (HÖCHSTE PRIO: Kiten, slowen, rooten, töten).</li>
+                    <li><strong>Verstärkt (Heroic): Übles Schicksal:</strong> Ersetzt den Geist. Zwei Adds spawnen bei zwei Spielern und laufen aufeinander zu. Verursachen Schaden je näher sie sind. (Gleichzeitig töten, auseinander halten).</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Seelenfragment:</strong> Nach (fast) jedem Verstärkungs-Bruch. Ein Spieler erhält einen Debuff, der `Verdunkelte Seele` (+5% Dmg Taken) stapelt. Der Debuff muss per Extra-Button weitergegeben werden (z.B. bei 5 Stapeln).</li>
+                <li><strong>Körperwärme (Malakk):</strong> Spieler, die `Erfrieren` soaken, erhalten einen Debuff und können 8s lang nicht erneut soaken. (Rotation nötig oder Ziel alleine heilen).</li>
+                <li><strong>Entladung (Kazra'jin):</strong> Reflektiert nur 5% Schaden, trifft dafür aber den gesamten Raid (statt nur den Angreifer).</li>
+                <li><strong>Trügerischer Boden (Sul):</strong> Überlappende `Treibsand`-Pfützen verschmelzen und erzeugen stärkere Adds. (SUL MUSS ZUERST STERBEN, um dies zu verhindern).</li>
+                <li><strong>Übles Schicksal (Mar'li):</strong> Ersetzt den `Schattigen Loa-Geist`. Zwei verbundene Adds, die auseinander gehalten und gleichzeitig getötet werden müssen.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

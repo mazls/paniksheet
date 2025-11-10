@@ -1,0 +1,194 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Primordius</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Primordius ist ein DPS-Rennen, das sich um das Sammeln von Mutationen dreht. Primordius selbst erleidet <strong class="text-red-400">75% weniger Schaden</strong> von Spielern, die nicht mutiert sind. Spieler müssen Adds töten, um Pfützen zu erzeugen, die ihnen Buffs gewähren. Gleichzeitig muss verhindert werden, dass die Adds den Boss erreichen und ihn mutieren lassen.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Spieler-Mutationen:</strong> Überall im Raum kriechen <strong class="text-green-400">Lebendige Flüssigkeiten</strong> (Adds) auf den Boss zu. Werden sie getötet, hinterlassen sie <strong class="text-purple-400">Mutagenpfützen</strong>. Das Betreten einer Pfütze gewährt einen stapelbaren Buff (Stats, Krit, Tempo oder Meisterschaft).</li>
+            <li><strong>Vollständig Mutiert:</strong> Bei 5 Stapeln verwandelt sich der Spieler für 2 Minuten in einen Saurok (<strong class="text-yellow-400">Vollständig mutiert</strong>) und kann Primordius vollen Schaden zufügen. Das Sammeln weiterer Pfützen während dieser Zeit führt zu schädlichen Debuffs.</li>
+            <li><strong>Tank-Mutationen (Debuffs):</strong> Primordius belegt seinen Tank mit <strong class="text-red-400">Missgebildetes Blut</strong>. Dieser Debuff erhöht den Schaden des Tanks gegen die <strong class="text-green-400">Lebendigen Flüssigkeiten</strong>. Dies erzwingt einen Tankwechsel.</li>
+            <li><strong>Boss-Mutationen (Evolution):</strong> Jedes Mal, wenn ein Add Primordius erreicht (oder er eine Pfütze absorbiert), füllt sich seine Energieleiste. Bei 100 Energie erhält er einen permanenten Schadensbuff (<strong class="text-red-500">Evolution</strong>) und eine neue, zufällige Fähigkeit (z.B. <strong class="text-yellow-400">Säurestachel</strong>, <strong class="text-red-400">Gasblase</strong>, etc.). Er kann bis zu 3 (Heroic: 4) gleichzeitig haben.</li>
+            <li><strong>Flüchtige Pfütze:</strong> Eine seltene, große Pfütze. Erreicht sie den Boss, heilt sie ihn um 10% und gibt ihm sofort alle Mutationen (Wipe-Gefahr). Spieler müssen sie soaken (verursacht hohen Schaden und Debuffs).</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Positionierung:</strong> Ein Tank hält Primordius. Der zweite Tank sammelt die <strong class="text-green-400">Lebendigen Flüssigkeiten</strong> ein (sobald er den <strong class="text-red-400">Missgebildetes Blut</strong>-Debuff hat) und tötet diese abseits vom Boss.</p>
+        <p class="mb-2"><strong>DPS-Rotation:</strong> Alle DDs töten *nur* <strong class="text-green-400">Lebendige Flüssigkeiten</strong> und sammeln Pfützen, bis sie 5 Buffs haben. Sobald sie <strong class="text-yellow-400">Vollständig mutiert</strong> sind, wechseln sie sofort auf Primordius und verursachen maximalen Schaden. Wenn die Mutation ausläuft, wechseln sie zurück zu den Adds.</p>
+        <p class="mb-2"><strong>Boss-Fähigkeiten:</strong> Der Raid muss auf die aktiven Mutationen des Bosses reagieren (z.B. bei <strong class="text-red-400">Gasblase</strong> am Boss sammeln, bei <strong class="text-yellow-400">Säurestachel</strong> verteilen).</p>
+        <p class="mb-2"><strong>Heroisch:</strong> Ein Tank kümmert sich um den <strong class="text-purple-500">Zähflüssigen Horror</strong> (neues Add) und hält ihn *weit weg* vom Boss (Explosionsgefahr). Der andere Tank spottet Primordius und hilft bei den Adds.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Primordius-Tank:</span><select class="assignment-select" data-assignment-id="primordius-tank-boss"></select></li>
+                        <li><span>Add-Tank (Flüssigkeiten):</span><select class="assignment-select" data-assignment-id="primordius-tank-adds"></select></li>
+                        <li class="list-subheader"><span>Heroisch: Zähflüssiger Horror</span></li>
+                        <li><span>Horror-Tank:</span><select data-assignment-id="primordius-tank-hc" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">✨ Dispel-Einteilung</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Dispellen entfernt *alle* Mutationen (gut und schlecht).</p>
+                    <ul class="assignment-list">
+                        <li><span>Spieler mit >5 Stapeln 1:</span><select data-assignment-id="primordius-dispel1" class="assignment-select"></select></li>
+                        <li><span>Spieler mit >5 Stapeln 2:</span><select data-assignment-id="primordius-dispel2" class="assignment-select"></select></li>
+                        <li><span>Backup / Notfall:</span><select data-assignment-id="primordius-dispel3" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">CDs je nach aktiver Boss-Mutation.</p>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="primordius-cd-header1" placeholder="z.B. 1. Ventralbeutel"></li>
+                        <li><select data-assignment-id="primordius-cd1a-player" class="assignment-select"></select><select data-assignment-id="primordius-cd1a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="primordius-cd1b-player" class="assignment-select"></select><select data-assignment-id="primordius-cd1b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="primordius-cd-header2" placeholder="z.B. 1. Gasblase (Soak)"></li>
+                        <li><select data-assignment-id="primordius-cd2a-player" class="assignment-select"></select><select data-assignment-id="primordius-cd2a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="primordius-cd2b-player" class="assignment-select"></select><select data-assignment-id="primordius-cd2b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="primordius-cd-header3" placeholder="z.B. 2. Ventralbeutel"></li>
+                        <li><select data-assignment-id="primordius-cd3a-player" class="assignment-select"></select><select data-assignment-id="primordius-cd3a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="primordius-cd3b-player" class="assignment-select"></select><select data-assignment-id="primordius-cd3b-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="primordius" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Positionierung</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="primordius">Ein Tank hält den Boss, der andere tankt die Adds abseits. DDs töten Adds, bis sie mutiert sind, dann wechseln sie zum Boss. Je nach Mutation muss der Raid <strong class="text-yellow-400">verteilt stehen</strong> (Säurestachel) oder <strong class="text-red-400">soaken</strong> (Gasblase).</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/primordius.png" alt="Positionierung Primordius" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="primordius">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/j97LCghNt7Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Primordius (Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Urzeitlicher Stoß:</strong> Frontal-Cleave (7m). (Niemals vor dem Boss stehen).</li>
+                    <li><strong>Missgebildetes Blut:</strong> Stapelbarer DoT auf dem Tank. Erhöht Schaden an Adds. (Tankwechsel).</li>
+                    <li><strong>Mutierte Monstrosität:</strong> Boss erleidet 75% weniger Schaden von nicht-mutierten Spielern.</li>
+                    <li><strong>Evolution:</strong> Boss erhält +5% Schaden und eine neue Mutation, wenn seine Energie voll ist (durch Adds/Pfützen).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-purple-400">Adds & Mutationen (Spieler)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Lebendige Flüssigkeit:</strong> Adds, die auf den Boss zu kriechen. Müssen getötet werden.</li>
+                    <li><strong>Mutagenpfütze:</strong> Entsteht beim Tod einer Flüssigkeit. Spieler aufsammeln.</li>
+                    <li><strong>Hilfreiche Mutation:</strong> (Bis 5 Stapel) Gibt +Stats, +Krit, +Tempo oder +Meisterschaft.</li>
+                    <li><strong>Vollständig mutiert:</strong> Bei 5 Stapeln. Erlaubt vollen Schaden am Boss für 2 Min.</li>
+                    <li><strong>Schädliche Mutation:</strong> (Ab 6 Stapeln) Gibt negative Stats. Muss dispellt werden (entfernt alle Buffs).</li>
+                    <li><strong>Flüchtige Pfütze:</strong> Seltene Pfütze. Boss: +10% Heilung & max. Mutation. Spieler: Hoher Schaden & Debuffs. (Muss von Spielern gesoakt werden!).</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4">
+            <h4 class="text-lg font-bold text-red-400">Boss-Mutationen (Evolution)</h4>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Ventralbeutel:</strong> Konstanter, leichter Raid-AoE. (Gegenheilen).</li>
+                <li><strong>Gasblase:</strong> Hoher Schaden, wird auf alle Spieler in 25m aufgeteilt. (Raid muss soaken/näher ran).</li>
+                <li><strong>Säurestachel:</strong> AoE-Schaden (5m) auf mehrere Spieler. (Raid muss verteilt stehen).</li>
+                <li><strong>Pathogendrüsen:</strong> Starker DoT auf einem Spieler. (Starke Heilung auf das Ziel).</li>
+                <li><strong>Metabolismusschub:</strong> Boss greift 50% schneller an und nutzt Skills öfter. (Tank-CDs / Heil-CDs).</li>
+                <li><strong>Pusteleruption:</strong> Zufällige Bodeneffekte. (Ausweichen).</li>
+            </ul>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Zähflüssiger Horror:</strong> Ein neues, großes Add spawnt alle 30s. Muss getankt werden.</li>
+                <li><strong>Tödliches Mutagen:</strong> Wenn der Horror zu nah an Primordius kommt (ca. 10m), explodiert er und verursacht 1 Mio. Raidschaden (Wipe). (Muss *weit weg* getankt werden).</li>
+                <li><strong>Schwarzes Blut:</strong> Tank-Debuff vom Horror. Erhöht den Schaden des Tanks gegen Primordius.</li>
+                <li><strong>Evolution (Heroic):</strong> Primordius kann nun 4 Mutationen gleichzeitig haben, statt 3.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

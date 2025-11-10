@@ -1,0 +1,192 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Jin'rokh der Zerstörer</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+<h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+    Kampfübersicht & Kernmechaniken
+    <span class="toggle-icon">▼</span>
+</h2>
+<div class="collapsible-content">
+    <p class="mb-4">
+        Der Kampf gegen Jin'rokh ist ein einphasiger DPS-Test. Die Kernmechanik dreht sich um <strong class="text-blue-400">Leitfähiges Wasser</strong>. Diese Pfützen entstehen, wenn ein Tank vom <strong class="text-red-500">Donnernden Wurf</strong> getroffen wird. Sie gewähren einen starken Buff (<strong class="text-green-400">Fluidität</strong>), machen den Raid aber anfällig für Naturschaden. Ein <strong class="text-yellow-400">Gewittersturm</strong> macht die Pfützen regelmäßig unbrauchbar, was den spielbaren Bereich einschränkt und einen Soft-Enrage darstellt.
+    </p>
+    <ul class="list-disc list-inside space-y-2 text-gray-300">
+        <li><strong>Tank-Mechanik (<strong class="text-red-400">Statischer Schlag</strong>):</strong> Verursacht hohen Raidschaden und belegt den Tank mit <strong class="text-red-400">Statische Wunde</strong>, einem stapelbaren Debuff, der bei Nahkampftreffern massiven Naturschaden verursacht. Dies erzwingt einen sofortigen Tankwechsel.</li>
+        <li><strong>Pfützen-Management (<strong class="text-blue-400">Leitfähiges Wasser</strong>):</strong> Entsteht durch <strong class="text-red-500">Donnernder Wurf</strong>. Spieler darin erhalten <strong class="text-green-400">Fluidität</strong> (+40% Schaden & Heilung), aber auch +100% Naturschaden.</li>
+        <li><strong>Blitz-Management (<strong class="text-yellow-400">Gebündelter Blitz</strong>):</strong> Eine Kugel fixiert einen Spieler (Range/Heiler). Explodiert sie im <strong class="text-blue-400">Leitfähigen Wasser</strong>, erleidet der gesamte Raid in der Pfütze extrem hohen Schaden (<strong class="text-red-500">Heftige Detonation</strong>). Sie muss daher immer aus der Pfütze getragen werden.</li>
+        <li><strong>Phasen-Wechsel (<strong class="text-yellow-400">Gewittersturm</strong>):</strong> Alle 90 Sek. erleidet der Raid hohen Naturschaden. Danach wird die Pfütze zu <strong class="text-gray-400">Elektrisiertem Wasser</strong>, verliert den Buff und verursacht stattdessen Schaden. Der Raid muss zur nächsten, neu erstellten Pfütze wechseln.</li>
+    </ul>
+    <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+    <p class="mb-2"><strong>Positionierung:</strong> Tanks stehen vor dem Boss. Der Raid (Heiler & DDs) steht in der aktiven <strong class="text-blue-400">Leitfähiges Wasser</strong>-Pfütze, um den <strong class="text-green-400">Fluidität</strong>-Buff zu nutzen.</p>
+    <p class="mb-2"><strong>Tank-Wechsel:</strong> Sofortiger Spott nach <strong class="text-red-400">Statischer Schlag</strong>.</p>
+    <p class="mb-2"><strong>Blitz-Kugel:</strong> Spieler, die von <strong class="text-yellow-400">Gebündelter Blitz</strong> anvisiert werden, laufen <strong>sofort</strong> aus der Pfütze an einen zugewiesenen Ablagepunkt am Rand. Explodiert die Kugel in der Pfütze, ist es sehr wahrscheinlich ein Wipe.</p>
+    <p class="mb-2"><strong>Gewittersturm:</strong> Sobald der Sturm beginnt, verlassen <strong>alle</strong> Spieler die Pfütze, sammeln sich in der Mitte (nicht im Heroic-Modus!) und nutzen Heil-CDs. Nach dem Sturm wird die Pfütze gewechselt.</p>
+</div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Haupttank:</span><select class="assignment-select" data-assignment-id="jinrokh-tank1"></select></li>
+                        <li><span>Spott-Tank:</span><select class="assignment-select" data-assignment-id="jinrokh-tank2"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">⚡ Blitz-Ablage (Gebündelter Blitz)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler, die Kugel an den Rand tragen (z.B. Hunter, Mages)</p>
+                    <ul class="assignment-list">
+                        <li><span>Ablage 1:</span><select data-assignment-id="jinrokh-lightning1" class="assignment-select"></select></li>
+                        <li><span>Ablage 2:</span><select data-assignment-id="jinrokh-lightning2" class="assignment-select"></select></li>
+                        <li><span>Backup:</span><select data-assignment-id="jinrokh-lightning-backup" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung (Gewittersturm)</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jinrokh-cd-header1" placeholder="z.B. 1. Gewittersturm"></li>
+                        <li><select data-assignment-id="jinrokh-cd1-player" class="assignment-select"></select><select data-assignment-id="jinrokh-cd1-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="jinrokh-cd2-player" class="assignment-select"></select><select data-assignment-id="jinrokh-cd2-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jinrokh-cd-header2" placeholder="z.B. 2. Gewittersturm"></li>
+                        <li><select data-assignment-id="jinrokh-cd3-player" class="assignment-select"></select><select data-assignment-id="jinrokh-cd3-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="jinrokh-cd4-player" class="assignment-select"></select><select data-assignment-id="jinrokh-cd4-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jinrokh-cd-header3" placeholder="z.B. 3. Gewittersturm"></li>
+                        <li><select data-assignment-id="jinrokh-cd5-player" class="assignment-select"></select><select data-assignment-id="jinrokh-cd5-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="jinrokh-cd6-player" class="assignment-select"></select><select data-assignment-id="jinrokh-cd6-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jinrokh-cd-header4" placeholder="z.B. 4. Gewittersturm"></li>
+                        <li><select data-assignment-id="jinrokh-cd7-player" class="assignment-select"></select><select data-assignment-id="jinrokh-cd7-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="jinrokh-cd8-player" class="assignment-select"></select><select data-assignment-id="jinrokh-cd8-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="jinrokh" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Positionierung</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="jinrokh">Der Raid steht in der aktiven Pfütze. Spieler mit <strong class="text-yellow-400">Gebündelter Blitz</strong> laufen an den Rand. Beim <strong class="text-yellow-400">Gewittersturm</strong> sammelt sich der Raid (außer Heroic) in der Mitte.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/jinrokh.png" alt="Positionierung Jin'rokh" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="jinrokh">
+                    </div>
+                </div>
+
+                <div class="assignment-block mt-6">
+                    <h4 class="text-lg font-bold text-red-500">🔥 Heroisch: Ionisierung</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler müssen sich zum Ablaufen/Dispellen verteilen.</p>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Haupt-Dispeller</span></li>
+                        <li><span>Heiler 1:</span><select data-assignment-id="jinrokh-dispel1" class="assignment-select"></select></li>
+                        <li><span>Heiler 2:</span><select data-assignment-id="jinrokh-dispel2" class="assignment-select"></select></li>
+                        <li><span>Heiler 3:</span><select data-assignment-id="jinrokh-dispel3" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/0XkB9DA8UjM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Tank-Fähigkeiten</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Donnernder Wurf:</strong> Wirft das aktuelle Ziel gegen eine Statue. Die Statue zerbricht und erzeugt eine Pfütze <strong class="text-blue-400">Leitfähiges Wasser</strong>. Der Tank und Spieler im Umkreis von 8m am Einschlagsort werden betäubt.</li>
+                    <li><strong>Statischer Schlag:</strong> Fügt allen Spielern Naturschaden zu und belegt den Tank mit 10 Stapeln <strong class="text-red-400">Statische Wunde</strong>.</li>
+                    <li><strong>Statische Wunde:</strong> Debuff. Verursacht pro Stapel hohen Naturschaden, wenn der Tank Nahkampftreffer erleidet. Ein Drittel dieses Schadens trifft auch andere Spieler. Erzwingt einen Tankwechsel.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-yellow-300">Raid-Fähigkeiten</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Leitfähiges Wasser:</strong> Eine Pfütze, die <strong class="text-green-400">Fluidität</strong> gewährt (+40% Dmg/Heal, +100% Naturschaden).</li>
+                    <li><strong>Gebündelter Blitz:</strong> Kugel fixiert einen Spieler. Explodiert bei Kontakt. Muss aus der Pfütze getragen werden!</li>
+                    <li><strong>Heftige Detonation:</strong> Passiert, wenn der <strong class="text-yellow-400">Gebündelte Blitz</strong> im Wasser explodiert. Verursacht massiven Schaden an allen in der Pfütze.</li>
+                    <li><strong>Blitzspalt:</strong> Entsteht, wenn der <strong class="text-yellow-400">Gebündelte Blitz</strong> außerhalb des Wassers explodiert. Eine kleine, schädliche Voidzone.</li>
+                    <li><strong>Gewittersturm:</strong> 15 Sek. lang raidweiter Naturschaden. Verwandelt danach die Pfütze in <strong class="text-gray-400">Elektrisiertem Wasser</strong>.</li>
+                    <li><strong>Elektrisiertes Wasser:</strong> Die Pfütze ist permanent verseucht, entfernt <strong class="text-green-400">Fluidität</strong> und verursacht Schaden.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Ionisierung:</strong> Ein 24-Sekunden-Debuff, der auf mehrere Spieler (außer Tanks) gewirkt wird. Bei Ablauf oder Dispellen explodiert der Spieler und fügt allen im Umkreis von 8 Metern massiven Schaden zu.</li>
+                <li><strong>Strategie (Ionisierung):</strong> Betroffene Spieler müssen sich sofort vom Raid und aus der Pfütze entfernen. Sie müssen sich mit 8m Abstand zueinander verteilen, bevor sie dispellt werden oder der Debuff ausläuft. Immunitäten (Ice Block, Divine Shield) können genutzt werden, um den Debuff zu entfernen oder (bei Nutzung *vorher*) gar nicht erst zu erhalten.</li>
+                <li><strong>Blitzeinschlag:</strong> Wird während des <strong class="text-yellow-400">Gewittersturms</strong> gewirkt. Blitze schlagen auf dem Boden ein und verteilen sich. Der Raid kann sich nicht mehr in der Mitte sammeln, sondern muss sich bewegen und den Blitzen ausweichen.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

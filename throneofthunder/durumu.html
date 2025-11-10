@@ -1,0 +1,209 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Durumu der Vergessene</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Durumu ist ein dreiphasiger Kampf, der sich zyklisch wiederholt. Die Hauptschwierigkeit liegt in der Koordination während der <strong class="text-yellow-400">Lichtspektrum-Phase</strong> (Adds aufdecken) und der <strong class="text-purple-400">Desintegrationsstrahl-Phase</strong> (Laufen im Labyrinth), während konstant hoher Raidschaden geheilt werden muss.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Tank-Mechanik (<strong class="text-red-400">Stechender Blick</strong>):</strong> Verursacht hohen Schaden und bringt zwei Debuffs auf: <strong class="text-red-400">Schwere Wunde</strong> (Heilreduktion, stapelbar) und <strong class="text-red-400">Arterienschnitt</strong> (Blutung). Die Blutung wird nur entfernt, wenn der Tank auf 100% HP geheilt wird. Erzwingt einen Tankwechsel.</li>
+            <li><strong>Phase 1: Normalphase:</strong> Der Boss wirkt <strong class="text-gray-400">Willensstärke</strong> (Knockback-Kegel, ausweichen), <strong class="text-purple-400">Verweilender Blick</strong> (Voidzones, am Rand ablegen) und <strong class="text-green-400">Lebensentzug</strong> (Kanal, heilt Boss, muss von anderen Spielern abgefangen werden).</li>
+            <li><strong>Phase 2: Lichtspektrum (Nebel-Phase):</strong> Beginnt nach ca. 30 Sek. Der Raid muss sich auf drei farbige Kegel aufteilen, um unsichtbare Adds aufzudecken. Das Ziel ist, die <strong class="text-red-500">3 Purpurroten Nebel</strong> mit dem roten Kegel zu finden und zu töten. Der <strong class="text-blue-400">Azurblaue Nebel</strong> darf *nicht* aufgedeckt werden.</li>
+            <li><strong>Phase 3: Desintegrationsstrahl (Labyrinth-Phase):</strong> Beginnt ca. 2,5 Min. später. Der Boss wirkt einen tödlichen Strahl und dreht sich. Der gesamte Boden wird zur Voidzone (<strong class="text-purple-400">Schandfleck</strong>), bis auf einen kleinen, mitwandernden "Safe-Spot", in dem der Raid 1 Minute lang überleben muss.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Positionierung (Normal):</strong> Tanks am Boss (stationär in der Mitte). Raid verteilt sich, um <strong class="text-purple-400">Verweilender Blick</strong>-Pfützen am Rand abzulegen. Weicht den <strong class="text-gray-400">Willensstärke</strong>-Kegeln aus.</p>
+        <p class="mb-2"><strong>Tank-Wechsel:</strong> Nach jedem <strong class="text-red-400">Stechender Blick</strong>. Heiler müssen den Tank mit <strong class="text-red-400">Arterienschnitt</strong> *sofort* vollheilen.</p>
+        <p class="mb-2"><strong>Lebensentzug:</strong> 2-3 Spieler (mit CDs) rotieren und stellen sich zwischen das Auge und das anvisierte Ziel, um den Kanal abzufangen.</p>
+        <p class="mb-2"><strong>Lichtspektrum:</strong> Raid aufteilen. Spieler mit dem <strong class="text-red-400">roten Kegel</strong> läuft die Positionen der 3 roten Adds ab (vorher markieren!). DDs fokussieren die roten Adds. Spieler mit dem <strong class="text-blue-400">blauen Kegel</strong> steht still und deckt *niemals* das blaue Add auf.</p>
+        <p class="mb-2"><strong>Desintegrationsstrahl:</strong> Alle Spieler laufen in die Safe-Zone und folgen dieser 1 Minute lang. Nicht vom Strahl treffen lassen, nicht in die <strong class="text-purple-400">Schandfleck</strong>-Fläche laufen.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="durumu-tank1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="durumu-tank2"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">💚 Lebensentzug-Rotation (Abfangen)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler, die den Strahl abfangen (soaken).</p>
+                    <ul class="assignment-list">
+                        <li><span>Abfänger 1:</span><select data-assignment-id="durumu-soak1" class="assignment-select" data-assignment-pool="durumu-soak"></select></li>
+                        <li><span>Abfänger 2:</span><select data-assignment-id="durumu-soak2" class="assignment-select" data-assignment-pool="durumu-soak"></select></li>
+                        <li><span>Abfänger 3 (Backup):</span><select data-assignment-id="durumu-soak3" class="assignment-select" data-assignment-pool="durumu-soak"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🌈 Lichtspektrum-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li style="grid-template-columns: 0.8fr 1.2fr;"><strong class="text-red-400">Roter Kegel:</strong><select data-assignment-id="durumu-cone-red" class="assignment-select"></select></li>
+                        <li style="grid-template-columns: 0.8fr 1.2fr;"><strong class="text-blue-400">Blauer Kegel:</strong><select data-assignment-id="durumu-cone-blue" class="assignment-select"></select></li>
+                        <li class="list-subheader"><span>(Gelber Kegel rotiert automatisch)</span></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="durumu-cd-header1" placeholder="z.B. 1. Lichtspektrum"></li>
+                        <li><select data-assignment-id="durumu-cd1a-player" class="assignment-select"></select><select data-assignment-id="durumu-cd1a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="durumu-cd1b-player" class="assignment-select"></select><select data-assignment-id="durumu-cd1b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="durumu-cd-header2" placeholder="z.B. 1. Strahl-Phase (Notfall)"></li>
+                        <li><select data-assignment-id="durumu-cd2a-player" class="assignment-select"></select><select data-assignment-id="durumu-cd2a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="durumu-cd2b-player" class="assignment-select"></select><select data-assignment-id="durumu-cd2b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="durumu-cd-header3" placeholder="z.B. 2. Lichtspektrum"></li>
+                        <li><select data-assignment-id="durumu-cd3a-player" class="assignment-select"></select><select data-assignment-id="durumu-cd3a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="durumu-cd3b-player" class="assignment-select"></select><select data-assignment-id="durumu-cd3b-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="durumu" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Normal / Nebel</button>
+                        <button data-phase="durumu-beam" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Strahl-Phase</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="durumu"><strong>Normal:</strong> Raid verteilt sich, legt <strong class="text-purple-400">Verweilender Blick</strong> am Rand ab.<br><strong>Nebel:</strong> Raid teilt sich auf die Kegel auf. Roter Kegel sucht Adds.</p>
+                            <p class="positioning-text hidden" data-phase="durumu-beam"><strong>Strahl:</strong> Alle Spieler sammeln sich in der kleinen Safe-Zone und bewegen sich mit dem Strahl mit.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/durumu.png" alt="Positionierung Durumu Normal" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="durumu">
+                        <img src="throneofthunder/durumu-beam.png" alt="Positionierung Durumu Strahl" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="durumu-beam">
+                    </div>
+                </div>
+
+                <div class="assignment-block mt-6">
+                    <h4 class="text-lg font-bold text-red-500">🔥 Heroisch: Parasiten-Dispeller</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Dispel-Rotation für <strong class="text-red-400">Dunkle Parasiten</strong>.</p>
+                    <ul class="assignment-list">
+                        <li><span>Dispel 1:</span><select data-assignment-id="durumu-hc-dispel1" class="assignment-select"></select></li>
+                        <li><span>Dispel 2:</span><select data-assignment-id="durumu-hc-dispel2" class="assignment-select"></select></li>
+                        <li><span>Backup / Immun:</span><select data-assignment-id="durumu-hc-dispel3" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Geqh1T8uaZw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Normalphase</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Stechender Blick:</strong> Tank-Hit, verursacht <strong class="text-red-400">Schwere Wunde</strong> (Heilreduktion) und <strong class="text-red-400">Arterienschnitt</strong> (Blutung). Blutung stoppt nur bei 100% HP.</li>
+                    <li><strong>Willensstärke:</strong> Kegelförmiger Knockback auf einen Spieler. (Ausweichen).</li>
+                    <li><strong>Verweilender Blick:</strong> Schattenblitze auf Spieler, hinterlassen permanente Voidzones. (Am Rand ablegen).</li>
+                    <li><strong>Lebensentzug:</strong> Auge kanalisiert auf einen Spieler, heilt Durumu. Kanal muss von anderen Spielern abgefangen werden.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-yellow-300">Phase: Lichtspektrum (Nebel)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Farb-Kegel:</strong> Raid muss sich auf rote, blaue und gelbe Kegel aufteilen, um Raidschaden zu vermeiden.</li>
+                    <li><strong class="text-red-400">Purpurroter Nebel (Rot):</strong> 3 Adds, die vom roten Kegel aufgedeckt werden müssen. Müssen sterben, um die Phase zu beenden. Wenn der Kegel sie verlässt, wipet der Raid.</li>
+                    <li><strong class="text-blue-400">Azurblauer Nebel (Blau):</strong> 1 Add, das vom blauen Kegel aufgedeckt wird. Darf <strong class="text-red-500">NICHT</strong> aufgedeckt werden. Explodiert bei Tod/Verlassen des Kegels und respawnt.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg col-span-1 md:col-span-2">
+                <h4 class="text-lg font-bold text-purple-400">Phase: Desintegrationsstrahl (Labyrinth)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Desintegrationsstrahl:</strong> Tödlicher Strahl, dem der Boss vor sich her kanalisiert, während er sich dreht.</li>
+                    <li><strong>Schandfleck:</strong> Tödliche Voidzone, die den gesamten Boden bedeckt, außer einer kleinen, mitrotierenden Safe-Zone.</li>
+                    <li><strong>Gedankendolche:</strong> Konstanter Raidschaden während dieser Phase.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Eiswälle:</strong> Vor der Nebel- und Strahl-Phase erscheinen Wände, die den Raum blockieren. Sie müssen schnell per AoE zerstört werden.</li>
+                <li><strong class="text-yellow-400">Goldgelber Nebel (Gelb):</strong> Ein Add, das vom gelben (automatischen) Kegel aufgedeckt wird. Muss ebenfalls getötet werden, wenn es erscheint.</li>
+                <li><strong>Dunkle Parasiten:</strong> Ein DoT, der auf Spieler gewirkt wird. Wenn er dispellt wird, entsteht eine <strong class="text-purple-400">Dunkle Seuche</strong>.</li>
+                <li><strong>Dunkle Seuche:</strong> Spawnt <strong class="text-purple-400">Umherschweifende Augen</strong>. Diese Adds fixieren Spieler und spiegeln *allen* erlittenen Schaden auf ihr Ziel. (Nur mit sehr leichtem Cleave/DoTs töten, **kein** Burst-AoE!).</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

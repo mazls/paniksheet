@@ -1,0 +1,195 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Tortos</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Tortos ist ein stationärer Bosskampf mit starkem Add-Fokus. Die Kernmechanik des Kampfes ist das Management der <strong class="text-green-400">Wirbelschildkröten</strong>. Diese müssen per Extra-Aktionsbutton auf den Boss getreten werden, um seine tödliche Fähigkeit <strong class="text-red-500">Wütender Steinatem</strong> zu unterbrechen.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Die Schildkröten-Mechanik:</strong> Regelmäßig spawnen 3 <strong class="text-green-400">Wirbelschildkröten</strong>. Sie können nicht getankt werden und wirbeln durch den Raum. DDs müssen eine Schildkröte auf niedrige Gesundheit bringen, woraufhin sie `Panzerblock` wirkt.</li>
+            <li><strong>Panzer treten (Kick):</strong> Sobald eine Schildkröte blockt, erhält jeder Spieler in ihrer Nähe einen Extra-Aktionsbutton. Ein Kick schleudert den Panzer in Blickrichtung des Spielers.</li>
+            <li><strong>Der Interrupt (<strong class="text-red-500">Wütender Steinatem</strong>):</strong> Dies ist die wichtigste Fähigkeit. Tortos lädt 100 Furor auf und wirkt dann `Wütender Steinatem`, was den Raid tötet. Die einzige Möglichkeit, dies zu unterbrechen, ist ein gezielter <strong class="text-green-400">Panzer-Kick</strong> auf den Boss.</li>
+            <li><strong>Schadens-Buff (<strong class="text-yellow-400">Panzererschütterung</strong>):</strong> Jeder erfolgreiche Kick auf den Boss unterbricht ihn nicht nur, sondern belegt ihn auch mit einem 20-sekündigen Debuff, der seinen erlittenen Schaden um 25% (im Tooltip 50%) erhöht.</li>
+            <li><strong>Adds (<strong class="text-gray-400">Vampirfledermäuse</strong>):</strong> Spawnen regelmäßig und müssen vom Add-Tank eingesammelt werden. Sie heilen sich (`Die Schwachen schröpfen`), wenn ihr Ziel unter 550.000 Leben fällt.</li>
+            <li><strong>Raid-Schaden:</strong> <strong class="text-yellow-400">Steinschlag</strong> (blaue Kreise auf dem Boden, ausweichen!) und <strong class="text-red-400">Bodenstampfer</strong> (massiver Raidschaden, ca. 65% HP, und verstärkter `Steinschlag`).</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Positionierung:</strong> Boss-Tank steht permanent in Melee-Reichweite (sonst bekommt der Boss schneller Furor). Add-Tank sammelt Fledermäuse ein und tankt sie neben dem Boss für Cleave-Schaden. Der Raid steht verteilt, um `Steinschlag` auszuweichen.</p>
+        <p class="mb-2"><strong>DPS-Priorität:</strong> 1. Eine <strong class="text-green-400">Wirbelschildkröte</strong> niedrig schlagen, *bevor* `Wütender Steinatem` kommt. 2. <strong class="text-gray-400">Vampirfledermäuse</strong> (Cleave/AoE). 3. Tortos (idealerweise mit `Panzererschütterung`-Debuff).</p>
+        <p class="mb-2"><strong>Kick-Einteilung:</strong> Zugewiesene Spieler (meist Range/Heiler) sind für den Kick verantwortlich. Sie bringen die Schildkröte in Position (zwischen sich und dem Boss) und treten sie, sobald Tortos `Wütender Steinatem` wirkt.</p>
+        <p class="mb-2"><strong>Heilung:</strong> Tanks bei <strong class="text-red-400">Zuschnappen</strong> (Boss-Tank) und Fledermaus-Schaden (Add-Tank > 550k HP halten) stark heilen. Raid-Heil-CDs für jeden <strong class="text-red-400">Bodenstampfer</strong> einteilen.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Boss-Tank (Tortos):</span><select class="assignment-select" data-assignment-id="tortos-tank-boss"></select></li>
+                        <li><span>Add-Tank (Fledermäuse):</span><select class="assignment-select" data-assignment-id="tortos-tank-adds"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🐢 Panzer-Kick (Interrupt)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler, die Schildkröten kicken, um `Steinatem` zu unterbrechen.</p>
+                    <ul class="assignment-list">
+                        <li><span>Kicker 1 (Haupt):</span><select data-assignment-id="tortos-kick1" class="assignment-select" data-assignment-pool="tortos-kicker"></select></li>
+                        <li data-size="25" class="tactic-content"><span>Kicker 2 (25m):</span><select data-assignment-id="tortos-kick2" class="assignment-select" data-assignment-pool="tortos-kicker"></select></li>
+                        <li><span>Kicker 3 (Backup):</span><select data-assignment-id="tortos-kick3" class="assignment-select" data-assignment-pool="tortos-kicker"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung (Bodenstampfer)</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tortos-cd-header1" placeholder="z.B. 1. Bodenstampfer"></li>
+                        <li><select data-assignment-id="tortos-cd1-player" class="assignment-select"></select><select data-assignment-id="tortos-cd1-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="tortos-cd1.1-player" class="assignment-select"></select><select data-assignment-id="tortos-cd1.1-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tortos-cd-header2" placeholder="z.B. 2. Bodenstampfer"></li>
+                        <li><select data-assignment-id="tortos-cd2-player" class="assignment-select"></select><select data-assignment-id="tortos-cd2-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="tortos-cd.21-player" class="assignment-select"></select><select data-assignment-id="tortos-cd2.1-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tortos-cd-header3" placeholder="z.B. 3. Bodenstampfer"></li>
+                        <li><select data-assignment-id="tortos-cd3-player" class="assignment-select"></select><select data-assignment-id="tortos-cd3-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="tortos-cd3.1-player" class="assignment-select"></select><select data-assignment-id="tortos-cd3.1-cooldown" class="assignment-select"></select></li>
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="tortos-cd-header4" placeholder="z.B. 4. Bodenstampfer"></li>
+                        <li><select data-assignment-id="tortos-cd4-player" class="assignment-select"></select><select data-assignment-id="tortos-cd4-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="tortos-cd4.1-player" class="assignment-select"></select><select data-assignment-id="tortos-cd4.1-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="tortos" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Positionierung</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="tortos">Der Boss-Tank steht permanent vor Tortos. Der Add-Tank tankt Fledermäuse neben dem Boss. Der Raid verteilt sich, um <strong class="text-yellow-400">Steinschlag</strong> auszuweichen. Kicker positionieren Schildkröten für den Interrupt.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/tortos.png" alt="Positionierung Tortos" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="tortos">
+                    </div>
+                </div>
+
+                <div class="assignment-block mt-6">
+                    <h4 class="text-lg font-bold text-red-500">🔥 Heroisch: Kristallpanzer</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Heiler müssen die Schilde der Spieler "aufladen".</p>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Schild-Heiler (Rotation)</span></li>
+                        <li><span>Heiler 1:</span><select data-assignment-id="tortos-hc-healer1" class="assignment-select"></select></li>
+                        <li><span>Heiler 2:</span><select data-assignment-id="tortos-hc-healer2" class="assignment-select"></select></li>
+                        <li data-size="25" class="tactic-content"><span>Heiler 3:</span><select data-assignment-id="tortos-hc-healer3" class="assignment-select"></select></li>
+                        <li data-size="25" class="tactic-content"><span>Heiler 4:</span><select data-assignment-id="tortos-hc-healer4" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/A276_zRcwIQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Tortos (Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Wütender Steinatem:</strong> Tödlicher Raidschaden. Muss durch <strong class="text-green-400">Panzer treten</strong> unterbrochen werden.</li>
+                    <li><strong>Bodenstampfer:</strong> Stunt den Raid (1s) und verursacht Schaden in Höhe von 65% (Heroic: 100%) der max. HP. Verstärkt `Steinschlag`.</li>
+                    <li><strong>Steinschlag:</strong> Blaue Kreise auf dem Boden. Verursacht hohen Schaden bei Einschlag (5m) und moderaten Schaden im Umkreis (20m).</li>
+                    <li><strong>Zuschnappen:</strong> Massiver Tank-Hit (ca. 60% HP) auf das aktuelle Ziel.</li>
+                    <li><strong>Wallender Zorn:</strong> Boss erhält 10 Furor, wenn niemand in Melee-Reichweite ist. (Tank muss dranbleiben).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-green-300">Adds & Mechaniken</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Wirbelschildkröte:</strong> Wirbelndes Add, nicht tankbar. Verursacht Schaden und Knockback in 5m.</li>
+                    <li><strong>Panzerblock:</strong> Bei niedriger HP wird die Schildkröte immun und kann getreten werden.</li>
+                    <li><strong>Panzer treten:</strong> Extra-Aktionsbutton. Kickt den Panzer in Blickrichtung.</li>
+                    <li><strong>Panzererschütterung:</strong> Debuff auf dem Boss nach einem Kick. Unterbricht und erhöht erlittenen Schaden.</li>
+                    <li><strong>Vampirfledermaus:</strong> Tankbares Add.</li>
+                    <li><strong>Die Schwachen schröpfen:</strong> Fledermäuse heilen sich, wenn ihr Tank-Ziel unter 550.000 HP fällt.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Bodenstampfer (Heroic):</strong> Verursacht nun Schaden in Höhe von **100% der maximalen Gesundheit**.</li>
+                <li><strong>Kristallpanzer:</strong> In der Arena stehen Kristalle. Greift ein Spieler einen Kristall an, erhält er einen Schild, der 15% seiner max. HP absorbiert.</li>
+                <li><strong>Schild-Heilung:</strong> Solange dieser Schild aktiv ist, wird **jegliche Heilung** auf den Spieler stattdessen **dem Schild hinzugefügt** (bis max. 75% der max. HP). Der Spieler selbst kann nicht geheilt werden!</li>
+                <li><strong>Strategie:</strong> Jeder Spieler *muss* vor `Bodenstampfer` einen Kristallpanzer aktiv haben. Heiler müssen die Schilde der Spieler "aufladen", indem sie sie heilen. Spieler mit niedriger HP dürfen *keinen* Schild nehmen, da sie sonst nicht mehr geheilt werden können und sterben.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

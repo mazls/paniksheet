@@ -1,0 +1,187 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Dunkler Animus</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen den Dunklen Animus ist ein unkonventioneller Add-Kampf, der sich um die Ressource <strong class="text-purple-400">Anima</strong> dreht. Zu Beginn sind nur 25 (10m: 12) kleine <strong class="text-gray-400">Animagolems</strong> aktiv. Größere Golems und der Boss selbst sind inaktiv.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Anima-Übertragung:</strong> Wenn ein Golem stirbt, springt seine <strong class="text-purple-400">Anima</strong> (Energie) auf den nächstgelegenen Golem mit freier Kapazität über.</li>
+            <li><strong>Golems aktivieren:</strong> <strong class="text-gray-400">Große Animagolems</strong> (8 Anima) und <strong class="text-gray-400">Massive Animagolems</strong> (36 Anima) starten leer. Sie werden aktiv, sobald sie Anima erhalten. Ziel ist es, die Anima der kleinen Golems kontrolliert in die Massiven Golems zu leiten, um den Boss noch nicht zu aktivieren.</li>
+            <li><strong>Boss aktivieren:</strong> Der Dunkle Animus wird aktiv, sobald er Anima erhält. Sobald er aktiv ist, beginnt er, <strong class="text-purple-400">Anima von allen</strong> anderen Golems im Raum abzusaugen (<strong class="text-purple-500">Anima entziehen</strong>).</li>
+            <li><strong>Soft-Enrage:</strong> Der Boss erhält neue, gefährliche Fähigkeiten bei 25, 50 und 75 Anima. Bei 100 Anima wirkt er <strong class="text-red-500">VOLLE MACHT</strong>, was einem Wipe gleichkommt. Der Kampf ist ein DPS-Rennen, um den Boss zu töten, bevor er 100 Anima erreicht.</li>
+            <li><strong>Add-Kontrolle:</strong> Kleine <strong class="text-gray-400">Animagolems</strong> müssen getrennt getankt werden, sonst erhalten sie den Buff <strong class="text-yellow-400">Beschleunigungsverbindung</strong> (+250% Schaden/Tempo).</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Phase 1 (Golems füllen):</strong> Zieht *keinen* Golem in die Mitte zum Boss. Tanks und DDs verteilen sich und tanken die kleinen <strong class="text-gray-400">Animagolems</strong> einzeln. Tötet die Golems nacheinander neben einem der <strong class="text-gray-400">Massiven Golems</strong>, um diesen zu füllen (Ziel: 36 Anima). Wiederholt dies für den zweiten Massiven Golem (nur 25m).</p>
+        <p class="mb-2"><strong>Phase 2 (Boss-Phase):</strong> Sobald die Massiven Golems (fast) voll sind, tötet einen letzten kleinen Golem neben dem <strong class="text-red-500">Dunklen Animus</strong> in der Mitte. Dieser wird aktiv.</p>
+        <p class="mb-2"><strong>Boss-Management:</strong> Alle DDs wechseln sofort auf den Boss (KR/HT). Ein Tank hält den Boss, der andere die <strong class="text-gray-400">Massiven Golems</strong>. Der Boss-Tank muss bei <strong class="text-yellow-400">Animaring</strong> aus dem Ring laufen (löst Debuff aus) und der andere Tank muss spotten.</p>
+        <p class="mb-2"><strong>Wichtige Mechaniken:</strong> Bei <strong class="text-purple-400">Materientausch</strong> (Tank-Debuff) den Tank nach 4-5 Sek. dispellen (tauscht Platz mit entferntestem Spieler). Spieler mit <strong class="text-red-400">Animaquell</strong> (AoE-Puls) laufen sofort aus der Gruppe. Vor <strong class="text-red-500">Unterbrechender Schlag</strong> (bei 75 Anima) müssen alle das Zauberwirken einstellen.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Tanks spotten den Boss nach jedem <strong class="text-yellow-400">Animaring</strong>.</p>
+                    <ul class="assignment-list">
+                        <li><span>Boss-Tank:</span><select class="assignment-select" data-assignment-id="animus-tank-boss"></select></li>
+                        <li><span>Add-Tank (Massive):</span><select class="assignment-select" data-assignment-id="animus-tank-adds"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">✨ Dispel-Einteilung (Materientausch)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Tank nach ca. 4-5 Sekunden dispellen.</p>
+                    <ul class="assignment-list">
+                        <li><span>Dispel 1:</span><select data-assignment-id="animus-dispel1" class="assignment-select"></select></li>
+                        <li><span>Dispel 2:</span><select data-assignment-id="animus-dispel2" class="assignment-select"></select></li>
+                        <li><span>Backup:</span><select data-assignment-id="animus-dispel3" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="animus-cd-header1" placeholder="z.B. Boss Aktivierung"></li>
+                        <li><select data-assignment-id="animus-cd1a-player" class="assignment-select"></select><select data-assignment-id="animus-cd1a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="animus-cd1b-player" class="assignment-select"></select><select data-assignment-id="animus-cd1b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="animus-cd-header2" placeholder="z.B. Bei 50 Anima (Animaquell)"></li>
+                        <li><select data-assignment-id="animus-cd2a-player" class="assignment-select"></select><select data-assignment-id="animus-cd2a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="animus-cd2b-player" class="assignment-select"></select><select data-assignment-id="animus-cd2b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="animus-cd-header3" placeholder="z.B. Bei 75 Anima (Schlag)"></li>
+                        <li><select data-assignment-id="animus-cd3a-player" class="assignment-select"></select><select data-assignment-id="animus-cd3a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="animus-cd3b-player" class="assignment-select"></select><select data-assignment-id="animus-cd3b-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="animus-start" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Start (Golems füllen)</button>
+                        <button data-phase="animus-boss" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Boss-Phase</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="animus-start">Raid verteilt sich. Kleine Golems werden einzeln getankt und zu den Massiven Golems gezogen, um sie zu aktivieren.</p>
+                            <p class="positioning-text hidden" data-phase="animus-boss">Boss und Massive Golems werden in der Mitte getankt. Raid verteilt sich leicht. Spieler mit <strong class="text-red-400">Animaquell</strong> laufen raus.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/animus-start.png" alt="Positionierung Animus Start" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="animus-start">
+                        <img src="throneofthunder/animus-boss.png" alt="Positionierung Animus Boss" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="animus-boss">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/BaVCOFVAWGY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-gray-300">Golems & Anima</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Animagolem (Klein):</strong> Startet mit 4 Anima. Muss getrennt getankt werden (<strong class="text-yellow-400">Beschleunigungsverbindung</strong>).</li>
+                    <li><strong>Großer Animagolem (Mittel):</strong> Startet mit 0/8 Anima. Wirkt <strong class="text-red-400">Purpurwelle</strong> (verfolgende Voidzone), wenn aktiv. (Wird meist ignoriert).</li>
+                    <li><strong>Massiver Animagolem (Groß):</strong> Startet mit 0/36 Anima. Wird aktiv, sobald er Anima erhält.</li>
+                    <li><strong>Materientausch:</strong> Debuff auf Tank. Bei Dispel/Ablauf tauscht der Tank Position mit dem am weitesten entfernten Spieler. Schaden wird geteilt.</li>
+                    <li><strong>Explosives Schmettern:</strong> 9m AoE um den Golem. (Rauslaufen).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-cyan-300">Dunkler Animus (Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Anima entziehen:</strong> Boss saugt Anima von allen Golems im Raum.</li>
+                    <li><strong>Berührung des Animus:</strong> Permanenter, stapelbarer Feuer-DoT, der regelmäßig auf Spieler gewirkt wird.</li>
+                    <li><strong>(25 Anima) Animaring:</strong> Ring aus Kugeln um den Tank. Tank muss eine Kugel berühren, um rauszukommen. Erhält dadurch einen Debuff (+200% Nahkampfschaden). (Tankwechsel).</li>
+                    <li><strong>(50 Anima) Animaquell:</strong> Ein Spieler mit <strong class="text-red-400">Berührung des Animus</strong> pulsiert AoE-Schaden. (Raus aus der Gruppe).</li>
+                    <li><strong>(75 Anima) Unterbrechender Schlag:</strong> Raidweiter AoE, unterbricht alle Zauber. (Nicht zaubern!).</li>
+                    <li><strong>(100 Anima) VOLLE MACHT:</strong> Raid-AoE, Wipe.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Boss startet aktiv:</strong> Der Dunkle Animus startet mit 52 Anima und ist von Beginn an aktiv.</li>
+                <li><strong>Anima entziehen (verzögert):</strong> Der Boss beginnt erst nach 2 Minuten mit dem Absaugen von Anima.</li>
+                <li><strong>Golem aufladen:</strong> Boss heilt Golem mit niedrigster HP und bufft dessen Schaden (stapelbar).</li>
+                <li><strong>Strategieänderung:</strong> Der Boss muss von Anfang an getankt werden. DDs müssen schnell die Golems "umfüllen" (18 kleine Golems in die 2 Massiven Golems), bevor der Boss nach 2 Minuten mit dem Absaugen beginnt. Die verbleibenden kleinen Golems werden kontrolliert geopfert, um die 216-Sekunden-Enrage-Timer (bis 100 Anima) zu timen.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>

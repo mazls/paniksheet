@@ -1,0 +1,208 @@
+<style>
+    
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+		cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Megaera</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Megaera ist ein Hydra-Boss, bei dem wir nie den Körper selbst angreifen, sondern nur die Köpfe. Der Kampf besteht darin, insgesamt 7 Köpfe zu töten, um die Gesundheit des Bosses auf 0 zu bringen. Es gibt drei (im Heroic-Modus vier) verschiedene Kopftypen: <strong class="text-red-400">Feuer</strong>, <strong class="text-blue-400">Frost</strong> und <strong class="text-green-400">Gift</strong>.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-gray-300">
+            <li><strong>Zwei Zonen:</strong> Es sind immer zwei Köpfe gleichzeitig aktiv auf der Plattform (einer links, einer rechts), die getankt und angegriffen werden können. Alle anderen Köpfe sind im <strong class="text-gray-400">Verbergenden Nebel</strong> (hinten) und attackieren den Raid von dort aus.</li>
+            <li><strong>Kopf töten:</strong> Wenn ein Kopf auf der Plattform stirbt, tauchen beide Köpfe ab. Der verbleibende Kopf wird voll geheilt und taucht mit einem neuen Kopf eines anderen Typs wieder auf. Im Nebel hinten wachsen zwei Köpfe des getöteten Typs nach.</li>
+            <li><strong>Toben (Raid-Schaden):</strong> Jedes Mal, wenn ein Kopf getötet wird, erleidet der gesamte Raid 20 Sekunden lang hohen Elementarschaden (`Toben`). In dieser Phase kann kein Kopf angegriffen werden.</li>
+            <li><strong>Tank-Mechanik (Atem):</strong> Die aktiven Köpfe müssen getrennt und von der Gruppe weggedreht werden. Jeder Kopf hat einen Atem-Angriff, der einen stapelbaren Debuff verursacht, was einen Tank-Spott erzwingt.</li>
+            <li><strong>Nebel-Mechaniken:</strong> Die Köpfe im Nebel werden immer zahlreicher und stärker.
+                <ul class="list-disc list-inside ml-6 mt-1">
+                    <li><strong class="text-red-400">Feuer (Glut):</strong> DoT auf Spieler. Muss dispellt werden und hinterlässt eine Feuerpfütze.</li>
+                    <li><strong class="text-blue-400">Frost (Eisige Sturzflut):</strong> Ein Eisstrahl verfolgt einen Spieler und hinterlässt Eisflächen.</li>
+                    <li><strong class="text-green-400">Gift (Saurer Regen):</strong> Eine Kugel schlägt ein. Der Schaden ist geringer, je weiter man wegläuft.</li>
+                </ul>
+            </li>
+            <li><strong>Soft-Enrage:</strong> Jeder getötete Kopf bufft permanent den Schaden *aller* Köpfe dieses Typs (`Elementarblut`). Der *verbleibende* aktive Kopf erhält +20% Tempo (`Hydrenraserei`), was abwechselndes Töten erzwingt.</li>
+        </ul>
+        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+        <p class="mb-2"><strong>Positionierung:</strong> Der Raid teilt sich in zwei Gruppen (links/rechts), eine für jeden Kopf. Die Köpfe werden von der Gruppe weggedreht. Beim <strong class="text-red-400">Toben</strong> sammelt sich der Raid für Heil-CDs.</p>
+        <p class="mb-2"><strong>Tank-Wechsel:</strong> Tanks spotten die Köpfe voneinander ab, wenn ihre Debuffs (z.B. <strong class="text-blue-400">Arktischer Frost</strong> bei 2-3 Stapeln) zu hoch werden.</p>
+        <p class="mb-2"><strong>DPS-Fokus:</strong> Fokussiert einen Kopf (z.B. erst Frost, dann Feuer, dann Gift). Wechselt die Ziele *nicht* wild hin und her. Tötet einen Kopf, überlebt das <strong class="text-red-400">Toben</strong>, tötet den nächsten Kopf.</p>
+        <p class="mb-2"><strong>Mechaniken kontern:</strong> Spieler mit <strong class="text-red-400">Glut</strong> laufen aus der Gruppe und lassen sich dispellen. Spieler mit <strong class="text-blue-400">Eisige Sturzflut</strong> kiten den Strahl weg vom Raid. Bei <strong class="text-green-400">Saurer Regen</strong> schnell vom Einschlagspunkt entfernen.</p>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Tanks spotten bei 2-3 Stacks des Atems.</p>
+                    <ul class="assignment-list">
+                        <li><span>Tank Links:</span><select class="assignment-select" data-assignment-id="megaera-tank-left"></select></li>
+                        <li><span>Tank Rechts:</span><select class="assignment-select" data-assignment-id="megaera-tank-right"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">✨ Dispel & Kicks</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><span>Glut (Feuer-DoT)</span></li>
+                        <li><span>Dispel 1:</span><select data-assignment-id="megaera-dispel1" class="assignment-select" data-assignment-pool="megaera-dispel"></select></li>
+                        <li><span>Dispel 2:</span><select data-assignment-id="megaera-dispel2" class="assignment-select" data-assignment-pool="megaera-dispel"></select></li>
+                        <li class="list-subheader"><span>Heroic: Netherwyrm Kicks</span></li>
+                        <li><span>Kick 1:</span><select data-assignment-id="megaera-kick1" class="assignment-select" data-assignment-pool="megaera-kick"></select></li>
+                        <li><span>Kick 2:</span><select data-assignment-id="megaera-kick2" class="assignment-select" data-assignment-pool="megaera-kick"></select></li>
+                        <li><span>Kick 3:</span><select data-assignment-id="megaera-kick3" class="assignment-select" data-assignment-pool="megaera-kick"></select></li>
+                    </ul>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung (Toben)</h4>
+                    <ul class="assignment-list">
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="megaera-cd-header1" placeholder="z.B. 1. Toben"></li>
+                        <li><select data-assignment-id="megaera-cd1a-player" class="assignment-select"></select><select data-assignment-id="megaera-cd1a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="megaera-cd1b-player" class="assignment-select"></select><select data-assignment-id="megaera-cd1b-cooldown" class="assignment-select"></select></li>
+                        
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="megaera-cd-header2" placeholder="z.B. 2. Toben"></li>
+                        <li><select data-assignment-id="megaera-cd2a-player" class="assignment-select"></select><select data-assignment-id="megaera-cd2a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="megaera-cd2b-player" class="assignment-select"></select><select data-assignment-id="megaera-cd2b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="megaera-cd-header3" placeholder="z.B. 3. Toben"></li>
+                        <li><select data-assignment-id="megaera-cd3a-player" class="assignment-select"></select><select data-assignment-id="megaera-cd3a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="megaera-cd3b-player" class="assignment-select"></select><select data-assignment-id="megaera-cd3b-cooldown" class="assignment-select"></select></li>
+
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="megaera-cd-header4" placeholder="z.B. 4. Toben"></li>
+                        <li><select data-assignment-id="megaera-cd4a-player" class="assignment-select"></select><select data-assignment-id="megaera-cd4a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="megaera-cd4b-player" class="assignment-select"></select><select data-assignment-id="megaera-cd4b-cooldown" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="megaera" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Positionierung</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="megaera">Der Raid teilt sich in zwei Camps (links/rechts). Tanks drehen die Köpfe vom Raid weg. Beim <strong class="text-red-400">Toben</strong> sammelt sich der Raid in der Mitte. Spieler mit <strong class="text-red-400">Glut</strong>, <strong class="text-blue-400">Sturzflut</strong> oder <strong class="text-green-400">Saurer Regen</strong> bewegen sich aus dem Camp.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="throneofthunder/megaera.png" alt="Positionierung Megaera" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="megaera">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg">
+                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/_A_SfoJwNuA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="mb-4 bg-slate-750 p-4 rounded-lg border-l-4 border-gray-400">
+            <h4 class="text-lg font-bold text-gray-300">Allgemeine Mechaniken</h4>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong>Toben:</strong> 20s raidweiter AoE nach jedem Kopf-Kill. Der Schaden steigt, je mehr Köpfe dieses Typs bereits im Nebel sind.</li>
+                <li><strong>Hydrenraserei:</strong> Verbleibender Kopf auf der Plattform greift 20% schneller an (stapelbar). Zwingt zum abwechselnden Töten.</li>
+                <li><strong>Elementarblut:</strong> Permanent +20% Schaden für diesen Kopftyp (Nebel + Plattform) für jeden getöteten Kopf dieses Typs.</li>
+                <li><strong>Megaeras Zorn:</strong> Köpfe wirken dies, wenn niemand in Melee-Reichweite ist. Führt zum Wipe.</li>
+            </ul>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-red-400">Feuriger Kopf</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Atem (Plattform): Fleisch entzünden</strong><br>Frontaler Kegel. Verursacht Feuerschaden und einen stapelbaren Feuer-DoT.</li>
+                    <li><strong>Nebel-Fähigkeit: Glut</strong><br>DoT auf zufälligen Spieler. Beim Dispellen (oder im Heroic: permanent) entsteht eine Feuerpfütze. Entfernt <strong class="text-blue-400">Vereisten Boden</strong>.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-blue-400">Eisiger Kopf</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Atem (Plattform): Arktischer Frost</strong><br>Frontaler Kegel. Verursacht Frostschaden. Bei 4 Stapeln wird der Tank 20s betäubt.</li>
+                    <li><strong>Nebel-Fähigkeit: Eisige Sturzflut</strong><br>Eisstrahl verfolgt einen Spieler (8s) und hinterlässt <strong class="text-blue-400">Vereisten Boden</strong> (Schaden + Slow). Entfernt Feuerpfützen.</li>
+                </ul>
+            </div>
+             <div class="bg-slate-750 p-4 rounded-lg">
+                <h4 class="text-lg font-bold text-green-400">Giftiger Kopf</h4>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong>Atem (Plattform): Rüstungsfraß</strong><br>Frontaler Kegel. Verursacht Naturschaden und stapelt einen Debuff, der 10% mehr Schaden (alle Quellen!) verursacht.</li>
+                    <li><strong>Nebel-Fähigkeit: Saurer Regen</strong><br>Kugel schlägt auf Spieler ein. Verursacht hohen Raidschaden, der mit Entfernung abnimmt. (Weglaufen!)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong class="text-red-400">Glut (Feuer):</strong> Hinterlässt jetzt alle 3 Sekunden eine Feuerpfütze, solange der DoT aktiv ist, nicht nur beim Dispellen.</li>
+                <li><strong class="text-blue-400">Vereister Boden (Frost):</strong> Die Eisflächen wachsen über 2 Minuten auf die doppelte Größe an.</li>
+                <li><strong class="text-green-400">Saurer Regen (Gift):</strong> Es schlagen **drei Kugeln** gleichzeitig ein, nicht nur eine. (Aus diesem Grund wird der Gift-Kopf im Heroic fast nie getötet!)</li>
+                <li><strong class="text-purple-400">Neuer Kopf: Arkaner Kopf</strong><br>
+                    <strong>Atem: Diffusion:</strong> Stapelbarer Debuff, der 10% der erhaltenen Heilung auf Verbündete in 8m umleitet.<br>
+                    <strong>Nebel: Netherriss:</strong> Beschwört <strong class="text-purple-400">Netherwyrm</strong>-Adds. Diese müssen getankt werden und wirken `Netherstachel` (Kick!) und `Unterdrückung` (Stun, Kick/Dispel!).
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+</main>
