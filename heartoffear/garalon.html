@@ -57,7 +57,7 @@
         </ul>
         <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
         <p class="mb-2"><strong>Kiten:</strong> Der Pheromon-Träger kitet Garalon am Rand des Raumes entlang. Die Pheromonspur sollte überlappend gelegt werden, um Platz zu sparen. Der Debuff wird bei ca. 20 Stacks an den nächsten Spieler in der Rotation weitergegeben.</p>
-        <p class="mb-2"><strong>Tanks:</strong> Stellt euch immer vor den Boss, um <strong class="text-orange-400">Wütender Hieb</strong> abzufangen. Bewegt euch mit dem Kiter mit.</p>
+        <p class="mb-2"><strong>Tanks:</strong> Stellt euch immer vor den Boss, um <strong class="text-orange-400">Wütenden Hieb</strong> abzufangen. Bewegt euch mit dem Kiter mit.</p>
         <p class="mb-2"><strong>DPS:</strong> Fokussiert euch auf die Beine. Nutzt den <strong class="text-cyan-400">Schwachpunkt</strong>-Buff, indem ihr in Nahkampfreichweite der Beine steht, aber achtet darauf, nicht unter den Boss (innerhalb des Kreises) zu geraten.</p>
     </div>
     </section>
@@ -70,31 +70,12 @@
     <div class="collapsible-content">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     <div>
-        <div class="assignment-block">
-            <h4 class="text-lg font-bold">🛡️ Tank-Einteilung (Wütender Hieb)</h4>
-            <p class="text-sm text-gray-400 mb-2">Die beiden Tanks (oder Schurken mit 'Finte') müssen immer vor dem Boss stehen, um den Hieb abzufangen.</p>
-            <div class="assignment-header">
-                <span>Aufgabe</span>
-                <span>Spieler</span>
-            </div>
-            <ul class="assignment-list">
-                <li>
-                    <span>Soaker 1:</span>
-                    <select class="assignment-select" data-assignment-id="garalon-tank1"></select>
-                </li>
-                <li>
-                    <span>Soaker 2:</span>
-                    <select class="assignment-select" data-assignment-id="garalon-tank2"></select>
-                </li>
-            </ul>
-        </div>
 
 <div class="assignment-block">
     <h4 class="text-lg font-bold text-yellow-400">🏃 Kiter-Rotation (Pheromone)</h4>
     <p class="text-sm text-gray-400 mb-2">
       Der Debuff wird bei ca. <strong>10 Stacks</strong> an den nächsten Spieler weitergegeben.
     </p>
-    <div id="garalon-kiter-compact" class="mt-2 text-sm text-gray-300"></div>
   <div class="flex gap-2 mb-3">
     <button id="garalon-kiter-autofill" class="tactic-content bg-green-700 px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed" data-size="10">Auto-füllen (10)</button>
     <button id="garalon-kiter-autofill-25" class="tactic-content bg-green-700 px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed" data-size="25" style="display:inline-block">Auto-füllen (25)</button>
@@ -108,36 +89,40 @@
     <span class="toggle-icon">▼</span>
 </div>
 
-    <div class="collapsible-content collapsed">
+    <div class="collapsible-content">
         <ul id="garalon-kiter-list" class="assignment-list"></ul>
     </div>
 </div>
 
 <div class="assignment-block">
-  <h4 class="text-lg font-bold">🦵 Beine-Einteilung</h4>
-  <p class="text-sm text-gray-400 mb-2">Jedes Bein: 6 Spieler. (Totenkopf, Kreuz, Quadrat, Dreieck)</p>
-
-<div class="flex gap-2 mb-3">
-  <button id="garalon-legs-autofill" class="bg-green-700 px-3 py-1 rounded">
-    Auto-füllen
-  </button>
-</div>
-
-  <ul id="garalon-legs" class="assignment-list">
-    <li class="list-subheader" style="display:block;"><span>Totenkopf</span><img class="raidicon" src="raidicons/skull.png"></li>
-    <li data-group-name="Totenkopf">
-      <!-- 6 Slots werden vom Script erzeugt -->
-    </li>
-
-    <li class="list-subheader" style="display:block;"><span>Kreuz</span><img class="raidicon" src="raidicons/cross.png"></li>
-    <li data-group-name="Kreuz"></li>
-
-    <li class="list-subheader" style="display:block;"><span>Quadrat</span><img class="raidicon" src="raidicons/square.png"></li>
-    <li data-group-name="Quadrat"></li>
-
-    <li class="list-subheader" style="display:block;"><span>Dreieck</span><img class="raidicon" src="raidicons/triangle.png"></li>
-    <li data-group-name="Dreieck"></li>
-  </ul>
+  <h4 class="text-lg font-bold collapsible-header">
+      🦵 Beine-Einteilung
+      <span class="toggle-icon">▼</span>
+  </h4>
+  <div class="collapsible-content collapsed">
+      <p class="text-sm text-gray-400 mb-2">Jedes Bein: 6 Spieler. (Totenkopf, Kreuz, Quadrat, Dreieck)</p>
+    
+    <div class="flex gap-2 mb-3">
+      <button id="garalon-legs-autofill" class="bg-green-700 px-3 py-1 rounded">
+        Auto-füllen
+      </button>
+    </div>
+    
+      <ul id="garalon-legs" class="assignment-list">
+        <li class="list-subheader" style="display:block;"><span>Totenkopf</span><img class="raidicon" src="raidicons/skull.png"></li>
+        <li data-group-name="Totenkopf">
+          </li>
+    
+        <li class="list-subheader" style="display:block;"><span>Kreuz</span><img class="raidicon" src="raidicons/cross.png"></li>
+        <li data-group-name="Kreuz"></li>
+    
+        <li class="list-subheader" style="display:block;"><span>Quadrat</span><img class="raidicon" src="raidicons/square.png"></li>
+        <li data-group-name="Quadrat"></li>
+    
+        <li class="list-subheader" style="display:block;"><span>Dreieck</span><img class="raidicon" src="raidicons/triangle.png"></li>
+        <li data-group-name="Dreieck"></li>
+      </ul>
+  </div>
 </div>
 
 
@@ -184,7 +169,7 @@
 					</div>
 					<div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
 					<div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-						<p class="positioning-text" data-phase="garalon">Der Kiter läuft an der Außenwand des Raumes entlang, um Garalon im Kreis zu führen. Die Tanks bleiben immer vor dem Boss. DPS-Spieler greifen das Bein an, das dem Rest des Raids am nächsten ist, und achten darauf, nicht in den lila Kreis unter dem Boss zu laufen. Der Raid hält sich generell in der Mitte des Raumes auf, um allen Beinen nahe zu sein.</p>
+						<p class="positioning-text" data-phase="garalon">Der Kiter läuft an der Außenwand des Raumes entlang, um Garalon im Kreis zu führen. Die Tanks bleiben immer vor dem Boss. DPS-Spieler greifen das Bein an, das dem Rest des Raids am nächsten ist, und achten darauf, nicht in den lila Kreis unter den Boss zu laufen. Der Raid hält sich generell in der Mitte des Raumes auf, um allen Beinen nahe zu sein.</p>
 						
 					</div>
 					</div>
@@ -202,7 +187,6 @@
         </div>
     </div>
 </div>
-<!-- WeakAura-Export: Kiter-Rotation -->
 <div class="mt-4">
   <div class="flex items-center gap-2 mb-2">
     <button id="copy-garalon-kiter-code-btn"
@@ -212,12 +196,10 @@
     <span class="text-xs text-gray-400">Kiter-Rotation (Wechsel bei ~10 Stacks)</span>
   </div>
 
-  <!-- Nur Zeilenliste für WeakAura -->
   <pre class="bg-slate-900 p-3 rounded border border-slate-700 max-h-64 overflow-auto">
 <code id="garalon-kiter-weakaura-output">-- Bitte Kiter zuweisen…</code>
   </pre>
 
-  <!-- Kompaktansicht (normaler Text, mit Klassenfarbe) -->
   <div id="garalon-kiter-compact" class="mt-2 text-sm text-gray-300"></div>
 </div>
 
@@ -287,355 +269,282 @@
         </div>
     </div>
     </section>
-<script>
-let _lastAssignments = null;
-    window.initializePageSpecificCode = function(assignments, roster, firebase) {
-        // Die Firebase-Funktionen lokal verfügbar machen
-        const { doc, updateDoc, db } = firebase;
-        _lastAssignments = assignments;
 
-        // UI-Elemente initial aufbauen (erstellt die Dropdowns)
+<script>
+(() => {
+    // --- Globale Helfer für diese Seite ---
+    const LEG_GROUP_MAP = { 'totenkopf': 'skull', 'kreuz': 'cross', 'quadrat': 'square', 'dreieck': 'triangle' };
+
+    function getRosterNames(roster) {
+        const src = Array.isArray(roster) && roster.length ? roster : (window.rosterData || []);
+        return src.map(p => (typeof p === 'string' ? p : p?.name)).filter(Boolean);
+    }
+
+    function getRaidSize() {
+        return (sessionStorage.getItem('raidSize') === '10' ? '10' : '25');
+    }
+
+    // --- Kiter-Liste Logik ---
+    function applyKiterVisibility() {
+        const is10 = getRaidSize() === '10';
+        for (let i = 1; i <= 25; i++) {
+            const li = document.querySelector(`#garalon-kiter-list li[data-kiter-idx="${i}"]`);
+            if (!li) continue;
+            if (is10 && i > 10) li.classList.add('kiter-hidden');
+            else li.classList.remove('kiter-hidden');
+        }
+    }
+
+    function buildKiterListOnce() {
+        const list = document.getElementById('garalon-kiter-list');
+        if (!list) return;
+        if (list.dataset._built === '1') {
+            applyKiterVisibility(); // Sicherstellen, dass Sichtbarkeit bei Neuladen stimmt
+            return;
+        }
+        list.dataset._built = '1';
+        list.innerHTML = '';
+
+        for (let i = 1; i <= 25; i++) {
+            const li = document.createElement('li');
+            li.dataset.kiterIdx = String(i);
+            li.style.gridTemplateColumns = '0.5fr 1fr';
+            const label = document.createElement('span');
+            label.textContent = i;
+            const sel = document.createElement('select');
+            sel.className = 'assignment-select';
+            sel.dataset.assignmentId = `garalon-kiter${i}`;
+            sel.dataset.assignmentPool = 'garalon-kiter';
+            li.appendChild(label);
+            li.appendChild(sel);
+            list.appendChild(li);
+        }
+        applyKiterVisibility();
+
+        document.getElementById('size-toggle')?.addEventListener('click', (e) => {
+            if (e.target.matches('.size-toggle-btn')) {
+                setTimeout(applyKiterVisibility, 0);
+            }
+        });
+
+        // Kiter-Liste einklappbar machen
+        const kiterToggle = document.getElementById('kiter-list-toggle');
+        if (kiterToggle && kiterToggle.nextElementSibling) {
+            const kiterContent = kiterToggle.nextElementSibling;
+            kiterToggle.addEventListener('click', () => {
+                kiterToggle.classList.toggle('active');
+                kiterContent.classList.toggle('collapsed');
+            });
+        }
+    }
+
+    // --- Beine-Liste Logik ---
+    function ensureLegSlotsOnce() {
+        const root = document.getElementById('garalon-legs');
+        if (!root || root.dataset._built === '1') return;
+        root.dataset._built = '1';
+
+        root.querySelectorAll('li[data-group-name]').forEach(li => {
+            if (li.querySelector('select')) return; 
+            const groupName = (li.dataset.groupName || '').trim();
+            for (let i = 1; i <= 6; i++) {
+                const sel = document.createElement('select');
+                sel.className = 'assignment-select';
+                sel.dataset.assignmentPool = `garalon-legs`;
+                sel.dataset.assignmentId = `garalon-leg-${groupName}-${i}`;
+                li.appendChild(sel);
+            }
+        });
+        
+        // Beine-Liste einklappbar machen (jetzt wo ich den Selektor habe)
+        const legsContentDiv = root.closest('.collapsible-content');
+        if (legsContentDiv) {
+            const legsToggle = legsContentDiv.previousElementSibling;
+            if (legsToggle && legsToggle.classList.contains('collapsible-header')) {
+                legsToggle.addEventListener('click', () => {
+                    legsToggle.classList.toggle('active');
+                    legsContentDiv.classList.toggle('collapsed');
+                });
+            }
+        }
+    }
+
+    // --- Export-Logik ---
+    function getShownKiterNames(assignments) {
+        const all = [];
+        for (let i = 1; i <= 25; i++) {
+            const n = assignments?.[`garalon-kiter${i}`]?.player || "";
+            if (n) all.push(n);
+        }
+        const size = getRaidSize();
+        return all.slice(0, size === '10' ? 10 : 25);
+    }
+
+    function renderLinesForWA(names) {
+        const outEl = document.getElementById('garalon-kiter-weakaura-output');
+        if (!outEl) return;
+        outEl.textContent = names.length ? names.join("\n") : "-- Bitte Kiter zuweisen…";
+    }
+
+    function renderCompactColored(names, roster) {
+        const host = document.getElementById('garalon-kiter-compact');
+        if (!host) return;
+        host.innerHTML = "";
+        if (!names.length) { host.textContent = ""; return; }
+
+        const byName = new Map();
+        (Array.isArray(roster) ? roster : []).forEach(p => {
+            const name = (typeof p === "string" ? p : p?.name);
+            const cls = (typeof p === "string" ? null : p?.class);
+            if (name) byName.set(name, cls);
+        });
+
+        const wrap = document.createElement("div");
+        wrap.className = "flex flex-wrap items-center gap-2";
+        names.forEach((n, idx) => {
+            const cls = (byName.get(n) || "").toUpperCase();
+            const color = (window.classColors && window.classColors[cls]) || "#FFFFFF";
+            const span = document.createElement("span");
+            span.textContent = n;
+            span.style.color = color;
+            span.style.fontWeight = "600";
+            wrap.appendChild(span);
+            if (idx < names.length - 1) {
+                const arrow = document.createElement("span");
+                arrow.textContent = "→";
+                arrow.className = "opacity-70";
+                wrap.appendChild(arrow);
+            }
+        });
+        
+        const label = document.createElement("div");
+        label.className = "text-xs text-gray-400 mb-1";
+        label.textContent = "Kompakt:";
+        host.appendChild(label);
+        host.appendChild(wrap);
+    }
+
+    function renderAllExports(assignments, roster) {
+        const names = getShownKiterNames(assignments);
+        renderLinesForWA(names);
+        renderCompactColored(names, roster);
+    }
+
+    // --- Button-Aktionen (nutzen window.applyAssignmentsBulk aus index.html) ---
+    function autofillKiter(roster, assignments, size) {
+        if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
+        
+        let orderedKiterList = [];
+        const addedPlayers = new Set();
+        const rosterData = Array.isArray(roster) ? roster : (window.rosterData || []);
+        const currentAssignments = assignments || window._lastAssignments || {};
+
+
+        // 1. Starter (Schurke/Jäger)
+        const starters = rosterData.filter(p => (p.class === "ROGUE" || p.class === "HUNTER") && !p.roles.includes('TANK'));
+        if (starters.length > 0) {
+            orderedKiterList.push(starters[0]);
+            addedPlayers.add(starters[0].name);
+        }
+
+        // 2. Tanks
+        const assignedTanks = [currentAssignments['garalon-tank1']?.player, currentAssignments['garalon-tank2']?.player].filter(Boolean);
+        assignedTanks.forEach(tankName => {
+            if (!addedPlayers.has(tankName)) {
+                const tankPlayer = rosterData.find(p => p.name === tankName);
+                if (tankPlayer) {
+                    orderedKiterList.push(tankPlayer);
+                    addedPlayers.add(tankName);
+                }
+            }
+        });
+
+        // 3. Range-DPS
+        const rangeDpsClasses = ["WARLOCK", "MAGE", "PRIEST", "SHAMAN", "HUNTER"];
+        const rangeDps = rosterData
+            .filter(p => rangeDpsClasses.includes(p.class) && p.roles.includes('DPS') && !addedPlayers.has(p.name));
+        rangeDps.forEach(p => { orderedKiterList.push(p); addedPlayers.add(p.name); });
+
+        // 4. Rest
+        const rest = rosterData.filter(p => !addedPlayers.has(p.name));
+        rest.forEach(p => { orderedKiterList.push(p); addedPlayers.add(p.name); });
+        
+        if (orderedKiterList.length === 0) return window.showModal("Keine Spieler im Roster gefunden.");
+
+        const kiterNames = orderedKiterList.map(p => p.name);
+        const updates = {};
+        const numToFill = (size === '10' ? 10 : 25);
+
+        for (let i = 1; i <= numToFill; i++) {
+            updates[`garalon-kiter${i}`] = kiterNames[(i - 1) % kiterNames.length];
+        }
+        // Restliche Slots (bis 25) leeren, falls 10er gefüllt wird
+        for (let i = numToFill + 1; i <= 25; i++) {
+            updates[`garalon-kiter${i}`] = "";
+        }
+        
+        window.applyAssignmentsBulk?.(updates);
+        window.showModal(`Kiter-Rotation (${numToFill}) wurde nach Priorität gefüllt!`);
+    }
+
+    function autofillLegs(roster) {
+        if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
+        const rosterData = Array.isArray(roster) ? roster : (window.rosterData || []);
+        const names = getRosterNames(rosterData).slice(); // Kopie
+        const updates = {};
+        ['Totenkopf', 'Kreuz', 'Quadrat', 'Dreieck'].forEach(label => {
+            for (let i = 1; i <= 6; i++) {
+                updates[`garalon-leg-${label}-${i}`] = names.shift() || "";
+            }
+        });
+        window.applyAssignmentsBulk?.(updates);
+    }
+
+    // --- EINMALIGE VERDRAHTUNG ---
+    function wireButtonsOnce(roster, assignments) {
+        if (document.body.dataset._garalonButtonsWired === '1') return;
+        document.body.dataset._garalonButtonsWired = '1';
+
+        document.getElementById('garalon-kiter-autofill')?.addEventListener('click', () => autofillKiter(roster, assignments, '10'));
+        document.getElementById('garalon-kiter-autofill-25')?.addEventListener('click', () => autofillKiter(roster, assignments, '25'));
+        document.getElementById('garalon-legs-autofill')?.addEventListener('click', () => autofillLegs(roster));
+
+        const btnCopy = document.getElementById('copy-garalon-kiter-code-btn');
+        if (btnCopy) {
+            btnCopy.addEventListener('click', async () => {
+                const outEl = document.getElementById('garalon-kiter-weakaura-output');
+                try {
+                    await navigator.clipboard.writeText(outEl?.textContent || "");
+                    const old = btnCopy.textContent; btnCopy.textContent = "Kopiert!";
+                    setTimeout(() => btnCopy.textContent = old, 1200);
+                } catch (e) { console.error(e); }
+            });
+        }
+    }
+
+    // --- HAUPTFUNKTION (HOOK) ---
+    // Diese Funktion wird von index.html's onSnapshot-Callback aufgerufen
+    window.initializePageSpecificCode = function(assignments, roster) {
+        
+        // 1. UI einmalig aufbauen (wird bei jedem Aufruf geprüft)
         buildKiterListOnce();
         ensureLegSlotsOnce();
 
-        // Buttons mit den Autofill-Funktionen verbinden
-        wireButtonsOnce(assignments, roster);
+        // 2. Buttons einmalig verdrahten (nutzt aktuelle assignments/roster)
+        wireButtonsOnce(roster, assignments);
 
-        // Die Export-Anzeigen (WeakAura, Kompakt) mit den neuen Daten aktualisieren
+        // 3. Exporte bei JEDEM Update neu rendern
         renderAllExports(assignments, roster);
 
-        // Den Status der "Schon vergeben"-Anzeige aktualisieren
+        // 4. Pool-Status (gelbe Punkte) aktualisieren
         window.updateAssignmentPools?.();
     };
-const getRaidSize = () => (sessionStorage.getItem('raidSize') === '10' ? '10' : '25');
 
-  // Map für Bein-Gruppen (deutsches Label -> Pool-Suffix)
-  const LEG_GROUP_MAP = {
-    'totenkopf': 'skull',
-    'kreuz':     'cross',
-    'quadrat':   'square',
-    'dreieck':   'triangle'
-  };
-
-  function getRosterNames(roster) {
-    // roster kann global (window.rosterData) oder als Param kommen
-    const src = Array.isArray(roster) && roster.length ? roster : (window.rosterData || []);
-    return src.map(p => (typeof p === 'string' ? p : p?.name)).filter(Boolean);
-  }
-
-  // =========================
-  // Kiter: 25 Slots einmalig bauen, Sichtbarkeit je Größe togglen
-  // =========================
-  function applyKiterVisibility() {
-    const is10 = getRaidSize() === '10';
-    for (let i = 1; i <= 25; i++) {
-      const li = document.querySelector(`#garalon-kiter-list li[data-kiter-idx="${i}"]`);
-      if (!li) continue;
-      if (is10 && i > 10) li.classList.add('kiter-hidden');
-      else li.classList.remove('kiter-hidden');
+    // Direkter Aufruf beim Laden des HTML, falls `onSnapshot` schon gelaufen ist
+    // und die globalen Variablen von index.html verfügbar sind.
+    if (window.rosterData) {
+         window.initializePageSpecificCode(window._lastAssignments || {}, window.rosterData);
     }
-  }
-    const kiterToggle = document.getElementById('kiter-list-toggle');
-    if (kiterToggle) {
-        const kiterContent = kiterToggle.nextElementSibling;
-        kiterToggle.addEventListener('click', () => {
-            kiterToggle.classList.toggle('active');
-            kiterContent.classList.toggle('collapsed');
-        });
-    }
-  function buildKiterListOnce() {
-    const list = document.getElementById('garalon-kiter-list');
-    if (!list) return;
-    if (list.dataset._built === '1') { applyKiterVisibility(); return; }
-
-    list.dataset._built = '1';
-    list.innerHTML = '';
-
-    // Immer 25 Selects erzeugen – Optionsbefüllung & DB-Save macht index.html
-    for (let i = 1; i <= 25; i++) {
-      const li = document.createElement('li');
-      li.dataset.kiterIdx = String(i);
-      li.style.gridTemplateColumns = '0.5fr 1fr';
-
-      const label = document.createElement('span');
-      label.textContent = i;
-
-      const sel = document.createElement('select');
-      sel.className = 'assignment-select';
-      sel.dataset.assignmentId   = `garalon-kiter${i}`;
-      sel.dataset.assignmentPool = 'garalon-kiter';
-
-      li.appendChild(label);
-      li.appendChild(sel);
-      list.appendChild(li);
-    }
-
-    applyKiterVisibility();
-
-    // Größen-Toggle: nur Sichtbarkeit umschalten, kein Rebuild
-    document.getElementById('size-toggle')?.addEventListener('click', (e) => {
-      if (e.target.matches('.size-toggle-btn')) {
-        setTimeout(applyKiterVisibility, 0);
-      }
-    });
-  }
-
-  // =========================
-  // Beine: je Gruppe 6 Slots erzeugen (einmalig)
-  // Erwartet im HTML einen Container mit <ul id="garalon-legs"> und darin
-  // <li class="list-subheader"><span>Totenkopf</span></li>
-  // <li data-group-name="Totenkopf"></li>  ... analog für Kreuz/Quadrat/Dreieck
-  // =========================
-  function ensureLegSlotsOnce() {
-    const root = document.getElementById('garalon-legs');
-    if (!root || root.dataset._built === '1') return;
-
-    root.dataset._built = '1';
-    root.querySelectorAll('li[data-group-name]').forEach(li => {
-      if (li.querySelector('select')) return; // bereits vorhanden
-      const groupName = (li.dataset.groupName || '').trim();
-      const poolSuffix = LEG_GROUP_MAP[groupName.toLowerCase()] || groupName.toLowerCase();
-
-      for (let i = 1; i <= 6; i++) {
-        const sel = document.createElement('select');
-        sel.className = 'assignment-select';
-        // eigener Pool je Bein, damit deine UI die Belegung klar zeigt
-        sel.dataset.assignmentPool = `garalon-legs`;
-        // ID bleibt sprechend mit deutschem Label wie bisher:
-        sel.dataset.assignmentId   = `garalon-leg-${groupName}-${i}`;
-        li.appendChild(sel);
-      }
-    });
-  }
-
-  // =========================
-  // Bulk-Aktionen (nutzt index.html: window.applyAssignmentsBulk)
-  // =========================
-
-function autofillKiterAlways25(roster) {
-    if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
-    
-    const assignments = window._lastAssignments || {};
-    const raidSize = (sessionStorage.getItem('raidSize') || '25') === '10' ? 10 : 25;
-
-    let orderedKiterList = [];
-    const addedPlayers = new Set();
-
-    // 1. Finde den besten Starter (Schurke oder Jäger)
-    const starters = (roster || []).filter(p => (p.class === "ROGUE" || p.class === "HUNTER") && !p.roles.includes('TANK'));
-    if (starters.length > 0) {
-        const bestStarter = starters[0]; // Nimm den ersten gefundenen
-        orderedKiterList.push(bestStarter);
-        addedPlayers.add(bestStarter.name);
-    }
-
-    // 2. Füge die beiden Tanks hinzu
-    const assignedTanks = [assignments['garalon-tank1']?.player, assignments['garalon-tank2']?.player].filter(Boolean);
-    assignedTanks.forEach(tankName => {
-        if (!addedPlayers.has(tankName)) {
-            const tankPlayer = (roster || []).find(p => p.name === tankName);
-            if (tankPlayer) {
-                orderedKiterList.push(tankPlayer);
-                addedPlayers.add(tankName);
-            }
-        }
-    });
-
-    // 3. Füge alle Range-DPS hinzu, die noch nicht in der Liste sind
-    const rangeDpsClasses = ["WARLOCK", "MAGE", "PRIEST", "SHAMAN", "HUNTER"];
-    const rangeDps = (roster || [])
-        .filter(p => rangeDpsClasses.includes(p.class) && p.roles.includes('DPS') && !addedPlayers.has(p.name));
-    rangeDps.forEach(p => {
-        orderedKiterList.push(p);
-        addedPlayers.add(p.name);
-    });
-
-    // 4. Füge den gesamten Rest hinzu (Melees, Heiler etc.), die noch nicht in der Liste sind
-    const rest = (roster || []).filter(p => !addedPlayers.has(p.name));
-    rest.forEach(p => {
-        orderedKiterList.push(p);
-        addedPlayers.add(p.name);
-    });
-    
-    if (orderedKiterList.length === 0) {
-        return window.showModal("Keine Spieler im Roster gefunden.");
-    }
-
-    const kiterNames = orderedKiterList.map(p => p.name);
-    const updates = {};
-
-    // 5. Fülle die Kiter-Rotation mit der neuen, sortierten Liste
-    for (let i = 1; i <= raidSize; i++) {
-        updates[`garalon-kiter${i}`] = kiterNames[(i - 1) % kiterNames.length];
-    }
-    
-    window.applyAssignmentsBulk?.(updates);
-    window.showModal("Kiter-Rotation wurde nach Priorität gefüllt!");
-}
-
-  function clearKiterAll25() {
-    if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
-    const updates = {};
-    for (let i = 1; i <= 25; i++) updates[`garalon-kiter${i}`] = "";
-    window.applyAssignmentsBulk?.(updates);
-  }
-
-  function autofillLegs(roster) {
-    if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
-    const perGroup = 6;
-    const names = getRosterNames(roster).slice(); // Kopie
-    const labels = ['Totenkopf', 'Kreuz', 'Quadrat', 'Dreieck'];
-    const updates = {};
-
-    labels.forEach(label => {
-      for (let i = 1; i <= perGroup; i++) {
-        updates[`garalon-leg-${label}-${i}`] = names.shift() || "";
-      }
-    });
-    window.applyAssignmentsBulk?.(updates);
-  }
-
-  function clearLegs() {
-    if (!window.isManager) return window.showModal("Nur der Gildenrat kann diese Funktion nutzen.");
-    const updates = {};
-    ['Totenkopf', 'Kreuz', 'Quadrat', 'Dreieck'].forEach(label => {
-      for (let i = 1; i <= 6; i++) {
-        updates[`garalon-leg-${label}-${i}`] = "";
-      }
-    });
-    window.applyAssignmentsBulk?.(updates);
-  }
-
-  // =========================
-  // Page-Hook: von index.html aufgerufen
-  // =========================
-  window.initializePageSpecificCode = function(assignments, roster) {
-    // 1) UI einmalig aufbauen
-    buildKiterListOnce();
-    ensureLegSlotsOnce();
-
-    // 2) Buttons verdrahten (einmalig)
-    const wired = document.body.dataset._garalonButtonsWired === '1';
-    if (!wired) {
-      document.body.dataset._garalonButtonsWired = '1';
-
-      // Kiter: immer 25 befüllen/leeren; Anzeige folgt dem Size-Toggle
-      document.getElementById('garalon-kiter-autofill')?.addEventListener('click', () => autofillKiterAlways25(roster));
-      document.getElementById('garalon-kiter-autofill-25')?.addEventListener('click', () => autofillKiterAlways25(roster));
-      document.getElementById('garalon-kiter-clear')?.addEventListener('click', clearKiterAll25);
-
-      // Beine
-      document.getElementById('garalon-legs-autofill')?.addEventListener('click', () => autofillLegs(roster));
-      document.getElementById('garalon-legs-clear')?.addEventListener('click', clearLegs);
-    }
-
-    // 3) Nach jedem Snapshot Pools ggf. einmal aktualisieren (leichtgewichtig)
-    window.updateAssignmentPools?.();
-  };
-</script>
-<script>
-(() => {
-  let _lastAssignments = null, _lastRoster = null;
-
-  function getShownNames(assignments) {
-    const all = [];
-    for (let i = 1; i <= 25; i++) {
-      const n = assignments?.[`garalon-kiter${i}`]?.player || "";
-      if (n) all.push(n);
-    }
-    const size = (sessionStorage.getItem('raidSize') === '10') ? 10 : 25;
-    return all.slice(0, size);
-  }
-
-  function renderLinesForWA(names) {
-    const outEl = document.getElementById('garalon-kiter-weakaura-output');
-    if (!outEl) return;
-    outEl.textContent = names.length ? names.join("\n") : "-- Bitte Kiter zuweisen…";
-  }
-
-  function renderCompactColored(names, roster) {
-    const host = document.getElementById('garalon-kiter-compact');
-    if (!host) return;
-    host.innerHTML = "";
-
-    if (!names.length) { host.textContent = ""; return; }
-
-    // Map: Name -> CLASS (aus roster)
-    const byName = new Map();
-    (Array.isArray(roster) ? roster : []).forEach(p => {
-      const name = (typeof p === "string" ? p : p?.name);
-      const cls = (typeof p === "string" ? null : p?.class);
-      if (name) byName.set(name, cls);
-    });
-
-    const wrap = document.createElement("div");
-    wrap.className = "flex flex-wrap items-center gap-2";
-
-    names.forEach((n, idx) => {
-      const cls = (byName.get(n) || "").toUpperCase();
-      const color = (window.classColors && window.classColors[cls]) || "#FFFFFF";
-
-      const span = document.createElement("span");
-      span.textContent = n;
-      span.style.color = color;
-      span.style.fontWeight = "600";
-      wrap.appendChild(span);
-
-      if (idx < names.length - 1) {
-        const arrow = document.createElement("span");
-        arrow.textContent = "→";
-        arrow.className = "opacity-70";
-        wrap.appendChild(arrow);
-      }
-    });
-
-    // Labelzeile
-    const label = document.createElement("div");
-    label.className = "text-xs text-gray-400 mb-1";
-    label.textContent = "Kompakt:";
-
-    host.appendChild(label);
-    host.appendChild(wrap);
-  }
-
-  function renderAll(assignments, roster) {
-    const names = getShownNames(assignments);
-    renderLinesForWA(names);
-    renderCompactColored(names, roster);
-  }
-
-  function wireCopyBtnOnce() {
-    const btn = document.getElementById('copy-garalon-kiter-code-btn');
-    if (!btn || btn.dataset._wired === '1') return;
-    btn.dataset._wired = '1';
-    btn.addEventListener('click', async () => {
-      const outEl = document.getElementById('garalon-kiter-weakaura-output');
-      try {
-        await navigator.clipboard.writeText(outEl?.textContent || "");
-        const old = btn.textContent; btn.textContent = "Kopiert!";
-        setTimeout(() => btn.textContent = old, 1200);
-      } catch (e) { console.error(e); }
-    });
-  }
-
-  // Hook an deine bestehende Seite (read-only)
-  const origInit = window.initializePageSpecificCode;
-  window.initializePageSpecificCode = function(assignments, roster) {
-    if (typeof origInit === 'function') origInit(assignments, roster);
-    _lastAssignments = assignments;
-    _lastRoster = roster;
-    renderAll(_lastAssignments, _lastRoster);
-    wireCopyBtnOnce();
-  };
-
-  // 10/25-Umschalter neu rendern
-  document.getElementById('size-toggle')?.addEventListener('click', (ev) => {
-    if (ev.target.matches('.size-toggle-btn')) {
-      setTimeout(() => _lastAssignments && renderAll(_lastAssignments, _lastRoster), 0);
-    }
-  });
 })();
 </script>
-
-
 </main>
