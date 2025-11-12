@@ -31,7 +31,44 @@
 			</button>
 		</div>
         </div>
+        <div id="name-alias-section">
+        
+    <h3 class="text-xl font-semibold mb-3 text-gold">Namens-Alias-Verwaltung</h3>
+    <p class="text-gray-400 mb-4">
+        Ersetzt beim Import automatisch Namen. Falls Spieler sich im Raid-Helper
+        konsequent falsch eintragen.
+    </p>
 
+    <form id="alias-form" class="flex flex-wrap items-end gap-4 mb-4">
+        <div>
+            <label for="alias-original" class="block text-sm font-medium text-gray-300">Original-Name (aus Import)</label>
+            <input type="text" id="alias-original" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650" required>
+        </div>
+        <div>
+            <label for="alias-replacement" class="block text-sm font-medium text-gray-300">Ersetzen durch (Korrekter Name)</label>
+            <input type="text" id="alias-replacement" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650" required>
+        </div>
+        <button type="submit" id="alias-save-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md">
+            Speichern
+        </button>
+    </form>
+
+    <h4 class="text-lg font-semibold mb-2 text-blue-450">Gespeicherte Aliase</h4>
+    <div class="overflow-x-auto rounded-lg border border-slate-700 max-h-64 overflow-y-auto">
+        <table class="min-w-full text-sm text-left text-gray-300">
+            <thead class="text-xs text-gray-400 uppercase bg-slate-700">
+                <tr>
+                    <th scope="col" class="px-4 py-3">Original-Name (Falsch)</th>
+                    <th scope="col" class="px-4 py-3">Wird ersetzt durch (Korrekt)</th>
+                    <th scope="col" class="px-4 py-3 text-right">Aktion</th>
+                </tr>
+            </thead>
+            <tbody id="alias-table-body" class="divide-y divide-slate-700">
+                </tbody>
+        </table>
+    </div>
+    </div>
+</section>
         <div id="snapshot-section" class="mt-6 pt-6 border-t border-slate-650" style="display: none;">
             <h3 class="text-xl font-semibold mb-3 text-gold">Setup-Snapshots</h3>
             <p class="text-gray-400 mb-4">Hier kannst du die komplette Konfiguration (Roster & alle Boss-Einteilungen) speichern, laden oder löschen.</p>

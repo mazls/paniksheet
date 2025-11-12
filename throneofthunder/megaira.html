@@ -44,32 +44,29 @@
         Kampfübersicht & Kernmechaniken
         <span class="toggle-icon">▼</span>
     </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            Megaera ist ein Hydra-Boss, bei dem wir nie den Körper selbst angreifen, sondern nur die Köpfe. Der Kampf besteht darin, insgesamt 7 Köpfe zu töten, um die Gesundheit des Bosses auf 0 zu bringen. Es gibt drei (im Heroic-Modus vier) verschiedene Kopftypen: <strong class="text-red-400">Feuer</strong>, <strong class="text-blue-400">Frost</strong> und <strong class="text-green-400">Gift</strong>.
-        </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Zwei Zonen:</strong> Es sind immer zwei Köpfe gleichzeitig aktiv auf der Plattform (einer links, einer rechts), die getankt und angegriffen werden können. Alle anderen Köpfe sind im <strong class="text-gray-400">Verbergenden Nebel</strong> (hinten) und attackieren den Raid von dort aus.</li>
-            <li><strong>Kopf töten:</strong> Wenn ein Kopf auf der Plattform stirbt, tauchen beide Köpfe ab. Der verbleibende Kopf wird voll geheilt und taucht mit einem neuen Kopf eines anderen Typs wieder auf. Im Nebel hinten wachsen zwei Köpfe des getöteten Typs nach.</li>
-            <li><strong>Toben (Raid-Schaden):</strong> Jedes Mal, wenn ein Kopf getötet wird, erleidet der gesamte Raid 20 Sekunden lang hohen Elementarschaden (`Toben`). In dieser Phase kann kein Kopf angegriffen werden.</li>
-            <li><strong>Tank-Mechanik (Atem):</strong> Die aktiven Köpfe müssen getrennt und von der Gruppe weggedreht werden. Jeder Kopf hat einen Atem-Angriff, der einen stapelbaren Debuff verursacht, was einen Tank-Spott erzwingt.</li>
-            <li><strong>Nebel-Mechaniken:</strong> Die Köpfe im Nebel werden immer zahlreicher und stärker.
-                <ul class="list-disc list-inside ml-6 mt-1">
-                    <li><strong class="text-red-400">Feuer (Glut):</strong> DoT auf Spieler. Muss dispellt werden und hinterlässt eine Feuerpfütze.</li>
-                    <li><strong class="text-blue-400">Frost (Eisige Sturzflut):</strong> Ein Eisstrahl verfolgt einen Spieler und hinterlässt Eisflächen.</li>
-                    <li><strong class="text-green-400">Gift (Saurer Regen):</strong> Eine Kugel schlägt ein. Der Schaden ist geringer, je weiter man wegläuft.</li>
-                </ul>
-            </li>
-            <li><strong>Soft-Enrage:</strong> Jeder getötete Kopf bufft permanent den Schaden *aller* Köpfe dieses Typs (`Elementarblut`). Der *verbleibende* aktive Kopf erhält +20% Tempo (`Hydrenraserei`), was abwechselndes Töten erzwingt.</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Positionierung:</strong> Der Raid teilt sich in zwei Gruppen (links/rechts), eine für jeden Kopf. Die Köpfe werden von der Gruppe weggedreht. Beim <strong class="text-red-400">Toben</strong> sammelt sich der Raid für Heil-CDs.</p>
-        <p class="mb-2"><strong>Tank-Wechsel:</strong> Tanks spotten die Köpfe voneinander ab, wenn ihre Debuffs (z.B. <strong class="text-blue-400">Arktischer Frost</strong> bei 2-3 Stapeln) zu hoch werden.</p>
-        <p class="mb-2"><strong>DPS-Fokus:</strong> Fokussiert einen Kopf (z.B. erst Frost, dann Feuer, dann Gift). Wechselt die Ziele *nicht* wild hin und her. Tötet einen Kopf, überlebt das <strong class="text-red-400">Toben</strong>, tötet den nächsten Kopf.</p>
-        <p class="mb-2"><strong>Mechaniken kontern:</strong> Spieler mit <strong class="text-red-400">Glut</strong> laufen aus der Gruppe und lassen sich dispellen. Spieler mit <strong class="text-blue-400">Eisige Sturzflut</strong> kiten den Strahl weg vom Raid. Bei <strong class="text-green-400">Saurer Regen</strong> schnell vom Einschlagspunkt entfernen.</p>
-    </div>
+<div class="collapsible-content">
+    <p class="mb-4">
+        Megaera ist ein Hydra-Boss, bei dem wir nie den Körper selbst angreifen, sondern nur die Köpfe. Der Kampf besteht darin, insgesamt 7 Köpfe zu töten, um die Gesundheit des Bosses auf 0 zu bringen. Es gibt drei (im Heroic-Modus vier) verschiedene Kopftypen: <strong class="text-red-400">Feuer</strong>, <strong class="text-blue-400">Frost</strong> und <strong class="text-green-400">Gift</strong>.
+    </p>
+    <ul class="list-disc list-inside space-y-2 text-gray-300">
+        <li><strong>Zwei Zonen:</strong> Immer zwei Köpfe sind aktiv tankbar. Die restlichen Köpfe greifen aus dem <strong class="text-gray-400">Verbergenden Nebel</strong> (hinten) an.</li>
+        <li><strong>Kopf töten:</strong> Stirbt ein Kopf, beginnen beide <strong class="text-red-400">Toben</strong> (siehe unten). Danach taucht der überlebende Kopf (voll geheilt) mit einem neuen, zufälligen Kopf wieder auf. Im Nebel wachsen zwei Köpfe des getöteten Typs nach.</li>
+        <li><strong>Toben (Raid-Schaden):</strong> Unmittelbar nach dem Tod eines Kopfes wirken die aktiven Köpfe 20 Sekunden lang hohen Raid-Schaden (<strong class="text-red-400">Toben</strong>). Sie müssen dabei nicht getankt werden (greifen nicht im Nahkampf an), können aber weiterhin Schaden erleiden.</li>
+        <li><strong>Tank-Mechanik (Atem):</strong> Köpfe müssen getrennt und vom Raid weggedreht werden. Der Atem-Debuff erzwingt einen Tank-Spott.</li>
+        <li><strong>Nebel-Mechaniken:</strong> Köpfe im Nebel werden zahlreicher und stärker:
+            <ul class="list-disc list-inside ml-6 mt-1">
+                <li><strong class="text-red-400">Feuer (Glut):</strong> DoT auf Spieler. Beim Dispellen entsteht eine Feuerpfütze.</li>
+                <li><strong class="text-blue-400">Frost (Eisige Sturzflut):</strong> Strahl verfolgt Spieler und hinterlässt Eisflächen.</li>
+                <li><strong class="text-green-400">Gift (Saurer Regen):</strong> Kugel-Einschlag. Schaden wird durch Weglaufen verringert.</li>
+            </ul>
+        </li>
+        <li><strong>Soft-Enrage:</strong> Getötete Köpfe buffen permanent den Schaden dieses Typs (<strong class="text-yellow-400">Elementarblut</strong>). Der verbleibende aktive Kopf erhält +20% Tempo (<strong class="text-yellow-400">Hydrenraserei</strong>), was abwechselndes Töten erzwingt.</li>
+    </ul>
+    <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
+    <p class="mb-2"><strong>Positionierung:</strong> Der gesamte Raid (DDs und Heiler) sammelt sich auf einer Seite. Beide Tanks ziehen die Köpfe ebenfalls dorthin und positionieren sie so, dass ihre Atem-Angriffe vom Raid weggehen. Beim <strong class="text-red-400">Toben</strong> bleibt der Raid für Heil-CDs versammelt.</p>
+    <p class="mb-2"><strong>Tank-Wechsel:</strong> Tanks spotten die Köpfe voneinander ab, wenn ihre Debuffs (z.B. <strong class="text-blue-400">Arktischer Frost</strong> bei 2-3 Stapeln) zu hoch werden.</p>
+    <p class="mb-2"><strong>DPS-Fokus:</strong> Konzentriert den Schaden auf einen Kopf (z.B. Frost > Feuer > Gift). Nicht wild wechseln. Tötet einen Kopf, überlebt das <strong class="text-red-400">Toben</strong>,
 </section>
-
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
         Einteilungen & Taktische Hilfen

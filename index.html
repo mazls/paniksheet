@@ -775,6 +775,7 @@ pre {
         };
 
         const app = initializeApp(firebaseConfig);
+
         const db = getFirestore(app);
         const auth = getAuth(app);
 		const SNAPSHOTS_COLLECTION = "raid-tool-snapshots";
@@ -792,6 +793,8 @@ pre {
 		let allLootDocuments = [];
 		let playerSummaryState = {};
 		let summarySortState = { column: 'total', direction: 'desc' };
+        let globalAliasMap = {};
+        
 
 const offensiveBuffsForAssignment = {
     "5% Stärke, Beweglichkeit, Intelligenz": ["DRUID", "MONK", "PALADIN"],
@@ -814,7 +817,96 @@ const offensiveBuffsForAssignment = {
         const userProfilesCollectionRef = collection(db, USER_PROFILES_COLLECTION);
 		const lootCollectionRef = collection(db, LOOT_COLLECTION);
         const denylistCollectionRef = collection(db, "snapshot_player_denylist");
-				
+        const aliasDocRef = doc(db, DATA_COLLECTION, "nameAliasMap"); // Referenz definieren
+function loadAndDisplayAliasMap(aliasMap) {
+    const tableBody = document.getElementById('alias-table-body');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = ''; // Liste leeren
+    if (Object.keys(aliasMap).length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="3" class="px-4 py-3 text-gray-500 text-center">Keine Aliase gespeichert.</td></tr>';
+        return;
+    }
+
+    // Nach dem Original-Namen sortieren
+    const sortedAliases = Object.entries(aliasMap).sort((a, b) => a[0].localeCompare(b[0]));
+
+    sortedAliases.forEach(([originalName, replacementName]) => {
+        const row = tableBody.insertRow();
+        row.innerHTML = `
+            <td class="px-4 py-3 font-mono">${originalName}</td>
+            <td class="px-4 py-3 font-mono font-bold text-jade">${replacementName}</td>
+            <td class="px-4 py-3 text-right">
+                <button class="alias-edit-btn text-sm text-blue-400 hover:underline" data-original="${originalName}" data-replacement="${replacementName}">Bearbeiten</button>
+                <button class="alias-delete-btn text-sm text-red-500 hover:underline ml-2" data-original="${originalName}">Löschen</button>
+            </td>
+        `;
+    });
+
+    // Event Listener für die neuen Buttons
+    tableBody.querySelectorAll('.alias-delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => handleDeleteAlias(btn.dataset.original));
+    });
+    tableBody.querySelectorAll('.alias-edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.getElementById('alias-original').value = btn.dataset.original;
+            document.getElementById('alias-replacement').value = btn.dataset.replacement;
+            document.getElementById('alias-original').focus();
+        });
+    });
+}
+
+/**
+ * Speichert ein neues Alias oder aktualisiert ein bestehendes.
+ */
+async function handleAddOrUpdateAlias(event) {
+    event.preventDefault(); // <-- DIESER BEFEHL VERHINDERT DAS NEULADEN DER SEITE
+    if (!window.isManager) return;
+
+    const originalInput = document.getElementById('alias-original');
+    const replacementInput = document.getElementById('alias-replacement');
+    const originalName = originalInput.value.trim();
+    const replacementName = replacementInput.value.trim();
+
+    if (!originalName || !replacementName) {
+        window.showModal("Beide Felder werden benötigt.");
+        return;
+    }
+
+    const newAliasMap = { ...globalAliasMap }; // Kopie der aktuellen Map
+    newAliasMap[originalName] = replacementName; // Hinzufügen oder Überschreiben
+
+    try {
+        await setDoc(aliasDocRef, { aliases: newAliasMap }, { merge: true });
+        window.showModal(`Alias für '${originalName}' wurde gespeichert.`);
+        originalInput.value = '';
+        replacementInput.value = '';
+    } catch (error) {
+        console.error("Fehler beim Speichern des Alias:", error);
+        window.showModal("Fehler beim Speichern.");
+    }
+}
+
+/**
+ * Löscht ein Alias aus der Liste.
+ */
+async function handleDeleteAlias(originalName) {
+    if (!window.isManager) return;
+
+    const confirmed = await window.showModal(`Soll das Alias für '${originalName}' wirklich gelöscht werden?`, true);
+    if (!confirmed) return;
+
+    const newAliasMap = { ...globalAliasMap };
+    delete newAliasMap[originalName]; // Eintrag aus der Kopie löschen
+
+    try {
+        await setDoc(aliasDocRef, { aliases: newAliasMap }); // Die gesamte Map (ohne den gelöschten) neu setzen
+        window.showModal(`Alias für '${originalName}' wurde gelöscht.`);
+    } catch (error) {
+        console.error("Fehler beim Löschen des Alias:", error);
+        window.showModal("Fehler beim Löschen.");
+    }
+}
 		// ============== URL IMPORT FUNKTION ==============
 async function handleImportFromUrl() {
     if (!window.isManager) return;
@@ -1569,7 +1661,18 @@ mainNav.innerHTML = mainNavHTML;
 				
 				// Füllt die Snapshot-Liste beim Laden der Seite
 				populateSnapshotSelector();
+                
 			}
+            const aliasSection = document.getElementById('name-alias-section');
+            if (window.isManager && aliasSection) {
+                aliasSection.style.display = 'block'; // Sektion sichtbar machen
+                document.getElementById('alias-form')?.addEventListener('submit', handleAddOrUpdateAlias);
+        
+                onSnapshot(aliasDocRef, (docSnap) => {
+                    globalAliasMap = docSnap.exists() ? docSnap.data().aliases || {} : {};
+                    loadAndDisplayAliasMap(globalAliasMap);
+                });
+            }
                 if (window.isManager) {
         const editorSection = document.getElementById('cooldown-editor-section');
         if (editorSection) {
@@ -1578,7 +1681,7 @@ mainNav.innerHTML = mainNavHTML;
         }
         initSnapshotPlayerAdder();
     }
-			
+	
 			
 currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
     const jsonInput = document.getElementById('json-input');
@@ -1843,6 +1946,7 @@ async function handleAddPlayerFromSnapshot() {
     playerSelector.value = '';
     document.getElementById('add-from-snapshot-btn').disabled = true;
 }
+
 function displayLootForDate(dateId) {
     if (selectedLootDateUnsubscribe) {
         selectedLootDateUnsubscribe();
@@ -2506,6 +2610,10 @@ assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
 
         // ============== COMP LOGIK (HELFERFUNKTIONEN) ==============
         function getPlayerInfoFromEntry(playerEntry) {
+            const originalName = playerEntry.name;
+            if (globalAliasMap[originalName]) {
+                playerEntry.name = globalAliasMap[originalName]; // Ersetze den Namen direkt im Eingabeobjekt
+            }
             let playerClass = playerEntry.class ? playerEntry.class.toUpperCase() : 'UNKNOWN';
             if (playerClass === 'DK') playerClass = 'DEATHKNIGHT';
             let spec = playerEntry.spec;
