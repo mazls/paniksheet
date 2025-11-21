@@ -2596,7 +2596,7 @@ assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
                 input.value = assignments[assignmentId]?.text || '';
             });
             if (typeof window.initializePageSpecificCode === 'function') {
-                 window.initializePageSpecificCode(assignments, rosterData);;
+                 window.initializePageSpecificCode(assignments, rosterData, { doc, updateDoc, db }, allCooldowns);
             }
             
             window.toggleSelectEditability();

@@ -25,6 +25,12 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+            .kill-order-select {
+            background-color: rgba(10, 20, 15, 0.7) !important;
+            border: 1px solid var(--color-gold-border) !important;
+            color: var(--color-parchment);
+            border-radius: 0.25rem;
+        }
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Megaera</h1>
@@ -44,7 +50,7 @@
         Kampfübersicht & Kernmechaniken
         <span class="toggle-icon">▼</span>
     </h2>
-<div class="collapsible-content">
+    <div class="collapsible-content">
     <p class="mb-4">
         Megaera ist ein Hydra-Boss, bei dem wir nie den Körper selbst angreifen, sondern nur die Köpfe. Der Kampf besteht darin, insgesamt 7 Köpfe zu töten, um die Gesundheit des Bosses auf 0 zu bringen. Es gibt drei (im Heroic-Modus vier) verschiedene Kopftypen: <strong class="text-red-400">Feuer</strong>, <strong class="text-blue-400">Frost</strong> und <strong class="text-green-400">Gift</strong>.
     </p>
@@ -65,8 +71,10 @@
     <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
     <p class="mb-2"><strong>Positionierung:</strong> Der gesamte Raid (DDs und Heiler) sammelt sich auf einer Seite. Beide Tanks ziehen die Köpfe ebenfalls dorthin und positionieren sie so, dass ihre Atem-Angriffe vom Raid weggehen. Beim <strong class="text-red-400">Toben</strong> bleibt der Raid für Heil-CDs versammelt.</p>
     <p class="mb-2"><strong>Tank-Wechsel:</strong> Tanks spotten die Köpfe voneinander ab, wenn ihre Debuffs (z.B. <strong class="text-blue-400">Arktischer Frost</strong> bei 2-3 Stapeln) zu hoch werden.</p>
-    <p class="mb-2"><strong>DPS-Fokus:</strong> Konzentriert den Schaden auf einen Kopf (z.B. Frost > Feuer > Gift). Nicht wild wechseln. Tötet einen Kopf, überlebt das <strong class="text-red-400">Toben</strong>,
+    <p class="mb-2"><strong>DPS-Fokus:</strong> Konzentriert den Schaden auf einen Kopf (z.B. Frost > Feuer > Gift). Nicht wild wechseln. Tötet einen Kopf, überlebt das <strong class="text-red-400">Toben</strong>.</p>
+</div>
 </section>
+
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
         Einteilungen & Taktische Hilfen
@@ -78,7 +86,7 @@
             <div class="space-y-6">
                 <div class="assignment-block">
                     <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Tanks spotten bei 2-3 Stacks des Atems.</p>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Tanks wechsel bei Kopf-Kill</p>
                     <ul class="assignment-list">
                         <li><span>Tank Links:</span><select class="assignment-select" data-assignment-id="megaera-tank-left"></select></li>
                         <li><span>Tank Rechts:</span><select class="assignment-select" data-assignment-id="megaera-tank-right"></select></li>
@@ -137,6 +145,47 @@
                             class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
                             data-phase="megaera">
                     </div>
+
+                    <div class="assignment-block mt-4">
+                        <h4 class="text-lg font-bold text-gold mb-2">Kill-Reihenfolge</h4>
+                        <div class="grid grid-cols-4 gap-2 mb-2" id="megaera-kill-order-container">
+                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
+                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
+                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
+                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
+                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
+                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
+                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
+                        </div>
+                        
+                        <div class="relative mt-2">
+                            <pre class="bg-slate-900 p-2 rounded border border-slate-700 overflow-auto text-sm"><code id="megaera-kill-order-output">Fire,Fire,Fire,Fire,Fire,Fire,Fire</code></pre>
+                             <button id="copy-kill-order-btn" class="absolute top-1 right-1 py-1 px-2 rounded-md bg-slate-600 hover:bg-slate-500 text-xs" title="In Zwischenablage kopieren">Kopieren</button>
+                        </div>
+                    </div>
+
+                    <div class="assignment-block mt-4">
+                        <h4 class="text-lg font-bold text-gold mb-2">Stack World Marker</h4>
+                        <div class="grid grid-cols-4 gap-2 text-center bg-slate-900/30 p-2 rounded-lg">
+                            <div class="flex flex-col items-center">
+                                <img src="raidicons/diamond.png" class="w-8 h-8 mb-1 object-contain" alt="Diamant">
+                                <span class="text-sm text-purple-400 font-bold">Arkan</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <img src="raidicons/cross.png" class="w-8 h-8 mb-1 object-contain" alt="Kreuz">
+                                <span class="text-sm text-red-400 font-bold">Feuer</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <img src="raidicons/square.png" class="w-8 h-8 mb-1 object-contain" alt="Quadrat">
+                                <span class="text-sm text-blue-400 font-bold">Frost</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <img src="raidicons/triangle.png" class="w-8 h-8 mb-1 object-contain" alt="Dreieck">
+                                <span class="text-sm text-green-400 font-bold">Natur</span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="mt-6">
@@ -202,4 +251,37 @@
         </div>
     </div>
 </section>
+<script>
+(() => {
+    const selects = document.querySelectorAll('.kill-order-select');
+    const output = document.getElementById('megaera-kill-order-output');
+    const copyBtn = document.getElementById('copy-kill-order-btn');
+
+    function updateOutput() {
+        const values = Array.from(selects).map(s => s.value);
+        output.textContent = values.join(',');
+    }
+
+    selects.forEach(sel => {
+        sel.addEventListener('change', updateOutput);
+    });
+
+    // Initial einmal ausführen
+    updateOutput();
+
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(output.textContent).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = "Kopiert!";
+                copyBtn.classList.add("bg-green-600");
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove("bg-green-600");
+                }, 1500);
+            });
+        });
+    }
+})();
+</script>
 </main>

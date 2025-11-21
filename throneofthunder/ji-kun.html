@@ -1,36 +1,72 @@
 <style>
+    .size-toggle-btn { transition: background-color 0.3s, color 0.3s; }
+    .active-size-btn { background-color: #16a34a !important; color: #ffffff !important; font-weight: 600; }
+    .assignment-select { background-color: #2d3748; border: 1px solid #4a5568; border-radius: 4px; padding: 4px 8px; width: 100%; color: white; font-size: 0.85rem; }
+    .assignment-select:disabled { opacity: 0.5; cursor: not-allowed; }
+    .config-select { background-color: #1a202c; border: 1px solid #ca8a04; color: #fcd34d; font-weight: bold; border-radius: 4px; padding: 2px 4px; font-size: 0.8rem; }
     
-    .size-toggle-btn {
-        transition: background-color 0.3s, color 0.3s;
+    .assignment-block {
+        background-color: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--color-gold-border-light);
+        border-radius: 6px;
+        padding: 10px;
+        margin-bottom: 10px;
     }
-    .active-size-btn {
-        background-color: #16a34a !important; /* Grüner Hintergrund für den aktiven Button */
-        color: #ffffff !important;
-        font-weight: 600;
+    
+    .dynamic-row {
+        background-color: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--color-gold-border-light);
+        border-radius: 6px;
+        padding: 8px;
+        margin-bottom: 8px;
+        transition: all 0.2s;
     }
-    .assignment-select {
-        background-color: #2d3748;
-        border: 1px solid #4a5568;
-        border-radius: 4px;
-        padding: 4px 8px;
-        width: 100%;
-        color: white;
+    .dynamic-row:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-color: var(--color-gold-border);
     }
-    .assignment-select:disabled {
-        opacity: 0.9;
-		cursor: not-allowed;
+    
+    .row-header {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 6px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 4px;
+        flex-wrap: wrap;
     }
-    .editor-info {
-        font-size: 0.75rem;
-        color: #a0aec0;
-        margin-left: 8px;
+    
+    .player-grid-nest {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 10er: 3 Spalten */
+        gap: 5px;
     }
+    [data-size="25"] .player-grid-nest {
+        grid-template-columns: repeat(5, 1fr); /* 25er: 5 Spalten (2 Zeilen à 5) */
+    }
+    
+    .custom-label-input {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #666;
+        color: var(--color-jade);
+        font-weight: bold;
+        width: 140px;
+        font-size: 0.9rem;
+    }
+    .custom-label-input:focus { outline: none; border-color: var(--color-gold); }
+    
+    .marker-legend { display: flex; justify-content: center; gap: 1rem; background-color: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; flex-wrap: wrap; margin-top: 10px; font-size: 0.8rem; }
+    .marker-item { display: flex; align-items: center; gap: 4px; color: #e2e8f0; }
+    .raidicon-med { width: 20px; height: 20px; }
 </style>
+
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Ji-Kun</h1>
     <nav class="quick-nav-bar mb-6">
         <a href="#overview">Übersicht</a>
         <a href="#assignments">Einteilungen</a>
+        <a href="#dynamic-planning">Planer</a>
         <a href="#details">Details</a>
     </nav>
     
@@ -67,72 +103,34 @@
     </div>
 </section>
 
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung (Hauptplattform)</h4>
-                    <ul class="assignment-list">
-                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="jikun-tank1"></select></li>
-                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="jikun-tank2"></select></li>
-                    </ul>
-                </div>
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Standard-Einteilungen & Visuelle Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🦅 Nest-Teams (Rotation)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Teams rotieren wegen des "Ikarus"-Debuffs.</p>
-                    <ul class="assignment-list">
-                        <li class="list-subheader"><span>Team 1 (Grün)</span></li>
-                        <li class="grid-cols-4">
-                            <span>Heiler:</span><select data-assignment-id="jikun-nest1-heal" class="assignment-select" data-assignment-pool="jikun-nest"></select>
-                            <span>DD 1:</span><select data-assignment-id="jikun-nest1-dd1" class="assignment-select" data-assignment-pool="jikun-nest"></select>
-                            <span>DD 2:</span><select data-assignment-id="jikun-nest1-dd2" class="assignment-select" data-assignment-pool="jikun-nest"></select>
-                            <span data-size="25" class="tactic-content">DD 3:</span><select data-size="25" class="tactic-content assignment-select" data-assignment-id="jikun-nest1-dd3" data-assignment-pool="jikun-nest"></select>
-                        </li>
-                        <li class="list-subheader"><span>Team 2 (Blau)</span></li>
-                        <li class="grid-cols-4">
-                            <span>Heiler:</span><select data-assignment-id="jikun-nest2-heal" class="assignment-select" data-assignment-pool="jikun-nest"></select>
-                            <span>DD 1:</span><select data-assignment-id="jikun-nest2-dd1" class="assignment-select" data-assignment-pool="jikun-nest"></select>
-                            <span>DD 2:</span><select data-assignment-id="jikun-nest2-dd2" class="assignment-select" data-assignment-pool="jikun-nest"></select>
-                            <span data-size="25" class="tactic-content">DD 3:</span><select data-size="25" class="tactic-content assignment-select" data-assignment-id="jikun-nest2-dd3" data-assignment-pool="jikun-nest"></select>
-                        </li>
-                        <li class="list-subheader"><span>Team 3 (Rot)</span></li>
-                        <li class="grid-cols-4">
-                            <span>Heiler:</span><select data-assignment-id="jikun-nest3-heal" class="assignment-select" data-assignment-pool="jikun-nest"></select>
-                            <span>DD 1:</span><select data-assignment-id="jikun-nest3-dd1" class="assignment-select" data-assignment-pool="jikun-nest"></select>
-                            <span>DD 2:</span><select data-assignment-id="jikun-nest3-dd2" class="assignment-select" data-assignment-pool="jikun-nest"></select>
-                            <span data-size="25" class="tactic-content">DD 3:</span><select data-size="25" class="tactic-content assignment-select" data-assignment-id="jikun-nest3-dd3" data-assignment-pool="jikun-nest"></select>
-                        </li>
-                    </ul>
+                <div class="space-y-6">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold">🛡️ Tank-Einteilung (Hauptplattform)</h4>
+                        <ul class="assignment-list">
+                            <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="jikun-tank1"></select></li>
+                            <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="jikun-tank2"></select></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold">🥦 Futterdieb-Rotation (Buff)</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Fliegende Spieler, die Futter abfangen.</p>
+                        <ul class="assignment-list">
+                            <li><span>Abfänger 1:</span><select data-assignment-id="jikun-food1" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
+                            <li><span>Abfänger 2:</span><select data-assignment-id="jikun-food2" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
+                            <li data-size="25" class="tactic-content"><span>Abfänger 3:</span><select data-assignment-id="jikun-food3" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
+                            <li data-size="25" class="tactic-content"><span>Abfänger 4:</span><select data-assignment-id="jikun-food4" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
+                        </ul>
+                    </div>
                 </div>
-
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung (Federkiele)</h4>
-                    <ul class="assignment-list">
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jikun-cd-header1" placeholder="z.B. 1. Federkiele"></li>
-                        <li><select data-assignment-id="jikun-cd1a-player" class="assignment-select"></select><select data-assignment-id="jikun-cd1a-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="jikun-cd1b-player" class="assignment-select"></select><select data-assignment-id="jikun-cd1b-cooldown" class="assignment-select"></select></li>
-                        
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jikun-cd-header2" placeholder="z.B. 2. Federkiele"></li>
-                        <li><select data-assignment-id="jikun-cd2a-player" class="assignment-select"></select><select data-assignment-id="jikun-cd2a-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="jikun-cd2b-player" class="assignment-select"></select><select data-assignment-id="jikun-cd2b-cooldown" class="assignment-select"></select></li>
-
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jikun-cd-header3" placeholder="z.B. 3. Federkiele"></li>
-                        <li><select data-assignment-id="jikun-cd3a-player" class="assignment-select"></select><select data-assignment-id="jikun-cd3a-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="jikun-cd3b-player" class="assignment-select"></select><select data-assignment-id="jikun-cd3b-cooldown" class="assignment-select"></select></li>
-
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="jikun-cd-header4" placeholder="z.B. 4. Federkiele"></li>
-                        <li><select data-assignment-id="jikun-cd4a-player" class="assignment-select"></select><select data-assignment-id="jikun-cd4a-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="jikun-cd4b-player" class="assignment-select"></select><select data-assignment-id="jikun-cd4b-cooldown" class="assignment-select"></select></li>
-                    </ul>
-                </div>
-            </div>
 
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
@@ -157,78 +155,280 @@
                             data-phase="jikun-nests">
                     </div>
                 </div>
+                </section>
 
-                <div class="assignment-block mt-6">
-                    <h4 class="text-lg font-bold">🥦 Futterdieb-Rotation (Buff)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Fliegende Spieler, die Futter abfangen.</p>
-                    <ul class="assignment-list">
-                        <li><span>Abfänger 1:</span><select data-assignment-id="jikun-food1" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
-                        <li><span>Abfänger 2:</span><select data-assignment-id="jikun-food2" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
-                        <li data-size="25" class="tactic-content"><span>Abfänger 3:</span><select data-assignment-id="jikun-food3" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
-                        <li data-size="25" class="tactic-content"><span>Abfänger 4:</span><select data-assignment-id="jikun-food4" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
-                    </ul>
-                </div>
-
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg">
-                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/71KLjndWA7M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <section id="dynamic-planning" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Planer (Wellen & CDs)
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                
+                <div class="assignment-block border border-gold-border">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-650 pb-2">
+                        <h4 class="text-lg font-bold text-gold">🦅 Nest-Wellen (12)</h4>
+                    </div>
+                    <div class="max-h-[600px] overflow-y-auto pr-2" id="static-waves-container">
+                         </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between mb-1 items-end">
+                            <span class="text-xs text-gray-400">Export Code:</span>
+                            <button id="copy-wave-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs transition-all duration-200">Kopieren</button>
+                        </div>
+                        <input type="text" id="wave-export-output" class="w-full bg-black text-green-400 font-mono text-xs p-2 rounded border border-gray-700" readonly value="...">
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Ji-Kun (Hauptplattform)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Infizierte Krallen:</strong> Stapelbarer Natur-DoT auf dem Tank.</li>
-                    <li><strong>Krallenreißen:</strong> Großer Tank-Hit, hinterlässt 1 Min. Debuff (erhöhter Schaden durch `Krallenreißen`). Erzwingt Spott.</li>
-                    <li><strong>Federkiele:</strong> 8s kanalisierter Raid-AoE. Trifft Hauptplattform und untere Nester.</li>
-                    <li><strong>Abwind:</strong> 8s Pushback von der Mitte der Plattform. Dagegen anlaufen.</li>
-                    <li><strong>Krächzen:</strong> Trifft 3 (10m) / 5 (25m) Spieler und verursacht 8m AoE-Schaden. (Verteilen!)</li>
-                </ul>
-            </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-yellow-300">Flug- & Futter-Mechanik</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Dädalische Schwingen:</strong> Buff (3-4 Aufladungen) vom Töten eines Kükens.</li>
-                    <li><strong>Flug:</strong> Extra-Aktionsbutton, gewährt 10s Flug.</li>
-                    <li><strong>Lektion des Ikarus:</strong> 2-Minuten-Debuff, verhindert das Aufsammeln neuer Federn.</li>
-                    <li><strong>Junge füttern:</strong> Boss wirft Futter. Trifft Küken (-> werden Nestlinge) oder die Plattform (-> wird Futterpfütze).</li>
-                    <li><strong>Futterpfütze:</strong> Voidzone. Wird entfernt, wenn ein Spieler 3s darin steht. Verursacht `Vollgeschleimt`.</li>
-                    <li><strong>Futterdieb:</strong> Buff (+Schaden/Heilung) für fliegende Spieler, die Futter in der Luft abfangen.</li>
-                    <li><strong>Vollgeschleimt:</strong> Stapelbarer DoT (15s) vom Soaken oder Abfangen. Erhöht Schaden von zukünftigem `Vollgeschleimt`.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-750 p-4 rounded-lg col-span-1 md:col-span-2">
-                <h4 class="text-lg font-bold text-green-300">Adds & Nester</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Untere Nester (Junge Eier):</strong> Spawnen <strong class="text-green-400">Küken</strong>. Diese müssen sterben, bevor `Junge füttern` sie trifft.</li>
-                    <li><strong>Nestlinge:</strong> Entstehen aus gefütterten Küken. Legen `Reife Eier` auf der unteren Plattform.</li>
-                    <li><strong>Obere Nester (Reife Eier):</strong> Eier müssen zerstört werden, bevor der 20s Timer abläuft.</li>
-                    <li><strong>Jungvögel:</strong> Schlüpfen aus `Reifen Eiern`. Fliegen über dem Raid und spammen `Tschirpen` (Raid-Schaden). MÜSSEN VERHINDERT WERDEN.</li>
-                </ul>
+                <div class="assignment-block border border-gold-border">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-650 pb-2">
+                        <h4 class="text-lg font-bold text-red-400">❤️ Raid-CDs (4)</h4>
+                    </div>
+                     <div class="max-h-[600px] overflow-y-auto pr-2" id="static-cds-container">
+                        </div>
+                     <div class="mt-4">
+                        <div class="flex justify-between mb-1 items-end">
+                            <span class="text-xs text-gray-400">Export Code:</span>
+                            <button id="copy-cd-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs transition-all duration-200">Kopieren</button>
+                        </div>
+                        <input type="text" id="cd-export-output" class="w-full bg-black text-green-400 font-mono text-xs p-2 rounded border border-gray-700" readonly value="...">
+                    </div>
+                </div>
+
             </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Nestwächter:</strong> Ein großes Add, das auf manchen Nestern (unten & oben) spawnt. Muss von einem Tank aufgenommen werden.</li>
-                <li><strong>Krallenreißen (Wächter):</strong> Frontal-Cleave. Tank muss das Add vom Nest-Team weg drehen.</li>
-                <li><strong>Kreischen (Wächter):</strong> Raidweiter AoE mit Zauber-Interrupt und Cast-Slow-Debuff. Wird gewirkt, wenn niemand den Wächter tankt.</li>
-                <li><strong>Dädalische Schwingen:</strong> Gewährt nur noch 3 Aufladungen.</li>
-                <li><strong>Vollgeschleimt:</strong> Der erhöhte Schaden durch Stapel ist permanent. Management ist noch wichtiger.</li>
-            </ul>
+    </section>
+
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-cyan-300">Ji-Kun (Hauptplattform)</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Infizierte Krallen:</strong> Stapelbarer Natur-DoT auf dem Tank.</li>
+                        <li><strong>Krallenreißen:</strong> Großer Tank-Hit, erzwingt Spott.</li>
+                        <li><strong>Federkiele:</strong> 8s kanalisierter Raid-AoE.</li>
+                        <li><strong>Abwind:</strong> Pushback von der Mitte.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg">
+                    <h4 class="text-lg font-bold text-yellow-300">Nester & Adds</h4>
+                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                        <li><strong>Küken:</strong> Schlüpfen unten. Geben Federn.</li>
+                        <li><strong>Reife Eier:</strong> Oben. Schlüpfen zu Jungvögeln (Wipe-Gefahr).</li>
+                        <li><strong>Nestwächter (HC):</strong> Großes Add, muss getankt werden.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+
+<script>
+    // Statisches HTML generieren
+    (function renderStaticStructure() {
+        // WAVE KONFIGURATION: 1-13, doppelt bei 4,5,7,8,10,11,12,13
+        const waveContainer = document.getElementById('static-waves-container');
+        if (waveContainer) {
+            let waveHtml = '';
+            const doubleWaves = [4, 5, 7, 8, 10, 11, 12, 13];
+            
+            for(let i=1; i<=13; i++) {
+                // Helper Funktion
+                const renderRow = (num, suffix = '') => {
+                    const dbKey = `jikun-wave-${num}${suffix}`;
+                    let slotsHtml = '';
+                    for(let s=1; s<=10; s++) {
+                        const hiddenClass = s > 3 ? 'tactic-content' : '';
+                        const sizeAttr = s > 3 ? 'data-size="25"' : '';
+                        slotsHtml += `<select class="assignment-select ${hiddenClass}" ${sizeAttr} data-assignment-id="${dbKey}-p${s}" data-assignment-pool="wave-${num}${suffix}"></select>`;
+                    }
+
+                    return `
+                    <div class="dynamic-row wave-row" data-id="${num}">
+                        <div class="row-header">
+                            <span class="text-gold font-bold text-sm">Welle ${num}${suffix}</span>
+                            <select class="config-select wave-lvl" data-assignment-id="${dbKey}-lvl">
+                                <option value="LOWER">LOWER</option>
+                                <option value="UPPER">UPPER</option>
+                            </select>
+                            <select class="config-select wave-dir" data-assignment-id="${dbKey}-dir">
+                                <option value="NE">NE (Star)</option>
+                                <option value="SE">SE (Square)</option>
+                                <option value="SW">SW (Cross)</option>
+                                <option value="W">W (Diamond)</option>
+                                <option value="NW">NW (Triangle)</option>
+                                <option value="M">M (Middle)</option>
+                            </select>
+                        </div>
+                        <div class="player-grid-nest">
+                            ${slotsHtml}
+                        </div>
+                    </div>`;
+                };
+
+                waveHtml += renderRow(i, '');
+                if(doubleWaves.includes(i)) waveHtml += renderRow(i, 'b');
+            }
+            waveContainer.innerHTML = waveHtml;
+        }
+
+        // 2. CDs (1-4)
+        const cdContainer = document.getElementById('static-cds-container');
+        if (cdContainer) {
+            let cdHtml = '';
+            for(let i=1; i<=4; i++) {
+                cdHtml += `
+                <div class="dynamic-row cd-row" data-id="${i}">
+                    <div class="row-header">
+                        <span class="text-red-400 font-bold text-sm">#${i}</span>
+                        <input type="text" class="custom-label-input" 
+                               data-assignment-id="jikun-cd-${i}-label" placeholder="Bezeichnung">
+                    </div>
+                    <div class="grid grid-cols-1 gap-2">
+                        <div class="flex gap-1 slot-wrapper">
+                            <select class="assignment-select w-1/2" data-assignment-id="jikun-cd-${i}-p1"></select>
+                            <select class="assignment-select w-1/2" data-assignment-id="jikun-cooldown-${i}-c1" data-assignment-pool="cd-spell-${i}"></select>
+                        </div>
+                        <div class="flex gap-1 slot-wrapper">
+                            <select class="assignment-select w-1/2" data-assignment-id="jikun-cd-${i}-p2"></select>
+                            <select class="assignment-select w-1/2" data-assignment-id="jikun-cooldown-${i}-c2" data-assignment-pool="cd-spell-${i}"></select>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            cdContainer.innerHTML = cdHtml;
+        }
+    })();
+
+    // Hauptfunktion
+    window.initializePageSpecificCode = async function(assignments, roster, firebaseTools, allCooldowns) {
+        // 1. Benötigte Firebase Funktionen dynamisch importieren
+        const { setDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        const db = firebaseTools.db;
+        let globalCooldowns = allCooldowns || window.allCooldowns || [];
+
+        // INTERNE SPEICHERFUNKTION
+        const jiKunDirectSave = async (updatesObj) => {
+            if (!window.isManager) return;
+            const editor = sessionStorage.getItem('currentManager') || 'Unbekannt';
+            const ts = serverTimestamp();
+            const payload = {};
+
+            Object.entries(updatesObj).forEach(([id, val]) => {
+                let data = {};
+                if (id.includes('label')) {
+                    data = { text: val, editor, timestamp: ts };
+                } else if (id.includes('cooldown')) {
+                    data = { cooldown: val, editor, timestamp: ts };
+                } else {
+                    data = { player: val, editor, timestamp: ts };
+                }
+                payload[id] = data;
+            });
+
+            try {
+                await setDoc(doc(db, "raid-tool-data", "boss-ji-kun"), payload, { merge: true });
+            } catch (e) { console.error(e); }
+        };
+
+        // --- 1. Dropdown Inhalte für Cooldowns befüllen ---
+        document.querySelectorAll('[data-assignment-pool^="cd-spell"]').forEach(select => {
+            if(select.options.length > 1) return;
+            select.innerHTML = '<option value="">-- CD --</option>';
+            globalCooldowns.forEach(cd => {
+                const opt = document.createElement('option');
+                if (cd.name.startsWith('---')) {
+                    opt.disabled = true; opt.textContent = cd.name; opt.style.color = 'var(--color-gold)'; opt.style.fontWeight = 'bold'; opt.style.backgroundColor = '#1a202c';
+                } else {
+                    opt.value = cd.name; opt.textContent = cd.name;
+                    opt.style.color = window.classColors[cd.class] || '#fff';
+                }
+                select.appendChild(opt);
+            });
+        });
+
+        // --- 2. Config-Dropdowns wiederherstellen ---
+        document.querySelectorAll('.config-select').forEach(sel => {
+            const savedVal = assignments[sel.dataset.assignmentId]?.player;
+            if (savedVal) sel.value = savedVal;
+            sel.addEventListener('change', (e) => {
+                jiKunDirectSave({ [e.target.dataset.assignmentId]: e.target.value });
+                updateExports();
+            });
+        });
+
+        // --- 3. Text Inputs wiederherstellen ---
+        document.querySelectorAll('.custom-label-input').forEach(input => {
+            const savedVal = assignments[input.dataset.assignmentId]?.text;
+            if (savedVal) input.value = savedVal;
+            input.addEventListener('change', (e) => {
+                jiKunDirectSave({ [e.target.dataset.assignmentId]: e.target.value });
+                updateExports();
+            });
+        });
+
+        // --- 4. Export Logik ---
+        function updateExports() {
+            // Waves
+            let wRows = [];
+            document.querySelectorAll('.wave-row').forEach(row => {
+                const lvl = row.querySelector('.wave-lvl').value;
+                const dir = row.querySelector('.wave-dir').value;
+                let players = [];
+                row.querySelectorAll('.assignment-select').forEach(s => {
+                    if (s.value && !s.value.includes('❌')) players.push(s.value);
+                });
+                if (players.length > 0) {
+                    wRows.push(`WAVE${row.dataset.id}-${lvl}${dir}-${players.join(',')}`);
+                }
+            });
+            document.getElementById('wave-export-output').value = wRows.join(',');
+
+            // CDs
+            let cRows = [];
+            document.querySelectorAll('.cd-row').forEach(row => {
+                const label = row.querySelector('input').value || `CD${row.dataset.id}`;
+                let pairs = [];
+                
+                const pSelects = row.querySelectorAll('select[data-assignment-id*="-p"]');
+                const cSelects = row.querySelectorAll('select[data-assignment-id*="cooldown"]');
+                
+                for(let i=0; i<pSelects.length; i++) {
+                    if(pSelects[i].value && cSelects[i].value) {
+                         pairs.push(`${pSelects[i].value}:${cSelects[i].value}`);
+                    }
+                }
+                if(pairs.length > 0) {
+                    cRows.push(`${label}: ${pairs.join(', ')}`);
+                }
+            });
+            document.getElementById('cd-export-output').value = cRows.join(' | ');
+        }
+
+        document.body.addEventListener('change', (e) => {
+            if (e.target.matches('select') || e.target.matches('input')) updateExports();
+        });
+
+        setTimeout(updateExports, 1000);
+
+        const setupCopy = (btnId, inputId) => {
+            const btn = document.getElementById(btnId);
+            if(btn) {
+                btn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(document.getElementById(inputId).value);
+                    const oldText = btn.textContent;
+                    btn.textContent = "Kopiert!";
+                    setTimeout(() => btn.textContent = oldText, 1500);
+                });
+            }
+        };
+        setupCopy('copy-wave-btn', 'wave-export-output');
+        setupCopy('copy-cd-btn', 'cd-export-output');
+    };
+    </script>
 </main>

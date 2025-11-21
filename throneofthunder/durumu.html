@@ -90,13 +90,60 @@
                     </ul>
                 </div>
                 
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🌈 Lichtspektrum-Einteilung</h4>
-                    <ul class="assignment-list">
-                        <li style="grid-template-columns: 0.8fr 1.2fr;"><strong class="text-red-400">Roter Kegel:</strong><select data-assignment-id="durumu-cone-red" class="assignment-select"></select></li>
-                        <li style="grid-template-columns: 0.8fr 1.2fr;"><strong class="text-blue-400">Blauer Kegel:</strong><select data-assignment-id="durumu-cone-blue" class="assignment-select"></select></li>
-                        <li class="list-subheader"><span>(Gelber Kegel rotiert automatisch)</span></li>
-                    </ul>
+<div class="assignment-block">
+                    <h4 class="text-lg font-bold mb-2">🌈 Lichtspektrum (8 Spieler/Farbe)</h4>
+                    <div class="grid grid-cols-3 gap-2 text-sm">
+                        
+                        <div class="spectrum-box border-red-800">
+                            <div class="spectrum-header text-red-400">ROT</div>
+                            <div class="space-y-1">
+                                <select data-assignment-id="durumu-cone-red-1" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="RED"></select>
+                                <select data-assignment-id="durumu-cone-red-2" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="RED"></select>
+                                <select data-assignment-id="durumu-cone-red-3" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="RED"></select>
+                                <select data-assignment-id="durumu-cone-red-4" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="RED"></select>
+                                <select data-assignment-id="durumu-cone-red-5" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="RED"></select>
+                                <select data-assignment-id="durumu-cone-red-6" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="RED"></select>
+                                <select data-assignment-id="durumu-cone-red-7" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="RED"></select>
+                                <select data-assignment-id="durumu-cone-red-8" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="RED"></select>
+                            </div>
+                        </div>
+
+                        <div class="spectrum-box border-blue-800">
+                            <div class="spectrum-header text-blue-400">BLAU</div>
+                            <div class="space-y-1">
+                                <select data-assignment-id="durumu-cone-blue-1" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="BLUE"></select>
+                                <select data-assignment-id="durumu-cone-blue-2" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="BLUE"></select>
+                                <select data-assignment-id="durumu-cone-blue-3" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="BLUE"></select>
+                                <select data-assignment-id="durumu-cone-blue-4" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="BLUE"></select>
+                                <select data-assignment-id="durumu-cone-blue-5" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="BLUE"></select>
+                                <select data-assignment-id="durumu-cone-blue-6" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="BLUE"></select>
+                                <select data-assignment-id="durumu-cone-blue-7" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="BLUE"></select>
+                                <select data-assignment-id="durumu-cone-blue-8" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="BLUE"></select>
+                            </div>
+                        </div>
+
+                        <div class="spectrum-box border-yellow-800">
+                            <div class="spectrum-header text-yellow-400">GELB</div>
+                            <div class="space-y-1">
+                                <select data-assignment-id="durumu-cone-yellow-1" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="YELLOW"></select>
+                                <select data-assignment-id="durumu-cone-yellow-2" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="YELLOW"></select>
+                                <select data-assignment-id="durumu-cone-yellow-3" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="YELLOW"></select>
+                                <select data-assignment-id="durumu-cone-yellow-4" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="YELLOW"></select>
+                                <select data-assignment-id="durumu-cone-yellow-5" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="YELLOW"></select>
+                                <select data-assignment-id="durumu-cone-yellow-6" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="YELLOW"></select>
+                                <select data-assignment-id="durumu-cone-yellow-7" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="YELLOW"></select>
+                                <select data-assignment-id="durumu-cone-yellow-8" data-assignment-pool="Lichtspektrum" class="assignment-select spectrum-select" data-color="YELLOW"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="flex justify-between mb-1 items-end">
+                            <span class="text-xs text-gray-400">Export Code:</span>
+                            <button id="copy-spectrum-export-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs transition-all duration-200">Kopieren</button>
+                        </div>
+                        <input type="text" id="spectrum-export-output" class="w-full bg-black text-green-400 font-mono text-xs p-2 rounded border border-gray-700" readonly value="...">
+                    </div>
                 </div>
 
                 <div class="assignment-block">
@@ -113,6 +160,10 @@
                         <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="durumu-cd-header3" placeholder="z.B. 2. Lichtspektrum"></li>
                         <li><select data-assignment-id="durumu-cd3a-player" class="assignment-select"></select><select data-assignment-id="durumu-cd3a-cooldown" class="assignment-select"></select></li>
                         <li><select data-assignment-id="durumu-cd3b-player" class="assignment-select"></select><select data-assignment-id="durumu-cd3b-cooldown" class="assignment-select"></select></li>
+                    
+                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="durumu-cd-header4" placeholder="z.B. 3. Lichtspektrum"></li>
+                        <li><select data-assignment-id="durumu-cd4a-player" class="assignment-select"></select><select data-assignment-id="durumu-cd4a-cooldown" class="assignment-select"></select></li>
+                        <li><select data-assignment-id="durumu-cd4b-player" class="assignment-select"></select><select data-assignment-id="durumu-cd4b-cooldown" class="assignment-select"></select></li>
                     </ul>
                 </div>
             </div>
@@ -206,4 +257,60 @@
         </div>
     </div>
 </section>
+<script>
+    // Spezifischer Code für Durumu (Export-Logik)
+    window.initializePageSpecificCode = function(assignments, roster) {
+        
+        function updateSpectrumExport() {
+            let exportParts = [];
+            const colors = ['RED', 'BLUE', 'YELLOW']; // Reihenfolge wie im HTML
+            
+            colors.forEach(color => {
+                // Alle Selects mit der entsprechenden Farbe suchen
+                const selects = document.querySelectorAll(`.spectrum-select[data-color="${color}"]`);
+                selects.forEach(select => {
+                    if(select.value && !select.value.includes('❌')) {
+                        exportParts.push(`${color}-${select.value}`);
+                    }
+                });
+            });
+
+            const exportString = exportParts.join(',');
+            document.getElementById('spectrum-export-output').value = exportString;
+        }
+
+        // Event Listener auf den Container der Spektrum-Auswahl
+        // Wir nutzen Event Delegation, damit wir nicht an jedes einzelne Select einen Listener hängen müssen
+        const spectrumContainer = document.querySelector('.assignment-block'); // Der übergeordnete Container
+        if(spectrumContainer) {
+            spectrumContainer.addEventListener('change', function(e) {
+                if(e.target.classList.contains('spectrum-select')) {
+                    updateSpectrumExport();
+                }
+            });
+        }
+
+        // Initiales Update nach kurzer Verzögerung (damit Werte geladen sind)
+        setTimeout(updateSpectrumExport, 1000);
+
+        // Copy Button Logik
+        const btn = document.getElementById('copy-spectrum-export-btn');
+        if(btn) {
+            btn.addEventListener('click', () => {
+                const input = document.getElementById('spectrum-export-output');
+                navigator.clipboard.writeText(input.value).then(() => {
+                    const originalText = btn.textContent;
+                    btn.textContent = "Kopiert!";
+                    btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    btn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    }, 1500);
+                });
+            });
+        }
+    };
+</script>
 </main>
