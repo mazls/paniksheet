@@ -107,27 +107,6 @@
                         <li><span>Dispel 5:</span><select data-assignment-id="horridon-amani-dispel1" class="assignment-select"></select></li>
                     </ul>
                 </div>
-
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
-                    <ul class="assignment-list">
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header1" placeholder="z.B. Gurubashi-Phase (Gift)"></li>
-                        <li><select data-assignment-id="horridon-cd1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd1-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="horridon-cd1.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd1.1-cooldown" class="assignment-select"></select></li>
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header2" placeholder="z.B. Drakkari-Phase (Seuche)"></li>
-                        <li><select data-assignment-id="horridon-cd2-player" class="assignment-select"></select><select data-assignment-id="horridon-cd2-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="horridon-cd2.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd2.1-cooldown" class="assignment-select"></select></li>
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header3" placeholder="z.B. Amani-Phase (Blitznova)"></li>
-                        <li><select data-assignment-id="horridon-cd3-player" class="assignment-select"></select><select data-assignment-id="horridon-cd3-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="horridon-cd3.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd3.1-cooldown" class="assignment-select"></select></li>
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header4" placeholder="Jalak (Bestial. Gebrüll)"></li>
-                        <li><select data-assignment-id="horridon-cd4-player" class="assignment-select"></select><select data-assignment-id="horridon-cd4-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="horridon-cd4.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd4.1-cooldown" class="assignment-select"></select></li>
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="horridon-cd-header5" placeholder="Boss-Enrage (nach Jalak)"></li>
-                        <li><select data-assignment-id="horridon-cd5-player" class="assignment-select"></select><select data-assignment-id="horridon-cd5-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="horridon-cd5.1-player" class="assignment-select"></select><select data-assignment-id="horridon-cd5.1-cooldown" class="assignment-select"></select></li>
-                    </ul>
-                </div>
             </div>
 
             <div>
@@ -191,7 +170,33 @@
         </div>
     </div>
 </section>
+    <div class="bg-slate-850 p-4 rounded-lg mb-6 border border-slate-600">
+        <label class="text-gold font-bold mr-2">Exact NPC Name:</label>
+        <input type="text" class="assignment-text-input w-64" data-assignment-id="horridon-npc_name" placeholder="Horrdion">
+    </div>
 
+
+
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400">
+            Global WA Export
+        </button>
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Advanced CD Planner (WA)
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="planner-grid planner-header">
+                <div>Trigger (Key)</div>
+                <div>Val/%</div>
+                <div>Time</div>
+                <div>Player</div>
+                <div>Cooldown</div>
+            </div>
+            
+            <div id="planner-rows-container"></div>
+        </div>
+    </section>
 <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
         Fähigkeiten im Detail
@@ -259,4 +264,56 @@
         </div>
     </div>
 </section>
+<script>
+    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
+        
+        const TRIGGER_OPTIONS = [
+            { val: "HORRIDON_ENC_START", text: "Encounter Start" },
+            { val: "HORRIDON_HEALTH", text: "Health %" },
+            { val: "HORRIDON_DOOR", text: "Door (Tor)" },
+            { val: "HORRIDON_DOUBLE_SWIPE", text: "Double Swipe" },
+            { val: "HORRIDON_DIRE_CALL", text: "Dire Call (Schreckensruf)" },
+            { val: "HORRIDON_CHARGE", text: "Charge (Anstürmen)" },
+            { val: "HORRIDON_PUNCTURE", text: "Triple Puncture" },
+            { val: "HORRIDON_JALAK", text: "Jalak" },
+            { val: "HORRIDON_FARRAKI", text: "Farraki" },
+            { val: "HORRIDON_GURUBASHI", text: "Gurubashi" },
+            { val: "HORRIDON_DRAKKARI", text: "Drakkari" },
+            { val: "HORRIDON_AMANI", text: "Amani" },
+            { val: "HORRIDON_DINO", text: "Dino (Mancer)" },
+            { val: "HORRIDON_BESTIAL_CRY", text: "Bestial Cry" }
+        ];
+
+        const container = document.getElementById('planner-rows-container');
+        // Nur einmalig aufbauen, wenn leer
+        if (container && container.innerHTML.trim() === "") {
+            let html = "";
+            for (let i = 1; i <= 20; i++) {
+                const options = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+                
+                // data-manual-options="true" verhindert, dass index.html Spieler in das Trigger-Feld lädt
+                // Die ID endet auf "-cooldown", damit index.html automatisch Spells lädt
+                
+                html += `
+                <div class="planner-grid">
+                    <select class="assignment-select" data-assignment-id="jinrokh-planner-row${i}-trigger" data-manual-options="true">
+                        <option value="">-- Inaktiv --</option>
+                        ${options}
+                    </select>
+                    
+                    <input type="text" class="assignment-text-input text-center" 
+                           data-assignment-id="jinrokh-planner-row${i}-condition" placeholder="%" value="0">
+                           
+                    <input type="text" class="assignment-text-input text-center" 
+                           data-assignment-id="jinrokh-planner-row${i}-time" placeholder="Sec" value="0">
+                           
+                    <select class="assignment-select" data-assignment-id="jinrokh-planner-row${i}-player"></select>
+                    
+                    <select class="assignment-select" data-assignment-id="jinrokh-planner-row${i}-cooldown"></select>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+    };
+</script>
 </main>

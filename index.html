@@ -34,7 +34,26 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
-
+    .planner-grid {
+        display: grid;
+        grid-template-columns: 2fr 0.5fr 0.5fr 1fr 1fr;
+        gap: 0.5rem;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+    }
+    
+    .planner-header {
+        font-weight: bold;
+        color: #fcd34d; /* Gold */
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        border-bottom: 1px solid #4a5568;
+        padding-bottom: 4px;
+        margin-bottom: 8px;
+    }
 #toggle-video-btn:hover {
     background-color: rgba(36, 61, 51, 0.9);
     border-color: var(--color-gold);
@@ -794,6 +813,8 @@ pre {
 		let playerSummaryState = {};
 		let summarySortState = { column: 'total', direction: 'desc' };
         let globalAliasMap = {};
+        let assignmentsDocRef;      // Global, damit Speicher-Funktionen darauf zugreifen können
+
         
 
 const offensiveBuffsForAssignment = {
@@ -818,6 +839,249 @@ const offensiveBuffsForAssignment = {
 		const lootCollectionRef = collection(db, LOOT_COLLECTION);
         const denylistCollectionRef = collection(db, "snapshot_player_denylist");
         const aliasDocRef = doc(db, DATA_COLLECTION, "nameAliasMap"); // Referenz definieren
+        window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc };
+
+
+window.generateGlobalWaString = async function() {
+            if (!window.isManager) return window.showModal("Nur Gildenräte können exportieren.");
+            
+            // SICHERSTELLEN, DASS COOLDOWNS DA SIND
+            if (!window.allCooldowns || window.allCooldowns.length === 0) {
+                console.log("Cooldowns fehlen, lade neu...");
+                await fetchAllCooldowns();
+            }
+
+            const bosses = [
+                'boss-jinrokh', 'boss-horridon', 'boss-council', 'boss-tortos', 
+                'boss-megaira', 'boss-ji-kun', 'boss-durumu', 'boss-primordius', 
+                'boss-dark-animus', 'boss-iron-qon', 'boss-twin-consorts', 
+                'boss-lei-shen', 'boss-ra-den'
+            ];
+
+            let result = [];
+            
+            // Wir holen alle Boss-Daten
+            const snaps = await Promise.all(bosses.map(b => getDoc(doc(db, "raid-tool-data", b))));
+
+            snaps.forEach((snap, idx) => {
+                if (!snap.exists()) return;
+                const data = snap.data();
+                const bossKey = bosses[idx].replace('boss-', ''); // z.B. "jinrokh"
+
+                // NPC Name holen (Standardwert, falls leer)
+                const npcName = data[`${bossKey}-npc_name`]?.text || "Unknown NPC";
+
+                // Alle Planner-Zeilen finden
+                const rows = Object.keys(data)
+                    .filter(k => k.includes('planner-row') && k.endsWith('-trigger'))
+                    .sort((a, b) => {
+                        // Sortierung extrahieren: "jinrokh-planner-row5-trigger" -> 5
+                        const getNum = s => parseInt(s.match(/row(\d+)/)?.[1] || 999);
+                        return getNum(a) - getNum(b);
+                    });
+
+                rows.forEach(rowKey => {
+                    const base = rowKey.replace('-trigger', ''); // z.B. "jinrokh-planner-row1"
+                    
+                    const trigger = data[rowKey]?.player;
+                    if (!trigger) return;
+
+                    const condition = data[`${base}-condition`]?.text || "0";
+                    const time = data[`${base}-time`]?.text || "0";
+                    const player = data[`${base}-player`]?.player || "ALL";
+                    
+                    // SPELL ID SUCHE
+                    const spellName = data[`${base}-cooldown`]?.cooldown;
+                    let spellId = "nil";
+                    
+                    if (spellName) {
+                        // Vergleiche Namen case-insensitive und getrimmt
+                        const cd = window.allCooldowns.find(c => c.name.trim().toLowerCase() === spellName.trim().toLowerCase());
+                        if (cd && cd.spellId) {
+                            spellId = cd.spellId;
+                        } else {
+                            console.warn(`Spell ID nicht gefunden für: "${spellName}"`);
+                        }
+                    }
+
+                    // String zusammenbauen - NEUE REIHENFOLGE!
+                    // Format: Key / Value / Player / Time / SpellID / [NPC Name für Health] / nil...
+                    let entry = "";
+                    if (trigger.includes("_HEALTH")) {
+                        // Bei Health kommt der NPC Name an Position 6 (statt nil)
+                        entry = `${trigger}/${condition}/${player}/${time}/${spellId}/${npcName}/nil/nil/nil/nil`;
+                    } else {
+                        // Bei Time bleibt es beim Standard
+                        entry = `${trigger}/${condition}/${player}/${time}/${spellId}/nil/nil/nil/nil`;
+                    }
+                    result.push(entry);
+                });
+            });
+
+            const finalString = result.join('*');
+            if(finalString) {
+                await navigator.clipboard.writeText(finalString);
+                window.showModal(`Exportiert: ${result.length} Einträge.`);
+            } else {
+                window.showModal("Keine Einträge gefunden.");
+            }
+        };
+    
+    // Initial Cooldowns laden
+    fetchAllCooldowns();
+    
+    // Hilfsobjekt global verfügbar machen, falls noch nicht geschehen
+    window.firebaseTools = { db, doc, getDoc, collection, getDocs };
+
+    // 3. Neuen Listener starten (Das ist der Code von vorhin, sicher verpackt)
+window.setupBossListener = function(bossId) {
+    // Alten Listener stoppen, um Datenmüll zu vermeiden
+    if (assignmentUnsubscribe) {
+        assignmentUnsubscribe();
+    }
+    
+    console.log("Setup Listener für:", bossId);
+    assignmentsDocRef = doc(db, "raid-tool-data", bossId);
+
+    assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
+        const assignments = docSnap.exists() ? docSnap.data() : {};
+        const rosterPlayerNames = window.rosterData ? window.rosterData.map(p => p.name) : [];
+        
+        // --- HILFSFUNKTION: Werte in die Elemente schreiben ---
+        const applyValues = () => {
+            // 1. Dropdowns
+            document.querySelectorAll('.assignment-select').forEach(select => {
+                const assignmentId = select.dataset.assignmentId;
+                if(!assignmentId) return;
+
+                const isCooldown = assignmentId.toLowerCase().includes('cooldown');
+                // WICHTIG: Hier prüfen wir, ob es ein manuelles Feld (wie der Trigger) ist
+                const isManual = select.getAttribute('data-manual-options') === "true";
+                
+                // Wert aus DB holen (entweder Cooldown-Name oder Spieler-Name)
+                const val = assignments[assignmentId] ? (assignments[assignmentId].cooldown || assignments[assignmentId].player) : "";
+                
+                // Wert setzen, falls abweichend
+                if (select.value !== val) {
+                    select.value = val;
+                }
+
+                // --- VALIDIERUNG (Rotfärbung) ---
+                select.classList.remove('invalid-assignment');
+                const oldInvalid = select.querySelector('.invalid-option');
+                if (oldInvalid && oldInvalid.value !== val) oldInvalid.remove(); 
+
+                // Nur rot markieren, wenn:
+                // - Ein Wert existiert
+                // - Es KEIN Cooldown-Feld ist
+                // - Es KEIN manuelles Feld ist (Fix für dein Health-Problem!)
+                // - Der Wert NICHT im Roster ist
+                if (val && !isCooldown && !isManual && !rosterPlayerNames.includes(val) && val !== "Niemand") {
+                    select.classList.add('invalid-assignment');
+                    // Option hinzufügen, falls sie fehlt, damit man den Fehler sieht
+                    if (!Array.from(select.options).some(o => o.value === val)) {
+                         const invalidOption = new Option(`❌ ${val} (Nicht im Roster)`, val);
+                         invalidOption.className = 'invalid-option';
+                         select.appendChild(invalidOption);
+                         select.value = val;
+                    }
+                }
+                
+                // Textfarbe aktualisieren (für Klassenfarben)
+                const selectedOption = Array.from(select.options).find(o => o.value === val);
+                select.style.color = selectedOption ? (selectedOption.dataset.color || '#fff') : '#fff';
+            });
+
+            // 2. Text Inputs (z.B. % oder Zeit im Planer)
+            document.querySelectorAll('.assignment-text-input').forEach(input => {
+                const assignmentId = input.dataset.assignmentId;
+                if(!assignmentId) return;
+                // Hier prüfen wir auf 'text' oder 'player' als Fallback
+                const val = assignments[assignmentId]?.text || assignments[assignmentId]?.player || '';
+                
+                // Wert nur setzen, wenn er nicht leer ist oder das Feld nicht gerade fokussiert ist (um Tippen nicht zu stören)
+                if (val !== "" || document.activeElement !== input) {
+                    input.value = val;
+                }
+            });
+        };
+
+        // DURCHLAUF 1: Werte auf statische Elemente anwenden (die schon im HTML sind)
+        applyValues();
+
+        // DURCHLAUF 2: Boss-spezifischen Code ausführen (baut den Planer in jinrokh.html auf)
+        if (typeof window.initializePageSpecificCode === 'function') {
+            // Wir übergeben window.rosterData und window.allCooldowns explizit
+            window.initializePageSpecificCode(assignments, window.rosterData, window.firebaseTools, window.allCooldowns);
+        }
+
+        // DURCHLAUF 3: Werte ERNEUT anwenden! 
+        // Jetzt existieren die Planer-Zeilen erst im DOM, daher müssen wir sie jetzt befüllen.
+        // Das behebt das "Inaktiv"-Problem beim Neuladen.
+        applyValues();
+        
+        // UI Status Updates
+        if(window.toggleSelectEditability) window.toggleSelectEditability();
+        if(typeof updateAssignmentPools === 'function') updateAssignmentPools();
+    });
+};
+// ---------------------------------------------------------
+// 3. SPEICHER-FUNKTION (Muss globale assignmentsDocRef nutzen)
+// ---------------------------------------------------------
+async function handleAssignmentChange(event) {
+        // Prüfen ob Referenz existiert
+        if (typeof assignmentsDocRef === 'undefined' || !assignmentsDocRef) {
+            console.error("Kein aktiver Boss geladen (assignmentsDocRef fehlt)!");
+            return;
+        }
+
+        if (window._suspendAssignListeners) return;
+        if (!window.isManager) return;
+        
+        const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+        const element = event.target;
+        const assignmentId = element.dataset.assignmentId;
+        const value = element.value; // 'val' korrigiert zu 'value'
+
+        let dataToSave;
+
+        if (element.tagName === 'SELECT') {
+            // Dropdown Logik
+            if (assignmentId.toLowerCase().includes('cooldown')) {
+                dataToSave = { [assignmentId]: { cooldown: value, editor: currentManager, timestamp: serverTimestamp() } };
+            } else if (assignmentId.includes('npc_name') || assignmentId.includes('condition') || assignmentId.includes('time')) {
+                 // Speichere Text-Werte für Planer-Selects unter 'text' (Fallback, falls ein Select dafür genutzt wird)
+                 dataToSave = { [assignmentId]: { text: value, editor: currentManager, timestamp: serverTimestamp() } };
+            } else {
+                // Normale Spieler oder Trigger (JINROKH_HEALTH etc.) -> speichern unter 'player'
+                dataToSave = { [assignmentId]: { player: value, editor: currentManager, timestamp: serverTimestamp() } };
+            }
+            
+            // Farbe aktualisieren
+            const selectedOption = element.options[element.selectedIndex];
+            element.style.color = selectedOption ? (selectedOption.dataset.color || '#FFFFFF') : '#FFFFFF';
+
+        } else {
+            // Text Input Logik (Fallback für handleTextInputChange, falls Events hier landen)
+            dataToSave = { [assignmentId]: { text: value, editor: currentManager, timestamp: serverTimestamp() } };
+        }
+
+        // Speichern
+        await setDoc(assignmentsDocRef, dataToSave, { merge: true });
+        
+        // Log
+        const playerForLog = value || "Niemand/Leer";
+        const bossName = location.hash.split('/')[1] || "Boss";
+        window.logHistory(bossName, `Einteilung: ${assignmentId}`, playerForLog, currentManager);
+    }
+
+// Event Listener für Änderungen global registrieren (falls noch nicht geschehen)
+document.addEventListener('change', (e) => {
+    if (e.target.classList.contains('assignment-select') || e.target.classList.contains('assignment-text-input')) {
+        handleAssignmentChange(e);
+    }
+});
+
 function loadAndDisplayAliasMap(aliasMap) {
     const tableBody = document.getElementById('alias-table-body');
     if (!tableBody) return;
@@ -1065,6 +1329,7 @@ async function fetchAllCooldowns() {
         const snapshot = await getDocs(q);
         allCooldowns = snapshot.docs.map(doc => doc.data());
         console.log("Cooldowns erfolgreich aus der Datenbank geladen:", allCooldowns);
+        window.allCooldowns = snapshot.docs.map(doc => doc.data());
     } catch (error) {
         console.error("Fehler beim Laden der Cooldowns aus der Datenbank:", error);
     }
@@ -1473,7 +1738,7 @@ mainNav.innerHTML = mainNavHTML;
 			if (assignmentUnsubscribe) { assignmentUnsubscribe(); assignmentUnsubscribe = null; }
 			if (lootDatesUnsubscribe) { lootDatesUnsubscribe(); lootDatesUnsubscribe = null; }
 			if (selectedLootDateUnsubscribe) { selectedLootDateUnsubscribe(); selectedLootDateUnsubscribe = null; }
-		
+            const hash = window.location.hash.substring(1);
 			const filePath = pageId.includes('/') ? `${pageId}.html` : `${pageId}.html`;
 		
 			try {
@@ -1521,7 +1786,19 @@ mainNav.innerHTML = mainNavHTML;
 				console.error("Fehler beim Laden des Inhalts:", error);
 				contentContainer.innerHTML = `<div class="text-center p-8 bg-slate-850 rounded-lg"><h2 class="text-2xl font-semibold text-yellow-400">Inhalt nicht gefunden</h2><p class="mt-2 text-gray-400">Für diesen Boss wurde noch keine Seite angelegt. Bitte erstelle die Datei <code>${filePath}</code>.</p></div>`;
 			}
+                    if (hash) {
+        // Extrahiere den Boss-Namen aus dem Hash (z.B. "jinrokh")
+        const parts = hash.split('/');
+        const bossSlug = parts.length > 1 ? parts[1] : parts[0]; 
+        
+        // Baue die ID: "boss-jinrokh"
+        const currentBossId = 'boss-' + bossSlug;
+
+        // RUFE DIE NEUE FUNKTION AUF:
+        window.setupBossListener(currentBossId);
+    }
 		}
+
 
         function renderCurrentState() {
             const currentRaidId = raidSelector.value;
@@ -2396,7 +2673,10 @@ window.applyAssignmentsBulk = applyAssignmentsBulk;
   select.dataset._wired = "1";
 
   // 1) Change-Handler für DB-Save
-  select.addEventListener('change', handleAssignmentChange);
+if (select.getAttribute('data-manual-options') === "true") {
+        select.addEventListener('change', window.handleAssignmentChange); // Trotzdem Speichern erlauben
+        return; 
+    }
 
   // 2) Optionen befüllen (wie bisherige Logik)
   const assignmentIdLower = (select.dataset.assignmentId || '').toLowerCase();
@@ -2526,45 +2806,7 @@ assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
   window.toggleSelectEditability?.();
   updateAssignmentPools?.();
 });
-        document.querySelectorAll('.assignment-select').forEach(select => {
-            select.addEventListener('change', handleAssignmentChange);
-            const assignmentId = select.dataset.assignmentId.toLowerCase();
-        if (assignmentId.includes('cooldown')) {
-            select.innerHTML = '<option value="">-- Cooldown wählen --</option>';
-            allCooldowns.forEach(cd => {
-                const option = document.createElement('option');
-                if (cd.name.startsWith('---')) {
-                    // Dies ist eine Trennlinie/Überschrift
-                    option.textContent = cd.name;
-                    option.disabled = true; // Macht die Option nicht auswählbar
-                    option.style.fontWeight = 'bold';
-                    option.style.color = 'var(--color-gold)';
-                    option.style.backgroundColor = 'var(--color-dark-green-bg)';
-                } else {
-                    // Dies ist ein normaler Cooldown
-                    const color = window.classColors[cd.class] || '#FFFFFF';
-                    option.value = cd.name;
-                    option.textContent = cd.name;
-                    option.dataset.color = color;
-                    option.style.color = color;
-                }
 
-                select.appendChild(option);
-            });
-        } else {
-                let playersForDropdown = [];
-                if (assignmentId.includes('tank')) {
-                    playersForDropdown = rosterData.filter(p => p.roles.includes('TANK'));
-                } else if (assignmentId.includes('healer')) {
-                    playersForDropdown = rosterData.filter(p => p.roles.includes('HEALER'));
-                } else if (assignmentId.includes('dps') || assignmentId.includes('dd')) {
-                    playersForDropdown = rosterData.filter(p => p.roles.includes('DPS'));
-                } else {
-                    playersForDropdown = rosterData;
-                }
-                populateDropdownOptions(select, playersForDropdown);
-            }
-        });
         assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
             const assignments = docSnap.exists() ? docSnap.data() : {};
             const rosterPlayerNames = rosterData.map(p => p.name);
