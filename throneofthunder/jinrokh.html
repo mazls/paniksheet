@@ -229,7 +229,18 @@
         const NPC_OPTIONS = [
             "Jinrokh the Breaker",
         ];
-
+        const getCooldownOptions = () => {
+            let html = '<option value="">-- Cooldown --</option>';
+            allCooldowns.forEach(cd => {
+                 if (cd.name.startsWith('---')) {
+                     html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                 } else {
+                     const color = window.classColors?.[cd.class] || '#FFFFFF';
+                     html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                 }
+            });
+            return html;
+        };
         const container = document.getElementById('jinrokh-planner-container');
         
         // Nur einmalig aufbauen
