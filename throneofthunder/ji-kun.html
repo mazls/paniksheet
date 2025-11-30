@@ -375,10 +375,14 @@
 
         // 3. Config-Selects (Wave Direction/Level) wiederherstellen & Listener setzen
         document.querySelectorAll('.config-select').forEach(sel => {
-            const savedVal = assignments[sel.dataset.assignmentId]?.player; // 'player' feld wird hier für values missbraucht, das ist ok
+            // WERT SETZEN (immer)
+            const savedVal = assignments[sel.dataset.assignmentId]?.player;
             if (savedVal) sel.value = savedVal;
             
-            // Listener für direkten Save
+            // LISTENER NUR EINMAL SETZEN
+            if (sel.dataset._wired === '1') return; // Abbrechen, wenn schon verkabelt
+            sel.dataset._wired = '1';               // Markieren als verkabelt
+        
             sel.addEventListener('change', (e) => {
                 jiKunDirectSave({ [e.target.dataset.assignmentId]: e.target.value });
                 updateExports();
@@ -387,8 +391,14 @@
 
         // 4. Custom Labels wiederherstellen
         document.querySelectorAll('.custom-label-input').forEach(input => {
+            // WERT SETZEN (immer)
             const savedVal = assignments[input.dataset.assignmentId]?.text;
             if (savedVal) input.value = savedVal;
+        
+            // LISTENER NUR EINMAL SETZEN
+            if (input.dataset._wired === '1') return;
+            input.dataset._wired = '1';
+        
             input.addEventListener('change', (e) => {
                 jiKunDirectSave({ [e.target.dataset.assignmentId]: e.target.value });
                 updateExports();
