@@ -248,16 +248,15 @@
     </section>
 
 <script>
-    // Statisches HTML generieren
+    // 1. Statisches HTML generieren (Bleibt unverändert, läuft sofort beim Laden)
     (function renderStaticStructure() {
-        // WAVE KONFIGURATION: 1-13, doppelt bei 4,5,7,8,10,11,12,13
+        // WAVE KONFIGURATION
         const waveContainer = document.getElementById('static-waves-container');
         if (waveContainer) {
             let waveHtml = '';
             const doubleWaves = [4, 5, 7, 8, 10, 11, 12, 13];
             
             for(let i=1; i<=13; i++) {
-                // Helper Funktion
                 const renderRow = (num, suffix = '') => {
                     const dbKey = `jikun-wave-${num}${suffix}`;
                     let slotsHtml = '';
@@ -296,7 +295,7 @@
             waveContainer.innerHTML = waveHtml;
         }
 
-        // 2. CDs (1-4)
+        // CD KONFIGURATION (Legacy/Static)
         const cdContainer = document.getElementById('static-cds-container');
         if (cdContainer) {
             let cdHtml = '';
@@ -324,14 +323,17 @@
         }
     })();
 
-    // Hauptfunktion
+    // 2. HAUPTFUNKTION (Zusammengeführt)
     window.initializePageSpecificCode = async function(assignments, roster, firebaseTools, allCooldowns) {
-        // 1. Benötigte Firebase Funktionen dynamisch importieren
+        
+        // --- A. Setup & Imports ---
         const { setDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
         const db = firebaseTools.db;
         let globalCooldowns = allCooldowns || window.allCooldowns || [];
 
-        // INTERNE SPEICHERFUNKTION
+        // --- B. Wave Planner Logik (Speichern & Export) ---
+
+        // 1. Interne Speicherfunktion für Config-Selects
         const jiKunDirectSave = async (updatesObj) => {
             if (!window.isManager) return;
             const editor = sessionStorage.getItem('currentManager') || 'Unbekannt';
@@ -352,10 +354,10 @@
 
             try {
                 await setDoc(doc(db, "raid-tool-data", "boss-ji-kun"), payload, { merge: true });
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Fehler beim Speichern:", e); }
         };
 
-        // --- 1. Dropdown Inhalte für Cooldowns befüllen ---
+        // 2. Dropdowns für alte CD-Sektion befüllen (Falls noch genutzt)
         document.querySelectorAll('[data-assignment-pool^="cd-spell"]').forEach(select => {
             if(select.options.length > 1) return;
             select.innerHTML = '<option value="">-- CD --</option>';
@@ -371,17 +373,19 @@
             });
         });
 
-        // --- 2. Config-Dropdowns wiederherstellen ---
+        // 3. Config-Selects (Wave Direction/Level) wiederherstellen & Listener setzen
         document.querySelectorAll('.config-select').forEach(sel => {
-            const savedVal = assignments[sel.dataset.assignmentId]?.player;
+            const savedVal = assignments[sel.dataset.assignmentId]?.player; // 'player' feld wird hier für values missbraucht, das ist ok
             if (savedVal) sel.value = savedVal;
+            
+            // Listener für direkten Save
             sel.addEventListener('change', (e) => {
                 jiKunDirectSave({ [e.target.dataset.assignmentId]: e.target.value });
                 updateExports();
             });
         });
 
-        // --- 3. Text Inputs wiederherstellen ---
+        // 4. Custom Labels wiederherstellen
         document.querySelectorAll('.custom-label-input').forEach(input => {
             const savedVal = assignments[input.dataset.assignmentId]?.text;
             if (savedVal) input.value = savedVal;
@@ -391,13 +395,13 @@
             });
         });
 
-        // --- 4. Export Logik ---
+        // 5. Export Logik definieren
         function updateExports() {
-            // Waves
+            // Waves Export
             let wRows = [];
             document.querySelectorAll('.wave-row').forEach(row => {
-                const lvl = row.querySelector('.wave-lvl').value;
-                const dir = row.querySelector('.wave-dir').value;
+                const lvl = row.querySelector('.wave-lvl')?.value || "LOWER";
+                const dir = row.querySelector('.wave-dir')?.value || "NE";
                 let players = [];
                 row.querySelectorAll('.assignment-select').forEach(s => {
                     if (s.value && !s.value.includes('❌')) players.push(s.value);
@@ -406,19 +410,20 @@
                     wRows.push(`WAVE${row.dataset.id}-${lvl}${dir}-${players.join(',')}`);
                 }
             });
-            document.getElementById('wave-export-output').value = wRows.join(',');
+            const waveOutput = document.getElementById('wave-export-output');
+            if(waveOutput) waveOutput.value = wRows.join(',');
 
-            // CDs
+            // CD Export (Legacy)
             let cRows = [];
             document.querySelectorAll('.cd-row').forEach(row => {
-                const label = row.querySelector('input').value || `CD${row.dataset.id}`;
+                const labelInp = row.querySelector('input');
+                const label = labelInp ? labelInp.value : `CD${row.dataset.id}`;
                 let pairs = [];
-                
                 const pSelects = row.querySelectorAll('select[data-assignment-id*="-p"]');
                 const cSelects = row.querySelectorAll('select[data-assignment-id*="cooldown"]');
                 
                 for(let i=0; i<pSelects.length; i++) {
-                    if(pSelects[i].value && cSelects[i].value) {
+                    if(pSelects[i] && cSelects[i] && pSelects[i].value && cSelects[i].value) {
                          pairs.push(`${pSelects[i].value}:${cSelects[i].value}`);
                     }
                 }
@@ -426,33 +431,41 @@
                     cRows.push(`${label}: ${pairs.join(', ')}`);
                 }
             });
-            document.getElementById('cd-export-output').value = cRows.join(' | ');
+            const cdOutput = document.getElementById('cd-export-output');
+            if(cdOutput) cdOutput.value = cRows.join(' | ');
         }
 
+        // Globaler Change Listener für Updates im Export
         document.body.addEventListener('change', (e) => {
-            if (e.target.matches('select') || e.target.matches('input')) updateExports();
+            if (e.target.matches('select') || e.target.matches('input')) {
+                // Kurze Verzögerung, damit Framework-Daten syncen können
+                setTimeout(updateExports, 100); 
+            }
         });
 
+        // Initiale Berechnung des Exports
         setTimeout(updateExports, 1000);
 
+        // Copy Buttons Setup
         const setupCopy = (btnId, inputId) => {
             const btn = document.getElementById(btnId);
             if(btn) {
                 btn.addEventListener('click', () => {
-                    navigator.clipboard.writeText(document.getElementById(inputId).value);
-                    const oldText = btn.textContent;
-                    btn.textContent = "Kopiert!";
-                    setTimeout(() => btn.textContent = oldText, 1500);
+                    const input = document.getElementById(inputId);
+                    if(input) {
+                        navigator.clipboard.writeText(input.value);
+                        const oldText = btn.textContent;
+                        btn.textContent = "Kopiert!";
+                        setTimeout(() => btn.textContent = oldText, 1500);
+                    }
                 });
             }
         };
         setupCopy('copy-wave-btn', 'wave-export-output');
-        setupCopy('copy-cd-btn', 'cd-export-output');
-    };
-    </script>
-    <script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
+
+
+        // --- C. Advanced WA Planner Logik (Rendering) ---
+
         const TRIGGER_OPTIONS = [
             { val: "JIKUN_ENC_START", text: "Encounter Start (Jikun)" },
             { val: "JIKUN_HEALTH", text: "Health % (Wähle NPC)" },
@@ -464,33 +477,23 @@
             { val: "JIKUN_FEED_YOUNG", text: "Feed Young" }
         ];
 
-        const NPC_OPTIONS = [
-            "Jikun"
-        ];
+        const NPC_OPTIONS = [ "Jikun" ];
 
-        const container = document.getElementById('jikun-planner-container');
-                const getCooldownOptions = () => {
-            let html = '<option value="">-- Cooldown --</option>';
-            allCooldowns.forEach(cd => {
-                 if (cd.name.startsWith('---')) {
-                     html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                 } else {
-                     const color = window.classColors?.[cd.class] || '#FFFFFF';
-                     html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                 }
-            });
-            return html;
-        };
-        // Nur einmalig aufbauen
-        if (container && container.innerHTML.trim() === "") {
+        const waContainer = document.getElementById('jikun-planner-container');
+        
+        // Grid aufbauen, falls leer
+        if (waContainer && waContainer.innerHTML.trim() === "") {
             let html = "";
             const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
 
+            // Cooldown Optionen generieren (für WA Planner Dropdowns)
+            // Hinweis: Die eigentliche Befüllung übernimmt oft das Framework über 'assignment-select',
+            // aber wir bauen hier das HTML Gerüst auf.
+            
             for (let i = 1; i <= 20; i++) {
                 html += `
                 <div class="planner-row">
-                    
                     <select class="assignment-select w-full" data-assignment-id="jikun-planner-row${i}-trigger" data-manual-options="true">
                         <option value="">-- Inaktiv --</option>
                         ${triggerOpts}
@@ -513,7 +516,7 @@
                     <div></div>
                 </div>`;
             }
-            container.innerHTML = html;
+            waContainer.innerHTML = html;
         }
     };
 </script>

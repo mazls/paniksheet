@@ -125,16 +125,28 @@
                             data-phase="megaera">
                     </div>
 
-                    <div class="assignment-block mt-4">
-                        <h4 class="text-lg font-bold text-gold mb-2">Kill-Reihenfolge</h4>
                         <div class="grid grid-cols-4 gap-2 mb-2" id="megaera-kill-order-container">
-                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
-                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
-                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
-                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
-                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
-                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
-                            <select class="kill-order-select"><option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option></select>
+                            <select class="kill-order-select assignment-select" data-assignment-id="megaera-kill-order-1" data-manual-options="true">
+                                <option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option>
+                            </select>
+                            <select class="kill-order-select assignment-select" data-assignment-id="megaera-kill-order-2" data-manual-options="true">
+                                <option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option>
+                            </select>
+                            <select class="kill-order-select assignment-select" data-assignment-id="megaera-kill-order-3" data-manual-options="true">
+                                <option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option>
+                            </select>
+                            <select class="kill-order-select assignment-select" data-assignment-id="megaera-kill-order-4" data-manual-options="true">
+                                <option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option>
+                            </select>
+                            <select class="kill-order-select assignment-select" data-assignment-id="megaera-kill-order-5" data-manual-options="true">
+                                <option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option>
+                            </select>
+                            <select class="kill-order-select assignment-select" data-assignment-id="megaera-kill-order-6" data-manual-options="true">
+                                <option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option>
+                            </select>
+                            <select class="kill-order-select assignment-select" data-assignment-id="megaera-kill-order-7" data-manual-options="true">
+                                <option value="Fire">Feuer</option><option value="Frost">Frost</option><option value="Nature">Natur</option><option value="Arcane">Arkan (HC)</option>
+                            </select>
                         </div>
                         
                         <div class="relative mt-2">
@@ -266,56 +278,75 @@
     </div>
 </section>
 <script>
-(() => {
-    const selects = document.querySelectorAll('.kill-order-select');
-    const output = document.getElementById('megaera-kill-order-output');
-    const copyBtn = document.getElementById('copy-kill-order-btn');
-
-    function updateOutput() {
-        const values = Array.from(selects).map(s => s.value);
-        output.textContent = values.join(',');
-    }
-
-    selects.forEach(sel => {
-        sel.addEventListener('change', updateOutput);
-    });
-
-    // Initial einmal ausführen
-    updateOutput();
-
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(output.textContent).then(() => {
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = "Kopiert!";
-                copyBtn.classList.add("bg-green-600");
-                setTimeout(() => {
-                    copyBtn.textContent = originalText;
-                    copyBtn.classList.remove("bg-green-600");
-                }, 1500);
-            });
-        });
-    }
-})();
-</script>
-<script>
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
+        // --- 1. KILL ORDER LOGIC (Integriert) ---
+        const killSelects = document.querySelectorAll('.kill-order-select');
+        const output = document.getElementById('megaera-kill-order-output');
+        const copyBtn = document.getElementById('copy-kill-order-btn');
+
+        const updateOutput = () => {
+            const values = Array.from(killSelects).map(s => s.value);
+            output.textContent = values.join(',');
+        };
+
+        // Event Listener für Änderungen
+        killSelects.forEach(sel => {
+            // Alte Listener entfernen um Doppelungen zu vermeiden
+            sel.removeEventListener('change', updateOutput);
+            sel.addEventListener('change', updateOutput);
+        });
+
+        // Kopieren-Button Logik
+        if (copyBtn) {
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(output.textContent).then(() => {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = "Kopiert!";
+                    copyBtn.classList.add("bg-green-600");
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                        copyBtn.classList.remove("bg-green-600");
+                    }, 1500);
+                });
+            };
+        }
+
+        // INITIALES UPDATE: Damit der Text direkt nach dem Laden stimmt
+        // (Die Werte sind durch index.html bereits gesetzt, wenn diese Funktion läuft)
+        setTimeout(updateOutput, 100); 
+
+
+        // --- 2. PLANNER LOGIC ---
         const TRIGGER_OPTIONS = [
             { val: "MEGAERA_ENC_START", text: "Encounter Start (MEG)" },
             { val: "MEGAERA_HEALTH", text: "Health % (Wähle NPC)" },
-            { val: "MEGAERA_CINDERS", text: "Cinders" },
-            { val: "MEGAERA_TORRENT", text: "Torrent of Ice" },
-            { val: "MEGAERA_RAMPAGE", text: "Rampage" },
-            { val: "MEGAERA_BREATHS", text: "Breaths" },
+            { val: "MEGAERA_CINDERS", text: "Cinders (Glut)" },
+            { val: "MEGAERA_TORRENT", text: "Torrent of Ice (Sturzflut)" },
+            { val: "MEGAERA_RAMPAGE", text: "Rampage (Toben)" },
+            { val: "MEGAERA_BREATHS", text: "Breaths (Atem)" },
         ];
 
         const NPC_OPTIONS = [
-            "Megaira"
+            "Megaira",
+            "Flaming Head",
+            "Frozen Head",
+            "Venomous Head",
+            "Arcane Head"
         ];
-
-        const container = document.getElementById('megaira-planner-container');
-                const getCooldownOptions = () => {
+        
+        // Hilfsfunktionen (für Sofort-Anzeige)
+        const getPlayerOptions = () => {
+            let html = '<option value="">-- Spieler --</option>';
+            const sortedRoster = [...roster].sort((a, b) => a.name.localeCompare(b.name));
+            sortedRoster.forEach(player => {
+                const color = window.classColors?.[player.class.toUpperCase()] || '#FFFFFF';
+                html += `<option value="${player.name}" style="color: ${color};" data-color="${color}">${player.name}</option>`;
+            });
+            return html;
+        };
+        
+        const getCooldownOptions = () => {
             let html = '<option value="">-- Cooldown --</option>';
             allCooldowns.forEach(cd => {
                  if (cd.name.startsWith('---')) {
@@ -327,16 +358,20 @@
             });
             return html;
         };
+
+        const container = document.getElementById('megaira-planner-container');
+        
         // Nur einmalig aufbauen
         if (container && container.innerHTML.trim() === "") {
             let html = "";
             const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
+            const playerOpts = getPlayerOptions();
+            const cdOpts = getCooldownOptions();
 
             for (let i = 1; i <= 20; i++) {
                 html += `
                 <div class="planner-row">
-                    
                     <select class="assignment-select w-full" data-assignment-id="megaira-planner-row${i}-trigger" data-manual-options="true">
                         <option value="">-- Inaktiv --</option>
                         ${triggerOpts}
@@ -352,9 +387,13 @@
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="megaira-planner-row${i}-time" placeholder="Sec" value="0">
                            
-                    <select class="assignment-select w-full" data-assignment-id="megaira-planner-row${i}-player"></select>
+                    <select class="assignment-select w-full" data-assignment-id="megaira-planner-row${i}-player" data-_wired="1">
+                        ${playerOpts}
+                    </select>
                     
-                    <select class="assignment-select w-full" data-assignment-id="megaira-planner-row${i}-cooldown"></select>
+                    <select class="assignment-select w-full" data-assignment-id="megaira-planner-row${i}-cooldown" data-_wired="1">
+                        ${cdOpts}
+                    </select>
                     
                     <div></div>
                 </div>`;
