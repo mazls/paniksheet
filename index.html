@@ -798,7 +798,7 @@ pre {
 	</div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc, getDoc, serverTimestamp, query, orderBy, addDoc, updateDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc, getDoc, serverTimestamp, query, orderBy, addDoc, updateDoc, where, getDocs, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 		
         // ============== INITIALISIERUNG & GLOBALE VARIABLEN ==============
@@ -1728,11 +1728,16 @@ async function fetchAllCooldowns() {
 const links = [
     `<a href="#comp" data-page-id="comp" class="nav-link">Übersicht & Comp</a>`,
     `<a href="#loot" data-page-id="loot" class="nav-link">Lootverlauf</a>`,
-    `<a href="#discord" data-page-id="discord" class="nav-link">Discord</a>`,
-    `<a href="#history" data-page-id="history" class="nav-link">Änderungsverlauf</a>`,
-    `<a href="https://classic.warcraftlogs.com/guild/reports-list/695179" target="_blank" class="nav-link">Warcraft Logs</a>`,
-    
+    `<a href="#discord" data-page-id="discord" class="nav-link">Discord</a>`
 ];
+
+// ÄNDERUNG: Nur hinzufügen, wenn der Nutzer eingeloggt (Manager) ist
+if (window.isManager) {
+    links.push(`<a href="#history" data-page-id="history" class="nav-link">Änderungsverlauf</a>`);
+}
+
+// Den externen Link immer hinzufügen
+links.push(`<a href="https://classic.warcraftlogs.com/guild/reports-list/695179" target="_blank" class="nav-link">Warcraft Logs</a>`);
 
 const separatorHTML = `<span class="nav-separator">|</span>`;
 const mainNavHTML = links.join(separatorHTML);
@@ -2003,7 +2008,7 @@ currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
 
         // --- Logik für history.html ---
         function initHistoryPage() {
-            const q = query(historyCollectionRef, orderBy("timestamp", "desc"));
+            const q = query(historyCollectionRef, orderBy("timestamp", "desc"), limit(50));
             const tableBody = document.getElementById('history-table-body');
             if (!tableBody) return;
             historyUnsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -3379,10 +3384,12 @@ function handleBuffClassChange(event, roster) {
             summarySortState = { column: 'total', direction: 'desc' };
 
 
-            if (allLootDocuments.length === 0) {
-                displayContainer.innerHTML = '<p class="text-gray-500">Keine Loot-Daten zum Auswerten vorhanden.</p>';
-                return;
-            }
+        if (allLootDocuments.length === 0) {
+                const allLootQuery = query(lootCollectionRef, orderBy("raidDate", "desc"));
+                getDocs(allLootQuery).then(snapshot => {
+                    allLootDocuments = snapshot.docs.map(doc => ({ id: doc.id, data: doc.data().lootData }));
+                });
+        }
 
             const datesHtml = allLootDocuments.map(doc => `
                 <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-slate-700 cursor-pointer transition-colors duration-150">
