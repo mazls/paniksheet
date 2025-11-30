@@ -34,25 +34,43 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
-    .planner-grid {
+.planner-row {
         display: grid;
-        grid-template-columns: 2fr 0.5fr 0.5fr 1fr 1fr;
+        /* Das exakte Grid aus deinem Snippet */
+        grid-template-columns: 1.2fr 1.2fr 60px 60px 1fr 1fr 30px;
         gap: 0.5rem;
         align-items: center;
-        margin-bottom: 0.5rem;
-        padding: 0.5rem;
-        background-color: rgba(255, 255, 255, 0.05);
+        
+        background-color: rgba(30, 41, 59, 0.5); /* Slate-800 mit Transparenz */
+        border: 1px solid #334155; /* Slate-700 Border */
         border-radius: 4px;
+        padding: 6px;
+        transition: all 0.15s ease;
+    }
+
+.planner-row:hover {
+        background-color: rgba(51, 65, 85, 0.8); /* Helleres Slate beim Hover */
+        border-color: #64748b; /* Slate-500 Border */
+    }
+
+    .planner-num {
+        font-weight: bold;
+        color: #5eead4; /* Jade Farbe für die Nummer */
+        font-size: 0.9rem;
+        text-align: center;
     }
     
-    .planner-header {
-        font-weight: bold;
-        color: #fcd34d; /* Gold */
-        text-transform: uppercase;
+    .planner-header-fancy {
+        display: grid;
+        grid-template-columns: 30px 1.2fr 1.2fr 60px 60px 1fr 1fr;
+        gap: 0.5rem;
+        padding: 0 8px 8px 8px;
+        margin-bottom: 4px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        color: #9ca3af; /* Gray-400 */
         font-size: 0.75rem;
-        border-bottom: 1px solid #4a5568;
-        padding-bottom: 4px;
-        margin-bottom: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
     }
 #toggle-video-btn:hover {
     background-color: rgba(36, 61, 51, 0.9);
@@ -843,89 +861,92 @@ const offensiveBuffsForAssignment = {
 
 
 window.generateGlobalWaString = async function() {
-            if (!window.isManager) return window.showModal("Nur Gildenräte können exportieren.");
-            
-            // SICHERSTELLEN, DASS COOLDOWNS DA SIND
-            if (!window.allCooldowns || window.allCooldowns.length === 0) {
-                console.log("Cooldowns fehlen, lade neu...");
-                await fetchAllCooldowns();
-            }
+    if (!window.isManager) return window.showModal("Nur Gildenräte können exportieren.");
+    
+    // SICHERSTELLEN, DASS COOLDOWNS DA SIND
+    if (!window.allCooldowns || window.allCooldowns.length === 0) {
+        console.log("Cooldowns fehlen, lade neu...");
+        await fetchAllCooldowns();
+    }
 
-            const bosses = [
-                'boss-jinrokh', 'boss-horridon', 'boss-council', 'boss-tortos', 
-                'boss-megaira', 'boss-ji-kun', 'boss-durumu', 'boss-primordius', 
-                'boss-dark-animus', 'boss-iron-qon', 'boss-twin-consorts', 
-                'boss-lei-shen', 'boss-ra-den'
-            ];
+    // 1. AKTUELLEN RAID ERMITTELN (Dynamisch statt statische Liste)
+    const selectedRaidId = document.getElementById('raid-selector').value;
+    const raidInfo = raidData[selectedRaidId]; // Greift auf dein raidData Objekt zu
 
-            let result = [];
-            
-            // Wir holen alle Boss-Daten
-            const snaps = await Promise.all(bosses.map(b => getDoc(doc(db, "raid-tool-data", b))));
+    if (!raidInfo || !raidInfo.bosses) {
+        return window.showModal("Keine Boss-Daten für den ausgewählten Raid gefunden.");
+    }
 
-            snaps.forEach((snap, idx) => {
-                if (!snap.exists()) return;
-                const data = snap.data();
-                const bossKey = bosses[idx].replace('boss-', ''); // z.B. "jinrokh"
+    // Wir bauen die Liste basierend auf dem Raid (z.B. boss-jinrokh, boss-horridon...)
+    const bosses = raidInfo.bosses.map(b => `boss-${b.id}`);
 
-                // NPC Name holen (Standardwert, falls leer)
-                const npcName = data[`${bossKey}-npc_name`]?.text || "Unknown NPC";
+    let result = [];
+    
+    // Wir holen alle Boss-Daten für diesen Raid
+    const snaps = await Promise.all(bosses.map(b => getDoc(doc(db, "raid-tool-data", b))));
 
-                // Alle Planner-Zeilen finden
-                const rows = Object.keys(data)
-                    .filter(k => k.includes('planner-row') && k.endsWith('-trigger'))
-                    .sort((a, b) => {
-                        // Sortierung extrahieren: "jinrokh-planner-row5-trigger" -> 5
-                        const getNum = s => parseInt(s.match(/row(\d+)/)?.[1] || 999);
-                        return getNum(a) - getNum(b);
-                    });
+    snaps.forEach((snap, idx) => {
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const bossId = bosses[idx];
+        const bossKey = bossId.replace('boss-', ''); // z.B. "jinrokh"
 
-                rows.forEach(rowKey => {
-                    const base = rowKey.replace('-trigger', ''); // z.B. "jinrokh-planner-row1"
-                    
-                    const trigger = data[rowKey]?.player;
-                    if (!trigger) return;
+        // Globaler NPC Name als Fallback
+        const npcName = data[`${bossKey}-npc_name`]?.text || "Unknown NPC";
 
-                    const condition = data[`${base}-condition`]?.text || "0";
-                    const time = data[`${base}-time`]?.text || "0";
-                    const player = data[`${base}-player`]?.player || "ALL";
-                    
-                    // SPELL ID SUCHE
-                    const spellName = data[`${base}-cooldown`]?.cooldown;
-                    let spellId = "nil";
-                    
-                    if (spellName) {
-                        // Vergleiche Namen case-insensitive und getrimmt
-                        const cd = window.allCooldowns.find(c => c.name.trim().toLowerCase() === spellName.trim().toLowerCase());
-                        if (cd && cd.spellId) {
-                            spellId = cd.spellId;
-                        } else {
-                            console.warn(`Spell ID nicht gefunden für: "${spellName}"`);
-                        }
-                    }
-
-                    // String zusammenbauen - NEUE REIHENFOLGE!
-                    // Format: Key / Value / Player / Time / SpellID / [NPC Name für Health] / nil...
-                    let entry = "";
-                    if (trigger.includes("_HEALTH")) {
-                        // Bei Health kommt der NPC Name an Position 6 (statt nil)
-                        entry = `${trigger}/${condition}/${player}/${time}/${spellId}/${npcName}/nil/nil/nil/nil`;
-                    } else {
-                        // Bei Time bleibt es beim Standard
-                        entry = `${trigger}/${condition}/${player}/${time}/${spellId}/nil/nil/nil/nil`;
-                    }
-                    result.push(entry);
-                });
+        // Alle Planner-Zeilen finden
+        const rows = Object.keys(data)
+            .filter(k => k.includes('planner-row') && k.endsWith('-trigger'))
+            .sort((a, b) => {
+                const getNum = s => parseInt(s.match(/row(\d+)/)?.[1] || 999);
+                return getNum(a) - getNum(b);
             });
 
-            const finalString = result.join('*');
-            if(finalString) {
-                await navigator.clipboard.writeText(finalString);
-                window.showModal(`Exportiert: ${result.length} Einträge.`);
-            } else {
-                window.showModal("Keine Einträge gefunden.");
+        rows.forEach(rowKey => {
+            const base = rowKey.replace('-trigger', ''); // z.B. "jinrokh-planner-row1"
+            
+            const trigger = data[rowKey]?.player;
+            if (!trigger || trigger === "") return; // Leere Trigger überspringen
+
+            const condition = data[`${base}-condition`]?.text || "0";
+            const time = data[`${base}-time`]?.text || "0";
+            const player = data[`${base}-player`]?.player || "ALL";
+            
+            // NEU: NPC für diese spezifische Zeile holen (Wichtig für Council/Horridon!)
+            const rowNpc = data[`${base}-npc`]?.player; 
+
+            // SPELL ID SUCHE
+            const spellName = data[`${base}-cooldown`]?.cooldown;
+            let spellId = "nil";
+            
+            if (spellName) {
+                const cd = window.allCooldowns.find(c => c.name.trim().toLowerCase() === spellName.trim().toLowerCase());
+                if (cd && cd.spellId) {
+                    spellId = cd.spellId;
+                }
             }
-        };
+
+            // String zusammenbauen
+            let entry = "";
+            if (trigger.includes("_HEALTH")) {
+                // Hierarchie: Zeilen-NPC -> Globaler NPC -> "nil"
+                const targetNpc = rowNpc || npcName || "nil";
+                entry = `${trigger}/${condition}/${player}/${time}/${spellId}/${targetNpc}/nil/nil/nil/nil`;
+            } else {
+                entry = `${trigger}/${condition}/${player}/${time}/${spellId}/nil/nil/nil/nil`;
+            }
+            result.push(entry);
+        });
+    });
+
+    const finalString = result.join('*');
+    if(finalString) {
+        await navigator.clipboard.writeText(finalString);
+        window.showModal(`Exportiert: ${result.length} Einträge für ${raidInfo.name}.`);
+    } else {
+        window.showModal(`Keine Einträge für ${raidInfo.name} gefunden.`);
+    }
+};
     
     // Initial Cooldowns laden
     fetchAllCooldowns();

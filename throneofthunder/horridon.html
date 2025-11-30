@@ -31,6 +31,7 @@
     <nav class="quick-nav-bar mb-6">
         <a href="#overview">Übersicht</a>
         <a href="#assignments">Einteilungen</a>
+        <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
     </nav>
     
@@ -170,31 +171,37 @@
         </div>
     </div>
 </section>
-    <div class="bg-slate-850 p-4 rounded-lg mb-6 border border-slate-600">
-        <label class="text-gold font-bold mr-2">Exact NPC Name:</label>
-        <input type="text" class="assignment-text-input w-64" data-assignment-id="horridon-npc_name" placeholder="Horrdion">
-    </div>
 
 
-
-    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400">
+<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Global WA Export
         </button>
+        
         <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
+
         <div class="collapsible-content">
-            <div class="planner-grid planner-header">
-                <div>Trigger (Key)</div>
-                <div>Val/%</div>
-                <div>Time</div>
-                <div>Player</div>
-                <div>Cooldown</div>
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                
+                <div class="grid grid-cols-[1.2fr_1.2fr_60px_60px_1fr_1fr_30px] gap-2 mb-2 text-sm font-semibold text-gray-400 px-2">
+                    <div>Trigger</div>
+                    <div>NPC (für Health)</div>
+                    <div class="text-center">% / #</div>
+                    <div class="text-center">Zeit</div>
+                    <div>Spieler</div>
+                    <div>Cooldown</div>
+                    <div></div>
+                </div>
+
+                <div id="horridon-planner-container" class="space-y-2"></div>
+                
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    * <strong>NPC:</strong> Wähle hier den Boss/Add, wenn du "Health %" nutzt.
+                </div>
             </div>
-            
-            <div id="planner-rows-container"></div>
         </div>
     </section>
 <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
@@ -269,47 +276,67 @@
         
         const TRIGGER_OPTIONS = [
             { val: "HORRIDON_ENC_START", text: "Encounter Start" },
-            { val: "HORRIDON_HEALTH", text: "Health %" },
+            { val: "HORRIDON_HEALTH", text: "Health % (Wähle NPC)" },
             { val: "HORRIDON_DOOR", text: "Door (Tor)" },
             { val: "HORRIDON_DOUBLE_SWIPE", text: "Double Swipe" },
-            { val: "HORRIDON_DIRE_CALL", text: "Dire Call (Schreckensruf)" },
-            { val: "HORRIDON_CHARGE", text: "Charge (Anstürmen)" },
+            { val: "HORRIDON_DIRE_CALL", text: "Dire Call" },
+            { val: "HORRIDON_CHARGE", text: "Charge" },
             { val: "HORRIDON_PUNCTURE", text: "Triple Puncture" },
-            { val: "HORRIDON_JALAK", text: "Jalak" },
-            { val: "HORRIDON_FARRAKI", text: "Farraki" },
-            { val: "HORRIDON_GURUBASHI", text: "Gurubashi" },
-            { val: "HORRIDON_DRAKKARI", text: "Drakkari" },
-            { val: "HORRIDON_AMANI", text: "Amani" },
+            { val: "HORRIDON_JALAK", text: "Jalak Spawn" },
+            { val: "HORRIDON_FARRAKI", text: "Farraki Phase" },
+            { val: "HORRIDON_GURUBASHI", text: "Gurubashi Phase" },
+            { val: "HORRIDON_DRAKKARI", text: "Drakkari Phase" },
+            { val: "HORRIDON_AMANI", text: "Amani Phase" },
             { val: "HORRIDON_DINO", text: "Dino (Mancer)" },
             { val: "HORRIDON_BESTIAL_CRY", text: "Bestial Cry" }
         ];
 
-        const container = document.getElementById('planner-rows-container');
-        // Nur einmalig aufbauen, wenn leer
+        const NPC_OPTIONS = [
+            "Horridon",
+            "War God Jalak",
+            "Zandalari Dinomancer",
+            "Sul'lithuz Stonegazer",
+            "Farraki Wastewalker",
+            "Gurubashi Venom Priest",
+            "Risen Drakkari Warlord",
+            "Risen Drakkari Champion",
+            "Amani'shi Protector",
+            "Amani'shi Flame Caster",
+            "Amani Warbear"
+        ];
+
+        const container = document.getElementById('horridon-planner-container');
+        
+        // Nur einmalig aufbauen
         if (container && container.innerHTML.trim() === "") {
             let html = "";
+            const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
+
             for (let i = 1; i <= 20; i++) {
-                const options = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-                
-                // data-manual-options="true" verhindert, dass index.html Spieler in das Trigger-Feld lädt
-                // Die ID endet auf "-cooldown", damit index.html automatisch Spells lädt
-                
                 html += `
-                <div class="planner-grid">
-                    <select class="assignment-select" data-assignment-id="jinrokh-planner-row${i}-trigger" data-manual-options="true">
+                <div class="planner-row">
+                    
+                    <select class="assignment-select w-full" data-assignment-id="horridon-planner-row${i}-trigger" data-manual-options="true">
                         <option value="">-- Inaktiv --</option>
-                        ${options}
+                        ${triggerOpts}
                     </select>
                     
-                    <input type="text" class="assignment-text-input text-center" 
-                           data-assignment-id="jinrokh-planner-row${i}-condition" placeholder="%" value="0">
+                    <select class="assignment-select w-full" data-assignment-id="horridon-planner-row${i}-npc" data-manual-options="true">
+                        ${npcOpts}
+                    </select>
+
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="horridon-planner-row${i}-condition" placeholder="%" value="0">
                            
-                    <input type="text" class="assignment-text-input text-center" 
-                           data-assignment-id="jinrokh-planner-row${i}-time" placeholder="Sec" value="0">
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="horridon-planner-row${i}-time" placeholder="Sec" value="0">
                            
-                    <select class="assignment-select" data-assignment-id="jinrokh-planner-row${i}-player"></select>
+                    <select class="assignment-select w-full" data-assignment-id="horridon-planner-row${i}-player"></select>
                     
-                    <select class="assignment-select" data-assignment-id="jinrokh-planner-row${i}-cooldown"></select>
+                    <select class="assignment-select w-full" data-assignment-id="horridon-planner-row${i}-cooldown"></select>
+                    
+                    <div></div>
                 </div>`;
             }
             container.innerHTML = html;

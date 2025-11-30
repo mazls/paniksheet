@@ -66,7 +66,8 @@
     <nav class="quick-nav-bar mb-6">
         <a href="#overview">Übersicht</a>
         <a href="#assignments">Einteilungen</a>
-        <a href="#dynamic-planning">Planer</a>
+        <a href="#dynamic-planning">Wellen Planer</a>
+        <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
     </nav>
     
@@ -164,7 +165,6 @@
         </h2>
         <div class="collapsible-content">
             
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 
                 <div class="assignment-block border border-gold-border">
                     <div class="flex justify-between items-center mb-4 border-b border-slate-650 pb-2">
@@ -179,27 +179,42 @@
                         </div>
                         <input type="text" id="wave-export-output" class="w-full bg-black text-green-400 font-mono text-xs p-2 rounded border border-gray-700" readonly value="...">
                     </div>
+                
+
+
+        </div>
+    </section>
+<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            Global WA Export
+        </button>
+        
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Advanced CD Planner (WA)
+            <span class="toggle-icon">▼</span>
+        </h2>
+
+        <div class="collapsible-content">
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                
+                <div class="grid grid-cols-[1.2fr_1.2fr_60px_60px_1fr_1fr_30px] gap-2 mb-2 text-sm font-semibold text-gray-400 px-2">
+                    <div>Trigger</div>
+                    <div>NPC (für Health)</div>
+                    <div class="text-center">% / #</div>
+                    <div class="text-center">Zeit</div>
+                    <div>Spieler</div>
+                    <div>Cooldown</div>
+                    <div></div>
                 </div>
 
-                <div class="assignment-block border border-gold-border">
-                    <div class="flex justify-between items-center mb-4 border-b border-slate-650 pb-2">
-                        <h4 class="text-lg font-bold text-red-400">❤️ Raid-CDs (4)</h4>
-                    </div>
-                     <div class="max-h-[600px] overflow-y-auto pr-2" id="static-cds-container">
-                        </div>
-                     <div class="mt-4">
-                        <div class="flex justify-between mb-1 items-end">
-                            <span class="text-xs text-gray-400">Export Code:</span>
-                            <button id="copy-cd-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs transition-all duration-200">Kopieren</button>
-                        </div>
-                        <input type="text" id="cd-export-output" class="w-full bg-black text-green-400 font-mono text-xs p-2 rounded border border-gray-700" readonly value="...">
-                    </div>
+                <div id="jikun-planner-container" class="space-y-2"></div>
+                
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    * <strong>NPC:</strong> Wähle hier den Boss/Add, wenn du "Health %" nutzt.
                 </div>
-
             </div>
         </div>
     </section>
-
     <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
             Fähigkeiten im Detail
@@ -431,4 +446,60 @@
         setupCopy('copy-cd-btn', 'cd-export-output');
     };
     </script>
+    <script>
+    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
+        
+        const TRIGGER_OPTIONS = [
+            { val: "JIKUN_ENC_START", text: "Encounter Start (Jikun)" },
+            { val: "JIKUN_HEALTH", text: "Health % (Wähle NPC)" },
+            { val: "JIKUN_QUILLS", text: "Quills" },
+            { val: "JIKUN_NEST", text: "Nest" },
+            { val: "JIKUN_GUARDIAN", text: "Nest Guardian" },
+            { val: "JIKUN_DOWN_DRAFT", text: "Down Draft" },
+            { val: "JIKUN_TALON_RAKE", text: "Talon Rake" },
+            { val: "JIKUN_FEED_YOUNG", text: "Feed Young" }
+        ];
+
+        const NPC_OPTIONS = [
+            "Jikun"
+        ];
+
+        const container = document.getElementById('jikun-planner-container');
+        
+        // Nur einmalig aufbauen
+        if (container && container.innerHTML.trim() === "") {
+            let html = "";
+            const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
+
+            for (let i = 1; i <= 20; i++) {
+                html += `
+                <div class="planner-row">
+                    
+                    <select class="assignment-select w-full" data-assignment-id="jikun-planner-row${i}-trigger" data-manual-options="true">
+                        <option value="">-- Inaktiv --</option>
+                        ${triggerOpts}
+                    </select>
+                    
+                    <select class="assignment-select w-full" data-assignment-id="jikun-planner-row${i}-npc" data-manual-options="true">
+                        ${npcOpts}
+                    </select>
+
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="jikun-planner-row${i}-condition" placeholder="%" value="0">
+                           
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="jikun-planner-row${i}-time" placeholder="Sec" value="0">
+                           
+                    <select class="assignment-select w-full" data-assignment-id="jikun-planner-row${i}-player"></select>
+                    
+                    <select class="assignment-select w-full" data-assignment-id="jikun-planner-row${i}-cooldown"></select>
+                    
+                    <div></div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+    };
+</script>
 </main>

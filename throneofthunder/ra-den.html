@@ -31,6 +31,7 @@
     <nav class="quick-nav-bar mb-6">
         <a href="#overview">Übersicht</a>
         <a href="#assignments">Einteilungen</a>
+        <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
     </nav>
     
@@ -95,23 +96,6 @@
                         <li><span>DD 4:</span><select data-assignment-id="raden-dd-vita2" class="assignment-select" data-assignment-pool="raden-dds"></select></li>
                     </ul>
                 </div>
-
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">❤️ Heil-CD Einteilung</h4>
-                    <ul class="assignment-list">
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="raden-cd-header1" placeholder="z.B. Ruin (Rote Phase)"></li>
-                        <li><select data-assignment-id="raden-cd1a-player" class="assignment-select"></select><select data-assignment-id="raden-cd1a-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="raden-cd1b-player" class="assignment-select"></select><select data-assignment-id="raden-cd1b-cooldown" class="assignment-select"></select></li>
-                        
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="raden-cd-header2" placeholder="z.B. Unleashed Vita (Blauer Nuke)"></li>
-                        <li><select data-assignment-id="raden-cd2a-player" class="assignment-select"></select><select data-assignment-id="raden-cd2a-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="raden-cd2b-player" class="assignment-select"></select><select data-assignment-id="raden-cd2b-cooldown" class="assignment-select"></select></li>
-
-                        <li class="list-subheader"><input type="text" class="assignment-text-input" data-assignment-id="raden-cd-header3" placeholder="z.B. Phase 2 (Burn)"></li>
-                        <li><select data-assignment-id="raden-cd3a-player" class="assignment-select"></select><select data-assignment-id="raden-cd3a-cooldown" class="assignment-select"></select></li>
-                        <li><select data-assignment-id="raden-cd3b-player" class="assignment-select"></select><select data-assignment-id="raden-cd3b-cooldown" class="assignment-select"></select></li>
-                    </ul>
-                </div>
             </div>
 
             <div>
@@ -148,7 +132,37 @@
         </div>
     </div>
 </section>
+<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            Global WA Export
+        </button>
+        
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Advanced CD Planner (WA)
+            <span class="toggle-icon">▼</span>
+        </h2>
 
+        <div class="collapsible-content">
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                
+                <div class="grid grid-cols-[1.2fr_1.2fr_60px_60px_1fr_1fr_30px] gap-2 mb-2 text-sm font-semibold text-gray-400 px-2">
+                    <div>Trigger</div>
+                    <div>NPC (für Health)</div>
+                    <div class="text-center">% / #</div>
+                    <div class="text-center">Zeit</div>
+                    <div>Spieler</div>
+                    <div>Cooldown</div>
+                    <div></div>
+                </div>
+
+                <div id="raden-planner-container" class="space-y-2"></div>
+                
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    * <strong>NPC:</strong> Wähle hier den Boss/Add, wenn du "Health %" nutzt.
+                </div>
+            </div>
+        </div>
+    </section>
 <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
         Fähigkeiten im Detail
@@ -196,4 +210,70 @@
         </div>
     </div>
 </section>
+<script>
+    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
+        
+        const TRIGGER_OPTIONS = [
+            { val: "RADEN_ENC_START", text: "Encounter Start" },
+            { val: "RADEN_HEALTH", text: "Health % (Wähle NPC!)" },
+            { val: "RADEN_P2_START", text: "Phase 2 Start" },
+            { val: "RADEN_FATAL_STRIKE", text: "Fatal Strike" },
+            { val: "RADEN_MURDEROUS_STRIKE", text: "Murderous Strike" },
+            { val: "RADEN_SANGUINE_HORROR", text: "Summon Sanguine Horror" },
+            { val: "RADEN_CRACKLING_STALKER", text: "Summon Crackling Stalker" },
+            { val: "RADEN_CREATION", text: "Materials of Creation" },
+            { val: "RADEN_CALL_ESSENCE", text: "Call Essence" },
+            { val: "RADEN_ANIMA_PHASE", text: "Anima Phase" },
+            { val: "RADEN_VITA_PHASE", text: "Vita Phase" },
+            { val: "RADEN_UNSTABLE_VITA", text: "Unstable Vita" },
+            { val: "RADEN_RUIN", text: "Ruin" }
+        ];
+
+        const NPC_OPTIONS = [
+            "Frost King Malakk",
+            "Kazra'jin",
+            "Sul the Sandcrawler",
+            "High Priestess Mar'li",
+            "Blessed Loa Spirit",
+            "Shadowed Loa Spirit",
+            "Gara'jal the Spiritbinder"
+        ];
+        const container = document.getElementById('raden-planner-container');
+        
+        // Nur einmalig aufbauen
+        if (container && container.innerHTML.trim() === "") {
+            let html = "";
+            const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
+
+            for (let i = 1; i <= 20; i++) {
+                html += `
+                <div class="planner-row">
+                    
+                    <select class="assignment-select w-full" data-assignment-id="raden-planner-row${i}-trigger" data-manual-options="true">
+                        <option value="">-- Inaktiv --</option>
+                        ${triggerOpts}
+                    </select>
+                    
+                    <select class="assignment-select w-full" data-assignment-id="raden-planner-row${i}-npc" data-manual-options="true">
+                        ${npcOpts}
+                    </select>
+
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="raden-planner-row${i}-condition" placeholder="%" value="0">
+                           
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="raden-planner-row${i}-time" placeholder="Sec" value="0">
+                           
+                    <select class="assignment-select w-full" data-assignment-id="raden-planner-row${i}-player"></select>
+                    
+                    <select class="assignment-select w-full" data-assignment-id="raden-planner-row${i}-cooldown"></select>
+                    
+                    <div></div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+    };
+</script>
 </main>

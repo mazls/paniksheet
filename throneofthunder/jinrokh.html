@@ -67,14 +67,10 @@
 <main>
     <nav class="quick-nav-bar mb-6">
         <a href="#overview">Übersicht</a>
-        <a href="#planner">CD Planer</a>
         <a href="#assignments">Einteilungen</a>
+        <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
-        <a href="#assignments">Assignments</a>
     </nav>
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400">
-            Global WA Export
-        </button>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Jin'rokh der Zerstörer</h1>
     
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
@@ -106,7 +102,26 @@
 </div>
 </section>
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-<div>
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Haupttank:</span><select class="assignment-select" data-assignment-id="jinrokh-tank1"></select></li>
+                        <li><span>Spott-Tank:</span><select class="assignment-select" data-assignment-id="jinrokh-tank2"></select></li>
+                    </ul>
+                </div>
+                
+
+            </div>
+
+            <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 
                 <div class="space-y-6">
@@ -124,59 +139,45 @@
                             data-phase="jinrokh">
                     </div>
                 </div>
-    </section>
-    <div class="bg-slate-850 p-4 rounded-lg mb-6 border border-slate-600">
-        <label class="text-gold font-bold mr-2">Exact NPC Name:</label>
-        <input type="text" class="assignment-text-input w-64" data-assignment-id="jinrokh-npc_name" placeholder="Jin'rokh the Breaker">
+        </div>
     </div>
+</section>
 
 
 
-    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400">
+
+<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Global WA Export
         </button>
+        
         <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
-        <div class="collapsible-content">
-            <div class="planner-grid planner-header">
-                <div>Trigger (Key)</div>
-                <div>Val/%</div>
-                <div>Time</div>
-                <div>Player</div>
-                <div>Cooldown</div>
-            </div>
-            
-            <div id="planner-rows-container"></div>
-        </div>
-    </section>
 
-    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-            Standard Einteilungen
-            <span class="toggle-icon">▼</span>
-        </h2>
         <div class="collapsible-content">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Haupttank:</span><select class="assignment-select" data-assignment-id="jinrokh-tank1"></select></li>
-                        <li><span>Spott-Tank:</span><select class="assignment-select" data-assignment-id="jinrokh-tank2"></select></li>
-                    </ul>
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                
+                <div class="grid grid-cols-[1.2fr_1.2fr_60px_60px_1fr_1fr_30px] gap-2 mb-2 text-sm font-semibold text-gray-400 px-2">
+                    <div>Trigger</div>
+                    <div>NPC (für Health)</div>
+                    <div class="text-center">% / #</div>
+                    <div class="text-center">Zeit</div>
+                    <div>Spieler</div>
+                    <div>Cooldown</div>
+                    <div></div>
                 </div>
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">⚡ Blitz-Ablage</h4>
-                    <ul class="assignment-list">
-                        <li><span>Ablage 1:</span><select data-assignment-id="jinrokh-lightning1" class="assignment-select"></select></li>
-                        <li><span>Backup:</span><select data-assignment-id="jinrokh-lightning-backup" class="assignment-select"></select></li>
-                    </ul>
+
+                <div id="jinrokh-planner-container" class="space-y-1"></div>
+                
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    * <strong>NPC:</strong> Wähle hier den Boss oder Adds (z.B. Fledermäuse), wenn du "Health %" nutzt.
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+
 <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
         Fähigkeiten im Detail
@@ -225,33 +226,42 @@
             { val: "JINROKH_STATIC_BURST", text: "Static Burst" },
             { val: "JINROKH_THUNDERING_THROW", text: "Thundering Throw" }
         ];
+        const NPC_OPTIONS = [
+            "Jinrokh the Breaker",
+        ];
 
-        const container = document.getElementById('planner-rows-container');
-        // Nur einmalig aufbauen, wenn leer
+        const container = document.getElementById('jinrokh-planner-container');
+        
+        // Nur einmalig aufbauen
         if (container && container.innerHTML.trim() === "") {
             let html = "";
+            const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
+
             for (let i = 1; i <= 20; i++) {
-                const options = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-                
-                // data-manual-options="true" verhindert, dass index.html Spieler in das Trigger-Feld lädt
-                // Die ID endet auf "-cooldown", damit index.html automatisch Spells lädt
-                
                 html += `
-                <div class="planner-grid">
-                    <select class="assignment-select" data-assignment-id="jinrokh-planner-row${i}-trigger" data-manual-options="true">
+                <div class="planner-row">
+                    
+                    <select class="assignment-select w-full" data-assignment-id="jinrokh-planner-row${i}-trigger" data-manual-options="true">
                         <option value="">-- Inaktiv --</option>
-                        ${options}
+                        ${triggerOpts}
                     </select>
                     
-                    <input type="text" class="assignment-text-input text-center" 
+                    <select class="assignment-select w-full" data-assignment-id="jinrokh-planner-row${i}-npc" data-manual-options="true">
+                        ${npcOpts}
+                    </select>
+
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="jinrokh-planner-row${i}-condition" placeholder="%" value="0">
                            
-                    <input type="text" class="assignment-text-input text-center" 
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="jinrokh-planner-row${i}-time" placeholder="Sec" value="0">
                            
-                    <select class="assignment-select" data-assignment-id="jinrokh-planner-row${i}-player"></select>
+                    <select class="assignment-select w-full" data-assignment-id="jinrokh-planner-row${i}-player"></select>
                     
-                    <select class="assignment-select" data-assignment-id="jinrokh-planner-row${i}-cooldown"></select>
+                    <select class="assignment-select w-full" data-assignment-id="jinrokh-planner-row${i}-cooldown"></select>
+                    
+                    <div></div>
                 </div>`;
             }
             container.innerHTML = html;
