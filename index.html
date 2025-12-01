@@ -863,7 +863,52 @@ const offensiveBuffsForAssignment = {
         const aliasDocRef = doc(db, DATA_COLLECTION, "nameAliasMap"); // Referenz definieren
         window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc };
 
+function updateAssignmentPools() {
+    const pools = {};
+    document.querySelectorAll('[data-assignment-pool]').forEach(select => {
+        const poolName = select.dataset.assignmentPool;
+        if (!pools[poolName]) {
+            pools[poolName] = [];
+        }
+        pools[poolName].push(select);
+    });
 
+    for (const poolName in pools) {
+        const selectsInPool = pools[poolName];
+        const assignmentsMap = new Map();
+
+        // 1. Setze zuerst alle Optionen in diesem Pool zurück
+        selectsInPool.forEach(select => {
+            select.querySelectorAll('option').forEach(option => {
+                option.disabled = false;
+                // Entfernt einen eventuell vorhandenen gelben Punkt
+                if (option.textContent.startsWith('🟡 ')) {
+                    option.textContent = option.textContent.substring(2);
+                }
+            });
+        });
+        
+        // 2. Finde heraus, wer wo eingeteilt ist
+        selectsInPool.forEach(select => {
+            if (select.value) {
+                const groupName = select.closest('[data-group-name]')?.dataset.groupName || 'Unbekannt';
+                assignmentsMap.set(select.value, groupName);
+            }
+        });
+
+        // 3. Markiere die bereits eingeteilten Spieler mit einem Punkt
+        selectsInPool.forEach(currentSelect => {
+            currentSelect.querySelectorAll('option').forEach(option => {
+                const playerName = option.value;
+                // Prüft, ob der Spieler in einer ANDEREN Gruppe eingeteilt ist
+                if (assignmentsMap.has(playerName) && currentSelect.value !== playerName) {
+                    // Spieler wird NICHT mehr deaktiviert
+                    option.textContent = `🟡 ${option.textContent}`;
+                }
+            });
+        });
+    }
+}
 window.generateGlobalWaString = async function() {
     if (!window.isManager) return window.showModal("Nur Gildenräte können exportieren.");
     
@@ -1001,7 +1046,7 @@ window.setupBossListener = function(bossId) {
                 // - Es KEIN Cooldown-Feld ist
                 // - Es KEIN manuelles Feld ist (Fix für dein Health-Problem!)
                 // - Der Wert NICHT im Roster ist
-                if (val && !isCooldown && !isManual && !rosterPlayerNames.includes(val) && val !== "Niemand") {
+                if (rosterPlayerNames.length > 0 && val && !isCooldown && !isManual && !rosterPlayerNames.includes(val) && val !== "Niemand") {
                     select.classList.add('invalid-assignment');
                     // Option hinzufügen, falls sie fehlt, damit man den Fehler sieht
                     if (!Array.from(select.options).some(o => o.value === val)) {
@@ -1043,11 +1088,13 @@ window.setupBossListener = function(bossId) {
         // DURCHLAUF 3: Werte ERNEUT anwenden! 
         // Jetzt existieren die Planer-Zeilen erst im DOM, daher müssen wir sie jetzt befüllen.
         // Das behebt das "Inaktiv"-Problem beim Neuladen.
-        setTimeout(applyValues, 100);
-        
-        // UI Status Updates
-        if(window.toggleSelectEditability) window.toggleSelectEditability();
-        if(typeof updateAssignmentPools === 'function') updateAssignmentPools();
+        setTimeout(() => {
+            applyValues(); // Erst Werte setzen
+
+            // Dann UI Updates machen (jetzt sind die Werte da!)
+            if(window.toggleSelectEditability) window.toggleSelectEditability();
+            if(typeof updateAssignmentPools === 'function') updateAssignmentPools();
+        }, 100);
     });
 };
 // ---------------------------------------------------------
@@ -1860,6 +1907,13 @@ mainNav.innerHTML = mainNavHTML;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchAllCooldowns(); 
+            try {
+                const rosterSnap = await getDoc(rosterDocRef);
+                window.rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
+            } catch(e) {
+                console.error("Fehler beim Laden des Rosters:", e);
+                window.rosterData = [];
+            }
             await setupAuthUI(); // "await" stellt die richtige Reihenfolge sicher
             const videoBtn = document.getElementById('toggle-video-btn');
             const videoBtnIcon = videoBtn.querySelector('i');
@@ -2559,52 +2613,7 @@ document.querySelectorAll('.video-wrapper').forEach(wrapper => {
     controlsOverlay.addEventListener('click', togglePlay);
 });
 
-function updateAssignmentPools() {
-    const pools = {};
-    document.querySelectorAll('[data-assignment-pool]').forEach(select => {
-        const poolName = select.dataset.assignmentPool;
-        if (!pools[poolName]) {
-            pools[poolName] = [];
-        }
-        pools[poolName].push(select);
-    });
 
-    for (const poolName in pools) {
-        const selectsInPool = pools[poolName];
-        const assignmentsMap = new Map();
-
-        // 1. Setze zuerst alle Optionen in diesem Pool zurück
-        selectsInPool.forEach(select => {
-            select.querySelectorAll('option').forEach(option => {
-                option.disabled = false;
-                // Entfernt einen eventuell vorhandenen gelben Punkt
-                if (option.textContent.startsWith('🟡 ')) {
-                    option.textContent = option.textContent.substring(2);
-                }
-            });
-        });
-        
-        // 2. Finde heraus, wer wo eingeteilt ist
-        selectsInPool.forEach(select => {
-            if (select.value) {
-                const groupName = select.closest('[data-group-name]')?.dataset.groupName || 'Unbekannt';
-                assignmentsMap.set(select.value, groupName);
-            }
-        });
-
-        // 3. Markiere die bereits eingeteilten Spieler mit einem Punkt
-        selectsInPool.forEach(currentSelect => {
-            currentSelect.querySelectorAll('option').forEach(option => {
-                const playerName = option.value;
-                // Prüft, ob der Spieler in einer ANDEREN Gruppe eingeteilt ist
-                if (assignmentsMap.has(playerName) && currentSelect.value !== playerName) {
-                    // Spieler wird NICHT mehr deaktiviert
-                    option.textContent = `🟡 ${option.textContent}`;
-                }
-            });
-        });
-    }
-}
     // --- Logik zum Laden der Einteilungen (Datenbank) ---
     const assignmentsDocRef = doc(db, DATA_COLLECTION, "boss-" + pageId);
     async function handleAssignmentChange(event) {
@@ -2682,8 +2691,10 @@ async function applyAssignmentsBulk(updatesObj) {
 window.applyAssignmentsBulk = applyAssignmentsBulk;
 
     (async () => {
-        const rosterSnap = await getDoc(rosterDocRef);
-        window.rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
+        if (!window.rosterData) {
+             const rosterSnap = await getDoc(rosterDocRef);
+             window.rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
+        }
         function populateDropdownOptions(selectElement, players) {
             selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
             const divider = new Option('──────────', '');
@@ -2806,7 +2817,7 @@ const assignmentObserver = new MutationObserver(mutations => {
 assignmentObserver.observe(document.body, { childList: true, subtree: true });
 
 
-        
+        updateAssignmentPools();
         window.toggleSelectEditability();
         
     })();
