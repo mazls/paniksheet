@@ -798,7 +798,7 @@ pre {
 	</div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc, getDoc, serverTimestamp, query, orderBy, addDoc, updateDoc, where, getDocs, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore,initializeFirestore, persistentLocalCache,  doc, setDoc, onSnapshot, collection, deleteDoc, getDoc, serverTimestamp, query, orderBy, addDoc, updateDoc, where, getDocs, limit} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 		
         // ============== INITIALISIERUNG & GLOBALE VARIABLEN ==============
@@ -813,7 +813,11 @@ pre {
 
         const app = initializeApp(firebaseConfig);
 
-        const db = getFirestore(app);
+        // --- CACHING AKTIVIEREN ---
+        // --- NEUE CACHING METHODE ---
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache()
+        });
         const auth = getAuth(app);
 		const SNAPSHOTS_COLLECTION = "raid-tool-snapshots";
 		
@@ -949,7 +953,7 @@ window.generateGlobalWaString = async function() {
 };
     
     // Initial Cooldowns laden
-    fetchAllCooldowns();
+    //fetchAllCooldowns();
     
     // Hilfsobjekt global verfügbar machen, falls noch nicht geschehen
     window.firebaseTools = { db, doc, getDoc, collection, getDocs };
@@ -1039,7 +1043,7 @@ window.setupBossListener = function(bossId) {
         // DURCHLAUF 3: Werte ERNEUT anwenden! 
         // Jetzt existieren die Planer-Zeilen erst im DOM, daher müssen wir sie jetzt befüllen.
         // Das behebt das "Inaktiv"-Problem beim Neuladen.
-        applyValues();
+        setTimeout(applyValues, 100);
         
         // UI Status Updates
         if(window.toggleSelectEditability) window.toggleSelectEditability();
@@ -2801,75 +2805,7 @@ const assignmentObserver = new MutationObserver(mutations => {
 });
 assignmentObserver.observe(document.body, { childList: true, subtree: true });
 
-// --- C) onSnapshot bleibt wie gehabt; es setzt Werte in alle Selects.
-//         Danach ruhig Pools/Farbe aktualisieren:
-assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
-  const assignments = docSnap.exists() ? docSnap.data() : {};
-  const rosterPlayerNames = rosterData.map(p => p.name);
-  document.querySelectorAll('.assignment-select').forEach(select => {
-    const assignmentId = select.dataset.assignmentId;
-    const assignment = assignments[assignmentId];
-    const assignedValue = assignment ? (assignment.cooldown || assignment.player) : "";
-    select.classList.remove('invalid-assignment');
-    const oldInvalidOption = select.querySelector('.invalid-option'); if (oldInvalidOption) oldInvalidOption.remove();
 
-    if (assignedValue && assignedValue !== "Niemand" && !rosterPlayerNames.includes(assignedValue)
-        && !select.dataset.assignmentId.includes('cooldown')) {
-      select.classList.add('invalid-assignment');
-      const invalidOption = new Option(`❌ ${assignedValue} (Nicht im Roster)`, assignedValue);
-      invalidOption.className = 'invalid-option';
-      select.appendChild(invalidOption);
-    } else {
-      select.value = assignedValue;
-      const selectedOption = Array.from(select.options).find(o => o.value === assignedValue);
-      select.style.color = selectedOption ? (selectedOption.dataset.color || '#FFFFFF') : '#FFFFFF';
-    }
-  });
-
-  if (typeof window.initializePageSpecificCode === 'function') {
-      window.initializePageSpecificCode(assignments, rosterData, { doc, updateDoc, db }, allCooldowns);
-    }
-  window.toggleSelectEditability?.();
-  updateAssignmentPools?.();
-});
-
-        assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
-            const assignments = docSnap.exists() ? docSnap.data() : {};
-            const rosterPlayerNames = rosterData.map(p => p.name);
-            document.querySelectorAll('.assignment-select').forEach(select => {
-                const assignmentId = select.dataset.assignmentId;
-                const assignment = assignments[assignmentId];
-                // NEU: Liest zuerst ".cooldown", und wenn das nicht da ist, ".player"
-                const assignedValue = assignment ? (assignment.cooldown || assignment.player) : ""; 
-
-                // Wichtig: Ersetze alle Vorkommen von "assignedPlayerName" im Rest des Blocks durch "assignedValue"
-                select.classList.remove('invalid-assignment');
-                const oldInvalidOption = select.querySelector('.invalid-option');
-                if (oldInvalidOption) oldInvalidOption.remove();
-            
-                if (assignedValue && assignedValue !== "Niemand" && !rosterPlayerNames.includes(assignedValue) && !select.dataset.assignmentId.includes('cooldown')) {
-                    // ... (der Rest der Logik für ungültige Spieler) ...
-                    select.classList.add('invalid-assignment');
-                    const invalidOption = new Option(`❌ ${assignedValue} (Nicht im Roster)`, assignedValue);
-                    // ...
-                    select.appendChild(invalidOption);
-                } else {
-                    select.value = assignedValue;
-                    const selectedOption = Array.from(select.options).find(o => o.value === assignedValue);
-                    select.style.color = selectedOption ? selectedOption.dataset.color : '#FFFFFF';
-                }
-            });
-            document.querySelectorAll('.assignment-text-input').forEach(input => {
-                const assignmentId = input.dataset.assignmentId;
-                input.value = assignments[assignmentId]?.text || '';
-            });
-            if (typeof window.initializePageSpecificCode === 'function') {
-                 window.initializePageSpecificCode(assignments, rosterData, { doc, updateDoc, db }, allCooldowns);
-            }
-            
-            window.toggleSelectEditability();
-            updateAssignmentPools();
-        });
         
         window.toggleSelectEditability();
         
