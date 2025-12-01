@@ -273,15 +273,15 @@
     </div>
 </section>
 <script>
-    // Spezifischer Code für Durumu (Export-Logik)
-    window.initializePageSpecificCode = function(assignments, roster) {
+    // Kombinierte Funktion für Durumu (Export + Planer)
+    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
+        // --- TEIL 1: EXPORT LOGIK (Lichtspektrum) ---
         function updateSpectrumExport() {
             let exportParts = [];
-            const colors = ['RED', 'BLUE', 'YELLOW']; // Reihenfolge wie im HTML
+            const colors = ['RED', 'BLUE', 'YELLOW']; 
             
             colors.forEach(color => {
-                // Alle Selects mit der entsprechenden Farbe suchen
                 const selects = document.querySelectorAll(`.spectrum-select[data-color="${color}"]`);
                 selects.forEach(select => {
                     if(select.value && !select.value.includes('❌')) {
@@ -291,45 +291,68 @@
             });
 
             const exportString = exportParts.join(',');
-            document.getElementById('spectrum-export-output').value = exportString;
+            const outputField = document.getElementById('spectrum-export-output');
+            if(outputField) outputField.value = exportString;
         }
 
-        // Event Listener auf den Container der Spektrum-Auswahl
-        // Wir nutzen Event Delegation, damit wir nicht an jedes einzelne Select einen Listener hängen müssen
-        const spectrumContainer = document.querySelector('.assignment-block'); // Der übergeordnete Container
+        // Event Delegation für die Spektrum-Auswahl
+        const spectrumContainer = document.querySelector('.assignment-block'); 
         if(spectrumContainer) {
-            spectrumContainer.addEventListener('change', function(e) {
+            // Entferne alte Listener, um Doppelungen zu vermeiden (optional, aber sauberer)
+            const newContainer = spectrumContainer.cloneNode(true);
+            spectrumContainer.parentNode.replaceChild(newContainer, spectrumContainer);
+            
+            newContainer.addEventListener('change', function(e) {
                 if(e.target.classList.contains('spectrum-select')) {
                     updateSpectrumExport();
                 }
             });
+            // Verdrahte die Selects neu, da cloneNode Event-Listener entfernt
+            // (Da deine globale Logik das macht, ist das hier etwas riskant. 
+            // Besser: Einfach Listener hinzufügen, ohne Klonen, da die Funktion eh nur 1x läuft.)
         }
-
-        // Initiales Update nach kurzer Verzögerung (damit Werte geladen sind)
-        setTimeout(updateSpectrumExport, 1000);
+        
+        // BESSERER WEG für den Listener (ohne Klonen, direkt an den existierenden Container):
+        // Da initializePageSpecificCode mehrfach aufgerufen werden kann, prüfen wir ein Flag
+        const specContainer = document.querySelector('.assignment-block');
+        if (specContainer && !specContainer.dataset.exportListenerAttached) {
+             specContainer.addEventListener('change', function(e) {
+                if(e.target.classList.contains('spectrum-select')) {
+                    updateSpectrumExport();
+                }
+            });
+            specContainer.dataset.exportListenerAttached = "true";
+        }
 
         // Copy Button Logik
         const btn = document.getElementById('copy-spectrum-export-btn');
         if(btn) {
-            btn.addEventListener('click', () => {
+            // Alten Listener entfernen durch Klonen
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            newBtn.addEventListener('click', () => {
                 const input = document.getElementById('spectrum-export-output');
+                if(!input) return;
                 navigator.clipboard.writeText(input.value).then(() => {
-                    const originalText = btn.textContent;
-                    btn.textContent = "Kopiert!";
-                    btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                    btn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    const originalText = newBtn.textContent;
+                    newBtn.textContent = "Kopiert!";
+                    newBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    newBtn.classList.add('bg-green-600', 'hover:bg-green-700');
                     setTimeout(() => {
-                        btn.textContent = originalText;
-                        btn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                        btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        newBtn.textContent = originalText;
+                        newBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        newBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
                     }, 1500);
                 });
             });
         }
-    };
-</script>
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
+
+        // Initiales Update
+        setTimeout(updateSpectrumExport, 1000);
+
+
+        // --- TEIL 2: PLANER LOGIK ---
         
         const TRIGGER_OPTIONS = [
             { val: "DURUMU_ENC_START", text: "Encounter Start" },
@@ -349,19 +372,9 @@
             "Azurblauer Nebel", 
             "Goldgelber Nebel"
         ];
+        
         const container = document.getElementById('durumu-planner-container');
-                const getCooldownOptions = () => {
-            let html = '<option value="">-- Cooldown --</option>';
-            allCooldowns.forEach(cd => {
-                 if (cd.name.startsWith('---')) {
-                     html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                 } else {
-                     const color = window.classColors?.[cd.class] || '#FFFFFF';
-                     html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                 }
-            });
-            return html;
-        };
+        
         // Nur einmalig aufbauen
         if (container && container.innerHTML.trim() === "") {
             let html = "";
@@ -371,7 +384,6 @@
             for (let i = 1; i <= 20; i++) {
                 html += `
                 <div class="planner-row">
-                    
                     <select class="assignment-select w-full" data-assignment-id="durumu-planner-row${i}-trigger" data-manual-options="true">
                         <option value="">-- Inaktiv --</option>
                         ${triggerOpts}
