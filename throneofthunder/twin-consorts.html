@@ -69,31 +69,71 @@
         Einteilungen & Taktische Hilfen
         <span class="toggle-icon">▼</span>
     </h2>
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Strategie
+        <span class="toggle-icon">▼</span>
+    </h2>
     <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="twins-tank1"></select></li>
-                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="twins-tank2"></select></li>
-                        <li class="list-subheader"><span>P1: Alptraumbestie</span></li>
-                        <li><span>Bestie Tank (kann sich heilen):</span><select data-assignment-id="twins-beast-tank" class="assignment-select"></select></li>
-                    </ul>
-                </div>
+            <div class="xl:col-span-1 space-y-6">
                 
                 <div class="assignment-block">
-                    <h4 class="text-lg font-bold">✨ Himmlische Helfer (Sternbilder)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler, die die Sternbilder aktivieren.</p>
-                    <ul class="assignment-list">
-                        <li><span>Niuzao (Ausdauer):</span><select data-assignment-id="twins-celestial-niuzao" class="assignment-select"></select></li>
-                        <li><span>Chi-Ji (Schaden):</span><select data-assignment-id="twins-celestial-chiji" class="assignment-select"></select></li>
-                        <li><span>Yu'lon (Mana/Heilung):</span><select data-assignment-id="twins-celestial-yulon" class="assignment-select"></select></li>
-                        <li><span>Xuen (Slow-Effekt):</span><select data-assignment-id="twins-celestial-xuen" class="assignment-select"></select></li>
-                    </ul>
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-slate-600 mb-2">🛡️ Tank-Einteilung</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center bg-slate-800 p-2 rounded">
+                            <span class="font-bold text-sm">Tank 1</span>
+                            <div class="w-48"><select class="assignment-select text-xs" data-assignment-id="twins-tank1"></select></div>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-800 p-2 rounded">
+                            <span class="font-bold text-sm">Tank 2</span>
+                            <div class="w-48"><select class="assignment-select text-xs" data-assignment-id="twins-tank2"></select></div>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-800 p-2 rounded border border-purple-500/30">
+                            <span class="font-bold text-sm text-purple-300">Bestien-Tank (P1)</span>
+                            <div class="w-48"><select class="assignment-select text-xs" data-assignment-id="twins-beast-tank"></select></div>
+                        </div>
+                    </div>
                 </div>
 
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-yellow-400 border-b border-slate-600 mb-2">✨ Positionierung</h4>
+                    <p class="text-xs text-gray-400 mb-2 italic">Einteilung für die 17 Positionen</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">1</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_1" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">2</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_2" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">3</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_3" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">4</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_4" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">5</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_5" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">6</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_6" data-assignment-pool="twins_celestials"></select></div>
+                        
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">7</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_7" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">8</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_8" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">9</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_9" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">10</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_10" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">11</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_11" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">12</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_12" data-assignment-pool="twins_celestials"></select></div>
+
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">13</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_13" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">14</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_14" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">15</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_15" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">16</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_16" data-assignment-pool="twins_celestials"></select></div>
+                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">17</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_17" data-assignment-pool="twins_celestials"></select></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-gold text-xs text-gray-300">
+                    <h4 class="text-sm font-bold text-gold mb-2 uppercase">Wichtige Hinweise</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong class="text-white">Alptraumbestie:</strong> Nur der fixierte Tank kann sie angreifen. Heiler aufpassen (Verderbte Heilung)!</li>
+                        <li><strong class="text-white">P2 (Tag):</strong> Suen immer zu den Kometen ziehen. Raid im Schatten.</li>
+                        <li><strong class="text-white">P3 (Dämmerung):</strong> Fokus auf Suen. Niuzao/Xuen nutzen.</li>
+                        <li><strong class="text-white">Zeichner:</strong> Laufwege den Sternbilder einnehmen.</li>
+                    </ul>
+                </div>
             </div>
 
             <div>
@@ -102,8 +142,6 @@
                 <div class="space-y-6">
                     <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
                         <button data-phase="twins-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P1: Nacht</button>
-                        <button data-phase="twins-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P2: Tag</button>
-                        <button data-phase="twins-p3" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P3: Dämmerung</button>
                     </div>
                     <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
                         <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
@@ -122,6 +160,11 @@
                         <img src="throneofthunder/twins.png" alt="Positionierung Zwillinge P3" 
                             class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
                             data-phase="twins-p3">
+                    </div>
+                    <div class="mt-4">
+                        <h4 class="text-sm font-bold text-gray-400 mb-1 text-center">Sternzeichen-Positionen</h4>
+                        <img src="throneofthunder/twins_signs.png" alt="Zwillinge Zeichen" 
+                            class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 shadow-md">
                     </div>
                 </div>
 

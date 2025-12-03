@@ -66,92 +66,112 @@
 
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
+        Einteilungen & Strategie
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Wechsel nach 2-3 Stapeln <strong class="text-red-400">Durchbohren</strong>.</p>
-                    <ul class="assignment-list">
-                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="qon-tank1"></select></li>
-                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="qon-tank2"></select></li>
-                    </ul>
-                </div>
+            <div class="xl:col-span-2 space-y-6">
                 
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🔥 P1: Entfesselte Flamme (Soak-Rotation)</h4>
-                    <ul class="assignment-list">
-                        <li class="list-subheader"><span>Gruppe 1</span></li>
-                        <li class="grid-cols-3">
-                            <select data-assignment-id="qon-soak1-1" class="assignment-select" data-assignment-pool="qon-soak"></select>
-                            <select data-assignment-id="qon-soak1-2" class="assignment-select" data-assignment-pool="qon-soak"></select>
-                            <select data-assignment-id="qon-soak1-3" class="assignment-select" data-assignment-pool="qon-soak"></select>
-                        </li>
-                        <li class="list-subheader"><span>Gruppe 2</span></li>
-                        <li class="grid-cols-3">
-                            <select data-assignment-id="qon-soak2-1" class="assignment-select" data-assignment-pool="qon-soak"></select>
-                            <select data-assignment-id="qon-soak2-2" class="assignment-select" data-assignment-pool="qon-soak"></select>
-                            <select data-assignment-id="qon-soak2-3" class="assignment-select" data-assignment-pool="qon-soak"></select>
-                        </li>
-                        <li class="list-subheader"><span>Gruppe 3</span></li>
-                        <li class="grid-cols-3">
-                            <select data-assignment-id="qon-soak3-1" class="assignment-select" data-assignment-pool="qon-soak"></select>
-                            <select data-assignment-id="qon-soak3-2" class="assignment-select" data-assignment-pool="qon-soak"></select>
-                            <select data-assignment-id="qon-soak3-3" class="assignment-select" data-assignment-pool="qon-soak"></select>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">⚡ P2: Überspringender Blitz (Befreier)</h4>
-                    <ul class="assignment-list">
-                        <li><span>Befreier 1 (Range):</span><select data-assignment-id="qon-free1" class="assignment-select"></select></li>
-                        <li><span>Befreier 2 (Melee):</span><select data-assignment-id="qon-free2" class="assignment-select"></select></li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="qon-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P1: Feuer</button>
-                        <button data-phase="qon-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P2: Sturm</button>
-                        <button data-phase="qon-p3" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P3: Eis</button>
-                    </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="qon-p1">Raid teilt sich in Soak-Gruppen auf. Weicht den <strong class="text-red-400">Feuerlinien</strong> aus.</p>
-                            <p class="positioning-text hidden" data-phase="qon-p2">Raid verteilt sich. Bei <strong class="text-gray-400">Windhose</strong> zur markierten Position (z.B. Eingang) laufen. <strong class="text-blue-400">Blitzlinien</strong> ausweichen.</p>
-                            <p class="positioning-text hidden" data-phase="qon-p3">Raid verteilt sich leicht. <strong class="text-blue-400">Eislinien</strong> ausweichen. DDs wechseln die Seite bei <strong class="text-gray-400">Totzone</strong>.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-blue-400 border-b border-slate-600 mb-2">🛡️ Tank-Einteilung</h4>
+                        <p class="text-xs text-gray-400 mb-2 italic">Wechsel bei 2-3 Stacks "Durchbohren"</p>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center bg-slate-800 p-2 rounded">
+                                <span class="font-bold text-sm">MT (Boss)</span>
+                                <div class="w-32"><select class="assignment-select text-xs" data-assignment-id="qon-tank1"></select></div>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-800 p-2 rounded">
+                                <span class="font-bold text-sm">OT (Add/Swap)</span>
+                                <div class="w-32"><select class="assignment-select text-xs" data-assignment-id="qon-tank2"></select></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <img src="throneofthunder/qon-p1.png" alt="Positionierung Qon P1" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="qon-p1">
-                        <img src="throneofthunder/qon-p2.png" alt="Positionierung Qon P2" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
-                            data-phase="qon-p2">
-                        <img src="throneofthunder/qon-p3.png" alt="Positionierung Qon P3" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
-                            data-phase="qon-p3">
+
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-yellow-400 border-b border-slate-600 mb-2">✨ Spezialaufgaben</h4>
+                        <div class="space-y-2">
+                            <div class="bg-slate-800 p-2 rounded">
+                                <span class="font-bold text-sm block mb-1">BoP Impale (Hand des Schutzes)</span>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <select class="assignment-select text-xs" data-assignment-id="qon-bop1"></select>
+                                    <select class="assignment-select text-xs" data-assignment-id="qon-bop2"></select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg">
-                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ha_dfkZ9A7Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-red-400 border-b border-slate-600 mb-2">🔥 P1: Soak Teams (Entfesselte Flamme)</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-800 p-3 rounded border border-red-900/30">
+                            <h5 class="font-bold text-white text-sm mb-1">Soak Team 1</h5>
+                            <p class="text-[10px] text-gray-400 mb-2">Standard Soak Gruppe</p>
+                            <div class="space-y-1">
+                                <select class="assignment-select text-xs w-full" data-assignment-id="qon-soak1-1" data-assignment-pool="qon_soak_team"></select>
+                                <select class="assignment-select text-xs w-full" data-assignment-id="qon-soak1-2" data-assignment-pool="qon_soak_team"></select>
+                                <select class="assignment-select text-xs w-full" data-assignment-id="qon-soak1-3" data-assignment-pool="qon_soak_team"></select>
+                                <select class="assignment-select text-xs w-full" data-assignment-id="qon-soak1-4" data-assignment-pool="qon_soak_team"></select>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-3 rounded border border-red-900/30">
+                            <h5 class="font-bold text-white text-sm mb-1">Soak Team 2 (Optional)</h5>
+                            <p class="text-[10px] text-gray-400 mb-2">Nur bei Low DPS / P1 Problemen</p>
+                            <div class="space-y-1">
+                                <select class="assignment-select text-xs w-full" data-assignment-id="qon-soak2-1" data-assignment-pool="qon_soak_team"></select>
+                                <select class="assignment-select text-xs w-full" data-assignment-id="qon-soak2-2" data-assignment-pool="qon_soak_team"></select>
+                                <select class="assignment-select text-xs w-full" data-assignment-id="qon-soak2-3" data-assignment-pool="qon_soak_team"></select>
+                                <select class="assignment-select text-xs w-full" data-assignment-id="qon-soak2-4" data-assignment-pool="qon_soak_team"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-gold text-xs text-gray-300">
+                    <h4 class="text-sm font-bold text-gold mb-2 uppercase">Wichtige Hinweise</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong class="text-white">Ranged/Healer:</strong> Mindestens 10y verteilen, wenn nur 1 Soak Team gespielt wird (vermeidet Splash-Damage).</li>
+                        <li><strong class="text-white">Soak Team 2:</strong> Nur nötig, wenn DPS niedrig ist oder wir in P1 am Feuerschaden wipen.</li>
+                        <li><strong class="text-white">P2 (Sturm):</strong> Hexertor während des Windsturms nutzen / Zum Eingang laufen.</li>
+                        <li><strong class="text-white">P4 (Endphase):</strong> Alle Hunde töten, bevor wir stacken!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                    <div id="positioning-toggle" class="flex flex-wrap justify-center mb-4 bg-slate-900 p-1 rounded-lg">
+                        <button data-phase="qon-p1" class="positioning-btn text-gray-400 py-1 px-3 text-sm rounded-md active-position-btn">Iron Qon</button>
+                    </div>
+                    
+                    <div class="bg-slate-900/50 p-3 rounded-lg mt-2 border border-gold-border-light">
+                        <p class="positioning-text text-xs text-gray-400 text-center" data-phase="qon-p1">P1: Soak-Teams sammeln die Energie. Ranged verteilt stehen (10y).</p>
+                        <p class="positioning-text hidden text-xs text-gray-400 text-center" data-phase="qon-p2">P2: Bei Windsturm zum Tor (Eingang) oder Hexer-Portal nutzen.</p>
+                        <p class="positioning-text hidden text-xs text-gray-400 text-center" data-phase="qon-p3">P3: Leicht verteilt stehen, Eislinien ausweichen.</p>
+                    </div>
+
+                    <div class="mt-2">
+                        <img src="throneofthunder/qon-p1.png" alt="Positionierung P1" class="positioning-image lightbox-trigger w-full h-auto rounded border border-slate-600" data-phase="qon-p1">
+                        <img src="throneofthunder/qon-p2.png" alt="Positionierung P2" class="positioning-image lightbox-trigger w-full h-auto rounded border border-slate-600 hidden" data-phase="qon-p2">
+                        <img src="throneofthunder/qon-p3.png" alt="Positionierung P3" class="positioning-image lightbox-trigger w-full h-auto rounded border border-slate-600 hidden" data-phase="qon-p3">
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container rounded-lg shadow-lg overflow-hidden">
+                        <iframe width="100%" height="200" src="https://www.youtube-nocookie.com/embed/ha_dfkZ9A7Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>

@@ -66,65 +66,161 @@
 
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
+        Einteilungen & Strategie (25-Spieler)
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Tanks spotten den Boss nach jedem <strong class="text-yellow-400">Animaring</strong>.</p>
-                    <ul class="assignment-list">
-                        <li><span>Boss-Tank:</span><select class="assignment-select" data-assignment-id="animus-tank-boss"></select></li>
-                        <li><span>Add-Tank (Massive):</span><select class="assignment-select" data-assignment-id="animus-tank-adds"></select></li>
-                    </ul>
-                </div>
+            <div class="xl:col-span-2 space-y-6">
                 
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">✨ Dispel-Einteilung (Materientausch)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Tank nach ca. 4-5 Sekunden dispellen.</p>
-                    <ul class="assignment-list">
-                        <li><span>Dispel 1:</span><select data-assignment-id="animus-dispel1" class="assignment-select"></select></li>
-                        <li><span>Dispel 2:</span><select data-assignment-id="animus-dispel2" class="assignment-select"></select></li>
-                        <li><span>Backup:</span><select data-assignment-id="animus-dispel3" class="assignment-select"></select></li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="animus-start" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Start (Golems füllen)</button>
-                        <button data-phase="animus-boss" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Boss-Phase</button>
-                    </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="animus-start">Raid verteilt sich. Kleine Golems werden einzeln getankt und zu den Massiven Golems gezogen, um sie zu aktivieren.</p>
-                            <p class="positioning-text hidden" data-phase="animus-boss">Boss und Massive Golems werden in der Mitte getankt. Raid verteilt sich leicht. Spieler mit <strong class="text-red-400">Animaquell</strong> laufen raus.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    
+                    <div class="bg-slate-800 p-3 rounded-lg border border-red-900/50">
+                        <h3 class="text-lg font-bold text-red-400 mb-1 border-b border-slate-600 pb-1 text-center">Links (A)</h3>
+                        <p class="text-[10px] text-gray-400 mb-3 text-center italic">Ziel: Füttere Golem A</p>
+                        
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-red-400 font-bold w-6 text-sm">1A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Heiler/Range</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_1a" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-red-400 font-bold w-6 text-sm">2A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Heiler/Range</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_2a" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-red-400 font-bold w-6 text-sm">3A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Heiler/Range</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_3a" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            
+                            <div class="my-2 border-t border-slate-700"></div>
+                            
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">4A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank A</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_4a" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">5A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank A</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_5a" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">6A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank A</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_6a" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">7A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank A</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_7a" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">8A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank A</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_8a" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">9A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank A</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_9a" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            
+                            <div class="my-2 border-t border-slate-700"></div>
+                            
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">10A</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Pet Tank</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_10a" data-assignment-pool="animus_raid_setup"></select></div></div>
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <img src="throneofthunder/animus-start.png" alt="Positionierung Animus Start" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="animus-start">
-                        <img src="throneofthunder/animus-boss.png" alt="Positionierung Animus Boss" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
-                            data-phase="animus-boss">
+
+                    <div class="bg-slate-800 p-3 rounded-lg border border-blue-900/50">
+                        <h3 class="text-lg font-bold text-blue-400 mb-1 border-b border-slate-600 pb-1 text-center">Rechts (B)</h3>
+                        <p class="text-[10px] text-gray-400 mb-3 text-center italic">Ziel: Füttere Golem B</p>
+                        
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-blue-400 font-bold w-6 text-sm">1B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Heiler/Range</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_1b" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-blue-400 font-bold w-6 text-sm">2B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Heiler/Range</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_2b" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-blue-400 font-bold w-6 text-sm">3B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Heiler/Range</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_3b" data-assignment-pool="animus_raid_setup"></select></div></div>
+
+                            <div class="my-2 border-t border-slate-700"></div>
+
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">4B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank B</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_4b" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">5B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank B</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_5b" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">6B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank B</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_6b" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">7B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank B</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_7b" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">8B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank B</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_8b" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">9B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Golem Tank B</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_9b" data-assignment-pool="animus_raid_setup"></select></div></div>
+
+                            <div class="my-2 border-t border-slate-700"></div>
+
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">10B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Pet Tank</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_10b" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-gray-400 font-bold w-6 text-sm">11B</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Pet Tank</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_11b" data-assignment-pool="animus_raid_setup"></select></div></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-3 rounded-lg border border-purple-900/50">
+                        <h3 class="text-lg font-bold text-purple-400 mb-1 border-b border-slate-600 pb-1 text-center">Boss (C)</h3>
+                        <p class="text-[10px] text-gray-400 mb-3 text-center italic">Ziel: Füttere Boss</p>
+                        
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-purple-400 font-bold w-6 text-sm">1C</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Boss Tank</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_1c" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-purple-400 font-bold w-6 text-sm">2C</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Melee DPS</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_2c" data-assignment-pool="animus_raid_setup"></select></div></div>
+                            <div class="flex items-center justify-between bg-slate-750/50 p-1 rounded"><span class="text-purple-400 font-bold w-6 text-sm">3C</span><div class="w-full"><span class="text-[10px] text-gray-500 uppercase block leading-none">Melee DPS</span><select class="assignment-select text-xs h-6 py-0" data-assignment-id="animus_3c" data-assignment-pool="animus_raid_setup"></select></div></div>
+                        </div>
+
+                        <div class="my-4 border-t-2 border-slate-600"></div>
+                        <h4 class="text-sm font-bold text-gold mb-2 text-center uppercase">Spezialaufgaben</h4>
+
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-[10px] font-bold text-gray-300 block mb-1">Animaring Soaker</span>
+                                <select class="assignment-select text-xs h-6 py-0 w-full mb-1" data-assignment-id="animus_ring_soaker_1" data-assignment-pool="animus_raid_setup"></select>
+                                <select class="assignment-select text-xs h-6 py-0 w-full" data-assignment-id="animus_ring_soaker_2" data-assignment-pool="animus_raid_setup"></select>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-gray-300 block mb-1">Materientausch Köder</span>
+                                <select class="assignment-select text-xs h-6 py-0 w-full mb-1" data-assignment-id="animus_swap_baiter_1" data-assignment-pool="animus_raid_setup"></select>
+                                <select class="assignment-select text-xs h-6 py-0 w-full" data-assignment-id="animus_swap_baiter_2" data-assignment-pool="animus_raid_setup"></select>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-gray-300 block mb-1">Dispeller</span>
+                                <select class="assignment-select text-xs h-6 py-0 w-full mb-1" data-assignment-id="animus_dispeller_1" data-assignment-pool="animus_raid_setup"></select>
+                                <select class="assignment-select text-xs h-6 py-0 w-full" data-assignment-id="animus_dispeller_2" data-assignment-pool="animus_raid_setup"></select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg">
-                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/BaVCOFVAWGY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <div class="bg-slate-900 p-3 rounded-lg border border-slate-700">
+                    <h3 class="text-lg font-bold text-gray-200 mb-2">Fütterungs-Reihenfolge</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left text-gray-300">
+                            <thead class="text-gray-400 uppercase bg-slate-800 border-b border-slate-600">
+                                <tr>
+                                    <th class="px-2 py-1">Event</th>
+                                    <th class="px-2 py-1 text-red-300">Roboter A</th>
+                                    <th class="px-2 py-1 text-blue-300">Roboter B</th>
+                                    <th class="px-2 py-1 text-purple-300">Boss C</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700">
+                                <tr class="hover:bg-slate-800"><td class="px-2 py-1 font-medium">Beim Pull</td><td class="px-2 py-1">9x Klein</td><td class="px-2 py-1">9x Klein</td><td class="px-2 py-1">3x Klein</td></tr>
+                                <tr class="hover:bg-slate-800"><td class="px-2 py-1">Entzug ~1:30</td><td class="px-2 py-1 text-gray-600">-</td><td class="px-2 py-1 text-gray-600">-</td><td class="px-2 py-1 text-gray-600">-</td></tr>
+                                <tr class="hover:bg-slate-800"><td class="px-2 py-1">Entzug ~2:00</td><td class="px-2 py-1 text-gray-600">-</td><td class="px-2 py-1 text-gray-600">-</td><td class="px-2 py-1 text-gray-600">-</td></tr>
+                                <tr class="bg-slate-800/50 text-yellow-500 font-bold"><td class="px-2 py-1">Nach 2. Entzug</td><td class="px-2 py-1">1x Klein</td><td class="px-2 py-1">1x Klein</td><td class="px-2 py-1 text-gray-600">-</td></tr>
+                                <tr class="hover:bg-slate-800"><td class="px-2 py-1">Entzug ~2:20</td><td class="px-2 py-1 text-gray-600">-</td><td class="px-2 py-1 text-gray-600">-</td><td class="px-2 py-1 text-gray-600">-</td></tr>
+                                <tr class="bg-slate-800/50 text-red-400 font-bold"><td class="px-2 py-1">Nach 4. Entzug</td><td class="px-2 py-1">1x Klein</td><td class="px-2 py-1">1x Klein</td><td class="px-2 py-1 italic text-gray-500">Alle Tot</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-gold text-xs text-gray-300">
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong class="text-white">Hexer/Shadows:</strong> Tanken idealerweise Roboter 1-3.</li>
+                        <li><strong class="text-white">Große Golems:</strong> Hauen beim Start extrem rein! CDs nutzen.</li>
+                        <li><strong class="text-white">Materientausch:</strong> Strikt nach 5-6s dispellen. Danach sofort zurücklaufen!</li>
+                        <li><strong class="text-white">Positionierung:</strong> Golems nie kuscheln lassen (Enrage!).</li>
+                        <li><strong class="text-white">Unterbrechender Schlag:</strong> Caststop! Sonst Lockout.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                    <div id="positioning-toggle" class="flex flex-wrap justify-center mb-4 bg-slate-900 p-1 rounded-lg">
+                        <button data-phase="animus-start" class="positioning-btn text-gray-400 py-1 px-3 text-sm rounded-md active-position-btn">Start</button>
+                        <button data-phase="animus-boss" class="positioning-btn text-gray-400 py-1 px-3 text-sm rounded-md">Boss</button>
+                    </div>
+                    
+                    <div class="bg-slate-900/50 p-3 rounded-lg mt-2 border border-gold-border-light">
+                        <p class="positioning-text text-xs text-gray-400 text-center" data-phase="animus-start">Start: Kleine Golems einzeln zu den Großen ziehen.</p>
+                        <p class="positioning-text hidden text-xs text-gray-400 text-center" data-phase="animus-boss">Boss-Phase: Alles in die Mitte, Animaquell raus.</p>
+                    </div>
+
+                    <div class="mt-2">
+                        <img src="throneofthunder/animus-start.png" alt="Positionierung Animus Start" class="positioning-image lightbox-trigger w-full h-auto rounded border border-slate-600" data-phase="animus-start">
+                        <img src="throneofthunder/animus-boss.png" alt="Positionierung Animus Boss" class="positioning-image lightbox-trigger w-full h-auto rounded border border-slate-600 hidden" data-phase="animus-boss">
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container rounded-lg shadow-lg overflow-hidden">
+                        <iframe width="100%" height="200" src="https://www.youtube-nocookie.com/embed/BaVCOFVAWGY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
