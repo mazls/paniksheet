@@ -2738,6 +2738,9 @@ if (select.getAttribute('data-manual-options') === "true") {
         option.textContent = cd.name;
         option.dataset.color = color;
         option.style.color = color;
+        if (cd.tooltip) {
+            option.title = cd.tooltip; // Zeigt den Text beim Hovern über die Liste
+        }
       }
       select.appendChild(option);
     });
@@ -2755,7 +2758,33 @@ if (select.getAttribute('data-manual-options') === "true") {
     }
     populateDropdownOptions(select, playersForDropdown);
   }
+const tooltipEl = document.getElementById('global-custom-tooltip');
 
+            // 1. Maus rein: Text suchen und Tooltip zeigen
+            select.addEventListener('mouseenter', () => {
+                const currentVal = select.value;
+                if (!currentVal || !window.allCooldowns) return;
+                
+                const cdObj = window.allCooldowns.find(c => c.name === currentVal);
+                if (cdObj && cdObj.tooltip) {
+                    tooltipEl.innerHTML = `<strong class="text-gold block mb-1">${cdObj.name}</strong>${cdObj.tooltip}`;
+                    tooltipEl.classList.remove('hidden');
+                }
+            });
+
+            // 2. Maus bewegen: Tooltip folgt der Maus
+            select.addEventListener('mousemove', (e) => {
+                if (!tooltipEl.classList.contains('hidden')) {
+                    // Etwas Abstand zur Maus (15px)
+                    tooltipEl.style.top = (e.clientY + 15) + 'px';
+                    tooltipEl.style.left = (e.clientX + 15) + 'px';
+                }
+            });
+
+            // 3. Maus raus: Tooltip verstecken
+            select.addEventListener('mouseleave', () => {
+                tooltipEl.classList.add('hidden');
+            });
   // 3) Pool-Indikator (🟡) wird vom bestehenden updateAssignmentPools() gesetzt
   //    Farbe initialisieren:
   const selOpt = select.options[select.selectedIndex];
@@ -3706,6 +3735,7 @@ async function handleCooldownFormSubmit(event) {
         type: document.getElementById('cooldown-type-select').value,
         order: parseInt(document.getElementById('cooldown-order-input').value) || 100,
         spellId: document.getElementById('cooldown-spellid-input').value || "",
+        tooltip: document.getElementById('cooldown-tooltip-input').value || "",
     };
 
     try {
@@ -3748,6 +3778,8 @@ async function populateCooldownFormForEdit(cooldownId) {
     document.getElementById('cooldown-type-select').value = cd.type;
     document.getElementById('cooldown-order-input').value = cd.order;
     document.getElementById('cooldown-spellid-input').value = cd.spellId || '';
+    document.getElementById('cooldown-tooltip-input').value = cd.tooltip || '';
+    
 
     document.getElementById('cooldown-form-title').textContent = 'Cooldown bearbeiten';
     document.getElementById('cooldown-save-btn').textContent = 'Aktualisieren';
@@ -3767,5 +3799,6 @@ async function handleDeleteCooldown(cooldownId, cooldownName) {
 <button id="toggle-video-btn" title="Hintergrundvideo an/aus" class="fixed bottom-4 right-4 z-50">
         <i class="fas fa-video"></i>
 </button>
+<div id="global-custom-tooltip" class="buff-tooltip fixed hidden pointer-events-none z-[9999] max-w-xs bg-slate-800 border border-slate-500 p-2 rounded shadow-xl text-xs text-white"></div>
 </body>
 </html>
