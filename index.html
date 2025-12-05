@@ -1046,9 +1046,11 @@ window.setupBossListener = function(bossId) {
                 // - Es KEIN Cooldown-Feld ist
                 // - Es KEIN manuelles Feld ist (Fix für dein Health-Problem!)
                 // - Der Wert NICHT im Roster ist
-                if (rosterPlayerNames.length > 0 && val && !isCooldown && !isManual && !rosterPlayerNames.includes(val) && val !== "Niemand") {
+                const ALLOWED_EXTRAS = ['ALL', 'DEATHKNIGHT', 'DRUID', 'HUNTER', 'MAGE', 'MONK', 'PALADIN', 'PRIEST', 'ROGUE', 'SHAMAN', 'WARLOCK', 'WARRIOR'];
+
+                // Erweiterte Prüfung: Auch in ALLOWED_EXTRAS nachsehen
+                if (val && !isCooldown && !isManual && !rosterPlayerNames.includes(val) && !ALLOWED_EXTRAS.includes(val) && val !== "Niemand") {
                     select.classList.add('invalid-assignment');
-                    // Option hinzufügen, falls sie fehlt, damit man den Fehler sieht
                     if (!Array.from(select.options).some(o => o.value === val)) {
                          const invalidOption = new Option(`❌ ${val} (Nicht im Roster)`, val);
                          invalidOption.className = 'invalid-option';
@@ -1406,6 +1408,80 @@ async function fetchAllCooldowns() {
         console.error("Fehler beim Laden der Cooldowns aus der Datenbank:", error);
     }
 }
+async function fetchRoster() {
+    try {
+        const rosterSnap = await getDoc(rosterDocRef);
+        window.rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
+        console.log("Roster geladen:", window.rosterData.length, "Spieler");
+    } catch (error) {
+        console.error("Fehler beim Laden des Rosters:", error);
+        window.rosterData = [];
+    }
+}
+window.populateDropdownOptions = function(selectElement, players) {
+    // Standard-Option (Wichtig: data-color für Reset auf Weiß)
+    selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
+        // 3. ECHTE SPIELER
+    const divider3 = document.createElement('option');
+    divider3.textContent = '── SPIELER ──';
+    divider3.disabled = true;
+    divider3.style.backgroundColor = '#1a202c';
+    divider3.style.fontWeight = 'bold';
+    divider3.style.color = '#fbbf24'; // Gold
+    selectElement.appendChild(divider3);
+
+    players.forEach(player => {
+        const option = document.createElement('option');
+        const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
+        option.value = player.name;
+        option.textContent = player.name;
+        option.style.color = color;
+        option.dataset.color = color;
+        selectElement.appendChild(option);
+    });
+    // 1. SPEZIAL-GRUPPEN
+    const specialGroups = ['ALL'];
+    const divider1 = document.createElement('option');
+    divider1.textContent = '── GRUPPEN ──';
+    divider1.disabled = true;
+    divider1.style.backgroundColor = '#1a202c';
+    divider1.style.fontWeight = 'bold';
+    divider1.style.color = '#fbbf24'; // Gold
+    selectElement.appendChild(divider1);
+
+    specialGroups.forEach(grp => {
+        const opt = document.createElement('option');
+        opt.value = grp;
+        opt.textContent = grp;
+        opt.style.color = '#FFFFFF'; // Weiß für Gruppen
+        opt.dataset.color = '#FFFFFF';
+        selectElement.appendChild(opt);
+    });
+
+    // 2. KLASSEN
+    const divider2 = document.createElement('option');
+    divider2.textContent = '── KLASSEN ──';
+    divider2.disabled = true;
+    divider2.style.backgroundColor = '#1a202c';
+    divider2.style.fontWeight = 'bold';
+    divider2.style.color = '#fbbf24'; // Gold
+    selectElement.appendChild(divider2);
+
+    // Wir nutzen die globalen window.classColors Keys, filtern aber TANK/DK raus, um Dopplungen zu vermeiden, falls nötig
+    const classes = ['DEATHKNIGHT', 'DRUID', 'HUNTER', 'MAGE', 'MONK', 'PALADIN', 'PRIEST', 'ROGUE', 'SHAMAN', 'WARLOCK', 'WARRIOR'];
+    
+    classes.forEach(cls => {
+        const opt = document.createElement('option');
+        opt.value = cls; // Wert in DB
+        opt.textContent = cls.charAt(0) + cls.slice(1).toLowerCase(); // Schöne Anzeige (Priest)
+        const color = window.classColors[cls] || '#FFFFFF';
+        opt.style.color = color;
+        opt.dataset.color = color;
+        selectElement.appendChild(opt);
+    });
+
+
+};
         window.classColors = { 'DEATHKNIGHT': '#C41F3B', 'DK': '#C41F3B', 'DRUID': '#FF7D0A', 'HUNTER': '#AAD372', 'MAGE': '#3FC7EB', 'MONK': '#00FF96', 'PALADIN': '#F48CBA', 'PRIEST': '#FFFFFF', 'ROGUE': '#FFF569', 'SHAMAN': '#0070DD', 'WARLOCK': '#8788EE', 'WARRIOR': '#C69B6D', 'TANK': '#A3A3A3' };
         const wowClasses = ['WARRIOR', 'PALADIN', 'HUNTER', 'ROGUE', 'PRIEST', 'DEATHKNIGHT', 'SHAMAN', 'MAGE', 'WARLOCK', 'MONK', 'DRUID'];
 
@@ -1907,6 +1983,7 @@ mainNav.innerHTML = mainNavHTML;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchAllCooldowns(); 
+            await fetchRoster();
             try {
                 const rosterSnap = await getDoc(rosterDocRef);
                 window.rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
@@ -2047,7 +2124,7 @@ mainNav.innerHTML = mainNavHTML;
 currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
     const jsonInput = document.getElementById('json-input');
     const currentRosterData = docSnap.exists() ? docSnap.data().roster || [] : [];
-    
+    window.rosterData = currentRosterData;
     // Reihenfolge der Aufrufe:
     displayRoster(currentRosterData);
     initBuffAssignments(currentRosterData);
@@ -2695,20 +2772,7 @@ window.applyAssignmentsBulk = applyAssignmentsBulk;
              const rosterSnap = await getDoc(rosterDocRef);
              window.rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
         }
-        function populateDropdownOptions(selectElement, players) {
-            selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
-            const divider = new Option('──────────', '');
-            selectElement.appendChild(divider);
-            players.forEach(player => {
-                const option = document.createElement('option');
-                const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
-                option.value = player.name;
-                option.textContent = `${player.name}`;
-                option.style.color = color;
-                option.dataset.color = color;
-                selectElement.appendChild(option);
-            });
-        }
+
         function wireAssignmentSelect(select) {
   if (!select || select.dataset._wired === "1") return;
   select.dataset._wired = "1";
