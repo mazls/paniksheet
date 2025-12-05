@@ -123,7 +123,7 @@
                     
                     <div class="assignment-block">
                         <h4 class="text-lg font-bold">🥦 Futterdieb-Rotation (Buff)</h4>
-                        <p class="text-sm text-gray-400 mb-2 px-3">Fliegende Spieler, die Futter abfangen.</p>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Fliegende Spieler, die Futter abfangen. (Grüne Pfütze mit großen Self-CDs)</p>
                         <ul class="assignment-list">
                             <li><span>Abfänger 1:</span><select data-assignment-id="jikun-food1" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
                             <li><span>Abfänger 2:</span><select data-assignment-id="jikun-food2" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
@@ -158,32 +158,50 @@
                 </div>
                 </section>
 
-    <section id="dynamic-planning" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-            Planer (Wellen & CDs)
-            <span class="toggle-icon">▼</span>
-        </h2>
-        <div class="collapsible-content">
-            
-                
-                <div class="assignment-block border border-gold-border">
-                    <div class="flex justify-between items-center mb-4 border-b border-slate-650 pb-2">
-                        <h4 class="text-lg font-bold text-gold">🦅 Nest-Wellen (12)</h4>
-                    </div>
-                    <div class="max-h-[600px] overflow-y-auto pr-2" id="static-waves-container">
-                         </div>
-                    <div class="mt-4">
-                        <div class="flex justify-between mb-1 items-end">
-                            <span class="text-xs text-gray-400">Export Code:</span>
-                            <button id="copy-wave-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs transition-all duration-200">Kopieren</button>
-                        </div>
-                        <input type="text" id="wave-export-output" class="w-full bg-black text-green-400 font-mono text-xs p-2 rounded border border-gray-700" readonly value="...">
-                    </div>
-                
-
-
+<section id="dynamic-planning" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Wellen & Team Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        
+        <div class="assignment-block mb-6 border border-blue-900/50">
+            <h3 class="text-xl font-bold text-blue-400 mb-4 border-b border-slate-600 pb-1">1. Team Aufstellung (5 Spieler pro Team)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="team-setup-container">
+                </div>
         </div>
-    </section>
+
+        <div class="assignment-block border border-gold-border">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-650 pb-2">
+                <h3 class="text-xl font-bold text-gold">2. Wellen Zuweisung (19 Wellen)</h3>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-400">
+                    <thead class="bg-slate-900 text-gray-200 font-bold uppercase text-xs">
+                        <tr>
+                            <th class="p-2 w-16 text-center">#</th>
+                            <th class="p-2 border-l border-slate-700 text-center">Einsatz A</th>
+                            <th class="p-2 border-l border-slate-700 text-center">Einsatz B</th>
+                            <th class="p-2 border-l border-slate-700 text-center">Einsatz C</th>
+                        </tr>
+                    </thead>
+                    <tbody id="waves-schedule-container" class="divide-y divide-slate-700">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-600">
+                <div class="flex justify-between mb-1 items-end">
+                    <span class="text-xs text-gray-400">Globaler Export Code (Teams werden automatisch aufgelöst):</span>
+                    <button id="copy-wave-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs transition-all duration-200">Kopieren</button>
+                </div>
+                <input type="text" id="wave-export-output" class="w-full bg-black text-green-400 font-mono text-xs p-2 rounded border border-gray-700" readonly value="...">
+            </div>
+        </div>
+
+    </div>
+</section>
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Global WA Export
@@ -248,108 +266,139 @@
     </section>
 
 <script>
-    // 1. Statisches HTML generieren (Bleibt unverändert, läuft sofort beim Laden)
+    // Konfiguration der Wellen (Wie viele Teams pro Welle?)
+    const WAVES_CONFIG = [
+        { id: 1, count: 1 }, { id: 2, count: 1 }, { id: 3, count: 1 },
+        { id: 4, count: 2 }, { id: 5, count: 2 }, 
+        { id: 6, count: 1 }, 
+        { id: 7, count: 2 }, { id: 8, count: 2 },
+        { id: 9, count: 1 },
+        { id: 10, count: 2 }, { id: 11, count: 2 }, { id: 12, count: 2 }, { id: 13, count: 2 },
+        { id: 14, count: 3 },
+        { id: 15, count: 2 },
+        { id: 16, count: 3 },
+        { id: 17, count: 2 },
+        { id: 18, count: 3 }, { id: 19, count: 3 }
+    ];
+
+    // Richtungs-Optionen für Dropdowns
+    const DIR_OPTIONS = `
+        <option value="NE">NE (Star)</option>
+        <option value="SE">SE (Square)</option>
+        <option value="SW">SW (Cross)</option>
+        <option value="W">W (Diamond)</option>
+        <option value="NW">NW (Triangle)</option>
+        <option value="M">M (Middle)</option>
+    `;
+
+    // 1. Statisches HTML generieren
     (function renderStaticStructure() {
-        // WAVE KONFIGURATION
-        const waveContainer = document.getElementById('static-waves-container');
-        if (waveContainer) {
-            let waveHtml = '';
-            const doubleWaves = [4, 5, 7, 8, 10, 11, 12, 13];
-            
-            for(let i=1; i<=13; i++) {
-                const renderRow = (num, suffix = '') => {
-                    const dbKey = `jikun-wave-${num}${suffix}`;
-                    let slotsHtml = '';
-                    for(let s=1; s<=10; s++) {
-                        const hiddenClass = s > 3 ? 'tactic-content' : '';
-                        const sizeAttr = s > 3 ? 'data-size="25"' : '';
-                        slotsHtml += `<select class="assignment-select ${hiddenClass}" ${sizeAttr} data-assignment-id="${dbKey}-p${s}" data-assignment-pool="wave-${num}${suffix}"></select>`;
-                    }
-
-                    return `
-                    <div class="dynamic-row wave-row" data-id="${num}">
-                        <div class="row-header">
-                            <span class="text-gold font-bold text-sm">Welle ${num}${suffix}</span>
-                            <select class="config-select wave-lvl" data-assignment-id="${dbKey}-lvl">
-                                <option value="LOWER">LOWER</option>
-                                <option value="UPPER">UPPER</option>
-                            </select>
-                            <select class="config-select wave-dir" data-assignment-id="${dbKey}-dir">
-                                <option value="NE">NE (Star)</option>
-                                <option value="SE">SE (Square)</option>
-                                <option value="SW">SW (Cross)</option>
-                                <option value="W">W (Diamond)</option>
-                                <option value="NW">NW (Triangle)</option>
-                                <option value="M">M (Middle)</option>
-                            </select>
-                        </div>
-                        <div class="player-grid-nest">
-                            ${slotsHtml}
-                        </div>
-                    </div>`;
-                };
-
-                waveHtml += renderRow(i, '');
-                if(doubleWaves.includes(i)) waveHtml += renderRow(i, 'b');
-            }
-            waveContainer.innerHTML = waveHtml;
-        }
-
-        // CD KONFIGURATION (Legacy/Static)
-        const cdContainer = document.getElementById('static-cds-container');
-        if (cdContainer) {
-            let cdHtml = '';
-            for(let i=1; i<=4; i++) {
-                cdHtml += `
-                <div class="dynamic-row cd-row" data-id="${i}">
-                    <div class="row-header">
-                        <span class="text-red-400 font-bold text-sm">#${i}</span>
-                        <input type="text" class="custom-label-input" 
-                               data-assignment-id="jikun-cd-${i}-label" placeholder="Bezeichnung">
-                    </div>
-                    <div class="grid grid-cols-1 gap-2">
-                        <div class="flex gap-1 slot-wrapper">
-                            <select class="assignment-select w-1/2" data-assignment-id="jikun-cd-${i}-p1"></select>
-                            <select class="assignment-select w-1/2" data-assignment-id="jikun-cooldown-${i}-c1" data-assignment-pool="cd-spell-${i}"></select>
-                        </div>
-                        <div class="flex gap-1 slot-wrapper">
-                            <select class="assignment-select w-1/2" data-assignment-id="jikun-cd-${i}-p2"></select>
-                            <select class="assignment-select w-1/2" data-assignment-id="jikun-cooldown-${i}-c2" data-assignment-pool="cd-spell-${i}"></select>
-                        </div>
+        
+        // A) TEAM SETUP GENERIEREN
+        const teamContainer = document.getElementById('team-setup-container');
+        if (teamContainer) {
+            let teamHtml = '';
+            for(let t=1; t<=5; t++) {
+                let playersHtml = '';
+                for(let p=1; p<=5; p++) {
+                    // ID: jikun-team-1-p1
+                    playersHtml += `<select class="assignment-select team-player-select mb-1 text-xs" 
+                                    data-assignment-id="jikun-team-${t}-p${p}" 
+                                    data-assignment-pool="jikun-teams" 
+                                    data-team-id="${t}"></select>`;
+                }
+                teamHtml += `
+                <div class="bg-slate-800 p-3 rounded border border-slate-600">
+                    <h4 class="font-bold text-center text-gray-200 mb-2 border-b border-gray-600">Team ${t}</h4>
+                    <div class="flex flex-col">
+                        ${playersHtml}
                     </div>
                 </div>`;
             }
-            cdContainer.innerHTML = cdHtml;
+            teamContainer.innerHTML = teamHtml;
+        }
+
+        // B) WELLEN LISTE GENERIEREN
+        const waveContainer = document.getElementById('waves-schedule-container');
+        if (waveContainer) {
+            let rowsHtml = '';
+            
+            // Helper für Team-Dropdown
+            const getTeamSelect = (dbKey) => {
+                return `<select class="config-select w-full mb-1 text-xs wave-team-select" data-assignment-id="${dbKey}-team">
+                            <option value="">- Team -</option>
+                            <option value="1">Team 1</option>
+                            <option value="2">Team 2</option>
+                            <option value="3">Team 3</option>
+                            <option value="4">Team 4</option>
+                            <option value="5">Team 5</option>
+                        </select>`;
+            };
+
+            // Helper für Config-Block (Lvl + Dir)
+            const getConfigBlock = (dbKey) => {
+                return `<div class="flex gap-1 mb-1">
+                            <select class="config-select w-1/2 text-[10px] px-0 text-center wave-lvl" data-assignment-id="${dbKey}-lvl">
+                                <option value="LOWER">LOW</option>
+                                <option value="UPPER">UP</option>
+                            </select>
+                            <select class="config-select w-1/2 text-[10px] px-0 text-center wave-dir" data-assignment-id="${dbKey}-dir">
+                                ${DIR_OPTIONS}
+                            </select>
+                        </div>`;
+            };
+
+            WAVES_CONFIG.forEach(wave => {
+                let cells = '';
+                const suffixes = ['', 'b', 'c']; // Für Einsatz A, B, C
+
+                for(let i=0; i<3; i++) {
+                    if (i < wave.count) {
+                        // Slot existiert
+                        const suffix = suffixes[i];
+                        const dbKey = `jikun-wave-${wave.id}${suffix}`;
+                        
+                        cells += `
+                        <td class="p-2 border-l border-slate-700 bg-slate-800/30 align-top wave-slot" data-wave="${wave.id}" data-suffix="${suffix}">
+                            ${getConfigBlock(dbKey)}
+                            ${getTeamSelect(dbKey)}
+                        </td>`;
+                    } else {
+                        // Leerer Slot (Grau)
+                        cells += `<td class="p-2 border-l border-slate-700 bg-black/20"></td>`;
+                    }
+                }
+
+                rowsHtml += `
+                <tr class="hover:bg-slate-700/50 transition-colors">
+                    <td class="p-2 text-center font-bold text-gold text-sm bg-slate-800">${wave.id}</td>
+                    ${cells}
+                </tr>`;
+            });
+            waveContainer.innerHTML = rowsHtml;
         }
     })();
 
-    // 2. HAUPTFUNKTION (Zusammengeführt)
+    // 2. HAUPTFUNKTION
     window.initializePageSpecificCode = async function(assignments, roster, firebaseTools, allCooldowns) {
         
-        // --- A. Setup & Imports ---
+        // --- Setup ---
         const { setDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
         const db = firebaseTools.db;
-        let globalCooldowns = allCooldowns || window.allCooldowns || [];
 
-        // --- B. Wave Planner Logik (Speichern & Export) ---
-
-        // 1. Interne Speicherfunktion für Config-Selects
+        // Speicher-Funktion
         const jiKunDirectSave = async (updatesObj) => {
             if (!window.isManager) return;
-            const editor = sessionStorage.getItem('currentManager') || 'Unbekannt';
             const ts = serverTimestamp();
             const payload = {};
+            const editor = sessionStorage.getItem('currentManager') || 'Unbekannt';
 
             Object.entries(updatesObj).forEach(([id, val]) => {
-                let data = {};
-                if (id.includes('label')) {
-                    data = { text: val, editor, timestamp: ts };
-                } else if (id.includes('cooldown')) {
-                    data = { cooldown: val, editor, timestamp: ts };
-                } else {
-                    data = { player: val, editor, timestamp: ts };
-                }
-                payload[id] = data;
+                // Unterscheidung: Player (in Teams) vs Text (Configs/Team-Wahl)
+                // Alles was "-p1" etc endet ist ein Spieler, Rest sind Configs
+                const isPlayer = id.match(/-p\d+$/); 
+                payload[id] = { [isPlayer ? 'player' : 'player']: val, editor, timestamp: ts }; 
+                // Hinweis: Wir nutzen 'player' Feld auch für Configs (Lvl/Dir/TeamID), damit das Laden einheitlich bleibt
             });
 
             try {
@@ -357,31 +406,15 @@
             } catch (e) { console.error("Fehler beim Speichern:", e); }
         };
 
-        // 2. Dropdowns für alte CD-Sektion befüllen (Falls noch genutzt)
-        document.querySelectorAll('[data-assignment-pool^="cd-spell"]').forEach(select => {
-            if(select.options.length > 1) return;
-            select.innerHTML = '<option value="">-- CD --</option>';
-            globalCooldowns.forEach(cd => {
-                const opt = document.createElement('option');
-                if (cd.name.startsWith('---')) {
-                    opt.disabled = true; opt.textContent = cd.name; opt.style.color = 'var(--color-gold)'; opt.style.fontWeight = 'bold'; opt.style.backgroundColor = '#1a202c';
-                } else {
-                    opt.value = cd.name; opt.textContent = cd.name;
-                    opt.style.color = window.classColors[cd.class] || '#fff';
-                }
-                select.appendChild(opt);
-            });
-        });
+        // --- Werte wiederherstellen & Listener ---
 
-        // 3. Config-Selects (Wave Direction/Level) wiederherstellen & Listener setzen
+        // 1. Configs & Team-Auswahl (in der Wellen-Tabelle)
         document.querySelectorAll('.config-select').forEach(sel => {
-            // WERT SETZEN (immer)
             const savedVal = assignments[sel.dataset.assignmentId]?.player;
             if (savedVal) sel.value = savedVal;
             
-            // LISTENER NUR EINMAL SETZEN
-            if (sel.dataset._wired === '1') return; // Abbrechen, wenn schon verkabelt
-            sel.dataset._wired = '1';               // Markieren als verkabelt
+            if (sel.dataset._wired === '1') return;
+            sel.dataset._wired = '1';
         
             sel.addEventListener('change', (e) => {
                 jiKunDirectSave({ [e.target.dataset.assignmentId]: e.target.value });
@@ -389,117 +422,86 @@
             });
         });
 
-        // 4. Custom Labels wiederherstellen
+        // 2. Custom Labels (falls vorhanden, z.B. in CD Planer)
         document.querySelectorAll('.custom-label-input').forEach(input => {
-            // WERT SETZEN (immer)
             const savedVal = assignments[input.dataset.assignmentId]?.text;
             if (savedVal) input.value = savedVal;
-        
-            // LISTENER NUR EINMAL SETZEN
             if (input.dataset._wired === '1') return;
             input.dataset._wired = '1';
-        
-            input.addEventListener('change', (e) => {
-                jiKunDirectSave({ [e.target.dataset.assignmentId]: e.target.value });
-                updateExports();
-            });
+            input.addEventListener('change', (e) => { /* Analog speichern */ });
         });
 
-        // 5. Export Logik definieren
+        // --- Export Logik ---
         function updateExports() {
-            // Waves Export
             let wRows = [];
-            document.querySelectorAll('.wave-row').forEach(row => {
-                const lvl = row.querySelector('.wave-lvl')?.value || "LOWER";
-                const dir = row.querySelector('.wave-dir')?.value || "NE";
-                let players = [];
-                row.querySelectorAll('.assignment-select').forEach(s => {
-                    if (s.value && !s.value.includes('❌')) players.push(s.value);
-                });
-                if (players.length > 0) {
-                    wRows.push(`WAVE${row.dataset.id}-${lvl}${dir}-${players.join(',')}`);
+            
+            // Wir iterieren über alle aktiven Wellen-Slots
+            document.querySelectorAll('.wave-slot').forEach(slot => {
+                const waveId = slot.dataset.wave;
+                const suffix = slot.dataset.suffix; // '', 'b', 'c'
+                
+                // Configs lesen
+                const lvl = slot.querySelector('.wave-lvl')?.value || "LOWER";
+                const dir = slot.querySelector('.wave-dir')?.value || "NE";
+                const teamId = slot.querySelector('.wave-team-select')?.value;
+
+                if (teamId) {
+                    // Spieler des Teams suchen
+                    let players = [];
+                    // Suche alle Selects, die zu diesem Team gehören (data-team-id Attribut)
+                    document.querySelectorAll(`.team-player-select[data-team-id="${teamId}"]`).forEach(pSelect => {
+                        if (pSelect.value && !pSelect.value.includes('❌')) {
+                            players.push(pSelect.value);
+                        }
+                    });
+
+                    if (players.length > 0) {
+                        // Format: WAVE{id}{suffix}-{LVL}{DIR}-{players}
+                        // Beispiel: WAVE4b-UPPERSW-Mage,Hexer,...
+                        wRows.push(`WAVE${waveId}${suffix}-${lvl}${dir}-${players.join(',')}`);
+                    }
                 }
             });
+
             const waveOutput = document.getElementById('wave-export-output');
             if(waveOutput) waveOutput.value = wRows.join(',');
-
-            // CD Export (Legacy)
-            let cRows = [];
-            document.querySelectorAll('.cd-row').forEach(row => {
-                const labelInp = row.querySelector('input');
-                const label = labelInp ? labelInp.value : `CD${row.dataset.id}`;
-                let pairs = [];
-                const pSelects = row.querySelectorAll('select[data-assignment-id*="-p"]');
-                const cSelects = row.querySelectorAll('select[data-assignment-id*="cooldown"]');
-                
-                for(let i=0; i<pSelects.length; i++) {
-                    if(pSelects[i] && cSelects[i] && pSelects[i].value && cSelects[i].value) {
-                         pairs.push(`${pSelects[i].value}:${cSelects[i].value}`);
-                    }
-                }
-                if(pairs.length > 0) {
-                    cRows.push(`${label}: ${pairs.join(', ')}`);
-                }
-            });
-            const cdOutput = document.getElementById('cd-export-output');
-            if(cdOutput) cdOutput.value = cRows.join(' | ');
         }
 
-        // Globaler Change Listener für Updates im Export
+        // Globaler Listener für Änderungen (damit der Export live aktualisiert wird)
         document.body.addEventListener('change', (e) => {
-            if (e.target.matches('select') || e.target.matches('input')) {
-                // Kurze Verzögerung, damit Framework-Daten syncen können
-                setTimeout(updateExports, 100); 
+            if (e.target.closest('#dynamic-planning')) {
+                setTimeout(updateExports, 100);
             }
         });
 
-        // Initiale Berechnung des Exports
+        // Initiale Berechnung
         setTimeout(updateExports, 1000);
 
-        // Copy Buttons Setup
-        const setupCopy = (btnId, inputId) => {
-            const btn = document.getElementById(btnId);
-            if(btn) {
-                btn.addEventListener('click', () => {
-                    const input = document.getElementById(inputId);
-                    if(input) {
-                        navigator.clipboard.writeText(input.value);
-                        const oldText = btn.textContent;
-                        btn.textContent = "Kopiert!";
-                        setTimeout(() => btn.textContent = oldText, 1500);
-                    }
-                });
-            }
-        };
-        setupCopy('copy-wave-btn', 'wave-export-output');
+        // Copy Button
+        const btn = document.getElementById('copy-wave-btn');
+        if(btn) {
+            btn.addEventListener('click', () => {
+                const input = document.getElementById('wave-export-output');
+                navigator.clipboard.writeText(input.value);
+                const old = btn.textContent;
+                btn.textContent = "Kopiert!";
+                setTimeout(() => btn.textContent = old, 1500);
+            });
+        }
 
-
-        // --- C. Advanced WA Planner Logik (Rendering) ---
-
-        const TRIGGER_OPTIONS = [
-            { val: "JIKUN_ENC_START", text: "Encounter Start (Jikun)" },
-            { val: "JIKUN_HEALTH", text: "Health % (Wähle NPC)" },
-            { val: "JIKUN_QUILLS", text: "Quills" },
-            { val: "JIKUN_NEST", text: "Nest" },
-            { val: "JIKUN_GUARDIAN", text: "Nest Guardian" },
-            { val: "JIKUN_DOWN_DRAFT", text: "Down Draft" },
-            { val: "JIKUN_TALON_RAKE", text: "Talon Rake" },
-            { val: "JIKUN_FEED_YOUNG", text: "Feed Young" }
-        ];
-
-        const NPC_OPTIONS = [ "Jikun" ];
-
+        // --- WA Planner (Grid unten) ---
+        // (Hier nur der Init-Code, HTML Struktur ist oben)
         const waContainer = document.getElementById('jikun-planner-container');
-        
-        // Grid aufbauen, falls leer
         if (waContainer && waContainer.innerHTML.trim() === "") {
+            const TRIGGER_OPTIONS = [
+                { val: "JIKUN_ENC_START", text: "Encounter Start" },
+                { val: "JIKUN_NEST", text: "Nest Aktiv" },
+                { val: "JIKUN_DOWN_DRAFT", text: "Abwind" },
+                { val: "JIKUN_QUILLS", text: "Federkiele" },
+                { val: "JIKUN_FEED_YOUNG", text: "Junge füttern" }
+            ];
             let html = "";
             const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
-
-            // Cooldown Optionen generieren (für WA Planner Dropdowns)
-            // Hinweis: Die eigentliche Befüllung übernimmt oft das Framework über 'assignment-select',
-            // aber wir bauen hier das HTML Gerüst auf.
             
             for (let i = 1; i <= 20; i++) {
                 html += `
@@ -508,21 +510,11 @@
                         <option value="">-- Inaktiv --</option>
                         ${triggerOpts}
                     </select>
-                    
-                    <select class="assignment-select w-full" data-assignment-id="jikun-planner-row${i}-npc" data-manual-options="true">
-                        ${npcOpts}
-                    </select>
-
-                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
-                           data-assignment-id="jikun-planner-row${i}-condition" placeholder="%" value="0">
-                           
-                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
-                           data-assignment-id="jikun-planner-row${i}-time" placeholder="Sec" value="0">
-                           
+                    <select class="assignment-select w-full" data-assignment-id="jikun-planner-row${i}-npc" data-manual-options="true"><option value="">--</option><option value="Jikun">Ji-Kun</option></select>
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" data-assignment-id="jikun-planner-row${i}-condition" placeholder="%" value="0">
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" data-assignment-id="jikun-planner-row${i}-time" placeholder="Sec" value="0">
                     <select class="assignment-select w-full" data-assignment-id="jikun-planner-row${i}-player"></select>
-                    
                     <select class="assignment-select w-full" data-assignment-id="jikun-planner-row${i}-cooldown"></select>
-                    
                     <div></div>
                 </div>`;
             }
