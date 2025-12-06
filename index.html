@@ -34,44 +34,126 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
+#planner .bg-slate-800 {
+    background-color: var(--color-dark-green-bg) !important;
+    border: 1px solid var(--color-gold-border);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* 2. Die Kopfzeile */
+.planner-header {
+    background-color: rgba(10, 20, 15, 0.4);
+    border-bottom: 2px solid var(--color-gold);
+    color: var(--color-parchment) !important;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* 3. Die einzelne Planer-Zeile */
 .planner-row {
-        display: grid;
-        /* Das exakte Grid aus deinem Snippet */
-        grid-template-columns: 1.2fr 1.2fr 60px 60px 1fr 1fr 30px;
-        gap: 0.5rem;
-        align-items: center;
-        
-        background-color: rgba(30, 41, 59, 0.5); /* Slate-800 mit Transparenz */
-        border: 1px solid #334155; /* Slate-700 Border */
-        border-radius: 4px;
-        padding: 6px;
-        transition: all 0.15s ease;
-    }
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 50px 50px 1.2fr 1.2fr 30px; 
+    gap: 8px;
+    align-items: center;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    background-color: rgba(10, 20, 15, 0.4); 
+    border-radius: 6px;
+    border: 1px solid var(--color-gold-border-light);
+    transition: all 0.2s ease;
+}
 
 .planner-row:hover {
-        background-color: rgba(51, 65, 85, 0.8); /* Helleres Slate beim Hover */
-        border-color: #64748b; /* Slate-500 Border */
-    }
+    background-color: rgba(36, 61, 51, 0.6);
+    border-color: var(--color-gold);
+    transform: translateX(2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
 
-    .planner-num {
-        font-weight: bold;
-        color: #5eead4; /* Jade Farbe für die Nummer */
-        font-size: 0.9rem;
-        text-align: center;
-    }
+/* 4. Styling der Dropdowns (Selects) - KORRIGIERT */
+.planner-row .assignment-select {
+    background-color: rgba(10, 20, 15, 0.6) !important;
+    border: 1px solid var(--color-gold-border-light) !important;
+    border-radius: 4px;
     
-    .planner-header-fancy {
-        display: grid;
-        grid-template-columns: 30px 1.2fr 1.2fr 60px 60px 1fr 1fr;
-        gap: 0.5rem;
-        padding: 0 8px 8px 8px;
-        margin-bottom: 4px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        color: #9ca3af; /* Gray-400 */
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
+    /* WICHTIG: Hier habe ich !important ENTFERNT. 
+       Jetzt gewinnt wieder die Farbe, die das Skript setzt (Klassenfarben). */
+    color: var(--color-parchment); 
+    
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    height: 32px;
+    transition: all 0.2s;
+}
+
+.planner-row .assignment-select:focus {
+    border-color: var(--color-gold) !important;
+    background-color: var(--color-dark-green-bg) !important;
+    outline: none;
+    box-shadow: 0 0 5px rgba(252, 211, 77, 0.2);
+}
+
+/* Damit die Liste beim Aufklappen dunkel ist */
+.planner-row .assignment-select option {
+    background-color: #1a202c;
+}
+
+/* Speziell für den Trigger (Bleibt Gold) */
+.planner-row select[data-assignment-id*="-trigger"] {
+    font-weight: bold;
+    color: var(--color-gold) !important; /* Trigger sollen immer Gold sein */
+    background-color: rgba(202, 138, 4, 0.1) !important;
+    border-color: var(--color-gold-border) !important;
+}
+
+/* 5. Styling der kleinen Text-Inputs (% und Zeit) */
+.planner-row .assignment-text-input {
+    background-color: rgba(10, 20, 15, 0.4) !important;
+    border: 1px solid var(--color-gold-border-light) !important;
+    border-radius: 4px;
+    text-align: center;
+    color: var(--color-jade) !important;
+    font-family: monospace;
+    height: 32px;
+}
+
+.planner-row .assignment-text-input:focus {
+    border-color: var(--color-gold) !important;
+    color: var(--color-parchment) !important;
+}
+
+.planner-row .assignment-text-input::placeholder {
+    color: rgba(245, 242, 232, 0.3);
+}
+
+/* 6. MOBILE ANPASSUNG */
+@media (max-width: 768px) {
+    .planner-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        background-color: var(--color-medium-green-bg) !important;
+        height: auto !important;
     }
+    .planner-row > select[data-assignment-id*="-trigger"] {
+        grid-column: span 2;
+        background-color: rgba(10, 20, 15, 0.8) !important;
+    }
+    .planner-row > select[data-assignment-id*="-player"] {
+        grid-column: span 2;
+        margin-top: 8px;
+        background-color: rgba(10, 20, 15, 0.5) !important;
+        border-color: var(--color-gold-border) !important;
+    }
+}
+
+/* Leere Zeilen etwas ausgrauen (Optional, wenn Value leer ist - per JS schwer, aber CSS :empty geht nicht auf Values) */
+/* Workaround: Wir machen den Placeholder-Text grau */
+.assignment-select option[value=""] {
+    color: #64748b;
+}
 #toggle-video-btn:hover {
     background-color: rgba(36, 61, 51, 0.9);
     border-color: var(--color-gold);
