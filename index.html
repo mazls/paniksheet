@@ -459,6 +459,80 @@
     color: var(--color-dark-text) !important;
     font-weight: 600;
 }
+@media (max-width: 768px) {
+    
+    /* 1. Die Kopfzeile (Trigger, NPC, Player...) ausblenden, da sie im Karten-Layout stört */
+    #planner .grid.grid-cols-12, /* Falls du Grid nutzt */
+    #planner .flex.font-bold     /* Falls du Flex nutzt */ 
+    {
+        display: none !important;
+    }
+
+    /* 2. Die Planer-Zeile in eine "Karte" verwandeln */
+    .planner-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; /* 2 Spalten Layout */
+        gap: 8px !important;
+        background-color: #1e293b; /* Dunklerer Hintergrund für Kontrast */
+        border: 1px solid #475569;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+        height: auto !important; /* Feste Höhe entfernen */
+    }
+
+    /* 3. Elemente neu anordnen (Grid-Magie) */
+    
+    /* TRIGGER: Sollte ganz oben über die volle Breite gehen */
+    .planner-row > select[data-assignment-id*="-trigger"] {
+        grid-column: span 2; /* Volle Breite */
+        border-color: #ca8a04; /* Goldener Rand zur Hervorhebung */
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+
+    /* NPC: Ebenfalls volle Breite darunter */
+    .planner-row > select[data-assignment-id*="-npc"] {
+        grid-column: span 2;
+        font-size: 0.8rem;
+        opacity: 0.9;
+    }
+
+    /* PROZENT & ZEIT: Teilen sich eine Zeile (50% / 50%) */
+    .planner-row > input[data-assignment-id*="-condition"], 
+    .planner-row > input[data-assignment-id*="-time"] {
+        grid-column: span 1;
+        text-align: center;
+    }
+
+    /* SPIELER: Volle Breite, etwas Abstand nach oben */
+    .planner-row > select[data-assignment-id*="-player"] {
+        grid-column: span 2;
+        margin-top: 8px; /* Optische Trennung */
+        background-color: #0f172a; /* Dunklerer Hintergrund */
+    }
+
+    /* COOLDOWN: Volle Breite ganz unten */
+    .planner-row > select[data-assignment-id*="-cooldown"] {
+        grid-column: span 2;
+    }
+
+    /* Löschen-Button (falls vorhanden, das leere div am Ende) */
+    .planner-row > div:last-child {
+        display: none; /* Auf Mobile oft schwer zu treffen, oder optional einblenden */
+    }
+
+    /* 4. Touch-Optimierung: Größere Felder */
+    .planner-row select, 
+    .planner-row input {
+        height: 40px !important; /* Größere Touch-Targets */
+        font-size: 14px !important; /* Lesbare Schriftgröße */
+    }
+    
+    /* Platzhalter-Texte sichtbar machen (da Header fehlt) */
+    .planner-row input[data-assignment-id*="-condition"]::placeholder { color: #94a3b8; opacity: 1; }
+    .planner-row input[data-assignment-id*="-time"]::placeholder { color: #94a3b8; opacity: 1; }
+}
 .login-modal-buttons button {
     padding: 0.6rem 1.5rem;          /* Etwas mehr vertikales Padding für eine bessere Klickfläche */
     border: 1px solid transparent;   /* Initial kein sichtbarer Rand */
