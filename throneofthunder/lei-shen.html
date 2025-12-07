@@ -95,93 +95,248 @@
 
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
+        Einteilungen & Strategie
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+            <div class="xl:col-span-1 space-y-8">
+                
+<div class="assignment-block border-l-4 border-gold bg-slate-800/50">
+                    <h4 class="text-lg font-bold text-gold border-b border-slate-700 mb-2 pb-1">⚡ Phasen-Ablauf & Positionen</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-gray-300">
+                            <thead class="text-xs text-gray-500 uppercase bg-slate-900/50">
+                                <tr>
+                                    <th class="p-2 text-left">Phase / HP</th>
+                                    <th class="p-2 text-left">Aktiver Pylon (Boss)</th>
+                                    <th class="p-2 text-left">Range Camp (Sammeln)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700">
+                                <tr>
+                                    <td class="p-2 font-bold text-white">P1 (100% - 65%)</td>
+                                    <td class="p-2 text-blue-400 font-bold">
+                                        <div class="flex items-center gap-2">
+                                            <img src="raidicons/square.png" class="w-4 h-4"> Quadrat (Nord)
+                                        </div>
+                                    </td>
+                                    <td class="p-2 text-white">
+                                        <div class="flex items-center gap-2">
+                                            <img src="raidicons/skull.png" class="w-4 h-4"> Totenkopf
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 font-bold text-white">P2 (65% - 30%)</td>
+                                    <td class="p-2 text-green-400 font-bold">
+                                        <div class="flex items-center gap-2">
+                                            <img src="raidicons/triangle.png" class="w-4 h-4"> Dreieck (Ost)
+                                        </div>
+                                    </td>
+                                    <td class="p-2 text-yellow-400">
+                                        <div class="flex items-center gap-2">
+                                            <img src="raidicons/star.png" class="w-4 h-4"> Stern
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 font-bold text-white">P3 (30% - 0%)</td>
+                                    <td class="p-2 text-purple-400 font-bold">
+                                        <div class="flex items-center gap-2">
+                                            <img src="raidicons/diamond.png" class="w-4 h-4"> Diamant (Süd)
+                                        </div>
+                                    </td>
+                                    <td class="p-2 text-gray-300">
+                                        <div class="flex items-center gap-2">
+                                            <img src="raidicons/moon.png" class="w-4 h-4"> Mond
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+<div class="assignment-block">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-slate-600 mb-4">🌪️ Intermission 1 (65%)</h4>
+                    <p class="text-xs text-gray-400 mb-2 italic">Aufteilung: 6 Spieler + 2 Springer/Backups pro Ecke.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        
+                        <div class="bg-slate-800 p-2 rounded border border-blue-900/50">
+                            <h5 class="flex items-center gap-2 font-bold text-blue-400 text-sm mb-2 border-b border-slate-700 pb-1">
+                                <img src="raidicons/square.png" class="w-4 h-4"> Quadrat
+                            </h5>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">1</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_sq_1" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">2</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_sq_2" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">3</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_sq_3" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">4</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_sq_4" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">5</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_sq_5" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">6</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_sq_6" data-assignment-pool="lei_int1"></select></div>
+                                <div class="border-t border-slate-600 my-1 pt-1 opacity-50"></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">7</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_sq_ex1" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">8</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_sq_ex2" data-assignment-pool="lei_int1"></select></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-2 rounded border border-green-900/50">
+                            <h5 class="flex items-center gap-2 font-bold text-green-400 text-sm mb-2 border-b border-slate-700 pb-1">
+                                <img src="raidicons/triangle.png" class="w-4 h-4"> Dreieck
+                            </h5>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">1</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_tri_1" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">2</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_tri_2" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">3</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_tri_3" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">4</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_tri_4" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">5</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_tri_5" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">6</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_tri_6" data-assignment-pool="lei_int1"></select></div>
+                                <div class="border-t border-slate-600 my-1 pt-1 opacity-50"></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">7</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_tri_ex1" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">8</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_tri_ex2" data-assignment-pool="lei_int1"></select></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-2 rounded border border-purple-900/50">
+                            <h5 class="flex items-center gap-2 font-bold text-purple-400 text-sm mb-2 border-b border-slate-700 pb-1">
+                                <img src="raidicons/diamond.png" class="w-4 h-4"> Diamant
+                            </h5>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">1</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_dia_1" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">2</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_dia_2" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">3</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_dia_3" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">4</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_dia_4" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">5</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_dia_5" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">6</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_dia_6" data-assignment-pool="lei_int1"></select></div>
+                                <div class="border-t border-slate-600 my-1 pt-1 opacity-50"></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">7</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_dia_ex1" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">8</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_dia_ex2" data-assignment-pool="lei_int1"></select></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-2 rounded border border-red-900/50">
+                            <h5 class="flex items-center gap-2 font-bold text-red-400 text-sm mb-2 border-b border-slate-700 pb-1">
+                                <img src="raidicons/cross.png" class="w-4 h-4"> Kreuz
+                            </h5>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">1</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_cross_1" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">2</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_cross_2" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">3</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_cross_3" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">4</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_cross_4" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">5</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_cross_5" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">6</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_cross_6" data-assignment-pool="lei_int1"></select></div>
+                                <div class="border-t border-slate-600 my-1 pt-1 opacity-50"></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">7</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_cross_ex1" data-assignment-pool="lei_int1"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">8</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int1_cross_ex2" data-assignment-pool="lei_int1"></select></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-purple-400 border-b border-slate-600 mb-4">🌪️ Intermission 2 (30%)</h4>
+                    <p class="text-xs text-gray-400 mb-2 italic">Kein Kreuz! Fokus auf Diamant (16 Spieler).</p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        
+                        <div class="bg-slate-800 p-2 rounded border border-blue-900/50">
+                            <h5 class="flex items-center gap-2 font-bold text-blue-400 text-sm mb-2 border-b border-slate-700 pb-1">
+                                <img src="raidicons/square.png" class="w-4 h-4"> Quadrat
+                            </h5>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">1</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_sq_1" data-assignment-pool="lei_int2"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">2</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_sq_2" data-assignment-pool="lei_int2"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">3</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_sq_3" data-assignment-pool="lei_int2"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">4</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_sq_4" data-assignment-pool="lei_int2"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">5</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_sq_5" data-assignment-pool="lei_int2"></select></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-2 rounded border border-green-900/50">
+                            <h5 class="flex items-center gap-2 font-bold text-green-400 text-sm mb-2 border-b border-slate-700 pb-1">
+                                <img src="raidicons/triangle.png" class="w-4 h-4"> Dreieck
+                            </h5>
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">1</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_tri_1" data-assignment-pool="lei_int2"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">2</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_tri_2" data-assignment-pool="lei_int2"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">3</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_tri_3" data-assignment-pool="lei_int2"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">4</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_tri_4" data-assignment-pool="lei_int2"></select></div>
+                                <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">5</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_tri_5" data-assignment-pool="lei_int2"></select></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-2 rounded border border-purple-900/50 lg:col-span-1">
+                            <h5 class="flex items-center gap-2 font-bold text-purple-400 text-sm mb-2 border-b border-slate-700 pb-1">
+                                <img src="raidicons/diamond.png" class="w-4 h-4"> Diamant (Main Camp)
+                            </h5>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">1</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_1" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">2</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_2" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">3</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_3" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">4</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_4" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">5</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_5" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">6</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_6" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">7</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_7" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">8</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_8" data-assignment-pool="lei_int2"></select></div>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">9</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_9" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">10</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_10" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">11</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_11" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">12</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_12" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">13</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_13" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">14</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_14" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">15</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_15" data-assignment-pool="lei_int2"></select></div>
+                                    <div class="flex items-center gap-1"><span class="text-gray-500 font-mono text-[10px] w-3">16</span><select class="assignment-select text-xs w-full h-6 py-0" data-assignment-id="lei_int2_dia_16" data-assignment-pool="lei_int2"></select></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-orange-400 border-b border-slate-600 mb-2">⚽ Ball Baiter</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <select class="assignment-select text-xs w-full" data-assignment-id="lei_baiter_1" data-assignment-pool="leishen_baiter"></select>
+                        <select class="assignment-select text-xs w-full" data-assignment-id="lei_baiter_2" data-assignment-pool="leishen_baiter"></select>
+                        <select class="assignment-select text-xs w-full" data-assignment-id="lei_baiter_3" data-assignment-pool="leishen_baiter"></select>
+                        <select class="assignment-select text-xs w-full" data-assignment-id="lei_baiter_4" data-assignment-pool="leishen_baiter"></select>
+                        <select class="assignment-select text-xs w-full" data-assignment-id="lei_baiter_5" data-assignment-pool="leishen_baiter"></select>
+                        <select class="assignment-select text-xs w-full" data-assignment-id="lei_baiter_6" data-assignment-pool="leishen_baiter"></select>
+                        <select class="assignment-select text-xs w-full" data-assignment-id="lei_baiter_7" data-assignment-pool="leishen_baiter"></select>
+                        <select class="assignment-select text-xs w-full" data-assignment-id="lei_baiter_8" data-assignment-pool="leishen_baiter"></select>
+                    </div>
+                </div>
+
+            </div>
 
             <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="leishen-tank1"></select></li>
-                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="leishen-tank2"></select></li>
-                        <li class="list-subheader"><span>P1: Spott bei <strong class="text-red-400">Enthaupten</strong> (aktiv muss weglaufen)</span></li>
-                        <li class="list-subheader"><span>P2: Spott bei <strong class="text-red-400">Fusionsschnitt</strong></span></li>
-                        <li class="list-subheader"><span>P3: Spott bei <strong class="text-red-400">Überwältigende Kraft</strong> (10 Stacks)</span></li>
-                    </ul>
-                </div>
-                
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">⚡ Leitungs-Mechaniken (Transition)</h4>
-                    <ul class="assignment-list">
-                        <li class="list-subheader"><span>Nördliche Leitung (Elektroschock Soak)</span></li>
-                        <li class="grid-cols-3">
-                            <select data-assignment-id="leishen-soak-n1" class="assignment-select" data-assignment-pool="leishen-soak-n"></select>
-                            <select data-assignment-id="leishen-soak-n2" class="assignment-select" data-assignment-pool="leishen-soak-n"></select>
-                            <select data-assignment-id="leishen-soak-n3" class="assignment-select" data-assignment-pool="leishen-soak-n"></select>
-                        </li>
-                        <li class="list-subheader"><span>Westliche Leitung (Sprungblitz Soak)</span></li>
-                        <li class="grid-cols-3">
-                            <select data-assignment-id="leishen-soak-w1" class="assignment-select" data-assignment-pool="leishen-soak-w"></select>
-                            <select data-assignment-id="leishen-soak-w2" class="assignment-select" data-assignment-pool="leishen-soak-w"></select>
-                            <select data-assignment-id="leishen-soak-w3" class="assignment-select" data-assignment-pool="leishen-soak-w"></select>
-                        </li>
-                        <li class="list-subheader"><span>Südliche Leitung (Überladung Stack)</span></li>
-                        <li><span class="text-gray-400">Alle Spieler stacken *auf* dem Ziel.</span></li>
-                        <li class="list-subheader"><span>Östliche Leitung (Diffusionskette Spread)</span></li>
-                        <li><span class="text-gray-400">Alle Spieler 10m verteilen. Adds töten!</span></li>
-                    </ul>
-                </div>
-            </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                    
+                    <div class="bg-slate-900/50 p-3 rounded-lg mt-2 border border-gold-border-light mb-2">
+                        <p class="text-xs text-gray-400 text-center">Positionierung der Plattformen.</p>
+                    </div>
 
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="leishen-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P1: Positionierung</button>
-                        <button data-phase="leishen-t1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">T1: Transition</button>
-                        <button data-phase="leishen-p3" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">P3: Endphase</button>
-                    </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="leishen-p1">Boss wird von einer Leitung zur nächsten gezogen. Raid weicht <strong class="text-red-400">Donneraxt</strong> (großer Kreis) und <strong class="text-gray-400">Grollender Donner</strong> (Voidzones) aus.</p>
-                            <p class="positioning-text hidden" data-phase="leishen-t1">Der Raid teilt sich auf die 4 Quadranten auf, um die jeweilige Mechanik der Leitung zu spielen (Soak, Stack, Spread, Soak).</p>
-                            <p class="positioning-text hidden" data-phase="leishen-p3">Der Raid kämpft in der "sicheren" Hälfte. Weicht <strong class="text-red-400">Donneraxt</strong> und <strong class="text-yellow-400">Blitzpeitsche</strong> aus und kämpft gegen die <strong class="text-gray-400">Windböen</strong> an.</p>
-                        </div>
-                    </div>
                     <div class="mt-2">
-                        <img src="throneofthunder/leishen-p1.png" alt="Positionierung Lei Shen P1" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="leishen-p1">
-                        <img src="throneofthunder/leishen-t1.png" alt="Positionierung Lei Shen T1" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
-                            data-phase="leishen-t1">
-                        <img src="throneofthunder/leishen-p3.png" alt="Positionierung Lei Shen P3" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
-                            data-phase="leishen-p3">
+                        <img src="throneofthunder/leishen-p1.png" alt="Positionierung Lei Shen" class="lightbox-trigger w-full h-auto rounded border border-slate-600 shadow-md">
                     </div>
                 </div>
 
-                <div class="assignment-block mt-6">
-                    <h4 class="text-lg font-bold text-red-500">🔥 Heroisch: Helm des Befehls (Pushback)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler, die in Transitionsphasen zurückgepullt werden.</p>
-                    <ul class="assignment-list">
-                        <li><span>Grip 1:</span><select data-assignment-id="leishen-hc-grip1" class="assignment-select"></select></li>
-                        <li><span>Grip 2:</span><select data-assignment-id="leishen-hc-grip2" class="assignment-select"></select></li>
-                        <li><span>Grip 3:</span><select data-assignment-id="leishen-hc-grip3" class="assignment-select"></select></li>
-                    </ul>
-                </div>
-
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg">
-                        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/2NtoFe46tMc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <div>
+                    <h4 class="text-lg font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container rounded-lg shadow-lg overflow-hidden">
+                        <iframe width="100%" height="200" src="https://www.youtube-nocookie.com/embed/eUlgkJlPjXY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
@@ -212,7 +367,7 @@
                     <div></div>
                 </div>
 
-                <div id="leishen-planner-container" class="space-y-2"></div>
+                <div id="leishen-planner-container" class="space-y-2 planner-scroll-container"></div>
                 
                 <div class="mt-4 text-xs text-gray-500 italic">
                     * <strong>NPC:</strong> Wähle hier den Boss/Add, wenn du "Health %" nutzt.
@@ -340,7 +495,7 @@ const TRIGGER_OPTIONS = [
             const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
 
-            for (let i = 1; i <= 20; i++) {
+            for (let i = 1; i <= 50; i++) {
                 html += `
                 <div class="planner-row">
                     

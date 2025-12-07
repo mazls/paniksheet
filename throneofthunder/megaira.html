@@ -216,7 +216,7 @@
                     <div></div>
                 </div>
 
-                <div id="megaira-planner-container" class="space-y-2"></div>
+                <div id="megaira-planner-container" class="space-y-2 planner-scroll-container"></div>
                 
                 <div class="mt-4 text-xs text-gray-500 italic">
                     * <strong>NPC:</strong> Wähle hier den Boss/Add, wenn du "Health %" nutzt.
@@ -369,7 +369,7 @@
             const playerOpts = getPlayerOptions();
             const cdOpts = getCooldownOptions();
 
-            for (let i = 1; i <= 20; i++) {
+            for (let i = 1; i <= 50; i++) {
                 html += `
                 <div class="planner-row">
                     <select class="assignment-select w-full" data-assignment-id="megaira-planner-row${i}-trigger" data-manual-options="true">
