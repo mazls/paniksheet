@@ -2973,7 +2973,7 @@ if (select.getAttribute('data-manual-options') === "true") {
   const assignmentIdLower = (select.dataset.assignmentId || '').toLowerCase();
   if (assignmentIdLower.includes('cooldown')) {
     // Cooldown-Dropdowns: hier unverändert (aus deinem bestehenden Code)
-    select.innerHTML = '<option value="">-- Cooldown wählen --</option>';
+    select.innerHTML = '<option value="" data-color="#FFFFFF">-- Cooldown wählen --</option>';
     allCooldowns.forEach(cd => {
       const option = document.createElement('option');
       if (cd.name.startsWith('---')) {
