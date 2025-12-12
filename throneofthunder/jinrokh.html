@@ -58,27 +58,58 @@
     </div>
 
 <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-<h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-    Kampfübersicht & Kernmechaniken
-    <span class="toggle-icon">▼</span>
-</h2>
-<div class="collapsible-content">
-    <p class="mb-4">
-        Der Kampf gegen Jin'rokh ist ein einphasiger DPS-Test. Die Kernmechanik dreht sich um <strong class="text-blue-400">Leitfähiges Wasser</strong>. Diese Pfützen entstehen, wenn ein Tank vom <strong class="text-red-500">Donnernden Wurf</strong> getroffen wird. Sie gewähren einen starken Buff (<strong class="text-green-400">Fluidität</strong>), machen den Raid aber anfällig für Naturschaden. Ein <strong class="text-yellow-400">Gewittersturm</strong> macht die Pfützen regelmäßig unbrauchbar, was den spielbaren Bereich einschränkt und einen Soft-Enrage darstellt.
-    </p>
-    <ul class="list-disc list-inside space-y-2 text-gray-300">
-        <li><strong>Tank-Mechanik (<strong class="text-red-400">Statischer Schlag</strong>):</strong> Verursacht hohen Raidschaden und belegt den Tank mit <strong class="text-red-400">Statische Wunde</strong>, einem stapelbaren Debuff, der bei Nahkampftreffern massiven Naturschaden verursacht. Dies erzwingt einen sofortigen Tankwechsel.</li>
-        <li><strong>Pfützen-Management (<strong class="text-blue-400">Leitfähiges Wasser</strong>):</strong> Entsteht durch <strong class="text-red-500">Donnernder Wurf</strong>. Spieler darin erhalten <strong class="text-green-400">Fluidität</strong> (+40% Schaden & Heilung), aber auch +100% Naturschaden.</li>
-        <li><strong>Blitz-Management (<strong class="text-yellow-400">Gebündelter Blitz</strong>):</strong> Eine Kugel fixiert einen Spieler (Range/Heiler). Explodiert sie im <strong class="text-blue-400">Leitfähigen Wasser</strong>, erleidet der gesamte Raid in der Pfütze extrem hohen Schaden (<strong class="text-red-500">Heftige Detonation</strong>). Sie muss daher immer aus der Pfütze getragen werden.</li>
-        <li><strong>Phasen-Wechsel (<strong class="text-yellow-400">Gewittersturm</strong>):</strong> Alle 90 Sek. erleidet der Raid hohen Naturschaden. Danach wird die Pfütze zu <strong class="text-gray-400">Elektrisiertem Wasser</strong>, verliert den Buff und verursacht stattdessen Schaden. Der Raid muss zur nächsten, neu erstellten Pfütze wechseln.</li>
-    </ul>
-    <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-<p class="mb-2"><strong>Positionierung:</strong> Tanks stehen vor dem Boss. Der Raid (Heiler & DDs) steht in der aktiven <strong class="text-blue-400">Leitfähiges Wasser</strong>-Pfütze, um den <strong class="text-green-400">Fluidität</strong>-Buff zu nutzen.</p>
-<p class="mb-2"><strong>Tank-Wechsel:</strong> Sofortiger Spott nach <strong class="text-red-400">Statischer Schlag</strong>. Der Off-Tank sollte kurz vor dem <strong class="text-red-500">Donnernden Wurf</strong> spotten, um die Pfützen-Platzierung zu kontrollieren.</p>
-<p class="mb-2"><strong>Blitz-Kugel:</strong> Spieler, die von <strong class="text-yellow-400">Gebündelter Blitz</strong> anvisiert werden, laufen <strong>sofort</strong> aus der Pfütze an einen Ablagepunkt. Die Kugel darf weder die Pfütze noch einen alten <strong class="text-gray-400">Blitzspalt</strong> berühren (Wipe-Gefahr).</p>
-<p class="mb-2"><strong>Gewittersturm:</strong> Sobald der Sturm beginnt, verlassen <strong>alle</strong> Spieler die Pfütze, sammeln sich in der Mitte (nicht im Heroic-Modus!) und nutzen Heil-CDs. Nach dem Sturm wird die Pfütze gewechselt.</p>
-<p class="mb-2"><strong>Kampfrausch/Heldentum:</strong> Ca. 20 Sekunden nach Erscheinen der ersten Pfütze zünden, um 1-Minuten-CDs mit dem <strong class="text-green-400">Fluidität</strong>-Buff zu aliniieren.</p>
-</div>
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Jin'rokh ist ein einphasiger DPS-Test, der in 4 Zyklen abläuft. Jeder Zyklus beginnt mit dem Erstellen einer <strong class="text-blue-400">Leitfähiges Wasser</strong>-Pfütze, die dem Raid +40% Schaden und Heilung (<strong class="text-green-400">Fluidität</strong>) gewährt, aber den erlittenen Naturschaden erhöht. Nach 90 Sek. beendet ein <strong class="text-yellow-400">Gewittersturm</strong> die Phase, macht die Pfütze unbrauchbar und der Kampf verlagert sich zur nächsten Ecke.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>Spottet sofort bei <strong class="text-red-400">Statischer Schlag</strong> (Stapel-Debuff).</li>
+                    <li>Der aktive Tank wird mit <strong class="text-red-500">Donnernder Wurf</strong> gegen eine Statue geschleudert -> Pfütze entsteht.</li>
+                    <li>Off-Tank spottet *während* des Wurfs, um den Boss zu positionieren.</li>
+                    <li>Niemals den Boss in einer elektrisierten Pfütze tanken.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>Steht in der aktiven Pfütze für den <strong class="text-green-400">Fluidität</strong>-Buff.</li>
+                    <li><strong class="text-yellow-400">Gebündelter Blitz:</strong> Fixierte Spieler rennen SOFORT aus der Pfütze. Legt die Kugel am Rand ab (darf keine Risse berühren!).</li>
+                    <li><strong class="text-yellow-400">Gewittersturm:</strong> Alle raus aus der Pfütze, sammeln und Heil-CDs nutzen.</li>
+                    <li>Nutzt KR/HT, sobald der erste Buff aktiv ist (ca. 20s nach Pull).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Magier / Paladin / Jäger:</strong><br>
+                    Können <strong class="text-yellow-400">Ionisierung</strong> (HC) mit Eisblock / Gottesschild / Abschreckung komplett negieren (vor dem Cast nutzen!).
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Todesritter:</strong><br>
+                    Antimagische Hülle verhindert das Aufbringen von <strong class="text-red-400">Statische Wunde</strong> und <strong class="text-yellow-400">Ionisierung</strong>.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Hexenmeister:</strong><br>
+                    Dämonischer Zirkel / Tor ist extrem stark, um nach dem <strong class="text-red-500">Donnernden Wurf</strong> (Tank) oder <strong class="text-yellow-400">Gewittersturm</strong> schnell wieder in Position zu kommen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Schurken:</strong><br>
+                    Mantel der Schatten entfernt <strong class="text-yellow-400">Ionisierung</strong> sicher.
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
@@ -175,31 +206,35 @@
     <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Tank-Fähigkeiten</h4>
+                <h4 class="text-lg font-bold text-cyan-300">Boss & Tanks</h4>
                 <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Donnernder Wurf:</strong> Wirft das aktuelle Ziel gegen eine Statue. Die Statue zerbricht und erzeugt eine Pfütze <strong class="text-blue-400">Leitfähiges Wasser</strong>. Der Tank und Spieler im Umkreis von 8m am Einschlagsort werden betäubt.</li>
-                    <li><strong>Statischer Schlag:</strong> Fügt allen Spielern Naturschaden zu und belegt den Tank mit 10 Stapeln <strong class="text-red-400">Statische Wunde</strong>.</li>
-                    <li><strong>Statische Wunde:</strong> Debuff. Verursacht pro Stapel hohen Naturschaden, wenn der Tank Nahkampftreffer erleidet. Ein Drittel dieses Schadens trifft auch andere Spieler. Erzwingt einen Tankwechsel.</li>
+                    <li><strong>Donnernder Wurf:</strong> Wirft den Tank gegen eine Statue (50m Reichweite). Verursacht 250k Naturschaden und betäubt den Tank für 5s. Erzeugt <strong class="text-blue-400">Leitfähiges Wasser</strong>.</li>
+                    <li><strong>Statischer Schlag:</strong> Trifft den Tank, verursacht moderaten Raidschaden und stapelt <strong class="text-red-400">Statische Wunde</strong> (10 Stacks). Jeder Melee-Hit gegen diesen Tank verursacht dann AoE-Schaden (abnehmend pro Stack). -> Sofortiger Tankwechsel!</li>
+                    <li><strong>Gewittersturm:</strong> Markiert das Ende einer Phase. Verwandelt <strong class="text-blue-400">Leitfähiges Wasser</strong> dauerhaft in <strong class="text-gray-400">Elektrisiertes Wasser</strong> (kein Buff mehr, Schaden alle 1s).</li>
                 </ul>
             </div>
             <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-yellow-300">Raid-Fähigkeiten</h4>
+                <h4 class="text-lg font-bold text-yellow-300">Raid & Umgebung</h4>
                 <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Leitfähiges Wasser:</strong> Eine Pfütze, die <strong class="text-green-400">Fluidität</strong> gewährt (+40% Dmg/Heal, +100% Naturschaden).</li>
-                    <li><strong>Gebündelter Blitz:</strong> Kugel fixiert einen Spieler. Explodiert bei Kontakt. Muss aus der Pfütze getragen werden!</li>
-                    <li><strong>Heftige Detonation:</strong> Passiert, wenn der <strong class="text-yellow-400">Gebündelte Blitz</strong> im Wasser explodiert. Verursacht massiven Schaden an allen in der Pfütze.</li>
-                    <li><strong>Blitzspalt:</strong> Entsteht, wenn der <strong class="text-yellow-400">Gebündelte Blitz</strong> außerhalb des Wassers explodiert. Eine kleine, schädliche Voidzone.</li>
-                    <li><strong>Gewittersturm:</strong> 15 Sek. lang raidweiter Naturschaden. Verwandelt danach die Pfütze in <strong class="text-gray-400">Elektrisiertem Wasser</strong>.</li>
-                    <li><strong>Elektrisiertes Wasser:</strong> Die Pfütze ist permanent verseucht, entfernt <strong class="text-green-400">Fluidität</strong> und verursacht Schaden.</li>
+                    <li><strong>Fluidität (Buff):</strong> Solange man im <strong class="text-blue-400">Leitfähigen Wasser</strong> steht: +40% Heilung, +40% Schaden, +50% erhaltener Naturschaden.</li>
+                    <li><strong>Gebündelter Blitz:</strong> Eine Energiekugel fixiert einen Spieler. Sie detoniert bei Kontakt für 180k Naturschaden und hinterlässt einen <strong class="text-gray-400">Blitzspalt</strong> (Voidzone).
+                        <ul class="list-decimal list-inside ml-4 text-xs text-gray-400">
+                            <li>Explosion im Wasser = <strong class="text-red-500">WIPE</strong> (hoher Raid-Schaden).</li>
+                            <li>Kontakt mit anderem Riss = <strong class="text-red-500">Implosion</strong> (hoher Raid-Schaden + +10% Dmg taken).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Blitzschlag:</strong> Während des Gewittersturms schlagen Blitze ein, die sich in 4 Richtungen ausbreiten. (Ausweichen!).</li>
                 </ul>
             </div>
         </div>
         <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
             <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Ionisierung:</strong> Ein 24-Sekunden-Debuff, der auf mehrere Spieler (außer Tanks) gewirkt wird. Bei Ablauf oder Dispellen explodiert der Spieler und fügt allen im Umkreis von 8 Metern massiven Schaden zu.</li>
-                <li><strong>Strategie (Ionisierung):</strong> Betroffene Spieler müssen sich sofort vom Raid und aus der Pfütze entfernen. Sie müssen sich mit 8m Abstand zueinander verteilen, bevor sie dispellt werden oder der Debuff ausläuft. Immunitäten (Ice Block, Divine Shield) können genutzt werden, um den Debuff zu entfernen oder (bei Nutzung *vorher*) gar nicht erst zu erhalten.</li>
-                <li><strong>Blitzeinschlag:</strong> Wird während des <strong class="text-yellow-400">Gewittersturms</strong> gewirkt. Blitze schlagen auf dem Boden ein und verteilen sich. Der Raid kann sich nicht mehr in der Mitte sammeln, sondern muss sich bewegen und den Blitzen ausweichen.</li>
+                <li><strong>Ionisierung:</strong> Der kritischste Debuff (24s). Wird auf zufällige Spieler (außer Tanks) gewirkt.
+                    <br><span class="text-sm text-gray-400">Effekt:</span> Bei Ablauf oder Dispel erleiden alle Spieler im 8m Umkreis 500k Naturschaden.
+                    <br><span class="text-sm text-gray-400">Strategie:</span> Betroffene müssen <strong>raus aus dem Wasser</strong> (sonst leitet das Wasser den Schaden auf ALLE weiter!) und sich 8m verteilen. Heiler dispellen sie nacheinander. Immunitäten nutzen!
+                </li>
+                <li><strong>Blitzschlag (Verstärkt):</strong> Im Heroic-Modus entstehen bei jedem Blitzeinschlag während des Sturms Funken, die sich bewegen. Der "Safe Spot" in der Mitte existiert nicht mehr sicher – Bewegung ist Pflicht.</li>
             </ul>
         </div>
     </div>

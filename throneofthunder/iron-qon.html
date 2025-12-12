@@ -47,20 +47,51 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Der Kampf gegen den Eisernen Qon ist ein vierphasiger Kampf. In den ersten drei Phasen kämpft Qon auf dem Rücken eines seiner drei Qilen-Reittiere (Ro'shak, Quet'zal, Dam'ren). Jede Phase endet, wenn das Reittier besiegt ist (Heroic: bei 25% HP). In Phase 4 kämpft Qon zu Fuß.
+            Der Kampf gegen den Eisernen Qon ist ein Marathon über 4 Phasen. Qon reitet nacheinander auf drei Qilen (Feuer, Sturm, Eis), bevor er selbst in den Kampf eingreift. Jede Phase erfordert spezifisches Movement und Koordination.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Tank-Mechanik (<strong class="text-red-400">Durchbohren</strong>):</strong> Qon belegt seinen Tank während des gesamten Kampfes mit einem stapelbaren Blutungs-Debuff, der einen Tankwechsel erzwingt.</li>
-            <li><strong>Phase 1: Ro'shak (Feuer):</strong> Der Raid muss in Gruppen aufgeteilt werden, um <strong class="text-red-400">Entfesselte Flamme</strong> abzufangen. Dies kostet den Boss Energie und verhindert <strong class="text-red-500">Geschmolzene Überladung</strong> (starker Raid-AoE). Spieler müssen den <strong class="text-yellow-400">Brennenden Spänen</strong> (Feuerlinien) ausweichen.</li>
-            <li><strong>Phase 2: Quet'zal (Sturm):</strong> Der Boss wirft Speere, die <strong class="text-blue-400">Sturmwolken</strong> (Blitzlinien) erzeugen. Spieler müssen <strong class="text-yellow-400">Überspringender Blitz</strong> (Stun) von Mitspielern entfernen (anklicken/hinlaufen). Bei <strong class="text-gray-400">Windhose</strong> muss der gesamte Raid aus dem Zentrum der Arena fliehen.</li>
-            <li><strong>Phase 3: Dam'ren (Eis):</strong> Der Boss wirft Speere, die <strong class="text-blue-400">Gefrorenes Blut</strong> (Eislinien) erzeugen. Der Raid erleidet konstanten Schaden durch <strong class="text-blue-400">Gefrorene Abhärtung</strong> (Reflekt) und <strong class="text-blue-400">Einfrieren</strong> (Raid-AoE). Der Boss wird zeitweise immun gegen Angriffe von vorne/hinten (<strong class="text-gray-400">Totzone</strong>).</li>
-            <li><strong>Phase 4: Eiserner Qon:</strong> Qon kämpft zu Fuß. Er erhält einen stapelbaren Schadensbuff (<strong class="text-red-500">Aufkochender Zorn</strong>) und wirkt <strong class="text-red-400">Faustschlag</strong> (starker Raid-AoE). Dies ist ein Burn-Down.</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Phase 1:</strong> Teilt den Raid in 2-3 Gruppen auf. Rotiert die Gruppen, um <strong class="text-red-400">Entfesselte Flamme</strong> abzufangen und den <strong class="text-yellow-400">Versengt</strong>-Debuff auslaufen zu lassen. Weicht Feuerlinien aus.</p>
-        <p class="mb-2"><strong>Phase 2:</strong> Verteilt stehen. Weicht Blitzlinien aus. Befreit Spieler schnell aus <strong class="text-yellow-400">Überspringender Blitz</strong>. Bei <strong class="text-gray-400">Windhose</strong> sofort aus der Mitte rauslaufen.</p>
-        <p class="mb-2"><strong>Phase 3:</strong> Weicht Eislinien aus. DDs müssen bei <strong class="text-gray-400">Totzone</strong> die Seite des Bosses wechseln. Heiler müssen den konstanten Raidschaden (Reflekt + AoE) gegenheilen.</p>
-        <p class="mb-2"><strong>Phase 4:</strong> KR/HT ziehen. Alle Spieler sammeln sich (außerhalb von verbleibenden Tornados) und töten den Boss so schnell wie möglich. Heil-CDs für <strong class="text-red-400">Faustschlag</strong> und steigenden Schaden durch <strong class="text-red-500">Aufkochender Zorn</strong>.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong class="text-red-400">Durchbohren:</strong> Stapelbare Blutung. Standard: <strong>Wechsel bei 2 Stacks</strong>.</li>
+                    <li><strong>Solo-Tank:</strong> Möglich mit Paladin-Hilfe. Blutung bei 4-5 Stacks mit <em>Hand des Schutzes</em> oder <em>Gottesschild</em> resetten.</li>
+                    <li><strong>P1 (Feuer):</strong> Bossenergie beachten! Bei fast 100% keine Speere mehr abfangen.</li>
+                    <li><strong>P4 (Qon):</strong> Zündet CDs bei <strong class="text-red-400">Faustschlag</strong>.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>P1 (Feuer):</strong> Gruppen bilden zum Soaken von <strong class="text-red-400">Entfesselte Flamme</strong>. Rotation einhalten!</li>
+                    <li><strong>P2 (Sturm):</strong> Verteilt stehen. Spieler im <strong class="text-blue-300">Blitz-Stun</strong> sofort anklicken/freilaufen.</li>
+                    <li><strong>P3 (Eis):</strong> Boss reflektiert Schaden! Heiler bereit machen.</li>
+                    <li><strong>P4 (Burn):</strong> Full Burst auf Qon. Heil-CDs rotieren.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Paladine:</strong><br>
+                    Nutzt <em>Hand des Schutzes</em> auf den Tank (bei 4-5 Stacks), um die Blutung zu entfernen und <strong>Solo-Tanking</strong> zu ermöglichen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Magier / Jäger:</strong><br>
+                    Können <strong class="text-red-300">Entfesselte Flamme</strong> (P1) alleine soaken (Eisblock, Abschreckung), um dem Raid Stacks zu ersparen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Hexenmeister:</strong><br>
+                    Das <em>Dämonische Tor</em> hilft massiv, um bei <strong class="text-gray-300">Windhose</strong> (P2) schnell aus der Mitte zu entkommen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Mönche / Druiden:</strong><br>
+                    Nutzt hohe Mobilität (Rollen, Spurt), um Spieler schnell aus dem <strong class="text-blue-300">Blitz-Stun</strong> (P2) zu befreien.
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -243,54 +274,49 @@
     </h2>
     <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Allgemein (Alle Phasen)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Durchbohren:</strong> Stapelbarer Blutungs-Debuff auf dem Tank. Erzwingt Tankwechsel.</li>
-                    <li><strong>Speerwurf:</strong> Qon wirft seinen Speer auf einen Spieler, was die Phasen-spezifische Linien-Fähigkeit auslöst.</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-red-900/30">
+                <h4 class="text-lg font-bold text-red-400 border-b border-red-900/50 mb-2">P1: Ro'shak (Feuer)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-300">Entfesselte Flamme:</strong> Trifft größte Spielergruppe. Teilt Schaden, gibt Debuff (+Feuer-Dmg). Kostet Boss Energie.</li>
+                    <li><strong class="text-red-500">Geschmolzene Überladung:</strong> Bei 100 Energie (wenn niemand soakt). Tödlicher Raid-AoE.</li>
+                    <li><strong class="text-yellow-300">Brennende Späne:</strong> Feuerlinien. Ausweichen.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-red-400">P1: Ro'shak (Feuer)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Brennende Späne:</strong> Feuerlinien am Boden. (Ausweichen).</li>
-                    <li><strong>Entfesselte Flamme:</strong> Trifft die größte Spielergruppe (min. 3/5). Teilt Schaden, verbraucht Boss-Energie und gibt <strong class="text-yellow-400">Versengt</strong>-Debuff (erhöhter Feuerschaden).</li>
-                    <li><strong>Geschmolzene Überladung:</strong> Boss erreicht 100 Energie (wenn <strong class="text-red-400">Entfesselte Flamme</strong> nicht gesoakt wird). Verursacht massiven Raid-AoE. (Verhindern!).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">P2: Quet'zal (Sturm)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-blue-300">Überspringender Blitz:</strong> Stunt Spieler. Muss durch Kontakt befreit werden. Kettenreaktion möglich (verteilen!).</li>
+                    <li><strong class="text-gray-300">Windhose:</strong> Zieht Raid in die Mitte. Schaden/Heilung -80%. Schnell rauslaufen!</li>
+                    <li><strong class="text-blue-200">Sturmwolke:</strong> Elektrische Linien. 3 Stacks = Stun.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-blue-400">P2: Quet'zal (Sturm)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Sturmwolke:</strong> Blitzlinien am Boden. 3 Stapel = 20s Stun. (Ausweichen).</li>
-                    <li><strong>Überspringender Blitz:</strong> Stunt einen Spieler, absorbiert Heilung und verursacht AoE-Schaden. Muss von einem Mitspieler befreit werden (anklicken/hinlaufen).</li>
-                    <li><strong>Windhose:</strong> Zieht alle Spieler in die Mitte, reduziert Dmg/Heal um 80% und erzeugt Tornados. (Sofort rauslaufen!).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-cyan-900/30">
+                <h4 class="text-lg font-bold text-cyan-300 border-b border-cyan-900/50 mb-2">P3: Dam'ren (Eis)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-cyan-200">Gefrorene Abhärtung:</strong> Reflektiert 10% allen Schadens auf den Angreifer.</li>
+                    <li><strong class="text-gray-400">Totzone:</strong> Boss schirmt 2 Seiten ab. Angriffe machen dort keinen Schaden.</li>
+                    <li><strong class="text-cyan-400">Gefrorenes Blut:</strong> Eislinien. Verlangsamen und machen Schaden.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-blue-300">P3: Dam'ren (Eis)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Gefrorenes Blut:</strong> Eislinien am Boden. Verursachen Schaden und stapelbaren Slow. (Ausweichen).</li>
-                    <li><strong>Totzone:</strong> Boss wird immun gegen Angriffe von vorne und einer Seite. (DDs müssen sich bewegen).</li>
-                    <li><strong>Gefrorene Abhärtung:</strong> 10% Schadensreflektion auf den Boss. (Konstante Heilung nötig).</li>
-                    <li><strong>Einfrieren:</strong> Raidweiter Frost-AoE nach 1-5 Sekunden.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-750 p-4 rounded-lg col-span-1 md:col-span-2">
-                <h4 class="text-lg font-bold text-red-500">P4: Eiserner Qon (Zu Fuß)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Aufkochender Zorn:</strong> Stapelbarer Schadensbuff (+10%) auf dem Boss alle 10s. (Soft-Enrage).</li>
-                    <li><strong>Faustschlag:</strong> 7.5s kanalisierter, schwerer Raid-AoE. (Heil-CDs).</li>
-                    <li><strong>Zyklon entzünden / einfrieren:</strong> Verwandelt verbleibende Tornados aus P2 in Feuer-AoE-Quellen oder Eis-Fallen.</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/30">
+                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-700/50 mb-2">P4: Eiserner Qon</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-400">Aufkochender Zorn:</strong> Boss erhält alle 10s +10% Schaden. Soft-Enrage.</li>
+                    <li><strong class="text-red-500">Faustschlag:</strong> Massiver Raid-AoE alle 20s. Heil-CDs nötig!</li>
+                    <li><strong class="text-yellow-400">Zyklon entzünden/einfrieren:</strong> Nutzt alte Tornados aus P2 für Feuer/Eis-Effekte.</li>
                 </ul>
             </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Phasenübergänge:</strong> Die Qilen fliehen bei 25% HP, anstatt zu sterben.</li>
-                <li><strong>Zusätzliche Adds:</strong> In jeder Phase ist ein zweiter Qilen in der Luft aktiv und nutzt eine seiner Fähigkeiten (P1: Quet'zal mit Tornados/Blitz; P2: Dam'ren mit Stacheln; P3: Ro'shak mit <strong class="text-red-400">Entfesselte Flamme</strong>).</li>
-                <li><strong>Phase 4 (Heroic):</strong> Alle drei Qilen kehren bei 25% HP zurück und müssen getankt und getötet werden (Kill-Prio: Dam'ren > Ro'shak > Quet'zal), bevor Qon selbst angegriffen werden kann.</li>
-            </ul>
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">Heroic: Alle Qilen leben!</h3>
+            <div class="text-sm text-gray-300 space-y-2">
+                <p>Die Reittiere sterben nicht, sondern fliehen bei 25%. In Phase 4 kommen <strong>alle drei Qilen</strong> zurück!</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Kill-Reihenfolge P4:</strong> Dam'ren (Eis) > Ro'shak (Feuer) > Quet'zal (Sturm). Erst dann Qon.</li>
+                    <li><strong>Multitasking:</strong> In jeder Phase greift ein inaktiver Qilen aus der Luft ein (z.B. Wirbelstürme in P1).</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>

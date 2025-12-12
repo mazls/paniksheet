@@ -47,20 +47,53 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Der Kampf gegen Durumu ist ein dreiphasiger Kampf, der sich zyklisch wiederholt. Die Hauptschwierigkeit liegt in der Koordination während der <strong class="text-yellow-400">Lichtspektrum-Phase</strong> (Adds aufdecken) und der <strong class="text-purple-400">Desintegrationsstrahl-Phase</strong> (Laufen im Labyrinth), während konstant hoher Raidschaden geheilt werden muss.
+            Durumu ist ein Präzisionskampf in drei wiederkehrenden Phasen. Der Schlüssel zum Sieg liegt im korrekten Aufdecken von Adds in der <strong class="text-yellow-400">Lichtspektrum-Phase</strong> und dem Überleben des tödlichen <strong class="text-purple-400">Desintegrationsstrahls</strong> im Labyrinth.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Tank-Mechanik (<strong class="text-red-400">Stechender Blick</strong>):</strong> Verursacht hohen Schaden und bringt zwei Debuffs auf: <strong class="text-red-400">Schwere Wunde</strong> (Heilreduktion, stapelbar) und <strong class="text-red-400">Arterienschnitt</strong> (Blutung). Die Blutung wird nur entfernt, wenn der Tank auf 100% HP geheilt wird. Erzwingt einen Tankwechsel.</li>
-            <li><strong>Phase 1: Normalphase:</strong> Der Boss wirkt <strong class="text-gray-400">Willensstärke</strong> (Knockback-Kegel, ausweichen), <strong class="text-purple-400">Verweilender Blick</strong> (Voidzones, am Rand ablegen) und <strong class="text-green-400">Lebensentzug</strong> (Kanal, heilt Boss, muss von anderen Spielern abgefangen werden).</li>
-            <li><strong>Phase 2: Lichtspektrum (Nebel-Phase):</strong> Beginnt nach ca. 30 Sek. Der Raid muss sich auf drei farbige Kegel aufteilen, um unsichtbare Adds aufzudecken. Das Ziel ist, die <strong class="text-red-500">3 Purpurroten Nebel</strong> mit dem roten Kegel zu finden und zu töten. Der <strong class="text-blue-400">Azurblaue Nebel</strong> darf *nicht* aufgedeckt werden.</li>
-            <li><strong>Phase 3: Desintegrationsstrahl (Labyrinth-Phase):</strong> Beginnt ca. 2,5 Min. später. Der Boss wirkt einen tödlichen Strahl und dreht sich. Der gesamte Boden wird zur Voidzone (<strong class="text-purple-400">Schandfleck</strong>), bis auf einen kleinen, mitwandernden "Safe-Spot", in dem der Raid 1 Minute lang überleben muss.</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Positionierung (Normal):</strong> Tanks am Boss (stationär in der Mitte). Raid verteilt sich, um <strong class="text-purple-400">Verweilender Blick</strong>-Pfützen am Rand abzulegen. Weicht den <strong class="text-gray-400">Willensstärke</strong>-Kegeln aus.</p>
-        <p class="mb-2"><strong>Tank-Wechsel:</strong> Nach jedem <strong class="text-red-400">Stechender Blick</strong>. Heiler müssen den Tank mit <strong class="text-red-400">Arterienschnitt</strong> *sofort* vollheilen.</p>
-        <p class="mb-2"><strong>Lebensentzug:</strong> 2-3 Spieler (mit CDs) rotieren und stellen sich zwischen das Auge und das anvisierte Ziel, um den Kanal abzufangen.</p>
-        <p class="mb-2"><strong>Lichtspektrum:</strong> Raid aufteilen. Spieler mit dem <strong class="text-red-400">roten Kegel</strong> läuft die Positionen der 3 roten Adds ab (vorher markieren!). DDs fokussieren die roten Adds. Spieler mit dem <strong class="text-blue-400">blauen Kegel</strong> steht still und deckt *niemals* das blaue Add auf.</p>
-        <p class="mb-2"><strong>Desintegrationsstrahl:</strong> Alle Spieler laufen in die Safe-Zone und folgen dieser 1 Minute lang. Nicht vom Strahl treffen lassen, nicht in die <strong class="text-purple-400">Schandfleck</strong>-Fläche laufen.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>Wechsel bei <strong class="text-red-400">Stechender Blick</strong> (Heil-Debuff + Blutung).</li>
+                    <li><strong>Achtung:</strong> Die Blutung (<strong class="text-red-300">Arterienschnitt</strong>) verschwindet erst, wenn ihr auf 100% HP geheilt werdet!</li>
+                    <li>Boss nicht bewegen (er dreht sich selbst).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Normalphase:</strong> Pfützen (<strong class="text-purple-300">Verweilender Blick</strong>) am Rand ablegen. <strong class="text-green-300">Lebensentzug</strong> abfangen (rotieren!).</li>
+                    <li><strong>Lichtspektrum:</strong> Rote Adds aufdecken & töten. Blaues Add <strong>NIEMALS</strong> aufdecken (Wipe!).</li>
+                    <li><strong>Labyrinth:</strong> Lauft im Safe-Spot mit dem Strahl mit. Nicht in den lila Boden (<strong class="text-purple-400">Schandfleck</strong>) treten.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Hexenmeister:</strong><br>
+                    Ein <em>Dämonisches Tor</em> über das Labyrinth kann im Notfall Leben retten (aber Vorsicht vor dem Strahl!).
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Schurken:</strong><br>
+                    <em>Mantel der Schatten</em> entfernt <strong class="text-purple-300">Dunkler Parasit</strong> (Heroic) ohne Adds zu spawnen!
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Jäger:</strong><br>
+                    <em>Abschreckung</em> kann genutzt werden, um kurzzeitig durch den <strong class="text-purple-400">Schandfleck</strong> zu laufen (Labyrinth-Fehler korrigieren).
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Heiler:</strong><br>
+                    In der <strong>Lichtspektrum-Phase</strong> kann der Heiler mit dem blauen Strahl einfach stehenbleiben und durchheilen, da er sich nicht bewegen muss.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Todesritter / Paladine:</strong><br>
+                    Können Debuffs (<strong class="text-purple-300">Dunkler Parasit</strong>) mit AMS/Bubble negieren.
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -235,39 +268,40 @@
     </h2>
     <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Normalphase</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Stechender Blick:</strong> Tank-Hit, verursacht <strong class="text-red-400">Schwere Wunde</strong> (Heilreduktion) und <strong class="text-red-400">Arterienschnitt</strong> (Blutung). Blutung stoppt nur bei 100% HP.</li>
-                    <li><strong>Willensstärke:</strong> Kegelförmiger Knockback auf einen Spieler. (Ausweichen).</li>
-                    <li><strong>Verweilender Blick:</strong> Schattenblitze auf Spieler, hinterlassen permanente Voidzones. (Am Rand ablegen).</li>
-                    <li><strong>Lebensentzug:</strong> Auge kanalisiert auf einen Spieler, heilt Durumu. Kanal muss von anderen Spielern abgefangen werden.</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-cyan-300 border-b border-blue-900/50 mb-2">P1: Normalphase</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-400">Stechender Blick:</strong> Tank-Hit. Verursacht <strong class="text-red-300">Schwere Wunde</strong> (-Heilung) und <strong class="text-red-300">Arterienschnitt</strong> (Blutung bis Full-HP).</li>
+                    <li><strong class="text-gray-400">Willensstärke:</strong> Kegelförmiger Knockback. Ausweichen!</li>
+                    <li><strong class="text-purple-400">Verweilender Blick:</strong> Spieler legt Voidzone ab. Weit rauslaufen!</li>
+                    <li><strong class="text-green-400">Lebensentzug:</strong> Strahl auf Spieler, heilt Boss. Muss von einem anderen Spieler abgefangen werden (wechseln bei 2-3 Stacks).</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-yellow-300">Phase: Lichtspektrum (Nebel)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Farb-Kegel:</strong> Raid muss sich auf rote, blaue und gelbe Kegel aufteilen, um Raidschaden zu vermeiden.</li>
-                    <li><strong class="text-red-400">Purpurroter Nebel (Rot):</strong> 3 Adds, die vom roten Kegel aufgedeckt werden müssen. Müssen sterben, um die Phase zu beenden. Wenn der Kegel sie verlässt, wipet der Raid.</li>
-                    <li><strong class="text-blue-400">Azurblauer Nebel (Blau):</strong> 1 Add, das vom blauen Kegel aufgedeckt wird. Darf <strong class="text-red-500">NICHT</strong> aufgedeckt werden. Explodiert bei Tod/Verlassen des Kegels und respawnt.</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-yellow-900/30">
+                <h4 class="text-lg font-bold text-yellow-300 border-b border-yellow-900/50 mb-2">P2: Lichtspektrum (Nebel)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-400">Roter Strahl:</strong> Muss 3 <strong class="text-red-400">Purpurrote Nebel</strong> aufdecken. Tötet diese schnell!</li>
+                    <li><strong class="text-blue-400">Blauer Strahl:</strong> Deckt <strong class="text-blue-400">Azurblauen Nebel</strong> auf. <strong>Darf nicht passieren!</strong> (Add respawnt & macht Schaden). Stillstehen!</li>
+                    <li><strong class="text-yellow-400">Gelber Strahl:</strong> Bewegt sich automatisch.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg col-span-1 md:col-span-2">
-                <h4 class="text-lg font-bold text-purple-400">Phase: Desintegrationsstrahl (Labyrinth)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Desintegrationsstrahl:</strong> Tödlicher Strahl, dem der Boss vor sich her kanalisiert, während er sich dreht.</li>
-                    <li><strong>Schandfleck:</strong> Tödliche Voidzone, die den gesamten Boden bedeckt, außer einer kleinen, mitrotierenden Safe-Zone.</li>
-                    <li><strong>Gedankendolche:</strong> Konstanter Raidschaden während dieser Phase.</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-purple-900/30 md:col-span-2">
+                <h4 class="text-lg font-bold text-purple-400 border-b border-purple-900/50 mb-2">P3: Desintegrationsstrahl (Labyrinth)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-500">Desintegrationsstrahl:</strong> Boss dreht sich und feuert einen Todesstrahl. Berührung = Tod.</li>
+                    <li><strong class="text-purple-400">Schandfleck:</strong> Der ganze Boden ist lila (tödlich), bis auf einen kleinen Pfad (Labyrinth), der sich aufdeckt.</li>
+                    <li><strong class="text-gray-300">Strategie:</strong> Folgt dem sicheren Pfad nahe am Boss. Nicht überholen, nicht zurückfallen.</li>
                 </ul>
             </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
             <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Eiswälle:</strong> Vor der Nebel- und Strahl-Phase erscheinen Wände, die den Raum blockieren. Sie müssen schnell per AoE zerstört werden.</li>
-                <li><strong class="text-yellow-400">Goldgelber Nebel (Gelb):</strong> Ein Add, das vom gelben (automatischen) Kegel aufgedeckt wird. Muss ebenfalls getötet werden, wenn es erscheint.</li>
-                <li><strong>Dunkle Parasiten:</strong> Ein DoT, der auf Spieler gewirkt wird. Wenn er dispellt wird, entsteht eine <strong class="text-purple-400">Dunkle Seuche</strong>.</li>
-                <li><strong>Dunkle Seuche:</strong> Spawnt <strong class="text-purple-400">Umherschweifende Augen</strong>. Diese Adds fixieren Spieler und spiegeln *allen* erlittenen Schaden auf ihr Ziel. (Nur mit sehr leichtem Cleave/DoTs töten, **kein** Burst-AoE!).</li>
+                <li><strong class="text-cyan-300">Eiswälle:</strong> Spawnen vor P2 und P3. Blockieren die Sicht/Weg. Müssen sofort weggebombt werden!</li>
+                <li><strong class="text-yellow-400">Goldgelber Nebel:</strong> In P2 gibt es ein gelbes Add. Wenn der gelbe Strahl es trifft, muss es getötet werden (10% HP Verlust = Raid-Schaden).</li>
+                <li><strong class="text-purple-400">Dunkler Parasit:</strong> DoT auf Spieler. Dispel erzeugt <strong class="text-green-400">Dunkle Seuche</strong> -> Spawnt <strong class="text-green-300">Umherschweifendes Auge</strong>.</li>
+                <li><strong>Augen-Adds:</strong> Fixieren Spieler und spiegeln Schaden. <strong>NICHT BURSTEN!</strong> Nur durch passiven Cleave/DoTs töten.</li>
             </ul>
         </div>
     </div>

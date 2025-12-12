@@ -47,21 +47,57 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Der Kampf gegen Tortos ist ein stationärer Bosskampf mit starkem Add-Fokus. Die Kernmechanik des Kampfes ist das Management der <strong class="text-green-400">Wirbelschildkröten</strong>. Diese müssen per Extra-Aktionsbutton auf den Boss getreten werden, um seine tödliche Fähigkeit <strong class="text-red-500">Wütender Steinatem</strong> zu unterbrechen.
+            Tortos ist ein stationärer Bosskampf mit starkem Add-Management. Der Schlüssel zum Sieg ist die Nutzung der <strong class="text-green-400">Wirbelschildkröten</strong>, um den tödlichen <strong class="text-red-500">Wütenden Steinatem</strong> des Bosses zu unterbrechen. Auf Heroisch kommt mit dem <strong class="text-blue-300">Kristallpanzer</strong> eine essenzielle Überlebensmechanik hinzu.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Die Schildkröten-Mechanik:</strong> Regelmäßig spawnen 3 <strong class="text-green-400">Wirbelschildkröten</strong>. Sie können nicht getankt werden und wirbeln durch den Raum. DDs müssen eine Schildkröte auf niedrige Gesundheit bringen, woraufhin sie `Panzerblock` wirkt.</li>
-            <li><strong>Panzer treten (Kick):</strong> Sobald eine Schildkröte blockt, erhält jeder Spieler in ihrer Nähe einen Extra-Aktionsbutton. Ein Kick schleudert den Panzer in Blickrichtung des Spielers.</li>
-            <li><strong>Der Interrupt (<strong class="text-red-500">Wütender Steinatem</strong>):</strong> Dies ist die wichtigste Fähigkeit. Tortos lädt 100 Furor auf und wirkt dann `Wütender Steinatem`, was den Raid tötet. Die einzige Möglichkeit, dies zu unterbrechen, ist ein gezielter <strong class="text-green-400">Panzer-Kick</strong> auf den Boss.</li>
-            <li><strong>Schadens-Buff (<strong class="text-yellow-400">Panzererschütterung</strong>):</strong> Jeder erfolgreiche Kick auf den Boss unterbricht ihn nicht nur, sondern belegt ihn auch mit einem 20-sekündigen Debuff, der seinen erlittenen Schaden um 25% (im Tooltip 50%) erhöht.</li>
-            <li><strong>Adds (<strong class="text-gray-400">Vampirfledermäuse</strong>):</strong> Spawnen regelmäßig und müssen vom Add-Tank eingesammelt werden. Sie heilen sich (`Die Schwachen schröpfen`), wenn ihr Ziel unter 550.000 Leben fällt.</li>
-            <li><strong>Raid-Schaden:</strong> <strong class="text-yellow-400">Steinschlag</strong> (blaue Kreise auf dem Boden, ausweichen!) und <strong class="text-red-400">Bodenstampfer</strong> (massiver Raidschaden, ca. 65% HP, und verstärkter `Steinschlag`).</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Positionierung:</strong> Boss-Tank steht permanent in Melee-Reichweite (sonst bekommt der Boss schneller Furor). Add-Tank sammelt Fledermäuse ein und tankt sie neben dem Boss für Cleave-Schaden. Der Raid steht verteilt, um `Steinschlag` auszuweichen.</p>
-        <p class="mb-2"><strong>DPS-Priorität:</strong> 1. Eine <strong class="text-green-400">Wirbelschildkröte</strong> niedrig schlagen, *bevor* `Wütender Steinatem` kommt. 2. <strong class="text-gray-400">Vampirfledermäuse</strong> (Cleave/AoE). 3. Tortos (idealerweise mit `Panzererschütterung`-Debuff).</p>
-        <p class="mb-2"><strong>Kick-Einteilung:</strong> Zugewiesene Spieler (meist Range/Heiler) sind für den Kick verantwortlich. Sie bringen die Schildkröte in Position (zwischen sich und dem Boss) und treten sie, sobald Tortos `Wütender Steinatem` wirkt.</p>
-        <p class="mb-2"><strong>Heilung:</strong> Tanks bei <strong class="text-red-400">Zuschnappen</strong> (Boss-Tank) und Fledermaus-Schaden (Add-Tank > 550k HP halten) stark heilen. Raid-Heil-CDs für jeden <strong class="text-red-400">Bodenstampfer</strong> einteilen.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Boss-Tank:</strong> Bleib immer in Melee-Reichweite (<strong class="text-red-400">Wallender Zorn</strong>). Nutze CDs für <strong class="text-red-400">Zuschnappen</strong>.</li>
+                    <li><strong>Add-Tank:</strong> Sammle <strong class="text-gray-400">Fledermäuse</strong> am Boss. Halte deine HP zwingend über <strong>350k (HC: 550k)</strong>, sonst heilen sich die Adds!</li>
+                    <li><strong>Position:</strong> Boss niemals drehen! Der Atem muss berechenbar sein.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Schildkröten:</strong> Eine Schildkröte fokussen (<20% HP) und passend zum Atem (100 Energie) in den Boss kicken.</li>
+                    <li><strong>Prio:</strong> Schildkröte (Kick-Bereitschaft) > Fledermäuse (Cleave) > Boss.</li>
+                    <li><strong>Heiler (HC):</strong> Spieler mit <strong class="text-blue-300">Kristallpanzer</strong> müssen "hochgeheilt" werden, um den Schild für den Stampfer aufzuladen.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Schamanen:</strong><br>
+                    Können auf Heroisch ihren <strong class="text-blue-300">Kristallpanzer</strong> mit <em>Windstoß</em> (Kick) oder <em>Reinigen</em> an Kristallen erneuern, ohne DPS/Mana zu verschwenden.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Mönch-Tanks:</strong><br>
+                    Hervorragend als Add-Tank geeignet, da sie die Fledermäuse bei Bedarf sehr gut kiten können.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Krieger / Ret-Palas / DKs:</strong><br>
+                    Nutzt die Fledermäuse für massiven Cleave-Schaden auf den Boss.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Jäger / Magier:</strong><br>
+                    Ideal für das Management der Schildkröten (Kiten & gezielter Burst aus der Ferne).
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Disziplin-Priester:</strong><br>
+                    <em>Geisteshülle</em> ist extrem stark, um den Raid vor dem <strong class="text-red-400">Bodenstampfer</strong> zusätzlich zu schützen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Blut-DK / Prot-Pala:</strong><br>
+                    Sehr stark als Boss-Tanks, da sie <strong class="text-red-400">Zuschnappen</strong> gut mit CDs abfedern können.
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -178,36 +214,35 @@
     </h2>
     <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Tortos (Boss)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Wütender Steinatem:</strong> Tödlicher Raidschaden. Muss durch <strong class="text-green-400">Panzer treten</strong> unterbrochen werden.</li>
-                    <li><strong>Bodenstampfer:</strong> Stunt den Raid (1s) und verursacht Schaden in Höhe von 65% (Heroic: 100%) der max. HP. Verstärkt `Steinschlag`.</li>
-                    <li><strong>Steinschlag:</strong> Blaue Kreise auf dem Boden. Verursacht hohen Schaden bei Einschlag (5m) und moderaten Schaden im Umkreis (20m).</li>
-                    <li><strong>Zuschnappen:</strong> Massiver Tank-Hit (ca. 60% HP) auf das aktuelle Ziel.</li>
-                    <li><strong>Wallender Zorn:</strong> Boss erhält 10 Furor, wenn niemand in Melee-Reichweite ist. (Tank muss dranbleiben).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Tortos (Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-400">Wütender Steinatem:</strong> Cast bei 100 Energie (alle ~45s). Tödlicher Raid-Schaden. Muss zwingend durch einen <strong>Schildkröten-Kick</strong> unterbrochen werden.</li>
+                    <li><strong class="text-yellow-400">Bodenstampfer:</strong> Massive physische Attacke auf alle Spieler (65% HP, HC: 100%). Betäubt für 1s und erhöht die Frequenz von Steinschlag für 9s.</li>
+                    <li><strong class="text-blue-300">Steinschlag:</strong> Blaue Kreise fallen von der Decke. 5m Radius = hoher Schaden, 20m Radius = moderater Schaden. Immer ausweichen!</li>
+                    <li><strong class="text-red-400">Zuschnappen:</strong> Heftiger physischer Angriff auf den Tank. Passiert oft, erfordert aktive Mitigation oder CDs.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-green-300">Adds & Mechaniken</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Wirbelschildkröte:</strong> Wirbelndes Add, nicht tankbar. Verursacht Schaden und Knockback in 5m.</li>
-                    <li><strong>Panzerblock:</strong> Bei niedriger HP wird die Schildkröte immun und kann getreten werden.</li>
-                    <li><strong>Panzer treten:</strong> Extra-Aktionsbutton. Kickt den Panzer in Blickrichtung.</li>
-                    <li><strong>Panzererschütterung:</strong> Debuff auf dem Boss nach einem Kick. Unterbricht und erhöht erlittenen Schaden.</li>
-                    <li><strong>Vampirfledermaus:</strong> Tankbares Add.</li>
-                    <li><strong>Die Schwachen schröpfen:</strong> Fledermäuse heilen sich, wenn ihr Tank-Ziel unter 550.000 HP fällt.</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-green-900/30">
+                <h4 class="text-lg font-bold text-green-400 border-b border-green-900/50 mb-2">Adds & Schildkröten</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong>Wirbelschildkröte:</strong> Spawnen zu dritt. Wirbeln herum (Knockback). Können nicht getankt werden. Bei niedriger HP nutzen sie <strong class="text-green-300">Panzerblock</strong> und werden immun/kickbar.</li>
+                    <li><strong class="text-green-300">Panzer treten:</strong> Extra-Button. Kickt eine blockende Schildkröte in Blickrichtung. Treffer auf Boss = Interrupt + <strong class="text-yellow-400">Panzererschütterung</strong> (+50% Dmg taken).</li>
+                    <li><strong class="text-gray-400">Vampirfledermäuse:</strong> Spawnen in Schwärmen. Greifen den Add-Tank an. Haben <strong class="text-red-400">Die Schwachen schröpfen</strong>: Heilen sich um das 50-fache des verursachten Schadens, wenn das Ziel < 350k (HC: 550k) HP hat.</li>
                 </ul>
             </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Bodenstampfer (Heroic):</strong> Verursacht nun Schaden in Höhe von **100% der maximalen Gesundheit**.</li>
-                <li><strong>Kristallpanzer:</strong> In der Arena stehen Kristalle. Greift ein Spieler einen Kristall an, erhält er einen Schild, der 15% seiner max. HP absorbiert.</li>
-                <li><strong>Schild-Heilung:</strong> Solange dieser Schild aktiv ist, wird **jegliche Heilung** auf den Spieler stattdessen **dem Schild hinzugefügt** (bis max. 75% der max. HP). Der Spieler selbst kann nicht geheilt werden!</li>
-                <li><strong>Strategie:</strong> Jeder Spieler *muss* vor `Bodenstampfer` einen Kristallpanzer aktiv haben. Heiler müssen die Schilde der Spieler "aufladen", indem sie sie heilen. Spieler mit niedriger HP dürfen *keinen* Schild nehmen, da sie sonst nicht mehr geheilt werden können und sterben.</li>
-            </ul>
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">Heroic: Kristallpanzer</h3>
+            <div class="text-sm text-gray-300 space-y-2">
+                <p>Auf Heroisch verursacht <strong class="text-red-400">Bodenstampfer</strong> Schaden in Höhe von 100% der maximalen Gesundheit. Überleben ist nur mit Schilden möglich.</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong class="text-blue-300">Kristallpanzer:</strong> Spieler erhalten einen Schild (15% der max HP), wenn sie leuchtende Kristalle am Raumrand angreifen/unterbrechen.</li>
+                    <li><strong>Schild-Aufladung:</strong> Solange der Schild aktiv ist, wird der Spieler <strong>nicht geheilt</strong>. Stattdessen wird die Heilung auf den Schild addiert (bis zu einem Cap von 75% der max HP).</li>
+                    <li><strong>Strategie:</strong> Holt euch den Schild, wenn ihr vollgeheilt seid. Heiler spammen dann Heilung in die Schilde, um sie vor dem Stampfer aufzuladen.</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>

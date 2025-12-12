@@ -41,24 +41,53 @@
     </div>
 
 <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-<div class="collapsible-content">
-<p class="mb-4">
-            Der Kampf gegen Horridon ist ein langer Add-Kampf, der sich über 5 Phasen erstreckt. In den ersten vier Phasen muss der Raid nacheinander vier Tore schließen, aus denen Trolle eines bestimmten Stammes strömen. Der Boss wird dabei von Tor zu Tor gezogen. Phase 5 ist die Endphase, in der der Boss selbst und ein Kriegsgott besiegt werden müssen.
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Horridon ist ein intensiver Add-Kampf über 5 Phasen. Der Raid zieht den Boss nacheinander vor vier Tore, aus denen Trolle verschiedener Stämme strömen. Das Ziel ist es, die Adds zu kontrollieren, den <strong class="text-green-400">Dinomanten</strong> zu töten, um die <strong class="text-purple-400">Kugel der Kontrolle</strong> zu erhalten und damit das Tor zu schließen.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Tank-Mechanik (<strong class="text-red-400">Dreifachstich</strong>):</strong> Horridon belegt seinen Tank mit einem stapelbaren Debuff, der den erlittenen Schaden durch diese Fähigkeit erhöht. Dies erzwingt einen Tankwechsel, idealerweise nach jeder geschlossenen Tür.</li>
-            <li><strong>Positionierung (<strong class="text-yellow-400">Doppelfeger</strong>):</strong> Der Boss darf <strong class="text-yellow-400">NIEMALS</strong> in den Raid schauen oder mit dem Schwanz zum Raid stehen. Alle Spieler, einschließlich der Tanks, müssen immer an der <strong class="text-yellow-400">Seite</strong> von Horridon stehen.</li>
-            <li><strong>Add-Wellen (4 Tore):</strong> Jedes Tor hat einzigartige Adds mit Fähigkeiten, die gekickt, dispellt oder kontrolliert werden müssen. Die Reihenfolge ist: Farraki (Sandfallen), Gurubashi (Gift), Drakkari (Seuche/Frostkugeln), Amani (Magie/Totems).</li>
-            <li><strong>Tor-Mechanik (<strong class="text-green-400">Zandalari Dinomant</strong>):</strong> Nach ca. 1 Minute an einem Tor erscheint ein Dinomant. Er muss unterbrochen (Saurierheilung) und schnell getötet werden. Er lässt eine <strong class="text-purple-400">Kugel der Kontrolle</strong> fallen. Ein Spieler klickt die Kugel, wodurch Horridon das Tor rammt und es schließt.</li>
-            <li><strong>Schadens-Buff (<strong class="text-green-400">Gesprungener Panzer</strong>):</strong> Jedes Mal, wenn Horridon ein Tor rammt, erleidet er 50% mehr Schaden (stapelbar).</li>
-            <li><strong>Endphase (<strong class="text-red-500">Kriegsgott Jalak</strong>):</strong> Nachdem alle 4 Tore geschlossen sind (oder der Boss 30% HP erreicht), springt Jalak in die Arena. Er muss getankt und getötet werden. Sobald Jalak stirbt, bekommt Horridon einen Enrage-Buff (<strong class="text-red-500">Toben</strong>) und muss schnell besiegt werden.</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Positionierung:</strong> Beginnt am Farraki-Tor (Norden). Zieht den Boss nach jedem Ramm-Stoß im Uhrzeigersinn zum nächsten Tor. Der Raid steht <strong>immer</strong> an Horridons linker oder rechter Flanke.</p>
-        <p class="mb-2"><strong>Add-Kontrolle:</strong> Ein Tank hält Horridon, der andere sammelt die Adds ein. DDs müssen die Add-Prioritäten (siehe Einteilungen) strikt einhalten. Kicks und Dispels sind überlebenswichtig.</p>
-        <p class="mb-2"><strong>Dinomant:</strong> Sobald der Dinomant erscheint, ist er das absolute Top-Ziel. Alle DDs wechseln auf ihn, unterbrechen die Heilung und töten ihn schnell. Ein zugewiesener Spieler (z.B. Tank) klickt die Kugel.</p>
-        <p class="mb-2"><strong>DPS-Timing:</strong> Nutzt die ca. 40 Sekunden zwischen den Toren (während der Boss zum nächsten Tor läuft), um mit dem <strong class="text-green-400">Gesprungener Panzer</strong>-Debuff maximalen Schaden auf Horridon zu machen. Vermeidet es, den Boss unter 30% HP zu bringen, bevor Jalak spawnt.</p>
-        <p class="mb-2"><strong>Endphase:</strong> KR/HT ziehen, wenn <strong class="text-red-500">Kriegsgott Jalak</strong> erscheint. Fokussiert Jalak, bis er tot ist (Raid-Schaden durch <strong class="text-red-400">Bestialisches Gebrüll</strong>). Sobald er stirbt, alle CDs auf Horridon und den Boss töten.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Boss-Tank:</strong> Achtet auf <strong class="text-red-400">Dreifachstich</strong> (Wechsel nötig) und <strong class="text-yellow-400">Doppelfeger</strong> (Front/Back Cone). Boss immer seitlich zum Raid drehen!</li>
+                    <li><strong>Add-Tank:</strong> Sammelt alle Adds ein. Vorsicht beim <strong class="text-purple-300">Amani-Kriegsbär</strong> (Swipe!) und dem <strong class="text-blue-300">Drakkari-Kriegsfürst</strong> (Mortal Strike).</li>
+                    <li><strong>Tor schließen:</strong> Ein Tank (oder zugewiesener Spieler) klickt die Kugel, sobald der Dinomant tot ist.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>Fokus-Priorität: <strong class="text-green-400">Dinomant</strong> (sobald da) > Elite-Adds > Kleine Adds > Boss.</li>
+                    <li><strong>Kicks:</strong> Unterbrecht `Saurierheilung` (Dinomant), `Giftblitzsalve` (Gurubashi) und `Feuerball` (Amani).</li>
+                    <li><strong>Dispels:</strong> Magie (Gift), Krankheit (Seuche), Fluch (Hex). Alles muss runter!</li>
+                    <li><strong>Endphase:</strong> KR/HT für <strong class="text-red-500">Kriegsgott Jalak</strong>. Tötet ihn schnell, bevor der Schaden zu hoch wird.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps (Heroic Geister)</h4>
+            <p class="text-xs text-gray-400 mb-2">Jeder Spieler ist für seinen eigenen Geist verantwortlich (nur er sieht ihn). Makro: <code>/tar Terrorhorngeist</code></p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Jäger / Hexer / Magier:</strong><br>
+                    Nutzt Pets oder Instant-Zauber (Eislanze, Teufelsflamme), um den Geist auf Distanz zu halten. Rückstoß bei jedem Treffer.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Schurken / Krieger / Mönche:</strong><br>
+                    Wurf-Waffen, Shuriken, Chi-Welle oder Spott nutzen, um den Geist wegzuschubsen, falls er zu nah kommt.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Heiler:</strong><br>
+                    Nutzt offensive Spontanzauber (Schock, Pein, Mondfeuer), um den Geist zurückzustoßen, ohne das Heilen zu unterbrechen.
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -204,67 +233,82 @@
     </section>
 <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
+        Fähigkeiten & Add-Wellen
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
+        
+        <div class="mb-4 bg-slate-750 p-4 rounded-lg border border-gold-border-light">
+            <h4 class="text-lg font-bold text-cyan-300">Boss & Dinomant</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300 mt-2">
+                <div>
+                    <strong class="text-white">Horridon:</strong>
+                    <ul class="list-disc list-inside ml-2">
+                        <li><strong>Dreifachstich:</strong> Tank-Debuff (Spott nötig).</li>
+                        <li><strong>Doppelfeger:</strong> Frontal & Rückseite (15m). Tödlich!</li>
+                        <li><strong>Sturmangriff:</strong> Wirbelt zu einem Spieler (weglaufen).</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong class="text-white">Zandalari Dinomant:</strong>
+                    <ul class="list-disc list-inside ml-2">
+                        <li>Spawnt nach ca. 1 Minute pro Tor.</li>
+                        <li><strong>Saurierheilung:</strong> Heilt Horridon (Kickpflicht!).</li>
+                        <li>Dino-Form: Bei 50% HP. Teilt mehr Schaden aus.</li>
+                        <li>Drop: <strong>Kugel der Kontrolle</strong> (zum Schließen).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Horridon & Steuerung</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Dreifachstich:</strong> Tank-Debuff, erzwingt Spott.</li>
-                    <li><strong>Doppelfeger:</strong> Kegelförmiger Angriff nach vorn *und* hinten. Immer seitlich stehen!</li>
-                    <li><strong>Sturmangriff:</strong> Sturmt einen Spieler an und wirkt `Doppelfeger`.</li>
-                    <li><strong>Zandalari Dinomant:</strong> Add, das `Saurierheilung` (Kick!) wirkt. Muss sterben, um die <strong class="text-purple-400">Kugel der Kontrolle</strong> zu erhalten.</li>
-                    <li><strong>Kugel der Kontrolle:</strong> Klick-Item, um Horridon in ein Tor zu steuern.</li>
-                    <li><strong>Gesprungener Panzer:</strong> Boss erleidet 50% mehr Schaden pro Tor (stapelbar).</li>
+            <div class="bg-slate-750 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-yellow-400 font-bold border-b border-gray-600 mb-1">1. Farraki (Sand/Stein)</h4>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                    <li><strong>Steinstarrer:</strong> Wirkt `Steinblick` (10s Stun). Kicken oder Dispel (Magie).</li>
+                    <li><strong>Ödniswandler:</strong> Setzt `Gleißendes Sonnenlicht` (DoT, Dispel) und `Sandfalle` (Voidzone).</li>
+                    <li><span class="text-gold">Strategie:</span> Stuns kicken, aus Sandfallen raus. Einfachste Phase.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-red-300">Endphase: Kriegsgott Jalak</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Kriegsgott Jalak:</strong> Spawnt, wenn alle Tore zu sind oder Boss < 30% HP.</li>
-                    <li><strong>Bestialisches Gebrüll:</strong> Raidweiter Schaden, der sich selbst stapelbar bufft. Die DPS-Renn-Mechanik der Endphase.</li>
-                    <li><strong>Toben:</strong> Sobald Jalak stirbt, dreht Horridon durch (+100% Schaden, +50% Tempo).</li>
+
+            <div class="bg-slate-750 p-3 rounded border border-green-600/30">
+                <h4 class="text-green-400 font-bold border-b border-gray-600 mb-1">2. Gurubashi (Gift)</h4>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                    <li><strong>Giftpriester:</strong> `Giftblitzsalve` (Raid-DoT). Kicken! Spawnt `Giftiger Ausstoß`.</li>
+                    <li><strong>Giftiger Ausstoß:</strong> Kleines Add, macht auch Giftblitze und hinterlässt Pfützen.</li>
+                    <li><span class="text-gold">Strategie:</span> Kicks sind essenziell. Hoher Raidschaden. Dispel auf CD.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-yellow-300">Tor 1: Farraki (Sand)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Steinstarrer:</strong> Wirkt `Steinblick` (10s Stun, unterbrechbar).</li>
-                    <li><strong>Ödniswandler:</strong> Wirkt `Gleißendes Sonnenlicht` (Magie-DoT, dispel!) und `Sandfalle` (wachsende Voidzone).</li>
+
+            <div class="bg-slate-750 p-3 rounded border border-blue-600/30">
+                <h4 class="text-blue-400 font-bold border-b border-gray-600 mb-1">3. Drakkari (Frost/Untot)</h4>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                    <li><strong>Kriegsfürst:</strong> `Tödlicher Stoß` auf Tank (Heal-Reduce). Heiler aufpassen!</li>
+                    <li><strong>Champion/Krieger:</strong> Verteilen `Tödliche Seuche` (Krankheit, Dispel!).</li>
+                    <li><strong>Gefrorene Kugel:</strong> Verfolgt Spieler, macht Schaden/Slow. Kiten!</li>
+                    <li><span class="text-gold">Strategie:</span> Adds nicht im Raid tanken (Kugeln). Krankheiten dispellen.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-green-300">Tor 2: Gurubashi (Gift)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Giftpriester:</strong> Wirkt `Giftblitzsalve` (Raid-DoT, stapelbar, unterbrechen!) und beschwört `Giftiger Ausstoß`.</li>
-                    <li><strong>Giftiger Ausstoß:</strong> Add, das ebenfalls `Giftblitzsalve` wirkt und eine `Lebende Giftlache` (wandernde Pfütze) hinterlässt.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-blue-300">Tor 3: Drakkari (Untot/Frost)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Auferstandene Adds:</strong> Greifen zufällige Ziele an, verteilen `Tödliche Seuche` (Krankheit, dispel!).</li>
-                    <li><strong>Gefrorener Kriegsfürst:</strong> Wirkt `Tödlicher Stoß` (Heal-Reduce) auf den Tank und beschwört `Gefrorene Kugeln` (Adds, die slowen/Schaden).</li>
-                </ul>
-            </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-purple-300">Tor 4: Amani (Magie/Bestien)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Flammenwirker:</strong> Wirkt `Feuerball` (unterbrechbar).</li>
-                    <li><strong>Kriegsbär:</strong> Reittier, macht `Prankenhieb` (Frontal).</li>
-                    <li><strong>Bestienschamane:</strong> Wird frei, wenn Bär stirbt. Wirkt `Kettenblitzschlag` (spread 5m), `Verhexung der Konfusion` (Fluch, dispel!) und `Totem der Blitznova` (Totem zerstören!).</li>
+
+            <div class="bg-slate-750 p-3 rounded border border-purple-600/30">
+                <h4 class="text-purple-400 font-bold border-b border-gray-600 mb-1">4. Amani (Feuer/Bär)</h4>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                    <li><strong>Kriegsbär:</strong> `Prankenhieb` (Frontal). Wegdrehen! Spawnt Schamane beim Tod.</li>
+                    <li><strong>Bestienschamane:</strong> `Kettenblitz` (verteilen!), `Blitznova-Totem` (sofort töten!), `Verhexung` (Fluch, Dispel!).</li>
+                    <li><strong>Flammenwirker:</strong> `Feuerball` (Kicken).</li>
+                    <li><span class="text-gold">Strategie:</span> Totems Prio 1. Bären weg vom Raid. Flüche dispellen.</li>
                 </ul>
             </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
+
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">P5: Kriegsgott Jalak & Heroic</h3>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Terrorgebrüll:</strong> Neuer Boss-Zauber (ca. alle 60s). Verursacht Raidschaden und bufft alle lebenden Adds (+50% Angriffstempo).</li>
-                <li><strong>Terrorhorngeist:</strong> Wird durch `Terrorgebrüll` beschworen. Fixiert einen Spieler (nur dieser Spieler kann ihn sehen/angreifen).</li>
-                <li><strong>Schwache Bindung:</strong> Der Geist wird bei *jedem* Treffer zurückgestoßen. Er darf den Spieler nie erreichen (One-Shot).</li>
-                <li><strong>Strategie:</strong> Jeder Spieler (erst Range/Heiler, dann Melees) muss sich um seinen eigenen Geist kümmern und ihn konstant mit Instants oder schnellen Zaubern zurückstoßen, während er die normalen Bossmechaniken spielt. Ein Makro (`/tar Terrorhorngeist`) ist essenziell.</li>
+                <li><strong>Kriegsgott Jalak:</strong> Spawnt nach dem 4. Tor (oder 30% Boss HP). Wirkt `Bestialisches Gebrüll` (Raid-Schaden, stapelbar +10%). Muss sofort getötet werden!</li>
+                <li><strong>Toben (Soft-Enrage):</strong> Wenn Jalak stirbt, erhält Horridon +100% Schaden. Jetzt CDs zünden und Boss töten.</li>
+                <li><strong>Heroic - Terrorgebrüll:</strong> Alle 60s. Verursacht Schaden und ruft für JEDEN Spieler einen <strong class="text-pink-400">Terrorhorngeist</strong>.
+                    <br><span class="text-xs text-gray-400">Konter:</span> Geist bewegt sich langsam auf den Spieler zu. Jeder Treffer stößt ihn zurück. Darf den Spieler nicht erreichen (Tod).
+                </li>
             </ul>
         </div>
     </div>

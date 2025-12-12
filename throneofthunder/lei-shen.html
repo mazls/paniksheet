@@ -74,22 +74,56 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Der Kampf gegen Lei Shen ist ein komplexer 3-Phasen-Kampf mit zwei Zwischenphasen. Die Kernmechanik sind die vier <strong class="text-yellow-400">Elektrischen Leitungen</strong> (Norden, Osten, Süden, Westen) an den Ecken der Plattform. Je nachdem, bei welcher Leitung der Boss getankt wird, erhält er eine neue Fähigkeit.
+            Der Kampf gegen Lei Shen ist ein komplexer 3-Phasen-Kampf mit zwei Zwischenphasen (Transitions). Die Kernmechanik sind die vier <strong class="text-yellow-400">Leitungen</strong> an den Ecken, die dem Boss Fähigkeiten verleihen und Energie sammeln. Ziel ist es, die gefährlichsten Leitungen kontrolliert zu überladen (zu zerstören), um die Endphase zu vereinfachen.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Leitungs-Mechanik:</strong> Der Boss muss immer bei einer Leitung getankt werden, sonst wirkt er <strong class="text-red-400">Entladene Energie</strong> (Raid-Wipe). Je länger er bei einer Leitung steht, desto stärker wird diese (Stufenaufstieg). Ziel ist es, die Leitungen kontrolliert aufzuladen.</li>
-            <li><strong>Phase 1 (100% - 65%):</strong> Boss nutzt <strong class="text-red-400">Enthaupten</strong> (Tank-Hit, Tank muss weglaufen, Spott) und <strong class="text-red-400">Donneraxt</strong> (massiver AoE, Raid muss weglaufen).</li>
-            <li><strong>Transition 1 (45s):</strong> Boss ist immun. Alle 4 Leitungen sind gleichzeitig aktiv. Der Raid muss sich aufteilen, um alle 4 Mechaniken zu bewältigen. Am Ende wird die Leitung mit der höchsten Energie zerstört.</li>
-            <li><strong>Phase 2 (65% - 30%):</strong> Der Quadrant der zerstörten Leitung ist nun tödlich (Voidzone). Boss nutzt <strong class="text-red-400">Fusionsschnitt</strong> (Tank-Wechsel), <strong class="text-yellow-400">Kugelblitz</strong> (Adds) und <strong class="text-yellow-400">Blitzpeitsche</strong> (Linien auf dem Boden).</li>
-            <li><strong>Transition 2 (45s):</strong> Boss ist immun. Die verbleibenden 3 Leitungen sind aktiv. Die Leitung mit der höchsten Energie wird am Ende zerstört.</li>
-            <li><strong>Phase 3 (30% - 0%):</strong> Zwei Quadranten sind tödlich. Boss nutzt <strong class="text-red-400">Überwältigende Kraft</strong> (Tank-Wechsel), <strong class="text-gray-400">Tosende Windböen</strong> (Raid-Pushback) und behält Fähigkeiten aus P1/P2. Dies ist ein Burn-Down.</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Phase 1:</strong> Zieht den Boss von einer Leitung zur nächsten (z.B. im Uhrzeigersinn). Ziel ist, die "nervigste" Leitung (z.B. <strong class="text-purple-400">Diffusionskette/Ost</strong>) am höchsten aufzuladen, damit sie in T1 zerstört wird. Tanks spotten bei <strong class="text-red-400">Enthaupten</strong> (weglaufen!), Raid läuft bei <strong class="text-red-400">Donneraxt</strong> weg.</p>
-        <p class="mb-2"><strong>Transition 1:</strong> Raid auf 4 Ecken aufteilen. Jede Gruppe spielt "ihre" Mechanik: <strong class="text-red-400">Norden</strong> (Soaken), <strong class="text-purple-400">Osten</strong> (Verteilen, Adds töten), <strong class="text-green-400">Süden</strong> (Auf dem Spieler stacken), <strong class="text-yellow-400">Westen</strong> (Bolzen fangen).</p>
-        <p class="mb-2"><strong>Phase 2:</strong> Zieht den Boss zu den verbleibenden Leitungen. Ziel ist, die Leitung *neben* der bereits zerstörten am höchsten zu laden, um eine "sichere Hälfte" für P3 zu schaffen. <strong class="text-yellow-400">Kugelblitze</strong> (Adds) sofort töten. <strong class="text-yellow-400">Blitzpeitsche</strong> ausweichen.</p>
-        <p class="mb-2"><strong>Transition 2:</strong> Raid auf 3 Ecken aufteilen. Mechaniken wie in T1 spielen.</p>
-        <p class="mb-2"><strong>Phase 3:</strong> KR/HT ziehen. Alle Spieler versammeln sich in der sicheren Hälfte. Boss burnen. Auf <strong class="text-gray-400">Windböen</strong> (Pushback) achten. <strong class="text-yellow-400">Kugelblitze</strong> und <strong class="text-red-400">Donneraxt</strong> weiterhin ausweichen.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>P1:</strong> Spott bei <strong class="text-red-400">Enthaupten</strong> und sofort weglaufen (Dmg-Falloff).</li>
+                    <li><strong>P2:</strong> Spott bei <strong class="text-red-400">Fusionsschnitt</strong> (Knockback!). Nicht an der Kante tanken.</li>
+                    <li><strong>P3:</strong> Wechsel bei <strong class="text-red-400">Überwältigende Kraft</strong> (ca. 10-12 Stacks).</li>
+                    <li>Boss immer nah an einer Leitung tanken (sonst <strong class="text-red-500">Entladene Energie</strong> Wipe).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Transitions:</strong> Raid teilt sich auf Ecken auf. Jede Gruppe spielt ihre Mechanik (Soak, Spread, Stack).</li>
+                    <li><strong>Nord (Static Shock):</strong> Stacken! (Heil-CDs).</li>
+                    <li><strong>Ost (Diffusion):</strong> Verteilen! Adds töten.</li>
+                    <li><strong>Süd (Overcharge):</strong> Im Ring stacken (oder weit weg).</li>
+                    <li><strong>West (Bouncing Bolt):</strong> Alle blauen Wirbel soaken.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Hexenmeister:</strong><br>
+                    Ein <em>Dämonisches Tor</em> zwischen zwei Plattformen hilft in den Transitions enorm bei der Positionierung (besonders bei <strong class="text-gray-300">Helm des Befehls</strong>).
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Magier / Jäger / Paladine:</strong><br>
+                    Können <strong class="text-red-300">Elektroschock</strong> (Nord) mit Immunitäten "solo-soaken", um dem Raid massiven Schaden zu ersparen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Todesritter (Grip):</strong><br>
+                    Zieht die Adds von <strong class="text-purple-300">Diffusionskette</strong> (Ost) oder <strong class="text-yellow-300">Sprungblitz</strong> (West) zusammen zum Cleaven.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Mönche / Druiden:</strong><br>
+                    <em>Ring des Friedens</em> oder <em>Ursols Vortex</em> kontrollieren die kleinen Adds in den Zwischenphasen perfekt.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Heiler (Diszi/Pala):</strong><br>
+                    Absorptions-Effekte sind extrem stark gegen <strong class="text-red-400">Elektroschock</strong>, da sie den Initialschaden abfedern.
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -384,46 +418,44 @@
         <div class="mb-4 bg-slate-750 p-4 rounded-lg border-l-4 border-yellow-400">
             <h4 class="text-lg font-bold text-yellow-400">Die 4 Leitungen (Fähigkeiten)</h4>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Nördliche Leitung: Elektroschock</strong><br>Debuff auf Spieler, explodiert nach 8s. Schaden muss geteilt werden. (Zusammenlaufen & Soaken).</li>
-                <li><strong>Östliche Leitung: Diffusionskette</strong><br>Kettenblitz. Springt auf Spieler (10m). Jeder Treffer spawnt ein Add (<strong class="text-purple-400">Diffusionsblitz</strong>). (10m verteilt stehen, Adds töten).</li>
-                <li><strong>Südliche Leitung: Überladung</strong><br>Debuff auf Spieler, wurzelt fest. Nach 6s explodiert ein Ring. *Nur* die Zone direkt am Spieler ist sicher. (Alle stacken *auf* dem Spieler).</li>
-                <li><strong>Westliche Leitung: Sprungblitz</strong><br>Blitze schlagen auf dem Boden ein (6m AoE). Schaden wird geteilt. Wenn kein Spieler getroffen wird, spawnt ein Add (<strong class="text-yellow-400">Ungezügelte Macht</strong>). (Bolzen soaken).</li>
+                <li><strong>Nord (Elektroschock):</strong> Spieler bekommt Debuff. Bei Ablauf massiver Schaden, geteilt durch alle Spieler im Umkreis. (Stacken!).</li>
+                <li><strong>Ost (Diffusionskette):</strong> Kettenblitz auf Spieler. Je mehr Treffer, desto mehr Adds spawnen. (Verteilen!).</li>
+                <li><strong>Süd (Überladung):</strong> Spieler wird gewurzelt, Ring breitet sich aus. (Im Zentrum beim Spieler stacken).</li>
+                <li><strong>West (Sprungblitz):</strong> Blaue Wirbel am Boden. Jeder muss gesoakt werden, sonst spawnt ein Add.</li>
             </ul>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Phase 1 (100% - 65%)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Enthaupten:</strong> Massiver Tank-Hit. Schaden skaliert mit Entfernung. (Spott, Tank läuft sofort weg). Hinterlässt +100% Debuff.</li>
-                    <li><strong>Donneraxt:</strong> Wirft Axt auf einen Spieler. Massiver AoE-Schaden am Einschlagspunkt, skaliert mit Entfernung. (Alle weglaufen).</li>
-                    <li><strong>Grollender Donner:</strong> Permanente Voidzones. (Am Rand ablegen).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-cyan-900/30">
+                <h4 class="text-lg font-bold text-cyan-300 border-b border-cyan-900/50 mb-2">P1 (100% - 65%)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-300">Enthaupten:</strong> Tank-Nuke (Falloff). Weglaufen!</li>
+                    <li><strong class="text-yellow-300">Donneraxt:</strong> Axtwurf auf Spieler. AoE (Falloff). Weglaufen!</li>
+                    <li><strong class="text-gray-300">Grollender Donner:</strong> Voidzones. Nicht drinstehen.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Phase 2 (65% - 30%)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Fusionsschnitt:</strong> Tank-Hit, verursacht Knockback und +100% Debuff. (Tankwechsel, nicht am Rand stehen).</li>
-                    <li><strong>Kugelblitz beschwören:</strong> Spawnt <strong class="text-yellow-400">Kugelblitz</strong>-Adds, die Spieler jagen. (Adds töten).</li>
-                    <li><strong>Blitzpeitsche:</strong> Linien-AoE auf dem Boden. (Ausweichen).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-300 border-b border-blue-900/50 mb-2">P2 (65% - 30%)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-300">Fusionsschnitt:</strong> Tank-Knockback + Debuff. Wechseln!</li>
+                    <li><strong class="text-purple-300">Kugelblitz:</strong> Adds spawnen bei Spielern. Töten!</li>
+                    <li><strong class="text-blue-300">Blitzpeitsche:</strong> Blitzlinien am Boden. Ausweichen (oder springen).</li>
                 </ul>
             </div>
-             <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Phase 3 (30% - 0%)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Überwältigende Kraft:</strong> Stapelbarer Debuff auf Tank, erhöht Nahkampfschaden. (Tankwechsel bei ca. 10 Stacks).</li>
-                    <li><strong>Tosende Windböen:</strong> Konstanter Pushback-Effekt + stapelbarer Raid-DoT. (Gegenlaufen, Heil-CDs).</li>
-                    <li>Behält <strong class="text-red-400">Donneraxt</strong>, <strong class="text-yellow-400">Kugelblitz</strong> und <strong class="text-yellow-400">Blitzpeitsche</strong>.</li>
+             <div class="bg-slate-750 p-4 rounded-lg border border-purple-900/30">
+                <h4 class="text-lg font-bold text-purple-300 border-b border-purple-900/50 mb-2">P3 (30% - 0%)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-300">Überwältigende Kraft:</strong> Tank-Debuff (Dmg+). Wechseln.</li>
+                    <li><strong class="text-gray-300">Tosende Windböen:</strong> Pushback + Raid-DoT. Gegenlaufen & Heilen.</li>
+                    <li>Boss nutzt weiter <strong class="text-yellow-300">Donneraxt</strong>, <strong class="text-purple-300">Kugelblitz</strong> & <strong class="text-blue-300">Blitzpeitsche</strong>.</li>
                 </ul>
             </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
             <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Netzwerküberlastung (Heroic):</strong> Die Leitung wird *nicht* zerstört. Stattdessen wird ihre Fähigkeit für den Rest des Kampfes *permanent* aktiv.</li>
-                <li><strong>Helm des Befehls:</strong> In Transitionsphasen werden Spieler von der Plattform geschoben. (Gegenlaufen, Grips bereithalten).</li>
-                <li><strong>Diffusionsblitz (Heroic):</strong> Das Add fixiert nun den Spieler, durch den es entstanden ist.</li>
-                <li><strong>Kugelblitz (Heroic):</strong> Verursacht nun Schaden in 3m Umkreis um das Ziel, nicht nur auf das Ziel selbst. (Verteilt stehen).</li>
-                <li><strong>Strategie:</strong> Der Raid muss gezielt wählen, welche 2 Fähigkeiten (P1: <strong class="text-yellow-400">Sprungblitz</strong>, P2: <strong class="text-red-400">Elektroschock</strong>) er permanent aktiv haben möchte.</li>
+                <li><strong class="text-red-400">Helm des Befehls:</strong> In Transitions werden Spieler von der Plattform geschoben (Pushback). <strong>Gegenlaufen oder Speed-Buffs nutzen!</strong></li>
+                <li><strong>Permanente Leitungen:</strong> "Zerstörte" Leitungen sind nicht weg, sondern ihre Fähigkeit wird permanent (aber schwächer) aktiv.</li>
+                <li><strong>Strategie:</strong> Wählt klug, welche Fähigkeiten ihr im Endkampf haben wollt (meistens Sprungblitz & Elektroschock), indem ihr diese Leitungen überladet.</li>
             </ul>
         </div>
     </div>

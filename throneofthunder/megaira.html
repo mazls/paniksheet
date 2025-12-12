@@ -52,28 +52,55 @@
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
-    <p class="mb-4">
-        Megaera ist ein Hydra-Boss, bei dem wir nie den Körper selbst angreifen, sondern nur die Köpfe. Der Kampf besteht darin, insgesamt 7 Köpfe zu töten, um die Gesundheit des Bosses auf 0 zu bringen. Es gibt drei (im Heroic-Modus vier) verschiedene Kopftypen: <strong class="text-red-400">Feuer</strong>, <strong class="text-blue-400">Frost</strong> und <strong class="text-green-400">Gift</strong>.
-    </p>
-    <ul class="list-disc list-inside space-y-2 text-gray-300">
-        <li><strong>Zwei Zonen:</strong> Immer zwei Köpfe sind aktiv tankbar. Die restlichen Köpfe greifen aus dem <strong class="text-gray-400">Verbergenden Nebel</strong> (hinten) an.</li>
-        <li><strong>Kopf töten:</strong> Stirbt ein Kopf, beginnen beide <strong class="text-red-400">Toben</strong> (siehe unten). Danach taucht der überlebende Kopf (voll geheilt) mit einem neuen, zufälligen Kopf wieder auf. Im Nebel wachsen zwei Köpfe des getöteten Typs nach.</li>
-        <li><strong>Toben (Raid-Schaden):</strong> Unmittelbar nach dem Tod eines Kopfes wirken die aktiven Köpfe 20 Sekunden lang hohen Raid-Schaden (<strong class="text-red-400">Toben</strong>). Sie müssen dabei nicht getankt werden (greifen nicht im Nahkampf an), können aber weiterhin Schaden erleiden.</li>
-        <li><strong>Tank-Mechanik (Atem):</strong> Köpfe müssen getrennt und vom Raid weggedreht werden. Der Atem-Debuff erzwingt einen Tank-Spott.</li>
-        <li><strong>Nebel-Mechaniken:</strong> Köpfe im Nebel werden zahlreicher und stärker:
-            <ul class="list-disc list-inside ml-6 mt-1">
-                <li><strong class="text-red-400">Feuer (Glut):</strong> DoT auf Spieler. Beim Dispellen entsteht eine Feuerpfütze.</li>
-                <li><strong class="text-blue-400">Frost (Eisige Sturzflut):</strong> Strahl verfolgt Spieler und hinterlässt Eisflächen.</li>
-                <li><strong class="text-green-400">Gift (Saurer Regen):</strong> Kugel-Einschlag. Schaden wird durch Weglaufen verringert.</li>
-            </ul>
-        </li>
-        <li><strong>Soft-Enrage:</strong> Getötete Köpfe buffen permanent den Schaden dieses Typs (<strong class="text-yellow-400">Elementarblut</strong>). Der verbleibende aktive Kopf erhält +20% Tempo (<strong class="text-yellow-400">Hydrenraserei</strong>), was abwechselndes Töten erzwingt.</li>
-    </ul>
-    <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-    <p class="mb-2"><strong>Positionierung:</strong> Der gesamte Raid (DDs und Heiler) sammelt sich auf einer Seite. Beide Tanks ziehen die Köpfe ebenfalls dorthin und positionieren sie so, dass ihre Atem-Angriffe vom Raid weggehen. Beim <strong class="text-red-400">Toben</strong> bleibt der Raid für Heil-CDs versammelt.</p>
-    <p class="mb-2"><strong>Tank-Wechsel:</strong> Tanks spotten die Köpfe voneinander ab, wenn ihre Debuffs (z.B. <strong class="text-blue-400">Arktischer Frost</strong> bei 2-3 Stapeln) zu hoch werden.</p>
-    <p class="mb-2"><strong>DPS-Fokus:</strong> Konzentriert den Schaden auf einen Kopf (z.B. Frost > Feuer > Gift). Nicht wild wechseln. Tötet einen Kopf, überlebt das <strong class="text-red-400">Toben</strong>.</p>
-</div>
+        <p class="mb-4">
+            Megaera ist ein Kampf gegen 7 Köpfe einer Hydra. Man bekämpft nie den Körper. Es sind immer zwei Köpfe vorne auf der Plattform aktiv, während die anderen aus dem Nebel angreifen. Wenn ein Kopf stirbt, erscheinen zwei neue desselben Typs im Nebel (wodurch die Nebel-Fähigkeiten stärker werden) und ein neuer Kopf taucht vorne auf.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>Köpfe immer <strong>vom Raid wegdrehen</strong> (Atem).</li>
+                    <li><strong>Wechsel:</strong> Nach dem Tod eines Kopfes oder bei zu hohen Debuffs (z.B. 2-3 Stacks <strong class="text-blue-300">Arktischer Frost</strong>).</li>
+                    <li><strong>Heroic:</strong> <strong class="text-purple-300">Netherwyrm</strong>-Adds vom Arkan-Kopf sofort einsammeln!</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Positioning:</strong> Sammelt euch in der Mitte/Hinten. Lauft gemeinsam für <strong class="text-green-300">Saurer Regen</strong> weg.</li>
+                    <li><strong>Toben:</strong> Nach jedem Kopf-Kill folgt 20s massiver Raidschaden. <strong>Stacken & Heil-CDs!</strong></li>
+                    <li><strong>Nebel-Mechaniken:</strong> Feuer (Dispel/Pfütze), Eis (Strahl kiten), Gift (Impact ausweichen).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Hexenmeister:</strong><br>
+                    Ein <em>Dämonisches Tor</em> ist Gold wert, um den <strong class="text-blue-300">Eisstrahl</strong> sicher wegzukiten (weglaufen -> porten).
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Schurken / Jäger:</strong><br>
+                    Können <em>Schurkenhandel</em> / <em>Irreführung</em> nutzen, um die <strong class="text-purple-300">Netherwyrms</strong> (Heroic) sofort zum Tank zu schicken.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Paladine / Magier:</strong><br>
+                    Können <strong class="text-red-300">Glut</strong> (Feuer-DoT) mit Immunitäten entfernen, ohne eine Pfütze zu hinterlassen (oder an einem sicheren Ort).
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Todesritter (Tank):</strong><br>
+                    <em>Antimagische Hülle</em> kann verhindern, dass der <strong class="text-blue-300">Arktischer Frost</strong>-Debuff (Stun) appliziert wird.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Mönche / Druiden:</strong><br>
+                    Nutzt <em>Ring des Friedens</em> oder <em>Ursols Vortex</em> um die <strong class="text-purple-300">Netherwyrms</strong> zu kontrollieren und Casts zu verhindern.
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
@@ -231,49 +258,47 @@
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
-        <div class="mb-4 bg-slate-750 p-4 rounded-lg border-l-4 border-gray-400">
+        <div class="mb-4 bg-slate-750 p-4 rounded-lg border border-gold-border-light">
             <h4 class="text-lg font-bold text-gray-300">Allgemeine Mechaniken</h4>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Toben:</strong> 20s raidweiter AoE nach jedem Kopf-Kill. Der Schaden steigt, je mehr Köpfe dieses Typs bereits im Nebel sind.</li>
-                <li><strong>Hydrenraserei:</strong> Verbleibender Kopf auf der Plattform greift 20% schneller an (stapelbar). Zwingt zum abwechselnden Töten.</li>
-                <li><strong>Elementarblut:</strong> Permanent +20% Schaden für diesen Kopftyp (Nebel + Plattform) für jeden getöteten Kopf dieses Typs.</li>
-                <li><strong>Megaeras Zorn:</strong> Köpfe wirken dies, wenn niemand in Melee-Reichweite ist. Führt zum Wipe.</li>
+                <li><strong class="text-red-400">Toben:</strong> Wenn ein Kopf stirbt, verursachen die verbleibenden Köpfe 20s lang massiven Elementarschaden am Raid. (Heil-Check!).</li>
+                <li><strong class="text-yellow-400">Hydrenraserei:</strong> Der überlebende Kopf erhält +20% Tempo (stapelbar). Zwingt dazu, die Köpfe abwechselnd zu töten.</li>
+                <li><strong class="text-yellow-400">Elementarblut:</strong> Jeder getötete Kopf erhöht permanent den Schaden aller Köpfe <em>desselben Typs</em> (auch im Nebel) um 20%.</li>
             </ul>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-red-400">Feuriger Kopf</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Atem (Plattform): Fleisch entzünden</strong><br>Frontaler Kegel. Verursacht Feuerschaden und einen stapelbaren Feuer-DoT.</li>
-                    <li><strong>Nebel-Fähigkeit: Glut</strong><br>DoT auf zufälligen Spieler. Beim Dispellen (oder im Heroic: permanent) entsteht eine Feuerpfütze. Entfernt <strong class="text-blue-400">Vereisten Boden</strong>.</li>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-3 rounded border border-red-600/30">
+                <h4 class="text-red-400 font-bold border-b border-red-900/50 mb-1">Feuriger Kopf</h4>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                    <li><strong>Plattform:</strong> <strong class="text-red-300">Fleisch entzünden</strong> (Feuer-DoT Atem).</li>
+                    <li><strong>Nebel:</strong> <strong class="text-red-300">Glut</strong> (DoT auf Spieler). Dispel = Feuerpfütze.</li>
+                    <li><span class="text-gold">Heroic:</span> DoT hinterlässt alle 3s Pfützen. Schnell rauslaufen!</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-blue-400">Eisiger Kopf</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Atem (Plattform): Arktischer Frost</strong><br>Frontaler Kegel. Verursacht Frostschaden. Bei 4 Stapeln wird der Tank 20s betäubt.</li>
-                    <li><strong>Nebel-Fähigkeit: Eisige Sturzflut</strong><br>Eisstrahl verfolgt einen Spieler (8s) und hinterlässt <strong class="text-blue-400">Vereisten Boden</strong> (Schaden + Slow). Entfernt Feuerpfützen.</li>
+            <div class="bg-slate-750 p-3 rounded border border-blue-600/30">
+                <h4 class="text-blue-400 font-bold border-b border-blue-900/50 mb-1">Eisiger Kopf</h4>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                    <li><strong>Plattform:</strong> <strong class="text-blue-300">Arktischer Frost</strong> (Atem). 5 Stacks = Stun (20s).</li>
+                    <li><strong>Nebel:</strong> <strong class="text-blue-300">Eisige Sturzflut</strong> (Laser). Verfolgt Spieler, hinterlässt Eisfläche. Kiten!</li>
+                    <li><span class="text-gold">Heroic:</span> Eisflächen wachsen an.</li>
                 </ul>
             </div>
-             <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-green-400">Giftiger Kopf</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Atem (Plattform): Rüstungsfraß</strong><br>Frontaler Kegel. Verursacht Naturschaden und stapelt einen Debuff, der 10% mehr Schaden (alle Quellen!) verursacht.</li>
-                    <li><strong>Nebel-Fähigkeit: Saurer Regen</strong><br>Kugel schlägt auf Spieler ein. Verursacht hohen Raidschaden, der mit Entfernung abnimmt. (Weglaufen!)</li>
+            <div class="bg-slate-750 p-3 rounded border border-green-600/30">
+                <h4 class="text-green-400 font-bold border-b border-green-900/50 mb-1">Giftiger Kopf</h4>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                    <li><strong>Plattform:</strong> <strong class="text-green-300">Rüstungsfraß</strong> (Atem). Debuff (+10% Dmg taken).</li>
+                    <li><strong>Nebel:</strong> <strong class="text-green-300">Saurer Regen</strong> (Kugel). Einschlag verursacht AoE (Distanz verringert Schaden).</li>
+                    <li><span class="text-gold">Heroic:</span> 3 Kugeln gleichzeitig. Tödlich! Giftkopf meist ignorieren.</li>
                 </ul>
             </div>
-        </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong class="text-red-400">Glut (Feuer):</strong> Hinterlässt jetzt alle 3 Sekunden eine Feuerpfütze, solange der DoT aktiv ist, nicht nur beim Dispellen.</li>
-                <li><strong class="text-blue-400">Vereister Boden (Frost):</strong> Die Eisflächen wachsen über 2 Minuten auf die doppelte Größe an.</li>
-                <li><strong class="text-green-400">Saurer Regen (Gift):</strong> Es schlagen **drei Kugeln** gleichzeitig ein, nicht nur eine. (Aus diesem Grund wird der Gift-Kopf im Heroic fast nie getötet!)</li>
-                <li><strong class="text-purple-400">Neuer Kopf: Arkaner Kopf</strong><br>
-                    <strong>Atem: Diffusion:</strong> Stapelbarer Debuff, der 10% der erhaltenen Heilung auf Verbündete in 8m umleitet.<br>
-                    <strong>Nebel: Netherriss:</strong> Beschwört <strong class="text-purple-400">Netherwyrm</strong>-Adds. Diese müssen getankt werden und wirken `Netherstachel` (Kick!) und `Unterdrückung` (Stun, Kick/Dispel!).
-                </li>
-            </ul>
+            <div class="bg-slate-750 p-3 rounded border border-purple-600/30">
+                <h4 class="text-purple-400 font-bold border-b border-purple-900/50 mb-1">Arkaner Kopf (Heroic)</h4>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                    <li><strong>Plattform:</strong> <strong class="text-purple-300">Diffusion</strong>. Leitet 10% Heilung auf Verbündete um.</li>
+                    <li><strong>Nebel:</strong> <strong class="text-purple-300">Netherriss</strong>. Beschwört Wyrms. Diese wirken <strong class="text-purple-300">Netherstachel</strong> (Kick!) und <strong class="text-purple-300">Unterdrückung</strong> (Stun).</li>
+                    <li><span class="text-gold">Strategie:</span> Arkan-Kopf oft als "sicheres" Ziel töten, um Gift zu vermeiden.</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>

@@ -83,24 +83,54 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Der Kampf gegen Ji-Kun findet auf einer großen Hauptplattform statt, auf der der Boss stationär bleibt. Um die Plattform herum befinden sich 5 untere und 5 obere Nester. Der Kampf dreht sich um das Management von Adds, die in diesen Nestern schlüpfen. Spieler müssen mittels eines Flug-Buffs zwischen den Plattformen wechseln.
+            Der Kampf gegen Ji-Kun findet auf einer großen Hauptplattform statt, umgeben von Nestern. Der Schlüssel zum Sieg ist die Koordination von <strong>Nest-Teams</strong>, die mit dem <strong class="text-yellow-400">Flug</strong>-Buff (erhalten durch Töten von Küken) zwischen den Plattformen reisen, um Adds zu beseitigen, bevor sie zur Gefahr werden.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Flug-Mechanik (<strong class="text-yellow-400">Dädalische Schwingen</strong>):</strong> Das Töten von <strong class="text-green-400">Küken</strong> in den unteren Nestern gewährt einen Feder-Buff. Dieser Buff gibt Spielern einen Extra-Aktionsbutton für <strong class="text-yellow-400">Flug</strong> (10s Dauer, 3-4 Aufladungen), der benötigt wird, um zu den oberen Nestern zu gelangen oder schnell zur Hauptplattform zurückzukehren.</li>
-            <li><strong>Add-Management (Nester):</strong> Nester werden nacheinander aktiv.
-                <ul class="list-disc list-inside ml-6 mt-1">
-                    <li><strong>Untere Nester:</strong> Spawnen <strong class="text-green-400">Küken</strong>. Diese müssen getötet werden, *bevor* Ji-Kun sie mit <strong class="text-green-400">Junge füttern</strong> trifft, sonst werden sie zu stärkeren <strong class="text-green-400">Nestlingen</strong>.</li>
-                    <li><strong>Obere Nester:</strong> Enthalten <strong class="text-red-400">Reife Eier</strong>. Diese müssen zerstört werden, bevor sie schlüpfen und <strong class="text-red-500">Jungvögel</strong> (sehr gefährlich) freilassen.</li>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🏠 Hauptplattform</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Positioning:</strong> 8m verteilt stehen (<strong class="text-yellow-300">Krächzen</strong>).</li>
+                    <li><strong>Abwind:</strong> Bei Windstoß <strong>gegenlaufen</strong>, nicht runterfallen!</li>
+                    <li><strong>Futterpfützen:</strong> Grüne Pfützen soaken (verhindert Adds, gibt aber DoT).</li>
+                    <li><strong>Tanks:</strong> Wechsel bei 2-3 Stacks <strong class="text-red-400">Krallenreißen</strong>.</li>
                 </ul>
-            </li>
-            <li><strong>Plattform-Mechaniken:</strong> Der Raid auf der Hauptplattform muss mit <strong class="text-yellow-400">Krächzen</strong> (8m verteilen), <strong class="text-gray-400">Abwind</strong> (Gegenlaufen) und <strong class="text-red-400">Federkiele</strong> (Raid-AoE) umgehen.</li>
-            <li><strong>Futter-Mechanik:</strong> Wenn keine Küken aktiv sind, wirft Ji-Kun Futter auf die Hauptplattform, was <strong class="text-green-400">Futterpfützen</strong> (Voidzones) erzeugt. Diese müssen von Spielern aufgesaugt werden (verursacht stapelbaren DoT). Fliegende Spieler können das Futter für den <strong class="text-yellow-400">Futterdieb</strong>-Buff (Schaden & Heilung) abfangen.</li>
-            <li><strong>Tank-Mechanik:</strong> Ji-Kun belegt Tanks mit <strong class="text-red-400">Infizierte Krallen</strong> (DoT) und <strong class="text-red-400">Krallenreißen</strong> (Schadens-Debuff), was einen Tankwechsel erfordert.</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Positionierung (Hauptplattform):</strong> Raid steht 8 Meter verteilt (wegen <strong class="text-yellow-400">Krächzen</strong>). Bei <strong class="text-gray-400">Abwind</strong> müssen alle Spieler gegen den Wind laufen, um nicht von der Plattform gestoßen zu werden. Heil-CDs für <strong class="text-red-400">Federkiele</strong> nutzen.</p>
-        <p class="mb-2"><strong>Nest-Teams:</strong> Teilt den Raid in 2-3 "Nest-Teams" (z.B. 1 Heiler, 3 DDs). Diese Teams springen zu den aktiven unteren Nestern, töten die <strong class="text-green-400">Küken</strong>, sammeln die Federn und fliegen dann zu den oberen Nestern, um die <strong class="text-red-400">Eier</strong> zu zerstören. Wegen des <strong class="text-gray-400">Lektion des Ikarus</strong>-Debuffs müssen die Teams rotieren.</p>
-        <p class="mb-2"><strong>Futter-Management:</strong> Zugewiesene Spieler (mit <strong class="text-yellow-400">Flug</strong>-Buff) fangen Futter in der Luft ab, um den <strong class="text-yellow-400">Futterdieb</strong>-Buff zu erhalten. Verbleibende <strong class="text-green-400">Futterpfützen</strong> auf dem Boden müssen von Spielern mit wenig <strong class="text-green-400">Vollgeschleimt</strong>-Debuffs aufgesaugt werden.</p>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🪶 Nest-Teams</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Ziel:</strong> Untere Nester (Küken töten -> Federn sammeln) -> Obere Nester (Eier töten).</li>
+                    <li><strong>Priorität:</strong> Eier oben zerstören, bevor sie schlüpfen (<strong class="text-red-500">Jungvogel</strong> = Wipe-Gefahr).</li>
+                    <li><strong>Futterdieb:</strong> Futterkugeln in der Luft abfangen für massiven Dmg/Heal-Buff (+30%/+10% pro Stack).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Hexenmeister:</strong><br>
+                    Ein <em>Dämonisches Tor</em> und der Zirkel sind perfekt, um <strong class="text-gray-300">Abwind</strong> komplett zu ignorieren.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Druiden / Schamanen:</strong><br>
+                    <em>Anstachelndes Gebrüll</em> oder <em>Totem des Windwandels</em> helfen dem ganzen Raid beim <strong class="text-gray-300">Abwind</strong>.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Paladine:</strong><br>
+                    <em>Hand der Freiheit</em> entfernt den Slow von den Futterpfützen (<strong class="text-green-300">Vollgeschleimt</strong>).
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Nest-DDs (Burst):</strong><br>
+                    Klassen mit starkem Burst (Retri, Krieger, Fire Mage) sind ideal für Nester, um Eier schnell zu zerstören.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Tanks:</strong><br>
+                    Nutzt aktive Mitigation für <strong class="text-red-400">Krallenreißen</strong>. Im Heroic muss der Nest-Tank den <strong class="text-red-400">Nestwächter</strong> sofort binden.
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -237,33 +267,34 @@
             </div>
         </div>
     </section>
-    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-            Fähigkeiten im Detail
-            <span class="toggle-icon">▼</span>
-        </h2>
-        <div class="collapsible-content">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-cyan-300">Ji-Kun (Hauptplattform)</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                        <li><strong>Infizierte Krallen:</strong> Stapelbarer Natur-DoT auf dem Tank.</li>
-                        <li><strong>Krallenreißen:</strong> Großer Tank-Hit, erzwingt Spott.</li>
-                        <li><strong>Federkiele:</strong> 8s kanalisierter Raid-AoE.</li>
-                        <li><strong>Abwind:</strong> Pushback von der Mitte.</li>
-                    </ul>
-                </div>
-                <div class="bg-slate-750 p-4 rounded-lg">
-                    <h4 class="text-lg font-bold text-yellow-300">Nester & Adds</h4>
-                    <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                        <li><strong>Küken:</strong> Schlüpfen unten. Geben Federn.</li>
-                        <li><strong>Reife Eier:</strong> Oben. Schlüpfen zu Jungvögeln (Wipe-Gefahr).</li>
-                        <li><strong>Nestwächter (HC):</strong> Großes Add, muss getankt werden.</li>
-                    </ul>
-                </div>
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Ji-Kun (Hauptplattform)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-400">Krallenreißen:</strong> Heftiger Tank-Hit (+Dmg taken). Spott bei 2-3 Stacks.</li>
+                    <li><strong class="text-yellow-400">Krächzen:</strong> Schallwellen auf zufällige Spieler. 8m verteilen.</li>
+                    <li><strong class="text-red-400">Federkiele:</strong> Kanalisierter Raid-AoE (8s). Heil-CDs nutzen!</li>
+                    <li><strong class="text-gray-400">Abwind:</strong> Stößt alle Spieler von der Mitte weg. Gegenlaufen!</li>
+                    <li><strong class="text-green-400">Junge füttern:</strong> Spuckt Futterkugeln. Wenn keine Spieler/Adds sie fangen, entstehen Pfützen.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg border border-green-900/30">
+                <h4 class="text-lg font-bold text-green-400 border-b border-green-900/50 mb-2">Nester & Adds</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong>Untere Nester:</strong> Enthalten <strong class="text-green-300">Küken</strong>. Diese fressen Futter und werden zu Nestlingen. Drop: <strong class="text-yellow-300">Dädalische Schwingen</strong> (Flugfeder).</li>
+                    <li><strong>Obere Nester:</strong> Enthalten <strong class="text-red-300">Reife Eier</strong>. Schlüpfen nach 20s zu <strong class="text-red-500">Jungvögeln</strong> (sehr gefährlich!). Eier zerstören!</li>
+                    <li><strong class="text-purple-400">Nestwächter (Heroic):</strong> Großes Add in manchen Nestern. Muss getankt werden (Breites Frontal-Cleave!). Tötet erst Eier, dann Wächter.</li>
+                </ul>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <script>
     // Konfiguration der Wellen (Wie viele Teams pro Welle?)

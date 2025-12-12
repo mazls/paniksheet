@@ -45,28 +45,40 @@
         Kampfübersicht & Kernmechaniken
         <span class="toggle-icon">▼</span>
     </h2>
-<div class="collapsible-content">
+    <div class="collapsible-content">
         <p class="mb-4">
-            Der Rat der Ältesten ist ein Council-Kampf gegen vier Trolle: <strong class="text-blue-400">Frostkönig Malakk</strong>, <strong class="text-gray-400">Kazra'jin</strong>, <strong class="text-yellow-400">Sul der Sandkriecher</strong> und <strong class="text-purple-400">Hohepriesterin Mar'li</strong>. Die Bosse teilen sich keine Gesundheit. Die Kernmechanik ist die <strong class="text-purple-500">Verstärkung (Empowerment)</strong> durch den Geist von Gara'jal.
+            Der Rat der Ältesten ist ein Council-Kampf gegen vier Trolle: <strong class="text-blue-400">Malakk</strong> (Frost), <strong class="text-gray-400">Kazra'jin</strong> (Physisch/Reflekt), <strong class="text-yellow-400">Sul</strong> (Sand) und <strong class="text-purple-400">Mar'li</strong> (Heilig/Schatten). Sie teilen sich keine Gesundheit. Die Kernmechanik ist die <strong class="text-purple-500">Verstärkung (Empowerment)</strong> durch Gara'jals Geist.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Verstärkung (Empowerment):</strong> Gara'jals Geist verstärkt immer einen Boss (beginnend mit Malakk). Der Boss erhält neue Fähigkeiten und eine "Dunkle Energie"-Leiste.</li>
-            <li><strong>Verstärkung brechen:</strong> Um den Geist zum Springen zu zwingen, muss der Raid dem verstärkten Boss <strong>25% seiner maximalen Gesundheit</strong> als Schaden zufügen.</li>
-            <li><strong>Soft-Enrage (<strong class="text-red-500">Dunkle Macht</strong>):</strong> Erreicht ein Boss 100 Energie (nach ca. 67 Sek.), wirkt er `Dunkle Macht`, einen stapelbaren, raidweiten DoT, der schnell zum Wipe führt.</li>
-            <li><strong>Permanenter Buff (<strong class="text-red-400">Bleibende Berührung</strong>):</strong> Jeder Boss, der die Verstärkung verlässt, erhält einen permanenten Buff (+15% Schaden & schnellere Energiegewinnung).</li>
-            <li><strong>Kill-Reihenfolge:</strong> Es gibt keine feste Reihenfolge, aber aufgrund der Mechaniken (Treibsand, DPS-Reflekt) ist eine Priorisierung von <strong>Sul > Kazra'jin > Mar'li > Malakk</strong> empfohlen.</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Positionierung:</strong> Der Raid muss <strong>5-7 Meter verteilt</strong> stehen, um Schaden von `Sandblitz` (Sul) und `Beißende Kälte` (Malakk) zu minimieren. Weicht `Tollkühner Ansturm` (Kazra'jin) und `Treibsand` (Sul) aus.</p>
-        <p class="mb-2"><strong>Tanks:</strong> Ein Tank hält Sul, der andere Mar'li. Beide Tanks müssen sich <strong class="text-blue-400">Frostkönig Malakk</strong> teilen und wegen `Kalte Angriffe` (15 Stapel = Stun) abspotten. Kazra'jin wird nicht getankt.</p>
-        <p class="mb-2"><strong>DPS-Fokus:</strong>
-            <ol class="list-decimal list-inside ml-4">
-                <li><strong>Adds:</strong> `Gesegneter Loa-Geist` (von Mar'li) und `Lebendiger Sand` (von Sul) haben <strong>absolute Priorität</strong>.</li>
-                <li><strong>Verstärkter Boss:</strong> Der verstärkte Boss muss 25% HP verlieren, um `Dunkle Macht` zu verhindern.</li>
-                <li><strong>DPS-Stopp:</strong> Wenn <strong class="text-gray-400">Kazra'jin</strong> verstärkt ist und `Entladung` (Reflekt-Schild) wirkt, muss der Schaden auf ihn <strong>gestoppt</strong> oder <strong>stark reduziert</strong> werden.</li>
-            </ol>
-        </p>
-        <p class="mb-2"><strong>Wichtige Aktionen:</strong> Unterbrecht `Sandblitz` (Sul) und `Zorn der Loa` (Mar'li). Wenn Malakk verstärkt ist, müssen <span data-size="10" class="tactic-content">2</span><span data-size="25" class="tactic-content">4</span> Spieler zum `Erfrieren`-Ziel laufen, um die Stapel zu entfernen.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚠️ Die Verstärkung (Empowerment)</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>Ein Boss wird verstärkt, erhält neue Skills und Energie.</li>
+                    <li><strong>Das Ziel:</strong> Fügt dem verstärkten Boss <strong>25% seiner HP</strong> Schaden zu, um den Geist zum Springen zu zwingen.</li>
+                    <li><strong>Wipe-Gefahr:</strong> Erreicht der Boss 100 Energie, wirkt er <strong class="text-red-500">Dunkle Macht</strong> (tödlicher Raid-DoT).</li>
+                    <li><strong>Buff:</strong> Nach der Verstärkung erhält der Boss permanent <strong class="text-red-400">Bleibende Berührung</strong> (+15% Dmg/Energie-Reg).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ & ⚔️ Raid-Aufgaben</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Positioning:</strong> 7m verteilt stehen (wegen <strong class="text-yellow-200">Sandblitz</strong> & <strong class="text-blue-300">Beißende Kälte</strong>).</li>
+                    <li><strong>Adds:</strong> <strong class="text-purple-300">Gesegneter Loa-Geist</strong> (Mar'li) und <strong class="text-yellow-300">Lebendiger Sand</strong> (Sul) haben absolute Priorität.</li>
+                    <li><strong>DPS-Stopp:</strong> Wenn <strong class="text-gray-400">Kazra'jin</strong> verstärkt ist, reflektiert er Schaden (<strong class="text-red-400">Entladung</strong>). Vorsichtig damage machen!</li>
+                    <li><strong>Tanks:</strong> Sul und Mar'li tanken. Malakk muss wegen Stun-Stacks gespottet werden. Kazra'jin springt wild herum.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Heroic Strategie: Sul Zerg</h4>
+            <div class="text-sm text-gray-300 space-y-2">
+                <p>Auf Heroisch ist <strong>Sul der Sandkriecher</strong> das gefährlichste Ziel. Wenn er verstärkt wird, verschmelzen seine Sandfallen zu mächtigen Adds, die den Raid wipen.</p>
+                <p><strong class="text-emerald-200">Die Taktik:</strong> Zündet KR/HT beim Pull und fokussiert Sul. Tötet ihn, <strong>bevor</strong> er das erste Mal verstärkt wird oder kurz danach. Ignoriert ggf. kurzzeitig den verstärkten Boss, um Sul zu finishen (Heiler-CDs nötig!).</p>
+                <p><strong>Seelenfragment:</strong> Gebt den Debuff (<strong class="text-gray-400">Verdunkelte Seele</strong>) bei 5-10 Stacks weiter. Tanks erst nach Malakks Tod einbeziehen.</p>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -219,61 +231,42 @@
     </section>
 <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
+        Die 4 Ältesten im Detail
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
-        <div class="mb-4 bg-slate-750 p-4 rounded-lg border-l-4 border-purple-400">
-            <h4 class="text-lg font-bold text-purple-400">Geist von Gara'jal (Kernmechanik)</h4>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Verstärkung:</strong> Ein Boss wird verstärkt, erhält neue Skills und Energie. Muss 25% HP verlieren, damit der Geist springt.</li>
-                <li><strong>Dunkle Macht:</strong> Wirkt der Boss bei 100 Energie. Raidweiter, stapelbarer Schaden. Verhindern!</li>
-                <li><strong>Bleibende Berührung:</strong> Permanenter Buff (+15% Dmg, +15% Energie-Reg.) auf dem Boss, nachdem die Verstärkung gebrochen wurde.</li>
-            </ul>
-        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-blue-400">Frostkönig Malakk (Tank-Boss)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Kalte Angriffe:</strong> Stapelbarer Debuff auf dem Tank. Bei 15 Stapeln -> 15s Stun. Erzwingt Tankwechsel.</li>
-                    <li><strong>Beißende Kälte:</strong> DoT auf Spieler, fügt Verbündeten in 4m Schaden zu. (Normal: 4m verteilen).</li>
-                    <li><strong>Verstärkt: Erfrieren:</strong> Ersetzt `Beißende Kälte`. 5 Stapel. Fügt Verbündeten in 4m Schaden pro Stapel zu. Stapel werden entfernt, wenn Spieler in die 4m-Zone laufen (10m: 2 Stapel/Spieler, 25m: 1 Stapel/Spieler).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Frostkönig Malakk</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong>Kalte Angriffe:</strong> Tank-Debuff. Bei 15 Stacks -> Stun. (Tanks wechseln oder CD nutzen).</li>
+                    <li><strong>Beißende Kälte:</strong> DoT + 4m AoE. (Verteilt stehen).</li>
+                    <li><strong class="text-blue-200">Verstärkt (Erfrieren):</strong> Ersetzt Beißende Kälte. Spieler bekommt 5 Stacks. Jeder Spieler in 4m entfernt 1 Stack (HC: Körperwärme verhindert erneutes Soaken). <strong>Taktik:</strong> 4 Spieler laufen kurz rein, um Stacks zu löschen.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-gray-400">Kazra'jin (Positioning-Boss)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Tollkühner Ansturm:</strong> Sturmt einen Spieler an, verursacht Schaden auf dem Weg und stößt am Ziel zurück. (Aus der Linie weichen).</li>
-                    <li><strong>Verstärkt: Entladung:</strong> Nach dem Ansturm betäubt er sich selbst und reflektiert 5% (Heroic: 5%, Normal: 50%) des erlittenen Schadens an den gesamten Raid. (DPS STOPPEN/REDUZIEREN).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/30">
+                <h4 class="text-lg font-bold text-gray-400 border-b border-gray-700/50 mb-2">Kazra'jin</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong>Tollkühner Ansturm:</strong> Sturmt Spieler an (Linien-AoE). (Ausweichen).</li>
+                    <li><strong class="text-gray-200">Verstärkt (Entladung):</strong> Nach Ansturm reflektiert er 50% (HC: 5% auf ALLE) Schaden. <strong>Taktik:</strong> Schaden drosseln, Heiler-CDs nutzen, schnell die 25% brechen.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-yellow-400">Sul der Sandkriecher (Add/Interrupt-Boss)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Sandblitz:</strong> Nuke auf Spieler + 5m AoE. (5m verteilen, UNTERBRECHEN).</li>
-                    <li><strong>Treibsand:</strong> Erzeugt Voidzone, die slowt. Bei 5 Stapeln wird man 30s gerootet. (Rauslaufen).</li>
-                    <li><strong>Verstärkt: Sandsturm:</strong> Verwandelt alle `Treibsand`-Pfützen in `Lebendiger Sand` (Adds). Adds müssen sterben, bevor der nächste `Sandsturm` sie heilt und bufft (`Gefestigt`).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-yellow-900/30">
+                <h4 class="text-lg font-bold text-yellow-400 border-b border-yellow-900/50 mb-2">Sul der Sandkriecher</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong>Sandblitz:</strong> AoE um Ziel. (KICKEN!).</li>
+                    <li><strong>Treibsand:</strong> Voidzone, die slowt/rootet. (Rauslaufen).</li>
+                    <li><strong class="text-yellow-200">Verstärkt (Sandsturm):</strong> Verwandelt alle Pfützen in Adds (<strong class="text-yellow-300">Lebendiger Sand</strong>). <strong>Taktik:</strong> Adds sofort töten, bevor sie durch den nächsten Sturm geheilt werden.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-purple-400">Hohepriesterin Mar'li (Add/Interrupt-Boss)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Zorn der Loa:</strong> Nuke auf Spieler. (UNTERBRECHEN).</li>
-                    <li><strong>Gesegneter Loa-Geist:</strong> Add läuft zum Boss mit den wenigsten HP und heilt ihn um 10%. (HÖCHSTE PRIO: Slowen, rooten, töten).</li>
-                    <li><strong>Verstärkt (Normal): Schattiger Loa-Geist:</strong> Add fixiert einen Spieler und tötet ihn bei Kontakt. (HÖCHSTE PRIO: Kiten, slowen, rooten, töten).</li>
-                    <li><strong>Verstärkt (Heroic): Übles Schicksal:</strong> Ersetzt den Geist. Zwei Adds spawnen bei zwei Spielern und laufen aufeinander zu. Verursachen Schaden je näher sie sind. (Gleichzeitig töten, auseinander halten).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-purple-900/30">
+                <h4 class="text-lg font-bold text-purple-400 border-b border-purple-900/50 mb-2">Hohepriesterin Mar'li</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong>Zorn der Loa:</strong> Heiliger Schaden. (Kicken).</li>
+                    <li><strong>Gesegneter Loa-Geist:</strong> Add heilt den Boss mit den wenigsten HP. (Sofort töten/Stunnen!).</li>
+                    <li><strong class="text-purple-200">Verstärkt (Schattiger Geist / HC: Übles Schicksal):</strong> Geist tötet Spieler bei Kontakt. HC: Zwei verbundene Geister (Range/Melee). <strong>Taktik:</strong> Kiten, verlangsamen, töten. HC: Beide gleichzeitig töten.</li>
                 </ul>
             </div>
-        </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Seelenfragment:</strong> Nach (fast) jedem Verstärkungs-Bruch. Ein Spieler erhält einen Debuff, der `Verdunkelte Seele` (+5% Dmg Taken) stapelt. Der Debuff muss per Extra-Button weitergegeben werden (z.B. bei 5 Stapeln).</li>
-                <li><strong>Körperwärme (Malakk):</strong> Spieler, die `Erfrieren` soaken, erhalten einen Debuff und können 8s lang nicht erneut soaken. (Rotation nötig oder Ziel alleine heilen).</li>
-                <li><strong>Entladung (Kazra'jin):</strong> Reflektiert nur 5% Schaden, trifft dafür aber den gesamten Raid (statt nur den Angreifer).</li>
-                <li><strong>Trügerischer Boden (Sul):</strong> Überlappende `Treibsand`-Pfützen verschmelzen und erzeugen stärkere Adds. (SUL MUSS ZUERST STERBEN, um dies zu verhindern).</li>
-                <li><strong>Übles Schicksal (Mar'li):</strong> Ersetzt den `Schattigen Loa-Geist`. Zwei verbundene Adds, die auseinander gehalten und gleichzeitig getötet werden müssen.</li>
-            </ul>
         </div>
     </div>
 </section>

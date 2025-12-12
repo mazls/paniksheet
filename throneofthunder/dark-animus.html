@@ -47,20 +47,55 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Der Kampf gegen den Dunklen Animus ist ein unkonventioneller Add-Kampf, der sich um die Ressource <strong class="text-purple-400">Anima</strong> dreht. Zu Beginn sind nur 25 (10m: 12) kleine <strong class="text-gray-400">Animagolems</strong> aktiv. Größere Golems und der Boss selbst sind inaktiv.
+            Der Kampf gegen den Dunklen Animus dreht sich um das Management von <strong class="text-purple-400">Anima</strong>. Das Ziel ist es, die Energie der kleinen Golems kontrolliert in die großen Golems zu leiten, um den Boss so spät wie möglich zu aktivieren und seinen Enrage (100 Anima) hinauszuzögern.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Anima-Übertragung:</strong> Wenn ein Golem stirbt, springt seine <strong class="text-purple-400">Anima</strong> (Energie) auf den nächstgelegenen Golem mit freier Kapazität über.</li>
-            <li><strong>Golems aktivieren:</strong> <strong class="text-gray-400">Große Animagolems</strong> (8 Anima) und <strong class="text-gray-400">Massive Animagolems</strong> (36 Anima) starten leer. Sie werden aktiv, sobald sie Anima erhalten. Ziel ist es, die Anima der kleinen Golems kontrolliert in die Massiven Golems zu leiten, um den Boss noch nicht zu aktivieren.</li>
-            <li><strong>Boss aktivieren:</strong> Der Dunkle Animus wird aktiv, sobald er Anima erhält. Sobald er aktiv ist, beginnt er, <strong class="text-purple-400">Anima von allen</strong> anderen Golems im Raum abzusaugen (<strong class="text-purple-500">Anima entziehen</strong>).</li>
-            <li><strong>Soft-Enrage:</strong> Der Boss erhält neue, gefährliche Fähigkeiten bei 25, 50 und 75 Anima. Bei 100 Anima wirkt er <strong class="text-red-500">VOLLE MACHT</strong>, was einem Wipe gleichkommt. Der Kampf ist ein DPS-Rennen, um den Boss zu töten, bevor er 100 Anima erreicht.</li>
-            <li><strong>Add-Kontrolle:</strong> Kleine <strong class="text-gray-400">Animagolems</strong> müssen getrennt getankt werden, sonst erhalten sie den Buff <strong class="text-yellow-400">Beschleunigungsverbindung</strong> (+250% Schaden/Tempo).</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Phase 1 (Golems füllen):</strong> Zieht *keinen* Golem in die Mitte zum Boss. Tanks und DDs verteilen sich und tanken die kleinen <strong class="text-gray-400">Animagolems</strong> einzeln. Tötet die Golems nacheinander neben einem der <strong class="text-gray-400">Massiven Golems</strong>, um diesen zu füllen (Ziel: 36 Anima). Wiederholt dies für den zweiten Massiven Golem (nur 25m).</p>
-        <p class="mb-2"><strong>Phase 2 (Boss-Phase):</strong> Sobald die Massiven Golems (fast) voll sind, tötet einen letzten kleinen Golem neben dem <strong class="text-red-500">Dunklen Animus</strong> in der Mitte. Dieser wird aktiv.</p>
-        <p class="mb-2"><strong>Boss-Management:</strong> Alle DDs wechseln sofort auf den Boss (KR/HT). Ein Tank hält den Boss, der andere die <strong class="text-gray-400">Massiven Golems</strong>. Der Boss-Tank muss bei <strong class="text-yellow-400">Animaring</strong> aus dem Ring laufen (löst Debuff aus) und der andere Tank muss spotten.</p>
-        <p class="mb-2"><strong>Wichtige Mechaniken:</strong> Bei <strong class="text-purple-400">Materientausch</strong> (Tank-Debuff) den Tank nach 4-5 Sek. dispellen (tauscht Platz mit entferntestem Spieler). Spieler mit <strong class="text-red-400">Animaquell</strong> (AoE-Puls) laufen sofort aus der Gruppe. Vor <strong class="text-red-500">Unterbrechender Schlag</strong> (bei 75 Anima) müssen alle das Zauberwirken einstellen.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Start:</strong> Jeder schnappt sich so viele <strong class="text-gray-400">Animagolems</strong> wie möglich (ohne Link!).</li>
+                    <li><strong>Boss-Tank:</strong> Achtet auf <strong class="text-yellow-400">Animaring</strong> (Debuff -> Wechsel).</li>
+                    <li><strong>Add-Tank:</strong> Hält die <strong class="text-gray-400">Massiven Golems</strong>. Achtung vor <strong class="text-red-400">Explosives Schmettern</strong>.</li>
+                    <li><strong>Materientausch:</strong> Bei Dispel tauscht ihr Plätze. Seid bereit, sofort zurückzulaufen!</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Phase 1:</strong> Zieht KEINE Golems in die Mitte. Tötet kleine Golems NUR neben den Massiven (zum Füllen).</li>
+                    <li><strong>Boss-Phase:</strong> Sobald der Boss aktiv ist -> Full Burst!</li>
+                    <li><strong>Interrupt:</strong> Bei 100 Energie (<strong class="text-red-500">Unterbrechender Schlag</strong>) aufhören zu casten!</li>
+                    <li><strong>Heiler:</strong> Tanks mit <strong class="text-purple-400">Materientausch</strong> erst nach 4-5s dispellen (Schadensteilung).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Mönch-Tanks:</strong><br>
+                    Können mit <em>Statue der Schwarzen Ochsen</em> extrem viele kleine Golems sicher einsammeln und binden.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Hexenmeister / Eulen:</strong><br>
+                    Starke Multidot-Klassen sind ideal, um die kleinen Golems kontrolliert runterzuspielen, ohne sie versehentlich zu töten.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Priester (Mass Dispel):</strong><br>
+                    Vorsicht! Mass Dispel darf NICHT für <strong class="text-purple-300">Materientausch</strong> genutzt werden, da das Timing (4-5s warten) essenziell ist.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Magier / Jäger:</strong><br>
+                    Können <strong class="text-red-300">Animaquell</strong>-Schaden mit Immunitäten komplett negieren, wenn sie als Ziel gewählt werden.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Todesritter:</strong><br>
+                    <em>Gorefiends Grasp</em> (Blut) ist perfekt, um kleine Golems präzise an einen Massiven Golem zu ziehen.
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -266,36 +301,36 @@
     </h2>
     <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-gray-300">Golems & Anima</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Animagolem (Klein):</strong> Startet mit 4 Anima. Muss getrennt getankt werden (<strong class="text-yellow-400">Beschleunigungsverbindung</strong>).</li>
-                    <li><strong>Großer Animagolem (Mittel):</strong> Startet mit 0/8 Anima. Wirkt <strong class="text-red-400">Purpurwelle</strong> (verfolgende Voidzone), wenn aktiv. (Wird meist ignoriert).</li>
-                    <li><strong>Massiver Animagolem (Groß):</strong> Startet mit 0/36 Anima. Wird aktiv, sobald er Anima erhält.</li>
-                    <li><strong>Materientausch:</strong> Debuff auf Tank. Bei Dispel/Ablauf tauscht der Tank Position mit dem am weitesten entfernten Spieler. Schaden wird geteilt.</li>
-                    <li><strong>Explosives Schmettern:</strong> 9m AoE um den Golem. (Rauslaufen).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-cyan-300 border-b border-blue-900/50 mb-2">Dunkler Animus (Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-purple-400">Anima entziehen:</strong> Saugt Anima aus Golems. Erhält bei bestimmten Schwellen neue Fähigkeiten.</li>
+                    <li><strong class="text-yellow-400">Animaring (25 Anima):</strong> Kugeln umkreisen den Tank. Berührung gibt Debuff (+Dmg taken). Erzwingt Tankwechsel.</li>
+                    <li><strong class="text-red-400">Animaquell (50 Anima):</strong> Spieler pulsiert AoE-Schaden. Raus aus dem Raid!</li>
+                    <li><strong class="text-red-500">Unterbrechender Schlag (75 Anima):</strong> Raidweiter Cast-Interrupt. <strong>Cast-Stop!</strong></li>
+                    <li><strong class="text-red-600">VOLLE MACHT (100 Anima):</strong> Wipe.</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Dunkler Animus (Boss)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Anima entziehen:</strong> Boss saugt Anima von allen Golems im Raum.</li>
-                    <li><strong>Berührung des Animus:</strong> Permanenter, stapelbarer Feuer-DoT, der regelmäßig auf Spieler gewirkt wird.</li>
-                    <li><strong>(25 Anima) Animaring:</strong> Ring aus Kugeln um den Tank. Tank muss eine Kugel berühren, um rauszukommen. Erhält dadurch einen Debuff (+200% Nahkampfschaden). (Tankwechsel).</li>
-                    <li><strong>(50 Anima) Animaquell:</strong> Ein Spieler mit <strong class="text-red-400">Berührung des Animus</strong> pulsiert AoE-Schaden. (Raus aus der Gruppe).</li>
-                    <li><strong>(75 Anima) Unterbrechender Schlag:</strong> Raidweiter AoE, unterbricht alle Zauber. (Nicht zaubern!).</li>
-                    <li><strong>(100 Anima) VOLLE MACHT:</strong> Raid-AoE, Wipe.</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-green-900/30">
+                <h4 class="text-lg font-bold text-gray-300 border-b border-green-900/50 mb-2">Golems & Mechaniken</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong>Animagolem (Klein):</strong> Hat 4 Anima. Gibt Anima bei Tod weiter. Wenn 2 nah beieinander sind: <strong class="text-yellow-300">Beschleunigungsverbindung</strong> (+Tempo/Dmg).</li>
+                    <li><strong>Massiver Golem (Groß):</strong> Hat 36 Kapazität. Muss gefüllt werden. Wirkt <strong class="text-purple-300">Materientausch</strong> auf Tank (Dispel tauscht Position mit fernstem Spieler, teilt Schaden).</li>
+                    <li><strong>Großer Golem (Mittel):</strong> Hat 8 Kapazität. Wirkt <strong class="text-red-300">Purpurwelle</strong> (Voidzone). Wird meist ignoriert/nicht gefüllt.</li>
                 </ul>
             </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Boss startet aktiv:</strong> Der Dunkle Animus startet mit 52 Anima und ist von Beginn an aktiv.</li>
-                <li><strong>Anima entziehen (verzögert):</strong> Der Boss beginnt erst nach 2 Minuten mit dem Absaugen von Anima.</li>
-                <li><strong>Golem aufladen:</strong> Boss heilt Golem mit niedrigster HP und bufft dessen Schaden (stapelbar).</li>
-                <li><strong>Strategieänderung:</strong> Der Boss muss von Anfang an getankt werden. DDs müssen schnell die Golems "umfüllen" (18 kleine Golems in die 2 Massiven Golems), bevor der Boss nach 2 Minuten mit dem Absaugen beginnt. Die verbleibenden kleinen Golems werden kontrolliert geopfert, um die 216-Sekunden-Enrage-Timer (bis 100 Anima) zu timen.</li>
-            </ul>
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">Heroic: Sofortiger Start</h3>
+            <div class="text-sm text-gray-300 space-y-2">
+                <p>Auf Heroisch startet der Boss mit <strong>52 Anima</strong> und ist sofort aktiv. Er saugt jedoch erst nach 2 Minuten weitere Anima ab.</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Zeitdruck:</strong> Der Raid hat 2 Minuten Zeit, die Golems "umzufüllen" (18 kleine in 2 Massive), bevor der Boss anfängt, Anima zu ziehen.</li>
+                    <li><strong class="text-yellow-400">Golem aufladen:</strong> Boss heilt den Golem mit den wenigsten HP und bufft dessen Schaden.</li>
+                    <li><strong>Strategie:</strong> Boss-Tank nimmt Boss + 1 kleinen Golem. Add-Tank nimmt 2 Massive + Rest kleine Golems. Zerg-Phase für das Umfüllen!</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>

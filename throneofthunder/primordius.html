@@ -47,20 +47,54 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Der Kampf gegen Primordius ist ein DPS-Rennen, das sich um das Sammeln von Mutationen dreht. Primordius selbst erleidet <strong class="text-red-400">75% weniger Schaden</strong> von Spielern, die nicht mutiert sind. Spieler müssen Adds töten, um Pfützen zu erzeugen, die ihnen Buffs gewähren. Gleichzeitig muss verhindert werden, dass die Adds den Boss erreichen und ihn mutieren lassen.
+            Der Kampf gegen Primordius ist ein reines DPS-Rennen. Der Schlüssel ist das effiziente Sammeln von <strong class="text-green-400">Guten Mutationen</strong> durch Töten von Adds, um dem Boss (der sonst 75% weniger Schaden nimmt) massiv zuzusetzen, bevor er selbst zu stark mutiert.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Spieler-Mutationen:</strong> Überall im Raum kriechen <strong class="text-green-400">Lebendige Flüssigkeiten</strong> (Adds) auf den Boss zu. Werden sie getötet, hinterlassen sie <strong class="text-purple-400">Mutagenpfützen</strong>. Das Betreten einer Pfütze gewährt einen stapelbaren Buff (Stats, Krit, Tempo oder Meisterschaft).</li>
-            <li><strong>Vollständig Mutiert:</strong> Bei 5 Stapeln verwandelt sich der Spieler für 2 Minuten in einen Saurok (<strong class="text-yellow-400">Vollständig mutiert</strong>) und kann Primordius vollen Schaden zufügen. Das Sammeln weiterer Pfützen während dieser Zeit führt zu schädlichen Debuffs.</li>
-            <li><strong>Tank-Mutationen (Debuffs):</strong> Primordius belegt seinen Tank mit <strong class="text-red-400">Missgebildetes Blut</strong>. Dieser Debuff erhöht den Schaden des Tanks gegen die <strong class="text-green-400">Lebendigen Flüssigkeiten</strong>. Dies erzwingt einen Tankwechsel.</li>
-            <li><strong>Boss-Mutationen (Evolution):</strong> Jedes Mal, wenn ein Add Primordius erreicht (oder er eine Pfütze absorbiert), füllt sich seine Energieleiste. Bei 100 Energie erhält er einen permanenten Schadensbuff (<strong class="text-red-500">Evolution</strong>) und eine neue, zufällige Fähigkeit (z.B. <strong class="text-yellow-400">Säurestachel</strong>, <strong class="text-red-400">Gasblase</strong>, etc.). Er kann bis zu 3 (Heroic: 4) gleichzeitig haben.</li>
-            <li><strong>Flüchtige Pfütze:</strong> Eine seltene, große Pfütze. Erreicht sie den Boss, heilt sie ihn um 10% und gibt ihm sofort alle Mutationen (Wipe-Gefahr). Spieler müssen sie soaken (verursacht hohen Schaden und Debuffs).</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Positionierung:</strong> Ein Tank hält Primordius. Der zweite Tank sammelt die <strong class="text-green-400">Lebendigen Flüssigkeiten</strong> ein (sobald er den <strong class="text-red-400">Missgebildetes Blut</strong>-Debuff hat) und tötet diese abseits vom Boss.</p>
-        <p class="mb-2"><strong>DPS-Rotation:</strong> Alle DDs töten *nur* <strong class="text-green-400">Lebendige Flüssigkeiten</strong> und sammeln Pfützen, bis sie 5 Buffs haben. Sobald sie <strong class="text-yellow-400">Vollständig mutiert</strong> sind, wechseln sie sofort auf Primordius und verursachen maximalen Schaden. Wenn die Mutation ausläuft, wechseln sie zurück zu den Adds.</p>
-        <p class="mb-2"><strong>Boss-Fähigkeiten:</strong> Der Raid muss auf die aktiven Mutationen des Bosses reagieren (z.B. bei <strong class="text-red-400">Gasblase</strong> am Boss sammeln, bei <strong class="text-yellow-400">Säurestachel</strong> verteilen).</p>
-        <p class="mb-2"><strong>Heroisch:</strong> Ein Tank kümmert sich um den <strong class="text-purple-500">Zähflüssigen Horror</strong> (neues Add) und hält ihn *weit weg* vom Boss (Explosionsgefahr). Der andere Tank spottet Primordius und hilft bei den Adds.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Boss-Tank:</strong> Hält Primordius in der Mitte. Achtung vor <strong class="text-red-400">Urzeitlicher Stoß</strong> (Frontal!).</li>
+                    <li><strong>Add-Tank:</strong> Sammelt Adds, sobald er <strong class="text-red-300">Missgebildetes Blut</strong> hat (macht ihn zum Add-Killer).</li>
+                    <li><strong>Heroic:</strong> <strong class="text-purple-400">Zähflüssiger Horror</strong> muss weit weg vom Boss getankt werden (Explosionsgefahr!).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Ziel:</strong> Sammelt 5 <strong class="text-green-400">Hilfreiche Mutationen</strong> (rote Pfützen meiden!).</li>
+                    <li><strong>Vollständig mutiert:</strong> Bei 5 Stacks -> <strong>FULL BURST</strong> auf den Boss (2 Min. Zeit).</li>
+                    <li><strong>Dispel:</strong> Bei <strong class="text-red-400">Schädlichen Mutationen</strong> (schlechte Stats) sofort dispellen (löscht ALLE Stacks).</li>
+                    <li><strong>Soak:</strong> Große lila Pfützen (<strong class="text-purple-400">Flüchtige Pfütze</strong>) müssen gesoakt werden, bevor sie den Boss erreichen!</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Jäger / Hexenmeister:</strong><br>
+                    Perfekt als "Kiter" für die Adds, die nicht getankt werden. Eisfalle/Verlangsamen hilft dem Add-Tank enorm.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Schurken / Mönche:</strong><br>
+                    Können mit ihrer hohen Mobilität schnell <strong class="text-purple-300">Mutagenpfützen</strong> (die guten) schnappen, bevor sie despawnen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Heiler:</strong><br>
+                    Wenn der Boss <strong class="text-red-300">Metabolismusschub</strong> hat, greift er extrem schnell an. Tank-CDs und externe CDs bereithalten!
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Magier:</strong><br>
+                    <em>Alter Zeit</em> ist stark, um nach dem Einsammeln von Pfützen (und dem damit verbundenen Schaden) sofort wieder voll zu sein.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Alle DDs:</strong><br>
+                    Achtet auf eure Stacks! Ein 6. Stack (lila Pfütze) ruiniert eure DPS-Phase komplett (Dispel nötig). Bleibt bei 5 stehen!
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -268,46 +302,52 @@
     </h2>
     <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-cyan-300">Primordius (Boss)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Urzeitlicher Stoß:</strong> Frontal-Cleave (7m). (Niemals vor dem Boss stehen).</li>
-                    <li><strong>Missgebildetes Blut:</strong> Stapelbarer DoT auf dem Tank. Erhöht Schaden an Adds. (Tankwechsel).</li>
-                    <li><strong>Mutierte Monstrosität:</strong> Boss erleidet 75% weniger Schaden von nicht-mutierten Spielern.</li>
-                    <li><strong>Evolution:</strong> Boss erhält +5% Schaden und eine neue Mutation, wenn seine Energie voll ist (durch Adds/Pfützen).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Primordius (Boss)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-400">Mutierte Monstrosität:</strong> Nimmt 75% weniger Schaden von nicht-mutierten Spielern.</li>
+                    <li><strong class="text-yellow-400">Evolution:</strong> Bei 100 Energie erhält er eine neue Fähigkeit (siehe unten). Energie kommt durch absorbierte Adds/Pfützen.</li>
+                    <li><strong class="text-red-300">Urzeitlicher Stoß:</strong> Tödlicher Frontal-Cleave (7m). Nur der Tank steht vorne!</li>
+                    <li><strong class="text-purple-300">Missgebildetes Blut:</strong> Tank-DoT. Erlaubt Schaden an den Adds (Tankwechsel-Signal).</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-purple-400">Adds & Mutationen (Spieler)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Lebendige Flüssigkeit:</strong> Adds, die auf den Boss zu kriechen. Müssen getötet werden.</li>
-                    <li><strong>Mutagenpfütze:</strong> Entsteht beim Tod einer Flüssigkeit. Spieler aufsammeln.</li>
-                    <li><strong>Hilfreiche Mutation:</strong> (Bis 5 Stapel) Gibt +Stats, +Krit, +Tempo oder +Meisterschaft.</li>
-                    <li><strong>Vollständig mutiert:</strong> Bei 5 Stapeln. Erlaubt vollen Schaden am Boss für 2 Min.</li>
-                    <li><strong>Schädliche Mutation:</strong> (Ab 6 Stapeln) Gibt negative Stats. Muss dispellt werden (entfernt alle Buffs).</li>
-                    <li><strong>Flüchtige Pfütze:</strong> Seltene Pfütze. Boss: +10% Heilung & max. Mutation. Spieler: Hoher Schaden & Debuffs. (Muss von Spielern gesoakt werden!).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-green-900/30">
+                <h4 class="text-lg font-bold text-green-400 border-b border-green-900/50 mb-2">Mutationen (Spieler)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-green-300">Hilfreiche Mutation:</strong> (1-5 Stacks) +Stats (Crit, Haste, Mastery, Stats).</li>
+                    <li><strong class="text-yellow-300">Vollständig mutiert:</strong> (Bei 5 Stacks) Verwandlung in Saurok. Voller Schaden auf Boss. Hält 2 Min.</li>
+                    <li><strong class="text-red-300">Schädliche Mutation:</strong> (Ab 6 Stacks) Negative Stats. Muss dispellt werden -> Verlust aller Stacks!</li>
+                    <li><strong class="text-purple-400">Flüchtige Pfütze:</strong> Groß, lila. Wenn sie den Boss trifft: +10% Boss-Heal & sofortige Evolution. Spieler müssen sie soaken (hoher Schaden!).</li>
                 </ul>
             </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4">
-            <h4 class="text-lg font-bold text-red-400">Boss-Mutationen (Evolution)</h4>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Ventralbeutel:</strong> Konstanter, leichter Raid-AoE. (Gegenheilen).</li>
-                <li><strong>Gasblase:</strong> Hoher Schaden, wird auf alle Spieler in 25m aufgeteilt. (Raid muss soaken/näher ran).</li>
-                <li><strong>Säurestachel:</strong> AoE-Schaden (5m) auf mehrere Spieler. (Raid muss verteilt stehen).</li>
-                <li><strong>Pathogendrüsen:</strong> Starker DoT auf einem Spieler. (Starke Heilung auf das Ziel).</li>
-                <li><strong>Metabolismusschub:</strong> Boss greift 50% schneller an und nutzt Skills öfter. (Tank-CDs / Heil-CDs).</li>
-                <li><strong>Pusteleruption:</strong> Zufällige Bodeneffekte. (Ausweichen).</li>
-            </ul>
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border border-red-900/30">
+            <h4 class="text-lg font-bold text-red-400 border-b border-red-900/50 mb-2">Boss-Evolutionen (Zufällig)</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-300">
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Ventralbeutel:</strong> Konstanter Raid-AoE. (Gegenheilen).</li>
+                    <li><strong>Gasblase:</strong> Hoher Split-Schaden. (Raid kuscheln).</li>
+                    <li><strong>Säurestachel:</strong> AoE auf Spieler. (Verteilen!).</li>
+                </ul>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Pathogendrüsen:</strong> Starker DoT auf einem Ziel. (Fokus-Heilung).</li>
+                    <li><strong>Metabolismusschub:</strong> +50% Tempo/Frequenz. (CDs!).</li>
+                    <li><strong>Pusteleruption:</strong> Bodeneffekte. (Ausweichen).</li>
+                </ul>
+            </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anpassungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Zähflüssiger Horror:</strong> Ein neues, großes Add spawnt alle 30s. Muss getankt werden.</li>
-                <li><strong>Tödliches Mutagen:</strong> Wenn der Horror zu nah an Primordius kommt (ca. 10m), explodiert er und verursacht 1 Mio. Raidschaden (Wipe). (Muss *weit weg* getankt werden).</li>
-                <li><strong>Schwarzes Blut:</strong> Tank-Debuff vom Horror. Erhöht den Schaden des Tanks gegen Primordius.</li>
-                <li><strong>Evolution (Heroic):</strong> Primordius kann nun 4 Mutationen gleichzeitig haben, statt 3.</li>
-            </ul>
+
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">Heroic: Zähflüssiger Horror</h3>
+            <div class="text-sm text-gray-300 space-y-2">
+                <p>Alle 30s spawnt ein riesiges Add. Es läuft langsam zum Boss.</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong class="text-red-400">Tödliches Mutagen:</strong> Kommt der Horror dem Boss zu nahe (<10m), explodiert er und tötet den Raid.</li>
+                    <li><strong>Taktik:</strong> Ein Tank (oder Kiter) fängt den Horror ab und zieht ihn weit weg. Fernkämpfer töten ihn.</li>
+                    <li><strong>Schwarzes Blut:</strong> Tank-Debuff vom Horror erhöht Schaden gegen Primordius (nützlich für den Execute!).</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>

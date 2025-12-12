@@ -47,21 +47,48 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Ra-den ist ein geheimer, reiner Heroic-Boss. Der Kampf ist ein komplexer Zweiphasen-Kampf, der sich um die Kontrolle von zwei verschiedenen Energieformen dreht: <strong class="text-red-400">Anima (Rot)</strong> und <strong class="text-blue-400">Vita (Blau)</strong>.
+            Ra-den ist ein komplexer Heroic-Only-Kampf, bei dem ihr zwischen zwei Energieformen jonglieren müsst: <strong class="text-red-400">Anima (Rot)</strong> und <strong class="text-blue-400">Vita (Blau)</strong>. Der Boss erhält Fähigkeiten basierend auf der Essenz, die er absorbiert. Ihr kontrolliert dies, indem ihr die *andere* Essenz tötet.
         </p>
-        <ul class="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Kernmechanik (<strong class="text-yellow-400">Materialien der Schöpfung</strong>):</strong> Ra-den beschwört regelmäßig eine <strong class="text-red-400">Essenz von Anima</strong> und eine <strong class="text-blue-400">Essenz von Vita</strong>. Der Raid muss *eine* Essenz töten, bevor sie den Boss erreicht. Die andere Essenz, die ihn erreicht, bestimmt seine aktuellen Fähigkeiten (entweder Anima- oder Vita-Toolkit).</li>
-            <li><strong>Soft-Enrage (<strong class="text-red-500">Lingering Energies</strong>):</strong> Jedes Mal, wenn Ra-den eine Essenz absorbiert, erhält er einen stapelbaren Buff, der seinen Schaden um 10% erhöht.</li>
-            <li><strong>Anima-Phase (Rot):</strong> Aktiv, wenn er Anima absorbiert. Fokussiert sich auf Raid-AoE (<strong class="text-red-400">Ruin</strong>) und Stack-Mechaniken (<strong class="text-red-400">Unstable Anima</strong>).</li>
-            <li><strong>Vita-Phase (Blau):</strong> Aktiv, wenn er Vita absorbiert. Fokussiert sich auf Tank-Checks (<strong class="text-blue-400">Fatal Strike</strong>) und Spread-Mechaniken (<strong class="text-blue-400">Unstable Vita</strong>).</li>
-            <li><strong>Der Trick:</strong> Der Raid *muss* den <strong class="text-red-400">Unleashed Anima</strong>-Buff (verdoppelt max. HP, fügt DoT hinzu) aus der Anima-Phase erhalten, um den massiven Nuke <strong class="text-blue-400">Unleashed Vita</strong> (600k Schaden) in der Vita-Phase zu überleben. Dies erzwingt einen Wechsel der Phasen.</li>
-            <li><strong>Phase 2 (unter 40%):</strong> Ra-den korrumpiert die Essenzen. Der Raid muss von nun an *immer* die <strong class="text-red-400">Korrumpierte Anima</strong> töten und den Boss die <strong class="text-blue-400">Korrumpierte Vita</strong> absorbieren lassen. Dies ist ein Burn-Down-Phase.</li>
-        </ul>
-        <h3 class="text-xl font-semibold mt-4 text-blue-450">Taktik (Kurzfassung)</h3>
-        <p class="mb-2"><strong>Start (Phase 1a - Vita):</strong> Raid tötet die <strong class="text-red-400">Essenz von Anima</strong> (Rot). Ra-den absorbiert Vita (Blau). Tanks müssen <strong class="text-blue-400">Fatal Strike</strong> mit aktiver Mitigation (Schildblock etc.) überleben. Raid muss 8m verteilt stehen, um <strong class="text-blue-400">Unstable Vita</strong> zu managen. Add (<strong class="text-blue-400">Crackling Stalker</strong>) muss getötet werden.</p>
-        <p class="mb-2"><strong>Phasenwechsel (Phase 1b - Anima):</strong> Bei den nächsten Orbs tötet der Raid die <strong class="text-blue-400">Essenz von Vita</strong> (Blau). Ra-den absorbiert Anima (Rot). Der Raid stackt 8m (wegen <strong class="text-red-400">Unstable Anima</strong>). Heiler müssen den <strong class="text-red-400">Ruin</strong>-AoE gegenheilen. Add (<strong class="text-red-400">Sanguine Horror</strong>) muss getötet werden. Der Boss wirkt <strong class="text-red-400">Unleashed Anima</strong> und gibt dem Raid den HP-Buff.</p>
-        <p class="mb-2"><strong>Phasenwechsel (Phase 1c - Vita mit Buff):</strong> Bei den nächsten Orbs tötet der Raid wieder die <strong class="text-red-400">Essenz von Anima</strong> (Rot). Der Boss geht zurück in die Vita-Phase. Dank des HP-Buffs überlebt der Raid nun den <strong class="text-blue-400">Unleashed Vita</strong>-Nuke. Dieser Zyklus (Blau -> Rot -> Blau) wird wiederholt.</p>
-        <p class="mb-2"><strong>Phase 2 (Burn bei 40%):</strong> Der Raid tötet *immer* die <strong class="text-red-400">Korrumpierte Anima</strong> und lässt den Boss Vita absorbieren. KR/HT ziehen und Boss töten, bevor der Soft-Enrage (<strong class="text-red-500">Lingering Energies</strong>) den Schaden zu hoch treibt.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Vita-Phase (Blau):</strong> Überlebt <strong class="text-blue-300">Tödlicher Stoß</strong> nur mit aktiver Mitigation (Schildblock, Todesstoß etc.)! Sonst One-Shot.</li>
+                    <li><strong>Anima-Phase (Rot):</strong> <strong class="text-red-300">Mörderischer Schlag</strong> verursacht Schaden basierend auf *aktueller* HP. (Nicht vollhheilen lassen!).</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DDs & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Vita-Phase:</strong> Verteilt stehen! <strong class="text-blue-300">Instabile Vita</strong> springt zum weitesten Spieler. (Rotation bilden!).</li>
+                    <li><strong>Anima-Phase:</strong> Kuscheln! <strong class="text-red-300">Instabile Anima</strong> teilt massiven Schaden.</li>
+                    <li><strong>Zyklus:</strong> Vita (Start) -> Anima (für HP-Buff) -> Vita (mit Buff überleben) -> P2 (Burn).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Krieger / Paladine / DKs (Tanks):</strong><br>
+                    Spart Wut/Heilige Kraft/Runenmacht auf, um für JEDEN <strong class="text-blue-300">Tödlichen Stoß</strong> aktive Mitigation bereit zu haben.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Hexenmeister:</strong><br>
+                    Der <em>Zirkel</em> ist extrem stark, um als "Empfänger" für <strong class="text-blue-300">Instabile Vita</strong> schnell auf Distanz zu kommen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Magier / Jäger:</strong><br>
+                    Können <strong class="text-blue-300">Instabile Vita</strong> notfalls mit Eisblock/Abschreckung "löschen" (unterbricht die Kette, aber sicher).
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Heiler (P2):</strong><br>
+                    In der Endphase (ab 40%) steigt der Raidschaden permanent an (<strong class="text-red-300">Verweilende Energien</strong>). Spart große CDs hierfür auf.
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -174,42 +201,40 @@
     </h2>
     <div class="collapsible-content">
         <div class="mb-4 bg-slate-750 p-4 rounded-lg border-l-4 border-yellow-400">
-            <h4 class="text-lg font-bold text-yellow-400">Kernmechanik: Materialien der Schöpfung</h4>
+            <h4 class="text-lg font-bold text-yellow-400">Der Zyklus der Schöpfung</h4>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong>Materialien der Schöpfung:</strong> Beschwört eine <strong class="text-red-400">Essenz von Anima</strong> und eine <strong class="text-blue-400">Essenz von Vita</strong>. Je nachdem, welche absorbiert wird, wechselt Ra-den seine Fähigkeiten.</li>
-                <li><strong>Imbued with Anima (Rot):</strong> Erhält der Boss, wenn er Anima absorbiert.</li>
-                <li><strong>Imbued with Vita (Blau):</strong> Erhält der Boss, wenn er Vita absorbiert.</li>
-                <li><strong>Lingering Energies (Soft Enrage):</strong> Jede absorbierte Essenz erhöht Ra-dens Schaden permanent um 10% (stapelbar).</li>
+                <li><strong>Mechanik:</strong> Ra-den beschwört eine Rote (Anima) und eine Blaue (Vita) Kugel. Ihr tötet eine, er frisst die andere.</li>
+                <li><strong>Ziel:</strong> Ihr müsst einmal <strong class="text-red-400">Anima</strong> absorbieren lassen, um den Buff <strong class="text-red-300">Entfesselte Anima</strong> (+100% HP) zu erhalten.</li>
+                <li><strong>Warum?</strong> Nur mit diesem Buff überlebt ihr den Nuke (<strong class="text-blue-300">Entfesselte Vita</strong>) in der zweiten Vita-Phase.</li>
+                <li><strong>Ablauf:</strong> Start (Vita) -> Wechsel zu Anima (für Buff) -> Zurück zu Vita -> P2 (Burn).</li>
             </ul>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-red-400">Anima-Fähigkeiten (Rot)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Murderous Strike:</strong> Schlag gegen den Tank, der Schaden in Höhe der *aktuellen* HP des Tanks verursacht (tickt 10s lang alle 2s). Ignoriert die meisten Schadensreduktionen.</li>
-                    <li><strong>Ruin:</strong> Konstanter Raid-AoE-Schaden alle 2 Sekunden.</li>
-                    <li><strong>Unstable Anima:</strong> Verursacht 15s nach dem Debuff eine Explosion, die 2,5 Mio. Schaden auf alle Spieler in 8m aufteilt. (Zusammenlaufen!).</li>
-                    <li><strong>Summon Sanguine Horror:</strong> Beschwört ein Add, das <strong class="text-red-400">Sanguine Volley</strong> (Raid-AoE) wirkt. Muss getötet werden.</li>
-                    <li><strong>Unleashed Anima:</strong> Verdoppelt die max. HP aller Spieler, fügt aber auch einen schweren DoT zu. (Wird benötigt, um <strong class="text-blue-400">Unleashed Vita</strong> zu überleben).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Vita-Phase (Blau)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-blue-300">Tödlicher Stoß:</strong> One-Shot auf Tank ohne aktive Mitigation.</li>
+                    <li><strong class="text-blue-300">Instabile Vita:</strong> Blitz springt zum weitesten Spieler. Getroffene erhalten Debuff (Empfindlichkeit). Rotation nötig!</li>
+                    <li><strong class="text-blue-300">Entfesselte Vita:</strong> Massiver Naturschaden (600k+). Tödlich ohne HP-Buff.</li>
+                    <li>Add: <strong class="text-blue-200">Knisternder Pirscher</strong> (Kettenblitz).</li>
                 </ul>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg">
-                <h4 class="text-lg font-bold text-blue-400">Vita-Fähigkeiten (Blau)</h4>
-                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                    <li><strong>Fatal Strike:</strong> Ein Schlag, der den Tank sofort tötet, wenn er keine aktive Mitigation (Schildblock, Schild der Rechtschaffenen, BlutSchild etc.) nutzt.</li>
-                    <li><strong>Unstable Vita:</strong> Debuff auf einem Spieler. Alle 5s springt der Debuff auf den am weitesten entfernten Spieler über und verursacht Schaden an allen auf dem Weg. Getroffene Spieler erhalten <strong class="text-blue-400">Vita Sensitivity</strong> (tödlich bei erneutem Treffer).</li>
-                    <li><strong>Summon Crackling Stalker:</strong> Beschwört ein Add, das <strong class="text-blue-400">Crackle</strong> (Kettenblitz) wirkt.</li>
-                    <li><strong>Unleashed Vita:</strong> Verursacht 600.000 Naturschaden an allen Spielern. (Nur mit dem <strong class="text-red-400">Unleashed Anima</strong> HP-Buff überlebbar).</li>
+            <div class="bg-slate-750 p-4 rounded-lg border border-red-900/30">
+                <h4 class="text-lg font-bold text-red-400 border-b border-red-900/50 mb-2">Anima-Phase (Rot)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-300">Mörderischer Schlag:</strong> Tank-DoT basierend auf *aktueller* HP. Tank niedrig halten!</li>
+                    <li><strong class="text-red-300">Instabile Anima:</strong> Explosion (2.5 Mio Dmg) geteilt auf alle Spieler in 8m. Stacken!</li>
+                    <li><strong class="text-red-300">Entfesselte Anima:</strong> Verdoppelt HP, gibt DoT. Essenziell für den Kampf.</li>
+                    <li>Add: <strong class="text-red-200">Sanguiner Horror</strong> (Raid-AoE).</li>
                 </ul>
             </div>
         </div>
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500">
-            <h3 class="text-xl font-bold text-red-500">Phase 2 (unter 40% HP)</h3>
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">Phase 2: Die Zerstörung (ab 40%)</h3>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li>Ra-den korrumpiert die Essenzen zu <strong class="text-red-400">Corrupted Anima</strong> und <strong class="text-blue-400">Corrupted Vita</strong>.</li>
-                <li>Der Raid muss ab jetzt *immer* die <strong class="text-red-400">Corrupted Anima</strong> töten.</li>
-                <li>Der Boss absorbiert die <strong class="text-blue-400">Corrupted Vita</strong>, was den Raid-Schaden erhöht.</li>
-                <li>Dies ist eine Burn-Phase bis zum Tod des Bosses.</li>
+                <li>Ra-den wirkt keine Kugeln mehr, sondern absorbiert <strong class="text-blue-300">Korrupte Vita</strong> und <strong class="text-red-300">Korrupte Anima</strong>.</li>
+                <li><strong>Strategie:</strong> Tötet IMMER die Rote Kugel (<strong class="text-red-400">Korrupte Anima</strong>).</li>
+                <li>Der Boss erhält dadurch stapelbare Dmg-Buffs. <strong>Zündet KR/HT und tötet ihn schnell!</strong></li>
             </ul>
         </div>
     </div>
