@@ -166,31 +166,91 @@
                         </table>
                     </div>
                 </div>
+<div class="assignment-block">
+    <div class="flex justify-between items-center border-b border-slate-600 mb-2 pb-1">
+        <h4 class="text-lg font-bold text-gray-400">📍 Positionen (17 Spieler)</h4>
+        <button id="btn-sync-qon" class="bg-slate-700 hover:bg-slate-600 text-yellow-400 border border-yellow-600/50 text-[10px] py-1 px-2 rounded transition-colors flex items-center gap-1" title="Importiert die Aufstellung von Iron Qon">
+            <span class="text-lg">↺</span> Sync von Qon
+        </button>
+    </div>
 
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-gray-400 border-b border-slate-600 mb-2">📍 Positionen (17 Spieler)</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">1</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_1" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">2</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_2" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">3</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_3" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">4</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_4" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">5</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_5" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">6</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_6" data-assignment-pool="twins_celestials"></select></div>
-                        
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">7</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_7" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">8</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_8" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">9</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_9" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">10</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_10" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">11</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_11" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">12</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_12" data-assignment-pool="twins_celestials"></select></div>
+    <div class="bg-slate-700 border border-slate-600 rounded-lg overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-slate-600">
+            
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">1</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_1" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">2</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_2" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">3</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_3" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">4</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_4" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">5</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_5" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">6</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_6" data-assignment-pool="twins_celestials"></select>
+            </div>
 
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">13</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_13" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">14</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_14" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">15</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_15" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">16</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_16" data-assignment-pool="twins_celestials"></select></div>
-                        <div class="flex justify-between items-center bg-slate-800 p-1.5 rounded"><span class="text-gray-400 font-bold w-6 text-xs">17</span> <select class="assignment-select text-xs w-full" data-assignment-id="twins_celestial_17" data-assignment-pool="twins_celestials"></select></div>
-                    </div>
-                </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">7</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_7" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">8</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_8" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">9</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_9" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">10</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_10" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">11</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_11" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">12</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_12" data-assignment-pool="twins_celestials"></select>
+            </div>
+
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">13</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_13" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">14</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_14" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">15</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_15" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2">
+                <span class="text-gray-500 font-mono text-xs w-4 text-right">16</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_16" data-assignment-pool="twins_celestials"></select>
+            </div>
+            <div class="bg-slate-800 hover:bg-slate-750 p-1.5 flex items-center gap-2 lg:col-span-1"> <span class="text-gray-500 font-mono text-xs w-4 text-right">17</span> 
+                <select class="assignment-select text-xs w-full border-none bg-slate-900/50" data-assignment-id="twins_celestial_17" data-assignment-pool="twins_celestials"></select>
+            </div>
+            
+            <div class="bg-slate-800/50 hidden lg:block"></div> 
+        </div>
+    </div>
+</div>
 
                 <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-gold text-xs text-gray-300">
                     <h4 class="text-sm font-bold text-gold mb-2 uppercase">Wichtige Hinweise</h4>
@@ -395,5 +455,87 @@ const TRIGGER_OPTIONS = [
             container.innerHTML = html;
         }
     };
+// --- SYNC BUTTON LOGIC (Iron Qon -> Twins) ---
+        const syncBtn = document.getElementById('btn-sync-qon');
+        
+        if (syncBtn) {
+            // Optional: Button initial sperren und erst entsperren, wenn Auth geladen ist
+            // Hier prüfen wir es einfach beim Klick, das ist am sichersten ohne tiefe Eingriffe
+            
+            syncBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                // 1. AUTH CHECK
+                const user = firebase.auth().currentUser;
+                if (!user) {
+                    alert("⚠️ Funktion gesperrt!\nBitte logge dich ein, um Daten zu importieren.");
+                    return;
+                }
+                
+                // 2. Bestätigung
+                if (!confirm("Möchtest du die Positionen (1-17) von Iron Qon importieren?\nDies überschreibt die aktuellen Einträge hier.")) {
+                    return;
+                }
+
+                const originalText = syncBtn.innerHTML;
+                syncBtn.innerHTML = "⏳ Lade...";
+                syncBtn.disabled = true;
+
+                try {
+                    const db = firebase.firestore();
+                    const raidId = window.currentRaidId; 
+
+                    if (!raidId) throw new Error("Keine Raid-ID gefunden.");
+
+                    // Daten von Iron Qon holen
+                    const docRef = db.collection('raids').doc(raidId).collection('bosses').doc('iron-qon');
+                    const docSnap = await docRef.get();
+
+                    if (!docSnap.exists) {
+                        alert("Keine Daten bei Iron Qon gefunden. Speichere dort erst etwas ab.");
+                        syncBtn.innerHTML = originalText;
+                        syncBtn.disabled = false;
+                        return;
+                    }
+
+                    const qonData = docSnap.data();
+                    let updateCount = 0;
+
+                    // Loop durch 1-17
+                    for (let i = 1; i <= 17; i++) {
+                        const sourceValue = qonData[`qon_pos_${i}`]; // Quelle: Iron Qon IDs
+                        const targetSelect = document.querySelector(`select[data-assignment-id="twins_celestial_${i}"]`); // Ziel: Twins IDs
+
+                        if (sourceValue && targetSelect) {
+                            targetSelect.value = sourceValue;
+                            
+                            // Event feuern zum Speichern
+                            const event = new Event('change', { bubbles: true });
+                            targetSelect.dispatchEvent(event);
+                            
+                            // Farbe optisch setzen
+                            const selectedOption = targetSelect.options[targetSelect.selectedIndex];
+                            if (selectedOption && selectedOption.dataset.color) {
+                                targetSelect.style.color = selectedOption.dataset.color;
+                            }
+                            
+                            updateCount++;
+                        }
+                    }
+
+                    syncBtn.innerHTML = "✅ Fertig!";
+                    setTimeout(() => {
+                        syncBtn.innerHTML = originalText;
+                        syncBtn.disabled = false;
+                    }, 1500);
+
+                } catch (error) {
+                    console.error("Sync Error:", error);
+                    alert("Fehler: " + error.message);
+                    syncBtn.innerHTML = "❌ Fehler";
+                    syncBtn.disabled = false;
+                }
+            });
+        }
 </script>
 </main>
