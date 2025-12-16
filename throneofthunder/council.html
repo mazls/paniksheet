@@ -193,6 +193,15 @@
         </div>
     </div>
 </section>
+<div class="mt-6 border-t border-slate-600 pt-6">
+    <h3 class="text-xl font-bold text-gray-200 mb-4 flex items-center gap-2">
+        📜 CD-Einteilung Übersicht
+    </h3>
+    
+    <div id="council-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-900 p-4 rounded-lg border border-slate-700 min-h-[100px]">
+        <p class="text-gray-500 text-xs italic col-span-2 text-center py-4">Warte auf Eingabe...</p>
+    </div>
+</div>
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Global WA Export
@@ -345,6 +354,161 @@
             }
             container.innerHTML = html;
         }
+        const plannerContainer = document.querySelector('[id$="-planner-container"]');
+    
+    if (plannerContainer) {
+        plannerContainer.addEventListener('change', () => {
+            // Aufruf OHNE Parameter -> Funktion sucht sich den Prefix selbst
+            setTimeout(window.updatePlannerSummary, 50);
+        });
+        
+        // Initialer Aufruf
+        setTimeout(window.updatePlannerSummary, 500);
+    }
     };
+window.updatePlannerSummary = function() {
+    // 1. AUTOMATISCHE ERKENNUNG
+    // Wir suchen das Element, dessen ID auf "-planner-summary" endet
+    const container = document.querySelector('[id$="-planner-summary"]');
+
+    if (!container) return; // Nichts gefunden, abbrechen
+
+    // Wir schneiden "-planner-summary" ab, um den Prefix zu bekommen (z.B. "iron-qon" oder "twins")
+    const prefix = container.id.replace('-planner-summary', '');
+
+    // Datenbank holen
+    const cooldownDB = window.globalCooldowns || [];
+    const rosterDB = window.globalRoster || [];
+    
+    let seqGroups = {};
+    let healthGroups = {};
+
+    // Hilfsfunktion: Zeit String zu Sekunden
+    const parseTime = (str) => {
+        if (!str) return 0;
+        const parts = str.split(':');
+        if (parts.length === 2) return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        return parseInt(str) || 0;
+    };
+
+    // 2. DATEN SAMMELN
+    for (let i = 1; i <= 50; i++) {
+        // Hier nutzen wir jetzt den automatisch erkannten 'prefix'
+        const triggerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-trigger"]`);
+        const playerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-player"]`);
+        const cdEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-cooldown"]`);
+        const condEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-condition"]`);
+        const timeEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-time"]`);
+        const npcEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-npc"]`);
+
+        if (!triggerEl || !triggerEl.value || !playerEl || !playerEl.value) continue;
+
+        const triggerText = triggerEl.options[triggerEl.selectedIndex].text;
+        const condition = parseFloat(condEl.value) || 0;
+        const timeVal = timeEl.value || "";
+        const timeSeconds = parseTime(timeVal);
+        const playerVal = playerEl.value;
+        const cdText = cdEl.value;
+        
+        // Cooldown Farbe
+        let cdColor = "#e2e8f0"; 
+        if (cdEl.selectedIndex >= 0) {
+            const opt = cdEl.options[cdEl.selectedIndex];
+            if (opt && opt.dataset.color) cdColor = opt.dataset.color;
+        }
+
+        // Spieler Farbe
+        let playerColor = "#ffffff";
+        const playerObj = rosterDB.find(p => p.name === playerVal);
+        if (playerObj && window.classColors && window.classColors[playerObj.class]) {
+            playerColor = window.classColors[playerObj.class];
+        } else if (playerObj && playerObj.color) {
+            playerColor = playerObj.color;
+        }
+
+        // Spell ID
+        let spellId = 0;
+        const cdEntry = cooldownDB.find(c => c.name === cdText);
+        if (cdEntry && cdEntry.spellId) spellId = cdEntry.spellId;
+
+        const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor, spellId: spellId };
+        const isHealth = triggerText.includes("Health") || triggerEl.value.includes("HEALTH");
+
+        if (isHealth) {
+            const npcName = npcEl && npcEl.value ? npcEl.value : "Boss";
+            const key = `${npcName}_${condition}`;
+            if (!healthGroups[key]) healthGroups[key] = { title: `${condition}% ${npcName}`, percent: condition, entries: [] };
+            healthGroups[key].entries.push(entry);
+        } else {
+            const key = `${condition}_${triggerText}`;
+            if (!seqGroups[key]) seqGroups[key] = { title: `#${condition} ${triggerText}`, triggerName: triggerText, count: condition, entries: [] };
+            seqGroups[key].entries.push(entry);
+        }
+    }
+
+    // 3. SORTIEREN
+    let seqArray = Object.values(seqGroups).sort((a, b) => {
+        if (a.count !== b.count) return a.count - b.count; 
+        return a.triggerName.localeCompare(b.triggerName);
+    });
+
+    let healthArray = Object.values(healthGroups).sort((a, b) => b.percent - a.percent);
+
+    const sortEntries = (groups) => {
+        groups.forEach(g => {
+            g.entries.sort((a, b) => a.timeSec - b.timeSec);
+        });
+    };
+    sortEntries(seqArray);
+    sortEntries(healthArray);
+
+    // 4. HTML GENERIEREN
+    let html = "";
+
+    const renderBlock = (title, entries, colorClass, borderClass) => {
+        return `
+        <div class="mb-1.5 relative pl-2 border-l-2 ${borderClass}">
+            <h5 class="text-${colorClass} font-bold text-[10px] uppercase tracking-wide mb-0.5 opacity-80">${title}</h5>
+            <div class="space-y-0.5">
+                ${entries.map(e => {
+                    let linkContent = e.cd;
+                    if (e.spellId > 0) {
+                        linkContent = `<a href="https://www.wowhead.com/spell=${e.spellId}" target="_blank" style="color: ${e.color} !important; text-decoration: none; font-weight: 600;">${e.cd}</a>`;
+                    } else {
+                        linkContent = `<span style="color:${e.color}; font-weight:600;">${e.cd}</span>`;
+                    }
+
+                    return `
+                    <div class="text-[11px] text-gray-300 bg-slate-800/40 px-1.5 py-0.5 rounded flex items-center gap-2 hover:bg-slate-800 transition-colors">
+                        <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}</span>
+                        <div class="flex-1 truncate">
+                            <strong style="color: ${e.playerColor}" class="mr-1">${e.player}</strong>
+                            <span class="text-gray-500 text-[9px] mr-1">➜</span>
+                            ${linkContent}
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+    };
+
+    if (seqArray.length > 0) {
+        html += `<div class="mb-4"><h4 class="text-yellow-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">⚡ Ablauf (#)</h4>`;
+        seqArray.forEach(g => html += renderBlock(g.title, g.entries, "yellow-200", "border-yellow-600/40"));
+        html += `</div>`;
+    }
+
+    if (healthArray.length > 0) {
+        html += `<div><h4 class="text-red-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">❤️ Phasen (%)</h4>`;
+        healthArray.forEach(g => html += renderBlock(g.title, g.entries, "red-200", "border-red-600/40"));
+        html += `</div>`;
+    }
+
+    if (!html) html = `<div class="col-span-2 text-center text-gray-600 text-xs py-4 italic">Keine Einträge.</div>`;
+
+    container.innerHTML = html;
+    
+    if (window.$WowheadPower) window.$WowheadPower.refreshLinks();
+};
 </script>
 </main>
