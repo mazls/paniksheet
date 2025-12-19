@@ -232,16 +232,9 @@
 
     </div>
 </section>
-<div class="mt-6 border-t border-slate-600 pt-6">
-    <h3 class="text-xl font-bold text-gray-200 mb-4 flex items-center gap-2">
-        📜 CD-Einteilung Übersicht
-    </h3>
-    
-    <div id="jikun-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-900 p-4 rounded-lg border border-slate-700 min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-4">Warte auf Eingabe...</p>
-    </div>
-</div>
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Global WA Export
         </button>
@@ -252,7 +245,18 @@
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
-
+<div class="mb-6">
+    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+        <span class="text-xl">📜</span> CD-Einteilung Übersicht
+    </h3>
+    
+    <div id="jikun-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+            Warte auf Eingabe... <br>
+            <span class="opacity-50">(Ändere etwas im Planer, um die Vorschau zu laden)</span>
+        </p>
+    </div>
+</div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                                                 <div class="mt-4 text-xs text-gray-500 italic">
@@ -307,7 +311,7 @@
 
 <script>
     // Konfiguration der Wellen (Wie viele Teams pro Welle?)
-    const WAVES_CONFIG = [
+const WAVES_CONFIG = [
         { id: 1, count: 1 }, { id: 2, count: 1 }, { id: 3, count: 1 },
         { id: 4, count: 2 }, { id: 5, count: 2 }, 
         { id: 6, count: 1 }, 
@@ -321,15 +325,30 @@
         { id: 18, count: 3 }, { id: 19, count: 3 }
     ];
 
-    // Richtungs-Optionen für Dropdowns
-    const DIR_OPTIONS = `
-        <option value="NE">NE (Star)</option>
-        <option value="SE">SE (Square)</option>
-        <option value="SW">SW (Cross)</option>
-        <option value="W">W (Diamond)</option>
-        <option value="NW">NW (Triangle)</option>
-        <option value="M">M (Middle)</option>
-    `;
+    // STANDARD-TAKTIK (Original Sheet Positionen)
+    // Format: "WaveID-Index": { lvl: "LOWER/UPPER", dir: "NE/SE/..." }
+    // Index: 0 = Erstes Nest, 1 = Zweites (b), 2 = Drittes (c)
+    const WAVE_DEFAULTS = {
+        "1-0": { lvl: "LOWER", dir: "NE" },
+        "2-0": { lvl: "LOWER", dir: "SE" },
+        "3-0": { lvl: "LOWER", dir: "SW" },
+        "4-0": { lvl: "LOWER", dir: "W" },  "4-1": { lvl: "UPPER", dir: "NE" },
+        "5-0": { lvl: "LOWER", dir: "NW" }, "5-1": { lvl: "UPPER", dir: "SE" },
+        "6-0": { lvl: "UPPER", dir: "MIDDLE" },
+        "7-0": { lvl: "LOWER", dir: "NE" }, "7-1": { lvl: "UPPER", dir: "SW" },
+        "8-0": { lvl: "LOWER", dir: "SE" }, "8-1": { lvl: "UPPER", dir: "NW" },
+        "9-0": { lvl: "LOWER", dir: "SW" },
+        "10-0": { lvl: "LOWER", dir: "W" },  "10-1": { lvl: "UPPER", dir: "NE" },
+        "11-0": { lvl: "LOWER", dir: "NW" }, "11-1": { lvl: "UPPER", dir: "SE" },
+        "12-0": { lvl: "LOWER", dir: "NE" }, "12-1": { lvl: "UPPER", dir: "M" },
+        "13-0": { lvl: "LOWER", dir: "SE" }, "13-1": { lvl: "UPPER", dir: "SW" },
+        "14-0": { lvl: "LOWER", dir: "SW" }, "14-1": { lvl: "UPPER", dir: "NE" }, "14-2": { lvl: "UPPER", dir: "NW" },
+        "15-0": { lvl: "LOWER", dir: "W" },  "15-1": { lvl: "UPPER", dir: "SE" },
+        "16-0": { lvl: "LOWER", dir: "NW" }, "16-1": { lvl: "LOWER", dir: "NE" }, "16-2": { lvl: "UPPER", dir: "MIDDLE" },
+        "17-0": { lvl: "LOWER", dir: "SE" }, "17-1": { lvl: "UPPER", dir: "SW" },
+        "18-0": { lvl: "LOWER", dir: "SW" }, "18-1": { lvl: "UPPER", dir: "NE" }, "18-2": { lvl: "UPPER", dir: "NW" },
+        "19-0": { lvl: "LOWER", dir: "NW" }, "19-1": { lvl: "LOWER", dir: "NE" }, "19-2": { lvl: "UPPER", dir: "SE" }
+    };
 
     // 1. Statisches HTML generieren
     (function renderStaticStructure() {
@@ -341,7 +360,6 @@
             for(let t=1; t<=5; t++) {
                 let playersHtml = '';
                 for(let p=1; p<=5; p++) {
-                    // ID: jikun-team-1-p1
                     playersHtml += `<select class="assignment-select team-player-select mb-1 text-xs" 
                                     data-assignment-id="jikun-team-${t}-p${p}" 
                                     data-assignment-pool="jikun-teams" 
@@ -363,7 +381,30 @@
         if (waveContainer) {
             let rowsHtml = '';
             
-            // Helper für Team-Dropdown
+            // Helper: Dropdown bauen mit VORAUSWAHL
+            const getConfigBlock = (dbKey, def) => {
+                const lvlOpts = `<option value="LOWER" ${def.lvl === 'LOWER' ? 'selected' : ''}>LOW</option>
+                                 <option value="UPPER" ${def.lvl === 'UPPER' ? 'selected' : ''}>UP</option>`;
+                
+                const dirOpts = `
+                    <option value="NE" ${def.dir === 'NE' ? 'selected' : ''}>NE (Star)</option>
+                    <option value="SE" ${def.dir === 'SE' ? 'selected' : ''}>SE (Square)</option>
+                    <option value="SW" ${def.dir === 'SW' ? 'selected' : ''}>SW (Cross)</option>
+                    <option value="W"  ${def.dir === 'W'  ? 'selected' : ''}>W (Diamond)</option>
+                    <option value="NW" ${def.dir === 'NW' ? 'selected' : ''}>NW (Triangle)</option>
+                    <option value="MIDDLE"  ${def.dir === 'MIDDLE'  ? 'selected' : ''}>M (Middle)</option>
+                `;
+
+                return `<div class="flex gap-1 mb-1">
+                            <select class="config-select w-1/2 text-[10px] px-0 text-center wave-lvl" data-assignment-id="${dbKey}-lvl">
+                                ${lvlOpts}
+                            </select>
+                            <select class="config-select w-1/2 text-[10px] px-0 text-center wave-dir" data-assignment-id="${dbKey}-dir">
+                                ${dirOpts}
+                            </select>
+                        </div>`;
+            };
+
             const getTeamSelect = (dbKey) => {
                 return `<select class="config-select w-full mb-1 text-xs wave-team-select" data-assignment-id="${dbKey}-team">
                             <option value="">- Team -</option>
@@ -375,36 +416,24 @@
                         </select>`;
             };
 
-            // Helper für Config-Block (Lvl + Dir)
-            const getConfigBlock = (dbKey) => {
-                return `<div class="flex gap-1 mb-1">
-                            <select class="config-select w-1/2 text-[10px] px-0 text-center wave-lvl" data-assignment-id="${dbKey}-lvl">
-                                <option value="LOWER">LOW</option>
-                                <option value="UPPER">UP</option>
-                            </select>
-                            <select class="config-select w-1/2 text-[10px] px-0 text-center wave-dir" data-assignment-id="${dbKey}-dir">
-                                ${DIR_OPTIONS}
-                            </select>
-                        </div>`;
-            };
-
             WAVES_CONFIG.forEach(wave => {
                 let cells = '';
-                const suffixes = ['', 'b', 'c']; // Für Einsatz A, B, C
+                const suffixes = ['', 'b', 'c']; 
 
                 for(let i=0; i<3; i++) {
                     if (i < wave.count) {
-                        // Slot existiert
                         const suffix = suffixes[i];
                         const dbKey = `jikun-wave-${wave.id}${suffix}`;
                         
+                        // Default Werte laden
+                        const def = WAVE_DEFAULTS[`${wave.id}-${i}`] || { lvl: "LOWER", dir: "NE" };
+                        
                         cells += `
                         <td class="p-2 border-l border-slate-700 bg-slate-800/30 align-top wave-slot" data-wave="${wave.id}" data-suffix="${suffix}">
-                            ${getConfigBlock(dbKey)}
+                            ${getConfigBlock(dbKey, def)}
                             ${getTeamSelect(dbKey)}
                         </td>`;
                     } else {
-                        // Leerer Slot (Grau)
                         cells += `<td class="p-2 border-l border-slate-700 bg-black/20"></td>`;
                     }
                 }
@@ -421,8 +450,9 @@
 
     // 2. HAUPTFUNKTION
     window.initializePageSpecificCode = async function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        // --- Setup ---
+        window.globalCooldowns = allCooldowns; // Für Summary wichtig
+        window.globalRoster = roster;
+
         const { setDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
         const db = firebaseTools.db;
 
@@ -432,63 +462,46 @@
             const ts = serverTimestamp();
             const payload = {};
             const editor = sessionStorage.getItem('currentManager') || 'Unbekannt';
-
             Object.entries(updatesObj).forEach(([id, val]) => {
-                // Unterscheidung: Player (in Teams) vs Text (Configs/Team-Wahl)
-                // Alles was "-p1" etc endet ist ein Spieler, Rest sind Configs
                 const isPlayer = id.match(/-p\d+$/); 
                 payload[id] = { [isPlayer ? 'player' : 'player']: val, editor, timestamp: ts }; 
-                // Hinweis: Wir nutzen 'player' Feld auch für Configs (Lvl/Dir/TeamID), damit das Laden einheitlich bleibt
             });
-
-            try {
-                await setDoc(doc(db, "raid-tool-data", "boss-ji-kun"), payload, { merge: true });
-            } catch (e) { console.error("Fehler beim Speichern:", e); }
+            try { await setDoc(doc(db, "raid-tool-data", "boss-ji-kun"), payload, { merge: true }); } 
+            catch (e) { console.error("Err:", e); }
         };
 
-        // --- Werte wiederherstellen & Listener ---
-
-        // 1. Configs & Team-Auswahl (in der Wellen-Tabelle)
+        // --- Werte wiederherstellen ---
         document.querySelectorAll('.config-select').forEach(sel => {
+            // Wenn in DB gespeichert, überschreibe den Default
             const savedVal = assignments[sel.dataset.assignmentId]?.player;
             if (savedVal) sel.value = savedVal;
             
             if (sel.dataset._wired === '1') return;
             sel.dataset._wired = '1';
-        
             sel.addEventListener('change', (e) => {
                 jiKunDirectSave({ [e.target.dataset.assignmentId]: e.target.value });
                 updateExports();
             });
         });
-
-        // 2. Custom Labels (falls vorhanden, z.B. in CD Planer)
-        document.querySelectorAll('.custom-label-input').forEach(input => {
-            const savedVal = assignments[input.dataset.assignmentId]?.text;
-            if (savedVal) input.value = savedVal;
-            if (input.dataset._wired === '1') return;
-            input.dataset._wired = '1';
-            input.addEventListener('change', (e) => { /* Analog speichern */ });
+        document.querySelectorAll('.team-player-select').forEach(sel => {
+             // Analog für Team-Spieler (wird autom. durch Main Tool geladen, aber für Export wichtig)
+             sel.addEventListener('change', () => setTimeout(updateExports, 50));
         });
 
         // --- Export Logik ---
         function updateExports() {
             let wRows = [];
             
-            // Wir iterieren über alle aktiven Wellen-Slots
             document.querySelectorAll('.wave-slot').forEach(slot => {
                 const waveId = slot.dataset.wave;
                 const suffix = slot.dataset.suffix; // '', 'b', 'c'
                 
-                // Configs lesen
                 const lvl = slot.querySelector('.wave-lvl')?.value || "LOWER";
                 const dir = slot.querySelector('.wave-dir')?.value || "NE";
                 const teamId = slot.querySelector('.wave-team-select')?.value;
 
                 if (teamId) {
-                    // Spieler des Teams suchen
                     let players = [];
-                    // Suche alle Selects, die zu diesem Team gehören (data-team-id Attribut)
                     document.querySelectorAll(`.team-player-select[data-team-id="${teamId}"]`).forEach(pSelect => {
                         if (pSelect.value && !pSelect.value.includes('❌')) {
                             players.push(pSelect.value);
@@ -496,9 +509,20 @@
                     });
 
                     if (players.length > 0) {
-                        // Format: WAVE{id}{suffix}-{LVL}{DIR}-{players}
-                        // Beispiel: WAVE4b-UPPERSW-Mage,Hexer,...
-                        wRows.push(`WAVE${waveId}${suffix}-${lvl}${dir}-${players.join(',')}`);
+                        // EXPORT FORMAT FIX:
+                        // Wenn suffix 'b' oder 'c' ist, KEIN "WAVE..." Prefix, sondern nur Location.
+                        // Sonst: WAVE{id}-Location-Players
+                        
+                        const location = `${lvl}${dir}`;
+                        const playerStr = players.join(',');
+
+                        if (suffix === 'b' || suffix === 'c') {
+                            // "Original" Format für Folge-Einsätze: NUR Location
+                            wRows.push(`${location}-${playerStr}`);
+                        } else {
+                            // Standard Format für ersten Einsatz
+                            wRows.push(`WAVE${waveId}-${location}-${playerStr}`);
+                        }
                     }
                 }
             });
@@ -507,17 +531,11 @@
             if(waveOutput) waveOutput.value = wRows.join(',');
         }
 
-        // Globaler Listener für Änderungen (damit der Export live aktualisiert wird)
         document.body.addEventListener('change', (e) => {
-            if (e.target.closest('#dynamic-planning')) {
-                setTimeout(updateExports, 100);
-            }
+            if (e.target.closest('#dynamic-planning')) setTimeout(updateExports, 100);
         });
-
-        // Initiale Berechnung
         setTimeout(updateExports, 1000);
 
-        // Copy Button
         const btn = document.getElementById('copy-wave-btn');
         if(btn) {
             btn.addEventListener('click', () => {
@@ -529,8 +547,7 @@
             });
         }
 
-        // --- WA Planner (Grid unten) ---
-        // (Hier nur der Init-Code, HTML Struktur ist oben)
+        // --- WA Planner Init ---
         const waContainer = document.getElementById('jikun-planner-container');
         if (waContainer && waContainer.innerHTML.trim() === "") {
             const TRIGGER_OPTIONS = [
@@ -560,17 +577,13 @@
             }
             waContainer.innerHTML = html;
         }
+
+        // Planner Summary Auto-Start
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
-    
-    if (plannerContainer) {
-        plannerContainer.addEventListener('change', () => {
-            // Aufruf OHNE Parameter -> Funktion sucht sich den Prefix selbst
-            setTimeout(window.updatePlannerSummary, 50);
-        });
-        
-        // Initialer Aufruf
-        setTimeout(window.updatePlannerSummary, 500);
-    }
+        if (plannerContainer) {
+            plannerContainer.addEventListener('change', () => setTimeout(window.updatePlannerSummary, 50));
+            setTimeout(window.updatePlannerSummary, 500);
+        }
     };
 window.updatePlannerSummary = function() {
     // 1. AUTOMATISCHE ERKENNUNG
@@ -686,7 +699,7 @@ window.updatePlannerSummary = function() {
 
                     return `
                     <div class="text-[11px] text-gray-300 bg-slate-800/40 px-1.5 py-0.5 rounded flex items-center gap-2 hover:bg-slate-800 transition-colors">
-                        <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}</span>
+                        <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}s</span>
                         <div class="flex-1 truncate">
                             <strong style="color: ${e.playerColor}" class="mr-1">${e.player}</strong>
                             <span class="text-gray-500 text-[9px] mr-1">➜</span>

@@ -300,15 +300,7 @@
         </div>
     </div>
 </section>
-<div class="mt-6 border-t border-slate-600 pt-6">
-    <h3 class="text-xl font-bold text-gray-200 mb-4 flex items-center gap-2">
-        📜 CD-Einteilung Übersicht
-    </h3>
-    
-    <div id="twins-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-900 p-4 rounded-lg border border-slate-700 min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-4">Warte auf Eingabe...</p>
-    </div>
-</div>
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Global WA Export
@@ -320,7 +312,18 @@
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
-
+<div class="mb-6">
+    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+        <span class="text-xl">📜</span> CD-Einteilung Übersicht
+    </h3>
+    
+    <div id="twins-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+            Warte auf Eingabe... <br>
+            <span class="opacity-50">(Ändere etwas im Planer, um die Vorschau zu laden)</span>
+        </p>
+    </div>
+</div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                                                 <div class="mt-4 text-xs text-gray-500 italic">
@@ -464,23 +467,20 @@ const TRIGGER_OPTIONS = [
             container.innerHTML = html;
         }
     };
+       
 // --- SYNC BUTTON LOGIC (Iron Qon -> Twins) ---
         const syncBtn = document.getElementById('btn-sync-qon');
         
         if (syncBtn) {
-            // Optional: Button initial sperren und erst entsperren, wenn Auth geladen ist
-            // Hier prüfen wir es einfach beim Klick, das ist am sichersten ohne tiefe Eingriffe
-            
             syncBtn.addEventListener('click', async function(e) {
                 e.preventDefault();
-                
-                // 1. AUTH CHECK
-                const user = firebase.auth().currentUser;
-                if (!user) {
-                    alert("⚠️ Funktion gesperrt!\nBitte logge dich ein, um Daten zu importieren.");
+
+                // 1. Manager Check
+                if (!window.isManager) {
+                    alert("⚠️ Fehlende Berechtigung!\nNur Manager können Daten importieren.");
                     return;
                 }
-                
+
                 // 2. Bestätigung
                 if (!confirm("Möchtest du die Positionen (1-17) von Iron Qon importieren?\nDies überschreibt die aktuellen Einträge hier.")) {
                     return;
@@ -491,17 +491,21 @@ const TRIGGER_OPTIONS = [
                 syncBtn.disabled = true;
 
                 try {
-                    const db = firebase.firestore();
-                    const raidId = window.currentRaidId; 
+                    // 3. Modulare Firestore-Funktionen laden
+                    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+                    
+                    if (!firebaseTools || !firebaseTools.db) {
+                        throw new Error("Datenbank-Verbindung nicht bereit.");
+                    }
+                    const db = firebaseTools.db;
 
-                    if (!raidId) throw new Error("Keine Raid-ID gefunden.");
+                    // 4. Daten von Iron Qon holen
+                    // HIER GEÄNDERT: Fester Pfad statt dynamischer Raid-ID
+                    const qonDocRef = doc(db, "raid-tool-data", "boss-iron-qon");
+                    const docSnap = await getDoc(qonDocRef);
 
-                    // Daten von Iron Qon holen
-                    const docRef = db.collection('raids').doc(raidId).collection('bosses').doc('iron-qon');
-                    const docSnap = await docRef.get();
-
-                    if (!docSnap.exists) {
-                        alert("Keine Daten bei Iron Qon gefunden. Speichere dort erst etwas ab.");
+                    if (!docSnap.exists()) {
+                        alert("Keine Daten bei Iron Qon gefunden (in 'raid-tool-data/boss-iron-qon').\nSpeichere dort erst etwas ab.");
                         syncBtn.innerHTML = originalText;
                         syncBtn.disabled = false;
                         return;
@@ -510,19 +514,29 @@ const TRIGGER_OPTIONS = [
                     const qonData = docSnap.data();
                     let updateCount = 0;
 
-                    // Loop durch 1-17
+                    // 5. Loop durch 1-17
                     for (let i = 1; i <= 17; i++) {
-                        const sourceValue = qonData[`qon_pos_${i}`]; // Quelle: Iron Qon IDs
-                        const targetSelect = document.querySelector(`select[data-assignment-id="twins_celestial_${i}"]`); // Ziel: Twins IDs
+                        // WICHTIG: Die ID muss stimmen. Wir versuchen 'iron-qon-pos-X'
+                        // Falls du andere IDs nutzt, pass diesen String an!
+                        const sourceKey = `qon_pos_${i}`; 
+                        const rawData = qonData[sourceKey];
+
+                        // Daten auslesen (es könnte ein String oder ein Objekt {player: "Name"} sein)
+                        let sourceValue = null;
+                        if (rawData) {
+                            sourceValue = (typeof rawData === 'object' && rawData.player) ? rawData.player : rawData;
+                        }
+
+                        // Ziel-Element finden
+                        const targetSelect = document.querySelector(`select[data-assignment-id="twins_celestial_${i}"]`);
 
                         if (sourceValue && targetSelect) {
                             targetSelect.value = sourceValue;
                             
-                            // Event feuern zum Speichern
-                            const event = new Event('change', { bubbles: true });
-                            targetSelect.dispatchEvent(event);
+                            // Speichern auslösen
+                            targetSelect.dispatchEvent(new Event('change', { bubbles: true }));
                             
-                            // Farbe optisch setzen
+                            // Optik: Farbe setzen
                             const selectedOption = targetSelect.options[targetSelect.selectedIndex];
                             if (selectedOption && selectedOption.dataset.color) {
                                 targetSelect.style.color = selectedOption.dataset.color;
@@ -532,6 +546,7 @@ const TRIGGER_OPTIONS = [
                         }
                     }
 
+                    console.log(`Sync erfolgreich: ${updateCount} Positionen übertragen.`);
                     syncBtn.innerHTML = "✅ Fertig!";
                     setTimeout(() => {
                         syncBtn.innerHTML = originalText;
@@ -545,6 +560,7 @@ const TRIGGER_OPTIONS = [
                     syncBtn.disabled = false;
                 }
             });
+        }
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
     
     if (plannerContainer) {
@@ -556,7 +572,6 @@ const TRIGGER_OPTIONS = [
         // Initialer Aufruf
         setTimeout(window.updatePlannerSummary, 500);
     }
-    };
 window.updatePlannerSummary = function() {
     // 1. AUTOMATISCHE ERKENNUNG
     // Wir suchen das Element, dessen ID auf "-planner-summary" endet
@@ -671,7 +686,7 @@ window.updatePlannerSummary = function() {
 
                     return `
                     <div class="text-[11px] text-gray-300 bg-slate-800/40 px-1.5 py-0.5 rounded flex items-center gap-2 hover:bg-slate-800 transition-colors">
-                        <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}</span>
+                        <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}s</span>
                         <div class="flex-1 truncate">
                             <strong style="color: ${e.playerColor}" class="mr-1">${e.player}</strong>
                             <span class="text-gray-500 text-[9px] mr-1">➜</span>

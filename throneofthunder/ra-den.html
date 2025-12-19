@@ -170,7 +170,18 @@
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
-
+<div class="mb-6">
+    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+        <span class="text-xl">📜</span> CD-Einteilung Übersicht
+    </h3>
+    
+    <div id="raden-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+            Warte auf Eingabe... <br>
+            <span class="opacity-50">(Ändere etwas im Planer, um die Vorschau zu laden)</span>
+        </p>
+    </div>
+</div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                                                 <div class="mt-4 text-xs text-gray-500 italic">
@@ -240,8 +251,12 @@
     </div>
 </section>
 <script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
+window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
+        // 1. GLOBALS SETZEN
+        window.globalCooldowns = allCooldowns;
+        window.globalRoster = roster;
+
         const TRIGGER_OPTIONS = [
             { val: "RADEN_ENC_START", text: "Encounter Start" },
             { val: "RADEN_HEALTH", text: "Health % (Wähle NPC!)" },
@@ -267,8 +282,9 @@
             "Shadowed Loa Spirit",
             "Gara'jal the Spiritbinder"
         ];
+        
         const container = document.getElementById('raden-planner-container');
-                const getCooldownOptions = () => {
+        const getCooldownOptions = () => {
             let html = '<option value="">-- Cooldown --</option>';
             allCooldowns.forEach(cd => {
                  if (cd.name.startsWith('---')) {
@@ -280,11 +296,13 @@
             });
             return html;
         };
+
         // Nur einmalig aufbauen
         if (container && container.innerHTML.trim() === "") {
             let html = "";
             const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
+            const cdOpts = getCooldownOptions(); // <-- Das hier fehlte evtl. auch oder war inline
 
             for (let i = 1; i <= 50; i++) {
                 html += `
@@ -307,13 +325,162 @@
                            
                     <select class="assignment-select w-full" data-assignment-id="raden-planner-row${i}-player"></select>
                     
-                    <select class="assignment-select w-full" data-assignment-id="raden-planner-row${i}-cooldown"></select>
+                    <select class="assignment-select w-full" data-assignment-id="raden-planner-row${i}-cooldown" data-manual-options="true">
+                        ${cdOpts}
+                    </select>
                     
                     <div></div>
                 </div>`;
             }
             container.innerHTML = html;
         }
+
+        // --- HIER WAR DER FEHLER: Das muss INNERHALB der Funktion stehen ---
+        // Planner Summary Auto-Start
+        const plannerContainer = document.querySelector('[id$="-planner-container"]');
+        if (plannerContainer) {
+            plannerContainer.addEventListener('change', () => {
+                setTimeout(window.updatePlannerSummary, 50);
+            });
+            setTimeout(window.updatePlannerSummary, 500);
+        }
+
+    }; // <--- HIER erst wird initializePageSpecificCode geschlossen
+
+// --- GLOBALE UPDATE FUNKTION (Bleibt draußen) ---
+window.updatePlannerSummary = function() {
+    // 1. AUTOMATISCHE ERKENNUNG
+    const container = document.querySelector('[id$="-planner-summary"]');
+    if (!container) return; 
+
+    const prefix = container.id.replace('-planner-summary', '');
+    const cooldownDB = window.globalCooldowns || [];
+    const rosterDB = window.globalRoster || [];
+    
+    let seqGroups = {};
+    let healthGroups = {};
+
+    const parseTime = (str) => {
+        if (!str) return 0;
+        const parts = str.split(':');
+        if (parts.length === 2) return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        return parseInt(str) || 0;
     };
+
+    // 2. DATEN SAMMELN
+    for (let i = 1; i <= 50; i++) {
+        const triggerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-trigger"]`);
+        const playerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-player"]`);
+        const cdEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-cooldown"]`);
+        const condEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-condition"]`);
+        const timeEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-time"]`);
+        const npcEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-npc"]`);
+
+        if (!triggerEl || !triggerEl.value || !playerEl || !playerEl.value) continue;
+
+        const triggerText = triggerEl.options[triggerEl.selectedIndex].text;
+        const condition = parseFloat(condEl.value) || 0;
+        const timeVal = timeEl.value || "";
+        const timeSeconds = parseTime(timeVal);
+        const playerVal = playerEl.value;
+        const cdText = cdEl.value;
+        
+        let cdColor = "#e2e8f0"; 
+        if (cdEl.selectedIndex >= 0) {
+            const opt = cdEl.options[cdEl.selectedIndex];
+            if (opt && opt.dataset.color) cdColor = opt.dataset.color;
+        }
+
+        let playerColor = "#ffffff";
+        const playerObj = rosterDB.find(p => p.name === playerVal);
+        if (playerObj && window.classColors && window.classColors[playerObj.class]) {
+            playerColor = window.classColors[playerObj.class];
+        } else if (playerObj && playerObj.color) {
+            playerColor = playerObj.color;
+        }
+
+        let spellId = 0;
+        const cdEntry = cooldownDB.find(c => c.name === cdText);
+        if (cdEntry && cdEntry.spellId) spellId = cdEntry.spellId;
+
+        const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor, spellId: spellId };
+        const isHealth = triggerText.includes("Health") || triggerEl.value.includes("HEALTH");
+
+        if (isHealth) {
+            const npcName = npcEl && npcEl.value ? npcEl.value : "Boss";
+            const key = `${npcName}_${condition}`;
+            if (!healthGroups[key]) healthGroups[key] = { title: `${condition}% ${npcName}`, percent: condition, entries: [] };
+            healthGroups[key].entries.push(entry);
+        } else {
+            const key = `${condition}_${triggerText}`;
+            if (!seqGroups[key]) seqGroups[key] = { title: `#${condition} ${triggerText}`, triggerName: triggerText, count: condition, entries: [] };
+            seqGroups[key].entries.push(entry);
+        }
+    }
+
+    // 3. SORTIEREN
+    let seqArray = Object.values(seqGroups).sort((a, b) => {
+        if (a.count !== b.count) return a.count - b.count; 
+        return a.triggerName.localeCompare(b.triggerName);
+    });
+
+    let healthArray = Object.values(healthGroups).sort((a, b) => b.percent - a.percent);
+
+    const sortEntries = (groups) => {
+        groups.forEach(g => {
+            g.entries.sort((a, b) => a.timeSec - b.timeSec);
+        });
+    };
+    sortEntries(seqArray);
+    sortEntries(healthArray);
+
+    // 4. HTML GENERIEREN
+    let html = "";
+
+    const renderBlock = (title, entries, colorClass, borderClass) => {
+        return `
+        <div class="mb-1.5 relative pl-2 border-l-2 ${borderClass}">
+            <h5 class="text-${colorClass} font-bold text-[10px] uppercase tracking-wide mb-0.5 opacity-80">${title}</h5>
+            <div class="space-y-0.5">
+                ${entries.map(e => {
+                    let linkContent = e.cd;
+                    if (e.spellId > 0) {
+                        linkContent = `<a href="https://www.wowhead.com/spell=${e.spellId}" target="_blank" style="color: ${e.color} !important; text-decoration: none; font-weight: 600;">${e.cd}</a>`;
+                    } else {
+                        linkContent = `<span style="color:${e.color}; font-weight:600;">${e.cd}</span>`;
+                    }
+
+                    return `
+                    <div class="text-[11px] text-gray-300 bg-slate-800/40 px-1.5 py-0.5 rounded flex items-center gap-2 hover:bg-slate-800 transition-colors">
+                        <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}s</span>
+                        <div class="flex-1 truncate">
+                            <strong style="color: ${e.playerColor}" class="mr-1">${e.player}</strong>
+                            <span class="text-gray-500 text-[9px] mr-1">➜</span>
+                            ${linkContent}
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+    };
+
+    if (seqArray.length > 0) {
+        html += `<div class="mb-4"><h4 class="text-yellow-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">⚡ Ablauf (#)</h4>`;
+        seqArray.forEach(g => html += renderBlock(g.title, g.entries, "yellow-200", "border-yellow-600/40"));
+        html += `</div>`;
+    }
+
+    if (healthArray.length > 0) {
+        html += `<div><h4 class="text-red-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">❤️ Phasen (%)</h4>`;
+        healthArray.forEach(g => html += renderBlock(g.title, g.entries, "red-200", "border-red-600/40"));
+        html += `</div>`;
+    }
+
+    if (!html) html = `<div class="col-span-2 text-center text-gray-600 text-xs py-4 italic">Keine Einträge.</div>`;
+
+    container.innerHTML = html;
+    
+    if (window.$WowheadPower) window.$WowheadPower.refreshLinks();
+};
 </script>
 </main>

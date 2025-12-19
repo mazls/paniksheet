@@ -194,15 +194,6 @@
         </div>
     </div>
 </section>
-<div class="mt-6 border-t border-slate-600 pt-6">
-    <h3 class="text-xl font-bold text-gray-200 mb-4 flex items-center gap-2">
-        📜 CD-Einteilung Übersicht
-    </h3>
-    
-    <div id="horridon-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-900 p-4 rounded-lg border border-slate-700 min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-4">Warte auf Eingabe...</p>
-    </div>
-</div>
 
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
@@ -213,6 +204,18 @@
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
+        <div class="mb-6">
+    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+        <span class="text-xl">📜</span> CD-Einteilung Übersicht
+    </h3>
+    
+    <div id="horridon-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+            Warte auf Eingabe... <br>
+            <span class="opacity-50">(Ändere etwas im Planer, um die Vorschau zu laden)</span>
+        </p>
+    </div>
+</div>
                 <div class="mt-4 text-xs text-gray-500 italic">
                     <strong>Leere Spalten:</strong> Seite neuladen, falls eine Spalte leer ist
                 </div>
