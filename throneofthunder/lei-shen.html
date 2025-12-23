@@ -354,12 +354,19 @@
                 <div>
                     <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                     
-                    <div class="bg-slate-900/50 p-3 rounded-lg mt-2 border border-gold-border-light mb-2">
-                        <p class="text-xs text-gray-400 text-center">Positionierung der Plattformen.</p>
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="leishen" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Positionierung</button>
                     </div>
-
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="leishen">Positionierung der Plattformen.</p>
+                        </div>
+                    </div>
                     <div class="mt-2">
-                        <img src="throneofthunder/leishen-p1.png" alt="Positionierung Lei Shen" class="lightbox-trigger w-full h-auto rounded border border-slate-600 shadow-md">
+                        <img src="throneofthunder/leishen-p1.png" alt="Positionierung Lei Shen" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="leishen">
                     </div>
                 </div>
 
