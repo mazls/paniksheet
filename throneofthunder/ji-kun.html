@@ -4,7 +4,12 @@
     .assignment-select { background-color: #2d3748; border: 1px solid #4a5568; border-radius: 4px; padding: 4px 8px; width: 100%; color: white; font-size: 0.85rem; }
     .assignment-select:disabled { opacity: 0.5; cursor: not-allowed; }
     .config-select { background-color: #1a202c; border: 1px solid #ca8a04; color: #fcd34d; font-weight: bold; border-radius: 4px; padding: 2px 4px; font-size: 0.8rem; }
-    
+    .assignment-select:disabled, 
+    .config-select:disabled {
+        opacity: 1 !important; 
+        cursor: not-allowed !important;
+        pointer-events: auto; /* Wichtig, damit der Cursor angezeigt wird */
+    }
     .assignment-block {
         background-color: rgba(0, 0, 0, 0.2);
         border: 1px solid var(--color-gold-border-light);
@@ -351,23 +356,23 @@ const WAVES_CONFIG = [
     };
 
     // 1. Statisches HTML generieren
-    (function renderStaticStructure() {
+(function renderStaticStructure() {
         
-        // A) TEAM SETUP GENERIEREN
+        // A) TEAM SETUP (Unverändert)
         const teamContainer = document.getElementById('team-setup-container');
         if (teamContainer) {
             let teamHtml = '';
             for(let t=1; t<=5; t++) {
                 let playersHtml = '';
                 for(let p=1; p<=5; p++) {
-                    playersHtml += `<select class="assignment-select team-player-select mb-1 text-xs" 
+                    playersHtml += `<select class="assignment-select team-player-select mb-0.5 text-[10px] h-5 py-0" 
                                     data-assignment-id="jikun-team-${t}-p${p}" 
                                     data-assignment-pool="jikun-teams" 
                                     data-team-id="${t}"></select>`;
                 }
                 teamHtml += `
-                <div class="bg-slate-800 p-3 rounded border border-slate-600">
-                    <h4 class="font-bold text-center text-gray-200 mb-2 border-b border-gray-600">Team ${t}</h4>
+                <div class="bg-slate-800 p-2 rounded border border-slate-600">
+                    <h4 class="font-bold text-center text-gray-200 mb-1 text-xs border-b border-gray-600 pb-1">Team ${t}</h4>
                     <div class="flex flex-col">
                         ${playersHtml}
                     </div>
@@ -381,39 +386,64 @@ const WAVES_CONFIG = [
         if (waveContainer) {
             let rowsHtml = '';
             
-            // Helper: Dropdown bauen mit VORAUSWAHL
-            const getConfigBlock = (dbKey, def) => {
-                const lvlOpts = `<option value="LOWER" ${def.lvl === 'LOWER' ? 'selected' : ''}>LOW</option>
-                                 <option value="UPPER" ${def.lvl === 'UPPER' ? 'selected' : ''}>UP</option>`;
+            // Farben Konfiguration
+            const DIR_CONFIG = [
+                { val: "NE", label: "★ NE (Star)", color: "#fcd34d" },      // Gelb
+                { val: "SE", label: "■ SE (Square)", color: "#60a5fa" },    // Blau
+                { val: "SW", label: "✜ SW (Cross)", color: "#f87171" },    // Rot
+                { val: "W",  label: "♦ W (Diamond)", color: "#c084fc" },    // Lila
+                { val: "NW", label: "▲ NW (Triangle)", color: "#4ade80" },  // Grün
+                { val: "MIDDLE", label: "⬆ MID", color: "#ffffff" }         // Weiß
+            ];
+
+            const getWaveCellContent = (dbKey, def) => {
                 
-                const dirOpts = `
-                    <option value="NE" ${def.dir === 'NE' ? 'selected' : ''}>NE (Star)</option>
-                    <option value="SE" ${def.dir === 'SE' ? 'selected' : ''}>SE (Square)</option>
-                    <option value="SW" ${def.dir === 'SW' ? 'selected' : ''}>SW (Cross)</option>
-                    <option value="W"  ${def.dir === 'W'  ? 'selected' : ''}>W (Diamond)</option>
-                    <option value="NW" ${def.dir === 'NW' ? 'selected' : ''}>NW (Triangle)</option>
-                    <option value="MIDDLE"  ${def.dir === 'MIDDLE'  ? 'selected' : ''}>M (Middle)</option>
+                // 1. LEVEL
+                const lvlOpts = `<option value="LOWER" ${def.lvl === 'LOWER' ? 'selected' : ''}>↓ Low</option>
+                                 <option value="UPPER" ${def.lvl === 'UPPER' ? 'selected' : ''}>↑ Up</option>`;
+                
+                // 2. RICHTUNG (Farbe ermitteln)
+                const currentDirObj = DIR_CONFIG.find(d => d.val === def.dir) || DIR_CONFIG[0];
+                const startColor = currentDirObj.color; // Startfarbe für BEIDE Dropdowns
+
+                const dirOpts = DIR_CONFIG.map(opt => 
+                    `<option value="${opt.val}" style="color: ${opt.color}; font-weight: bold; background-color: #1e293b;" ${def.dir === opt.val ? 'selected' : ''}>
+                        ${opt.label}
+                    </option>`
+                ).join('');
+
+                // 3. TEAM
+                const teamOpts = `
+                    <option value="">-</option>
+                    <option value="1">Team 1</option>
+                    <option value="2">Team 2</option>
+                    <option value="3">Team 3</option>
+                    <option value="4">Team 4</option>
+                    <option value="5">Team 5</option>
                 `;
 
-                return `<div class="flex gap-1 mb-1">
-                            <select class="config-select w-1/2 text-[10px] px-0 text-center wave-lvl" data-assignment-id="${dbKey}-lvl">
+                // Layout
+                return `<div class="flex w-max gap-0.5">
+                            <select class="config-select w-[85px] text-[10px] h-5 py-0 px-0 text-center wave-lvl rounded-r-none border-r-0" 
+                                    data-assignment-id="${dbKey}-lvl" title="Ebene">
                                 ${lvlOpts}
                             </select>
-                            <select class="config-select w-1/2 text-[10px] px-0 text-center wave-dir" data-assignment-id="${dbKey}-dir">
+                            
+                            <select class="config-select w-[125px] text-[10px] h-5 py-0 px-0 text-center wave-dir rounded-none border-l-0 border-r-0 border-slate-600 font-bold" 
+                                    data-assignment-id="${dbKey}-dir" 
+                                    title="Richtung"
+                                    style="color: ${startColor};"
+                                    onchange="const c = this.options[this.selectedIndex].style.color; this.style.color = c; this.nextElementSibling.style.color = c;">
                                 ${dirOpts}
                             </select>
+                            
+                            <select class="config-select w-[80px] text-[10px] h-5 py-0 px-0 text-center wave-team-select rounded-l-none bg-slate-700 border-slate-500 font-bold" 
+                                    data-assignment-id="${dbKey}-team" 
+                                    title="Team"
+                                    style="color: ${startColor};">
+                                ${teamOpts}
+                            </select>
                         </div>`;
-            };
-
-            const getTeamSelect = (dbKey) => {
-                return `<select class="config-select w-full mb-1 text-xs wave-team-select" data-assignment-id="${dbKey}-team">
-                            <option value="">- Team -</option>
-                            <option value="1">Team 1</option>
-                            <option value="2">Team 2</option>
-                            <option value="3">Team 3</option>
-                            <option value="4">Team 4</option>
-                            <option value="5">Team 5</option>
-                        </select>`;
             };
 
             WAVES_CONFIG.forEach(wave => {
@@ -424,23 +454,20 @@ const WAVES_CONFIG = [
                     if (i < wave.count) {
                         const suffix = suffixes[i];
                         const dbKey = `jikun-wave-${wave.id}${suffix}`;
-                        
-                        // Default Werte laden
                         const def = WAVE_DEFAULTS[`${wave.id}-${i}`] || { lvl: "LOWER", dir: "NE" };
                         
                         cells += `
-                        <td class="p-2 border-l border-slate-700 bg-slate-800/30 align-top wave-slot" data-wave="${wave.id}" data-suffix="${suffix}">
-                            ${getConfigBlock(dbKey, def)}
-                            ${getTeamSelect(dbKey)}
+                        <td class="p-1 border-l border-slate-700 bg-slate-800/30 align-middle wave-slot" data-wave="${wave.id}" data-suffix="${suffix}">
+                            ${getWaveCellContent(dbKey, def)}
                         </td>`;
                     } else {
-                        cells += `<td class="p-2 border-l border-slate-700 bg-black/20"></td>`;
+                        cells += `<td class="p-1 border-l border-slate-700 bg-black/20"></td>`;
                     }
                 }
 
                 rowsHtml += `
-                <tr class="hover:bg-slate-700/50 transition-colors">
-                    <td class="p-2 text-center font-bold text-gold text-sm bg-slate-800">${wave.id}</td>
+                <tr class="hover:bg-slate-700/50 transition-colors border-b border-slate-800/50">
+                    <td class="p-1 text-center font-bold text-gold text-xs bg-slate-800 align-middle">${wave.id}</td>
                     ${cells}
                 </tr>`;
             });
@@ -583,6 +610,21 @@ const WAVES_CONFIG = [
         if (plannerContainer) {
             plannerContainer.addEventListener('change', () => setTimeout(window.updatePlannerSummary, 50));
             setTimeout(window.updatePlannerSummary, 500);
+        }
+        if (!window.isManager) {
+            // 1. Team-Einteilung sperren
+            const teamSelects = document.querySelectorAll('#team-setup-container select');
+            teamSelects.forEach(el => {
+                el.disabled = true;
+                el.title = "Nur Manager können dies ändern.";
+            });
+
+            // 2. Wellen-Zuweisung sperren (Level, Richtung, Team)
+            const waveSelects = document.querySelectorAll('#waves-schedule-container select');
+            waveSelects.forEach(el => {
+                el.disabled = true;
+                el.title = "Nur Manager können dies ändern.";
+            });
         }
     };
 window.updatePlannerSummary = function() {
