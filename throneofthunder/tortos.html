@@ -328,6 +328,9 @@
             }
             container.innerHTML = html;
         }
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('tortos-planner-container');
+        }
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
     
     if (plannerContainer) {

@@ -335,8 +335,9 @@ window.initializePageSpecificCode = function(assignments, roster, firebaseTools,
             container.innerHTML = html;
         }
 
-        // --- HIER WAR DER FEHLER: Das muss INNERHALB der Funktion stehen ---
-        // Planner Summary Auto-Start
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('raden-planner-container');
+        }
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
         if (plannerContainer) {
             plannerContainer.addEventListener('change', () => {

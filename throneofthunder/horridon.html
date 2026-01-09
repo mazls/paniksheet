@@ -405,6 +405,9 @@
             }
             container.innerHTML = html;
         }
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('horridon-planner-container');
+        }
         const plannerContainer = document.getElementById('horridon-planner-container'); // (bzw. twins-...)
         if (plannerContainer) {
         // Event Listener für Änderungen

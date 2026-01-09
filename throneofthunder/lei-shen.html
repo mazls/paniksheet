@@ -574,6 +574,9 @@ const TRIGGER_OPTIONS = [
             }
             container.innerHTML = html;
         }
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('leishen-planner-container');
+        }
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
     
     if (plannerContainer) {

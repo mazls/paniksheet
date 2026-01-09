@@ -358,8 +358,11 @@
             }
             container.innerHTML = html;
         }
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('council-planner-container');
+        }
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
-    
+        
     if (plannerContainer) {
         plannerContainer.addEventListener('change', () => {
             // Aufruf OHNE Parameter -> Funktion sucht sich den Prefix selbst

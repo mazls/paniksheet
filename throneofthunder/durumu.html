@@ -471,7 +471,9 @@ function updateSpectrumExport() {
             container.innerHTML = html;
         }
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
-    
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('durumu-planner-container');
+        }
     if (plannerContainer) {
         plannerContainer.addEventListener('change', () => {
             // Aufruf OHNE Parameter -> Funktion sucht sich den Prefix selbst

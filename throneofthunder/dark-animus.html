@@ -419,6 +419,9 @@
             }
             container.innerHTML = html;
         }
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('animus-planner-container');
+        }
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
     
     if (plannerContainer) {

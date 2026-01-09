@@ -365,7 +365,7 @@ const WAVES_CONFIG = [
             for(let t=1; t<=5; t++) {
                 let playersHtml = '';
                 for(let p=1; p<=5; p++) {
-                    playersHtml += `<select class="assignment-select team-player-select mb-0.5 text-[10px] h-5 py-0" 
+                    playersHtml += `<select class="assignment-select team-player-select mb-0.5 text-[8px] h-7 py-0" 
                                     data-assignment-id="jikun-team-${t}-p${p}" 
                                     data-assignment-pool="jikun-teams" 
                                     data-team-id="${t}"></select>`;
@@ -604,7 +604,9 @@ const WAVES_CONFIG = [
             }
             waContainer.innerHTML = html;
         }
-
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('jikun-planner-container');
+        }
         // Planner Summary Auto-Start
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
         if (plannerContainer) {

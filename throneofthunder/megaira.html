@@ -372,16 +372,7 @@
             "Arcane Head"
         ];
         
-        // Hilfsfunktionen (für Sofort-Anzeige)
-        const getPlayerOptions = () => {
-            let html = '<option value="">-- Spieler --</option>';
-            const sortedRoster = [...roster].sort((a, b) => a.name.localeCompare(b.name));
-            sortedRoster.forEach(player => {
-                const color = window.classColors?.[player.class.toUpperCase()] || '#FFFFFF';
-                html += `<option value="${player.name}" style="color: ${color};" data-color="${color}">${player.name}</option>`;
-            });
-            return html;
-        };
+
         
         const getCooldownOptions = () => {
             let html = '<option value="">-- Cooldown --</option>';
@@ -403,7 +394,7 @@
             let html = "";
             const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
-            const playerOpts = getPlayerOptions();
+            
             const cdOpts = getCooldownOptions();
 
             for (let i = 1; i <= 50; i++) {
@@ -424,9 +415,7 @@
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="megaira-planner-row${i}-time" placeholder="Sec" value="0">
                            
-                    <select class="assignment-select w-full" data-assignment-id="megaira-planner-row${i}-player" data-_wired="1">
-                        ${playerOpts}
-                    </select>
+                    <select class="assignment-select w-full" data-assignment-id="megaira-planner-row${i}-player"></select>
                     
                     <select class="assignment-select w-full" data-assignment-id="megaira-planner-row${i}-cooldown" data-_wired="1">
                         ${cdOpts}
@@ -438,6 +427,9 @@
             container.innerHTML = html;
         }
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('megaira-planner-container');
+        }
     
     if (plannerContainer) {
         plannerContainer.addEventListener('change', () => {

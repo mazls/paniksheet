@@ -411,13 +411,8 @@ const TRIGGER_OPTIONS = [
         ];
 
         const NPC_OPTIONS = [
-            "Frost King Malakk",
-            "Kazra'jin",
-            "Sul the Sandcrawler",
-            "High Priestess Mar'li",
-            "Blessed Loa Spirit",
-            "Shadowed Loa Spirit",
-            "Gara'jal the Spiritbinder"
+            "Lu'lin",
+            "Suen",
         ];
         const container = document.getElementById('twins-planner-container');
                 const getCooldownOptions = () => {
@@ -465,7 +460,11 @@ const TRIGGER_OPTIONS = [
                 </div>`;
             }
             container.innerHTML = html;
+            if (window.makePlannerSortable) {
+            window.makePlannerSortable('twins-planner-container');
         }
+        }
+        
     };
        
 // --- SYNC BUTTON LOGIC (Iron Qon -> Twins) ---
@@ -561,6 +560,7 @@ const TRIGGER_OPTIONS = [
                 }
             });
         }
+
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
     
     if (plannerContainer) {
@@ -716,5 +716,6 @@ window.updatePlannerSummary = function() {
     
     if (window.$WowheadPower) window.$WowheadPower.refreshLinks();
 };
+
 </script>
 </main>

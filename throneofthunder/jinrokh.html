@@ -314,6 +314,9 @@
             }
             container.innerHTML = html;
         }
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('jinrokh-planner-container');
+        }
         const plannerContainer = document.getElementById('jinrokh-planner-container'); // (bzw. twins-...)
         if (plannerContainer) {
         // Event Listener für Änderungen

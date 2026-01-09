@@ -160,7 +160,25 @@
 .planner-row .assignment-text-input::placeholder {
     color: rgba(245, 242, 232, 0.3);
 }
-
+.planner-header > div {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: color 0.2s;
+}
+.planner-header > div:hover {
+    color: var(--color-parchment);
+    text-shadow: 0 0 5px rgba(252, 211, 77, 0.5);
+}
+.planner-header > div::after {
+    content: '↕';
+    font-size: 0.7em;
+    margin-left: 4px;
+    opacity: 0.3;
+}
+.planner-header > div:hover::after {
+    opacity: 1;
+}
 /* 6. MOBILE ANPASSUNG */
 @media (max-width: 768px) {
     .planner-row {
@@ -4044,11 +4062,83 @@ async function handleDeleteCooldown(cooldownId, cooldownName) {
         await fetchAllCooldowns();
     }
 }
+window.makePlannerSortable = function(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
 
+    // Suche den Header, der direkt VOR dem Container steht
+    const headerRow = container.previousElementSibling;
+    if (!headerRow || !headerRow.classList.contains('planner-header')) return;
+
+    const headers = headerRow.children;
+    // Spalten-Mapping (Index im Grid -> Index des Eingabefeldes im HTML)
+    // 0: Trigger (Select), 1: NPC (Select), 2: % (Input), 3: Zeit (Input), 4: Spieler (Select), 5: Cooldown (Select)
+    const colIndexMap = { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 };
+
+    let sortDirection = 1; // 1 = ASC, -1 = DESC
+    let lastSortCol = -1;
+
+    Array.from(headers).forEach((header, colIndex) => {
+        // Ignoriere die leere Spalte am Ende
+        if (colIndex > 5) return;
+
+        header.addEventListener('click', () => {
+            // Richtung umkehren bei gleichem Spaltenklick
+            if (lastSortCol === colIndex) {
+                sortDirection *= -1;
+            } else {
+                sortDirection = 1;
+                lastSortCol = colIndex;
+            }
+
+            const rows = Array.from(container.children);
+            
+            rows.sort((rowA, rowB) => {
+                // Input/Select Elemente holen
+                const elA = rowA.children[colIndexMap[colIndex]];
+                const elB = rowB.children[colIndexMap[colIndex]];
+                
+                let valA = elA ? elA.value.toLowerCase() : "";
+                let valB = elB ? elB.value.toLowerCase() : "";
+
+                // Spezialfall: Zeit (MM:SS in Sekunden umwandeln)
+                if (colIndex === 3) { 
+                    const parseTime = (t) => {
+                        if(!t) return -1;
+                        if(t.includes(':')) {
+                            const p = t.split(':');
+                            return parseInt(p[0])*60 + parseInt(p[1]);
+                        }
+                        return parseFloat(t) || -1;
+                    };
+                    valA = parseTime(valA);
+                    valB = parseTime(valB);
+                    return (valA - valB) * sortDirection;
+                }
+
+                // Spezialfall: Zahlen (%)
+                if (colIndex === 2) {
+                    const numA = parseFloat(valA) || -9999;
+                    const numB = parseFloat(valB) || -9999;
+                    return (numA - numB) * sortDirection;
+                }
+
+                // Standard Text-Sortierung (Trigger, Player, Cooldown)
+                if (valA < valB) return -1 * sortDirection;
+                if (valA > valB) return 1 * sortDirection;
+                return 0;
+            });
+
+            // Neu ins DOM einfügen (visuelle Sortierung)
+            rows.forEach(row => container.appendChild(row));
+        });
+    });
+};
     </script>
 <button id="toggle-video-btn" title="Hintergrundvideo an/aus" class="fixed bottom-4 right-4 z-50">
         <i class="fas fa-video"></i>
 </button>
 <div id="global-custom-tooltip" class="buff-tooltip fixed hidden pointer-events-none z-[9999] max-w-xs bg-slate-800 border border-slate-500 p-2 rounded shadow-xl text-xs text-white"></div>
+
 </body>
 </html>

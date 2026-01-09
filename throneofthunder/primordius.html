@@ -430,6 +430,9 @@
             }
             container.innerHTML = html;
         }
+        if (window.makePlannerSortable) {
+            window.makePlannerSortable('primordius-planner-container');
+        }
         const plannerContainer = document.querySelector('[id$="-planner-container"]');
     
     if (plannerContainer) {
