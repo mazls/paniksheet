@@ -937,9 +937,146 @@ pre {
     display: flex !important; /* Stellt sicher, dass Flexbox immer gewinnt */
     gap: 1rem; /* Fügt einen schönen Abstand zwischen Text und Pfeil hinzu */
 }
+#roster-groups-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+}
+@media (min-width: 768px) {
+    #roster-groups-container { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1280px) {
+    #roster-groups-container { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* Die Gruppen-Box */
+.roster-group {
+    background-color: rgba(36, 61, 51, 0.6); /* Transparenter Hintergrund */
+    border: 1px solid var(--color-gold-border-light);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    min-height: 200px; /* Mindesthöhe damit man immer hinein droppen kann */
+    display: flex;
+    flex-direction: column;
+}
+
+.group-header {
+    text-align: center;
+    font-weight: bold;
+    color: var(--color-gold);
+    border-bottom: 1px solid var(--color-gold-border-light);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
+    font-family: 'Cinzel', serif;
+}
+
+/* Die Spieler-Karte (kompakt) */
+.player-card {
+    background-color: rgba(10, 20, 15, 0.8);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: grab;
+    transition: all 0.2s;
+    user-select: none; /* Verhindert Textmarkierung beim Ziehen */
+}
+
+.player-card:hover {
+    border-color: var(--color-gold-border);
+    background-color: rgba(20, 40, 30, 0.9);
+}
+
+.player-card:active {
+    cursor: grabbing;
+}
+
+/* Drag & Drop Ghost (das Element, das man zieht) */
+.sortable-ghost {
+    opacity: 0.4;
+    background-color: var(--color-gold) !important;
+}
+
+/* Kompakte Elemente innerhalb der Karte */
+.player-icon-role {
+    font-size: 1rem;
+    margin-right: 6px;
+    width: 20px;
+    text-align: center;
+}
+
+.player-name-compact {
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 1px 1px 2px black;
+}
+
+.player-class-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-left: 6px;
+    border: 1px solid #444;
+}
+.role-icon-group {
+    display: flex;
+    gap: 3px;
+    margin-right: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.role-toggle-icon {
+    font-size: 0.75rem; /* Klein aber erkennbar */
+    opacity: 0.2;       /* Standard: Inaktiv / Ausgegraut */
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.role-toggle-icon:hover {
+    opacity: 0.6;
+    transform: scale(1.1);
+}
+
+/* Aktive Zustände (Volle Deckkraft & Farbe) */
+.role-toggle-icon.active-tank { opacity: 1; color: #60a5fa; text-shadow: 0 0 5px rgba(96, 165, 250, 0.4); }
+.role-toggle-icon.active-healer { opacity: 1; color: #4ade80; text-shadow: 0 0 5px rgba(74, 222, 128, 0.4); }
+.role-toggle-icon.active-dps { opacity: 1; color: #f87171; text-shadow: 0 0 5px rgba(248, 113, 113, 0.4); }
+
+/* Wenn gesperrt (Nicht-Manager) */
+.role-toggle-icon.disabled {
+    pointer-events: none;
+    cursor: default;
+}
+.player-card.is-placeholder {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    opacity: 0.5;
+    color: transparent; /* Text unsichtbar machen */
+}
+.player-card.is-placeholder:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: var(--color-gold-border-light);
+}
+.player-card.is-placeholder .player-name-compact {
+    color: #4a5568 !important; /* Dunkelgrauer Text für "Leerer Platz" */
+    font-style: italic;
+    font-size: 0.8rem;
+}
+.player-card.is-placeholder .role-icon-group,
+.player-card.is-placeholder .player-icon-role {
+    visibility: hidden; /* Icons verstecken */
+}
 	</style>
 </head>
-<body>
 <body class="pt-4">
 <video autoplay muted loop playsinline id="background-video">
     <source src="static/background.webm" type="video/webm">
@@ -1002,6 +1139,29 @@ pre {
 			</form>
 		</div>
 	</div>
+    <div id="player-edit-modal" class="modal-overlay hidden" style="z-index: 3000;">
+    <div class="modal-content" style="max-width: 350px;">
+        <h3 class="text-xl font-bold text-gold mb-4 border-b border-gold-border pb-2">Spieler bearbeiten</h3>
+        
+        <div class="space-y-4 text-left">
+            <div>
+                <label class="text-xs text-gray-400 uppercase font-bold">Name</label>
+                <input type="text" id="edit-player-name-input" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
+            </div>
+            
+            <div>
+                <label class="text-xs text-gray-400 uppercase font-bold">Klasse</label>
+                <select id="edit-player-class-select" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
+                    </select>
+            </div>
+        </div>
+
+        <div class="modal-buttons mt-6">
+            <button id="btn-cancel-player-edit" class="cancel-btn">Abbrechen</button>
+            <button id="btn-save-player-edit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">Speichern</button>
+        </div>
+    </div>
+</div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore,initializeFirestore, persistentLocalCache,  doc, setDoc, onSnapshot, collection, deleteDoc, getDoc, serverTimestamp, query, orderBy, addDoc, updateDoc, where, getDocs, limit} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -1207,7 +1367,7 @@ window.generateGlobalWaString = async function() {
     //fetchAllCooldowns();
     
     // Hilfsobjekt global verfügbar machen, falls noch nicht geschehen
-    window.firebaseTools = { db, doc, getDoc, collection, getDocs };
+    window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc, setDoc };
 
     // 3. Neuen Listener starten (Das ist der Code von vorhin, sicher verpackt)
 window.setupBossListener = function(bossId) {
@@ -1877,42 +2037,51 @@ window.populateDropdownOptions = function(selectElement, players) {
 			}
 		}
         // ============== MODAL-FUNKTION (global verfügbar) ==============
-		window.showModal = function(message, isConfirm = false) {
-			// Entferne zuerst ein eventuell bereits existierendes Modal
-			const existingModal = document.querySelector('.modal-overlay');
-			if (existingModal) {
-				document.body.removeChild(existingModal);
-			}
-		
-			return new Promise((resolve) => {
-				const modalOverlay = document.createElement('div');
-				modalOverlay.className = 'modal-overlay';
-				modalOverlay.innerHTML = `
-					<div class="modal-content">
-						<h3>Nachricht</h3>
-						<p>${message}</p>
-						<div class="modal-buttons">
-							${isConfirm ? `<button id="modal-cancel-btn" class="cancel-btn">Abbrechen</button>` : ''}
-							<button id="modal-ok-btn">OK</button>
-						</div>
-					</div>
-				`;
-				document.body.appendChild(modalOverlay);
-		
-				const okButton = modalOverlay.querySelector('#modal-ok-btn');
-				const cancelButton = modalOverlay.querySelector('#modal-cancel-btn');
-		
-				const close = (value) => {
-					document.body.removeChild(modalOverlay);
-					resolve(value);
-				};
-		
-				okButton.addEventListener('click', () => close(true));
-				if (cancelButton) {
-					cancelButton.addEventListener('click', () => close(false));
-				}
-			});
-		};
+window.showModal = function(message, isConfirm = false) {
+            
+            // 1. AUFRÄUMEN: Nur dynamische Nachrichten-Fenster löschen!
+            const allOverlays = document.querySelectorAll('.modal-overlay');
+            allOverlays.forEach(el => {
+                // Wir prüfen anhand der ID, ob es ein "wichtiges" statisches Fenster ist
+                const isStatic = (el.id === 'player-edit-modal' || el.id === 'login-modal-overlay' || el.id === 'image-lightbox');
+                
+                // Nur löschen, wenn es KEIN statisches Fenster ist
+                if (!isStatic) {
+                    el.remove(); 
+                }
+            });
+        
+            return new Promise((resolve) => {
+                const modalOverlay = document.createElement('div');
+                modalOverlay.className = 'modal-overlay'; 
+                // WICHTIG: Keine ID vergeben, damit es als dynamisch erkannt wird
+                
+                modalOverlay.innerHTML = `
+                    <div class="modal-content">
+                        <h3>Nachricht</h3>
+                        <p>${message}</p>
+                        <div class="modal-buttons">
+                            ${isConfirm ? `<button id="modal-cancel-btn" class="cancel-btn">Abbrechen</button>` : ''}
+                            <button id="modal-ok-btn">OK</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modalOverlay);
+        
+                const okButton = modalOverlay.querySelector('#modal-ok-btn');
+                const cancelButton = modalOverlay.querySelector('#modal-cancel-btn');
+        
+                const close = (value) => {
+                    modalOverlay.remove(); 
+                    resolve(value);
+                };
+        
+                okButton.addEventListener('click', () => close(true));
+                if (cancelButton) {
+                    cancelButton.addEventListener('click', () => close(false));
+                }
+            });
+        };
 				
 				// ============== LOGIN MODAL FUNKTION ==============
 		function showLoginModal() {
@@ -3142,72 +3311,223 @@ assignmentObserver.observe(document.body, { childList: true, subtree: true });
             return { name: playerEntry.name, class: playerClass, roles: [role], id: crypto.randomUUID() };
         }
 
-		function displayRoster(roster) {
-			const lists = { TANK: document.getElementById('tanks-list'), HEALER: document.getElementById('healers-list'), DPS: document.getElementById('dps-list') };
-			if (!lists.TANK) return;
-			Object.values(lists).forEach(list => list.innerHTML = '');
-		
-			function createPlayerElement(player) {
-				const playerDiv = document.createElement('div');
-				playerDiv.className = 'flex justify-between items-center player-row-container'; 
-				playerDiv.dataset.playerId = player.id;
-			
-				const roleIcons = {
-					TANK: '🛡️',
-					HEALER: '❤️',
-					DPS: '⚔️'
-				};
-			
-				playerDiv.innerHTML = `
-					<div class="player-details">
-						<input type="text" value="${player.name}" class="editable-name" style="color: ${window.classColors[player.class.toUpperCase()] || '#FFFFFF'};" ${!window.isManager ? 'disabled' : ''}>
-						<select class="editable-class-select" ${!window.isManager ? 'disabled' : ''}>
-							${wowClasses.map(c => `<option value="${c}" ${player.class === c ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()}</option>`).join('')}
-						</select>
-					</div>
-					<div class="flex gap-1">
-						${['TANK', 'HEALER', 'DPS'].map(role => `
-							<button 
-								class="role-btn role-${role.toLowerCase()} ${player.roles.includes(role) ? 'active' : ''}" 
-								data-role="${role}" 
-								${!window.isManager ? 'disabled' : ''}
-								style="font-size: 1.25rem; line-height: 1; padding: 0.25rem;"
-							>
-								${roleIcons[role]} 
-							</button>
-						`).join('')}
-					</div>`;
-				return playerDiv;
-			}
-		
-			roster.forEach(player => {
-				const playerElement = createPlayerElement(player);
-				if (player.roles.includes('TANK')) lists.TANK.appendChild(playerElement.cloneNode(true));
-				if (player.roles.includes('HEALER')) lists.HEALER.appendChild(playerElement.cloneNode(true));
-				if (player.roles.includes('DPS')) lists.DPS.appendChild(playerElement.cloneNode(true));
-			});
-		
-			roster.forEach(player => {
-				document.querySelectorAll(`[data-player-id="${player.id}"]`).forEach(element => {
-					const nameInput = element.querySelector('.editable-name');
-					nameInput?.addEventListener('blur', (e) => handlePlayerUpdate(e, player.id, 'name'));
-					nameInput?.addEventListener('keydown', (event) => {
-						if (event.key === 'Enter') {
-							event.preventDefault();
-							event.target.blur(); 
-						}
-					});
-					const classSelect = element.querySelector('.editable-class-select');
-					classSelect?.addEventListener('change', (e) => handlePlayerUpdate(e, player.id, 'class'));
-					element.querySelectorAll('.role-btn').forEach(btn => btn.addEventListener('click', () => togglePlayerRole(player.id, btn.dataset.role)));
-				});
-			});
-		
-			['TANK', 'HEALER', 'DPS'].forEach(role => {
-				if(lists[role] && lists[role].children.length === 0) lists[role].innerHTML = `<p class="text-gray-500">Keine ${role.toLowerCase()}s zugewiesen.</p>`;
-			});
-			window.toggleCompEditability();
-		}
+function displayRoster(roster) {
+    const container = document.getElementById('roster-groups-container');
+    const benchContainer = document.getElementById('roster-bench');
+    
+    if (!container || !benchContainer) return;
+
+    container.innerHTML = '';
+    benchContainer.innerHTML = '';
+
+    const GROUPS_COUNT = 5;
+    const PLAYERS_PER_GROUP = 5;
+
+    // Helper: Smart-Swap Logik
+    const handleSortableEnd = (evt) => {
+        const targetList = evt.to;
+        const sourceList = evt.from;
+
+        // Wir greifen nur ein, wenn:
+        // 1. Wir in eine Gruppe gedroppt haben (nicht auf die Bank)
+        // 2. Wir VON WOANDERS kamen (nicht innerhalb der gleichen Gruppe sortiert haben)
+        // 3. Die Gruppe jetzt ÜBERFÜLLT ist (> 5 Spieler)
+        if (targetList.id.startsWith('group-list-') && targetList !== sourceList) {
+            
+            if (targetList.children.length > PLAYERS_PER_GROUP) {
+                // Hier ist der Trick:
+                // evt.newIndex ist die Position, wo der NEUE Spieler gelandet ist.
+                // Alle Spieler DANACH sind um eins nach unten gerutscht.
+                // Der Spieler, der VORHER an dieser Stelle war, ist jetzt also an (newIndex + 1).
+                
+                const cards = Array.from(targetList.children);
+                const droppedIndex = evt.newIndex;
+                let cardToSwapOut = null;
+
+                // Fall A: Wir haben mitten rein oder am Anfang gedroppt
+                // -> Der Spieler UNTER uns (newIndex + 1) ist der, den wir "verdrängt" haben.
+                if (droppedIndex < cards.length - 1) {
+                    cardToSwapOut = cards[droppedIndex + 1];
+                } 
+                // Fall B: Wir haben ganz unten angehängt
+                // -> Wir wollen den Spieler verdrängen, der VORHER der letzte war (jetzt vor uns).
+                else {
+                    cardToSwapOut = cards[droppedIndex - 1];
+                }
+
+                // Den verdrängten Spieler zurück zum Absender schicken (Tausch)
+                if (cardToSwapOut) {
+                    // Animation für den Tausch (optional, aber schick)
+                    cardToSwapOut.style.transition = "transform 0.3s";
+                    // Wir hängen ihn an die Quell-Liste an.
+                    // (SortableJS hat den neuen Spieler schon aus der Quell-Liste entfernt, also ist dort Platz)
+                    sourceList.appendChild(cardToSwapOut);
+                }
+            }
+        }
+        
+        // Datenbank aktualisieren
+        saveRosterOrder();
+    };
+
+    // 1. Gruppen erstellen
+    for (let i = 1; i <= GROUPS_COUNT; i++) {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'roster-group';
+        groupDiv.innerHTML = `<div class="group-header">Gruppe ${i}</div>`;
+        
+        const listDiv = document.createElement('div');
+        listDiv.className = 'group-player-list flex-1';
+        listDiv.dataset.groupIndex = i;
+        listDiv.id = `group-list-${i}`;
+        
+        groupDiv.appendChild(listDiv);
+        container.appendChild(groupDiv);
+
+        new Sortable(listDiv, {
+            group: 'roster',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            disabled: !window.isManager,
+            onEnd: handleSortableEnd // HIER ist die neue Logik
+        });
+    }
+
+    // 2. Bank konfigurieren
+    new Sortable(benchContainer, {
+        group: 'roster',
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        disabled: !window.isManager,
+        onEnd: handleSortableEnd
+    });
+
+    // 3. Spieler verteilen (Initiale Ansicht)
+    roster.forEach((player, index) => {
+        const playerCard = createCompactPlayerCard(player);
+        const groupNum = Math.floor(index / PLAYERS_PER_GROUP) + 1;
+
+        if (groupNum <= GROUPS_COUNT) {
+            document.getElementById(`group-list-${groupNum}`).appendChild(playerCard);
+        } else {
+            benchContainer.appendChild(playerCard);
+        }
+    });
+    
+    window.toggleCompEditability();
+}
+function createCompactPlayerCard(player) {
+    const div = document.createElement('div');
+    // Platzhalter-Logik
+    div.className = `player-card ${player.isPlaceholder ? 'is-placeholder' : ''}`;
+    div.dataset.playerId = player.id; 
+    div.dataset.playerJson = JSON.stringify(player);
+
+    if (player.isPlaceholder) {
+        div.innerHTML = `<span class="player-name-compact text-center w-full">Leerer Platz</span>`;
+        return div;
+    }
+
+    // Rollen-Icons generieren
+    const roles = ['TANK', 'HEALER', 'DPS'];
+    const icons = { TANK: 'fa-shield-alt', HEALER: 'fa-heart', DPS: 'fa-khanda' };
+
+    let rolesHtml = '<div class="role-icon-group">';
+    roles.forEach(role => {
+        const isActive = player.roles.includes(role);
+        const activeClass = isActive ? `active-${role.toLowerCase()}` : '';
+        const disabledClass = window.isManager ? '' : 'disabled';
+        rolesHtml += `<i class="fas ${icons[role]} role-toggle-icon ${activeClass} ${disabledClass}" 
+                         data-role="${role}" data-player-id="${player.id}"></i>`;
+    });
+    rolesHtml += '</div>';
+
+    const color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
+    const className = player.class.charAt(0) + player.class.slice(1).toLowerCase();
+
+    // HTML Aufbau der Karte
+    div.innerHTML = `
+        <div class="flex items-center w-full">
+            ${rolesHtml}
+            <span class="player-name-compact" style="color: ${color};">${player.name}</span>
+            <span class="text-[10px] text-gray-500 uppercase ml-2 tracking-wider opacity-70">${className}</span>
+        </div>
+    `;
+    
+    // --- EVENT LISTENER ---
+    if (window.isManager) {
+        // 1. Rollen umschalten (Klick auf Icons)
+        div.querySelectorAll('.role-toggle-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                togglePlayerRole(icon.dataset.playerId, icon.dataset.role);
+            });
+        });
+
+        // 2. WICHTIG: Doppelklick öffnet jetzt das MODAL (nicht mehr prompt)
+        div.addEventListener('dblclick', (e) => {
+            e.stopPropagation(); // Verhindert Bubbling
+            openPlayerEditModal(player);
+        });
+        
+        // Optional: Cursor-Hinweis beim Hover für Manager
+        div.title = "Doppelklick zum Bearbeiten (Name/Klasse)";
+    }
+
+    return div;
+}
+async function saveRosterOrder() {
+    if (!window.isManager) return;
+
+    const newRoster = [];
+    const PLAYERS_PER_GROUP = 5;
+    
+    // 1. Gruppen 1-5 durchgehen und Lücken füllen
+    for (let i = 1; i <= 5; i++) {
+        const list = document.getElementById(`group-list-${i}`);
+        if (!list) continue;
+
+        // Nur ECHTE Spieler aus der Gruppe holen (Platzhalter ignorieren wir beim Einlesen, wir generieren neue)
+        const cards = Array.from(list.querySelectorAll('.player-card'));
+        const realPlayersInGroup = cards
+            .map(c => JSON.parse(c.dataset.playerJson))
+            .filter(p => !p.isPlaceholder);
+
+        // Echte Spieler hinzufügen
+        newRoster.push(...realPlayersInGroup);
+
+        // Auffüllen bis 5 Slots, falls nötig
+        const missingSlots = PLAYERS_PER_GROUP - realPlayersInGroup.length;
+        for (let j = 0; j < missingSlots; j++) {
+            newRoster.push({
+                id: `placeholder-${i}-${j}-${Date.now()}`, // Unique ID
+                name: "Leerer Platz",
+                class: "UNKNOWN",
+                roles: [],
+                isPlaceholder: true
+            });
+        }
+    }
+
+    // 2. Bench (Bank) hinzufügen (ohne Platzhalter, nur echte Spieler)
+    const bench = document.getElementById('roster-bench');
+    if (bench) {
+        const benchCards = Array.from(bench.querySelectorAll('.player-card'));
+        const realBenchPlayers = benchCards
+            .map(c => JSON.parse(c.dataset.playerJson))
+            .filter(p => !p.isPlaceholder);
+        
+        newRoster.push(...realBenchPlayers);
+    }
+
+    // 3. Speichern
+    try {
+        await setDoc(rosterDocRef, { roster: newRoster }, { merge: true });
+    } catch (e) {
+        console.error("Save Error:", e);
+        window.showModal("Fehler beim Speichern.");
+    }
+}
 
         window.toggleSelectEditability = function() {
             document.querySelectorAll('.assignment-select').forEach(el => { el.disabled = !window.isManager; });
@@ -3243,35 +3563,251 @@ assignmentObserver.observe(document.body, { childList: true, subtree: true });
                 window.logHistory('Roster', `${oldPlayer.name} ${changeText}`, '', currentManager);
             }
         }
+let currentPlayerIdToEdit = null;
 
-        async function togglePlayerRole(playerId, roleToToggle) {
-            if (!window.isManager) return;
+function openPlayerEditModal(player) {
+    if (!window.isManager) return;
+
+    const modal = document.getElementById('player-edit-modal');
+    const nameInput = document.getElementById('edit-player-name-input');
+    const classSelect = document.getElementById('edit-player-class-select');
+    
+    currentPlayerIdToEdit = player.id;
+    nameInput.value = player.name;
+
+    // Klassen-Dropdown füllen (falls noch leer)
+    if (classSelect.options.length === 0) {
+        const classes = ['DEATHKNIGHT', 'DRUID', 'HUNTER', 'MAGE', 'MONK', 'PALADIN', 'PRIEST', 'ROGUE', 'SHAMAN', 'WARLOCK', 'WARRIOR'];
+        classes.forEach(cls => {
+            const opt = document.createElement('option');
+            opt.value = cls;
+            opt.textContent = cls.charAt(0) + cls.slice(1).toLowerCase();
+            opt.style.color = window.classColors[cls];
+            opt.style.fontWeight = "bold";
+            classSelect.appendChild(opt);
+        });
+    }
+    
+    classSelect.value = player.class.toUpperCase(); // Aktuelle Klasse setzen
+    
+    // Farbe beim Öffnen setzen
+    classSelect.style.color = window.classColors[classSelect.value] || '#fff';
+    
+    // Farbe bei Änderung anpassen
+    classSelect.onchange = function() {
+        this.style.color = window.classColors[this.value] || '#fff';
+    };
+
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex'; // Sicherstellen, dass es sichtbar ist
+    nameInput.focus();
+}
+
+function closePlayerEditModal() {
+    const modal = document.getElementById('player-edit-modal');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+    currentPlayerIdToEdit = null;
+}
+
+// Event Listener für Buttons im Modal
+document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('btn-cancel-player-edit')?.addEventListener('click', closePlayerEditModal);
+        
+        document.getElementById('btn-save-player-edit')?.addEventListener('click', async () => {
+            if (!currentPlayerIdToEdit || !window.isManager) return;
+
+            const newName = document.getElementById('edit-player-name-input').value.trim();
+            const newClass = document.getElementById('edit-player-class-select').value;
+
+            // Datenbank Verbindung holen
             const docSnap = await getDoc(rosterDocRef);
-            if (!docSnap.exists()) return;
+            if (docSnap.exists()) {
+                let roster = docSnap.data().roster || [];
+                const idx = roster.findIndex(p => p.id === currentPlayerIdToEdit);
+                
+                if (idx > -1) {
+                    const oldName = roster[idx].name;
 
-            const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-            let roster = docSnap.data().roster || [];
-            const player = roster.find(p => p.id === playerId);
-            if (!player) return;
+                    // --- FALL 1: Name ist LEER -> LÖSCHEN ---
+                    if (!newName) {
+                        const confirmed = await window.showModal(`Soll der Spieler '${oldName}' wirklich gelöscht werden?`, true);
+                        if (confirmed) {
+                            roster.splice(idx, 1); // Spieler aus dem Array entfernen
+                            await updateDoc(rosterDocRef, { roster: roster });
+                            
+                            const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                            window.logHistory('Roster', `Spieler gelöscht (via Edit)`, oldName, currentManager);
+                            window.showModal(`Spieler '${oldName}' wurde entfernt.`);
+                        }
+                        closePlayerEditModal();
+                        return; // Beenden, da gelöscht
+                    }
 
-            let changeText = '';
-            const roleIndex = player.roles.indexOf(roleToToggle);
-            if (roleIndex > -1) {
-                if(player.roles.length > 1) {
-                    player.roles.splice(roleIndex, 1);
-                    changeText = `Rolle ${roleToToggle} entfernt`;
+                    // --- FALL 2: Name vorhanden -> UPDATE ---
+                    roster[idx].name = newName;
+                    roster[idx].class = newClass;
+                    
+                    await updateDoc(rosterDocRef, { roster: roster });
+                    
+                    const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                    window.logHistory('Roster', `Spieler bearbeitet (${oldName})`, `${newName} / ${newClass}`, currentManager);
                 }
-            } else {
-                player.roles.push(roleToToggle);
-                changeText = `Rolle ${roleToToggle} hinzugefügt`;
             }
+            closePlayerEditModal();
+        });
+    });
+async function togglePlayerRole(playerId, roleToToggle) {
+    if (!window.isManager) return;
+    
+    // Aktuelles Roster laden (um sicherzugehen, dass wir nicht mit alten Daten arbeiten)
+    const docSnap = await getDoc(rosterDocRef);
+    if (!docSnap.exists()) return;
 
-            if(changeText) {
-                await updateDoc(rosterDocRef, { roster: roster });
-                window.logHistory('Roster', changeText, player.name, currentManager);
-            }
+    const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+    let roster = docSnap.data().roster || [];
+    const playerIndex = roster.findIndex(p => p.id === playerId);
+    
+    if (playerIndex === -1) return;
+
+    const player = roster[playerIndex];
+    let changeText = '';
+
+    // Prüfen, ob Rolle schon da ist
+    const roleIndex = player.roles.indexOf(roleToToggle);
+
+    if (roleIndex > -1) {
+        // Rolle entfernen (nur wenn es nicht die letzte ist)
+        if (player.roles.length > 1) {
+            player.roles.splice(roleIndex, 1);
+            changeText = `Rolle ${roleToToggle} entfernt`;
+        } else {
+            // Optional: Feedback, dass man die letzte Rolle nicht löschen kann
+            console.warn("Kann letzte Rolle nicht entfernen.");
+            return; 
+        }
+    } else {
+        // Rolle hinzufügen
+        player.roles.push(roleToToggle);
+        changeText = `Rolle ${roleToToggle} hinzugefügt`;
+    }
+
+    // Speichern
+    if (changeText) {
+        await updateDoc(rosterDocRef, { roster: roster });
+        // Loggen (optional, kann bei vielen Klicks spammen)
+        // window.logHistory('Roster', changeText, player.name, currentManager);
+    }
+}
+// ============== COMP SETUP & EXPORT MANAGER ==============
+
+// 1. Setup SPEICHERN
+window.saveCompSetup = async function(slotId) {
+    if (!window.isManager) return window.showModal("Nur Manager können Setups speichern.");
+    
+    // Wir holen uns die aktuelle Reihenfolge direkt aus dem DOM (das ist am sichersten nach Drag&Drop)
+    // oder aus window.rosterData, da dieses nach Drag&Drop aktualisiert wurde.
+    // Wir nutzen window.rosterData, da saveRosterOrder() dies aktuell hält.
+    
+    if (!window.rosterData || window.rosterData.length === 0) {
+        return window.showModal("Roster ist leer.");
+    }
+
+    const setupDocRef = window.firebaseTools.doc(window.firebaseTools.db, "raid-tool-data", `comp-setup-${slotId}`);
+    
+    try {
+        await window.firebaseTools.updateDoc(setupDocRef, { 
+            roster: window.rosterData,
+            savedBy: sessionStorage.getItem('currentManager'),
+            savedAt: new Date().toISOString()
+        }).catch(async (err) => {
+            // Falls Doc noch nicht existiert -> setDoc (create)
+            const { setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+            await setDoc(setupDocRef, { 
+                roster: window.rosterData,
+                savedBy: sessionStorage.getItem('currentManager'),
+                savedAt: new Date().toISOString()
+            });
+        });
+
+        // Visuelles Feedback
+        window.showModal(`✅ Setup ${slotId} gespeichert!`);
+    } catch (e) {
+        console.error(e);
+        window.showModal("Fehler beim Speichern: " + e.message);
+    }
+};
+
+// 2. Setup LADEN
+window.loadCompSetup = async function(slotId) {
+    if (!window.isManager) return window.showModal("Nur Manager können Setups laden.");
+
+    const confirmed = await window.showModal(`Möchtest du Setup ${slotId} laden? Dies überschreibt die aktuelle Aufstellung für ALLE.`, true);
+    if (!confirmed) return;
+
+    try {
+        const setupDocRef = window.firebaseTools.doc(window.firebaseTools.db, "raid-tool-data", `comp-setup-${slotId}`);
+        const snap = await window.firebaseTools.getDoc(setupDocRef);
+
+        if (!snap.exists()) {
+            return window.showModal(`Setup ${slotId} ist leer.`);
         }
 
+        const data = snap.data();
+        
+        // Wir überschreiben das Live-Roster
+        // Da das Index.html Script auf Änderungen an 'currentRoster' lauscht,
+        // aktualisiert sich die Anzeige bei allen Clients automatisch.
+        const rosterDocRef = window.firebaseTools.doc(window.firebaseTools.db, "raid-tool-data", "currentRoster");
+        
+        // Import updateDoc/setDoc falls nötig (da module scope)
+        const { setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        
+        await setDoc(rosterDocRef, { roster: data.roster }, { merge: true });
+        
+        window.showModal(`Setup ${slotId} erfolgreich geladen!`);
+
+    } catch (e) {
+        console.error(e);
+        window.showModal("Fehler beim Laden: " + e.message);
+    }
+};
+
+// 3. EXPORT (Nur Namen, nach Gruppen sortiert)
+window.exportSimpleComp = function() {
+    let output = "";
+    let count = 0;
+
+    // Wir iterieren durch die DOM-Gruppen, um die visuelle Reihenfolge exakt abzubilden
+    for (let i = 1; i <= 8; i++) { // Bis zu 8 Gruppen unterstützen
+        const groupList = document.getElementById(`group-list-${i}`);
+        if (!groupList) continue;
+
+        const cards = groupList.querySelectorAll('.player-card');
+        if (cards.length > 0) {
+            cards.forEach(card => {
+                // Wir holen den Namen aus dem span Element
+                const nameSpan = card.querySelector('.player-name-compact');
+                if (nameSpan) {
+                    output += nameSpan.textContent.trim() + "\n";
+                    count++;
+                }
+            });
+        }
+    }
+
+    if (output === "") {
+        return window.showModal("Keine Spieler gefunden.");
+    }
+
+    // In Zwischenablage
+    navigator.clipboard.writeText(output).then(() => {
+        window.showModal(`📋 ${count} Namen in die Zwischenablage kopiert!`);
+    }).catch(err => {
+        console.error('Konnte nicht kopieren: ', err);
+        window.showModal("Kopieren fehlgeschlagen. Siehe Konsole.");
+    });
+};
         async function handleImportRoster() {
             if (!window.isManager) return;
             const jsonString = document.getElementById('json-input').value;

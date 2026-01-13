@@ -111,12 +111,46 @@
 
     <section class="bg-slate-850 p-6 rounded-lg">
         <h3 class="text-xl font-semibold mb-3 text-blue-450">Aktuelle Aufstellung</h3>
-        <div id="roster-display" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-            <div class="bg-slate-750 p-4 rounded-lg"><h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">🛡️ Tanks</h4><div id="tanks-list" class="space-y-2"></div></div>
-            <div class="bg-slate-750 p-4 rounded-lg"><h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">❤️ Heiler</h4><div id="healers-list" class="space-y-2"></div></div>
-            <div class="bg-slate-750 p-4 rounded-lg"><h4 class="text-lg font-bold mb-3 border-b border-slate-650 pb-2">⚔️ DDs</h4><div id="dps-list" class="space-y-2"></div></div>
+<div id="roster-view-wrapper" class="mt-6">
+    <div id="roster-groups-container">
         </div>
+    
+    <div class="mt-6">
+        <h4 class="text-lg font-bold text-gray-400 mb-2">Ersatzbank / Unzugeordnet</h4>
+        <div id="roster-bench" class="roster-group flex-row flex-wrap gap-2 min-h-[60px]">
+            </div>
+    </div>
+    <div class="bg-slate-800 border border-slate-600 rounded-lg p-3 mb-4 flex flex-wrap justify-between items-center gap-4">
+    
+    <div class="flex items-center gap-2">
+        <span class="text-gold font-bold text-sm uppercase mr-2">Setups:</span>
+        
+        <div class="flex border border-slate-600 rounded overflow-hidden">
+            <button onclick="window.loadCompSetup(1)" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 text-xs font-bold transition-colors" title="Setup 1 laden">1</button>
+            <button onclick="window.saveCompSetup(1)" class="bg-slate-900 hover:bg-slate-800 text-gray-400 hover:text-gold px-2 py-1 text-xs border-l border-slate-600" title="Aktuelle Aufstellung in Slot 1 speichern">💾</button>
+        </div>
+
+        <div class="flex border border-slate-600 rounded overflow-hidden">
+            <button onclick="window.loadCompSetup(2)" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 text-xs font-bold transition-colors" title="Setup 2 laden">2</button>
+            <button onclick="window.saveCompSetup(2)" class="bg-slate-900 hover:bg-slate-800 text-gray-400 hover:text-gold px-2 py-1 text-xs border-l border-slate-600" title="Aktuelle Aufstellung in Slot 2 speichern">💾</button>
+        </div>
+
+        <div class="flex border border-slate-600 rounded overflow-hidden">
+            <button onclick="window.loadCompSetup(3)" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 text-xs font-bold transition-colors" title="Setup 3 laden">3</button>
+            <button onclick="window.saveCompSetup(3)" class="bg-slate-900 hover:bg-slate-800 text-gray-400 hover:text-gold px-2 py-1 text-xs border-l border-slate-600" title="Aktuelle Aufstellung in Slot 3 speichern">💾</button>
+        </div>
+    </div>
+
+    <button onclick="window.exportSimpleComp()" class="bg-blue-600 hover:bg-blue-500 text-white border border-blue-400 font-bold py-1 px-4 rounded text-sm flex items-center gap-2 shadow-lg transition-transform active:scale-95">
+        <i class="fas fa-list-ul"></i> Namens-Liste Export
+    </button>
+</div>
+
+<div id="roster-view-wrapper" class="mt-2">
+    </div>
+</div>
     </section>
+
 <section id="utility-assignment-section" class="bg-slate-850 p-6 rounded-lg">
     <h3 class="text-xl font-semibold mb-3 text-blue-450">Buff & Utility Einteilung</h3>
 
