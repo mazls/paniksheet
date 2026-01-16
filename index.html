@@ -1504,35 +1504,84 @@ window.initPlannerRowFeatures = function(containerId) {
     const prefix = containerId.replace('-rows-container', '');
 
     // 1. SORTABLE (Zeilen verschieben)
-    new Sortable(container, {
-        handle: '.row-drag-handle', 
-        animation: 150,
-        ghostClass: 'bg-slate-700',
-        onEnd: async function(evt) {
-            const rows = Array.from(container.children);
-            const updates = {};
-            const ts = serverTimestamp();
+if (typeof Sortable !== 'undefined') {
+        new Sortable(container, {
+            handle: '.row-drag-handle', 
+            animation: 150,
+            ghostClass: 'bg-slate-700',
+            
+            onEnd: async function(evt) {
+                // Wenn nichts verschoben wurde, abbrechen
+                if (evt.newIndex === evt.oldIndex) return;
 
-            rows.forEach((row, index) => {
-                const newRowIndex = index + 1; 
-                row.querySelectorAll('[data-assignment-id]').forEach(input => {
-                    const oldId = input.dataset.assignmentId;
-                    const suffix = oldId.split('-planner-row')[1].substring(oldId.split('-planner-row')[1].indexOf('-'));
-                    const newId = `${prefix}-planner-row${newRowIndex}${suffix}`;
+                console.log("Sortierung erkannt. Speichere sicher...");
+                container.style.borderLeft = "4px solid #fcd34d"; // Gelb = Arbeitet
+
+                const rows = Array.from(container.children);
+                
+                // WICHTIG: Imports für Firestore holen
+                const { doc, setDoc, getFirestore } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+                const db = window.db || getFirestore();
+                const bossDocRef = doc(db, "raid-tool-data", "boss-" + prefix);
+
+                // WICHTIG: Aufteilen in Pakete + Date.now() nutzen
+                const batch1 = {}; // 0-40
+                const batch2 = {}; // 40-80
+                const batch3 = {}; // 80+
+                const safeTs = Date.now(); // Zählt NICHT als Transform-Limit!
+
+                rows.forEach((row, index) => {
+                    const newRowIndex = index + 1; 
                     
-                    let val = input.value;
-                    let dbField = 'player'; 
-                    if (input.tagName === 'INPUT') dbField = 'text';
-                    else if (newId.includes('cooldown')) dbField = 'cooldown';
-                    
-                    updates[newId] = { [dbField]: val, timestamp: ts };
-                    input.dataset.assignmentId = newId;
+                    row.querySelectorAll('[data-assignment-id]').forEach(input => {
+                        const oldId = input.dataset.assignmentId;
+                        // Extrahiert den Suffix (z.B. "-player", "-time", "-cooldown")
+                        // Wir suchen ab dem ersten Bindestrich nach "rowX"
+                        // Einfachere Methode: Split am letzten Bindestrich
+                        const parts = oldId.split('-');
+                        const suffix = parts[parts.length - 1]; // "player", "time", etc.
+
+                        const newId = `${prefix}-planner-row${newRowIndex}-${suffix}`;
+                        
+                        // HTML sofort updaten für UX
+                        input.dataset.assignmentId = newId;
+
+                        let val = input.value;
+                        let dbField = 'text'; // Standard für Inputs
+
+                        // DB Feldname bestimmen
+                        if (suffix === 'cooldown') dbField = 'cooldown';
+                        else if (['player', 'trigger', 'npc'].includes(suffix)) dbField = 'player';
+                        
+                        // Datenobjekt
+                        const dataObj = { [dbField]: val, timestamp: safeTs };
+
+                        // In Pakete verteilen
+                        if (index < 40) batch1[newId] = dataObj;
+                        else if (index < 80) batch2[newId] = dataObj;
+                        else batch3[newId] = dataObj;
+                    });
                 });
-            });
-            const bossDocRef = doc(db, "raid-tool-data", "boss-" + prefix);
-            await setDoc(bossDocRef, updates, { merge: true });
-        }
-    });
+
+                try {
+                    // Pakete nacheinander senden
+                    const promises = [];
+                    if (Object.keys(batch1).length > 0) promises.push(setDoc(bossDocRef, batch1, { merge: true }));
+                    if (Object.keys(batch2).length > 0) promises.push(setDoc(bossDocRef, batch2, { merge: true }));
+                    if (Object.keys(batch3).length > 0) promises.push(setDoc(bossDocRef, batch3, { merge: true }));
+
+                    await Promise.all(promises);
+                    
+                    container.style.borderLeft = "4px solid #4ade80"; // Grün
+                    setTimeout(() => container.style.borderLeft = "", 1000);
+                } catch (e) {
+                    console.error(e);
+                    window.showModal("Fehler beim Sortieren: " + e.message);
+                    container.style.borderLeft = "4px solid #f87171"; // Rot
+                }
+            }
+        });
+    }
 
     // 2. BUTTONS (Copy, Paste, Delete)
     container.addEventListener('click', async (e) => {
