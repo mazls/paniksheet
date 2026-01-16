@@ -41,39 +41,68 @@
 }
 
 /* 2. Die Kopfzeile */
-.planner-header {
-    /* Erbt das Gitter */
-    display: grid; 
-    grid-template-columns: 1.4fr 1fr 55px 55px 1.2fr 1.2fr 30px; 
-    gap: 8px;
-    
-    background-color: rgba(10, 20, 15, 0.4); /* Sehr transparent */
-    border-bottom: 1px solid var(--color-gold); /* Feine Goldlinie */
-    padding: 8px 8px 4px 8px;
-    margin-bottom: 6px;
-    
-    color: var(--color-gold);
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    
-}
-
-/* 3. Die einzelne Planer-Zeile */
+.planner-header,
 .planner-row {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr 50px 50px 1.2fr 1.2fr 30px; 
-    gap: 8px;
+    display: grid; 
+    /* Griff | Trigger | NPC | % | Zeit | Spieler | CD | Toggle | Actions */
+    grid-template-columns: 20px 1.4fr 0.9fr 50px 50px 1.1fr 1.1fr 30px 45px; 
+    gap: 4px;
     align-items: center;
-    padding: 6px 8px;
+    padding: 6px 4px;
     margin-bottom: 4px;
     background-color: rgba(10, 20, 15, 0.4); 
     border-radius: 6px;
     border: 1px solid var(--color-gold-border-light);
-    transition: all 0.2s ease;
 }
+/* 2. Versteckte Spalten (Standard) */
+.planner-col-extended { display: none; }
+
+/* 3. ERWEITERTER MODUS (Wenn Klasse .show-extended aktiv ist) */
+.planner-container.show-extended .planner-header,
+.planner-container.show-extended .planner-row {
+    /* Griff | Trigger | NPC | % | Zeit | Spieler | CD | Note | TTS | Name | Icon | Toggle | Actions */
+    grid-template-columns: 20px 1.4fr 0.9fr 50px 50px 1.1fr 1.1fr 0.8fr 0.8fr 0.8fr 0.6fr 30px 45px;
+}
+.planner-container.show-extended .planner-col-extended {
+    display: block; 
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* 4. Der Griff zum Ziehen */
+.row-drag-handle {
+    cursor: grab;
+    color: #64748b;
+    text-align: center;
+    display: flex; justify-content: center; align-items: center;
+}
+.row-drag-handle:hover { color: var(--color-gold); }
+.row-drag-handle:active { cursor: grabbing; }
+
+/* 5. Action Buttons (Copy/Paste) */
+.row-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+}
+.icon-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 2px;
+    transition: color 0.2s;
+}
+.icon-btn:hover { color: #e2e8f0; }
+
+/* 6. Toggle Button Rotation */
+#planner-expand-btn { transition: transform 0.3s; }
+.planner-container.show-extended #planner-expand-btn { transform: rotate(180deg); color: var(--color-gold); }
 
 .planner-row:hover {
     background-color: rgba(36, 61, 51, 0.6);
@@ -129,7 +158,7 @@
     height: 32px;
 }
 .planner-scroll-container {
-    max-height: 60vh; /* Nutzt 60% der Bildschirmhöhe, passt sich an */
+    max-height: 120vh; /* Nutzt 60% der Bildschirmhöhe, passt sich an */
     overflow-y: auto; /* Vertikales Scrollen aktivieren */
     overflow-x: hidden;
     padding-right: 6px; /* Abstand zur Scrollleiste */
@@ -1277,39 +1306,23 @@ function updateAssignmentPools() {
 }
 window.generateGlobalWaString = async function() {
     if (!window.isManager) return window.showModal("Nur Gildenräte können exportieren.");
-    
-    // SICHERSTELLEN, DASS COOLDOWNS DA SIND
-    if (!window.allCooldowns || window.allCooldowns.length === 0) {
-        console.log("Cooldowns fehlen, lade neu...");
-        await fetchAllCooldowns();
-    }
+    if (!window.allCooldowns || window.allCooldowns.length === 0) await fetchAllCooldowns();
 
-    // 1. AKTUELLEN RAID ERMITTELN (Dynamisch statt statische Liste)
     const selectedRaidId = document.getElementById('raid-selector').value;
-    const raidInfo = raidData[selectedRaidId]; // Greift auf dein raidData Objekt zu
+    const raidInfo = raidData[selectedRaidId];
+    if (!raidInfo || !raidInfo.bosses) return window.showModal("Keine Daten.");
 
-    if (!raidInfo || !raidInfo.bosses) {
-        return window.showModal("Keine Boss-Daten für den ausgewählten Raid gefunden.");
-    }
-
-    // Wir bauen die Liste basierend auf dem Raid (z.B. boss-jinrokh, boss-horridon...)
     const bosses = raidInfo.bosses.map(b => `boss-${b.id}`);
-
     let result = [];
     
-    // Wir holen alle Boss-Daten für diesen Raid
     const snaps = await Promise.all(bosses.map(b => getDoc(doc(db, "raid-tool-data", b))));
 
     snaps.forEach((snap, idx) => {
         if (!snap.exists()) return;
         const data = snap.data();
-        const bossId = bosses[idx];
-        const bossKey = bossId.replace('boss-', ''); // z.B. "jinrokh"
-
-        // Globaler NPC Name als Fallback
+        const bossKey = bosses[idx].replace('boss-', '');
         const npcName = data[`${bossKey}-npc_name`]?.text || "Unknown NPC";
 
-        // Alle Planner-Zeilen finden
         const rows = Object.keys(data)
             .filter(k => k.includes('planner-row') && k.endsWith('-trigger'))
             .sort((a, b) => {
@@ -1318,37 +1331,34 @@ window.generateGlobalWaString = async function() {
             });
 
         rows.forEach(rowKey => {
-            const base = rowKey.replace('-trigger', ''); // z.B. "jinrokh-planner-row1"
-            
+            const base = rowKey.replace('-trigger', '');
             const trigger = data[rowKey]?.player;
-            if (!trigger || trigger === "") return; // Leere Trigger überspringen
+            if (!trigger || trigger === "") return;
 
             const condition = data[`${base}-condition`]?.text || "0";
             const time = data[`${base}-time`]?.text || "0";
             const player = data[`${base}-player`]?.player || "ALL";
-            
-            // NEU: NPC für diese spezifische Zeile holen (Wichtig für Council/Horridon!)
             const rowNpc = data[`${base}-npc`]?.player; 
+            
+            // --- DIE 4 NEUEN FELDER ---
+            const valText = data[`${base}-note`]?.text || "nil";
+            const valTTS = data[`${base}-tts`]?.text || "nil";
+            const valName = data[`${base}-varname`]?.text || "nil";
+            const valIcon = data[`${base}-icon`]?.text || "nil";
 
-            // SPELL ID SUCHE
             const spellName = data[`${base}-cooldown`]?.cooldown;
             let spellId = "nil";
-            
             if (spellName) {
-                const cd = window.allCooldowns.find(c => c.name.trim().toLowerCase() === spellName.trim().toLowerCase());
-                if (cd && cd.spellId) {
-                    spellId = cd.spellId;
-                }
+                const cd = window.allCooldowns.find(c => c.name === spellName);
+                if (cd && cd.spellId) spellId = cd.spellId;
             }
-
-            // String zusammenbauen
             let entry = "";
             if (trigger.includes("_HEALTH")) {
                 // Hierarchie: Zeilen-NPC -> Globaler NPC -> "nil"
                 const targetNpc = rowNpc || npcName || "nil";
-                entry = `${trigger}/${condition}/${player}/${time}/${spellId}/${targetNpc}/nil/nil/nil/nil`;
+                entry = `${trigger}/${condition}/${player}/${time}/${spellId}/${targetNpc}/${valText}/${valTTS}/${valName}/${valIcon}`;
             } else {
-                entry = `${trigger}/${condition}/${player}/${time}/${spellId}/nil/nil/nil/nil`;
+                entry = `${trigger}/${condition}/${player}/${time}/${spellId}/${valText}/${valTTS}/${valName}/${valIcon}`;
             }
             result.push(entry);
         });
@@ -1357,29 +1367,383 @@ window.generateGlobalWaString = async function() {
     const finalString = result.join('*');
     if(finalString) {
         await navigator.clipboard.writeText(finalString);
-        window.showModal(`Exportiert: ${result.length} Einträge für ${raidInfo.name}.`);
+        window.showModal(`Exportiert: ${result.length} Einträge.`);
     } else {
-        window.showModal(`Keine Einträge für ${raidInfo.name} gefunden.`);
+        window.showModal(`Keine Einträge gefunden.`);
     }
 };
+window.updatePlannerSummary = function() {
+    // 1. AUTOMATISCHE ERKENNUNG
+    const container = document.querySelector('[id$="-planner-summary"]');
+    if (!container) return; 
+
+    const prefix = container.id.replace('-planner-summary', '');
+    const cooldownDB = window.globalCooldowns || [];
+    const rosterDB = window.globalRoster || [];
     
+    let seqGroups = {};
+    let healthGroups = {};
+
+    const parseTime = (str) => {
+        if (!str) return 0;
+        const parts = str.split(':');
+        if (parts.length === 2) return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        return parseInt(str) || 0;
+    };
+
+    // 2. DATEN SAMMELN
+    for (let i = 1; i <= 100; i++) {
+        const triggerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-trigger"]`);
+        const playerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-player"]`);
+        const cdEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-cooldown"]`);
+        const condEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-condition"]`);
+        const timeEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-time"]`);
+        const npcEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-npc"]`);
+
+        // Nur Zeilen mit Trigger & (Spieler ODER CD)
+        if (!triggerEl || !triggerEl.value || (!playerEl.value && !cdEl.value)) continue;
+
+        const triggerText = triggerEl.options[triggerEl.selectedIndex].text;
+        const triggerVal = triggerEl.value;
+        const conditionRaw = condEl.value || "0"; 
+        const timeVal = timeEl.value || "";
+        const timeSeconds = parseTime(timeVal);
+        const playerVal = playerEl.value;
+        const cdText = cdEl.value;
+        
+        // Cooldown Farbe
+        let cdColor = "#e2e8f0"; 
+        if (cdEl.selectedIndex >= 0) {
+            const opt = cdEl.options[cdEl.selectedIndex];
+            if (opt && opt.dataset.color) cdColor = opt.dataset.color;
+        }
+
+        // Spieler Farbe
+        let playerColor = "#ffffff";
+        const playerObj = rosterDB.find(p => p.name === playerVal);
+        if (playerObj) {
+            playerColor = window.classColors[playerObj.class] || playerObj.color || "#ffffff";
+        }
+
+        const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor };
+        const isHealth = triggerText.includes("Health") || triggerVal.includes("HEALTH");
+
+        // --- KOMMA SPLIT (z.B. "7, 22") ---
+        const conditions = conditionRaw.split(',').map(s => s.trim()).filter(s => s !== "");
+        if (conditions.length === 0) conditions.push("0");
+
+        conditions.forEach(cond => {
+            const sortValue = parseFloat(cond) || 0;
+
+            if (isHealth) {
+                const npcName = npcEl && npcEl.value ? npcEl.value : "Boss";
+                const key = `${npcName}_${cond}`;
+                if (!healthGroups[key]) healthGroups[key] = { title: `${cond}% ${npcName}`, percent: sortValue, entries: [] };
+                healthGroups[key].entries.push({ ...entry });
+            } else {
+                const key = `${cond}_${triggerText}`;
+                if (!seqGroups[key]) seqGroups[key] = { title: `#${cond} ${triggerText}`, triggerName: triggerText, count: sortValue, entries: [] };
+                seqGroups[key].entries.push({ ...entry });
+            }
+        });
+    }
+
+    // 3. SORTIEREN & RENDERN
+    let seqArray = Object.values(seqGroups).sort((a, b) => {
+        if (a.count !== b.count) return a.count - b.count; 
+        return a.triggerName.localeCompare(b.triggerName);
+    });
+    let healthArray = Object.values(healthGroups).sort((a, b) => b.percent - a.percent);
+
+    const sortEntries = (groups) => groups.forEach(g => g.entries.sort((a, b) => a.timeSec - b.timeSec));
+    sortEntries(seqArray);
+    sortEntries(healthArray);
+
+    let html = "";
+    const renderBlock = (title, entries, colorClass, borderClass) => {
+        return `
+        <div class="mb-1.5 relative pl-2 border-l-2 ${borderClass} break-inside-avoid">
+            <h5 class="text-${colorClass} font-bold text-[10px] uppercase tracking-wide mb-0.5 opacity-80">${title}</h5>
+            <div class="space-y-0.5">
+                ${entries.map(e => {
+                    // ÄNDERUNG: KEIN LINK, NUR TEXT
+                    let linkContent = `<span style="color:${e.color}; font-weight:600;">${e.cd}</span>`;
+                    
+                    return `
+                    <div class="text-[11px] text-gray-300 bg-slate-800/40 px-1.5 py-0.5 rounded flex items-center gap-2 hover:bg-slate-800 transition-colors">
+                        <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}s</span>
+                        <div class="flex-1 truncate">
+                            <strong style="color: ${e.playerColor}" class="mr-1">${e.player}</strong>
+                            <span class="text-gray-500 text-[9px] mr-1">➜</span>
+                            ${linkContent}
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+    };
+
+    if (seqArray.length > 0) {
+        html += `<div class="mb-4"><h4 class="text-yellow-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">⚡ Ablauf (#)</h4>`;
+        seqArray.forEach(g => html += renderBlock(g.title, g.entries, "yellow-200", "border-yellow-600/40"));
+        html += `</div>`;
+    }
+    if (healthArray.length > 0) {
+        html += `<div><h4 class="text-red-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">❤️ Phasen (%)</h4>`;
+        healthArray.forEach(g => html += renderBlock(g.title, g.entries, "red-200", "border-red-600/40"));
+        html += `</div>`;
+    }
+    if (!html) html = `<div class="col-span-2 text-center text-gray-600 text-xs py-4 italic">Keine Einträge.</div>`;
+
+    container.innerHTML = html;
+};
+window.initPlannerRowFeatures = function(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const prefix = containerId.replace('-rows-container', '');
+
+    // 1. SORTABLE (Zeilen verschieben)
+    new Sortable(container, {
+        handle: '.row-drag-handle', 
+        animation: 150,
+        ghostClass: 'bg-slate-700',
+        onEnd: async function(evt) {
+            const rows = Array.from(container.children);
+            const updates = {};
+            const ts = serverTimestamp();
+
+            rows.forEach((row, index) => {
+                const newRowIndex = index + 1; 
+                row.querySelectorAll('[data-assignment-id]').forEach(input => {
+                    const oldId = input.dataset.assignmentId;
+                    const suffix = oldId.split('-planner-row')[1].substring(oldId.split('-planner-row')[1].indexOf('-'));
+                    const newId = `${prefix}-planner-row${newRowIndex}${suffix}`;
+                    
+                    let val = input.value;
+                    let dbField = 'player'; 
+                    if (input.tagName === 'INPUT') dbField = 'text';
+                    else if (newId.includes('cooldown')) dbField = 'cooldown';
+                    
+                    updates[newId] = { [dbField]: val, timestamp: ts };
+                    input.dataset.assignmentId = newId;
+                });
+            });
+            const bossDocRef = doc(db, "raid-tool-data", "boss-" + prefix);
+            await setDoc(bossDocRef, updates, { merge: true });
+        }
+    });
+
+    // 2. BUTTONS (Copy, Paste, Delete)
+    container.addEventListener('click', async (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        const row = btn.closest('.planner-row');
+
+        // --- KOPIEREN ---
+        if (btn.classList.contains('copy-row-btn')) {
+            const rowData = {};
+            const fields = ['condition', 'time', 'player', 'cooldown', 'note', 'tts', 'varname', 'icon'];
+            fields.forEach(f => {
+                const el = row.querySelector(`[data-assignment-id$="-${f}"]`);
+                if(el) rowData[f] = el.value;
+            });
+            localStorage.setItem('plannerClipboard', JSON.stringify(rowData));
+            
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check text-green-400"></i>';
+            setTimeout(() => btn.innerHTML = originalIcon, 1000);
+        }
+
+        // --- EINFÜGEN ---
+        if (btn.classList.contains('paste-row-btn')) {
+            const dataStr = localStorage.getItem('plannerClipboard');
+            if (!dataStr) return window.showModal('Zwischenablage ist leer.');
+            const data = JSON.parse(dataStr);
+            const updates = {};
+            
+            const fields = ['condition', 'time', 'player', 'cooldown', 'note', 'tts', 'varname', 'icon'];
+            fields.forEach(f => {
+                if (data[f] !== undefined) {
+                    const input = row.querySelector(`[data-assignment-id$="-${f}"]`);
+                    if (input) {
+                        input.value = data[f];
+                        if (input.tagName === 'SELECT') { 
+                           const opt = Array.from(input.options).find(o => o.value === data[f]);
+                           input.style.color = opt ? opt.dataset.color : '#fff';
+                        }
+                        const id = input.dataset.assignmentId;
+                        let dbField = (input.tagName === 'INPUT') ? 'text' : (f === 'cooldown' ? 'cooldown' : 'player');
+                        updates[id] = { [dbField]: data[f], timestamp: serverTimestamp() };
+                    }
+                }
+            });
+            const bossDocRef = doc(db, "raid-tool-data", "boss-" + prefix);
+            await setDoc(bossDocRef, updates, { merge: true });
+            
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check text-green-400"></i>';
+            setTimeout(() => btn.innerHTML = originalIcon, 1000);
+        }
+
+        // --- LÖSCHEN (NEU) ---
+        if (btn.classList.contains('delete-row-btn')) {
+            // Eigenen Dialog erstellen
+            const dialog = document.createElement('div');
+            dialog.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[9999]';
+            dialog.innerHTML = `
+                <div class="bg-slate-800 border border-slate-600 p-6 rounded-lg shadow-2xl text-center max-w-sm mx-4">
+                    <h3 class="text-xl font-bold text-white mb-2">Zeile löschen</h3>
+                    <p class="text-gray-300 mb-6 text-sm">Möchtest du nur den Trigger deaktivieren oder die gesamte Zeile leeren?</p>
+                    <div class="flex flex-col gap-3">
+                        <button id="del-inactive" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded font-bold transition">Nur Inaktiv setzen</button>
+                        <button id="del-clear" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded font-bold transition">Alles leeren</button>
+                        <button id="del-cancel" class="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-gray-200 rounded transition mt-2">Abbrechen</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(dialog);
+
+            const handleChoice = async (choice) => {
+                dialog.remove();
+                if (choice === 'cancel') return;
+
+                const updates = {};
+                const ts = serverTimestamp();
+                const inputs = row.querySelectorAll('[data-assignment-id]');
+
+                inputs.forEach(input => {
+                    const id = input.dataset.assignmentId;
+                    
+                    // Fall 1: Nur Inaktiv -> Nur Trigger leeren
+                    if (choice === 'inactive') {
+                        if (id.includes('-trigger')) {
+                            input.value = "";
+                            updates[id] = { player: "", timestamp: ts };
+                        }
+                    }
+                    // Fall 2: Alles leeren -> Alle Felder leeren
+                    else if (choice === 'clear') {
+                        input.value = "";
+                        if (input.tagName === 'SELECT') input.style.color = '#fff';
+                        
+                        let dbField = 'player';
+                        if (input.tagName === 'INPUT') dbField = 'text';
+                        else if (id.includes('cooldown')) dbField = 'cooldown';
+                        
+                        updates[id] = { [dbField]: "", timestamp: ts };
+                    }
+                });
+
+                // Speichern
+                const bossDocRef = doc(db, "raid-tool-data", "boss-" + prefix);
+                await setDoc(bossDocRef, updates, { merge: true });
+            };
+
+            dialog.querySelector('#del-inactive').onclick = () => handleChoice('inactive');
+            dialog.querySelector('#del-clear').onclick = () => handleChoice('clear');
+            dialog.querySelector('#del-cancel').onclick = () => handleChoice('cancel');
+        }
+    });
+};
+window.cleanUpInvalidRosterEntries = async function() {
+    if (!window.isManager) return window.showModal("Nur Manager dürfen die Datenbank bereinigen.");
+    
+    if (!confirm("ACHTUNG: Dies überprüft ALLE Bosse im aktuellen Raid.\n\nAlle Einträge von Spielern, die NICHT mehr im Roster sind, werden auf 'Inaktiv' gesetzt und entfernt.\n\nMöchtest du fortfahren?")) return;
+
+    // 1. Roster Namen sammeln
+    let currentRosterNames = [];
+    if (window.globalRoster && window.globalRoster.length > 0) {
+        currentRosterNames = window.globalRoster.map(p => p.name);
+    } else {
+        // Fallback: Roster frisch laden, falls nicht verfügbar
+        try {
+            const rosterSnaps = await getDocs(collection(db, "roster"));
+            currentRosterNames = rosterSnaps.docs.map(d => d.data().name);
+        } catch (e) {
+            return window.showModal("Fehler: Konnte Roster nicht laden.");
+        }
+    }
+
+    // 2. Aktuelle Bosse identifizieren
+    const selectedRaidId = document.getElementById('raid-selector').value; 
+    const raidInfo = raidData[selectedRaidId];
+    if (!raidInfo || !raidInfo.bosses) return window.showModal("Keine Raid-Daten gefunden.");
+
+    let totalCleaned = 0;
+    let bossesProcessed = 0;
+
+    // 3. Durch alle Bosse iterieren
+    for (const boss of raidInfo.bosses) {
+        const bossDocId = "boss-" + boss.id;
+        const docRef = doc(db, "raid-tool-data", bossDocId);
+        const snap = await getDoc(docRef);
+
+        if (!snap.exists()) continue;
+
+        const data = snap.data();
+        const updates = {};
+        let hasChanges = false;
+        const ts = serverTimestamp();
+
+        // Alle Keys durchsuchen
+        Object.keys(data).forEach(key => {
+            // Wir suchen nur nach Spieler-Zuweisungen im Planer
+            // Format: [prefix]-planner-row[X]-player
+            if (key.includes('-planner-row') && key.endsWith('-player')) {
+                const assignedPlayer = data[key].player;
+                
+                // PRÜFUNG: Ist ein Spieler eingetragen UND ist er NICHT im Roster?
+                if (assignedPlayer && assignedPlayer !== "" && !currentRosterNames.includes(assignedPlayer)) {
+                    
+                    // A. Spieler aus dem Feld löschen
+                    updates[key] = { player: "", timestamp: ts };
+                    
+                    // B. Trigger auf "Inaktiv" (Leerstring) setzen
+                    // Der Key für den Trigger ist fast gleich, endet aber auf "-trigger"
+                    const triggerKey = key.replace('-player', '-trigger');
+                    updates[triggerKey] = { player: "", timestamp: ts }; // Selects nutzen 'player' als Value-Feld in deiner DB-Struktur
+
+                    hasChanges = true;
+                    totalCleaned++;
+                }
+            }
+        });
+
+        // Speichern, wenn nötig
+        if (hasChanges) {
+            await setDoc(docRef, updates, { merge: true });
+            bossesProcessed++;
+        }
+    }
+
+    if (totalCleaned > 0) {
+        window.showModal(`Fertig! ${totalCleaned} Einträge bei ${bossesProcessed} Bossen wurden bereinigt.`);
+    } else {
+        window.showModal("Alles sauber! Keine veralteten Einträge gefunden.");
+    }
+};  
     // Initial Cooldowns laden
     //fetchAllCooldowns();
     
     // Hilfsobjekt global verfügbar machen, falls noch nicht geschehen
     window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc, setDoc };
 
+window.assignmentUnsubscribe = window.assignmentUnsubscribe || null;
+
     // 3. Neuen Listener starten (Das ist der Code von vorhin, sicher verpackt)
 window.setupBossListener = function(bossId) {
     // Alten Listener stoppen, um Datenmüll zu vermeiden
-    if (assignmentUnsubscribe) {
-        assignmentUnsubscribe();
+    if (window.assignmentUnsubscribe) {
+        // console.log("Stoppe alten Listener..."); // Optional für Debugging
+        window.assignmentUnsubscribe();
+        window.assignmentUnsubscribe = null; // Sauber zurücksetzen
     }
     
     console.log("Setup Listener für:", bossId);
     assignmentsDocRef = doc(db, "raid-tool-data", bossId);
 
-    assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
+    window.assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
         const assignments = docSnap.exists() ? docSnap.data() : {};
         const rosterPlayerNames = window.rosterData ? window.rosterData.map(p => p.name) : [];
         
@@ -4270,7 +4634,235 @@ function handleSummaryDateSelection() {
             
             drawPlayerSummaryTable();
         }
+window.manageAllAssignments = async function() {
+    if (!window.isManager) return window.showModal("Nur Manager dürfen die Datenbank verwalten.");
 
+    // 1. IMPORTE & INIT
+    const { getFirestore, getDocs, getDoc, doc, setDoc, serverTimestamp } 
+        = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+
+    const db = window.db || getFirestore(); 
+
+    window.showModal("Konsultiere die Geister...", false); 
+
+    const selectedRaidId = document.getElementById('raid-selector').value; 
+    const raidInfo = (typeof raidData !== 'undefined') ? raidData[selectedRaidId] : null;
+    
+    if (!raidInfo || !raidInfo.bosses) return window.showModal("Keine Raid-Daten gefunden.");
+
+    // 2. DATEN SAMMELN (Mit Details)
+    let assignmentMap = {}; 
+
+    for (const boss of raidInfo.bosses) {
+        const bossDocId = "boss-" + boss.id;
+        try {
+            const snap = await getDoc(doc(db, "raid-tool-data", bossDocId));
+            if (!snap.exists()) continue;
+            
+            const data = snap.data();
+            Object.keys(data).forEach(key => {
+                if (key.includes('-planner-row') && key.endsWith('-player')) {
+                    const assignedPlayer = data[key].player;
+                    
+                    if (assignedPlayer && assignedPlayer.trim() !== "") {
+                        if (!assignmentMap[assignedPlayer]) assignmentMap[assignedPlayer] = [];
+                        
+                        const baseKey = key.substring(0, key.lastIndexOf('-player'));
+                        
+                        // DETAILS LESEN (Versuchen, lesbare Werte zu finden)
+                        // Trigger & Cooldown sind oft IDs, wir zeigen sie 'raw' oder bereinigt an
+                        let triggerVal = data[baseKey + '-trigger']?.player || "";
+                        // Kleine Bereinigung für Trigger-IDs (z.B. MEGAIRA_RAMPAGE -> Rampage)
+                        triggerVal = triggerVal.replace(/^[A-Z]+_/, '').replace(/_/g, ' ').toLowerCase();
+                        
+                        const conditionVal = data[baseKey + '-condition']?.text || "";
+                        const timeVal = data[baseKey + '-time']?.text || "";
+                        const cdVal = data[baseKey + '-cooldown']?.cooldown || "";
+
+                        assignmentMap[assignedPlayer].push({
+                            bossId: bossDocId,
+                            bossName: boss.name,
+                            baseKey: baseKey, 
+                            playerKey: key,
+                            triggerKey: baseKey + '-trigger',
+                            // Details für die Anzeige
+                            trigger: triggerVal,
+                            condition: conditionVal,
+                            time: timeVal,
+                            cd: cdVal
+                        });
+                    }
+                }
+            });
+        } catch(e) { console.error("Error scanning boss " + boss.id, e); }
+    }
+
+    // Modal schließen
+    const oldModal = document.querySelector('.fixed.inset-0.z-50');
+    if(oldModal && oldModal.textContent.includes("Geister")) oldModal.remove();
+
+    const playersFound = Object.keys(assignmentMap).sort();
+    if (playersFound.length === 0) {
+        return window.showModal("Die Schriftrollen sind leer. Alles sauber.");
+    }
+
+    // 3. HELPER: Detail-HTML bauen
+    const buildDetails = (entries) => {
+        // Gruppieren nach Boss
+        const byBoss = {};
+        entries.forEach(e => {
+            if(!byBoss[e.bossName]) byBoss[e.bossName] = [];
+            byBoss[e.bossName].push(e);
+        });
+
+        let html = `<div class="p-3 bg-black/40 border-t border-emerald-900/50 text-xs font-mono grid gap-3">`;
+        
+        for (const [bossName, items] of Object.entries(byBoss)) {
+            html += `
+            <div>
+                <h5 class="text-amber-500 font-bold mb-1 border-b border-amber-900/30 pb-0.5">${bossName}</h5>
+                <div class="space-y-1">
+                    ${items.map(item => `
+                        <div class="flex items-center text-gray-400 hover:text-gray-200">
+                            <span class="w-24 truncate text-emerald-600/80 mr-2" title="${item.trigger}">${item.trigger || '-'}</span>
+                            <span class="w-12 text-center text-gray-500 border-r border-gray-700 mr-2">${item.condition ? item.condition+'%' : (item.time ? item.time+'s' : '-')}</span>
+                            <span class="flex-1 text-amber-100/70 truncate">${item.cd || 'Kein CD'}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        return html;
+    };
+
+    // 4. UI BAUEN (JADE THEME)
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center z-[100] p-4';
+    
+    let listHtml = playersFound.map((pName, index) => {
+        const entries = assignmentMap[pName];
+        const count = entries.length;
+        const detailId = `details-${index}`;
+        const iconId = `icon-${index}`;
+        
+        return `
+        <div class="mb-2 rounded border border-emerald-900/40 bg-slate-900/80 overflow-hidden transition-all duration-300" id="row-${pName.replace(/\s/g, '-')}">
+            <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-emerald-900/10 transition-colors"
+                 onclick="document.getElementById('${detailId}').classList.toggle('hidden'); document.getElementById('${iconId}').classList.toggle('rotate-90');">
+                
+                <div class="flex items-center gap-3">
+                    <i id="${iconId}" class="fas fa-chevron-right text-emerald-600 text-xs transition-transform duration-200"></i>
+                    <div>
+                        <div class="font-bold text-emerald-400 text-lg drop-shadow-sm">${pName}</div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest">${count} Einträge</div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2" onclick="event.stopPropagation()"> <button class="px-3 py-1 bg-emerald-950 text-emerald-500 border border-emerald-800/50 rounded hover:bg-emerald-900 hover:text-emerald-200 hover:border-emerald-500 text-xs font-bold transition-all"
+                            onclick="window.processPlayerAssignments('${pName}', 'inactive')" title="Trigger entfernen, Name behalten">
+                        INAKTIV
+                    </button>
+                    <button class="px-3 py-1 bg-red-950/40 text-red-500 border border-red-900/50 rounded hover:bg-red-900/60 hover:text-red-300 hover:border-red-600 text-xs font-bold transition-all"
+                            onclick="window.processPlayerAssignments('${pName}', 'delete')" title="Komplett entfernen">
+                        LÖSCHEN
+                    </button>
+                </div>
+            </div>
+
+            <div id="${detailId}" class="hidden">
+                ${buildDetails(entries)}
+            </div>
+        </div>`;
+    }).join('');
+
+    modal.innerHTML = `
+        <div class="bg-slate-900 border-2 border-emerald-800/60 shadow-[0_0_50px_rgba(16,185,129,0.1)] rounded-lg max-w-2xl w-full max-h-[85vh] flex flex-col">
+            
+            <div class="flex justify-between items-center border-b border-emerald-800/30 p-5 bg-gradient-to-r from-slate-900 to-emerald-950/20">
+                <div>
+                    <h3 class="text-xl font-bold text-emerald-400 tracking-wide font-serif flex items-center gap-2">
+                        <i class="fas fa-dragon"></i> Jade Register
+                    </h3>
+                    <p class="text-emerald-200/40 text-xs mt-1">
+                        Alle aktiven Zuweisungen im Überblick.
+                    </p>
+                </div>
+                <span class="px-3 py-1 bg-emerald-900/20 border border-emerald-700/30 rounded text-emerald-400 text-xs font-mono shadow-[0_0_10px_rgba(52,211,153,0.1)]">
+                    ${playersFound.length} Champions
+                </span>
+            </div>
+            
+            <div class="overflow-y-auto flex-1 p-4 custom-scrollbar space-y-1">
+                ${listHtml}
+            </div>
+
+            <div class="p-4 border-t border-emerald-800/30 bg-slate-900 flex justify-end">
+                <button onclick="this.closest('.fixed').remove()" class="px-5 py-2 text-emerald-600 hover:text-emerald-300 transition-colors text-sm font-bold uppercase tracking-wider">
+                    Schließen
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // 5. ACTION HANDLER (Bleibt gleich)
+    window.processPlayerAssignments = async (pName, mode) => {
+        const { doc, setDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        const db = window.db || getFirestore();
+
+        const entries = assignmentMap[pName];
+        if (!entries) return;
+
+        const rowId = `row-${pName.replace(/\s/g, '-')}`;
+        const rowEl = document.getElementById(rowId);
+        if(rowEl) rowEl.style.opacity = '0.5';
+
+        const updatesByBoss = {};
+        
+        entries.forEach(entry => {
+            if (!updatesByBoss[entry.bossId]) updatesByBoss[entry.bossId] = {};
+            const ts = serverTimestamp();
+            
+            if (mode === 'inactive') {
+                updatesByBoss[entry.bossId][entry.triggerKey] = { player: "", timestamp: ts };
+            } 
+            else if (mode === 'delete') {
+                const suffixes = [
+                    { key: 'trigger', field: 'player' }, { key: 'player', field: 'player' },
+                    { key: 'npc', field: 'player' }, { key: 'cooldown', field: 'cooldown' },
+                    { key: 'condition', field: 'text' }, { key: 'time', field: 'text' },      
+                    { key: 'note', field: 'text' }, { key: 'tts', field: 'text' },       
+                    { key: 'varname', field: 'text' }, { key: 'icon', field: 'text' }       
+                ];
+                suffixes.forEach(s => {
+                    const fullKey = `${entry.baseKey}-${s.key}`;
+                    updatesByBoss[entry.bossId][fullKey] = { [s.field]: "", timestamp: ts };
+                });
+            }
+        });
+
+        try {
+            const promises = Object.keys(updatesByBoss).map(bid => {
+                return setDoc(doc(db, "raid-tool-data", bid), updatesByBoss[bid], { merge: true });
+            });
+            await Promise.all(promises);
+
+            if(rowEl) {
+                rowEl.innerHTML = `<div class="text-center w-full text-emerald-400 font-bold py-4 bg-emerald-900/20"><i class="fas fa-check-circle"></i> Läutert...</div>`;
+                setTimeout(() => {
+                    rowEl.style.height = '0';
+                    rowEl.style.marginBottom = '0';
+                    rowEl.style.opacity = '0';
+                    setTimeout(() => rowEl.remove(), 300);
+                }, 800);
+            }
+        } catch(e) {
+            alert("Fehler: " + e.message);
+            if(rowEl) rowEl.style.opacity = '1';
+        }
+    };
+};
 function renderPlayerSummary(selectedDates) {
             const resultsContainer = document.getElementById('player-summary-results');
             if (selectedDates.length === 0) {
@@ -4602,72 +5194,70 @@ window.makePlannerSortable = function(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // Suche den Header, der direkt VOR dem Container steht
-    const headerRow = container.previousElementSibling;
-    if (!headerRow || !headerRow.classList.contains('planner-header')) return;
+    const header = container.querySelector('.planner-header');
+    // Wichtig: Wir müssen wissen, wo die Zeilen drin liegen (im neuen rows-container)
+    const rowsContainer = container.querySelector('[id$="-rows-container"]') || container;
 
-    const headers = headerRow.children;
-    // Spalten-Mapping (Index im Grid -> Index des Eingabefeldes im HTML)
-    // 0: Trigger (Select), 1: NPC (Select), 2: % (Input), 3: Zeit (Input), 4: Spieler (Select), 5: Cooldown (Select)
-    const colIndexMap = { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 };
+    if (!header) return;
 
-    let sortDirection = 1; // 1 = ASC, -1 = DESC
-    let lastSortCol = -1;
+    let sortDirection = 1; // 1 = aufsteigend, -1 = absteigend
 
-    Array.from(headers).forEach((header, colIndex) => {
-        // Ignoriere die leere Spalte am Ende
-        if (colIndex > 5) return;
+    // Durch alle Header-Spalten iterieren
+    Array.from(header.children).forEach((th, colIndex) => {
+        // Ignorieren: 
+        // 0 = Griff
+        // Letzte 2 = Toggle Button & Actions
+        if (colIndex === 0 || colIndex >= header.children.length - 2) {
+            th.style.cursor = 'default';
+            return;
+        }
 
-        header.addEventListener('click', () => {
-            // Richtung umkehren bei gleichem Spaltenklick
-            if (lastSortCol === colIndex) {
-                sortDirection *= -1;
-            } else {
-                sortDirection = 1;
-                lastSortCol = colIndex;
-            }
+        // Klickbar machen
+        th.style.cursor = 'pointer';
+        th.title = "Sortieren";
+        th.classList.add('hover:text-white', 'transition-colors');
 
-            const rows = Array.from(container.children);
+        th.onclick = () => {
+            sortDirection *= -1; // Richtung wechseln
+            const rows = Array.from(rowsContainer.querySelectorAll('.planner-row'));
             
-            rows.sort((rowA, rowB) => {
-                // Input/Select Elemente holen
-                const elA = rowA.children[colIndexMap[colIndex]];
-                const elB = rowB.children[colIndexMap[colIndex]];
-                
-                let valA = elA ? elA.value.toLowerCase() : "";
-                let valB = elB ? elB.value.toLowerCase() : "";
+            rows.sort((a, b) => {
+                const getVal = (row) => {
+                    const el = row.children[colIndex];
+                    if (!el) return "";
+                    return el.value || el.textContent || ""; 
+                };
 
-                // Spezialfall: Zeit (MM:SS in Sekunden umwandeln)
+                let valA = getVal(a).toLowerCase();
+                let valB = getVal(b).toLowerCase();
+
+                // --- SPEZIAL-FÄLLE ---
+
+                // Spalte 3: % / # (Zahlen)
                 if (colIndex === 3) { 
-                    const parseTime = (t) => {
-                        if(!t) return -1;
-                        if(t.includes(':')) {
-                            const p = t.split(':');
-                            return parseInt(p[0])*60 + parseInt(p[1]);
+                    return (parseFloat(valA || 0) - parseFloat(valB || 0)) * sortDirection;
+                }
+                
+                // Spalte 4: Zeit (Min:Sek oder Sek)
+                if (colIndex === 4) {
+                    const toSec = (t) => {
+                        if (!t) return 0;
+                        if (t.includes(':')) {
+                           const parts = t.split(':');
+                           return parseInt(parts[0])*60 + parseInt(parts[1]);
                         }
-                        return parseFloat(t) || -1;
+                        return parseFloat(t) || 0;
                     };
-                    valA = parseTime(valA);
-                    valB = parseTime(valB);
-                    return (valA - valB) * sortDirection;
+                    return (toSec(valA) - toSec(valB)) * sortDirection;
                 }
 
-                // Spezialfall: Zahlen (%)
-                if (colIndex === 2) {
-                    const numA = parseFloat(valA) || -9999;
-                    const numB = parseFloat(valB) || -9999;
-                    return (numA - numB) * sortDirection;
-                }
-
-                // Standard Text-Sortierung (Trigger, Player, Cooldown)
-                if (valA < valB) return -1 * sortDirection;
-                if (valA > valB) return 1 * sortDirection;
-                return 0;
+                // Standard Text-Vergleich
+                return valA.localeCompare(valB) * sortDirection;
             });
 
-            // Neu ins DOM einfügen (visuelle Sortierung)
-            rows.forEach(row => container.appendChild(row));
-        });
+            // Zeilen neu einsortieren
+            rows.forEach(row => rowsContainer.appendChild(row));
+        };
     });
 };
     </script>
