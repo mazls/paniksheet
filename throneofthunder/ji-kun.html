@@ -146,26 +146,120 @@
         </h2>
         <div class="collapsible-content">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <div class="space-y-6">
-                    <div class="assignment-block">
-                        <h4 class="text-lg font-bold">🛡️ Tank-Einteilung (Hauptplattform)</h4>
-                        <ul class="assignment-list">
-                            <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="jikun-tank1"></select></li>
-                            <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="jikun-tank2"></select></li>
-                        </ul>
-                    </div>
+                <div class="mt-8 border-t border-slate-600 pt-4">
+    <div class="bg-slate-900/90 rounded border border-slate-700 overflow-hidden max-w-3xl mx-auto shadow-xl">
+        
+        <div class="bg-slate-800 px-3 py-1.5 border-b border-slate-700 flex justify-between items-center">
+            <h4 class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+                <i class="fas fa-clipboard-list text-yellow-500"></i> Standard Rotation
+            </h4>
+            
+            <div class="flex bg-slate-900 rounded p-0.5 border border-slate-600">
+                <button onclick="switchTactic('nhc')" id="btn-nhc" class="px-3 py-0.5 text-[10px] font-bold rounded bg-blue-600 text-white transition-all">NHC</button>
+                <button onclick="switchTactic('hc')" id="btn-hc" class="px-3 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white transition-all">HC</button>
+            </div>
+        </div>
+
+        <table class="w-full text-[10px] text-left text-gray-300">
+            <thead class="bg-slate-800/50 text-gray-500 font-bold uppercase">
+                <tr>
+                    <th class="p-1 w-8 text-center border-r border-slate-700">#</th>
+                    <th class="p-1 w-10 text-center border-r border-slate-700">Zeit</th>
+                    <th class="p-1 pl-2 w-1/2">Nest A</th>
+                    <th class="p-1 pl-2 w-1/2 border-l border-slate-700/50">Nest B</th>
+                </tr>
+            </thead>
+
+            <tbody id="body-nhc" class="divide-y divide-slate-700/50">
+                <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">1</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">0:00</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NE</span> Team 1</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
+                <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">2</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">0:30</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SE</span> Team 2</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
+                <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">3</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">1:00</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SW</span> Team 3</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
+                <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">4</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">1:30</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ W</span> Team 4</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
+                <tr class="bg-yellow-900/10"><td class="text-center font-bold text-gold bg-slate-800/30">5</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">2:00</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NW</span> Team 5</td><td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ NE</span> Team 1</td></tr>
+                <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">6</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">2:30</td><td class="px-2 py-0.5"><span class="text-sky-400 font-bold">↑ SE</span> Team 2</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
+                <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">7</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">3:00</td><td class="px-2 py-0.5"><span class="text-sky-400 font-bold">↑ MID</span> Team 4</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
+                <tr class="bg-yellow-900/10"><td class="text-center font-bold text-gold bg-slate-800/30">8</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">3:30</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NE</span> Team 1</td><td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ SW</span> Team 3</td></tr>
+                <tr class="bg-yellow-900/10"><td class="text-center font-bold text-gold bg-slate-800/30">9</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">4:00</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SE</span> Team 2</td><td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ NW</span> Team 5</td></tr>
+                <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">10</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">4:30</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SW</span> Team 3</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
+                <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">11</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">5:00</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ W</span> Team 4</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
+                <tr class="bg-yellow-900/10"><td class="text-center font-bold text-gold bg-slate-800/30">12</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">5:30</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NW</span> Team 5</td><td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ NE</span> Team 1</td></tr>
+                <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">13</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">6:00</td><td class="px-2 py-0.5"><span class="text-sky-400 font-bold">↑ SE</span> Team 2</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
+                <tr class="bg-yellow-900/10"><td class="text-center font-bold text-gold bg-slate-800/30">14</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">6:30</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NE</span> Team 1</td><td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ MID</span> Team 4</td></tr>
+                <tr class="bg-yellow-900/10"><td class="text-center font-bold text-gold bg-slate-800/30">15</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">7:00</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SE</span> Team 2</td><td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ SW</span> Team 3</td></tr>
+            </tbody>
+
+            <tbody id="body-hc" class="divide-y divide-slate-700/50 hidden">
+                <tr class="hover:bg-slate-800/30">
+                    <td class="text-center font-bold text-white bg-slate-800/30">1</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">0:00</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NE</span> Team 1</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td>
+                </tr>
+                <tr class="hover:bg-slate-800/30">
+                    <td class="text-center font-bold text-white bg-slate-800/30">2</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">0:30</td>
+                    <td class="px-2 py-0.5 bg-red-900/20"><span class="text-emerald-400 font-bold">↓ SE</span> Team 2 <span title="Tank benötigt">🛡️</span></td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td>
+                </tr>
+                <tr class="hover:bg-slate-800/30">
+                    <td class="text-center font-bold text-white bg-slate-800/30">3</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">1:00</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SW</span> Team 3</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td>
+                </tr>
+                <tr class="bg-yellow-900/10">
+                    <td class="text-center font-bold text-gold bg-slate-800/30">4</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">1:30</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ W</span> Team 4</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ NE</span> Team 1</td>
+                </tr>
+                <tr class="bg-yellow-900/10">
+                    <td class="text-center font-bold text-gold bg-slate-800/30">5</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">2:00</td>
+                    <td class="px-2 py-0.5 bg-red-900/20"><span class="text-emerald-400 font-bold">↓ NW</span> Team 5 <span title="Tank benötigt">🛡️</span></td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ SE</span> Team 2</td>
+                </tr>
+                <tr class="hover:bg-slate-800/30">
+                    <td class="text-center font-bold text-white bg-slate-800/30">6</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">2:30</td>
+                    <td class="px-2 py-0.5"><span class="text-sky-400 font-bold">↑ MID</span> Team 4</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td>
+                </tr>
+                <tr class="bg-yellow-900/10">
+                    <td class="text-center font-bold text-gold bg-slate-800/30">7</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">3:00</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NE</span> Team 1</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ SW</span> Team 3</td>
+                </tr>
+                <tr class="bg-yellow-900/10">
+                    <td class="text-center font-bold text-gold bg-slate-800/30">8</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">3:30</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SE</span> Team 2</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50 bg-red-900/20"><span class="text-sky-400 font-bold">↑ NW</span> Team 5 <span title="Tank benötigt">🛡️</span></td>
+                </tr>
+                <tr class="bg-yellow-900/10">
+                    <td class="text-center font-bold text-gold bg-slate-800/30">9</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">4:00</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SW</span> Team 3</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ NE</span> Team 1</td> </tr>
+                <tr class="bg-yellow-900/10">
+                    <td class="text-center font-bold text-gold bg-slate-800/30">10</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">4:30</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ W</span> Team 4</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ NE</span> Team 1</td>
+                </tr>
+                <tr class="bg-yellow-900/10">
+                    <td class="text-center font-bold text-gold bg-slate-800/30">11</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">5:00</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NW</span> Team 5</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50 bg-red-900/20"><span class="text-sky-400 font-bold">↑ SE</span> Team 2 <span title="Tank benötigt">🛡️</span></td>
+                </tr>
+                <tr class="bg-yellow-900/10">
+                    <td class="text-center font-bold text-gold bg-slate-800/30">12</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">5:30</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NE</span> Team 1</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ MID</span> Team 4</td>
+                </tr>
+                <tr class="bg-yellow-900/10">
+                    <td class="text-center font-bold text-gold bg-slate-800/30">13</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">6:00</td>
+                    <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SE</span> Team 2</td>
+                    <td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ SW</span> Team 3</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
                     
-                    <div class="assignment-block">
-                        <h4 class="text-lg font-bold">🥦 Futterdieb-Rotation (Buff)</h4>
-                        <p class="text-sm text-gray-400 mb-2 px-3">Fliegende Spieler, die Futter abfangen. (Grüne Pfütze mit großen Self-CDs)</p>
-                        <ul class="assignment-list">
-                            <li><span>Abfänger 1:</span><select data-assignment-id="jikun-food1" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
-                            <li><span>Abfänger 2:</span><select data-assignment-id="jikun-food2" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
-                            <li data-size="25" class="tactic-content"><span>Abfänger 3:</span><select data-assignment-id="jikun-food3" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
-                            <li data-size="25" class="tactic-content"><span>Abfänger 4:</span><select data-assignment-id="jikun-food4" class="assignment-select" data-assignment-pool="jikun-food"></select></li>
-                        </ul>
-                    </div>
+
                 </div>
 
             <div>
@@ -304,10 +398,9 @@
         </div>
     </div>
 </section>
-
 <script>
-    // Konfiguration der Wellen (Wie viele Teams pro Welle?)
-const WAVES_CONFIG = [
+    // Konfiguration der Wellen
+    const WAVES_CONFIG = [
         { id: 1, count: 1 }, { id: 2, count: 1 }, { id: 3, count: 1 },
         { id: 4, count: 2 }, { id: 5, count: 2 }, 
         { id: 6, count: 1 }, 
@@ -321,9 +414,7 @@ const WAVES_CONFIG = [
         { id: 18, count: 3 }, { id: 19, count: 3 }
     ];
 
-    // STANDARD-TAKTIK (Original Sheet Positionen)
-    // Format: "WaveID-Index": { lvl: "LOWER/UPPER", dir: "NE/SE/..." }
-    // Index: 0 = Erstes Nest, 1 = Zweites (b), 2 = Drittes (c)
+    // Positionen & Defaults
     const WAVE_DEFAULTS = {
         "1-0": { lvl: "LOWER", dir: "NE" },
         "2-0": { lvl: "LOWER", dir: "SE" },
@@ -346,17 +437,41 @@ const WAVES_CONFIG = [
         "19-0": { lvl: "LOWER", dir: "NW" }, "19-1": { lvl: "LOWER", dir: "NE" }, "19-2": { lvl: "UPPER", dir: "SE" }
     };
 
-    // 1. Statisches HTML generieren
-(function renderStaticStructure() {
+    const formatTime = (seconds) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
+    // 1. STATISCHE STRUKTUR GENERIEREN
+    (function renderStaticStructure() {
         
-        // A) TEAM SETUP (Unverändert)
+        // A) TEAM SETUP (Inkl. Tanks)
         const teamContainer = document.getElementById('team-setup-container');
         if (teamContainer) {
+            // 1. TANK SELEKTOREN (Oben)
+            let tankHtml = `
+            <div class="col-span-1 md:col-span-5 mb-4 p-3 bg-slate-900/50 border border-slate-700 rounded flex gap-6 items-center justify-center flex-wrap">
+                <div class="flex items-center gap-2 bg-black/30 px-3 py-1 rounded border border-blue-900/30">
+                    <span class="text-xs font-bold text-blue-400 uppercase">🛡️ Tank 1 (T1):</span>
+                    <select class="assignment-select w-40 h-8 text-xs" data-assignment-id="jikun-nest-tank1" data-assignment-pool="tanks"></select>
+                </div>
+                <div class="flex items-center gap-2 bg-black/30 px-3 py-1 rounded border border-blue-900/30">
+                    <span class="text-xs font-bold text-purple-400 uppercase">🛡️ Tank 2 (T2):</span>
+                    <select class="assignment-select w-40 h-8 text-xs" data-assignment-id="jikun-nest-tank2" data-assignment-pool="tanks"></select>
+                </div>
+                <div class="text-[10px] text-gray-500 italic ml-2 w-full text-center mt-1">
+                    (Wähle unten T1 oder T2 an, um den 5. Spieler im Team durch den jeweiligen Tank zu ersetzen)
+                </div>
+            </div>`;
+
+            // 2. TEAMS (1-5)
             let teamHtml = '';
             for(let t=1; t<=5; t++) {
                 let playersHtml = '';
                 for(let p=1; p<=5; p++) {
-                    playersHtml += `<select class="assignment-select team-player-select mb-0.5 text-[8px] h-7 py-0" 
+                    let extraClass = (p === 5) ? 'border-b-2 border-slate-600' : ''; 
+                    playersHtml += `<select class="assignment-select team-player-select mb-0.5 text-[8px] h-7 py-0 ${extraClass}" 
                                     data-assignment-id="jikun-team-${t}-p${p}" 
                                     data-assignment-pool="jikun-teams" 
                                     data-team-id="${t}"></select>`;
@@ -369,7 +484,7 @@ const WAVES_CONFIG = [
                     </div>
                 </div>`;
             }
-            teamContainer.innerHTML = teamHtml;
+            teamContainer.innerHTML = tankHtml + `<div class="grid grid-cols-1 md:grid-cols-5 gap-4 col-span-5 w-full">${teamHtml}</div>`;
         }
 
         // B) WELLEN LISTE GENERIEREN
@@ -377,25 +492,24 @@ const WAVES_CONFIG = [
         if (waveContainer) {
             let rowsHtml = '';
             
-            // Farben Konfiguration
             const DIR_CONFIG = [
-                { val: "NE", label: "★ NE (Star)", color: "#fcd34d" },      // Gelb
-                { val: "SE", label: "■ SE (Square)", color: "#60a5fa" },    // Blau
-                { val: "SW", label: "✜ SW (Cross)", color: "#f87171" },    // Rot
-                { val: "W",  label: "♦ W (Diamond)", color: "#c084fc" },    // Lila
-                { val: "NW", label: "▲ NW (Triangle)", color: "#4ade80" },  // Grün
-                { val: "MIDDLE", label: "⬆ MID", color: "#ffffff" }         // Weiß
+                { val: "", label: "--", color: "#64748b" },
+                { val: "NE", label: "★ NE (Star)", color: "#fcd34d" },
+                { val: "SE", label: "■ SE (Square)", color: "#60a5fa" },
+                { val: "SW", label: "✜ SW (Cross)", color: "#f87171" },
+                { val: "W",  label: "♦ W (Diamond)", color: "#c084fc" },
+                { val: "NW", label: "▲ NW (Triangle)", color: "#4ade80" },
+                { val: "MIDDLE", label: "⬆ MID", color: "#ffffff" }
             ];
 
-            const getWaveCellContent = (dbKey, def) => {
+            const getWaveCellContent = (dbKey, def, waveId, suffix) => {
                 
-                // 1. LEVEL
-                const lvlOpts = `<option value="LOWER" ${def.lvl === 'LOWER' ? 'selected' : ''}>↓ Low</option>
+                const lvlOpts = `<option value="">--</option>
+                                 <option value="LOWER" ${def.lvl === 'LOWER' ? 'selected' : ''}>↓ Low</option>
                                  <option value="UPPER" ${def.lvl === 'UPPER' ? 'selected' : ''}>↑ Up</option>`;
                 
-                // 2. RICHTUNG (Farbe ermitteln)
                 const currentDirObj = DIR_CONFIG.find(d => d.val === def.dir) || DIR_CONFIG[0];
-                const startColor = currentDirObj.color; // Startfarbe für BEIDE Dropdowns
+                const startColor = currentDirObj.color; 
 
                 const dirOpts = DIR_CONFIG.map(opt => 
                     `<option value="${opt.val}" style="color: ${opt.color}; font-weight: bold; background-color: #1e293b;" ${def.dir === opt.val ? 'selected' : ''}>
@@ -403,7 +517,6 @@ const WAVES_CONFIG = [
                     </option>`
                 ).join('');
 
-                // 3. TEAM
                 const teamOpts = `
                     <option value="">-</option>
                     <option value="1">Team 1</option>
@@ -413,9 +526,29 @@ const WAVES_CONFIG = [
                     <option value="5">Team 5</option>
                 `;
 
-                // Layout
-                return `<div class="flex w-max gap-0.5">
-                            <select class="config-select w-[85px] text-[10px] h-5 py-0 px-0 text-center wave-lvl rounded-r-none border-r-0" 
+                // --- TANK CHECKBOXEN (T1 & T2) ---
+                let tankControls = '';
+                const isTankWave = (waveId === 2 && suffix === '') || (waveId === 5 && suffix === '') ||
+                                   (waveId === 8 && suffix === 'b') || (waveId === 11 && suffix === 'b');
+                
+                if (isTankWave) {
+                    tankControls = `
+                    <div class="absolute -right-9 top-0 flex flex-col gap-0.5 p-0.5 bg-slate-900/90 rounded border border-slate-600 z-10 shadow-lg">
+                        <div class="flex items-center gap-1 cursor-pointer" title="Tank 1 statt Spieler 5">
+                            <input type="checkbox" class="tank-override-cb t1 accent-blue-500 w-3 h-3 cursor-pointer" 
+                                   data-assignment-id="${dbKey}-tank-t1" data-group="${dbKey}">
+                            <span class="text-[9px] text-blue-400 font-bold leading-none">T1</span>
+                        </div>
+                        <div class="flex items-center gap-1 cursor-pointer" title="Tank 2 statt Spieler 5">
+                            <input type="checkbox" class="tank-override-cb t2 accent-purple-500 w-3 h-3 cursor-pointer" 
+                                   data-assignment-id="${dbKey}-tank-t2" data-group="${dbKey}">
+                            <span class="text-[9px] text-purple-400 font-bold leading-none">T2</span>
+                        </div>
+                    </div>`;
+                }
+
+                return `<div class="flex w-max gap-0.5 relative pr-1">
+                            <select class="config-select w-[80px] text-[10px] h-5 py-0 px-0 text-center wave-lvl rounded-r-none border-r-0" 
                                     data-assignment-id="${dbKey}-lvl" title="Ebene">
                                 ${lvlOpts}
                             </select>
@@ -424,22 +557,26 @@ const WAVES_CONFIG = [
                                     data-assignment-id="${dbKey}-dir" 
                                     title="Richtung"
                                     style="color: ${startColor};"
-                                    onchange="const c = this.options[this.selectedIndex].style.color; this.style.color = c; this.nextElementSibling.style.color = c;">
+                                    onchange="const c = this.options[this.selectedIndex].style.color; this.style.color = c;">
                                 ${dirOpts}
                             </select>
                             
                             <select class="config-select w-[80px] text-[10px] h-5 py-0 px-0 text-center wave-team-select rounded-l-none bg-slate-700 border-slate-500 font-bold" 
                                     data-assignment-id="${dbKey}-team" 
-                                    title="Team"
-                                    style="color: ${startColor};">
+                                    title="Team">
                                 ${teamOpts}
                             </select>
+                            ${tankControls}
                         </div>`;
             };
+
+            let currentTime = 0;
 
             WAVES_CONFIG.forEach(wave => {
                 let cells = '';
                 const suffixes = ['', 'b', 'c']; 
+                const timeStr = formatTime(currentTime);
+                currentTime += 30;
 
                 for(let i=0; i<3; i++) {
                     if (i < wave.count) {
@@ -449,7 +586,7 @@ const WAVES_CONFIG = [
                         
                         cells += `
                         <td class="p-1 border-l border-slate-700 bg-slate-800/30 align-middle wave-slot" data-wave="${wave.id}" data-suffix="${suffix}">
-                            ${getWaveCellContent(dbKey, def)}
+                            ${getWaveCellContent(dbKey, def, wave.id, suffix)}
                         </td>`;
                     } else {
                         cells += `<td class="p-1 border-l border-slate-700 bg-black/20"></td>`;
@@ -458,7 +595,10 @@ const WAVES_CONFIG = [
 
                 rowsHtml += `
                 <tr class="hover:bg-slate-700/50 transition-colors border-b border-slate-800/50">
-                    <td class="p-1 text-center font-bold text-gold text-xs bg-slate-800 align-middle">${wave.id}</td>
+                    <td class="p-1 text-center font-bold text-xs bg-slate-800 align-middle leading-tight">
+                        <span class="text-gold block text-sm">${wave.id}</span>
+                        <span class="text-gray-500 text-[9px] font-mono">${timeStr}</span>
+                    </td>
                     ${cells}
                 </tr>`;
             });
@@ -468,7 +608,7 @@ const WAVES_CONFIG = [
 
     // 2. HAUPTFUNKTION
     window.initializePageSpecificCode = async function(assignments, roster, firebaseTools, allCooldowns) {
-        window.globalCooldowns = allCooldowns; // Für Summary wichtig
+        window.globalCooldowns = allCooldowns; 
         window.globalRoster = roster;
 
         const { setDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
@@ -480,57 +620,97 @@ const WAVES_CONFIG = [
             const ts = serverTimestamp();
             const payload = {};
             const editor = sessionStorage.getItem('currentManager') || 'Unbekannt';
+            
             Object.entries(updatesObj).forEach(([id, val]) => {
-                const isPlayer = id.match(/-p\d+$/); 
-                payload[id] = { [isPlayer ? 'player' : 'player']: val, editor, timestamp: ts }; 
+                const isBool = typeof val === 'boolean';
+                payload[id] = { [isBool ? 'active' : 'player']: val, editor, timestamp: ts }; 
             });
             try { await setDoc(doc(db, "raid-tool-data", "boss-ji-kun"), payload, { merge: true }); } 
             catch (e) { console.error("Err:", e); }
         };
 
         // --- Werte wiederherstellen ---
-        document.querySelectorAll('.config-select').forEach(sel => {
-            // Wenn in DB gespeichert, überschreibe den Default
+        // 1. SELECTS
+        document.querySelectorAll('.config-select, .assignment-select').forEach(sel => {
             const savedVal = assignments[sel.dataset.assignmentId]?.player;
             if (savedVal) sel.value = savedVal;
             
+            if (sel.classList.contains('wave-dir')) {
+                const opt = sel.options[sel.selectedIndex];
+                if(opt) sel.style.color = opt.style.color;
+            }
+
             if (sel.dataset._wired === '1') return;
             sel.dataset._wired = '1';
             sel.addEventListener('change', (e) => {
                 jiKunDirectSave({ [e.target.dataset.assignmentId]: e.target.value });
-                updateExports();
+                setTimeout(updateExports, 50);
             });
         });
-        document.querySelectorAll('.team-player-select').forEach(sel => {
-             // Analog für Team-Spieler (wird autom. durch Main Tool geladen, aber für Export wichtig)
-             sel.addEventListener('change', () => setTimeout(updateExports, 50));
+
+        // 2. CHECKBOXEN (T1 / T2 Logic)
+        document.querySelectorAll('.tank-override-cb').forEach(cb => {
+            const savedState = assignments[cb.dataset.assignmentId]?.active;
+            if (savedState !== undefined) cb.checked = savedState;
+            
+            cb.addEventListener('change', (e) => {
+                const me = e.target;
+                const groupKey = me.dataset.group;
+                
+                // Exklusive Logik: Wenn T1 an -> T2 aus (und umgekehrt)
+                if (me.checked) {
+                    const otherClass = me.classList.contains('t1') ? '.t2' : '.t1';
+                    const otherCb = document.querySelector(`.tank-override-cb${otherClass}[data-group="${groupKey}"]`);
+                    if (otherCb && otherCb.checked) {
+                        otherCb.checked = false;
+                        jiKunDirectSave({ [otherCb.dataset.assignmentId]: false });
+                    }
+                }
+
+                jiKunDirectSave({ [me.dataset.assignmentId]: me.checked });
+                setTimeout(updateExports, 50);
+            });
         });
 
         // --- Export Logik ---
         function updateExports() {
             let wRows = [];
             
+            // Tanks laden
+            const tank1 = document.querySelector('[data-assignment-id="jikun-nest-tank1"]')?.value || "Tank1";
+            const tank2 = document.querySelector('[data-assignment-id="jikun-nest-tank2"]')?.value || "Tank2";
+
             document.querySelectorAll('.wave-slot').forEach(slot => {
                 const waveId = slot.dataset.wave;
                 const suffix = slot.dataset.suffix; // '', 'b', 'c'
                 
-                const lvl = slot.querySelector('.wave-lvl')?.value || "LOWER";
-                const dir = slot.querySelector('.wave-dir')?.value || "NE";
+                const lvl = slot.querySelector('.wave-lvl')?.value;
+                const dir = slot.querySelector('.wave-dir')?.value;
                 const teamId = slot.querySelector('.wave-team-select')?.value;
+                
+                // Tank Overrides prüfen
+                const t1Cb = slot.querySelector('.tank-override-cb.t1');
+                const t2Cb = slot.querySelector('.tank-override-cb.t2');
+                const useT1 = t1Cb && t1Cb.checked;
+                const useT2 = t2Cb && t2Cb.checked;
 
-                if (teamId) {
+                // NUR exportieren, wenn ALLES gesetzt ist (Keine leeren "--")
+                if (teamId && lvl && dir && lvl !== "" && dir !== "") {
                     let players = [];
-                    document.querySelectorAll(`.team-player-select[data-team-id="${teamId}"]`).forEach(pSelect => {
-                        if (pSelect.value && !pSelect.value.includes('❌')) {
-                            players.push(pSelect.value);
+                    document.querySelectorAll(`.team-player-select[data-team-id="${teamId}"]`).forEach((pSelect, idx) => {
+                        let pName = pSelect.value;
+                        if (!pName || pName.includes('❌')) return;
+
+                        // TANK LOGIK: Wenn Checkbox an, ersetze den 5. Spieler (Index 4)
+                        if (idx === 4) {
+                            if (useT1) pName = tank1;
+                            else if (useT2) pName = tank2;
                         }
+
+                        players.push(pName);
                     });
 
                     if (players.length > 0) {
-                        // EXPORT FORMAT FIX:
-                        // Wenn suffix 'b' oder 'c' ist, KEIN "WAVE..." Prefix, sondern nur Location.
-                        // Sonst: WAVE{id}-Location-Players
-                        
                         const location = `${lvl}${dir}`;
                         const playerStr = players.join(',');
 
@@ -569,12 +749,8 @@ const WAVES_CONFIG = [
         const container = document.getElementById('jikun-planner-container'); 
 
         if (container && container.innerHTML.trim() === "") {
-            
-            // 2. AUTOMATISCHE ERKENNUNG (Ergibt "jikun")
             const p = container.id.replace('-planner-container', '');
 
-            // 3. TRIGGER DEFINIEREN (Spezifisch für Ji-Kun!)
-            // Da Ji-Kun spezielle Trigger hat, definieren wir sie hier als Fallback
             const jikunTriggers = [
                 { val: "JIKUN_ENC_START", text: "Encounter Start" },
                 { val: "JIKUN_NEST", text: "Nest Aktiv" },
@@ -590,7 +766,6 @@ const WAVES_CONFIG = [
             const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
             const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
 
-            // 4. HEADER BAUEN (Mit Toggle Button)
             const headerHtml = `
             <div class="planner-header">
                 <div></div> <div>Trigger</div>
@@ -612,7 +787,6 @@ const WAVES_CONFIG = [
                 </div>
                 <div></div> </div>`;
 
-            // 5. ZEILEN GENERIEREN
             let rowsHtml = "";
             for (let i = 1; i <= 100; i++) {
                 rowsHtml += `
@@ -654,160 +828,151 @@ const WAVES_CONFIG = [
                 </div>`;
             }
 
-            // 6. HTML ZUSAMMENSETZEN
             container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
             
-            // 7. FEATURES AKTIVIEREN (Sortieren, Drag&Drop, Copy/Paste)
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
-            }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
+            if (window.initPlannerRowFeatures) setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+            if (window.makePlannerSortable) setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
         }
 
-        // Listener für die Zusammenfassung
         if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 50);
-            });
+            container.addEventListener('change', () => { setTimeout(window.updatePlannerSummary, 50); });
             setTimeout(window.updatePlannerSummary, 500);
         }
         if (!window.isManager) {
-            // 1. Team-Einteilung sperren
-            const teamSelects = document.querySelectorAll('#team-setup-container select');
-            teamSelects.forEach(el => {
-                el.disabled = true;
-                el.title = "Nur Manager können dies ändern.";
-            });
-
-            // 2. Wellen-Zuweisung sperren (Level, Richtung, Team)
-            const waveSelects = document.querySelectorAll('#waves-schedule-container select');
-            waveSelects.forEach(el => {
-                el.disabled = true;
-                el.title = "Nur Manager können dies ändern.";
-            });
+            const selects = document.querySelectorAll('#team-setup-container select, #waves-schedule-container select, .tank-override-cb');
+            selects.forEach(el => { el.disabled = true; });
         }
     };
-    // --- SUMMARY FUNKTION (Lokal für Ji-Kun) ---
-        window.updatePlannerSummary = function() {
-            // Container suchen (ID ist in ji-kun.html fest definiert)
-            const summaryContainer = document.getElementById('jikun-planner-summary');
-            if (!summaryContainer) return;
 
-            const prefix = "jikun"; 
-            const cooldownDB = window.globalCooldowns || [];
-            const rosterDB = window.globalRoster || [];
-            
-            let seqGroups = {};
-            let healthGroups = {};
+    // --- SUMMARY FUNKTION ---
+    window.updatePlannerSummary = function() {
+        const summaryContainer = document.getElementById('jikun-planner-summary');
+        if (!summaryContainer) return;
 
-            const parseTime = (str) => {
-                if (!str) return 0;
-                const parts = str.split(':');
-                if (parts.length === 2) return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-                return parseInt(str) || 0;
-            };
+        const prefix = "jikun"; 
+        const rosterDB = window.globalRoster || [];
+        
+        let seqGroups = {};
+        let healthGroups = {};
 
-            // Daten sammeln
-            for (let i = 1; i <= 100; i++) {
-                const triggerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-trigger"]`);
-                const playerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-player"]`);
-                const cdEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-cooldown"]`);
-                const condEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-condition"]`);
-                const timeEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-time"]`);
-                const npcEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-npc"]`);
-
-                if (!triggerEl || !triggerEl.value || (!playerEl.value && !cdEl.value)) continue;
-
-                const triggerText = triggerEl.options[triggerEl.selectedIndex].text;
-                const triggerVal = triggerEl.value;
-                const conditionRaw = condEl.value || "0";
-                const timeVal = timeEl.value || "";
-                const timeSeconds = parseTime(timeVal);
-                const playerVal = playerEl.value;
-                const cdText = cdEl.value;
-                
-                // Farben & IDs
-                let cdColor = "#e2e8f0"; 
-                if (cdEl.selectedIndex >= 0) {
-                    const opt = cdEl.options[cdEl.selectedIndex];
-                    if (opt && opt.dataset.color) cdColor = opt.dataset.color;
-                }
-                
-                let playerColor = "#ffffff";
-                const playerObj = rosterDB.find(p => p.name === playerVal);
-                if (playerObj) {
-                    playerColor = window.classColors?.[playerObj.class] || playerObj.color || "#ffffff";
-                }
-
-                const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor };
-                const isHealth = triggerText.includes("Health") || triggerVal.includes("HEALTH") || triggerVal.includes("PHASE");
-
-                // Komma-Trennung Logik (z.B. "7, 22")
-                const conditions = conditionRaw.split(',').map(s => s.trim()).filter(s => s !== "");
-                if (conditions.length === 0) conditions.push("0");
-
-                conditions.forEach(cond => {
-                    const sortValue = parseFloat(cond) || 0;
-                    if (isHealth) {
-                        const npcName = npcEl && npcEl.value ? npcEl.value : "Boss";
-                        const key = `${npcName}_${cond}`;
-                        if (!healthGroups[key]) healthGroups[key] = { title: `${cond}% ${npcName}`, percent: sortValue, entries: [] };
-                        healthGroups[key].entries.push({ ...entry });
-                    } else {
-                        const key = `${cond}_${triggerText}`;
-                        if (!seqGroups[key]) seqGroups[key] = { title: `#${cond} ${triggerText}`, triggerName: triggerText, count: sortValue, entries: [] };
-                        seqGroups[key].entries.push({ ...entry });
-                    }
-                });
-            }
-
-            // Sortieren & HTML bauen
-            let seqArray = Object.values(seqGroups).sort((a, b) => {
-                if (a.count !== b.count) return a.count - b.count; 
-                return a.triggerName.localeCompare(b.triggerName);
-            });
-            let healthArray = Object.values(healthGroups).sort((a, b) => b.percent - a.percent);
-
-            const sortEntries = (groups) => groups.forEach(g => g.entries.sort((a, b) => a.timeSec - b.timeSec));
-            sortEntries(seqArray);
-            sortEntries(healthArray);
-
-            let html = "";
-            const renderBlock = (title, entries, colorClass, borderClass) => {
-                return `
-                <div class="mb-1.5 relative pl-2 border-l-2 ${borderClass} break-inside-avoid">
-                    <h5 class="text-${colorClass} font-bold text-[10px] uppercase tracking-wide mb-0.5 opacity-80">${title}</h5>
-                    <div class="space-y-0.5">
-                        ${entries.map(e => `
-                            <div class="text-[11px] text-gray-300 bg-slate-800/40 px-1.5 py-0.5 rounded flex items-center gap-2 hover:bg-slate-800 transition-colors">
-                                <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}s</span>
-                                <div class="flex-1 truncate">
-                                    <strong style="color: ${e.playerColor}" class="mr-1">${e.player}</strong>
-                                    <span class="text-gray-500 text-[9px] mr-1">➜</span>
-                                    <span style="color:${e.color}; font-weight:600;">${e.cd}</span>
-                                </div>
-                            </div>`).join('')}
-                    </div>
-                </div>`;
-            };
-
-            if (seqArray.length > 0) {
-                html += `<div class="mb-4"><h4 class="text-yellow-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">⚡ Ablauf (#)</h4>`;
-                seqArray.forEach(g => html += renderBlock(g.title, g.entries, "yellow-200", "border-yellow-600/40"));
-                html += `</div>`;
-            }
-            if (healthArray.length > 0) {
-                html += `<div><h4 class="text-red-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">❤️ Phasen (%)</h4>`;
-                healthArray.forEach(g => html += renderBlock(g.title, g.entries, "red-200", "border-red-600/40"));
-                html += `</div>`;
-            }
-            
-            if (!html) html = `<div class="col-span-2 text-center text-gray-600 text-xs py-4 italic">Keine Einträge gefunden.</div>`;
-            
-            summaryContainer.innerHTML = html;
+        const parseTime = (str) => {
+            if (!str) return 0;
+            const parts = str.split(':');
+            if (parts.length === 2) return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+            return parseInt(str) || 0;
         };
 
+        for (let i = 1; i <= 100; i++) {
+            const triggerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-trigger"]`);
+            const playerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-player"]`);
+            const cdEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-cooldown"]`);
+            const condEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-condition"]`);
+            const timeEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-time"]`);
+            const npcEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-npc"]`);
+
+            if (!triggerEl || !triggerEl.value || (!playerEl.value && !cdEl.value)) continue;
+
+            const triggerText = triggerEl.options[triggerEl.selectedIndex].text;
+            const triggerVal = triggerEl.value;
+            const conditionRaw = condEl.value || "0";
+            const timeVal = timeEl.value || "";
+            const timeSeconds = parseTime(timeVal);
+            const playerVal = playerEl.value;
+            const cdText = cdEl.value;
+            
+            let cdColor = "#e2e8f0"; 
+            if (cdEl.selectedIndex >= 0) {
+                const opt = cdEl.options[cdEl.selectedIndex];
+                if (opt && opt.dataset.color) cdColor = opt.dataset.color;
+            }
+            
+            let playerColor = "#ffffff";
+            const playerObj = rosterDB.find(p => p.name === playerVal);
+            if (playerObj) {
+                playerColor = window.classColors?.[playerObj.class] || playerObj.color || "#ffffff";
+            }
+
+            const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor };
+            const isHealth = triggerText.includes("Health") || triggerVal.includes("HEALTH") || triggerVal.includes("PHASE");
+
+            const conditions = conditionRaw.split(',').map(s => s.trim()).filter(s => s !== "");
+            if (conditions.length === 0) conditions.push("0");
+
+            conditions.forEach(cond => {
+                const sortValue = parseFloat(cond) || 0;
+                if (isHealth) {
+                    const npcName = npcEl && npcEl.value ? npcEl.value : "Boss";
+                    const key = `${npcName}_${cond}`;
+                    if (!healthGroups[key]) healthGroups[key] = { title: `${cond}% ${npcName}`, percent: sortValue, entries: [] };
+                    healthGroups[key].entries.push({ ...entry });
+                } else {
+                    const key = `${cond}_${triggerText}`;
+                    if (!seqGroups[key]) seqGroups[key] = { title: `#${cond} ${triggerText}`, triggerName: triggerText, count: sortValue, entries: [] };
+                    seqGroups[key].entries.push({ ...entry });
+                }
+            });
+        }
+
+        let seqArray = Object.values(seqGroups).sort((a, b) => {
+            if (a.count !== b.count) return a.count - b.count; 
+            return a.triggerName.localeCompare(b.triggerName);
+        });
+        let healthArray = Object.values(healthGroups).sort((a, b) => b.percent - a.percent);
+
+        const sortEntries = (groups) => groups.forEach(g => g.entries.sort((a, b) => a.timeSec - b.timeSec));
+        sortEntries(seqArray);
+        sortEntries(healthArray);
+
+        let html = "";
+        const renderBlock = (title, entries, colorClass, borderClass) => {
+            return `
+            <div class="mb-1.5 relative pl-2 border-l-2 ${borderClass} break-inside-avoid">
+                <h5 class="text-${colorClass} font-bold text-[10px] uppercase tracking-wide mb-0.5 opacity-80">${title}</h5>
+                <div class="space-y-0.5">
+                    ${entries.map(e => `
+                        <div class="text-[11px] text-gray-300 bg-slate-800/40 px-1.5 py-0.5 rounded flex items-center gap-2 hover:bg-slate-800 transition-colors">
+                            <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}s</span>
+                            <div class="flex-1 truncate">
+                                <strong style="color: ${e.playerColor}" class="mr-1">${e.player}</strong>
+                                <span class="text-gray-500 text-[9px] mr-1">➜</span>
+                                <span style="color:${e.color}; font-weight:600;">${e.cd}</span>
+                            </div>
+                        </div>`).join('')}
+                </div>
+            </div>`;
+        };
+
+        if (seqArray.length > 0) {
+            html += `<div class="mb-4"><h4 class="text-yellow-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">⚡ Ablauf (#)</h4>`;
+            seqArray.forEach(g => html += renderBlock(g.title, g.entries, "yellow-200", "border-yellow-600/40"));
+            html += `</div>`;
+        }
+        if (healthArray.length > 0) {
+            html += `<div><h4 class="text-red-400 text-xs font-bold border-b border-slate-700 pb-1 mb-2 uppercase tracking-widest">❤️ Phasen (%)</h4>`;
+            healthArray.forEach(g => html += renderBlock(g.title, g.entries, "red-200", "border-red-600/40"));
+            html += `</div>`;
+        }
+        
+        if (!html) html = `<div class="col-span-2 text-center text-gray-600 text-xs py-4 italic">Keine Einträge gefunden.</div>`;
+        summaryContainer.innerHTML = html;
+    };
+    function switchTactic(mode) {
+    const nhcBody = document.getElementById('body-nhc');
+    const hcBody = document.getElementById('body-hc');
+    const btnNhc = document.getElementById('btn-nhc');
+    const btnHc = document.getElementById('btn-hc');
+
+    if (mode === 'nhc') {
+        nhcBody.classList.remove('hidden');
+        hcBody.classList.add('hidden');
+        btnNhc.className = "px-3 py-0.5 text-[10px] font-bold rounded bg-blue-600 text-white transition-all";
+        btnHc.className = "px-3 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white transition-all";
+    } else {
+        nhcBody.classList.add('hidden');
+        hcBody.classList.remove('hidden');
+        btnNhc.className = "px-3 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white transition-all";
+        btnHc.className = "px-3 py-0.5 text-[10px] font-bold rounded bg-red-600 text-white transition-all";
+    }
+}
 </script>
 </main>
