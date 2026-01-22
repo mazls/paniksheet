@@ -2802,10 +2802,23 @@ mainNav.innerHTML = mainNavHTML;
                 updateVideoState();
             });
             updateVideoState();
-            raidSelector.addEventListener('change', () => {
+            raidSelector.addEventListener('change', async (e) => {
+                const newRaidId = e.target.value;
+                
+                // 1. Globale Variable und Storage aktualisieren
+                window.currentRaidId = newRaidId;
+                sessionStorage.setItem('lastSelectedRaid', newRaidId); // Nutze sessionStorage statt localStorage um Konflikte zu vermeiden
+
+                console.log("Raid gewechselt auf:", newRaidId);
+
+                // 2. Setup Grid neu initialisieren (Wichtig für Import!)
+                // Wir prüfen, ob wir auf der Comp-Seite sind, und erzwingen ein Neuladen
                 if (window.location.hash === '#comp' || window.location.hash === '') {
-                    renderCurrentState();
+                    // Falls wir schon auf der Comp-Seite sind, müssen wir sie manuell neu laden,
+                    // damit die Slots (Kästchen) neu generiert werden.
+                    await loadContent('comp');
                 } else {
+                    // Falls wir woanders sind, wechseln wir zur Comp-Seite (das triggert loadContent automatisch)
                     window.location.hash = '#comp';
                 }
             });
@@ -4686,8 +4699,9 @@ function handleSummaryDateSelection() {
 window.manageAllAssignments = async function() {
     if (!window.isManager) return window.showModal("Nur Manager dürfen die Datenbank verwalten.");
 
-    // 1. IMPORTE & INIT
-    const { getFirestore, getDocs, getDoc, doc, setDoc, serverTimestamp } 
+    // 1. IMPORTE
+    // Wir nehmen Date.now() statt serverTimestamp für Sicherheit bzgl Limits
+    const { getFirestore, getDoc, doc, setDoc } 
         = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
 
     const db = window.db || getFirestore(); 
@@ -4699,17 +4713,25 @@ window.manageAllAssignments = async function() {
     
     if (!raidInfo || !raidInfo.bosses) return window.showModal("Keine Raid-Daten gefunden.");
 
-    // 2. DATEN SAMMELN (Mit Details)
+    // 2. DATEN SAMMELN (PARALLEL FÜR GESCHWINDIGKEIT)
     let assignmentMap = {}; 
+    const bossIds = raidInfo.bosses.map(b => ({ docId: "boss-" + b.id, name: b.name }));
 
-    for (const boss of raidInfo.bosses) {
-        const bossDocId = "boss-" + boss.id;
-        try {
-            const snap = await getDoc(doc(db, "raid-tool-data", bossDocId));
-            if (!snap.exists()) continue;
+    try {
+        // Alle Bosse gleichzeitig abfragen statt nacheinander (viel schneller)
+        const snapshots = await Promise.all(
+            bossIds.map(b => getDoc(doc(db, "raid-tool-data", b.docId)))
+        );
+
+        snapshots.forEach((snap, index) => {
+            if (!snap.exists()) return;
             
+            const bossName = bossIds[index].name;
+            const bossDocId = bossIds[index].docId;
             const data = snap.data();
+
             Object.keys(data).forEach(key => {
+                // Wir suchen nach Feldern, die auf "-player" enden
                 if (key.includes('-planner-row') && key.endsWith('-player')) {
                     const assignedPlayer = data[key].player;
                     
@@ -4718,10 +4740,8 @@ window.manageAllAssignments = async function() {
                         
                         const baseKey = key.substring(0, key.lastIndexOf('-player'));
                         
-                        // DETAILS LESEN (Versuchen, lesbare Werte zu finden)
-                        // Trigger & Cooldown sind oft IDs, wir zeigen sie 'raw' oder bereinigt an
+                        // Details auslesen
                         let triggerVal = data[baseKey + '-trigger']?.player || "";
-                        // Kleine Bereinigung für Trigger-IDs (z.B. MEGAIRA_RAMPAGE -> Rampage)
                         triggerVal = triggerVal.replace(/^[A-Z]+_/, '').replace(/_/g, ' ').toLowerCase();
                         
                         const conditionVal = data[baseKey + '-condition']?.text || "";
@@ -4730,11 +4750,10 @@ window.manageAllAssignments = async function() {
 
                         assignmentMap[assignedPlayer].push({
                             bossId: bossDocId,
-                            bossName: boss.name,
+                            bossName: bossName,
                             baseKey: baseKey, 
                             playerKey: key,
                             triggerKey: baseKey + '-trigger',
-                            // Details für die Anzeige
                             trigger: triggerVal,
                             condition: conditionVal,
                             time: timeVal,
@@ -4743,10 +4762,14 @@ window.manageAllAssignments = async function() {
                     }
                 }
             });
-        } catch(e) { console.error("Error scanning boss " + boss.id, e); }
+        });
+
+    } catch(e) { 
+        console.error("Fehler beim Scannen:", e); 
+        return window.showModal("Fehler beim Lesen der Schriftrollen: " + e.message);
     }
 
-    // Modal schließen
+    // Altes Lade-Modal schließen
     const oldModal = document.querySelector('.fixed.inset-0.z-50');
     if(oldModal && oldModal.textContent.includes("Geister")) oldModal.remove();
 
@@ -4757,7 +4780,6 @@ window.manageAllAssignments = async function() {
 
     // 3. HELPER: Detail-HTML bauen
     const buildDetails = (entries) => {
-        // Gruppieren nach Boss
         const byBoss = {};
         entries.forEach(e => {
             if(!byBoss[e.bossName]) byBoss[e.bossName] = [];
@@ -4808,7 +4830,8 @@ window.manageAllAssignments = async function() {
                     </div>
                 </div>
 
-                <div class="flex gap-2" onclick="event.stopPropagation()"> <button class="px-3 py-1 bg-emerald-950 text-emerald-500 border border-emerald-800/50 rounded hover:bg-emerald-900 hover:text-emerald-200 hover:border-emerald-500 text-xs font-bold transition-all"
+                <div class="flex gap-2" onclick="event.stopPropagation()"> 
+                    <button class="px-3 py-1 bg-emerald-950 text-emerald-500 border border-emerald-800/50 rounded hover:bg-emerald-900 hover:text-emerald-200 hover:border-emerald-500 text-xs font-bold transition-all"
                             onclick="window.processPlayerAssignments('${pName}', 'inactive')" title="Trigger entfernen, Name behalten">
                         INAKTIV
                     </button>
@@ -4855,9 +4878,10 @@ window.manageAllAssignments = async function() {
     `;
     document.body.appendChild(modal);
 
-    // 5. ACTION HANDLER (Bleibt gleich)
+    // 5. ACTION HANDLER (OPTIMIERT)
     window.processPlayerAssignments = async (pName, mode) => {
-        const { doc, setDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        // Kein serverTimestamp importieren, um Limits zu umgehen
+        const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
         const db = window.db || getFirestore();
 
         const entries = assignmentMap[pName];
@@ -4868,13 +4892,13 @@ window.manageAllAssignments = async function() {
         if(rowEl) rowEl.style.opacity = '0.5';
 
         const updatesByBoss = {};
-        
+        const safeTs = Date.now(); // Sicherer Zeitstempel (Keine Rechenoperation für Firebase)
+
         entries.forEach(entry => {
             if (!updatesByBoss[entry.bossId]) updatesByBoss[entry.bossId] = {};
-            const ts = serverTimestamp();
             
             if (mode === 'inactive') {
-                updatesByBoss[entry.bossId][entry.triggerKey] = { player: "", timestamp: ts };
+                updatesByBoss[entry.bossId][entry.triggerKey] = { player: "", timestamp: safeTs };
             } 
             else if (mode === 'delete') {
                 const suffixes = [
@@ -4886,12 +4910,13 @@ window.manageAllAssignments = async function() {
                 ];
                 suffixes.forEach(s => {
                     const fullKey = `${entry.baseKey}-${s.key}`;
-                    updatesByBoss[entry.bossId][fullKey] = { [s.field]: "", timestamp: ts };
+                    updatesByBoss[entry.bossId][fullKey] = { [s.field]: "", timestamp: safeTs };
                 });
             }
         });
 
         try {
+            // Parallel speichern
             const promises = Object.keys(updatesByBoss).map(bid => {
                 return setDoc(doc(db, "raid-tool-data", bid), updatesByBoss[bid], { merge: true });
             });
