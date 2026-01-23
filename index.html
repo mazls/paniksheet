@@ -2810,7 +2810,7 @@ mainNav.innerHTML = mainNavHTML;
                 sessionStorage.setItem('lastSelectedRaid', newRaidId); // Nutze sessionStorage statt localStorage um Konflikte zu vermeiden
 
                 console.log("Raid gewechselt auf:", newRaidId);
-
+                updateBossNav(newRaidId);
                 // 2. Setup Grid neu initialisieren (Wichtig für Import!)
                 // Wir prüfen, ob wir auf der Comp-Seite sind, und erzwingen ein Neuladen
                 if (window.location.hash === '#comp' || window.location.hash === '') {
