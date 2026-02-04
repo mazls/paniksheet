@@ -2024,84 +2024,151 @@ async function handleDeleteAlias(originalName) {
         window.showModal("Fehler beim Löschen.");
     }
 }
-		// ============== URL IMPORT FUNKTION ==============
-async function handleImportFromUrl() {
-    if (!window.isManager) return;
-    const urlInput = document.getElementById('json-url-input');
-    const userInputUrl = urlInput.value.trim();
+// ============== KLASSISCHER URL IMPORT (ROBUST V4) ==============
 
-    if (!userInputUrl) {
-        window.showModal("Bitte eine Raid-Helper URL einfügen.");
-        return;
-    }
-
-    let raidHelperApiUrl = '';
-    const planPath = '/raidplan/';
-    const apiPath = '/api/raidplan/';
-
-    if (userInputUrl.includes(planPath)) {
-        raidHelperApiUrl = userInputUrl.replace(planPath, apiPath);
-    } else if (userInputUrl.includes(apiPath)) {
-        raidHelperApiUrl = userInputUrl;
-    } else {
-        window.showModal("Ungültige URL. Bitte gib eine Standard-URL von Raid-Helper ein, die '/raidplan/' enthält.");
-        return;
-    }
-
-    // Wenn einer fehlschlägt, wird automatisch der nächste probiert.
-    const proxies = [
-        'https://corsproxy.io/?',
-        'https://api.allorigins.win/raw?url=' // Ein alternativer, guter Proxy
-    ];
-
-    const loadingModal = window.showModal("Lade Daten über Proxy von der Raid-Helper API...", false);
-    let success = false;
-
-    for (const proxyUrl of proxies) {
-        const finalUrl = proxyUrl + (proxyUrl.includes('allorigins') ? encodeURIComponent(raidHelperApiUrl) : raidHelperApiUrl);
-
-        try {
-            console.log(`Versuche Import über Proxy: ${proxyUrl}`);
-            const response = await fetch(finalUrl);
-
-            if (!response.ok) {
-                // Wenn der Status nicht OK ist (z.B. 404, 500), werfen wir einen Fehler,
-                // damit der nächste Proxy probiert wird.
-                throw new Error(`Proxy-Antwort war nicht ok. Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const jsonStringForDisplay = JSON.stringify(data, null, 2);
-
-            if (!data.raidDrop || !Array.isArray(data.raidDrop)) {
-                throw new Error("API-Daten haben nicht das erwartete Format ('raidDrop'-Array fehlt).");
-            }
-
-            const newRoster = data.raidDrop.filter(p => p && p.name).map(getPlayerInfoFromEntry);
-            await setDoc(rosterDocRef, { roster: newRoster, rawJson: jsonStringForDisplay });
-
-            const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-            window.logHistory('Roster', `Importiert von Raid-Helper URL`, `${newRoster.length} Spieler`, currentManager);
-
-            // Erfolgreich! Modal schließen und Funktion beenden.
-            loadingModal.then(() => {});
-            window.showModal(`Roster mit ${newRoster.length} Spielern erfolgreich importiert!`);
+        async function handleImportFromUrl() {
+            if (!window.isManager) return window.showModal("Nur Manager dürfen importieren.");
             
-            document.getElementById('json-input').value = jsonStringForDisplay;
-            urlInput.value = '';
-            success = true;
-            return; // Wichtig: Die Schleife und Funktion bei Erfolg verlassen.
+            const urlInput = document.getElementById('json-url-input');
+            const userInputUrl = urlInput.value.trim();
 
-        } catch (error) {
-            console.warn(`Fehler beim Import mit Proxy ${proxyUrl}:`, error);
-            // Bei einem Fehler wird die Schleife einfach fortgesetzt und der nächste Proxy probiert.
+            if (!userInputUrl) {
+                return window.showModal("Bitte eine URL einfügen.");
+            }
+
+            // 1. ID Extraktion (Nimmt die längste Zahl in der URL)
+            const idMatch = userInputUrl.match(/(\d{15,})/); 
+            const raidId = idMatch ? idMatch[0] : userInputUrl; // Fallback: Ganze Eingabe ist ID
+
+            if (!raidId || raidId.length < 10) {
+                return window.showModal("Konnte keine gültige ID aus dem Link lesen.");
+            }
+
+            // 2. Typ Bestimmung (Comp oder Event?)
+            let apiType = 'events'; 
+
+
+            const targetApiUrl = `https://raid-helper.dev/api/raidplan/${raidId}`;
+
+            // 3. Backup Proxies
+            const proxies = [
+                'https://corsproxy.io/?',              // Favorit 1: Schnell & zuverlässig
+                'https://api.allorigins.win/raw?url='  // Favorit 2: Guter Fallback
+            ];
+
+            const loadingModal = window.showModal("Lade Daten über Proxy...", false);
+            let success = false;
+
+            // 4. Proxies durchprobieren
+            for (const proxy of proxies) {
+                if (success) break;
+
+                try {
+                    console.log(`Versuche Proxy: ${proxy}`);
+                    const fetchUrl = proxy + encodeURIComponent(targetApiUrl);
+                    
+                    const response = await fetch(fetchUrl);
+                    if (!response.ok) throw new Error(`Status ${response.status}`);
+
+                    const data = await response.json();
+
+                    const rawSlots = data.slots || data.signUps || data.raidDrop; // raidDrop für V3 legacy
+
+                    if (!rawSlots || !Array.isArray(rawSlots)) {
+                        throw new Error("Keine Spieler-Daten im JSON gefunden.");
+                    }
+
+                    // 5. Mapping (V4 -> Intern)
+                    const newRoster = rawSlots.map(slot => {
+                        // Absagen filtern
+                        if (slot.signupType === 'absent' || slot.spec === 'Absence') return null;
+
+                        return getPlayerInfoFromEntry({
+                            name: slot.name,
+                            class: slot.className || slot.class, 
+                            spec: slot.specName || slot.spec,
+                            status: slot.signupType || 'unknown',
+                            group: slot.groupNumber // Falls vorhanden (bei Comps)
+                        });
+                    }).filter(p => p !== null);
+
+                    // Speichern
+                    const jsonString = JSON.stringify(data, null, 2);
+                    await window.firebaseTools.setDoc(
+                        window.firebaseTools.doc(window.firebaseTools.db, "raid-tool-data", "currentRoster"), 
+                        { roster: newRoster, rawJson: jsonString }
+                    );
+
+                    // UI Updates
+                    document.getElementById('json-input').value = jsonString;
+                    urlInput.value = '';
+                    
+                    loadingModal.then(()=>{});
+                    window.showModal(`Erfolg!\n${newRoster.length} Spieler importiert.`);
+                    
+                    success = true;
+                    if (typeof renderCurrentState === 'function') renderCurrentState();
+
+                } catch (e) {
+                    console.warn(`Proxy ${proxy} fehlgeschlagen:`, e);
+                }
+            }
+
+            if (!success) {
+                loadingModal.then(()=>{});
+                window.showModal("Import gescheitert. Beide Proxies konnten die URL nicht laden.\nIst der Link öffentlich und korrekt?");
+            }
         }
-    }
-    if (!success) {
-        loadingModal.then(() => {}); // Lade-Modal aufräumen
-        window.showModal(`Import fehlgeschlagen. Alle Proxy-Server konnten die URL nicht erreichen. Bitte versuche es später erneut.`);
-    }
-}
+
+        window.handleImportFromJson = async function() {
+            if (!window.isManager) return window.showModal("Nur Manager dürfen importieren.");
+            
+            const input = document.getElementById('json-input').value;
+            if (!input.trim()) return window.showModal("Bitte JSON einfügen.");
+
+            try {
+                const data = JSON.parse(input);
+                
+                const rawSlots = data.slots || data.signUps || data.raidDrop; 
+                
+                if (!rawSlots || !Array.isArray(rawSlots)) {
+                    throw new Error("Keine 'slots' oder 'signUps' Liste im JSON gefunden.");
+                }
+
+                const newRoster = rawSlots.map(slot => {
+                     // Absagen rausfiltern (falls vorhanden)
+                     if (slot.signupType === 'absent' || slot.spec === 'Absence') return null;
+
+                     return getPlayerInfoFromEntry({
+                        name: slot.name,
+
+                        class: slot.className || slot.class, 
+                        spec: slot.specName || slot.spec,
+                        group: slot.groupNumber,
+                        id: slot.id, 
+                        status: slot.isConfirmed || slot.signupType || 'unknown'
+                    });
+                }).filter(p => p !== null);
+
+                if (newRoster.length === 0) {
+                    throw new Error("JSON wurde gelesen, enthielt aber 0 gültige Spieler.");
+                }
+
+                await window.firebaseTools.setDoc(
+                    window.firebaseTools.doc(window.firebaseTools.db, "raid-tool-data", "currentRoster"), 
+                    { roster: newRoster, rawJson: input }
+                );
+                
+                window.showModal(`✅ JSON Importiert: ${newRoster.length} Spieler.`);
+                
+
+                if (typeof renderCurrentState === 'function') renderCurrentState();
+
+            } catch(e) {
+                console.error(e); // Für Debugging in der Konsole (F12)
+                window.showModal("JSON Fehler: " + e.message);
+            }
+        }
 		
         const raidData = {
             mogushan: {
@@ -4234,19 +4301,47 @@ window.exportSimpleComp = function() {
         window.showModal("Kopieren fehlgeschlagen. Siehe Konsole.");
     });
 };
-        async function handleImportRoster() {
+async function handleImportRoster() {
             if (!window.isManager) return;
             const jsonString = document.getElementById('json-input').value;
             if (!jsonString) return window.showModal("Bitte JSON einfügen.");
             try {
                 const data = JSON.parse(jsonString);
-                if (!data.raidDrop || !Array.isArray(data.raidDrop)) throw new Error("Ungültiges JSON: 'raidDrop' Array fehlt.");
-                const newRoster = data.raidDrop.filter(p => p && p.name).map(getPlayerInfoFromEntry);
+                
+
+                const rawSlots = data.slots || data.signUps || data.raidDrop;
+
+                if (!rawSlots || !Array.isArray(rawSlots)) {
+                    throw new Error("Ungültiges JSON: 'slots' Array fehlt (V4 Format nicht erkannt).");
+                }
+
+                const newRoster = rawSlots.map(slot => {
+
+                    if (slot.signupType === 'absent' || slot.spec === 'Absence') return null;
+
+                    return getPlayerInfoFromEntry({
+                        name: slot.name,
+                        class: slot.className || slot.class, 
+                        spec: slot.specName || slot.spec,
+                        // Zusätzliche Infos mitnehmen, falls nötig
+                        id: slot.id,
+                        group: slot.groupNumber,
+                        status: slot.isConfirmed || slot.signupType
+                    });
+                }).filter(p => p !== null); // Leere Einträge entfernen
+
+
                 await setDoc(rosterDocRef, { roster: newRoster, rawJson: jsonString });
+                
                 const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
                 window.logHistory('Roster', `Importiert`, `${newRoster.length} Spieler`, currentManager);
                 window.showModal(`Roster mit ${newRoster.length} Spielern importiert!`);
+                
+                // Ansicht neu laden, damit die Spieler sofort sichtbar sind
+                if (typeof renderCurrentState === 'function') renderCurrentState();
+
             } catch (error) {
+                console.error(error);
                 window.showModal("Fehler beim Verarbeiten des JSON: " + error.message);
             }
         }

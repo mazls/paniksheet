@@ -14,9 +14,7 @@
             <button id="import-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                 Aufstellung importieren & speichern
             </button>
-            <button id="add-player-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                Spieler hinzufügen
-            </button>
+
             <button id="clear-roster-btn" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                 Roster leeren
             </button>
@@ -120,35 +118,43 @@
         <div id="roster-bench" class="roster-group flex-row flex-wrap gap-2 min-h-[60px]">
             </div>
     </div>
-    <div class="bg-slate-800 border border-slate-600 rounded-lg p-3 mb-4 flex flex-wrap justify-between items-center gap-4">
+<div class="bg-slate-800 border border-slate-600 rounded-lg p-3 mb-4 flex flex-wrap justify-between items-center gap-4">
     
-    <div class="flex items-center gap-2">
-        <span class="text-gold font-bold text-sm uppercase mr-2">Setups:</span>
+    <div class="flex items-center gap-3">
+        <span class="text-gold font-bold text-sm uppercase tracking-wider">Setups:</span>
         
-        <div class="flex border border-slate-600 rounded overflow-hidden">
-            <button onclick="window.loadCompSetup(1)" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 text-xs font-bold transition-colors" title="Setup 1 laden">1</button>
-            <button onclick="window.saveCompSetup(1)" class="bg-slate-900 hover:bg-slate-800 text-gray-400 hover:text-gold px-2 py-1 text-xs border-l border-slate-600" title="Aktuelle Aufstellung in Slot 1 speichern">💾</button>
+        <div class="flex border border-slate-600 rounded overflow-hidden shadow-sm">
+            <button onclick="window.loadCompSetup(1)" class="h-8 min-w-[2rem] px-3 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition-colors flex items-center justify-center" title="Setup 1 laden">1</button>
+            <button onclick="window.saveCompSetup(1)" class="h-8 w-8 bg-slate-900 hover:bg-slate-800 text-gray-400 hover:text-gold text-xs border-l border-slate-600 flex items-center justify-center transition-colors" title="Speichern">💾</button>
         </div>
 
-        <div class="flex border border-slate-600 rounded overflow-hidden">
-            <button onclick="window.loadCompSetup(2)" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 text-xs font-bold transition-colors" title="Setup 2 laden">2</button>
-            <button onclick="window.saveCompSetup(2)" class="bg-slate-900 hover:bg-slate-800 text-gray-400 hover:text-gold px-2 py-1 text-xs border-l border-slate-600" title="Aktuelle Aufstellung in Slot 2 speichern">💾</button>
+        <div class="flex border border-slate-600 rounded overflow-hidden shadow-sm">
+            <button onclick="window.loadCompSetup(2)" class="h-8 min-w-[2rem] px-3 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition-colors flex items-center justify-center" title="Setup 2 laden">2</button>
+            <button onclick="window.saveCompSetup(2)" class="h-8 w-8 bg-slate-900 hover:bg-slate-800 text-gray-400 hover:text-gold text-xs border-l border-slate-600 flex items-center justify-center transition-colors" title="Speichern">💾</button>
         </div>
 
-        <div class="flex border border-slate-600 rounded overflow-hidden">
-            <button onclick="window.loadCompSetup(3)" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 text-xs font-bold transition-colors" title="Setup 3 laden">3</button>
-            <button onclick="window.saveCompSetup(3)" class="bg-slate-900 hover:bg-slate-800 text-gray-400 hover:text-gold px-2 py-1 text-xs border-l border-slate-600" title="Aktuelle Aufstellung in Slot 3 speichern">💾</button>
+        <div class="flex border border-slate-600 rounded overflow-hidden shadow-sm">
+            <button onclick="window.loadCompSetup(3)" class="h-8 min-w-[2rem] px-3 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition-colors flex items-center justify-center" title="Setup 3 laden">3</button>
+            <button onclick="window.saveCompSetup(3)" class="h-8 w-8 bg-slate-900 hover:bg-slate-800 text-gray-400 hover:text-gold text-xs border-l border-slate-600 flex items-center justify-center transition-colors" title="Speichern">💾</button>
         </div>
     </div>
 
-    <button onclick="window.exportSimpleComp()" class="bg-blue-600 hover:bg-blue-500 text-white border border-blue-400 font-bold py-1 px-4 rounded text-sm flex items-center gap-2 shadow-lg transition-transform active:scale-95">
-        <i class="fas fa-list-ul"></i> Namens-Liste Export
-    </button>
-<button id="btn-admin-kader" onclick="window.manageAllAssignments()" 
-        class="bg-amber-900/30 hover:bg-amber-800/50 text-amber-200 border border-amber-700/50 hover:border-amber-500 hover:shadow-[0_0_15px_rgba(217,119,6,0.2)] text-xs px-3 py-1 rounded transition-all duration-300 ml-2 group"
-        title="Zeigt eine Liste ALLER eingeteilten Spieler zum Verwalten">
-    <i class="fas fa-scroll mr-1 text-amber-500 group-hover:text-amber-300 transition-colors"></i> Kader
-</button>
+    <div class="flex items-center gap-2">
+        
+        <button onclick="window.exportSimpleComp()" class="h-8 px-4 bg-blue-600 hover:bg-blue-500 text-white border border-blue-400 font-bold rounded text-xs flex items-center gap-2 shadow-md transition-all active:scale-95">
+            <i class="fas fa-list-ul"></i> Export
+        </button>
+
+        <button id="add-player-btn" class="h-8 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded text-xs flex items-center gap-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
+            <i class="fas fa-plus"></i> Spieler hinzufügen
+        </button>
+
+        <button id="btn-admin-kader" onclick="window.manageAllAssignments()" 
+                class="h-8 px-3 bg-amber-900/30 hover:bg-amber-800/50 text-amber-200 border border-amber-700/50 hover:border-amber-500 hover:shadow-[0_0_15px_rgba(217,119,6,0.2)] text-xs font-bold rounded flex items-center gap-2 transition-all duration-300 group">
+            <i class="fas fa-scroll text-amber-500 group-hover:text-amber-300 transition-colors"></i> Kader
+        </button>
+    </div>
+
 </div>
 
 <div id="roster-view-wrapper" class="mt-2">
