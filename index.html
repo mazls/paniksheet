@@ -1231,7 +1231,7 @@ pre {
 		let summarySortState = { column: 'total', direction: 'desc' };
         let globalAliasMap = {};
         let assignmentsDocRef;      // Global, damit Speicher-Funktionen darauf zugreifen können
-
+        let _textSaveTimers = {};
         
 
 const offensiveBuffsForAssignment = {
@@ -1257,6 +1257,17 @@ const offensiveBuffsForAssignment = {
         const denylistCollectionRef = collection(db, "snapshot_player_denylist");
         const aliasDocRef = doc(db, DATA_COLLECTION, "nameAliasMap"); // Referenz definieren
         window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc };
+function debounce(fn, ms) {
+    let timer;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), ms);
+    };
+}
+const debouncedUpdatePools = debounce(updateAssignmentPools, 300);
+const debouncedUpdateSummary = debounce(() => {
+    if (window.updatePlannerSummary) window.updatePlannerSummary();
+}, 500);
 
 function updateAssignmentPools() {
     const pools = {};
@@ -1779,55 +1790,123 @@ window.cleanUpInvalidRosterEntries = async function() {
     window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc, setDoc };
 
 window.assignmentUnsubscribe = window.assignmentUnsubscribe || null;
+// NEU: Setup umbenennen
+window.renameCompSetup = async function(slotId) {
+    if (!window.isManager) return window.showModal("Nur Manager können Setups umbenennen.");
+    
+    const currentLabel = document.getElementById(`setup-label-${slotId}`)?.textContent || slotId;
+    const newName = await window.showPrompt("Name für Setup " + slotId + ":", currentLabel);
+    if (!newName || newName.trim() === '') return;
+    
+    const { setDoc, doc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+    const db = window.firebaseTools.db;
+    const setupDocRef = doc(db, "raid-tool-data", `comp-setup-${slotId}`);
+    
+    await setDoc(setupDocRef, { label: newName.trim() }, { merge: true });
+    
+    const labelEl = document.getElementById(`setup-label-${slotId}`);
+    if (labelEl) labelEl.textContent = newName.trim();
+};
 
+// NEU: Labels beim Laden der Comp-Seite aktualisieren
+window.loadSetupLabels = async function() {
+    const { getDoc, doc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+    const db = window.firebaseTools.db;
+    
+    for (let i = 1; i <= 3; i++) {
+        const labelEl = document.getElementById(`setup-label-${i}`);
+        if (!labelEl) continue;
+        
+        try {
+            const snap = await getDoc(doc(db, "raid-tool-data", `comp-setup-${i}`));
+            if (snap.exists() && snap.data().label) {
+                labelEl.textContent = snap.data().label;
+            }
+        } catch(e) { /* ignore */ }
+    }
+};
+window.showPrompt = function(message, defaultValue = '') {
+    return new Promise((resolve) => {
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'modal-overlay';
+        
+        modalOverlay.innerHTML = `
+            <div class="modal-content">
+                <h3>Eingabe</h3>
+                <p>${message}</p>
+                <input type="text" id="prompt-input" 
+                       class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none mb-4"
+                       value="${defaultValue.replace(/"/g, '&quot;')}">
+                <div class="modal-buttons">
+                    <button id="prompt-cancel-btn" class="cancel-btn">Abbrechen</button>
+                    <button id="prompt-ok-btn">OK</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalOverlay);
+        
+        const input = modalOverlay.querySelector('#prompt-input');
+        const okBtn = modalOverlay.querySelector('#prompt-ok-btn');
+        const cancelBtn = modalOverlay.querySelector('#prompt-cancel-btn');
+        
+        input.focus();
+        input.select();
+        
+        const close = (value) => {
+            modalOverlay.remove();
+            resolve(value);
+        };
+        
+        okBtn.addEventListener('click', () => close(input.value.trim()));
+        cancelBtn.addEventListener('click', () => close(null));
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') close(input.value.trim());
+            if (e.key === 'Escape') close(null);
+        });
+    });
+};
     // 3. Neuen Listener starten (Das ist der Code von vorhin, sicher verpackt)
 window.setupBossListener = function(bossId) {
-    // Alten Listener stoppen, um Datenmüll zu vermeiden
     if (window.assignmentUnsubscribe) {
-        // console.log("Stoppe alten Listener..."); // Optional für Debugging
         window.assignmentUnsubscribe();
-        window.assignmentUnsubscribe = null; // Sauber zurücksetzen
+        window.assignmentUnsubscribe = null;
     }
+    
+    if (window._snapshotTimer) {
+        clearTimeout(window._snapshotTimer);
+        window._snapshotTimer = null;
+    }
+    window._snapshotFirstLoad = true;
     
     console.log("Setup Listener für:", bossId);
     assignmentsDocRef = doc(db, "raid-tool-data", bossId);
 
+    // ENTFERNT: let snapshotTimer = null;  (war unbenutzt)
+
     window.assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
         const assignments = docSnap.exists() ? docSnap.data() : {};
         const rosterPlayerNames = window.rosterData ? window.rosterData.map(p => p.name) : [];
-        
-        // --- HILFSFUNKTION: Werte in die Elemente schreiben ---
+
         const applyValues = () => {
-            // 1. Dropdowns
             document.querySelectorAll('.assignment-select').forEach(select => {
                 const assignmentId = select.dataset.assignmentId;
                 if(!assignmentId) return;
 
                 const isCooldown = assignmentId.toLowerCase().includes('cooldown');
-                // WICHTIG: Hier prüfen wir, ob es ein manuelles Feld (wie der Trigger) ist
                 const isManual = select.getAttribute('data-manual-options') === "true";
                 
-                // Wert aus DB holen (entweder Cooldown-Name oder Spieler-Name)
                 const val = assignments[assignmentId] ? (assignments[assignmentId].cooldown || assignments[assignmentId].player) : "";
                 
-                // Wert setzen, falls abweichend
                 if (select.value !== val) {
                     select.value = val;
                 }
 
-                // --- VALIDIERUNG (Rotfärbung) ---
                 select.classList.remove('invalid-assignment');
                 const oldInvalid = select.querySelector('.invalid-option');
                 if (oldInvalid && oldInvalid.value !== val) oldInvalid.remove(); 
 
-                // Nur rot markieren, wenn:
-                // - Ein Wert existiert
-                // - Es KEIN Cooldown-Feld ist
-                // - Es KEIN manuelles Feld ist (Fix für dein Health-Problem!)
-                // - Der Wert NICHT im Roster ist
                 const ALLOWED_EXTRAS = ['ALL', 'DEATHKNIGHT', 'DRUID', 'HUNTER', 'MAGE', 'MONK', 'PALADIN', 'PRIEST', 'ROGUE', 'SHAMAN', 'WARLOCK', 'WARRIOR'];
 
-                // Erweiterte Prüfung: Auch in ALLOWED_EXTRAS nachsehen
                 if (val && !isCooldown && !isManual && !rosterPlayerNames.includes(val) && !ALLOWED_EXTRAS.includes(val) && val !== "Niemand") {
                     select.classList.add('invalid-assignment');
                     if (!Array.from(select.options).some(o => o.value === val)) {
@@ -1838,45 +1917,81 @@ window.setupBossListener = function(bossId) {
                     }
                 }
                 
-                // Textfarbe aktualisieren (für Klassenfarben)
                 const selectedOption = Array.from(select.options).find(o => o.value === val);
                 select.style.color = selectedOption ? (selectedOption.dataset.color || '#fff') : '#fff';
             });
 
-            // 2. Text Inputs (z.B. % oder Zeit im Planer)
             document.querySelectorAll('.assignment-text-input').forEach(input => {
                 const assignmentId = input.dataset.assignmentId;
                 if(!assignmentId) return;
-                // Hier prüfen wir auf 'text' oder 'player' als Fallback
+                if (document.activeElement === input) return;
                 const val = assignments[assignmentId]?.text || assignments[assignmentId]?.player || '';
-                
-                // Wert nur setzen, wenn er nicht leer ist oder das Feld nicht gerade fokussiert ist (um Tippen nicht zu stören)
-                if (val !== "" || document.activeElement !== input) {
+                if (input.value !== val) {
                     input.value = val;
                 }
             });
         };
 
-        // DURCHLAUF 1: Werte auf statische Elemente anwenden (die schon im HTML sind)
-        applyValues();
+        if (window._snapshotFirstLoad) {
+            window._snapshotFirstLoad = false;
+            
+            applyValues();
 
-        // DURCHLAUF 2: Boss-spezifischen Code ausführen (baut den Planer in jinrokh.html auf)
-        if (typeof window.initializePageSpecificCode === 'function') {
-            // Wir übergeben window.rosterData und window.allCooldowns explizit
-            window.initializePageSpecificCode(assignments, window.rosterData, window.firebaseTools, window.allCooldowns);
+            if (typeof window.initializePageSpecificCode === 'function') {
+                window.initializePageSpecificCode(assignments, window.rosterData, window.firebaseTools, window.allCooldowns);
+            }
+
+            setTimeout(() => {
+                applyValues();
+                if(window.toggleSelectEditability) window.toggleSelectEditability();
+                if(typeof updateAssignmentPools === 'function') updateAssignmentPools();
+            }, 100);
+            
+            return;
         }
 
-        // DURCHLAUF 3: Werte ERNEUT anwenden! 
-        // Jetzt existieren die Planer-Zeilen erst im DOM, daher müssen wir sie jetzt befüllen.
-        // Das behebt das "Inaktiv"-Problem beim Neuladen.
-        setTimeout(() => {
-            applyValues(); // Erst Werte setzen
-
-            // Dann UI Updates machen (jetzt sind die Werte da!)
-            if(window.toggleSelectEditability) window.toggleSelectEditability();
+        clearTimeout(window._snapshotTimer);
+        window._snapshotTimer = setTimeout(() => {
+            applyValues();
             if(typeof updateAssignmentPools === 'function') updateAssignmentPools();
-        }, 100);
+            if(window.updatePlannerSummary) window.updatePlannerSummary();
+        }, 250);
     });
+    
+    // NEU: Safety-Fallback — falls onSnapshot nicht sofort feuert (Cache-Race-Condition)
+    setTimeout(() => {
+        if (window._snapshotFirstLoad) {
+            console.log("Safety-Fallback: onSnapshot hat nicht gefeuert, erzwinge Init...");
+            window._snapshotFirstLoad = false;
+            
+            if (typeof window.initializePageSpecificCode === 'function') {
+                // Lade Daten manuell
+                getDoc(assignmentsDocRef).then(docSnap => {
+                    const assignments = docSnap.exists() ? docSnap.data() : {};
+                    window.initializePageSpecificCode(assignments, window.rosterData, window.firebaseTools, window.allCooldowns);
+                    
+                    // applyValues inline
+                    document.querySelectorAll('.assignment-select').forEach(select => {
+                        const assignmentId = select.dataset.assignmentId;
+                        if(!assignmentId) return;
+                        const val = assignments[assignmentId] ? (assignments[assignmentId].cooldown || assignments[assignmentId].player) : "";
+                        if (select.value !== val) select.value = val;
+                        const selectedOption = Array.from(select.options).find(o => o.value === val);
+                        select.style.color = selectedOption ? (selectedOption.dataset.color || '#fff') : '#fff';
+                    });
+                    document.querySelectorAll('.assignment-text-input').forEach(input => {
+                        const assignmentId = input.dataset.assignmentId;
+                        if(!assignmentId) return;
+                        const val = assignments[assignmentId]?.text || assignments[assignmentId]?.player || '';
+                        if (input.value !== val) input.value = val;
+                    });
+                    
+                    if(window.toggleSelectEditability) window.toggleSelectEditability();
+                    if(typeof updateAssignmentPools === 'function') updateAssignmentPools();
+                });
+            }
+        }
+    }, 500);
 };
 // ---------------------------------------------------------
 // 3. SPEICHER-FUNKTION (Muss globale assignmentsDocRef nutzen)
@@ -2379,7 +2494,7 @@ window.populateDropdownOptions = function(selectElement, players) {
 		
 		async function saveSnapshot() {
 			if (!window.isManager) return;
-			const snapshotName = prompt("Bitte gib einen Namen für den Snapshot ein (z.B. 'Progress-Setup KW25'):");
+			const snapshotName = await window.showPrompt("Bitte gib einen Namen für den Snapshot ein (z.B. 'Progress-Setup KW25'):");
 			if (!snapshotName || snapshotName.trim() === '') {
 				window.showModal("Speichern abgebrochen. Kein Name angegeben.");
 				return;
@@ -2955,7 +3070,7 @@ mainNav.innerHTML = mainNavHTML;
             document.getElementById('add-player-btn')?.addEventListener('click', handleAddPlayer);
             document.getElementById('clear-roster-btn')?.addEventListener('click', handleClearRoster);
 			document.getElementById('import-url-btn')?.addEventListener('click', handleImportFromUrl);
-			
+			if (window.loadSetupLabels) window.loadSetupLabels();
 			const snapshotSection = document.getElementById('snapshot-section');
 			if (window.isManager && snapshotSection) {
 				snapshotSection.style.display = 'block'; // Snapshot-Bereich nur für Manager anzeigen
@@ -3387,7 +3502,7 @@ async function handleDeleteLootItem(dateId, itemChecksum) {
 }
 async function handleEditLootWinner(dateId, itemChecksum, currentWinner) {
     if (!window.isManager) return;
-    const newWinner = prompt("Bitte den neuen Namen des Gewinners eingeben:", currentWinner);
+    const newWinner = await window.showPrompt("Bitte den neuen Namen des Gewinners eingeben:", currentWinner);
     if (newWinner && newWinner.trim() !== '') {
         try {
             const lootDocRef = doc(db, LOOT_COLLECTION, dateId);
@@ -3578,25 +3693,144 @@ document.querySelectorAll('.video-wrapper').forEach(wrapper => {
         const assignmentName = assignmentId.replace(pageId + '-', '').replace(/([A-Z])/g, ' $1').trim();
         window.logHistory(bossName, `Einteilung: ${assignmentName}`, playerForLog, currentManager);
     }
-    async function handleTextInputChange(event) {
-        if (!window.isManager) return;
-        const input = event.target;
-        const assignmentId = input.dataset.assignmentId;
-        const textToSave = input.value;
-        const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-        
-        // Wir speichern den Wert im Feld 'text' in der Datenbank
-        const dataToSave = { text: textToSave, editor: currentManager, timestamp: serverTimestamp() };
-        await setDoc(assignmentsDocRef, { [assignmentId]: dataToSave }, { merge: true });
-        
-        // Logging für den Änderungsverlauf
-        const bossName = pageId.charAt(0).toUpperCase() + pageId.slice(1);
-        const assignmentName = `Header: ${assignmentId.replace(pageId + '-', '')}`;
-        window.logHistory(bossName, assignmentName, textToSave || "Leer", currentManager);
-    }
+
+async function handleTextInputChange(event) {
+    if (!window.isManager) return;
+    const input = event.target;
+    const assignmentId = input.dataset.assignmentId;
+    const textToSave = input.value;
+    const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+    
+    const dataToSave = { text: textToSave, editor: currentManager, timestamp: serverTimestamp() };
+    await setDoc(assignmentsDocRef, { [assignmentId]: dataToSave }, { merge: true });
+    
+    const bossName = pageId.charAt(0).toUpperCase() + pageId.slice(1);
+    const assignmentName = `Header: ${assignmentId.replace(pageId + '-', '')}`;
+    window.logHistory(bossName, assignmentName, textToSave || "Leer", currentManager);
+}
+
+// Debounced Wrapper
+function handleTextInputChangeDebounced(event) {
+    const id = event.target.dataset.assignmentId;
+    clearTimeout(_textSaveTimers[id]);
+    _textSaveTimers[id] = setTimeout(() => handleTextInputChange(event), 500);
+}
     // Globale Sperre, um Change-Handler während Bulk-Updates zu pausieren
 window._suspendAssignListeners = false;
+window.syncCompToJiKunTeams = async function() {
+    if (!window.isManager) return window.showModal("Nur Manager können synchronisieren.");
+    
+    const confirmed = await window.showModal(
+        "Die aktuellen Gruppen 1-5 werden als Ji-Kun Teams 1-5 überschrieben. Fortfahren?", true
+    );
+    if (!confirmed) return;
+    
+    const { setDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+    const db = window.firebaseTools.db;
+    const editor = sessionStorage.getItem('currentManager') || 'Unbekannt';
+    const ts = serverTimestamp();
+    
+    const updates = {};
+    
+    for (let team = 1; team <= 5; team++) {
+        const groupList = document.getElementById(`group-list-${team}`);
+        if (!groupList) continue;
+        
+        const cards = Array.from(groupList.querySelectorAll('.player-card'));
+        const realPlayers = cards
+            .map(c => JSON.parse(c.dataset.playerJson))
+            .filter(p => !p.isPlaceholder);
+        
+        for (let p = 1; p <= 5; p++) {
+            const assignmentId = `jikun-team-${team}-p${p}`;
+            const playerName = (p <= realPlayers.length) ? realPlayers[p - 1].name : "";
+            updates[assignmentId] = { player: playerName, editor: editor, timestamp: ts };
+        }
+    }
+    
+    const jikunDocRef = doc(db, "raid-tool-data", "boss-ji-kun");
+    await setDoc(jikunDocRef, updates, { merge: true });
+    
+    window.showModal(`Ji-Kun Teams wurden mit den Gruppen 1-5 synchronisiert (${Object.keys(updates).length / 5} Teams).`);
+};
 
+// JI-KUN → COMP: Teams in Gruppen schreiben
+window.syncJiKunTeamsToComp = async function() {
+    if (!window.isManager) return window.showModal("Nur Manager können synchronisieren.");
+    
+    const confirmed = await window.showModal(
+        "Die Ji-Kun Teams 1-5 werden als Gruppen 1-5 ins Roster geschrieben. Spieler die nicht in Teams sind, landen auf der Bank. Fortfahren?", true
+    );
+    if (!confirmed) return;
+    
+    const { getDoc, setDoc, doc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+    const db = window.firebaseTools.db;
+    
+    // 1. Ji-Kun Team-Daten laden
+    const jikunSnap = await getDoc(doc(db, "raid-tool-data", "boss-ji-kun"));
+    if (!jikunSnap.exists()) return window.showModal("Keine Ji-Kun Daten gefunden.");
+    const jikunData = jikunSnap.data();
+    
+    // 2. Aktuelles Roster laden
+    const rosterSnap = await getDoc(doc(db, "raid-tool-data", "currentRoster"));
+    const currentRoster = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
+    
+    if (currentRoster.length === 0) return window.showModal("Roster ist leer.");
+    
+    // 3. Team-Namen extrahieren
+    const teamPlayers = {}; // { "Spielername": teamIndex }
+    for (let team = 1; team <= 5; team++) {
+        for (let p = 1; p <= 5; p++) {
+            const name = jikunData[`jikun-team-${team}-p${p}`]?.player;
+            if (name && name.trim() !== '') {
+                teamPlayers[name] = team;
+            }
+        }
+    }
+    
+    // 4. Roster neu sortieren: Team-Spieler erst (nach Gruppe), dann Rest (Bank)
+    const grouped = []; // Spieler in Teams
+    const bench = [];   // Spieler ohne Team
+    
+    // Pro Gruppe sammeln (Reihenfolge beibehalten)
+    for (let team = 1; team <= 5; team++) {
+        let teamMembers = [];
+        for (let p = 1; p <= 5; p++) {
+            const name = jikunData[`jikun-team-${team}-p${p}`]?.player;
+            if (!name) continue;
+            const rosterPlayer = currentRoster.find(r => r.name === name);
+            if (rosterPlayer) {
+                teamMembers.push(rosterPlayer);
+            }
+        }
+        // Auffüllen bis 5 mit Platzhaltern
+        while (teamMembers.length < 5) {
+            teamMembers.push({
+                id: `placeholder-${team}-${teamMembers.length}-${Date.now()}`,
+                name: "Leerer Platz",
+                class: "UNKNOWN",
+                roles: [],
+                isPlaceholder: true
+            });
+        }
+        grouped.push(...teamMembers);
+    }
+    
+    // Spieler die in keinem Team sind → Bank
+    const assignedNames = new Set(Object.keys(teamPlayers));
+    currentRoster.forEach(player => {
+        if (!player.isPlaceholder && !assignedNames.has(player.name)) {
+            bench.push(player);
+        }
+    });
+    
+    const newRoster = [...grouped, ...bench];
+    
+    // 5. Speichern
+    await setDoc(doc(db, "raid-tool-data", "currentRoster"), { roster: newRoster }, { merge: true });
+    
+    window.showModal(`Roster wurde nach Ji-Kun Teams sortiert. ${Object.keys(teamPlayers).length} Spieler in Teams, ${bench.length} auf der Bank.`);
+};
 // Einmalig viele Zuweisungen speichern und UI aktualisieren
 async function applyAssignmentsBulk(updatesObj) {
   try {
@@ -3724,14 +3958,24 @@ const tooltipEl = document.getElementById('global-custom-tooltip');
 // --- A) Vorhandene Selects jetzt mit der neuen Funktion verdrahten
 document.querySelectorAll('.assignment-select').forEach(wireAssignmentSelect);
 
-document.querySelectorAll('.assignment-text-input').forEach(input => {
-  if (input.dataset._textWired) return;
-  input.dataset._textWired = '1';
-  input.addEventListener('change', handleTextInputChange);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-  });
-});
+const wireTextInput = (input) => {
+    if (input.dataset._textWired) return;
+    input.dataset._textWired = '1';
+    
+    input.addEventListener('input', handleTextInputChangeDebounced);  // Debounced beim Tippen
+    input.addEventListener('change', (e) => {
+        clearTimeout(_textSaveTimers[e.target.dataset.assignmentId]);
+        handleTextInputChange(e);  // Sofort bei Fokusverlust
+    });
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(_textSaveTimers[e.target.dataset.assignmentId]);
+            handleTextInputChange({ target: input });
+            input.blur();
+        }
+    });
+};
 
 // --- B) Observer: wenn deine Boss-Seite später dynamisch Selects hinzufügt,
 //           werden diese automatisch nachverdrahtet und speichern dann einzeln.
@@ -4198,32 +4442,26 @@ async function togglePlayerRole(playerId, roleToToggle) {
 window.saveCompSetup = async function(slotId) {
     if (!window.isManager) return window.showModal("Nur Manager können Setups speichern.");
     
-    // Wir holen uns die aktuelle Reihenfolge direkt aus dem DOM (das ist am sichersten nach Drag&Drop)
-    // oder aus window.rosterData, da dieses nach Drag&Drop aktualisiert wurde.
-    // Wir nutzen window.rosterData, da saveRosterOrder() dies aktuell hält.
-    
     if (!window.rosterData || window.rosterData.length === 0) {
         return window.showModal("Roster ist leer.");
     }
 
     const setupDocRef = window.firebaseTools.doc(window.firebaseTools.db, "raid-tool-data", `comp-setup-${slotId}`);
+    const currentLabel = document.getElementById(`setup-label-${slotId}`)?.textContent || String(slotId);
     
+    const dataToSave = { 
+        roster: window.rosterData,
+        label: currentLabel,
+        savedBy: sessionStorage.getItem('currentManager'),
+        savedAt: new Date().toISOString()
+    };
+
     try {
-        await window.firebaseTools.updateDoc(setupDocRef, { 
-            roster: window.rosterData,
-            savedBy: sessionStorage.getItem('currentManager'),
-            savedAt: new Date().toISOString()
-        }).catch(async (err) => {
-            // Falls Doc noch nicht existiert -> setDoc (create)
+        await window.firebaseTools.updateDoc(setupDocRef, dataToSave).catch(async (err) => {
             const { setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-            await setDoc(setupDocRef, { 
-                roster: window.rosterData,
-                savedBy: sessionStorage.getItem('currentManager'),
-                savedAt: new Date().toISOString()
-            });
+            await setDoc(setupDocRef, dataToSave);
         });
 
-        // Visuelles Feedback
         window.showModal(`✅ Setup ${slotId} gespeichert!`);
     } catch (e) {
         console.error(e);
@@ -4348,7 +4586,7 @@ async function handleImportRoster() {
 
         async function handleAddPlayer() {
             if (!window.isManager) return;
-            const name = prompt("Name des neuen Spielers:", "NeuerSpieler");
+            const name = await window.showPrompt("Name des neuen Spielers:", "NeuerSpieler");
             if (!name) return;
             const newPlayer = { id: crypto.randomUUID(), name: name, class: 'WARRIOR', roles: ['DPS'] };
             const docSnap = await getDoc(rosterDocRef);

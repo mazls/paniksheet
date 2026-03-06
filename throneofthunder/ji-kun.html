@@ -299,6 +299,14 @@
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="team-setup-container">
                 </div>
         </div>
+        <div class="flex gap-2 mb-3">
+    <button onclick="window.syncCompToJiKunTeams()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-1 px-3 rounded text-xs border border-purple-400 flex items-center gap-1">
+        <i class="fas fa-arrow-right"></i> Comp → Teams
+    </button>
+    <button onclick="window.syncJiKunTeamsToComp()" class="bg-amber-700 hover:bg-amber-600 text-white font-bold py-1 px-3 rounded text-xs border border-amber-500 flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Teams → Comp
+    </button>
+</div>
 
         <div class="assignment-block border border-gold-border">
             <div class="flex justify-between items-center mb-4 border-b border-slate-650 pb-2">
@@ -607,16 +615,16 @@
     })();
 
     // 2. HAUPTFUNKTION
-    window.initializePageSpecificCode = async function(assignments, roster, firebaseTools, allCooldowns) {
+    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         window.globalCooldowns = allCooldowns; 
         window.globalRoster = roster;
 
-        const { setDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
         const db = firebaseTools.db;
 
         // Speicher-Funktion
         const jiKunDirectSave = async (updatesObj) => {
             if (!window.isManager) return;
+            const { setDoc, doc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
             const ts = serverTimestamp();
             const payload = {};
             const editor = sessionStorage.getItem('currentManager') || 'Unbekannt';
