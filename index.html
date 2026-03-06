@@ -1323,17 +1323,20 @@ window.generateGlobalWaString = async function() {
     const raidInfo = raidData[selectedRaidId];
     if (!raidInfo || !raidInfo.bosses) return window.showModal("Keine Daten.");
 
-    const bosses = raidInfo.bosses.map(b => `boss-${b.id}`);
-    let result = [];
+    // --- 1. ALLE DATEN PARALLEL LADEN ---
+    const bossDocIds = raidInfo.bosses.map(b => `boss-${b.id}`);
+    const snaps = await Promise.all(bossDocIds.map(b => getDoc(doc(db, "raid-tool-data", b))));
     
-    const snaps = await Promise.all(bosses.map(b => getDoc(doc(db, "raid-tool-data", b))));
-
+    const bossDataMap = {};
     snaps.forEach((snap, idx) => {
-        if (!snap.exists()) return;
-        const data = snap.data();
-        const bossKey = bosses[idx].replace('boss-', '');
-        const npcName = data[`${bossKey}-npc_name`]?.text || "Unknown NPC";
+        if (snap.exists()) bossDataMap[raidInfo.bosses[idx].id] = snap.data();
+    });
 
+    // --- 2. HILFSFUNKTION: CD-Planner Export für einen Boss ---
+    function buildCdExportForBoss(bossId, data) {
+        let entries = [];
+        const npcName = data[`${bossId}-npc_name`]?.text || "Unknown NPC";
+        
         const rows = Object.keys(data)
             .filter(k => k.includes('planner-row') && k.endsWith('-trigger'))
             .sort((a, b) => {
@@ -1349,9 +1352,7 @@ window.generateGlobalWaString = async function() {
             const condition = data[`${base}-condition`]?.text || "0";
             const time = data[`${base}-time`]?.text || "0";
             const player = data[`${base}-player`]?.player || "ALL";
-            const rowNpc = data[`${base}-npc`]?.player; 
-            
-            // --- DIE 4 NEUEN FELDER ---
+            const rowNpc = data[`${base}-npc`]?.player;
             const valText = data[`${base}-note`]?.text || "nil";
             const valTTS = data[`${base}-tts`]?.text || "nil";
             const valName = data[`${base}-varname`]?.text || "nil";
@@ -1363,25 +1364,273 @@ window.generateGlobalWaString = async function() {
                 const cd = window.allCooldowns.find(c => c.name === spellName);
                 if (cd && cd.spellId) spellId = cd.spellId;
             }
+
             let entry = "";
             if (trigger.includes("_HEALTH")) {
-                // Hierarchie: Zeilen-NPC -> Globaler NPC -> "nil"
                 const targetNpc = rowNpc || npcName || "nil";
                 entry = `${trigger}/${condition}/${player}/${time}/${spellId}/${targetNpc}/${valText}/${valTTS}/${valName}/${valIcon}`;
             } else {
                 entry = `${trigger}/${condition}/${player}/${time}/${spellId}/${valText}/${valTTS}/${valName}/${valIcon}`;
             }
-            result.push(entry);
+            entries.push(entry);
+        });
+        return entries;
+    }
+
+    // --- 3. HILFSFUNKTION: Ji-Kun Wellen Export aus DB ---
+    function buildJiKunWaveExport(data) {
+        if (!data) return "";
+        
+        const WAVES = [
+            { id: 1, count: 1 }, { id: 2, count: 1 }, { id: 3, count: 1 },
+            { id: 4, count: 2 }, { id: 5, count: 2 }, { id: 6, count: 1 },
+            { id: 7, count: 2 }, { id: 8, count: 2 }, { id: 9, count: 2 },
+            { id: 10, count: 2 }, { id: 11, count: 2 }, { id: 12, count: 2 }, { id: 13, count: 2 },
+            { id: 14, count: 3 }, { id: 15, count: 2 },
+            { id: 16, count: 3 }, { id: 17, count: 2 },
+            { id: 18, count: 3 }, { id: 19, count: 3 }
+        ];
+        const suffixes = ['', 'b', 'c'];
+        
+        const tank1 = data['jikun-nest-tank1']?.player || "Tank1";
+        const tank2 = data['jikun-nest-tank2']?.player || "Tank2";
+        
+        // Teams aus DB laden
+        const teams = {};
+        for (let t = 1; t <= 5; t++) {
+            teams[t] = [];
+            for (let p = 1; p <= 5; p++) {
+                const name = data[`jikun-team-${t}-p${p}`]?.player;
+                if (name && name.trim() !== '') teams[t].push(name);
+            }
+        }
+        
+        let wRows = [];
+        WAVES.forEach(wave => {
+            for (let i = 0; i < wave.count; i++) {
+                const suffix = suffixes[i];
+                const key = `jikun-wave-${wave.id}${suffix}`;
+                
+                const lvl = data[`${key}-lvl`]?.player;
+                const dir = data[`${key}-dir`]?.player;
+                const teamId = data[`${key}-team`]?.player;
+                const useT1 = data[`${key}-tank-t1`]?.active === true;
+                const useT2 = data[`${key}-tank-t2`]?.active === true;
+                
+                if (teamId && lvl && dir) {
+                    let players = [...(teams[teamId] || [])];
+                    
+                    // Tank-Override: 5. Spieler ersetzen
+                    if (players.length >= 5) {
+                        if (useT1) players[4] = tank1;
+                        else if (useT2) players[4] = tank2;
+                    }
+                    
+                    if (players.length > 0) {
+                        const location = `${lvl}${dir}`;
+                        const playerStr = players.join(',');
+                        if (suffix === 'b' || suffix === 'c') {
+                            wRows.push(`${location}-${playerStr}`);
+                        } else {
+                            wRows.push(`WAVE${wave.id}-${location}-${playerStr}`);
+                        }
+                    }
+                }
+            }
+        });
+        return wRows.join(',');
+    }
+
+    // --- 4. HILFSFUNKTION: Durumu Lichtspektrum Export aus DB ---
+    function buildDurumuSpectrumExport(data) {
+        if (!data) return "";
+        
+        const colors = ['BLUE', 'RED', 'YELLOW'];
+        let parts = [];
+        
+        colors.forEach(color => {
+            let players = [];
+            for (let i = 1; i <= 10; i++) {
+                const name = data[`durumu-cone-${color.toLowerCase()}-${i}`]?.player;
+                if (name && name.trim() !== '') players.push(name);
+            }
+            if (players.length > 0) {
+                parts.push(`${color}-${players.join(',')}`);
+            }
+        });
+        return parts.join(',');
+    }
+
+    // --- 5. MODAL BAUEN ---
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.style.zIndex = '5000';
+
+    // Boss-Checkboxen
+    let bossCheckboxesHtml = raidInfo.bosses.map(boss => {
+        const hasData = !!bossDataMap[boss.id];
+        const entryCount = hasData ? buildCdExportForBoss(boss.id, bossDataMap[boss.id]).length : 0;
+        return `
+            <label class="flex items-center gap-2 p-1.5 rounded hover:bg-slate-700/50 cursor-pointer ${!hasData ? 'opacity-40' : ''}">
+                <input type="checkbox" class="boss-export-cb accent-emerald-500 w-4 h-4" 
+                       data-boss-id="${boss.id}" ${hasData && entryCount > 0 ? 'checked' : ''} ${!hasData ? 'disabled' : ''}>
+                <span class="text-sm">${boss.name}</span>
+                <span class="text-[10px] text-gray-500 ml-auto">${entryCount} Einträge</span>
+            </label>`;
+    }).join('');
+
+    // Extras (nur für Thron des Donners)
+    let extrasHtml = '';
+    if (selectedRaidId === 'throneofthunder') {
+        const jikunData = bossDataMap['ji-kun'];
+        const durumuData = bossDataMap['durumu'];
+        const jikunWaveStr = buildJiKunWaveExport(jikunData);
+        const durumuSpecStr = buildDurumuSpectrumExport(durumuData);
+
+        extrasHtml = `
+            <div class="border-t border-slate-600 pt-4 mt-4">
+                <h4 class="text-gold font-bold text-sm uppercase tracking-wider mb-3">
+                    <i class="fas fa-puzzle-piece mr-1"></i> Spezial-Exports
+                </h4>
+                
+                <div class="space-y-3">
+                    <div class="bg-slate-900/60 p-3 rounded border border-slate-700">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-bold text-emerald-400">
+                                <i class="fas fa-feather-alt mr-1"></i> Ji-Kun Wellen
+                            </span>
+                            <button class="export-copy-btn bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors"
+                                    data-target="export-jikun-waves">Kopieren</button>
+                        </div>
+                        <input type="text" id="export-jikun-waves" readonly
+                               class="w-full bg-black text-green-400 font-mono text-[10px] p-2 rounded border border-slate-700 cursor-text"
+                               value="${jikunWaveStr || '(keine Daten)'}">
+                        <span class="text-[9px] text-gray-500">${jikunWaveStr ? jikunWaveStr.split(',').length + ' Einträge' : ''}</span>
+                    </div>
+                    
+                    <div class="bg-slate-900/60 p-3 rounded border border-slate-700">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-bold text-purple-400">
+                                <i class="fas fa-eye mr-1"></i> Durumu Lichtspektrum
+                            </span>
+                            <button class="export-copy-btn bg-purple-700 hover:bg-purple-600 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors"
+                                    data-target="export-durumu-spectrum">Kopieren</button>
+                        </div>
+                        <input type="text" id="export-durumu-spectrum" readonly
+                               class="w-full bg-black text-green-400 font-mono text-[10px] p-2 rounded border border-slate-700 cursor-text"
+                               value="${durumuSpecStr || '(keine Daten)'}">
+                        <span class="text-[9px] text-gray-500">${durumuSpecStr ? durumuSpecStr.split(',').length + ' Gruppen' : ''}</span>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 600px; text-align: left;">
+            <h1 class="text-center mb-1">
+                <i class="fas fa-file-export mr-2"></i>WA Export
+            </h1>
+            <p class="text-center text-sm text-gray-400 mb-4">${raidInfo.name}</p>
+            
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-bold text-gold uppercase tracking-wider">
+                        <i class="fas fa-dragon mr-1"></i> CD-Planung pro Boss
+                    </h3>
+                    <div class="flex gap-1">
+                        <button id="export-check-all" class="text-[10px] py-0.5 px-2 rounded bg-slate-600 hover:bg-slate-500 text-gray-300">Alle</button>
+                        <button id="export-check-none" class="text-[10px] py-0.5 px-2 rounded bg-slate-600 hover:bg-slate-500 text-gray-300">Keine</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-1 max-h-[250px] overflow-y-auto bg-slate-900/40 p-2 rounded border border-slate-700">
+                    ${bossCheckboxesHtml}
+                </div>
+            </div>
+
+            <div class="bg-slate-900/60 p-3 rounded border border-slate-700 mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-bold text-yellow-400">
+                        <i class="fas fa-scroll mr-1"></i> CD-Planer Export
+                    </span>
+                    <button id="export-cd-copy-btn" class="export-copy-btn bg-yellow-700 hover:bg-yellow-600 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors"
+                            data-target="export-cd-output">Kopieren</button>
+                </div>
+                <textarea id="export-cd-output" readonly rows="3"
+                          class="w-full bg-black text-green-400 font-mono text-[10px] p-2 rounded border border-slate-700 resize-none cursor-text"></textarea>
+                <span id="export-cd-count" class="text-[9px] text-gray-500"></span>
+            </div>
+            
+            ${extrasHtml}
+            
+            <div class="modal-buttons mt-6">
+                <button id="export-close-btn" class="cancel-btn">Schließen</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // --- 6. INTERAKTIVITÄT ---
+    
+    // CD-Export aktualisieren basierend auf Checkboxen
+    function updateCdExport() {
+        const checked = Array.from(modal.querySelectorAll('.boss-export-cb:checked'));
+        let allEntries = [];
+        
+        checked.forEach(cb => {
+            const bossId = cb.dataset.bossId;
+            const data = bossDataMap[bossId];
+            if (data) {
+                allEntries.push(...buildCdExportForBoss(bossId, data));
+            }
+        });
+        
+        const output = modal.querySelector('#export-cd-output');
+        const count = modal.querySelector('#export-cd-count');
+        const exportStr = allEntries.join('*');
+        output.value = exportStr;
+        count.textContent = allEntries.length > 0 ? `${allEntries.length} Einträge von ${checked.length} Bossen` : 'Keine Bosse ausgewählt';
+    }
+
+    // Checkboxen → Update
+    modal.querySelectorAll('.boss-export-cb').forEach(cb => {
+        cb.addEventListener('change', updateCdExport);
+    });
+    
+    // Alle / Keine Buttons
+    modal.querySelector('#export-check-all').addEventListener('click', () => {
+        modal.querySelectorAll('.boss-export-cb:not(:disabled)').forEach(cb => cb.checked = true);
+        updateCdExport();
+    });
+    modal.querySelector('#export-check-none').addEventListener('click', () => {
+        modal.querySelectorAll('.boss-export-cb').forEach(cb => cb.checked = false);
+        updateCdExport();
+    });
+
+    // Kopieren-Buttons (generisch für alle)
+    modal.querySelectorAll('.export-copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.dataset.target;
+            const input = modal.querySelector(`#${targetId}`);
+            if (!input || !input.value || input.value === '(keine Daten)') return;
+            
+            navigator.clipboard.writeText(input.value).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = '✓ Kopiert!';
+                btn.classList.add('bg-green-600');
+                setTimeout(() => {
+                    btn.textContent = orig;
+                    btn.classList.remove('bg-green-600');
+                }, 1500);
+            });
         });
     });
 
-    const finalString = result.join('*');
-    if(finalString) {
-        await navigator.clipboard.writeText(finalString);
-        window.showModal(`Exportiert: ${result.length} Einträge.`);
-    } else {
-        window.showModal(`Keine Einträge gefunden.`);
-    }
+    // Schließen
+    modal.querySelector('#export-close-btn').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+
+    // Initialer Export
+    updateCdExport();
 };
 window.updatePlannerSummary = function() {
     // 1. AUTOMATISCHE ERKENNUNG
