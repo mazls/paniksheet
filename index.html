@@ -1104,12 +1104,51 @@ pre {
 .player-card.is-placeholder .player-icon-role {
     visibility: hidden; /* Icons verstecken */
 }
+#xalatath-feet {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    pointer-events: none;
+    max-height: 30vh;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    mix-blend-mode: screen;
+}
+#xalatath-feet.hidden-feet {
+    opacity: 0;
+    pointer-events: none;
+}
+#toggle-feet-btn {
+    background-color: rgba(10, 20, 15, 0.7);
+    border: 1px solid var(--color-gold-border);
+    color: var(--color-parchment);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+#toggle-feet-btn:hover {
+    background-color: rgba(36, 61, 51, 0.9);
+    border-color: var(--color-gold);
+}
 	</style>
 </head>
 <body class="pt-4">
 <video autoplay muted loop playsinline id="background-video">
     <source src="static/background.webm" type="video/webm">
 </video>
+<img id="xalatath-feet" src="static/xalatath.gif" alt="Xal'atath's" class="hidden-feet">
+
+<button id="toggle-feet-btn" title="Xal'athats an/aus" class="fixed bottom-4 right-16 z-50">
+    🦶
+</button>
 <div class="content-wrapper">
     <div class="max-w-7xl mx-auto main-container p-6 rounded-lg shadow-2xl relative">
         <div id="auth-section"></div>
@@ -3212,7 +3251,39 @@ mainNav.innerHTML = mainNavHTML;
             const videoBtn = document.getElementById('toggle-video-btn');
             const videoBtnIcon = videoBtn.querySelector('i');
             const backgroundVideo = document.getElementById('background-video');
+            // XALATATH FEET TOGGLE
+            const feetBtn = document.getElementById('toggle-feet-btn');
+            const feetImg = document.getElementById('xalatath-feet');
 
+            function updateFeetState() {
+                const isManager = window.isManager;
+                const feetState = localStorage.getItem('xalatathFeetState') || 'on';
+
+                if (!isManager) {
+                    feetImg.classList.add('hidden-feet');
+                    feetBtn.style.display = 'none';
+                    return;
+                }
+
+                feetBtn.style.display = 'flex';
+
+                if (feetState === 'on') {
+                    feetImg.classList.remove('hidden-feet');
+                    feetBtn.textContent = '🦶';
+                } else {
+                    feetImg.classList.add('hidden-feet');
+                    feetBtn.textContent = '🚫';
+                }
+            }
+
+            feetBtn.addEventListener('click', () => {
+                const current = localStorage.getItem('xalatathFeetState') || 'on';
+                const newState = current === 'on' ? 'off' : 'on';
+                localStorage.setItem('xalatathFeetState', newState);
+                updateFeetState();
+            });
+
+            updateFeetState();
             function updateVideoState() {
                 const videoState = localStorage.getItem('backgroundVideoState') || 'on'; // Standard ist 'on'
 
