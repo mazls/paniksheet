@@ -160,6 +160,11 @@
             <i class="fas fa-plus"></i> Spieler hinzufügen
         </button>
 
+        <button onclick="window.replacePlayerRaidWide()"
+                class="h-8 px-3 bg-emerald-900/30 hover:bg-emerald-800/50 text-emerald-200 border border-emerald-700/50 hover:border-emerald-500 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] text-xs font-bold rounded flex items-center gap-2 transition-all duration-300 group">
+            <i class="fas fa-exchange-alt text-emerald-500 group-hover:text-emerald-300 transition-colors"></i> Spieler ersetzen
+        </button>
+
         <button id="btn-admin-kader" onclick="window.manageAllAssignments()" 
                 class="h-8 px-3 bg-amber-900/30 hover:bg-amber-800/50 text-amber-200 border border-amber-700/50 hover:border-amber-500 hover:shadow-[0_0_15px_rgba(217,119,6,0.2)] text-xs font-bold rounded flex items-center gap-2 transition-all duration-300 group">
             <i class="fas fa-scroll text-amber-500 group-hover:text-amber-300 transition-colors"></i> Kader
@@ -257,6 +262,53 @@
             </div>
         </div>
     </details>
+</section>
+
+<!-- ==================== MASTER-VIEW: EINTEILUNGS-ÜBERSICHT ==================== -->
+<section id="master-view-section" class="bg-slate-850 p-6 rounded-lg" style="display: none;">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold text-blue-450">
+            <i class="fas fa-scroll mr-2"></i>Einteilungs-Übersicht
+        </h3>
+        <div class="flex items-center gap-3">
+            <span id="mv-raid-label" class="text-sm text-gray-400"></span>
+            <button id="mv-discord-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-4 rounded-md text-sm transition-colors">
+                <i class="fab fa-discord mr-1"></i> Discord posten
+            </button>
+            <button id="mv-refresh-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-4 rounded-md text-sm transition-colors">
+                <i class="fas fa-sync-alt mr-1"></i> Aktualisieren
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistik-Leiste -->
+    <div id="mv-stats-bar" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <div class="bg-slate-800/60 p-3 rounded border border-gold-border-light text-center">
+            <div class="text-2xl font-bold text-gold" id="mv-stat-bosses">-</div>
+            <div class="text-xs text-gray-400 uppercase">Bosse</div>
+        </div>
+        <div class="bg-slate-800/60 p-3 rounded border border-gold-border-light text-center">
+            <div class="text-2xl font-bold text-green-400" id="mv-stat-assigned">-</div>
+            <div class="text-xs text-gray-400 uppercase">Einteilungen</div>
+        </div>
+        <div class="bg-slate-800/60 p-3 rounded border border-gold-border-light text-center">
+            <div class="text-2xl font-bold text-red-400" id="mv-stat-missing">-</div>
+            <div class="text-xs text-gray-400 uppercase">Offen</div>
+        </div>
+        <div class="bg-slate-800/60 p-3 rounded border border-gold-border-light text-center">
+            <div class="text-2xl font-bold text-purple-400" id="mv-stat-cds">-</div>
+            <div class="text-xs text-gray-400 uppercase">CD-Einträge</div>
+        </div>
+    </div>
+
+    <!-- Nicht zugeteilte Spieler -->
+    <div id="mv-unassigned-bar" class="mb-4 bg-slate-800/40 p-3 rounded border border-red-900/30" style="display:none;">
+        <h4 class="text-sm font-bold text-red-400 mb-2"><i class="fas fa-user-slash mr-1"></i> Spieler ohne Einteilung bei diesem Boss:</h4>
+        <div id="mv-unassigned-players" class="flex flex-wrap gap-1.5"></div>
+    </div>
+
+    <!-- Boss Accordion Container -->
+    <div id="mv-accordion" class="space-y-2"></div>
 </section>
 
     <section class="bg-slate-850 p-6 rounded-lg">

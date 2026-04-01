@@ -3440,7 +3440,1087 @@ currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
     }
 
 });
+        // Master-View initialisieren
+        if (window.isManager) {
+            initMasterView();
+        }
         }        
+
+// ==================== MASTER-VIEW LOGIK ====================
+function initMasterView() {
+    const section = document.getElementById('master-view-section');
+    if (!section) return;
+    section.style.display = 'block';
+
+    document.getElementById('mv-refresh-btn')?.addEventListener('click', () => loadMasterViewData());
+    document.getElementById('mv-discord-post-btn')?.addEventListener('click', () => openDiscordPostModal());
+    loadMasterViewData();
+}
+
+// ==================== DISCORD WEBHOOK LOGIK ====================
+
+async function getWebhookUrl() {
+    try {
+        const webhookDoc = await getDoc(doc(db, 'raid-tool-data', 'discord-webhook'));
+        return webhookDoc.exists() ? webhookDoc.data().url || '' : '';
+    } catch (e) {
+        console.error('Webhook laden fehlgeschlagen:', e);
+        return '';
+    }
+}
+
+async function saveWebhookUrl(url) {
+    await setDoc(doc(db, 'raid-tool-data', 'discord-webhook'), { url: url }, { merge: true });
+}
+
+function getBaseUrl() {
+    const loc = window.location;
+    return window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+}
+
+async function openDiscordPostModal() {
+    if (!window.isManager) return window.showModal("Nur Manager können Discord-Posts erstellen.");
+
+    const selectedRaidId = document.getElementById('raid-selector').value;
+    const raidInfo = (typeof raidData !== 'undefined') ? raidData[selectedRaidId] : null;
+    if (!raidInfo || !raidInfo.bosses) return window.showModal("Keine Raid-Daten gefunden.");
+
+    const savedWebhook = await getWebhookUrl();
+
+    // 1. Lade-Fenster anzeigen
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center z-[100] p-4';
+    modal.innerHTML = `
+        <div class="bg-slate-900 border border-gold-border rounded-lg p-6 max-w-2xl w-full shadow-2xl flex flex-col max-h-[90vh]">
+            <h3 class="text-xl font-bold text-gold mb-4"><i class="fab fa-discord mr-2 text-indigo-400"></i>Discord Post erstellen</h3>
+            <div id="discord-modal-content" class="flex-1 flex justify-center items-center min-h-[200px]">
+                <p class="text-gray-400 animate-pulse"><i class="fas fa-spinner fa-spin mr-2"></i>Scanne Boss-Einteilungen...</p>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // 2. Boss-HTMLs laden
+    const bossHtmls = await Promise.all(raidInfo.bosses.map(async b => {
+        try {
+            const resp = await fetch(`${selectedRaidId}/${b.id}.html`);
+            return resp.ok ? await resp.text() : '';
+        } catch(e) { return ''; }
+    }));
+
+    // 3. Intelligente Scan-Logik (Mit Ausnahmen)
+    const bossStructures = raidInfo.bosses.map((boss, idx) => {
+        const html = bossHtmls[idx];
+        let blocks = [];
+        
+        // --- CUSTOM PARSER ---
+        if (boss.id === 'ji-kun') {
+            blocks = ["Rotation (NHC)", "Rotation (HC)", "Teams (1-5)"];
+        } 
+        else if (boss.id === 'dark-animus') {
+            blocks = ["Links (A)", "Rechts (B)", "Boss (C)", "Spezialaufgaben"];
+        }
+        else if (boss.id === 'lei-shen') {
+            blocks = ["Intermission 1 & 2", "Ball Baiter"];
+        }
+        else if (boss.id === 'twin-consorts') {
+            blocks = ["🛡️ Tank-Einteilung", "🎨 Painter (Zeichner)", "✨ Aktivierungs-Reihenfolge", "📍 Positionen (17 Spieler)"];
+        }
+        else if (boss.id === 'iron-qon') {
+            blocks = ["Tanks & BoP", "Positionen (Ranged & Healer)", "Positionen (Melee)", "Soak Teams"];
+        }
+        // --- GENERIC PARSER ---
+        else if (html) {
+            const parser = new DOMParser();
+            const doc2 = parser.parseFromString('<div>' + html + '</div>', 'text/html');
+            const assignSection = doc2.querySelector('#assignments .collapsible-content');
+            if (assignSection) {
+                assignSection.querySelectorAll('.assignment-block').forEach(block => {
+                    if (block.querySelector('.assignment-select') || block.querySelector('.assignment-text-input')) {
+                        const titleEl = block.querySelector('h4') || block.querySelector('h3');
+                        if (titleEl) blocks.push(titleEl.textContent.trim());
+                    }
+                });
+            }
+        }
+        return { ...boss, blocks };
+    });
+
+    // 4. Modal-Interface aufbauen
+    const contentDiv = modal.querySelector('#discord-modal-content');
+    contentDiv.className = 'flex-1 overflow-y-auto pr-2 flex flex-col custom-scrollbar';
+    contentDiv.innerHTML = `
+        <div class="mb-4 shrink-0">
+            <label class="block text-sm font-medium text-gray-300 mb-1">Webhook-URL</label>
+            <div class="flex gap-2">
+                <input type="url" id="discord-webhook-input" value="${savedWebhook}"
+                       class="flex-1 bg-slate-800 text-white p-2 rounded border border-slate-600 focus:border-gold focus:outline-none text-sm"
+                       placeholder="https://discord.com/api/webhooks/...">
+                <button id="discord-save-webhook-btn" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 px-3 rounded text-sm">
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="mb-4 shrink-0">
+            <label class="block text-sm font-medium text-gray-300 mb-2">Globale Boss-Inhalte</label>
+            <div class="flex flex-wrap gap-4 bg-slate-800/50 p-3 rounded border border-slate-700">
+                <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer hover:text-white">
+                    <input type="checkbox" id="discord-inc-cds" checked class="accent-gold"> CD-Planer
+                </label>
+                <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer hover:text-white">
+                    <input type="checkbox" id="discord-inc-image" checked class="accent-gold"> Positionierungsbild
+                </label>
+                <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer hover:text-white">
+                    <input type="checkbox" id="discord-inc-tactics" class="accent-gold"> Taktik-Kurzübersicht
+                </label>
+            </div>
+        </div>
+
+        <div class="mb-4 flex-1 flex flex-col min-h-0">
+            <div class="flex justify-between items-center mb-2 shrink-0">
+                <label class="block text-sm font-medium text-gray-300">Bosse & Einteilungen auswählen</label>
+                <div class="flex gap-2">
+                    <button id="discord-select-all" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded">Alle</button>
+                    <button id="discord-select-none" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded">Keine</button>
+                </div>
+            </div>
+            
+            <div id="discord-boss-checkboxes" class="space-y-3 bg-slate-800/50 p-3 rounded border border-slate-700 overflow-y-auto flex-1">
+                ${bossStructures.map(b => `
+                    <div class="border border-slate-600 rounded bg-slate-800 p-2 shadow-sm">
+                        <label class="flex items-center gap-2 text-sm font-bold text-gold cursor-pointer mb-1 hover:text-yellow-300 transition-colors">
+                            <input type="checkbox" value="${b.id}" class="discord-boss-cb accent-gold" checked>
+                            <span>${b.name}</span>
+                        </label>
+                        ${b.blocks.length > 0 ? `
+                            <div class="ml-6 grid grid-cols-1 sm:grid-cols-2 gap-1.5 mt-2 discord-block-container" data-boss="${b.id}">
+                                ${b.blocks.map(blockName => `
+                                    <label class="flex items-center gap-2 text-xs text-gray-300 cursor-pointer hover:text-white transition-colors">
+                                        <input type="checkbox" value="${blockName.replace(/"/g, '&quot;')}" class="discord-block-cb accent-emerald-500" checked>
+                                        <span class="truncate" title="${blockName.replace(/"/g, '&quot;')}">${blockName}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        ` : '<div class="ml-6 text-xs text-gray-500 italic">Keine detaillierten Einteilungsblöcke vorhanden</div>'}
+                        <div class="ml-6 mt-2">
+                            <textarea data-boss-note="${b.id}" class="w-full bg-slate-900 border border-slate-700 text-gray-300 text-xs p-1.5 rounded focus:border-gold focus:outline-none transition-colors" rows="1" placeholder="Optionale Notiz / Ansage für ${b.name} dazuschreiben..."></textarea>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+
+        <div id="discord-post-status" class="mb-2 shrink-0" style="display:none;"></div>
+
+        <div class="flex gap-3 justify-end pt-4 border-t border-slate-700 shrink-0">
+            <button id="discord-preview-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
+                <i class="fas fa-eye mr-1"></i>Vorschau
+            </button>
+            <button id="discord-send-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded text-sm">
+                <i class="fab fa-discord mr-1"></i>Absenden
+            </button>
+            <button id="discord-cancel-btn" class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded text-sm">
+                Abbrechen
+            </button>
+        </div>
+
+        <div id="discord-preview-area" class="mt-4 shrink-0" style="display:none;"></div>
+    `;
+
+    // --- Checkbox-Verhalten ---
+    modal.querySelectorAll('.discord-boss-cb').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+            const container = e.target.closest('div.border').querySelector('.discord-block-container');
+            if (container) {
+                container.querySelectorAll('.discord-block-cb').forEach(subCb => subCb.checked = e.target.checked);
+            }
+        });
+    });
+
+    modal.querySelectorAll('.discord-block-cb').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+            const bossContainer = e.target.closest('div.border');
+            const bossCb = bossContainer.querySelector('.discord-boss-cb');
+            const allSubCbs = Array.from(bossContainer.querySelectorAll('.discord-block-cb'));
+            bossCb.checked = allSubCbs.some(c => c.checked);
+        });
+    });
+
+    document.getElementById('discord-cancel-btn').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+
+    document.getElementById('discord-save-webhook-btn').addEventListener('click', async () => {
+        const url = document.getElementById('discord-webhook-input').value.trim();
+        if (!url) return window.showModal('Bitte eine Webhook-URL eingeben.');
+        await saveWebhookUrl(url);
+        window.showModal('Webhook-URL gespeichert!');
+    });
+
+    document.getElementById('discord-select-all').addEventListener('click', () => {
+        modal.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+    });
+    
+    document.getElementById('discord-select-none').addEventListener('click', () => {
+        modal.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    });
+
+    const getSelectionState = () => {
+        const state = { bosses: [], blocks: {}, notes: {} };
+        modal.querySelectorAll('.discord-boss-cb:checked').forEach(cb => {
+            state.bosses.push(cb.value);
+            const blockContainer = cb.closest('div.border').querySelector('.discord-block-container');
+            if (blockContainer) {
+                const checkedBlocks = Array.from(blockContainer.querySelectorAll('.discord-block-cb:checked')).map(b => b.value);
+                state.blocks[cb.value] = checkedBlocks;
+            } else {
+                state.blocks[cb.value] = [];
+            }
+        });
+        modal.querySelectorAll('textarea[data-boss-note]').forEach(ta => {
+            if (ta.value.trim()) state.notes[ta.dataset.bossNote] = ta.value.trim();
+        });
+        return state;
+    };
+
+    // Vorschau
+    document.getElementById('discord-preview-btn').addEventListener('click', async () => {
+        const selection = getSelectionState();
+        const embeds = await buildDiscordEmbeds(raidInfo, selection);
+        const previewArea = document.getElementById('discord-preview-area');
+        previewArea.style.display = 'block';
+
+        if (embeds.length === 0) {
+            previewArea.innerHTML = '<p class="text-amber-400 text-sm">Keine Bosse ausgewählt oder keine Daten gefunden.</p>';
+            return;
+        }
+
+        previewArea.innerHTML = `
+            <h4 class="text-sm font-bold text-gray-400 mb-2">Vorschau (${embeds.length} Embeds):</h4>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+                ${embeds.map(e => `
+                    <div class="bg-slate-800 border-l-4 border-indigo-500 p-3 rounded text-sm">
+                        <div class="font-bold text-indigo-300">${e.title || 'Kein Titel'}</div>
+                        <pre class="text-xs text-gray-400 mt-1 whitespace-pre-wrap font-sans max-h-32 overflow-y-auto">${(e.description || '').substring(0, 500)}${(e.description || '').length > 500 ? '...' : ''}</pre>
+                        ${e.image ? `<div class="text-xs text-green-400 mt-1"><i class="fas fa-image mr-1"></i>Bild: ${e.image.url}</div>` : ''}
+                    </div>
+                `).join('')}
+            </div>`;
+    });
+
+    // Absenden
+    document.getElementById('discord-send-btn').addEventListener('click', async () => {
+        const webhookUrl = document.getElementById('discord-webhook-input').value.trim();
+        if (!webhookUrl) return window.showModal('Bitte zuerst eine Webhook-URL eingeben und speichern.');
+
+        const selection = getSelectionState();
+        if (selection.bosses.length === 0) return window.showModal('Keine Bosse ausgewählt.');
+
+        const embeds = await buildDiscordEmbeds(raidInfo, selection);
+        if (embeds.length === 0) return window.showModal('Es gibt keine Daten zum Senden.');
+
+        const statusDiv = document.getElementById('discord-post-status');
+        statusDiv.style.display = 'block';
+        statusDiv.innerHTML = '<p class="text-blue-400 text-sm animate-pulse"><i class="fas fa-spinner fa-spin mr-1"></i>Sende an Discord...</p>';
+
+        try {
+            const chunks = [];
+            for (let i = 0; i < embeds.length; i += 10) {
+                chunks.push(embeds.slice(i, i + 10));
+            }
+
+            for (let i = 0; i < chunks.length; i++) {
+                const payload = {
+                    username: 'P Ä N I K Raidsheet',
+                    content: i === 0 ? `📜 **${raidInfo.name}** — Einteilungen` : '',
+                    embeds: chunks[i]
+                };
+
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(`Discord API Fehler ${response.status}: ${errText}`);
+                }
+                if (i < chunks.length - 1) await new Promise(r => setTimeout(r, 1000));
+            }
+
+            statusDiv.innerHTML = `<p class="text-green-400 text-sm"><i class="fas fa-check-circle mr-1"></i>Erfolgreich gepostet! ${embeds.length} Embeds gesendet.</p>`;
+            const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+            window.logHistory('Discord', `Post gesendet: ${raidInfo.name}`, `${embeds.length} Bosse`, currentManager);
+
+        } catch (error) {
+            console.error('Discord Post Error:', error);
+            statusDiv.innerHTML = `<p class="text-red-400 text-sm"><i class="fas fa-times-circle mr-1"></i>Fehler: ${error.message}</p>`;
+        }
+    });
+}
+
+async function buildDiscordEmbeds(raidInfo, selection) {
+    const selectedBosses = selection.bosses;
+    const incCDs = document.getElementById('discord-inc-cds').checked;
+    const incImage = document.getElementById('discord-inc-image').checked;
+    const incTactics = document.getElementById('discord-inc-tactics').checked;
+
+    if (selectedBosses.length === 0) return [];
+
+    const baseUrl = "https://mazls.github.io/paniksheet/";
+    const selectedRaidId = document.getElementById('raid-selector').value;
+
+    const bossInfos = raidInfo.bosses.filter(b => selectedBosses.includes(b.id));
+    
+    // Alles parallel laden
+    const [snapshots, bossPages] = await Promise.all([
+        Promise.all(bossInfos.map(b => window.firebaseTools.getDoc(window.firebaseTools.doc(window.firebaseTools.db, 'raid-tool-data', 'boss-' + b.id)))),
+        Promise.all(bossInfos.map(async b => {
+            try {
+                const resp = await fetch(`${selectedRaidId}/${b.id}.html`);
+                return resp.ok ? await resp.text() : '';
+            } catch(e) { return ''; }
+        }))
+    ]);
+
+    const embeds = [];
+
+    snapshots.forEach((snap, idx) => {
+        const boss = bossInfos[idx];
+        const data = snap.exists() ? snap.data() : {};
+        const pageHtml = bossPages[idx] || '';
+        const allowedBlocks = selection.blocks[boss.id] || [];
+
+        // Die richtige URL mit Hashtag-Routing
+        const bossUrl = `${baseUrl}#${selectedRaidId}/${boss.id}`;
+
+        let description = '';
+
+        // --- Custom Note des Users einfügen ---
+        if (selection.notes[boss.id]) {
+            description += `📝 **Ansage / Notiz:**\n${selection.notes[boss.id]}\n\n`;
+        }
+
+        if (pageHtml && allowedBlocks.length > 0) {
+            
+            // --- CUSTOM PARSER: JI-KUN ---
+            if (boss.id === 'ji-kun') {
+                if (allowedBlocks.includes("Teams (1-5)")) {
+                    let teamLines = [];
+                    for (let t = 1; t <= 5; t++) {
+                        let players = [];
+                        for (let p = 1; p <= 5; p++) {
+                            const pName = data[`jikun-team-${t}-p${p}`]?.player;
+                            if (pName && pName !== '—') players.push(pName);
+                        }
+                        if (players.length > 0) teamLines.push(`> **Team ${t}:** ${players.join(', ')}`);
+                    }
+                    if (teamLines.length > 0) description += `\n**Teams (1-5)**\n${teamLines.join('\n')}\n`;
+                }
+                
+                const hcChecked = allowedBlocks.includes("Rotation (HC)");
+                const nhcChecked = allowedBlocks.includes("Rotation (NHC)");
+                
+                if (hcChecked || nhcChecked) {
+                    const doc2 = new DOMParser().parseFromString('<div>' + pageHtml + '</div>', 'text/html');
+                    const tablesToProcess = [];
+                    if (nhcChecked) tablesToProcess.push({ id: '#body-nhc', name: 'NHC' });
+                    if (hcChecked) tablesToProcess.push({ id: '#body-hc', name: 'HC' });
+                    
+                    tablesToProcess.forEach(t => {
+                        const tbody = doc2.querySelector(t.id);
+                        if (tbody) {
+                            description += `\n**Rotation (${t.name})**\n`;
+                            tbody.querySelectorAll('tr').forEach(row => {
+                                const cells = row.querySelectorAll('td');
+                                if (cells.length >= 4) {
+                                    const wave = cells[0].textContent.trim();
+                                    const time = cells[1].textContent.trim();
+                                    const nestA = cells[2].textContent.replace(/\s+/g, ' ').trim();
+                                    const nestB = cells[3].textContent.replace(/\s+/g, ' ').trim();
+                                    
+                                    const cleanNestA = nestA.replace(/Tank benötigt/g, '').replace(/🛡️/g, '').trim();
+                                    const cleanNestB = nestB.replace(/Tank benötigt/g, '').replace(/🛡️/g, '').trim();
+
+                                    let line = `> **#${wave}** (${time}) ➜ ${cleanNestA}`;
+                                    if (cleanNestB !== '-' && cleanNestB !== '') line += ` | ${cleanNestB}`;
+                                    description += line + '\n';
+                                }
+                            });
+                        }
+                    });
+                }
+            } 
+            
+            // --- CUSTOM PARSER: DUNKLER ANIMUS ---
+            else if (boss.id === 'dark-animus') {
+                const groups = [
+                    { id: "Links (A)", keys: ['animus_a', 'animus_1a', 'animus_2a', 'animus_3a', 'animus_4a', 'animus_5a', 'animus_6a', 'animus_7a', 'animus_8a', 'animus_9a', 'animus_10a', 'animus_11a'] },
+                    { id: "Rechts (B)", keys: ['animus_b', 'animus_1b', 'animus_2b', 'animus_3b', 'animus_4b', 'animus_5b', 'animus_6b', 'animus_7b', 'animus_8b', 'animus_9b', 'animus_10b', 'animus_11b'] },
+                    { id: "Boss (C)", keys: ['animus_c', 'animus_1c', 'animus_2c', 'animus_3c'] },
+                    { id: "Spezialaufgaben", keys: ['animus_ring_soaker_1', 'animus_ring_soaker_2', 'animus_swap_baiter_1', 'animus_swap_baiter_2', 'animus_dispeller_1', 'animus_dispeller_2'] }
+                ];
+
+                groups.forEach(g => {
+                    if (allowedBlocks.includes(g.id)) {
+                        let lines = [];
+                        g.keys.forEach(k => {
+                            const pName = data[k]?.player;
+                            if (pName && pName !== '—') {
+                                let label = k.replace('animus_', '').toUpperCase();
+                                if (label.includes('RING_SOAKER')) label = label.replace('RING_SOAKER_', 'Ring Soaker ');
+                                else if (label.includes('SWAP_BAITER')) label = label.replace('SWAP_BAITER_', 'Materientausch ');
+                                else if (label.includes('DISPELLER')) label = label.replace('DISPELLER_', 'Dispeller ');
+                                
+                                lines.push(`> **${label}:** ${pName}`);
+                            }
+                        });
+                        if (lines.length > 0) {
+                            description += `\n**${g.id}**\n${lines.join('\n')}\n`;
+                        }
+                    }
+                });
+            }
+
+            // --- CUSTOM PARSER: LEI SHEN ---
+            else if (boss.id === 'lei-shen') {
+                if (allowedBlocks.includes("Intermission 1 & 2")) {
+                    const intGroups = [
+                        { name: "🟦 Quadrat", prefix: "lei_int1_sq_" },
+                        { name: "🟩 Dreieck", prefix: "lei_int1_tri_" },
+                        { name: "🟪 Diamant", prefix: "lei_int1_dia_" },
+                        { name: "🟥 Kreuz", prefix: "lei_int1_cross_" }
+                    ];
+                    
+                    let intLines = [];
+                    intGroups.forEach(g => {
+                        let players = [];
+                        for(let i=1; i<=6; i++) {
+                            const p = data[`${g.prefix}${i}`]?.player;
+                            if (p && p !== '—') players.push(p);
+                        }
+                        
+                        let extraPlayers = [];
+                        for(let i=1; i<=2; i++) {
+                            const p = data[`${g.prefix}ex${i}`]?.player;
+                            if (p && p !== '—') extraPlayers.push(p);
+                        }
+                        
+                        if (players.length > 0) {
+                            let line = `> **${g.name}:** ${players.join(', ')}`;
+                            if (extraPlayers.length > 0) line += ` *(P2 Extra: ${extraPlayers.join(', ')})*`;
+                            intLines.push(line);
+                        }
+                    });
+                    
+                    if (intLines.length > 0) {
+                        description += `\n**Intermissions**\n${intLines.join('\n')}\n`;
+                    }
+                }
+
+                if (allowedBlocks.includes("Ball Baiter")) {
+                    let baiters = [];
+                    for(let i=1; i<=8; i++) {
+                        const p = data[`lei_baiter_${i}`]?.player;
+                        if (p && p !== '—') baiters.push(p);
+                    }
+                    if (baiters.length > 0) {
+                        description += `\n**⚽ Ball Baiter**\n> ${baiters.join(' | ')}\n`;
+                    }
+                }
+            }
+
+            // --- CUSTOM PARSER: ZWILLINGSKONKUBINEN ---
+            else if (boss.id === 'twin-consorts') {
+                if (allowedBlocks.some(b => b.includes("Tank-Einteilung"))) {
+                    let lines = [];
+                    [1, 2].forEach(i => {
+                        const p = data[`twins-tank${i}`]?.player;
+                        if (p && p !== '—') lines.push(`> **Tank ${i}:** ${p}`);
+                    });
+                    if (lines.length > 0) description += `\n**🛡️ Tank-Einteilung**\n${lines.join('\n')}\n`;
+                }
+
+                if (allowedBlocks.some(b => b.includes("Painter"))) {
+                    let lines = [];
+                    [1, 2].forEach(i => {
+                        const p = data[`twins-painter-${i}`]?.player;
+                        if (p && p !== '—') lines.push(`> **Painter ${i}:** ${p}`);
+                    });
+                    if (lines.length > 0) description += `\n**🎨 Painter (Zeichner)**\n${lines.join('\n')}\n`;
+                }
+
+                if (allowedBlocks.some(b => b.includes("Aktivierungs-Reihenfolge"))) {
+                    const seq = [
+                        { id: 'twins_seq_pull', label: 'Bei Pull' },
+                        { id: 'twins_seq_p2_start', label: 'P2 Start' },
+                        { id: 'twins_seq_inferno_1', label: 'Nukleares Inferno 1' },
+                        { id: 'twins_seq_inferno_2', label: 'Nukleares Inferno 2' },
+                        { id: 'twins_seq_p3_start', label: 'P3 Start' },
+                        { id: 'twins_seq_tide_2', label: 'Gezeitenkraft 2' },
+                        { id: 'twins_seq_tide_3', label: 'Gezeitenkraft 3' },
+                        { id: 'twins_seq_opt', label: '? (Optional)' }
+                    ];
+                    let lines = [];
+                    seq.forEach(s => {
+                        const val = data[s.id]?.text || data[s.id]?.player || data[s.id]?.value || data[s.id];
+                        let finalVal = typeof val === 'object' ? (val.text || val.player) : val;
+                        if (finalVal && finalVal !== '—' && finalVal !== '- Wählen -') {
+                            lines.push(`> **${s.label}:** ${finalVal}`);
+                        }
+                    });
+                    if (lines.length > 0) description += `\n**✨ Aktivierungs-Reihenfolge**\n${lines.join('\n')}\n`;
+                }
+
+                if (allowedBlocks.some(b => b.includes("Positionen (17 Spieler)"))) {
+                    let posLines = [];
+                    for(let i=1; i<=17; i++) {
+                        const p = data[`twins_celestial_${i}`]?.player;
+                        if (p && p !== '—') posLines.push(`> **Position ${i}:** ${p}`);
+                    }
+                    if (posLines.length > 0) description += `\n**📍 Positionen (17 Spieler)**\n${posLines.join('\n')}\n`;
+                }
+            }
+
+            // --- CUSTOM PARSER: EISERNER QON ---
+            else if (boss.id === 'iron-qon') {
+                if (allowedBlocks.includes("Tanks & BoP")) {
+                    let lines = [];
+                    const t1 = data['qon-tank1']?.player;
+                    const t2 = data['qon-tank2']?.player;
+                    if (t1 && t1 !== '—') lines.push(`> **MT (Boss):** ${t1}`);
+                    if (t2 && t2 !== '—') lines.push(`> **OT (Add/Swap):** ${t2}`);
+                    
+                    const b1 = data['qon-bop1']?.player;
+                    const b2 = data['qon-bop2']?.player;
+                    let bops = [];
+                    if (b1 && b1 !== '—') bops.push(b1);
+                    if (b2 && b2 !== '—') bops.push(b2);
+                    if (bops.length > 0) lines.push(`> **BoP Impale:** ${bops.join(', ')}`);
+                    
+                    if (lines.length > 0) description += `\n**🛡️ Tanks & Spezialaufgaben**\n${lines.join('\n')}\n`;
+                }
+
+                if (allowedBlocks.includes("Positionen (Ranged & Healer)")) {
+                    const groups = [
+                        { name: "R1 (Mond)", ids: [1, 2] },
+                        { name: "R2 (Diamant)", ids: [3, 4] },
+                        { name: "H1 (Kreuz)", ids: [5, 6] },
+                        { name: "R3 (Quadrat)", ids: [7, 8] },
+                        { name: "R4 (Kreis)", ids: [9, 10] },
+                        { name: "R5 (Totenkopf)", ids: [11, 12] },
+                        { name: "H2 (Dreieck)", ids: [13, 14] },
+                        { name: "R6 (Stern)", ids: [15, 16] }
+                    ];
+                    let lines = [];
+                    groups.forEach(g => {
+                        let pList = [];
+                        g.ids.forEach(id => {
+                            const p = data[`qon_pos_${id}`]?.player;
+                            if (p && p !== '—') pList.push(p);
+                        });
+                        if (pList.length > 0) lines.push(`> **${g.name}:** ${pList.join(' | ')}`);
+                    });
+                    if (lines.length > 0) description += `\n**✨ Ranged & Healer Positionen**\n${lines.join('\n')}\n`;
+                }
+
+                if (allowedBlocks.includes("Positionen (Melee)")) {
+                    let lines = [];
+                    for (let i = 1; i <= 3; i++) {
+                        let pList = [];
+                        const offset = 16 + (i - 1) * 4;
+                        for (let j = 1; j <= 4; j++) {
+                            const p = data[`qon_pos_${offset + j}`]?.player;
+                            if (p && p !== '—') pList.push(p);
+                        }
+                        if (pList.length > 0) lines.push(`> **M${i}:** ${pList.join(', ')}`);
+                    }
+                    if (lines.length > 0) description += `\n**⚔️ Melee Gruppen**\n${lines.join('\n')}\n`;
+                }
+
+                if (allowedBlocks.includes("Soak Teams")) {
+                    let lines = [];
+                    [1, 2].forEach(team => {
+                        let pList = [];
+                        for (let i = 1; i <= 5; i++) {
+                            const p = data[`qon-soak${team}-${i}`]?.player;
+                            if (p && p !== '—') pList.push(p);
+                        }
+                        if (pList.length > 0) lines.push(`> **Team ${team}:** ${pList.join(', ')}`);
+                    });
+                    if (lines.length > 0) description += `\n**🔥 P1 Soak Teams**\n${lines.join('\n')}\n`;
+                }
+            }
+            
+            // --- GENERIC PARSER: Für alle anderen Bosse ---
+            else {
+                const parser = new DOMParser();
+                const doc2 = parser.parseFromString('<div>' + pageHtml + '</div>', 'text/html');
+                const assignSection = doc2.querySelector('#assignments .collapsible-content');
+                
+                if (assignSection) {
+                    assignSection.querySelectorAll('.assignment-block').forEach(block => {
+                        const titleEl = block.querySelector('h4') || block.querySelector('h3');
+                        const blockTitle = titleEl ? titleEl.textContent.trim() : '';
+
+                        if (!allowedBlocks.includes(blockTitle)) return; 
+
+                        const selects = block.querySelectorAll('.assignment-select');
+                        if (selects.length === 0) return;
+                        
+                        const table = block.querySelector('table');
+                        
+                        if (table) {
+                            description += `\n**${blockTitle}**\n`;
+                            const rows = table.querySelectorAll('tbody tr');
+                            rows.forEach(row => {
+                                const markCell = row.querySelector('td:first-child');
+                                const markName = markCell ? markCell.textContent.trim() : '';
+                                const rowSelects = row.querySelectorAll('.assignment-select');
+                                const players = Array.from(rowSelects).map(sel => {
+                                    const id = sel.dataset.assignmentId;
+                                    return data[id]?.player || '—';
+                                });
+                                if (players.some(p => p !== '—')) {
+                                    description += `> ${markName}: ${players.join(' | ')}\n`;
+                                }
+                            });
+                        } else {
+                            const lines = [];
+                            block.querySelectorAll('.assignment-list li').forEach(li => {
+                                const label = li.querySelector('span');
+                                const sel = li.querySelector('.assignment-select');
+                                if (!sel || !label) return;
+                                if (li.classList.contains('list-subheader')) return;
+                                
+                                const id = sel.dataset.assignmentId;
+                                const val = data[id]?.player || '';
+                                if (val) {
+                                    lines.push(`> **${label.textContent.trim()}** ${val}`);
+                                }
+                            });
+                            if (lines.length > 0) {
+                                description += `\n**${blockTitle}**\n${lines.join('\n')}\n`;
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        // --- CD-Planer ---
+        if (incCDs) {
+            const cdEntries = [];
+            Object.keys(data).forEach(key => {
+                if (!key.includes('-planner-row') || !key.endsWith('-player')) return;
+                const playerVal = data[key]?.player;
+                if (!playerVal) return;
+                const baseKey = key.substring(0, key.lastIndexOf('-player'));
+                const trigger = data[baseKey + '-trigger']?.player || '';
+                if (!trigger) return;
+                const cd = data[baseKey + '-cooldown']?.cooldown || '';
+                const condition = data[baseKey + '-condition']?.text || '';
+                const time = data[baseKey + '-time']?.text || '';
+                const triggerClean = trigger.replace(/^[A-Z_]+_/, '').replace(/_/g, ' ');
+                cdEntries.push({ triggerClean, condition, time, playerVal, cd });
+            });
+
+            const byTrigger = {};
+            cdEntries.forEach(e => {
+                const groupKey = `${e.condition || '0'}|${e.triggerClean}`;
+                if (!byTrigger[groupKey]) byTrigger[groupKey] = { label: e.triggerClean, condition: e.condition, entries: [] };
+                byTrigger[groupKey].entries.push(e);
+            });
+
+            const cdLines = [];
+            Object.values(byTrigger).forEach(group => {
+                const condLabel = group.condition ? `#${group.condition}` : '';
+                cdLines.push(`**${condLabel} ${group.label}**`);
+                group.entries.forEach(e => {
+                    cdLines.push(`> ${e.time || '-'}s — ${e.playerVal} ➜ ${e.cd || '-'}`);
+                });
+            });
+
+            if (cdLines.length > 0) {
+                description += `\n⚡ **CD-Plan**\n${cdLines.join('\n')}\n`;
+            }
+        }
+
+        // --- Taktik-Kurzübersicht ---
+        if (incTactics && pageHtml) {
+            const overviewMatch = pageHtml.match(/<section id="overview"[^>]*>[\s\S]*?<p class="mb-4">([\s\S]*?)<\/p>/);
+            if (overviewMatch) {
+                let tactics = overviewMatch[1]
+                    .replace(/<strong[^>]*>/g, '**').replace(/<\/strong>/g, '**')
+                    .replace(/<[^>]+>/g, '').trim();
+                if (tactics.length > 300) tactics = tactics.substring(0, 297) + '...';
+                description += `\n📖 **Kurzübersicht**\n${tactics}\n`;
+            }
+        }
+
+        // Kürzung des Textes, um das Discord-Limit nicht zu überschreiten
+        if (description.length > 3900) {
+            description = description.substring(0, 3897) + '...';
+        }
+
+        // Direkten Link zur Boss-Seite unten anfügen
+        if (description.trim() !== '') {
+            description += `\n\n🔗 **[Zum vollständigen Raid Sheet für den Boss](${bossUrl})**`;
+        }
+
+        // --- Bild-URL ---
+        let imageUrl = null;
+        if (incImage && pageHtml) {
+            const imgMatch = pageHtml.match(/<img[^>]*class="[^"]*(?:positioning-image|lightbox-trigger)[^"]*"[^>]*src="([^"]+)"/);
+            if (!imgMatch) {
+                const imgMatch2 = pageHtml.match(/<img[^>]*src="([^"]+)"[^>]*class="[^"]*(?:positioning-image|lightbox-trigger)[^"]*"/);
+                if (imgMatch2) imageUrl = imgMatch2[1];
+            } else {
+                imageUrl = imgMatch[1];
+            }
+            if (imageUrl && !imageUrl.startsWith('http')) {
+                imageUrl = new URL(imageUrl, baseUrl).href; 
+            }
+        }
+
+        if (description.trim() || imageUrl) {
+            const embed = {
+                title: `⚔️ ${boss.name}`,
+                url: bossUrl, 
+                description: description.trim() || undefined,
+                color: 0xFCD34D,
+                footer: { text: 'P Ä N I K Raidsheet' }
+            };
+            if (imageUrl) embed.image = { url: imageUrl };
+            embeds.push(embed);
+        }
+    });
+
+    return embeds;
+}
+
+async function loadMasterViewData() {
+    const accordion = document.getElementById('mv-accordion');
+    if (!accordion) return;
+
+    const selectedRaidId = document.getElementById('raid-selector').value;
+    const raidInfo = (typeof raidData !== 'undefined') ? raidData[selectedRaidId] : null;
+    if (!raidInfo || !raidInfo.bosses) {
+        accordion.innerHTML = '<p class="text-gray-400">Keine Raid-Daten gefunden.</p>';
+        return;
+    }
+
+    document.getElementById('mv-raid-label').textContent = raidInfo.name;
+    accordion.innerHTML = '<p class="text-gray-400 animate-pulse"><i class="fas fa-spinner fa-spin mr-2"></i>Lade Daten aller Bosse...</p>';
+
+    const roster = window.rosterData || [];
+    const rosterNames = roster.map(p => p.name);
+
+    try {
+        const bossIds = raidInfo.bosses.map(b => ({ id: b.id, name: b.name, docId: 'boss-' + b.id }));
+        
+        // Boss-Daten UND HTML-Seiten parallel laden
+        const [snapshots, bossPages] = await Promise.all([
+            Promise.all(bossIds.map(b => getDoc(doc(db, 'raid-tool-data', b.docId)))),
+            Promise.all(bossIds.map(async b => {
+                try {
+                    const resp = await fetch(`${selectedRaidId}/${b.id}.html`);
+                    return resp.ok ? await resp.text() : '';
+                } catch(e) { return ''; }
+            }))
+        ]);
+
+        let totalAssigned = 0;
+        let totalMissing = 0;
+        let totalCDs = 0;
+
+        accordion.innerHTML = '';
+
+        snapshots.forEach((snap, idx) => {
+            const boss = bossIds[idx];
+            const data = snap.exists() ? snap.data() : {};
+            const pageHtml = bossPages[idx] || '';
+
+            // Zähle Assignments und CDs
+            let filledCount = 0;
+            let emptySelectCount = 0;
+            let cdCount = 0;
+            const assignedPlayers = new Set();
+            const invalidPlayers = [];
+
+            Object.keys(data).forEach(key => {
+                if (key.includes('-planner-row')) {
+                    if (key.endsWith('-player') && data[key]?.player) {
+                        const baseKey = key.substring(0, key.lastIndexOf('-player'));
+                        if (data[baseKey + '-trigger']?.player) cdCount++;
+                    }
+                } else {
+                    const val = data[key];
+                    if (val && typeof val === 'object' && val.player !== undefined) {
+                        if (val.player && val.player.trim()) {
+                            filledCount++;
+                            const pName = val.player;
+                            if (!['ALL','Niemand','DEATHKNIGHT','DRUID','HUNTER','MAGE','MONK','PALADIN','PRIEST','ROGUE','SHAMAN','WARLOCK','WARRIOR'].includes(pName)) {
+                                assignedPlayers.add(pName);
+                                if (!rosterNames.includes(pName)) invalidPlayers.push(pName);
+                            }
+                        } else {
+                            emptySelectCount++;
+                        }
+                    }
+                }
+            });
+
+            totalAssigned += filledCount;
+            totalMissing += emptySelectCount;
+            totalCDs += cdCount;
+
+            // Boss-Panel rendern
+            const contentId = `mv-content-${boss.id}`;
+            const iconId = `mv-icon-${boss.id}`;
+            const statusColor = emptySelectCount === 0 ? 'text-green-400' : 'text-amber-400';
+            const statusIcon = emptySelectCount === 0 ? 'fa-check-circle' : 'fa-exclamation-circle';
+
+            const panel = document.createElement('div');
+            panel.className = 'rounded-lg border border-gold-border-light overflow-hidden bg-slate-800/40';
+            panel.innerHTML = `
+                <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-slate-700/30 transition-colors"
+                     onclick="document.getElementById('${contentId}').classList.toggle('hidden'); document.getElementById('${iconId}').classList.toggle('rotate-90');">
+                    <div class="flex items-center gap-3">
+                        <i id="${iconId}" class="fas fa-chevron-right text-gold text-xs transition-transform duration-200"></i>
+                        <span class="font-bold text-gold text-lg">${boss.name}</span>
+                        <span class="${statusColor} text-sm"><i class="fas ${statusIcon} mr-1"></i>${filledCount} besetzt</span>
+                        ${cdCount > 0 ? `<span class="text-purple-400 text-sm"><i class="fas fa-bolt mr-1"></i>${cdCount} CDs</span>` : ''}
+                        ${invalidPlayers.length > 0 ? `<span class="text-red-400 text-sm"><i class="fas fa-user-times mr-1"></i>${invalidPlayers.length} nicht im Roster</span>` : ''}
+                    </div>
+                    <a href="#${selectedRaidId}/${boss.id}" class="text-xs text-blue-400 hover:text-blue-300 underline" onclick="event.stopPropagation();">
+                        <i class="fas fa-external-link-alt mr-1"></i>Boss-Seite
+                    </a>
+                </div>
+                <div id="${contentId}" class="hidden border-t border-gold-border-light">
+                    <div class="p-4 mv-boss-content" data-mv-boss-id="${boss.id}" data-mv-boss-docid="${boss.docId}">
+                        ${renderMasterViewFromHtml(pageHtml, boss)}
+                    </div>
+                </div>
+            `;
+            accordion.appendChild(panel);
+        });
+
+        // Stats aktualisieren
+        document.getElementById('mv-stat-bosses').textContent = bossIds.length;
+        document.getElementById('mv-stat-assigned').textContent = totalAssigned;
+        document.getElementById('mv-stat-missing').textContent = totalMissing;
+        document.getElementById('mv-stat-cds').textContent = totalCDs;
+
+        // Dropdowns befüllen und Werte setzen
+        setTimeout(async () => {
+            populateMasterViewDropdowns();
+            await setMasterViewValues();
+            attachMasterViewChangeHandlers();
+        }, 100);
+
+    } catch (error) {
+        console.error('Master-View Fehler:', error);
+        accordion.innerHTML = `<p class="text-red-400">Fehler beim Laden: ${error.message}</p>`;
+    }
+}
+
+function renderMasterViewFromHtml(pageHtml, boss) {
+    if (!pageHtml) {
+        return '<p class="text-gray-500 text-sm italic">Keine Boss-Seite gefunden. Erstelle die HTML-Datei für diesen Boss.</p>';
+    }
+
+    // Assignments-Section aus dem HTML extrahieren
+    const parser = new DOMParser();
+    const doc2 = parser.parseFromString('<div>' + pageHtml + '</div>', 'text/html');
+    
+    const assignmentsSection = doc2.querySelector('#assignments .collapsible-content');
+    if (!assignmentsSection) {
+        return '<p class="text-gray-500 text-sm italic">Keine Einteilungs-Section gefunden.</p>';
+    }
+
+    // Entferne Elemente die im Master-View nicht gebraucht werden:
+    // - Positioning toggle/images/text (die kommen separat)
+    // - Mutationen-Listen und andere Info-Blöcke ohne Selects
+    // - Script-Tags
+    assignmentsSection.querySelectorAll('script, #positioning-toggle, .positioning-image, .positioning-text, video, .video-wrapper').forEach(el => el.remove());
+
+    // Entferne assignment-blocks die keine selects enthalten (reine Info-Blöcke)
+    assignmentsSection.querySelectorAll('.assignment-block').forEach(block => {
+        if (!block.querySelector('.assignment-select') && !block.querySelector('.assignment-text-input')) {
+            block.remove();
+        }
+    });
+
+    // Visuelle Hilfen Section komplett entfernen (Bilder, Toggle etc.)
+    const visualSection = assignmentsSection.querySelector('h3.text-blue-450');
+    if (visualSection) {
+        let parent = visualSection.closest('div');
+        if (parent) parent.remove();
+    }
+
+    // Alle selects mit einer mv-spezifischen Klasse versehen
+    assignmentsSection.querySelectorAll('.assignment-select').forEach(sel => {
+        sel.classList.add('mv-assignment-select');
+        // data-manual-options Selects nicht anfassen (Trigger etc.)
+        if (sel.getAttribute('data-manual-options') === 'true') return;
+    });
+
+    // Text-Inputs ebenfalls
+    assignmentsSection.querySelectorAll('.assignment-text-input').forEach(inp => {
+        inp.classList.add('mv-text-input');
+    });
+
+    let html = assignmentsSection.innerHTML;
+
+    // Bild extrahieren und als kompaktes Thumbnail unten anfügen
+    const imgEl = doc2.querySelector('.positioning-image, .lightbox-trigger');
+    if (imgEl) {
+        const imgSrc = imgEl.getAttribute('src') || '';
+        const imgAlt = imgEl.getAttribute('alt') || 'Positionierung';
+        html += `
+        <div class="mt-4 pt-3 border-t border-slate-700">
+            <img src="${imgSrc}" alt="${imgAlt}" 
+                 class="w-full max-w-md rounded border border-slate-600 cursor-pointer"
+                 onclick="if(window.openLightbox) window.openLightbox(this.src);">
+        </div>`;
+    }
+
+    return html;
+}
+
+function populateMasterViewDropdowns() {
+    const roster = window.rosterData || [];
+    document.querySelectorAll('.mv-assignment-select:not([data-manual-options="true"])').forEach(select => {
+        if (select.options.length > 1) return; // Bereits gefüllt
+        window.populateDropdownOptions(select, roster);
+        if (!window.isManager) select.disabled = true;
+    });
+}
+
+async function setMasterViewValues() {
+    // Für jeden Boss-Content-Block die Werte aus Firebase setzen
+    const containers = document.querySelectorAll('.mv-boss-content');
+    const selectedRaidId = document.getElementById('raid-selector').value;
+
+    const bossDocIds = Array.from(containers).map(c => c.dataset.mvBossDocid).filter(Boolean);
+    if (bossDocIds.length === 0) return;
+
+    const snapshots = await Promise.all(
+        bossDocIds.map(docId => getDoc(doc(db, 'raid-tool-data', docId)))
+    );
+
+    snapshots.forEach((snap, idx) => {
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const container = containers[idx];
+        if (!container) return;
+
+        // Selects befüllen
+        container.querySelectorAll('.assignment-select').forEach(select => {
+            const assignmentId = select.dataset.assignmentId;
+            if (!assignmentId) return;
+            
+            const isManual = select.getAttribute('data-manual-options') === 'true';
+            const isCooldown = assignmentId.toLowerCase().includes('cooldown');
+            const val = data[assignmentId] ? (data[assignmentId].cooldown || data[assignmentId].player) : '';
+
+            if (val && select.value !== val) {
+                // Bei manuellen Selects: Wenn Option nicht existiert, überspringen
+                if (isManual && !Array.from(select.options).some(o => o.value === val)) return;
+                
+                select.value = val;
+
+                // Invalid-Check für Nicht-Roster Spieler
+                const rosterNames = (window.rosterData || []).map(p => p.name);
+                const ALLOWED = ['ALL','DEATHKNIGHT','DRUID','HUNTER','MAGE','MONK','PALADIN','PRIEST','ROGUE','SHAMAN','WARLOCK','WARRIOR','Niemand',''];
+                if (val && !isCooldown && !isManual && !rosterNames.includes(val) && !ALLOWED.includes(val)) {
+                    select.classList.add('invalid-assignment');
+                    if (!Array.from(select.options).some(o => o.value === val)) {
+                        const invalidOpt = new Option(`❌ ${val} (Nicht im Roster)`, val);
+                        invalidOpt.className = 'invalid-option';
+                        select.appendChild(invalidOpt);
+                        select.value = val;
+                    }
+                }
+            }
+
+            // Klassenfarbe setzen
+            const selectedOption = Array.from(select.options).find(o => o.value === val);
+            if (selectedOption?.dataset?.color) {
+                select.style.color = selectedOption.dataset.color;
+            }
+        });
+
+        // Text-Inputs befüllen
+        container.querySelectorAll('.assignment-text-input').forEach(input => {
+            const assignmentId = input.dataset.assignmentId;
+            if (!assignmentId) return;
+            const val = data[assignmentId]?.text || data[assignmentId]?.player || '';
+            if (input.value !== val) input.value = val;
+        });
+    });
+}
+
+function attachMasterViewChangeHandlers() {
+    // Change-Handler für alle Master-View Selects
+    document.querySelectorAll('.mv-boss-content').forEach(container => {
+        const bossDocId = container.dataset.mvBossDocid;
+        if (!bossDocId) return;
+
+        container.querySelectorAll('.assignment-select').forEach(select => {
+            if (select.dataset.mvListenerAttached) return;
+            select.dataset.mvListenerAttached = 'true';
+
+            select.addEventListener('change', async () => {
+                if (!window.isManager) return;
+                const assignmentId = select.dataset.assignmentId;
+                if (!assignmentId) return;
+
+                const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                const valueToSave = select.value;
+                const bossDocRef = doc(db, 'raid-tool-data', bossDocId);
+
+                let dataToSave;
+                if (assignmentId.toLowerCase().includes('cooldown')) {
+                    dataToSave = { cooldown: valueToSave, editor: currentManager, timestamp: serverTimestamp() };
+                } else {
+                    dataToSave = { player: valueToSave, editor: currentManager, timestamp: serverTimestamp() };
+                }
+
+                await setDoc(bossDocRef, { [assignmentId]: dataToSave }, { merge: true });
+
+                // Farbe aktualisieren
+                const selectedOption = Array.from(select.options).find(o => o.value === valueToSave);
+                select.style.color = selectedOption?.dataset?.color || '#fff';
+
+                const bossName = bossDocId.replace('boss-', '');
+                window.logHistory(bossName, `Einteilung (Übersicht): ${assignmentId}`, valueToSave || 'Niemand', currentManager);
+            });
+        });
+
+        container.querySelectorAll('.assignment-text-input').forEach(input => {
+            if (input.dataset.mvListenerAttached) return;
+            input.dataset.mvListenerAttached = 'true';
+
+            let timer;
+            input.addEventListener('input', () => {
+                clearTimeout(timer);
+                timer = setTimeout(async () => {
+                    if (!window.isManager) return;
+                    const assignmentId = input.dataset.assignmentId;
+                    if (!assignmentId) return;
+
+                    const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                    const bossDocRef = doc(db, 'raid-tool-data', bossDocId);
+                    const dataToSave = { text: input.value, editor: currentManager, timestamp: serverTimestamp() };
+                    await setDoc(bossDocRef, { [assignmentId]: dataToSave }, { merge: true });
+                }, 500);
+            });
+        });
+    });
+}
 
         // --- Logik für history.html ---
         function initHistoryPage() {
@@ -5349,6 +6429,194 @@ function handleSummaryDateSelection() {
             
             drawPlayerSummaryTable();
         }
+
+// ==================== SPIELER ERSETZEN (RAIDWEIT) ====================
+
+window.replacePlayerRaidWide = async function() {
+    if (!window.isManager) return window.showModal("Nur Manager dürfen Spieler ersetzen.");
+
+    const selectedRaidId = document.getElementById('raid-selector').value;
+    const raidInfo = (typeof raidData !== 'undefined') ? raidData[selectedRaidId] : null;
+    if (!raidInfo || !raidInfo.bosses) return window.showModal("Keine Raid-Daten gefunden.");
+
+    const roster = window.rosterData || [];
+    if (roster.length === 0) return window.showModal("Roster ist leer.");
+
+    // --- Spieler-Auswahl Modal bauen ---
+    const sortedRoster = [...roster].sort((a, b) => a.name.localeCompare(b.name));
+    const optionsHtml = sortedRoster.map(p => {
+        const color = window.classColors[p.class.toUpperCase()] || '#FFFFFF';
+        return `<option value="${p.name}" style="color:${color}">${p.name}</option>`;
+    }).join('');
+
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center z-[100] p-4';
+    modal.innerHTML = `
+        <div class="bg-slate-900 border border-gold-border rounded-lg p-6 max-w-md w-full shadow-2xl">
+            <h3 class="text-xl font-bold text-gold mb-4"><i class="fas fa-exchange-alt mr-2"></i>Spieler raidweit ersetzen</h3>
+            <p class="text-gray-400 text-sm mb-4">Ersetzt alle Vorkommen eines Spielers bei <strong class="text-gold">${raidInfo.name}</strong> (nur Einteilungen, nicht CD-Planer).</p>
+            
+            <div class="space-y-3 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-red-400 mb-1"><i class="fas fa-user-minus mr-1"></i>Wer fällt aus?</label>
+                    <select id="replace-from" class="w-full bg-slate-800 text-white p-2 rounded border border-slate-600 focus:border-gold focus:outline-none">
+                        <option value="">-- Spieler wählen --</option>
+                        ${optionsHtml}
+                    </select>
+                </div>
+                <div class="text-center text-2xl text-gold">↓</div>
+                <div>
+                    <label class="block text-sm font-medium text-green-400 mb-1"><i class="fas fa-user-plus mr-1"></i>Wer kommt stattdessen?</label>
+                    <select id="replace-to" class="w-full bg-slate-800 text-white p-2 rounded border border-slate-600 focus:border-gold focus:outline-none">
+                        <option value="">-- Ersatz wählen --</option>
+                        ${optionsHtml}
+                    </select>
+                </div>
+            </div>
+
+            <div id="replace-preview" class="mb-4 max-h-48 overflow-y-auto" style="display:none;"></div>
+
+            <div class="flex gap-3 justify-end">
+                <button id="replace-preview-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm transition-colors">
+                    <i class="fas fa-search mr-1"></i>Vorschau
+                </button>
+                <button id="replace-execute-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded text-sm transition-colors" disabled>
+                    <i class="fas fa-check mr-1"></i>Ersetzen
+                </button>
+                <button id="replace-cancel-btn" class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded text-sm transition-colors">
+                    Abbrechen
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // State
+    let previewData = null;
+
+    document.getElementById('replace-cancel-btn').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+
+    // Vorschau
+    document.getElementById('replace-preview-btn').addEventListener('click', async () => {
+        const fromPlayer = document.getElementById('replace-from').value;
+        const toPlayer = document.getElementById('replace-to').value;
+        if (!fromPlayer) return window.showModal("Bitte wähle den Spieler der ausfällt.");
+        if (!toPlayer) return window.showModal("Bitte wähle den Ersatzspieler.");
+        if (fromPlayer === toPlayer) return window.showModal("Spieler und Ersatz dürfen nicht identisch sein.");
+
+        const previewDiv = document.getElementById('replace-preview');
+        previewDiv.style.display = 'block';
+        previewDiv.innerHTML = '<p class="text-gray-400 text-sm animate-pulse">Scanne alle Bosse...</p>';
+
+        const bossIds = raidInfo.bosses.map(b => ({ id: b.id, name: b.name, docId: 'boss-' + b.id }));
+        const snapshots = await Promise.all(
+            bossIds.map(b => getDoc(doc(db, 'raid-tool-data', b.docId)))
+        );
+
+        previewData = [];
+        snapshots.forEach((snap, idx) => {
+            if (!snap.exists()) return;
+            const data = snap.data();
+            const boss = bossIds[idx];
+
+            Object.keys(data).forEach(key => {
+                if (key.includes('-planner-row')) return; // CD-Planer überspringen
+                const val = data[key];
+                if (val && typeof val === 'object') {
+                    if (val.player === fromPlayer || val.cooldown === fromPlayer) {
+                        previewData.push({
+                            bossDocId: boss.docId,
+                            bossName: boss.name,
+                            key: key,
+                            field: val.player === fromPlayer ? 'player' : 'cooldown',
+                            label: formatReplaceLabel(key, boss.id)
+                        });
+                    }
+                }
+            });
+        });
+
+        if (previewData.length === 0) {
+            previewDiv.innerHTML = `<p class="text-amber-400 text-sm"><i class="fas fa-info-circle mr-1"></i>${fromPlayer} ist bei keinem Boss in ${raidInfo.name} eingetragen.</p>`;
+            document.getElementById('replace-execute-btn').disabled = true;
+        } else {
+            const byBoss = {};
+            previewData.forEach(e => {
+                if (!byBoss[e.bossName]) byBoss[e.bossName] = [];
+                byBoss[e.bossName].push(e);
+            });
+
+            let html = `<div class="bg-slate-800/60 rounded p-3 border border-slate-700 text-sm">
+                <p class="text-green-400 font-bold mb-2"><i class="fas fa-list mr-1"></i>${previewData.length} Einträge gefunden:</p>`;
+            for (const [bossName, entries] of Object.entries(byBoss)) {
+                html += `<div class="mb-2"><span class="text-gold font-bold text-xs">${bossName}</span>
+                    <div class="ml-3 text-xs text-gray-300">${entries.map(e => `<div>• ${e.label}</div>`).join('')}</div></div>`;
+            }
+            html += '</div>';
+            previewDiv.innerHTML = html;
+            document.getElementById('replace-execute-btn').disabled = false;
+        }
+    });
+
+    // Ausführen
+    document.getElementById('replace-execute-btn').addEventListener('click', async () => {
+        if (!previewData || previewData.length === 0) return;
+        const fromPlayer = document.getElementById('replace-from').value;
+        const toPlayer = document.getElementById('replace-to').value;
+        const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+
+        const confirmed = await window.showModal(
+            `${previewData.length} Einträge von "${fromPlayer}" werden durch "${toPlayer}" ersetzt. Fortfahren?`, true
+        );
+        if (!confirmed) return;
+
+        try {
+            // Gruppiere Updates nach Boss-Dokument
+            const updatesByDoc = {};
+            previewData.forEach(entry => {
+                if (!updatesByDoc[entry.bossDocId]) updatesByDoc[entry.bossDocId] = {};
+                updatesByDoc[entry.bossDocId][entry.key] = {
+                    [entry.field]: toPlayer,
+                    editor: currentManager,
+                    timestamp: serverTimestamp()
+                };
+            });
+
+            // Batch-Schreiben pro Boss
+            const promises = Object.entries(updatesByDoc).map(([docId, updates]) => {
+                return setDoc(doc(db, 'raid-tool-data', docId), updates, { merge: true });
+            });
+            await Promise.all(promises);
+
+            window.logHistory('Raidweit', `Spieler ersetzt: ${fromPlayer} → ${toPlayer}`, `${previewData.length} Einträge`, currentManager);
+            modal.remove();
+            window.showModal(`Fertig! ${previewData.length} Einträge wurden von "${fromPlayer}" zu "${toPlayer}" geändert.`);
+
+            // Master-View aktualisieren falls sichtbar
+            if (typeof loadMasterViewData === 'function') {
+                setTimeout(loadMasterViewData, 500);
+            }
+        } catch (error) {
+            console.error('Replace Error:', error);
+            window.showModal('Fehler: ' + error.message);
+        }
+    });
+};
+
+function formatReplaceLabel(key, bossId) {
+    let label = key;
+    label = label.replace(new RegExp('^' + bossId.replace(/-/g, '[-_]?') + '[-_]?', 'i'), '');
+    const shortPrefix = bossId.replace(/-/g, '').substring(0, 4);
+    label = label.replace(new RegExp('^' + shortPrefix + '[-_]?', 'i'), '');
+    label = label.replace(/[-_]/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+    if (label.includes('planner row')) {
+        const match = label.match(/planner row(\d+)/);
+        if (match) label = `CD-Planer Zeile ${match[1]}`;
+    }
+    return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 window.manageAllAssignments = async function() {
     if (!window.isManager) return window.showModal("Nur Manager dürfen die Datenbank verwalten.");
 
