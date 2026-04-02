@@ -1,0 +1,362 @@
+<style>
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important;
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+        cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Sha des Stolzes</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#planner">CD Planer</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Das zentrale Element dieses Kampfes ist die Ressourcen-Leiste für <strong>Stolz</strong>. Spieler beginnen mit null Stolz. Verschiedene Mechaniken erhöhen diesen Wert. Erreicht der Stolz bestimmte Schwellenwerte (25, 50, 75, 100), treten bei der Fähigkeit <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=144400" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Schwellender Stolz</a> zusätzliche negative Effekte für den jeweiligen Spieler auf. Ein Erreichen von 100 Stolz bedeutet den sicheren Tod.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><a href="https://www.wowhead.com/mists-of-pandaria/de/spell=144358" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Verletzter Stolz</a>: Ein Debuff, der dafür sorgt, dass Nahkampfangriffe des Bosses euren Stolz erhöhen. Bei Erhalt sofort abspotten!</li>
+                    <li>Der Boss muss an seiner Position gehalten werden.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong class="text-blue-400">Gefängnisse:</strong> Spieler, die im <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=144574" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Verderbten Gefängnis</a> eingesperrt werden, müssen sofort befreit werden. Dazu müssen sich andere Spieler auf die leuchtenden Bodenplatten stellen.</li>
+                    <li><strong class="text-yellow-400">Dispels (Heiler):</strong> Das <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=144351" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:underline">Mal der Arroganz</a> verursacht stetig Schaden. Jeder Dispel gibt dem heiler jedoch 5 Stolz. Nur Spieler mit dem Buff <em>Gabe der Titanen</em> sollten dispellen!</li>
+                    <li><strong class="text-red-400">Adds (DPS):</strong> Die große <em>Manifestation des Stolzes</em> muss schnell getötet werden. Achtet auf Interrupts bei den kleinen <em>Spiegelbildern</em>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische Tipps</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Gabe der Titanen (Buff):</strong><br>
+                    Spieler mit diesem Buff sind vorrübergehend immun gegen Stolz-Zuwachs. Wenn Spieler mit diesem Buff zusammenstehen, erhöhen sie die Werte aller nahen Spieler.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Verbannung (Pac-Man Phase):</strong><br>
+                    Wer von <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=145215" target="_blank" rel="noopener noreferrer" class="text-emerald-300 hover:underline">Verbannung</a> getroffen wird, landet in einer Schattenwelt. Sammelt die leuchtenden Kugeln, um in die reale Welt zurückzukehren.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Heiler CD-Management:</strong><br>
+                    Hebt starke Raid-Cooldowns für <em>Schwellender Stolz</em> auf, besonders in den späteren Phasen des Kampfes, wenn viele Spieler hohe Stolz-Werte haben.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">DPS Priorität:</strong><br>
+                    Manifestation des Stolzes > Spiegelbilder > Sha des Stolzes. Die Manifestation gibt bei ihrem Tod den zwei nächststehenden Spielern Stolz.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1 (Start):</span><select class="assignment-select" data-assignment-id="sha-tank-1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="sha-tank-2"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-cyan-400">✨ Gefängnis-Öffner</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Zuweisung für die Bodenplatten der Gefängnisse (Mindestens 2 pro Seite für Ausfälle).</p>
+                    <ul class="assignment-list">
+                        <li><span class="text-cyan-200">Platten Links:</span><select data-assignment-id="sha-prison-left-1" class="assignment-select"></select></li>
+                        <li><span class="text-cyan-200">Platten Links (Ersatz):</span><select data-assignment-id="sha-prison-left-2" class="assignment-select"></select></li>
+                        <li><span class="text-cyan-400">Platten Rechts:</span><select data-assignment-id="sha-prison-right-1" class="assignment-select"></select></li>
+                        <li><span class="text-cyan-400">Platten Rechts (Ersatz):</span><select data-assignment-id="sha-prison-right-2" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="sha-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Reguläre Aufstellung</button>
+                        <button data-phase="sha-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Schattenwelt (Verbannung)</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="sha-p1">Raid sammelt sich als Gruppe hinter dem Boss. Bei "Gabe der Titanen" laufen markierte Spieler zusammen.</p>
+                            <p class="positioning-text hidden" data-phase="sha-p2">Lauft den vorgegebenen Pfad ab, sammelt die Kugeln und weicht den dunklen Elementen aus.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="siegeoforgrimmar/sha-main.png" alt="Aufstellung Hauptplattform" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="sha-p1" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;sha-p1&quot;>Bild für die Hauptaufstellung noch nicht verfügbar.</div>'">
+                            
+                        <img src="siegeoforgrimmar/sha-banish.png" alt="Aufstellung Verbannung" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="sha-p2" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;sha-p2&quot;>Bild für die Verbannung noch nicht verfügbar.</div>'">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Ratgeber</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
+                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            Globalen Export erzeugen
+        </button>
+        <div class="mt-4 text-xs text-gray-500 italic">
+            <strong>Hinweis:</strong> Sollte eine Spalte fehlerhaft laden, laden Sie das Dokument kurz neu.
+        </div>
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            CD Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+<div class="mb-6">
+    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+        <span class="text-xl">📜</span> Planungsübersicht
+    </h3>
+    
+    <div id="sha-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+            Warte auf Eingaben... <br>
+            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
+        </p>
+    </div>
+</div>
+        <div class="collapsible-content">
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende Reihenfolge (1, 2, 3...).
+                </div>
+
+                <div id="sha-planner-container" class="space-y-2 planner-scroll-container"></div>
+                
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Schwellender Stolz Effekte</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-gray-300">25 Stolz:</strong> Eine Explosion, die nahen Spielern Schaden zufügt. Aus der Gruppe laufen!</li>
+                    <li><strong class="text-gray-400">50 Stolz:</strong> Erzeugt Projektionen, in die sich der Spieler stellen muss, andernfalls erleidet der gesamte Raid massiven Schaden.</li>
+                    <li><strong class="text-gray-500">75 Stolz:</strong> Der Spieler wird von einer schädlichen Aura umgeben. Weit entfernt vom Raid stehen.</li>
+                    <li><strong class="text-red-500">100 Stolz:</strong> Dauerhafter Schadensbuff, jedoch stirbt der Spieler nach wenigen Sekunden unweigerlich.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Adds</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-purple-400">Manifestation des Stolzes:</strong> Wirkt fortlaufend AoE-Schaden. Muss zwingend unterbrochen und schnell eliminiert werden.</li>
+                    <li><strong class="text-cyan-400">Spiegelbild des Stolzes:</strong> Entstehen an den Positionen von Spielern. Fixieren sich auf Ziele und müssen getötet werden, bevor sie den Raid überrennen.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong class="text-purple-400">Schwächende Verbannung:</strong> Die <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=145215" target="_blank" rel="noopener noreferrer" class="text-purple-300 hover:underline">Verbannung</a> ist nun eine physische Realität. Ein festgelegter Teil der Gruppe wird hinabgezogen und muss eine spezielle Add-Phase überleben, während der Rest des Raids oben aushält.</li>
+                <li>Riss im Boden: Der Raum wird durch dunkle Spalten geteilt, die den Bewegungsraum drastisch einschränken und bei Berührung extremen Schaden verursachen.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<script>
+    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
+        
+        const TRIGGER_OPTIONS = [
+            { val: "SHA_ENC_START", text: "Kampfbeginn" },
+            { val: "SHA_HEALTH", text: "Gesundheit %" },
+            { val: "SHA_SWELLING_PRIDE", text: "Schwellender Stolz" },
+            { val: "SHA_MANIFESTATION", text: "Manifestation Spawns" },
+            { val: "SHA_BANISHMENT", text: "Verbannung" },
+            { val: "SHA_PRISON", text: "Verderbtes Gefängnis" }
+        ];
+
+        const NPC_OPTIONS = [
+            "Sha des Stolzes",
+            "Manifestation des Stolzes",
+            "Spiegelbild des Stolzes"
+        ];
+        
+        const container = document.getElementById('sha-planner-container');
+        
+        const getCooldownOptions = () => {
+            let html = '<option value="">-- Bereitschaft --</option>';
+            if (allCooldowns) {
+                allCooldowns.forEach(cd => {
+                     if (cd.name.startsWith('---')) {
+                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                     } else {
+                         const color = window.classColors?.[cd.class] || '#FFFFFF';
+                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                     }
+                });
+            }
+            return html;
+        };
+
+        if (container && container.innerHTML.trim() === "") {
+            
+            const p = container.id.replace('-planner-container', '');
+
+            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+            
+            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+            const headerHtml = `
+            <div class="planner-header">
+                <div></div> 
+                <div>Auslöser</div>
+                <div>Zielvorgabe</div>
+                <div class="text-center">%</div>
+                <div class="text-center">Zeit</div>
+                <div>Spieler</div>
+                <div>Fähigkeit</div>
+                
+                <div class="planner-col-extended text-xs text-gray-400">Hinweis</div>
+                <div class="planner-col-extended text-xs text-gray-400">Sprachausgabe</div>
+                <div class="planner-col-extended text-xs text-gray-400">Name</div>
+                <div class="planner-col-extended text-xs text-gray-400">Symbol</div>
+
+                <div class="text-center cursor-pointer hover:text-white" 
+                     onclick="document.getElementById('${p}-planner-wrapper').classList.toggle('show-extended')" 
+                     id="planner-expand-btn" title="Zusätzliche Spalten anzeigen">
+                    <i class="fas fa-angle-double-right"></i>
+                </div>
+                <div></div> 
+            </div>`;
+
+            let rowsHtml = "";
+            for (let i = 1; i <= 100; i++) {
+                rowsHtml += `
+                <div class="planner-row">
+                    <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
+
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-trigger" data-manual-options="true">
+                        <option value="">-- Nicht aktiv --</option>
+                        ${triggerOpts}
+                    </select>
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
+                        ${npcOpts}
+                    </select>
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="${p}-planner-row${i}-condition" placeholder="%" value="0">
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="${p}-planner-row${i}-time" placeholder="Sek." value="0">
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-player"></select>
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-cooldown">
+                         ${cdOpts}
+                    </select>
+                    
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-note" placeholder="Zusätzlicher Text">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-tts" placeholder="Sprachausgabe ändern">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-varname" placeholder="Eigener Name">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-icon" placeholder="Symbolnummer">
+
+                    <div></div>
+
+                    <div class="row-actions">
+                        <button class="icon-btn copy-row-btn" title="Kopieren"><i class="far fa-copy"></i></button>
+                        <button class="icon-btn paste-row-btn" title="Einfügen"><i class="far fa-clipboard"></i></button>
+                        <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
+                    </div>
+                </div>`;
+            }
+
+            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+            
+            if (window.initPlannerRowFeatures) {
+                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+            }
+            if (window.makePlannerSortable) {
+                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+            }
+        }
+
+        if (container) {
+            container.addEventListener('change', () => {
+                setTimeout(window.updatePlannerSummary, 100);
+            });
+            setTimeout(window.updatePlannerSummary, 500);
+        }
+    };
+</script>
+</main>

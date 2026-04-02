@@ -1,0 +1,360 @@
+<style>
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important;
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+        cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Malkorok</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#planner">CD Planer</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf wird durch das <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=142861" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Uralte Miasma</a> definiert. Jegliche Heilung auf Spieler wird absorbiert und in einen Schild umgewandelt (bis zu 100% der maximalen Gesundheit). Der Kampf wechselt zwischen Phase 1 (Verteilen und Soaken) und Phase 2 (Stacken).
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong class="text-red-400">Tank-Swap:</strong> Malkorok wirkt <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=142879" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Fataler Stoß</a>. Dieser Debuff erhöht den erlittenen Schaden drastisch. Ein Wechsel bei ca. 15 Stacks (oder wenn der aktive Tank in Gefahr ist) ist erforderlich.</li>
+                    <li><strong class="text-purple-400">Phase 2:</strong> Der Boss steht still und wirkt <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=142878" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Blutrausch</a>. Tanks müssen zusammen mit dem Raid stacken, um den Schaden aufzuteilen.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong class="text-blue-400">Soaking (Phase 1):</strong> Violette Zonen (<a href="https://www.wowhead.com/mists-of-pandaria/de/spell=142986" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">Implodierende Energie</a>) erscheinen auf dem Boden. Genau ein Spieler muss sich in jede Zone stellen, um den Schaden zu soaken. Bleibt eine Zone leer, stirbt der Raid.</li>
+                    <li><strong class="text-orange-400">Ausweichen:</strong> Dem <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=142851" target="_blank" rel="noopener noreferrer" class="text-orange-300 hover:underline">Seismischen Schmettern</a> (Frontalangriff auf einen zufälligen Spieler) muss sofort ausgewichen werden.</li>
+                    <li><strong class="text-green-400">Heiler:</strong> Haltet die Schilde der Spieler durch konstante Überheilung stets im grünen Bereich, besonders vor den Implosionen.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische Tipps & Phase 2</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Dispels (Phase 2):</strong><br>
+                    Spieler erhalten <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=142913" target="_blank" rel="noopener noreferrer" class="text-emerald-300 hover:underline">Verschobene Energie</a>. Beim Dispellen werden alle Spieler im Umkreis von 8 Metern zurückgestoßen und erleiden Schaden. Der betroffene Spieler muss kurz aus dem Stack laufen, <em>bevor</em> er dispellt wird.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Schild-Indikatoren:</strong><br>
+                    Rote Aura = Schwacher Schild. Gelbe Aura = Mittlerer Schild. Grüne Aura = Maximaler Schild. Geht nur mit ausreichendem Schild zum Soaken!
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Positionierung (Phase 1):</strong><br>
+                    Verteilt euch gleichmäßig um den Boss, um die Laufwege zu den violetten Zonen so kurz wie möglich zu halten.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Raid-CDs:</strong><br>
+                    Nutzt schadensreduzierende Raid-CDs in Phase 2, wenn der Boss in den Blutrausch übergeht und der Schild nicht mehr durch das Miasma aufrechterhalten wird.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1 (Start):</span><select class="assignment-select" data-assignment-id="malkorok-tank-1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="malkorok-tank-2"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-blue-400">🗺️ Zonen-Zuweisung (Soaking)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Grobe Einteilung, wer welche Bereiche für die <em>Implodierende Energie</em> abdeckt.</p>
+                    <ul class="assignment-list">
+                        <li><span class="text-blue-300">Bereich Links/Nahkampf:</span><select data-assignment-id="malkorok-soak-left" class="assignment-select"></select></li>
+                        <li><span class="text-blue-300">Bereich Rechts/Nahkampf:</span><select data-assignment-id="malkorok-soak-right" class="assignment-select"></select></li>
+                        <li><span class="text-blue-400">Bereich Hinten (Ranged):</span><select data-assignment-id="malkorok-soak-ranged1" class="assignment-select"></select></li>
+                        <li><span class="text-blue-400">Flexibler Soaker:</span><select data-assignment-id="malkorok-soak-flex" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="malkorok-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1 (Verteilt)</button>
+                        <button data-phase="malkorok-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 2 (Stack)</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="malkorok-p1">Der Raid verteilt sich kreisförmig. Abstände einhalten, um gemeinsam aus dem Seismischen Schmettern zu laufen.</p>
+                            <p class="positioning-text hidden" data-phase="malkorok-p2">Alle stacken direkt vor dem Boss. Bei "Verschobene Energie" läuft das Ziel nach hinten aus dem Camp.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="siegeoforgrimmar/malkorok-p1.png" alt="Aufstellung Phase 1" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="malkorok-p1" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;malkorok-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
+                            
+                        <img src="siegeoforgrimmar/malkorok-p2.png" alt="Aufstellung Phase 2" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="malkorok-p2" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;malkorok-p2&quot;>Bild für Phase 2 noch nicht verfügbar.</div>'">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Ratgeber</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
+                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            Globalen Export erzeugen
+        </button>
+        <div class="mt-4 text-xs text-gray-500 italic">
+            <strong>Hinweis:</strong> Sollte eine Spalte fehlerhaft laden, laden Sie das Dokument kurz neu.
+        </div>
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            CD Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+<div class="mb-6">
+    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+        <span class="text-xl">📜</span> Planungsübersicht
+    </h3>
+    
+    <div id="malkorok-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+            Warte auf Eingaben... <br>
+            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
+        </p>
+    </div>
+</div>
+        <div class="collapsible-content">
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende Reihenfolge (1, 2, 3...).
+                </div>
+
+                <div id="malkorok-planner-container" class="space-y-2 planner-scroll-container"></div>
+                
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 1 (Wutaufbau)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-cyan-400">Atem von Y'Shaarj:</strong> Der Boss lässt alle Bereiche explodieren, die zuvor durch <em>Seismisches Schmettern</em> getroffen wurden. Spieler, die in diesen Arealen stehen, sterben sofort. Merkt euch die Positionen der vorherigen Schläge!</li>
+                    <li>Malkorok generiert fortlaufend Wut. Erreicht er 100 Wut, beginnt Phase 2.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Phase 2 (Blutrausch)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li>Das <em>Uralte Miasma</em> ist deaktiviert. Spieler können normal geheilt werden.</li>
+                    <li>Der Boss schlägt mit massivem physischen Cleave-Schaden zu. Der Schaden verteilt sich auf alle Spieler in Front des Bosses. Dies erfordert starkes Stacken und CD-Management.</li>
+                    <li>Sobald seine Wut aufgebraucht ist, kehrt er in Phase 1 zurück und der Schildaufbau beginnt von vorn.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong class="text-purple-400">Essenz von Y'Shaarj:</strong> Jede <em>Implodierende Energie</em> (die gesoakt wird), hinterlässt nun ein Add (Essenz von Y'Shaarj). Diese Adds müssen vom Tank eingesammelt und mit Cleave-Schaden zerstört werden.</li>
+                <li>Wird eine Zone nicht gesoakt, verursacht sie nicht nur einen Wipe, sondern heilt den Boss zusätzlich massiv hoch. Das fehlerfreie Einteilen und Soaken ist die absolute Kernmechanik.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<script>
+    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
+        
+        const TRIGGER_OPTIONS = [
+            { val: "MALKOROK_ENC_START", text: "Kampfbeginn" },
+            { val: "MALKOROK_ENERGY", text: "Implodierende Energie" },
+            { val: "MALKOROK_BREATH", text: "Atem von Y'Shaarj" },
+            { val: "MALKOROK_BLOOD_RAGE", text: "Phase 2 (Blutrausch)" },
+            { val: "MALKOROK_DISPLACED_ENERGY", text: "Verschobene Energie (Dispel)" },
+            { val: "MALKOROK_MIASMA_RETURN", text: "Phase 1 (Miasma Rückkehr)" }
+        ];
+
+        const NPC_OPTIONS = [
+            "Malkorok",
+            "Essenz von Y'Shaarj"
+        ];
+        
+        const container = document.getElementById('malkorok-planner-container');
+        
+        const getCooldownOptions = () => {
+            let html = '<option value="">-- Bereitschaft --</option>';
+            if (allCooldowns) {
+                allCooldowns.forEach(cd => {
+                     if (cd.name.startsWith('---')) {
+                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                     } else {
+                         const color = window.classColors?.[cd.class] || '#FFFFFF';
+                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                     }
+                });
+            }
+            return html;
+        };
+
+        if (container && container.innerHTML.trim() === "") {
+            
+            const p = container.id.replace('-planner-container', '');
+
+            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+            
+            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+            const headerHtml = `
+            <div class="planner-header">
+                <div></div> 
+                <div>Auslöser</div>
+                <div>Zielvorgabe</div>
+                <div class="text-center">% / #</div>
+                <div class="text-center">Zeit</div>
+                <div>Spieler</div>
+                <div>Fähigkeit</div>
+                
+                <div class="planner-col-extended text-xs text-gray-400">Hinweis</div>
+                <div class="planner-col-extended text-xs text-gray-400">Sprachausgabe</div>
+                <div class="planner-col-extended text-xs text-gray-400">Name</div>
+                <div class="planner-col-extended text-xs text-gray-400">Symbol</div>
+
+                <div class="text-center cursor-pointer hover:text-white" 
+                     onclick="document.getElementById('${p}-planner-wrapper').classList.toggle('show-extended')" 
+                     id="planner-expand-btn" title="Zusätzliche Spalten anzeigen">
+                    <i class="fas fa-angle-double-right"></i>
+                </div>
+                <div></div> 
+            </div>`;
+
+            let rowsHtml = "";
+            for (let i = 1; i <= 100; i++) {
+                rowsHtml += `
+                <div class="planner-row">
+                    <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
+
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-trigger" data-manual-options="true">
+                        <option value="">-- Nicht aktiv --</option>
+                        ${triggerOpts}
+                    </select>
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
+                        ${npcOpts}
+                    </select>
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="${p}-planner-row${i}-condition" placeholder="% / #" value="0">
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="${p}-planner-row${i}-time" placeholder="Sek." value="0">
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-player"></select>
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-cooldown">
+                         ${cdOpts}
+                    </select>
+                    
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-note" placeholder="Zusätzlicher Text">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-tts" placeholder="Sprachausgabe ändern">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-varname" placeholder="Eigener Name">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-icon" placeholder="Symbolnummer">
+
+                    <div></div>
+
+                    <div class="row-actions">
+                        <button class="icon-btn copy-row-btn" title="Kopieren"><i class="far fa-copy"></i></button>
+                        <button class="icon-btn paste-row-btn" title="Einfügen"><i class="far fa-clipboard"></i></button>
+                        <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
+                    </div>
+                </div>`;
+            }
+
+            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+            
+            if (window.initPlannerRowFeatures) {
+                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+            }
+            if (window.makePlannerSortable) {
+                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+            }
+        }
+
+        if (container) {
+            container.addEventListener('change', () => {
+                setTimeout(window.updatePlannerSummary, 100);
+            });
+            setTimeout(window.updatePlannerSummary, 500);
+        }
+    };
+</script>
+</main>

@@ -1,0 +1,362 @@
+<style>
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important;
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+        cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Amalgam des Stolzes (Norushen)</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#planner">Planer</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf dreht sich um die Kontrolle der "Verderbnis". Jeder Teilnehmer beginnt mit einem hohen Maß an Verderbnis, wodurch der verursachte Schaden an der Hauptkreatur stark verringert ist. Durch das Betreten der gelben Lichtkugeln auf dem Boden werden Spieler in eine Prüfung versetzt. Ein erfolgreicher Abschluss reinigt die Verderbnis, erhöht den eigenen Schaden und erlaubt das Blockieren weiterer schadhafter Kugeln auf der Plattform.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Verteidiger</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong class="text-red-400">Entfesselter Zorn:</strong> Die Hauptkreatur schlägt hart zu. Ein stetiger Wechsel zwischen den Verteidigern ist Pflicht, um die Schwächungseffekte gering zu halten.</li>
+                    <li><strong class="text-purple-400">Die Prüfung:</strong> In der Einzelprüfung müsst ihr einen großen Feind eine Minute lang überleben. Sammelt die fallengelassenen Kugeln ein, um den Schaden abzumildern.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ Schadensausteiler & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong class="text-blue-400">Blinder Hass:</strong> Ein gewaltiger Strahl, der sich langsam über die Plattform dreht. Diesem muss unter allen Umständen ausgewichen werden.</li>
+                    <li><strong class="text-yellow-400">Reinigendes Licht (Heiler):</strong> In eurer Prüfung müsst ihr verbündete Kämpfer am Leben erhalten, während ihr feindliche Ziele besiegt.</li>
+                    <li><strong class="text-red-400">Restverderbnis (Schadensausteiler):</strong> Besiegte Feinde auf der Hauptplattform hinterlassen schwarze Kugeln. Nur Spieler, deren eigene Verderbnis auf null gesunken ist, dürfen diese aufsammeln.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Schadensausteiler mit hohem Anfangsschaden:</strong><br>
+                    Sollten als Erste in die Prüfung geschickt werden, damit der gesamte Schlachtzug möglichst früh von ihrer maximalen Leistung profitiert.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Bewegungsfähigkeiten:</strong><br>
+                    Nutzt schnelle Fortbewegungsmittel, um rechtzeitig in die Lichtkugeln zu treten, wenn ihr für die Prüfung an der Reihe seid, und um dem "Blinden Hass" zu entkommen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Verteidiger:</strong><br>
+                    Stimmt euren Wechsel genau mit den Prüfungsphasen ab. Der aktive Verteidiger darf die Ebene niemals verlassen.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Alle Spieler:</strong><br>
+                    Besiegt die großen und kleinen Manifestationen (die zusätzlichen Feinde) immer vor der Hauptkreatur. Sie richten enormen Flächenschaden an.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Verteidiger-Zuteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Verteidiger 1 (Start & 1. Prüfung):</span><select class="assignment-select" data-assignment-id="amalgam-tank-1"></select></li>
+                        <li><span>Verteidiger 2 (Übernahme & 2. Prüfung):</span><select class="assignment-select" data-assignment-id="amalgam-tank-2"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-yellow-400">✨ Reihenfolge für die Prüfung (Lichtkugeln)</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Wer sich in welcher Gruppe läutern lassen soll.</p>
+                    <ul class="assignment-list">
+                        <li><span class="text-yellow-200">Gruppe 1 (Frühzeitige Läuterung):</span><select data-assignment-id="amalgam-group-1" class="assignment-select"></select></li>
+                        <li><span class="text-yellow-300">Gruppe 2:</span><select data-assignment-id="amalgam-group-2" class="assignment-select"></select></li>
+                        <li><span class="text-yellow-400">Gruppe 3:</span><select data-assignment-id="amalgam-group-3" class="assignment-select"></select></li>
+                        <li><span class="text-yellow-500">Gruppe 4:</span><select data-assignment-id="amalgam-group-4" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="amalgam-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Hauptplattform</button>
+                        <button data-phase="amalgam-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Prüfungsbereich</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="amalgam-p1">Sammeln hinter dem Hauptgegner. Zusätzliche Feinde werden sofort an sich gebunden und ins Zentrum gezogen.</p>
+                            <p class="positioning-text hidden" data-phase="amalgam-p2">In der Prüfung: Ausweichen, gegnerische Angriffe blockieren und die zugewiesene Rolle erfüllen.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="siegeoforgrimmar/amalgam-main.png" alt="Aufstellung Hauptplattform" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="amalgam-p1" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;amalgam-p1&quot;>Bild für die Hauptplattform noch nicht verfügbar.</div>'">
+                            
+                        <img src="siegeoforgrimmar/amalgam-test.png" alt="Aufstellung Prüfung" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="amalgam-p2" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;amalgam-p2&quot;>Bild für den Prüfungsbereich noch nicht verfügbar.</div>'">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Ratgeber</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
+                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            Globalen Export erzeugen
+        </button>
+        <div class="mt-4 text-xs text-gray-500 italic">
+            <strong>Hinweis:</strong> Sollte eine Spalte fehlerhaft laden, laden Sie das Dokument kurz neu.
+        </div>
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Zeitplaner für Fähigkeiten
+            <span class="toggle-icon">▼</span>
+        </h2>
+<div class="mb-6">
+    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+        <span class="text-xl">📜</span> Planungsübersicht
+    </h3>
+    
+    <div id="amalgam-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+            Warte auf Eingaben... <br>
+            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
+        </p>
+    </div>
+</div>
+        <div class="collapsible-content">
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende Reihenfolge (1, 2, 3...).
+                </div>
+
+                <div id="amalgam-planner-container" class="space-y-2 planner-scroll-container"></div>
+                
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Die Hauptkreatur</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-400">Entfesselter Zorn:</strong> Verursacht massiven Schaden an der primären Bedrohung.</li>
+                    <li><strong class="text-purple-400">Eisige Furcht:</strong> Alle paar Sekunden erleidet der gesamte Schlachtzug Frostschaden, der ansteigt, je geringer die Gesundheit des Gegners ist. Hier müssen die Heiler starke schützende Maßnahmen bereithalten.</li>
+                    <li><strong class="text-cyan-400">Blinder Hass:</strong> Ein Energiestrahl, der von der Mitte nach außen wandert und bei Berührung tödlichen Schaden verursacht.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Erschaffene Feinde</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-gray-400">Blinde Manifestation (Groß):</strong> Wird durch Schadensausteiler während ihrer Prüfung besiegt. Entsteht sie auf der Hauptplattform, wirkt sie Flächenschaden, der unbedingt verhindert werden muss.</li>
+                    <li><strong class="text-gray-400">Manifestation der Verderbnis (Klein):</strong> Wirkt schädliche Geschosse auf die Gruppe. Nach dem Sieg hinterlassen sie einen schwarzen Bereich, der von geläuterten Spielern absorbiert werden muss, um großen Schaden an allen Kämpfern zu verhindern.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li>Der Schaden der "Eisigen Furcht" ist deutlich erhöht. Der Kampf muss schnell beendet werden, bevor der Schaden die Heiler überfordert.</li>
+                <li>Das Betreten einer Lichtkugel zur Prüfung löst flächendeckenden Schaden aus. Es dürfen niemals zu viele Spieler gleichzeitig in die Prüfungen geschickt werden.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<script>
+    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
+        
+        const TRIGGER_OPTIONS = [
+            { val: "AMALGAM_ENC_START", text: "Kampfbeginn" },
+            { val: "AMALGAM_HEALTH", text: "Gesundheit %" },
+            { val: "AMALGAM_BLIND_HATRED", text: "Blinder Hass" },
+            { val: "AMALGAM_UNLEASHED_ANGER", text: "Entfesselter Zorn" },
+            { val: "AMALGAM_TEST_GROUP_1", text: "Prüfungsgruppe 1" },
+            { val: "AMALGAM_TEST_GROUP_2", text: "Prüfungsgruppe 2" },
+            { val: "AMALGAM_TEST_GROUP_3", text: "Prüfungsgruppe 3" }
+        ];
+
+        const NPC_OPTIONS = [
+            "Amalgam des Stolzes",
+            "Blinde Manifestation",
+            "Manifestation der Verderbnis"
+        ];
+        
+        const container = document.getElementById('amalgam-planner-container');
+        
+        const getCooldownOptions = () => {
+            let html = '<option value="">-- Bereitschaft --</option>';
+            if (allCooldowns) {
+                allCooldowns.forEach(cd => {
+                     if (cd.name.startsWith('---')) {
+                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                     } else {
+                         const color = window.classColors?.[cd.class] || '#FFFFFF';
+                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                     }
+                });
+            }
+            return html;
+        };
+
+        if (container && container.innerHTML.trim() === "") {
+            
+            const p = container.id.replace('-planner-container', '');
+
+            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+            
+            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+            const headerHtml = `
+            <div class="planner-header">
+                <div></div> 
+                <div>Auslöser</div>
+                <div>Zielvorgabe</div>
+                <div class="text-center">%</div>
+                <div class="text-center">Zeit</div>
+                <div>Spieler</div>
+                <div>Fähigkeit</div>
+                
+                <div class="planner-col-extended text-xs text-gray-400">Hinweis</div>
+                <div class="planner-col-extended text-xs text-gray-400">Sprachausgabe</div>
+                <div class="planner-col-extended text-xs text-gray-400">Name</div>
+                <div class="planner-col-extended text-xs text-gray-400">Symbol</div>
+
+                <div class="text-center cursor-pointer hover:text-white" 
+                     onclick="document.getElementById('${p}-planner-wrapper').classList.toggle('show-extended')" 
+                     id="planner-expand-btn" title="Zusätzliche Spalten anzeigen">
+                    <i class="fas fa-angle-double-right"></i>
+                </div>
+                <div></div> 
+            </div>`;
+
+            let rowsHtml = "";
+            for (let i = 1; i <= 100; i++) {
+                rowsHtml += `
+                <div class="planner-row">
+                    <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
+
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-trigger" data-manual-options="true">
+                        <option value="">-- Nicht aktiv --</option>
+                        ${triggerOpts}
+                    </select>
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
+                        ${npcOpts}
+                    </select>
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="${p}-planner-row${i}-condition" placeholder="%" value="0">
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="${p}-planner-row${i}-time" placeholder="Sek." value="0">
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-player"></select>
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-cooldown">
+                         ${cdOpts}
+                    </select>
+                    
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-note" placeholder="Zusätzlicher Text">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-tts" placeholder="Sprachausgabe ändern">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-varname" placeholder="Eigener Name">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-icon" placeholder="Symbolnummer">
+
+                    <div></div>
+
+                    <div class="row-actions">
+                        <button class="icon-btn copy-row-btn" title="Kopieren"><i class="far fa-copy"></i></button>
+                        <button class="icon-btn paste-row-btn" title="Einfügen"><i class="far fa-clipboard"></i></button>
+                        <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
+                    </div>
+                </div>`;
+            }
+
+            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+            
+            if (window.initPlannerRowFeatures) {
+                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+            }
+            if (window.makePlannerSortable) {
+                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+            }
+        }
+
+        if (container) {
+            container.addEventListener('change', () => {
+                setTimeout(window.updatePlannerSummary, 100);
+            });
+            setTimeout(window.updatePlannerSummary, 500);
+        }
+    };
+</script>
+</main>

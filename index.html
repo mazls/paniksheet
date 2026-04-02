@@ -1165,10 +1165,10 @@ pre {
         <div class="flex justify-center mb-4">
             <label for="raid-selector" class="sr-only">Raid auswählen</label>
             <select id="raid-selector" class="bg-slate-850 text-gray-200 p-2 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="mogushan" selected>Mogu'shangewölbe</option>
+                <option value="mogushan">Mogu'shangewölbe</option>
                 <option value="heartoffear">Das Herz der Angst</option>
                 <option value="terraceofendlessspring">Terrasse des Endlosen Frühlings</option>
-                <option value="throneofthunder">Der Thron des Donners</option>
+                <option value="throneofthunder" selected>Der Thron des Donners</option>
                 <option value="siegeoforgrimmar">Schlacht um Orgrimmar</option>
             </select>
         </div>
@@ -3513,7 +3513,7 @@ async function openDiscordPostModal() {
         const html = bossHtmls[idx];
         let blocks = [];
         
-        // --- CUSTOM PARSER ---
+        // --- AUSNAHMEN FÜR SPEZIELLE BOSSE ---
         if (boss.id === 'ji-kun') {
             blocks = ["Rotation (NHC)", "Rotation (HC)", "Teams (1-5)"];
         } 
@@ -3529,7 +3529,7 @@ async function openDiscordPostModal() {
         else if (boss.id === 'iron-qon') {
             blocks = ["Tanks & BoP", "Positionen (Ranged & Healer)", "Positionen (Melee)", "Soak Teams"];
         }
-        // --- GENERIC PARSER ---
+        // --- STANDARD-ERKENNUNG ---
         else if (html) {
             const parser = new DOMParser();
             const doc2 = parser.parseFromString('<div>' + html + '</div>', 'text/html');
@@ -3546,7 +3546,7 @@ async function openDiscordPostModal() {
         return { ...boss, blocks };
     });
 
-    // 4. Modal-Interface aufbauen
+    // 4. Anzeige-Oberfläche aufbauen
     const contentDiv = modal.querySelector('#discord-modal-content');
     contentDiv.className = 'flex-1 overflow-y-auto pr-2 flex flex-col custom-scrollbar';
     contentDiv.innerHTML = `
@@ -3628,7 +3628,7 @@ async function openDiscordPostModal() {
         <div id="discord-preview-area" class="mt-4 shrink-0" style="display:none;"></div>
     `;
 
-    // --- Checkbox-Verhalten ---
+    // --- Verhalten der Auswahlkästchen ---
     modal.querySelectorAll('.discord-boss-cb').forEach(cb => {
         cb.addEventListener('change', (e) => {
             const container = e.target.closest('div.border').querySelector('.discord-block-container');
@@ -3696,19 +3696,19 @@ async function openDiscordPostModal() {
         }
 
         previewArea.innerHTML = `
-            <h4 class="text-sm font-bold text-gray-400 mb-2">Vorschau (${embeds.length} Embeds):</h4>
+            <h4 class="text-sm font-bold text-gray-400 mb-2">Vorschau (${embeds.length} Blöcke):</h4>
             <div class="space-y-2 max-h-64 overflow-y-auto">
                 ${embeds.map(e => `
                     <div class="bg-slate-800 border-l-4 border-indigo-500 p-3 rounded text-sm">
                         <div class="font-bold text-indigo-300">${e.title || 'Kein Titel'}</div>
                         <pre class="text-xs text-gray-400 mt-1 whitespace-pre-wrap font-sans max-h-32 overflow-y-auto">${(e.description || '').substring(0, 500)}${(e.description || '').length > 500 ? '...' : ''}</pre>
-                        ${e.image ? `<div class="text-xs text-green-400 mt-1"><i class="fas fa-image mr-1"></i>Bild: ${e.image.url}</div>` : ''}
+                        ${e.image ? `<div class="text-xs text-green-400 mt-1"><i class="fas fa-image mr-1"></i>Bild vorhanden</div>` : ''}
                     </div>
                 `).join('')}
             </div>`;
     });
 
-    // Absenden
+    // Absenden (Ein Boss pro Nachricht mit 1,5 Sekunden Pause)
     document.getElementById('discord-send-btn').addEventListener('click', async () => {
         const webhookUrl = document.getElementById('discord-webhook-input').value.trim();
         if (!webhookUrl) return window.showModal('Bitte zuerst eine Webhook-URL eingeben und speichern.');
@@ -3724,16 +3724,14 @@ async function openDiscordPostModal() {
         statusDiv.innerHTML = '<p class="text-blue-400 text-sm animate-pulse"><i class="fas fa-spinner fa-spin mr-1"></i>Sende an Discord...</p>';
 
         try {
-            const chunks = [];
-            for (let i = 0; i < embeds.length; i += 10) {
-                chunks.push(embeds.slice(i, i + 10));
-            }
-
-            for (let i = 0; i < chunks.length; i++) {
+            // Senden mit 1,5 Sekunden Pause zwischen jedem Boss
+            for (let i = 0; i < embeds.length; i++) {
                 const payload = {
                     username: 'P Ä N I K Raidsheet',
+                    // Der Titel mit dem Raid-Namen wird nur bei der allerersten Nachricht angehängt
                     content: i === 0 ? `📜 **${raidInfo.name}** — Einteilungen` : '',
-                    embeds: chunks[i]
+                    // Exakt ein Boss-Block wird in diese Nachricht eingefügt
+                    embeds: [embeds[i]]
                 };
 
                 const response = await fetch(webhookUrl, {
@@ -3744,17 +3742,21 @@ async function openDiscordPostModal() {
 
                 if (!response.ok) {
                     const errText = await response.text();
-                    throw new Error(`Discord API Fehler ${response.status}: ${errText}`);
+                    throw new Error(`Verbindungsfehler ${response.status}: ${errText}`);
                 }
-                if (i < chunks.length - 1) await new Promise(r => setTimeout(r, 1000));
+                
+                // 1,5 Sekunden Pause einlegen (außer nach der letzten Nachricht)
+                if (i < embeds.length - 1) {
+                    statusDiv.innerHTML = `<p class="text-amber-400 text-sm animate-pulse"><i class="fas fa-hourglass-half mr-1"></i>Boss gesendet (${i + 1}/${embeds.length}). Warte 1,5 Sekunden...</p>`;
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
             }
 
-            statusDiv.innerHTML = `<p class="text-green-400 text-sm"><i class="fas fa-check-circle mr-1"></i>Erfolgreich gepostet! ${embeds.length} Embeds gesendet.</p>`;
+            statusDiv.innerHTML = `<p class="text-green-400 text-sm"><i class="fas fa-check-circle mr-1"></i>Erfolgreich gepostet! Alle ${embeds.length} Bosse wurden gesendet.</p>`;
             const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-            window.logHistory('Discord', `Post gesendet: ${raidInfo.name}`, `${embeds.length} Bosse`, currentManager);
+            window.logHistory('Discord', `Post gesendet: ${raidInfo.name}`, `${embeds.length} Bosse gesendet`, currentManager);
 
         } catch (error) {
-            console.error('Discord Post Error:', error);
             statusDiv.innerHTML = `<p class="text-red-400 text-sm"><i class="fas fa-times-circle mr-1"></i>Fehler: ${error.message}</p>`;
         }
     });

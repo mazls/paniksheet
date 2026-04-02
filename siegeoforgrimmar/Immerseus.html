@@ -1,0 +1,417 @@
+<style>
+    .size-toggle-btn {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .active-size-btn {
+        background-color: #16a34a !important;
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .assignment-select {
+        background-color: #2d3748;
+        border: 1px solid #4a5568;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+        color: white;
+    }
+    .assignment-select:disabled {
+        opacity: 0.9;
+        cursor: not-allowed;
+    }
+    .editor-info {
+        font-size: 0.75rem;
+        color: #a0aec0;
+        margin-left: 8px;
+    }
+</style>
+<main>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Immerseus</h1>
+    <nav class="quick-nav-bar mb-6">
+        <a href="#overview">Übersicht</a>
+        <a href="#assignments">Einteilungen</a>
+        <a href="#planner">Planer</a>
+        <a href="#details">Details</a>
+    </nav>
+    
+    <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
+        <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
+        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+    </div>
+
+<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Kampfübersicht & Kernmechaniken
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="mb-4">
+            Der Kampf gegen Immerseus wechselt stetig zwischen zwei Phasen. In Phase 1 wird der Hauptgegner bekämpft, bis seine Gesundheit auf null fällt. In Phase 2 teilt er sich in zahlreiche kleine Schleime auf, die den Rand der Plattform erreichen wollen.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Verteidiger (Tanks)</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>Immerseus ist stationär und wendet sich automatisch dem Bedrohungsziel zu.</li>
+                    <li><strong class="text-red-400">Ätzender Schlag:</strong> Trifft kegelförmig nach vorne und hinterlässt einen Schwächungszauber. Zwingender Wechsel nach jedem Schlag!</li>
+                    <li>Niemals in die Mitte der Gruppe zielen lassen.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ Schadensausteiler & Heiler</h4>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li><strong>Phase 1:</strong> Dem <strong class="text-purple-400">Wirbel</strong> (Wasserstrahl) unbedingt ausweichen! Er dreht sich im oder gegen den Uhrzeigersinn.</li>
+                    <li><strong>Phase 2 (Schadensausteiler):</strong> Schwarze <strong class="text-gray-400">Sha-Pfützen</strong> zerstören, bevor sie die Mitte erreichen.</li>
+                    <li><strong>Phase 2 (Heiler):</strong> Blaue <strong class="text-blue-400">Kontaminierte Pfützen</strong> auf 100% Gesundheit heilen.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                <div>
+                    <strong class="text-emerald-200">Klassen mit Verlangsamung:</strong><br>
+                    Frostmagier, Jäger und Hexenmeister sind in Phase 2 enorm wichtig, um die schwarzen Pfützen aufzuhalten.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Klassen mit hoher Mobilität:</strong><br>
+                    Schurken und Mönche sollten sich in Phase 2 um die am weitesten entfernten schwarzen Pfützen kümmern.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Heiler:</strong><br>
+                    Flächenheilung am Ende von Phase 2 ist entscheidend, da jede Pfütze, die die Mitte erreicht, flächendeckenden Schaden am gesamten Schlachtzug verursacht.
+                </div>
+                <div>
+                    <strong class="text-emerald-200">Alle Spieler:</strong><br>
+                    Achtet auf eure Position! Das Wasser in der Mitte der Plattform und die schwarzen Flächen auf dem Boden verursachen hohen Schaden.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1 (Start):</span><select class="assignment-select" data-assignment-id="immerseus-tank1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="immerseus-tank2"></select></li>
+                    </ul>
+                </div>
+                
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">✨ Sonderaufgaben</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Zuweisungen für heroische Mechaniken oder spezielle Positionen.</p>
+                    <ul class="assignment-list">
+                        <li><span>Verantwortlich Bereich Links:</span><select data-assignment-id="immerseus-area-left" class="assignment-select"></select></li>
+                        <li><span>Verantwortlich Bereich Rechts:</span><select data-assignment-id="immerseus-area-right" class="assignment-select"></select></li>
+                        <li><span>Verantwortlich Bereich Hinten:</span><select data-assignment-id="immerseus-area-back" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+            <div class="xl:col-span-2 space-y-6">
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-purple-400 border-b border-slate-600 mb-2">🌈 Phasen-Aufteilung (Markierungen)</h4>
+                    <p class="text-xs text-gray-400 mb-3 italic">Einteilung der Spieler auf die Plattform-Viertel für Phase 2 (Pfützen).</p>
+                    
+                    <div class="overflow-x-auto rounded border border-slate-700">
+                        <table class="w-full text-left text-xs text-gray-300">
+                            <thead class="bg-slate-900 text-gray-400 font-bold uppercase">
+                                <tr>
+                                    <th class="p-2 w-28">Bereich</th>
+                                    <th class="p-2">Spieler 1</th>
+                                    <th class="p-2">Spieler 2</th>
+                                    <th class="p-2">Spieler 3</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700 bg-slate-800">
+                                <tr class="hover:bg-slate-700/50">
+                                    <td class="p-2 flex items-center gap-2 font-bold text-white">
+                                        <img src="raidicons/skull.png" class="w-5 h-5" alt="Skull"> Vorne Links
+                                    </td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_1" data-assignment-pool="imm_areas"></select></td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_2" data-assignment-pool="imm_areas"></select></td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_3" data-assignment-pool="imm_areas"></select></td>
+                                </tr>
+                                <tr class="hover:bg-slate-700/50">
+                                    <td class="p-2 flex items-center gap-2 font-bold text-red-400">
+                                        <img src="raidicons/cross.png" class="w-5 h-5" alt="Cross"> Hinten Links
+                                    </td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_1" data-assignment-pool="imm_areas"></select></td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_2" data-assignment-pool="imm_areas"></select></td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_3" data-assignment-pool="imm_areas"></select></td>
+                                </tr>
+                                <tr class="hover:bg-slate-700/50">
+                                    <td class="p-2 flex items-center gap-2 font-bold text-blue-400">
+                                        <img src="raidicons/square.png" class="w-5 h-5" alt="Square"> Vorne Rechts
+                                    </td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_1" data-assignment-pool="imm_areas"></select></td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_2" data-assignment-pool="imm_areas"></select></td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_3" data-assignment-pool="imm_areas"></select></td>
+                                </tr>
+                                <tr class="hover:bg-slate-700/50">
+                                    <td class="p-2 flex items-center gap-2 font-bold text-gray-200">
+                                        <img src="raidicons/moon.png" class="w-5 h-5" alt="Moon"> Hinten Rechts
+                                    </td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_1" data-assignment-pool="imm_areas"></select></td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_2" data-assignment-pool="imm_areas"></select></td>
+                                    <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_3" data-assignment-pool="imm_areas"></select></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="immerseus-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1</button>
+                        <button data-phase="immerseus-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 2</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="immerseus-p1"><strong>Phase 1:</strong> Die Gruppe verteilt sich kreisförmig. Der Tank dreht den <strong class="text-red-400">Ätzenden Schlag</strong> nach außen.</p>
+                            <p class="positioning-text hidden" data-phase="immerseus-p2"><strong>Phase 2:</strong> Alle Spieler begeben sich in ihre zugewiesenen Viertel, um die Pfützen aufzuhalten.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="siegeoforgrimmar/immerseus-p1.png" alt="Positionierung Immerseus Phase 1" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="immerseus-p1" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;immerseus-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
+                            
+                        <img src="siegeoforgrimmar/immerseus-p2.png" alt="Positionierung Immerseus Phase 2" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="immerseus-p2" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;immerseus-p2&quot;>Bild für Phase 2 noch nicht verfügbar.</div>'">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
+                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            Globalen Export erzeugen
+        </button>
+        <div class="mt-4 text-xs text-gray-500 italic">
+            <strong>Hinweis:</strong> Sollte eine Spalte fehlerhaft laden, laden Sie das Dokument kurz neu.
+        </div>
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Zeitplaner für Fähigkeiten
+            <span class="toggle-icon">▼</span>
+        </h2>
+<div class="mb-6">
+    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+        <span class="text-xl">📜</span> Planungsübersicht
+    </h3>
+    
+    <div id="immerseus-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+            Warte auf Eingaben... <br>
+            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
+        </p>
+    </div>
+</div>
+        <div class="collapsible-content">
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende Reihenfolge (1, 2, 3...).
+                </div>
+
+                <div id="immerseus-planner-container" class="space-y-2 planner-scroll-container"></div>
+                
+                <div class="mt-4 text-xs text-gray-500 italic">
+                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Fähigkeiten im Detail
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 1 (Immerseus)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li><strong class="text-red-400">Ätzender Schlag:</strong> Fügt allen Zielen in einem Frontalkegel schweren Schattenschaden zu und erhöht den erlittenen Schattenschaden um 100% für 45 Sekunden.</li>
+                    <li><strong class="text-purple-400">Schacht:</strong> Erzeugt eine verseuchte Zone unter zufälligen Spielern, die bei Berührung Schaden verursacht.</li>
+                    <li><strong class="text-cyan-400">Wirbel:</strong> Ein harter Wasserstrahl, der sich kreisförmig über die Plattform bewegt und bei Treffern Spieler in die Luft schleudert.</li>
+                </ul>
+            </div>
+            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Phase 2 (Teilung)</h4>
+                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                    <li>Sobald die Gesundheit null erreicht, spaltet sich der Gegner auf. Jede besiegte oder geheilte Pfütze entfernt eine Korruptionsebene dauerhaft.</li>
+                    <li><strong class="text-gray-400">Sha-Pfütze:</strong> Bewegen sich zur Mitte. Werden sie nicht zerstört, verursachen sie am Ende der Phase massiven Gruppenschaden.</li>
+                    <li><strong class="text-blue-400">Kontaminierte Pfütze:</strong> Bewegen sich ebenfalls zur Mitte. Müssen vollständig geheilt werden, andernfalls erleidet die Gruppe Schaden.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
+            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                <li><strong class="text-purple-400">Schwellendes Verderbnis:</strong> Jeder Angriff auf Immerseus verursacht einen stapelbaren Schwächungszauber. Erreicht dieser eine kritische Menge, explodiert er und erzeugt zusätzliche dunkle Beschwörungen.</li>
+                <li><strong class="text-cyan-300">Beschwörungen von Sha:</strong> Die durch das Schwellende Verderbnis entstehenden Einheiten müssen schnellstmöglich unschädlich gemacht werden, da sie den Bewegungsraum massiv einschränken.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<script>
+    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
+        
+        const TRIGGER_OPTIONS = [
+            { val: "IMMERSEUS_ENC_START", text: "Kampfbeginn" },
+            { val: "IMMERSEUS_HEALTH", text: "Gesundheit %" },
+            { val: "IMMERSEUS_SPLIT", text: "Phase 2 (Teilung)" },
+            { val: "IMMERSEUS_REFORM", text: "Phase 1 (Zusammensetzen)" },
+            { val: "IMMERSEUS_SWIRL", text: "Wirbel" },
+            { val: "IMMERSEUS_CORROSIVE_BLAST", text: "Ätzender Schlag" },
+            { val: "IMMERSEUS_SWELLING_CORRUPTION", text: "Schwellendes Verderbnis (HC)" }
+        ];
+
+        const NPC_OPTIONS = [
+            "Immerseus",
+            "Sha-Pfütze",
+            "Kontaminierte Pfütze"
+        ];
+        
+        const container = document.getElementById('immerseus-planner-container');
+        
+        const getCooldownOptions = () => {
+            let html = '<option value="">-- Bereitschaft --</option>';
+            if (allCooldowns) {
+                allCooldowns.forEach(cd => {
+                     if (cd.name.startsWith('---')) {
+                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                     } else {
+                         const color = window.classColors?.[cd.class] || '#FFFFFF';
+                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                     }
+                });
+            }
+            return html;
+        };
+
+        if (container && container.innerHTML.trim() === "") {
+            
+            const p = container.id.replace('-planner-container', '');
+
+            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+            
+            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+            const headerHtml = `
+            <div class="planner-header">
+                <div></div> 
+                <div>Auslöser</div>
+                <div>Zielvorgabe</div>
+                <div class="text-center">%</div>
+                <div class="text-center">Zeit</div>
+                <div>Spieler</div>
+                <div>Fähigkeit</div>
+                
+                <div class="planner-col-extended text-xs text-gray-400">Hinweis</div>
+                <div class="planner-col-extended text-xs text-gray-400">Sprachausgabe</div>
+                <div class="planner-col-extended text-xs text-gray-400">Name</div>
+                <div class="planner-col-extended text-xs text-gray-400">Symbol</div>
+
+                <div class="text-center cursor-pointer hover:text-white" 
+                     onclick="document.getElementById('${p}-planner-wrapper').classList.toggle('show-extended')" 
+                     id="planner-expand-btn" title="Zusätzliche Spalten anzeigen">
+                    <i class="fas fa-angle-double-right"></i>
+                </div>
+                <div></div> 
+            </div>`;
+
+            let rowsHtml = "";
+            for (let i = 1; i <= 100; i++) {
+                rowsHtml += `
+                <div class="planner-row">
+                    <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
+
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-trigger" data-manual-options="true">
+                        <option value="">-- Nicht aktiv --</option>
+                        ${triggerOpts}
+                    </select>
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
+                        ${npcOpts}
+                    </select>
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="${p}-planner-row${i}-condition" placeholder="%" value="0">
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
+                           data-assignment-id="${p}-planner-row${i}-time" placeholder="Sek." value="0">
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-player"></select>
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-cooldown">
+                         ${cdOpts}
+                    </select>
+                    
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-note" placeholder="Zusätzlicher Text">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-tts" placeholder="Sprachausgabe ändern">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-varname" placeholder="Eigener Name">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
+                           data-assignment-id="${p}-planner-row${i}-icon" placeholder="Symbolnummer">
+
+                    <div></div>
+
+                    <div class="row-actions">
+                        <button class="icon-btn copy-row-btn" title="Kopieren"><i class="far fa-copy"></i></button>
+                        <button class="icon-btn paste-row-btn" title="Einfügen"><i class="far fa-clipboard"></i></button>
+                        <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
+                    </div>
+                </div>`;
+            }
+
+            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+            
+            if (window.initPlannerRowFeatures) {
+                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+            }
+            if (window.makePlannerSortable) {
+                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+            }
+        }
+
+        if (container) {
+            container.addEventListener('change', () => {
+                setTimeout(window.updatePlannerSummary, 100);
+            });
+            setTimeout(window.updatePlannerSummary, 500);
+        }
+    };
+</script>
+</main>
