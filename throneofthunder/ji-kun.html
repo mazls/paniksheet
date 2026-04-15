@@ -407,53 +407,54 @@
     </div>
 </section>
 <script>
-    // Konfiguration der Wellen
-    const WAVES_CONFIG = [
-        { id: 1, count: 1 }, { id: 2, count: 1 }, { id: 3, count: 1 },
-        { id: 4, count: 2 }, { id: 5, count: 2 }, 
-        { id: 6, count: 1 }, 
-        { id: 7, count: 2 }, { id: 8, count: 2 },
-        { id: 9, count: 2 },
-        { id: 10, count: 2 }, { id: 11, count: 2 }, { id: 12, count: 2 }, { id: 13, count: 2 },
-        { id: 14, count: 3 },
-        { id: 15, count: 2 },
-        { id: 16, count: 3 },
-        { id: 17, count: 2 },
-        { id: 18, count: 3 }, { id: 19, count: 3 }
-    ];
-
-    // Positionen & Defaults
-    const WAVE_DEFAULTS = {
-        "1-0": { lvl: "LOWER", dir: "NE" },
-        "2-0": { lvl: "LOWER", dir: "SE" },
-        "3-0": { lvl: "LOWER", dir: "SW" },
-        "4-0": { lvl: "LOWER", dir: "W" },  "4-1": { lvl: "UPPER", dir: "NE" },
-        "5-0": { lvl: "LOWER", dir: "NW" }, "5-1": { lvl: "UPPER", dir: "SE" },
-        "6-0": { lvl: "UPPER", dir: "MIDDLE" },
-        "7-0": { lvl: "LOWER", dir: "NE" }, "7-1": { lvl: "UPPER", dir: "SW" },
-        "8-0": { lvl: "LOWER", dir: "SE" }, "8-1": { lvl: "UPPER", dir: "NW" },
-        "9-0": { lvl: "LOWER", dir: "SW" }, "9-1": { lvl: "UPPER", dir: "NW" },
-        "10-0": { lvl: "LOWER", dir: "W" },  "10-1": { lvl: "UPPER", dir: "NE" },
-        "11-0": { lvl: "LOWER", dir: "NW" }, "11-1": { lvl: "UPPER", dir: "SE" },
-        "12-0": { lvl: "LOWER", dir: "NE" }, "12-1": { lvl: "UPPER", dir: "M" },
-        "13-0": { lvl: "LOWER", dir: "SE" }, "13-1": { lvl: "UPPER", dir: "SW" },
-        "14-0": { lvl: "LOWER", dir: "SW" }, "14-1": { lvl: "UPPER", dir: "NE" }, "14-2": { lvl: "UPPER", dir: "NW" },
-        "15-0": { lvl: "LOWER", dir: "W" },  "15-1": { lvl: "UPPER", dir: "SE" },
-        "16-0": { lvl: "LOWER", dir: "NW" }, "16-1": { lvl: "LOWER", dir: "NE" }, "16-2": { lvl: "UPPER", dir: "MIDDLE" },
-        "17-0": { lvl: "LOWER", dir: "SE" }, "17-1": { lvl: "UPPER", dir: "SW" },
-        "18-0": { lvl: "LOWER", dir: "SW" }, "18-1": { lvl: "UPPER", dir: "NE" }, "18-2": { lvl: "UPPER", dir: "NW" },
-        "19-0": { lvl: "LOWER", dir: "NW" }, "19-1": { lvl: "LOWER", dir: "NE" }, "19-2": { lvl: "UPPER", dir: "SE" }
-    };
-
-    const formatTime = (seconds) => {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${m}:${s.toString().padStart(2, '0')}`;
-    };
-
     // 1. STATISCHE STRUKTUR GENERIEREN
+    // Wir packen die Konstanten IN diese Funktion, damit sie beim erneuten Laden keinen Fehler werfen.
     (function renderStaticStructure() {
         
+        // Konfiguration der Wellen
+        const WAVES_CONFIG = [
+            { id: 1, count: 1 }, { id: 2, count: 1 }, { id: 3, count: 1 },
+            { id: 4, count: 2 }, { id: 5, count: 2 }, 
+            { id: 6, count: 1 }, 
+            { id: 7, count: 2 }, { id: 8, count: 2 },
+            { id: 9, count: 2 },
+            { id: 10, count: 2 }, { id: 11, count: 2 }, { id: 12, count: 2 }, { id: 13, count: 2 },
+            { id: 14, count: 3 },
+            { id: 15, count: 2 },
+            { id: 16, count: 3 },
+            { id: 17, count: 2 },
+            { id: 18, count: 3 }, { id: 19, count: 3 }
+        ];
+
+        // Positionen & Defaults
+        const WAVE_DEFAULTS = {
+            "1-0": { lvl: "LOWER", dir: "NE" },
+            "2-0": { lvl: "LOWER", dir: "SE" },
+            "3-0": { lvl: "LOWER", dir: "SW" },
+            "4-0": { lvl: "LOWER", dir: "W" },  "4-1": { lvl: "UPPER", dir: "NE" },
+            "5-0": { lvl: "LOWER", dir: "NW" }, "5-1": { lvl: "UPPER", dir: "SE" },
+            "6-0": { lvl: "UPPER", dir: "MIDDLE" },
+            "7-0": { lvl: "LOWER", dir: "NE" }, "7-1": { lvl: "UPPER", dir: "SW" },
+            "8-0": { lvl: "LOWER", dir: "SE" }, "8-1": { lvl: "UPPER", dir: "NW" },
+            "9-0": { lvl: "LOWER", dir: "SW" }, "9-1": { lvl: "UPPER", dir: "NW" },
+            "10-0": { lvl: "LOWER", dir: "W" },  "10-1": { lvl: "UPPER", dir: "NE" },
+            "11-0": { lvl: "LOWER", dir: "NW" }, "11-1": { lvl: "UPPER", dir: "SE" },
+            "12-0": { lvl: "LOWER", dir: "NE" }, "12-1": { lvl: "UPPER", dir: "M" },
+            "13-0": { lvl: "LOWER", dir: "SE" }, "13-1": { lvl: "UPPER", dir: "SW" },
+            "14-0": { lvl: "LOWER", dir: "SW" }, "14-1": { lvl: "UPPER", dir: "NE" }, "14-2": { lvl: "UPPER", dir: "NW" },
+            "15-0": { lvl: "LOWER", dir: "W" },  "15-1": { lvl: "UPPER", dir: "SE" },
+            "16-0": { lvl: "LOWER", dir: "NW" }, "16-1": { lvl: "LOWER", dir: "NE" }, "16-2": { lvl: "UPPER", dir: "MIDDLE" },
+            "17-0": { lvl: "LOWER", dir: "SE" }, "17-1": { lvl: "UPPER", dir: "SW" },
+            "18-0": { lvl: "LOWER", dir: "SW" }, "18-1": { lvl: "UPPER", dir: "NE" }, "18-2": { lvl: "UPPER", dir: "NW" },
+            "19-0": { lvl: "LOWER", dir: "NW" }, "19-1": { lvl: "LOWER", dir: "NE" }, "19-2": { lvl: "UPPER", dir: "SE" }
+        };
+
+        const formatTime = (seconds) => {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        };
+
         // A) TEAM SETUP (Inkl. Tanks)
         const teamContainer = document.getElementById('team-setup-container');
         if (teamContainer) {
@@ -761,10 +762,14 @@
 
             const jikunTriggers = [
                 { val: "JIKUN_ENC_START", text: "Encounter Start" },
+                { val: "JIKUN_HEALTH", text: "Health %" },
                 { val: "JIKUN_NEST", text: "Nest Aktiv" },
                 { val: "JIKUN_DOWN_DRAFT", text: "Abwind" },
                 { val: "JIKUN_QUILLS", text: "Federkiele" },
+                { val: "JIKUN_TALON_RAKE", text: "Krallenreißen" },
+                { val: "JIKUN_GUARDIAN", text: "Wächter Spawn" },
                 { val: "JIKUN_FEED_YOUNG", text: "Junge füttern" }
+
             ];
 
             const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : jikunTriggers;
@@ -964,23 +969,25 @@
         if (!html) html = `<div class="col-span-2 text-center text-gray-600 text-xs py-4 italic">Keine Einträge gefunden.</div>`;
         summaryContainer.innerHTML = html;
     };
-    function switchTactic(mode) {
-    const nhcBody = document.getElementById('body-nhc');
-    const hcBody = document.getElementById('body-hc');
-    const btnNhc = document.getElementById('btn-nhc');
-    const btnHc = document.getElementById('btn-hc');
 
-    if (mode === 'nhc') {
-        nhcBody.classList.remove('hidden');
-        hcBody.classList.add('hidden');
-        btnNhc.className = "px-3 py-0.5 text-[10px] font-bold rounded bg-blue-600 text-white transition-all";
-        btnHc.className = "px-3 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white transition-all";
-    } else {
-        nhcBody.classList.add('hidden');
-        hcBody.classList.remove('hidden');
-        btnNhc.className = "px-3 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white transition-all";
-        btnHc.className = "px-3 py-0.5 text-[10px] font-bold rounded bg-red-600 text-white transition-all";
+    // WICHTIG: switchTactic auch an window heften!
+    window.switchTactic = function(mode) {
+        const nhcBody = document.getElementById('body-nhc');
+        const hcBody = document.getElementById('body-hc');
+        const btnNhc = document.getElementById('btn-nhc');
+        const btnHc = document.getElementById('btn-hc');
+
+        if (mode === 'nhc') {
+            nhcBody.classList.remove('hidden');
+            hcBody.classList.add('hidden');
+            btnNhc.className = "px-3 py-0.5 text-[10px] font-bold rounded bg-blue-600 text-white transition-all";
+            btnHc.className = "px-3 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white transition-all";
+        } else {
+            nhcBody.classList.add('hidden');
+            hcBody.classList.remove('hidden');
+            btnNhc.className = "px-3 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white transition-all";
+            btnHc.className = "px-3 py-0.5 text-[10px] font-bold rounded bg-red-600 text-white transition-all";
+        }
     }
-}
 </script>
 </main>
