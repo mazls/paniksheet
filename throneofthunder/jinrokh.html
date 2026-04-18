@@ -159,6 +159,145 @@
     </div>
 </section>
 
+<!-- ══════════════════════════════════════════════════════════════
+     JINROKH — CD AUTO-PLANER INTEGRATION
+     ════════════════════════════════════════════════════════════
+     
+     SCHRITT 1: cd-auto-planner.js muss im static/ Ordner liegen
+     SCHRITT 2: Diesen Block in jinrokh.html einfügen (vor dem CD Planer)
+     SCHRITT 3: Events anpassen (firstCast, cooldown, maxCasts, delay)
+     
+     ══════════════════════════════════════════════════════════ -->
+ 
+<!-- HTML-Sektion (identisch für alle Bosse, nicht verändern) -->
+ <!--
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        ⚡ CD Auto-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
+        <div class="flex flex-wrap gap-3 mb-4">
+            <button id="btn-auto-assign" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded text-sm border border-emerald-400">⚡ Auto-Assign</button>
+            <button id="btn-export-to-planner" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm border border-blue-400">📋 → CD Planer übertragen</button>
+            <button id="btn-clear-auto" class="bg-red-700 hover:bg-red-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-500">🗑 Leeren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+        </div>
+        <details id="cd-categories-admin" class="mb-4 bg-slate-800 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-yellow-400 hover:bg-slate-750 rounded-t-lg">⚙️ CD-Kategorien & Prioritäten</summary>
+            <div class="p-4">
+                <div class="text-xs text-gray-400 mb-3">SpellID-Match gegen deine Cooldown-Datenbank. ❌ = nicht gefunden.</div>
+                <div id="cd-categories-container" class="space-y-3"></div>
+                <button id="btn-save-categories" class="mt-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">💾 Kategorien speichern</button>
+            </div>
+        </details>
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="min-w-full text-xs border-collapse">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-4 text-[10px] text-gray-500">
+            <span>✅ Auto | ✏️ Manuell | ⚠️ Kein CD | ✖ Übersprungen | — Nicht benötigt (klickbar)</span>
+        </div>
+    </div>
+</section>
+ -->
+<!-- JS-Modul laden + Boss-Config -->
+ <!--
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════════
+// NUR DIESER BLOCK IST BOSS-SPEZIFISCH!
+// ══════════════════════════════════════════════════════════════
+//
+// events[]:
+//   name:          Anzeigename des Events
+//   firstCast:     Sekunde des ersten Casts (ab Pull)
+//   cooldown:      Sekunden zwischen Casts (0 = einmalig)
+//   maxCasts:      Wie oft im Kampf
+//   delay:         Standard-Verzögerung für Export (0 = beim Event,
+//                  -5 = 5s vorher, +10 = 10s nachher)
+//                  → Kann pro Zeile im UI überschrieben werden!
+//   eventDuration: Wie lange das Event dauert (z.B. Storm = 30s)
+//                  → Wird in der Tabelle angezeigt zur Orientierung
+//   requiredCDs:   Welche CD-Kategorien werden benötigt
+//   icon:          Emoji zur Darstellung
+//
+// triggerMap:
+//   Event-Name → TRIGGER_OPTIONS.val aus dem bestehenden CD-Planer
+//   Damit der Export den richtigen Trigger setzt
+ 
+CD_AUTO_PLANNER.init({
+    id: 'jinrokh',
+    name: "Jin'rokh der Zerstörer",
+    prefix: 'JINROKH',
+ 
+    events: [
+        {
+            name: "Static Burst",
+            firstCast: 13,          // TODO: Wann kommt der erste Cast?
+            cooldown: 23,           // TODO: Zwischen den Casts
+            maxCasts: 10,           // TODO: Wie oft im Kampf
+            delay: -5,              // 5s vorher (pre-warn)
+            eventDuration: 0,       // Instant
+            requiredCDs: ["magical_dr"],
+            icon: "⚡"
+        },
+        {
+            name: "Lightning Storm",
+            firstCast: 90,          // TODO: Erste Storm
+            cooldown: 75,           // TODO: Zwischen den Storms
+            maxCasts: 5,            // TODO: Max Storms im Kill
+            delay: 0,               // Beim Start des Storms
+            eventDuration: 30,      // Storm dauert 30s → CDs mit 6s Dauer
+                                    // decken nur einen Teil ab!
+            requiredCDs: ["any_dr", "additional_surv", "major_heal", "minor_heal"],
+            icon: "🌩️"
+        },
+        {
+            name: "Ionization",
+            firstCast: 155,         // TODO: Erster Cast
+            cooldown: 90,           // TODO: Zwischen den Casts
+            maxCasts: 3,
+            delay: -5,              // Pre-warn
+            eventDuration: 0,
+            requiredCDs: ["magical_dr"],
+            icon: "💥"
+        },
+        {
+            name: "Conductive Waters",
+            firstCast: 46,
+            cooldown: 0,            // Einmalig
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 0,
+            requiredCDs: ["bloodlust"],
+            icon: "🌊"
+        },
+        {
+            name: "Movement Phase",
+            firstCast: 90,
+            cooldown: 75,
+            maxCasts: 5,
+            delay: -5,              // Speed CD vor dem Storm
+            eventDuration: 0,
+            requiredCDs: ["movement"],
+            icon: "🏃"
+        }
+    ],
+ 
+    triggerMap: {
+        "Static Burst":      "JINROKH_STATIC_BURST",
+        "Lightning Storm":   "JINROKH_LIGHTNING_STORM",
+        "Ionization":        "JINROKH_IONIZATION",
+        "Conductive Waters": "JINROKH_CONDUCTIVE_WATER",
+        "Movement Phase":    "JINROKH_LIGHTNING_STORM"
+    }
+});
+</script>
+-->
 
 
 
