@@ -32,46 +32,48 @@ window.CD_AUTO_PLANNER = (function() {
         magical_dr: {
             name: "Magische Schadensred.", shortName: "Magic DR", color: "#8b5cf6",
             spells: [
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6  },
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10 },
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6  },
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6  },                           // Aura der Hingabe (Paladin - jede Spec)
+                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredRole: "heal" },     // Machtwort: Barriere (Disc-Priest)
+                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredRole: "heal" },     // Geistverbindungstotem (Resto-Schamane)
             ]
         },
         physical_dr: {
             name: "Physische Schadensred.", shortName: "Phys DR", color: "#d97706",
             spells: [
                 { spellId: "31821",  cooldownSec: 180, durationSec: 6  },
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10 },
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6  },
+                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredRole: "heal" },
+                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredRole: "heal" },
             ]
         },
         major_heal: {
             name: "Grosse Heilung", shortName: "Major Heal", color: "#10b981",
+            requiredRole: "heal",  // Gesamte Kategorie nur für Heal-Spieler
             spells: [
-                { spellId: "108280", cooldownSec: 180, durationSec: 10 },
-                { spellId: "740",    cooldownSec: 480, durationSec: 8  },
-                { spellId: "64843",  cooldownSec: 180, durationSec: 8  },
-                { spellId: "115310", cooldownSec: 180, durationSec: 0  },
-                { spellId: "15286",  cooldownSec: 180, durationSec: 15 },
+                { spellId: "108280", cooldownSec: 180, durationSec: 10 },  // Heilende Gezeiten (Resto-Schamane)
+                { spellId: "740",    cooldownSec: 480, durationSec: 8  },  // Gelassenheit (Resto-Druide)
+                { spellId: "64843",  cooldownSec: 180, durationSec: 8  },  // Gotteshymne (Heilig-Priester)
+                { spellId: "115310", cooldownSec: 180, durationSec: 0  },  // Beleben (Mistweaver-Mönch)
+                { spellId: "15286",  cooldownSec: 180, durationSec: 15 },  // Vampirische Umarmung (Schatten-Priester)
             ]
         },
         minor_heal: {
             name: "Kleine Heilung", shortName: "Minor Heal", color: "#34d399",
+            requiredRole: "heal",
             spells: [
                 { spellId: "108280", cooldownSec: 180, durationSec: 10 },
-                { spellId: "108281", cooldownSec: 120, durationSec: 10 },
-                { spellId: "120517", cooldownSec: 25,  durationSec: 1  },
+                { spellId: "108281", cooldownSec: 120, durationSec: 10 },  // Führung der Ahnen (Ele/Enh/Resto)
+                { spellId: "120517", cooldownSec: 25,  durationSec: 1  },  // Strahlenkranz (Priester)
             ]
         },
         additional_surv: {
             name: "Zusaetzliches Ueberleben", shortName: "Add. Surv", color: "#f59e0b",
             spells: [
-                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },
-                { spellId: "114203", cooldownSec: 180, durationSec: 15 },
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6  },
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10 },
-                { spellId: "76577",  cooldownSec: 180, durationSec: 5  },
-                { spellId: "51052",  cooldownSec: 120, durationSec: 10 },
+                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },                            // Schlachtruf (Warrior - jede Spec)
+                { spellId: "114203", cooldownSec: 180, durationSec: 15 },                            // Demo Banner (Warrior)
+                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredRole: "heal" },      // SLT (Resto)
+                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredRole: "heal" },      // PW:Barrier (Disc)
+                { spellId: "76577",  cooldownSec: 180, durationSec: 5  },                            // Rauchbombe (Rogue)
+                { spellId: "51052",  cooldownSec: 120, durationSec: 10 },                            // AMZ (DK)
             ]
         },
         any_dr: {
@@ -80,24 +82,24 @@ window.CD_AUTO_PLANNER = (function() {
                 { spellId: "31821",  cooldownSec: 180, durationSec: 6  },
                 { spellId: "97462",  cooldownSec: 180, durationSec: 10 },
                 { spellId: "114203", cooldownSec: 180, durationSec: 15 },
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10 },
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6  },
+                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredRole: "heal" },
+                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredRole: "heal" },
                 { spellId: "76577",  cooldownSec: 180, durationSec: 5  },
                 { spellId: "51052",  cooldownSec: 120, durationSec: 10 },
-                { spellId: "122278", cooldownSec: 120, durationSec: 6  },
+                { spellId: "122278", cooldownSec: 120, durationSec: 6,  requiredRole: "tank" },      // Schaden abwenden (BM-Mönch)
             ]
         },
         movement: {
             name: "Bewegungsgeschw.", shortName: "Speed", color: "#22d3ee",
             spells: [
-                { spellId: "77764",  cooldownSec: 120, durationSec: 8  },
+                { spellId: "77764",  cooldownSec: 120, durationSec: 8  },  // Anstrachelndes Gebrüll (Druide - jede Spec)
             ]
         },
         bloodlust: {
             name: "Kampfrausch", shortName: "Lust", color: "#ef4444",
             spells: [
-                { spellId: "78151",   cooldownSec: 300, durationSec: 40 },
                 { spellId: "80353",  cooldownSec: 300, durationSec: 40 },
+                { spellId: "2825",   cooldownSec: 300, durationSec: 40 },
                 { spellId: "90355",  cooldownSec: 300, durationSec: 40 },
             ]
         },
@@ -144,9 +146,23 @@ window.CD_AUTO_PLANNER = (function() {
         return (window.classColors && window.classColors[(cls || '').toUpperCase()]) || '#FFFFFF';
     }
 
-    function getPlayersOfClass(cls) {
+    function getPlayersOfClass(cls, requiredRole) {
         return rosterRef.filter(function(p) {
-            return (p.class || '').toUpperCase() === (cls || '').toUpperCase();
+            if ((p.class || '').toUpperCase() !== (cls || '').toUpperCase()) return false;
+            if (!requiredRole) return true;  // Kein Role-Filter
+            // Role aus Roster (roles ist Array, erste Rolle zählt)
+            var roles = p.roles || [];
+            var firstRole = (Array.isArray(roles) ? (roles[0] || '') : roles).toString().toLowerCase();
+            if (requiredRole === 'heal') return firstRole.indexOf('heal') !== -1;
+            if (requiredRole === 'tank') return firstRole.indexOf('tank') !== -1;
+            if (requiredRole === 'dps')  {
+                // DPS = alles was nicht Tank/Heal/Bench ist
+                return firstRole.indexOf('heal') === -1 &&
+                       firstRole.indexOf('tank') === -1 &&
+                       firstRole.indexOf('bench') === -1 &&
+                       firstRole.indexOf('absence') === -1;
+            }
+            return true;
         }).map(function(p) { return p.name; });
     }
 
@@ -177,6 +193,8 @@ window.CD_AUTO_PLANNER = (function() {
                 spellId:     entry.spellId,
                 cooldownSec: parseInt(db.cooldownSec) || entry.cooldownSec || 180,
                 durationSec: parseInt(db.durationSec) || entry.durationSec || 0,
+                // Role-Filter: Spell-spezifisch hat Vorrang, sonst Kategorie-weit
+                requiredRole: entry.requiredRole || cat.requiredRole || null,
                 found:       true
             });
         });
@@ -263,7 +281,7 @@ window.CD_AUTO_PLANNER = (function() {
                 var assigned = false;
                 for (var si = 0; si < spells.length && !assigned; si++) {
                     var spell = spells[si];
-                    var players = getPlayersOfClass(spell.dbClass);
+                    var players = getPlayersOfClass(spell.dbClass, spell.requiredRole);
                     for (var pi = 0; pi < players.length && !assigned; pi++) {
                         if (isAvailable(players[pi], spell.dbName, spell.cooldownSec, row.absTime)) {
                             row.slots[catKey] = {
@@ -451,14 +469,20 @@ window.CD_AUTO_PLANNER = (function() {
             });
             Object.entries(byClassR).forEach(function(entry) {
                 var cls = entry[0], spells = entry[1];
-                var players = getPlayersOfClass(cls);
-                if (!players.length) return;
                 var color = getClassColor(cls);
-                html += '<option disabled style="font-weight:bold; color:' + color + '; background:#1a202c;">── ' + cls + ' ──</option>';
-                players.forEach(function(p) {
-                    spells.forEach(function(s) {
-                        var dur = s.durationSec ? ' [' + s.durationSec + 's]' : '';
-                        html += '<option value="' + p + '::' + s.dbName + '" style="color:' + color + ';">★ ' + p + ' → ' + s.dbName + dur + '</option>';
+                // Role pro Spell kann unterschiedlich sein → pro Spell filtern
+                var anyRendered = false;
+                spells.forEach(function(s) {
+                    var players = getPlayersOfClass(cls, s.requiredRole);
+                    if (!players.length) return;
+                    if (!anyRendered) {
+                        html += '<option disabled style="font-weight:bold; color:' + color + '; background:#1a202c;">── ' + cls + ' ──</option>';
+                        anyRendered = true;
+                    }
+                    var dur = s.durationSec ? ' [' + s.durationSec + 's]' : '';
+                    var roleMark = s.requiredRole ? ' (' + s.requiredRole + ')' : '';
+                    players.forEach(function(p) {
+                        html += '<option value="' + p + '::' + s.dbName + '" style="color:' + color + ';">★ ' + p + ' → ' + s.dbName + dur + roleMark + '</option>';
                     });
                 });
             });
@@ -623,7 +647,10 @@ window.CD_AUTO_PLANNER = (function() {
     function renderCategoriesAdmin() {
         var el = document.getElementById('cd-categories-container');
         if (!el) return;
-        el.innerHTML = Object.entries(categories).map(function(entry) {
+
+        var addCatBtn = '<div class="mb-3"><button id="btn-add-category" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Neue Kategorie</button></div>';
+
+        var catsHtml = Object.entries(categories).map(function(entry) {
             var key = entry[0], cat = entry[1];
             var resolved = resolveCategory(key);
             var rows = cat.spells.map(function(sp, idx) {
@@ -634,20 +661,244 @@ window.CD_AUTO_PLANNER = (function() {
                 var color = found ? getClassColor(cls) : '#ef4444';
                 var cdS = r ? r.cooldownSec : sp.cooldownSec;
                 var durS = r ? r.durationSec : (sp.durationSec || 0);
-                return '<div class="flex items-center gap-2 text-[11px]">'
+                var role = sp.requiredRole || '';
+                var roleOptions = ['', 'heal', 'tank', 'dps'].map(function(r) {
+                    return '<option value="' + r + '"' + (role === r ? ' selected' : '') + '>' + (r || 'alle') + '</option>';
+                }).join('');
+
+                return '<div class="spell-row flex items-center gap-2 text-[11px] bg-slate-800/50 p-1.5 rounded" draggable="true" data-cat="' + key + '" data-idx="' + idx + '">'
+                    + '<span class="drag-handle cursor-move text-gray-600 px-1" title="Ziehen zum Sortieren">⋮⋮</span>'
                     + '<span class="text-gray-500 w-4 text-right">' + (idx + 1) + '.</span>'
                     + '<span style="color:' + color + ';" class="font-medium flex-1">' + (found ? '' : '❌ ') + name + '</span>'
-                    + '<span class="text-gray-500">' + cls + '</span>'
+                    + '<span class="text-gray-500 w-20">' + cls + '</span>'
+                    + '<select class="spell-role-select bg-slate-900 text-gray-400 text-[10px] px-1 py-0.5 rounded border border-slate-600" data-cat="' + key + '" data-idx="' + idx + '" title="Nur für diese Rolle">' + roleOptions + '</select>'
                     + '<span class="text-gray-600 font-mono" title="Wirkdauer">' + durS + 's</span>'
                     + '<span class="text-gray-600 font-mono" title="Cooldown">' + cdS + 's CD</span>'
-                    + '<span class="text-gray-700 font-mono text-[9px]">' + sp.spellId + '</span></div>';
+                    + '<span class="text-gray-700 font-mono text-[9px] w-12">' + sp.spellId + '</span>'
+                    + '<button class="remove-spell-btn text-red-400 hover:text-red-300 px-1" data-cat="' + key + '" data-idx="' + idx + '" title="Spell entfernen">✕</button>'
+                    + '</div>';
             }).join('');
-            return '<div class="bg-slate-750 p-3 rounded border border-slate-600">'
-                + '<div class="flex items-center justify-between mb-2">'
-                + '<h5 class="text-sm font-bold" style="color:' + cat.color + ';">' + cat.name + '</h5>'
-                + '<span class="text-[10px] text-gray-500 font-mono">' + key + '</span></div>'
-                + '<div class="space-y-1">' + rows + '</div></div>';
+
+            var catRoleOptions = ['', 'heal', 'tank', 'dps'].map(function(r) {
+                return '<option value="' + r + '"' + ((cat.requiredRole || '') === r ? ' selected' : '') + '>' + (r || 'alle') + '</option>';
+            }).join('');
+
+            return '<div class="bg-slate-750 p-3 rounded border border-slate-600 mb-2" data-cat-key="' + key + '">'
+                + '<div class="flex items-center gap-2 mb-2">'
+                +   '<input type="color" class="cat-color-input w-6 h-6 bg-transparent border-0 cursor-pointer" data-cat="' + key + '" value="' + cat.color + '" title="Farbe">'
+                +   '<input type="text" class="cat-name-input text-sm font-bold bg-slate-900 text-white px-2 py-1 rounded border border-slate-600 flex-1" data-cat="' + key + '" value="' + cat.name + '" placeholder="Anzeigename">'
+                +   '<input type="text" class="cat-short-input text-xs bg-slate-900 text-gray-300 px-2 py-1 rounded border border-slate-600 w-24" data-cat="' + key + '" value="' + (cat.shortName || '') + '" placeholder="Kurzname">'
+                +   '<select class="cat-role-select bg-slate-900 text-gray-400 text-[10px] px-1 py-1 rounded border border-slate-600" data-cat="' + key + '" title="Rolle für gesamte Kategorie">' + catRoleOptions + '</select>'
+                +   '<span class="text-[10px] text-gray-500 font-mono">' + key + '</span>'
+                +   '<button class="delete-cat-btn text-red-400 hover:text-red-300 text-lg px-1" data-cat="' + key + '" title="Kategorie löschen">🗑</button>'
+                + '</div>'
+                + '<div class="spells-container space-y-1" data-cat-spells="' + key + '">' + rows + '</div>'
+                + '<button class="add-spell-btn mt-2 bg-slate-700 hover:bg-slate-600 text-gray-300 text-[11px] py-1 px-2 rounded border border-slate-600" data-cat="' + key + '">+ Spell aus DB hinzufügen</button>'
+                + '</div>';
         }).join('');
+
+        el.innerHTML = addCatBtn + catsHtml;
+
+        // Event Listeners
+        attachEditorListeners();
+    }
+
+    function attachEditorListeners() {
+        // Add category
+        var addBtn = document.getElementById('btn-add-category');
+        if (addBtn) {
+            addBtn.addEventListener('click', function() {
+                var key = prompt('Eindeutiger Key für neue Kategorie (z.B. "dispel_magic"):');
+                if (!key) return;
+                if (categories[key]) { alert('Key existiert bereits!'); return; }
+                var name = prompt('Anzeigename:', key);
+                if (!name) return;
+                categories[key] = {
+                    name: name, shortName: name.substring(0, 10), color: '#8b5cf6',
+                    spells: []
+                };
+                renderCategoriesAdmin();
+            });
+        }
+
+        // Delete category
+        document.querySelectorAll('.delete-cat-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                var cat = e.target.dataset.cat;
+                if (!confirm('Kategorie "' + categories[cat].name + '" wirklich löschen?')) return;
+                delete categories[cat];
+                renderCategoriesAdmin();
+            });
+        });
+
+        // Name/Shortname/Color änderungen
+        document.querySelectorAll('.cat-name-input').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                categories[e.target.dataset.cat].name = e.target.value;
+            });
+        });
+        document.querySelectorAll('.cat-short-input').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                categories[e.target.dataset.cat].shortName = e.target.value;
+            });
+        });
+        document.querySelectorAll('.cat-color-input').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                categories[e.target.dataset.cat].color = e.target.value;
+            });
+        });
+
+        // Kategorie-Role
+        document.querySelectorAll('.cat-role-select').forEach(function(sel) {
+            sel.addEventListener('change', function(e) {
+                var v = e.target.value;
+                if (v) categories[e.target.dataset.cat].requiredRole = v;
+                else delete categories[e.target.dataset.cat].requiredRole;
+            });
+        });
+
+        // Spell-Role
+        document.querySelectorAll('.spell-role-select').forEach(function(sel) {
+            sel.addEventListener('change', function(e) {
+                var cat = e.target.dataset.cat;
+                var idx = parseInt(e.target.dataset.idx);
+                var v = e.target.value;
+                if (v) categories[cat].spells[idx].requiredRole = v;
+                else delete categories[cat].spells[idx].requiredRole;
+            });
+        });
+
+        // Spell entfernen
+        document.querySelectorAll('.remove-spell-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                var cat = e.target.dataset.cat;
+                var idx = parseInt(e.target.dataset.idx);
+                categories[cat].spells.splice(idx, 1);
+                renderCategoriesAdmin();
+            });
+        });
+
+        // Spell hinzufügen
+        document.querySelectorAll('.add-spell-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                var cat = e.target.dataset.cat;
+                openSpellPicker(cat);
+            });
+        });
+
+        // Drag & Drop für Spells
+        attachDragDrop();
+    }
+
+    // ── Drag & Drop Sortierung ──
+    function attachDragDrop() {
+        var dragged = null;
+        document.querySelectorAll('.spell-row').forEach(function(row) {
+            row.addEventListener('dragstart', function(e) {
+                dragged = e.currentTarget;
+                e.currentTarget.style.opacity = '0.4';
+                e.dataTransfer.effectAllowed = 'move';
+            });
+            row.addEventListener('dragend', function(e) {
+                e.currentTarget.style.opacity = '';
+            });
+            row.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            });
+            row.addEventListener('drop', function(e) {
+                e.preventDefault();
+                if (!dragged || dragged === e.currentTarget) return;
+                var fromCat = dragged.dataset.cat;
+                var toCat = e.currentTarget.dataset.cat;
+                if (fromCat !== toCat) return;  // Nur innerhalb einer Kategorie
+                var fromIdx = parseInt(dragged.dataset.idx);
+                var toIdx = parseInt(e.currentTarget.dataset.idx);
+                var arr = categories[fromCat].spells;
+                var item = arr.splice(fromIdx, 1)[0];
+                arr.splice(toIdx, 0, item);
+                renderCategoriesAdmin();
+            });
+        });
+    }
+
+    // ── Spell-Picker: Dialog zur Spell-Auswahl aus DB ──
+    function openSpellPicker(catKey) {
+        // Overlay erstellen
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;';
+
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:700px;max-height:80vh;overflow-y:auto;width:90%;';
+
+        var existingIds = new Set(categories[catKey].spells.map(function(s) { return String(s.spellId); }));
+        var availableCDs = cooldownsDB.filter(function(cd) {
+            return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 && !existingIds.has(String(cd.spellId));
+        });
+
+        // Gruppiere nach Klasse
+        var byClass = {};
+        availableCDs.forEach(function(cd) {
+            var cls = cd.class || 'UNKNOWN';
+            if (!byClass[cls]) byClass[cls] = [];
+            byClass[cls].push(cd);
+        });
+
+        var classSections = Object.entries(byClass).sort().map(function(entry) {
+            var cls = entry[0], cds = entry[1];
+            var color = getClassColor(cls);
+            var rows = cds.map(function(cd) {
+                return '<div class="picker-row flex items-center gap-2 text-[11px] hover:bg-slate-700/40 p-1 rounded cursor-pointer" data-spellid="' + cd.spellId + '">'
+                    + '<span style="color:' + color + ';" class="flex-1">' + cd.name + '</span>'
+                    + '<span class="text-gray-500 font-mono text-[9px]">' + cd.spellId + '</span>'
+                    + '</div>';
+            }).join('');
+            return '<div class="mb-3">'
+                + '<h6 class="font-bold text-xs mb-1" style="color:' + color + ';">' + cls + '</h6>'
+                + rows + '</div>';
+        }).join('');
+
+        modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-3">Spell zu "' + categories[catKey].name + '" hinzufügen</h4>'
+            + '<input type="text" id="picker-search" placeholder="Suchen..." class="w-full bg-slate-900 text-white px-3 py-2 rounded mb-3 border border-slate-600">'
+            + '<div id="picker-list">' + classSections + '</div>'
+            + '<div class="flex justify-end mt-3"><button id="picker-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button></div>';
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // Search
+        var searchInp = modal.querySelector('#picker-search');
+        searchInp.addEventListener('input', function(e) {
+            var q = e.target.value.toLowerCase();
+            modal.querySelectorAll('.picker-row').forEach(function(row) {
+                var txt = row.textContent.toLowerCase();
+                row.style.display = txt.indexOf(q) !== -1 ? '' : 'none';
+            });
+        });
+        searchInp.focus();
+
+        // Pick
+        modal.querySelectorAll('.picker-row').forEach(function(row) {
+            row.addEventListener('click', function(e) {
+                var spellId = row.dataset.spellid;
+                var cd = cooldownsDB.find(function(c) { return String(c.spellId) === spellId; });
+                categories[catKey].spells.push({
+                    spellId: spellId,
+                    cooldownSec: parseInt(cd && cd.cooldownSec) || 180,
+                    durationSec: parseInt(cd && cd.durationSec) || 0
+                });
+                document.body.removeChild(overlay);
+                renderCategoriesAdmin();
+            });
+        });
+
+        // Cancel
+        modal.querySelector('#picker-cancel').addEventListener('click', function() {
+            document.body.removeChild(overlay);
+        });
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) document.body.removeChild(overlay);
+        });
     }
 
     // ══════════════════════════════════════════════════════════════

@@ -1430,6 +1430,30 @@ window.generateGlobalWaString = async function() {
             { id: 16, count: 3 }, { id: 17, count: 2 },
             { id: 18, count: 3 }, { id: 19, count: 3 }
         ];
+
+        // Die Standard-Ausrichtungen, falls sie in der DB fehlen (weil nie vom User im Dropdown geändert)
+        const WAVE_DEFAULTS = {
+            "1-0": { lvl: "LOWER", dir: "NE" },
+            "2-0": { lvl: "LOWER", dir: "SE" },
+            "3-0": { lvl: "LOWER", dir: "SW" },
+            "4-0": { lvl: "LOWER", dir: "W" },  "4-1": { lvl: "UPPER", dir: "NE" },
+            "5-0": { lvl: "LOWER", dir: "NW" }, "5-1": { lvl: "UPPER", dir: "SE" },
+            "6-0": { lvl: "UPPER", dir: "MIDDLE" },
+            "7-0": { lvl: "LOWER", dir: "NE" }, "7-1": { lvl: "UPPER", dir: "SW" },
+            "8-0": { lvl: "LOWER", dir: "SE" }, "8-1": { lvl: "UPPER", dir: "NW" },
+            "9-0": { lvl: "LOWER", dir: "SW" }, "9-1": { lvl: "UPPER", dir: "NW" },
+            "10-0": { lvl: "LOWER", dir: "W" },  "10-1": { lvl: "UPPER", dir: "NE" },
+            "11-0": { lvl: "LOWER", dir: "NW" }, "11-1": { lvl: "UPPER", dir: "SE" },
+            "12-0": { lvl: "LOWER", dir: "NE" }, "12-1": { lvl: "UPPER", dir: "MIDDLE" },
+            "13-0": { lvl: "LOWER", dir: "SE" }, "13-1": { lvl: "UPPER", dir: "SW" },
+            "14-0": { lvl: "LOWER", dir: "SW" }, "14-1": { lvl: "UPPER", dir: "NE" }, "14-2": { lvl: "UPPER", dir: "NW" },
+            "15-0": { lvl: "LOWER", dir: "W" },  "15-1": { lvl: "UPPER", dir: "SE" },
+            "16-0": { lvl: "LOWER", dir: "NW" }, "16-1": { lvl: "LOWER", dir: "NE" }, "16-2": { lvl: "UPPER", dir: "MIDDLE" },
+            "17-0": { lvl: "LOWER", dir: "SE" }, "17-1": { lvl: "UPPER", dir: "SW" },
+            "18-0": { lvl: "LOWER", dir: "SW" }, "18-1": { lvl: "UPPER", dir: "NE" }, "18-2": { lvl: "UPPER", dir: "NW" },
+            "19-0": { lvl: "LOWER", dir: "NW" }, "19-1": { lvl: "LOWER", dir: "NE" }, "19-2": { lvl: "UPPER", dir: "SE" }
+        };
+
         const suffixes = ['', 'b', 'c'];
         
         const tank1 = data['jikun-nest-tank1']?.player || "Tank1";
@@ -1451,8 +1475,16 @@ window.generateGlobalWaString = async function() {
                 const suffix = suffixes[i];
                 const key = `jikun-wave-${wave.id}${suffix}`;
                 
-                const lvl = data[`${key}-lvl`]?.player;
-                const dir = data[`${key}-dir`]?.player;
+                // Greift auf die Defaults zurück, wenn nichts vorhanden ist
+                const def = WAVE_DEFAULTS[`${wave.id}-${i}`] || { lvl: "LOWER", dir: "NE" };
+                
+                // Lese aus der DB oder nutze den Default
+                const lvl = data[`${key}-lvl`]?.player || def.lvl;
+                let dir = data[`${key}-dir`]?.player || def.dir;
+                
+                // Falls noch das alte 'M' für Middle im System gegeistert, korrigieren wir das hier sauber
+                if (dir === "M") dir = "MIDDLE";
+                
                 const teamId = data[`${key}-team`]?.player;
                 const useT1 = data[`${key}-tank-t1`]?.active === true;
                 const useT2 = data[`${key}-tank-t2`]?.active === true;
@@ -1469,6 +1501,8 @@ window.generateGlobalWaString = async function() {
                     if (players.length > 0) {
                         const location = `${lvl}${dir}`;
                         const playerStr = players.join(',');
+                        
+                        // Bei Folgeeinsätzen ('b', 'c') in einer Welle weglassen des "WAVE"-Präfix (wie vom User / WA gewünscht)
                         if (suffix === 'b' || suffix === 'c') {
                             wRows.push(`${location}-${playerStr}`);
                         } else {

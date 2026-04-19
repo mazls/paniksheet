@@ -159,7 +159,248 @@
         </div>
     </div>
 </section>
+<!-- ══════════════════════════════════════════════════════════════
+     DIE GEFALLENEN BESCHÜTZER — CD AUTO-PLANER
+     ════════════════════════════════════════════════════════════
+     Füge diesen Block VOR die <section id="planner"> ein.
+     
+     KAMPF-STRUKTUR (aus DBM):
+       3 Bosse gleichzeitig:
+         - Rook Steinzeh (71475)
+         - He der Leisetreter (71479)
+         - Sun zartes Herz (71480)
+       
+       Jeder Boss hat 2 "Desperate Measures" Phasen:
+         - 66% HP: Erste Measure
+         - 33% HP: Zweite Measure
+       
+       Reihenfolge der Bosse beim Töten ist TAKTISCH!
+       Meistens: Rook → He → Sun
+       → Dadurch ergeben sich die HP-Schwellen zu verschiedenen Zeiten
+     
+     TIMER (DBM OnCombatStart):
+       Vengeful Strikes:  21s CD,  Start 7s
+       Garrote (He):      29s CD,  Start 15s
+       Bane (Sun):        17s CD,  Start 15s
+       Corrupted Brew:    10.1s CD, Start 18s
+       Gouge (He):        26.7s CD, Start 23s
+       Calamity (Sun):    37.5s CD, Start 31s
+       Clash:             46s CD,  Start 45s
+       Berserk:           600s (Mythic) / 900s (andere)
+     
+     WICHTIG: Desperate Measures unterbrechen die normalen Timer!
+     Nach Ende der Measure starten sie wieder mit Offsets.
+     Daher sind die Zeiten hier Schätzungen für einen Kill ohne
+     spezielle Measures-Überlappungen.
+     ══════════════════════════════════════════════════════════ -->
 
+<!-- HTML-Sektion (Copy & Paste, nicht verändern) -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        ⚡ CD Auto-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
+        <div class="flex flex-wrap gap-3 mb-4">
+            <button id="btn-auto-assign" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded text-sm border border-emerald-400">⚡ Auto-Assign</button>
+            <button id="btn-export-to-planner" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm border border-blue-400">📋 → CD Planer übertragen</button>
+            <button id="btn-clear-auto" class="bg-red-700 hover:bg-red-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-500">🗑 Leeren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+        </div>
+        <details id="cd-categories-admin" class="mb-4 bg-slate-800 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-yellow-400 hover:bg-slate-750 rounded-t-lg">⚙️ CD-Kategorien & Prioritäten</summary>
+            <div class="p-4">
+                <div class="text-xs text-gray-400 mb-3">SpellID-Match gegen deine Cooldown-DB. ❌ = nicht gefunden.</div>
+                <div id="cd-categories-container" class="space-y-3"></div>
+                <button id="btn-save-categories" class="mt-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">💾 Kategorien speichern</button>
+            </div>
+        </details>
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="min-w-full text-xs border-collapse">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-4 text-[10px] text-gray-500">
+            <span>✅ Auto | ✏️ Manuell | ⚠️ Kein CD | ✖ Übersprungen | — Nicht benötigt (klickbar)</span>
+        </div>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════════
+// GEFALLENE BESCHÜTZER — BOSS-KONFIGURATION
+// ══════════════════════════════════════════════════════════════
+//
+// DBM-Quellen (FallenProtectors.lua):
+//   timerCalamityCD:     NewCDTimer(37.5, 143491)  → Raid-Schaden (5s Cast)
+//   timerClashCD:        NewCDTimer(46, 143027)    → Ausweichen
+//   timerGarroteCD:      NewCDTimer(29, 143198)    → Heal-Druck (Tank-DoT)
+//   timerBaneCD:         NewCDTimer(17, 143446)    → Dispel (Healer-fokussiert)
+//   timerCorruptedBrewCD:NewCDTimer(10.1, 143019)  → Mini-AoE
+//   timerGougeCD:        NewCDTimer(26.7, 143330)  → Tank-Stun
+//   timerVengefulStrikesCD: NewCDTimer(21, 144396) → Tank-CD
+//
+// HP-SCHWELLEN (Desperate Measures):
+//   Rook 66%: Misery/Sorrow/Gloom → Inferno Strike + Defiled Ground
+//   Rook 33%: Wiederholung
+//   He 66%:   Mark of Anguish → Markierte Spieler
+//   He 33%:   Wiederholung
+//   Sun 66%:  Dark Meditation → DoT-Schaden auf Raid
+//   Sun 33%:  Wiederholung
+//
+// TIPP: Viele Gilden killen die Bosse in fester Reihenfolge
+// (z.B. Rook → He → Sun). Dann fallen die Measures zeitlich
+// auseinander. Passt die HP-Trigger-Zeiten an EUREN Kill an.
+//
+// WICHTIG: Während einer Measure-Phase sind die normalen Timer
+// GEPAUST. Der Auto-Planner weiß das nicht, also exportiert er
+// CDs zu Zeiten wo sie eigentlich nicht nötig sind.
+// → Nutze manuelles Overriding für komplexe Zyklen!
+
+CD_AUTO_PLANNER.init({
+    id: 'fallen-protectors',
+    name: "Die gefallenen Beschützer",
+    prefix: 'PROTECTORS',
+
+    events: [
+        // ──────────────────────────────────────────────
+        // CALAMITY (Sun) — HAUPTGRUND für Raid-CDs
+        // DBM: CDTimer 37.5s, firstCast 31s, 5s Cast
+        // Raid-weiter Schaden, skaliert mit Prozent (+10% pro Cast auf Mythic)
+        // ──────────────────────────────────────────────
+        {
+            name: "Unheil (Calamity)",
+            spellId: 143491,
+            firstCast: 31,          // DBM OnCombatStart
+            cooldown: 37.5,         // DBM CDTimer
+            maxCasts: 8,
+            delay: -3,              // 3s vor dem Einschlag (Cast = 5s)
+            eventDuration: 5,       // 5s Cast
+            requiredCDs: ["any_dr", "major_heal"],
+            icon: "☀️"
+        },
+
+        // ──────────────────────────────────────────────
+        // CLASH — Raid-weite Mechanik (Ausweichen + AoE)
+        // DBM: CDTimer 46s, firstCast 45s
+        // ──────────────────────────────────────────────
+        {
+            name: "Zusammenstoß (Clash)",
+            spellId: 143027,
+            firstCast: 45,
+            cooldown: 46,
+            maxCasts: 6,
+            delay: 0,
+            eventDuration: 0,
+            requiredCDs: ["movement"],
+            icon: "💥"
+        },
+
+        // ──────────────────────────────────────────────
+        // DESPERATE MEASURES — HP-basiert
+        // Reihenfolge: Rook (meistens zuerst) → He → Sun
+        // Zeitpunkte = Schätzungen für typischen Kill
+        // ──────────────────────────────────────────────
+        {
+            name: "Rook 66% (Misery/Sorrow/Gloom)",
+            spellId: 143955,
+            firstCast: 90,          // ~1:30 für Rook 66%
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,      // Adds müssen gekillt werden
+            requiredCDs: ["any_dr", "additional_surv"],
+            icon: "🔥"
+        },
+        {
+            name: "He 66% (Mark of Anguish)",
+            spellId: 143812,
+            firstCast: 120,         // ~2:00
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 20,
+            requiredCDs: ["minor_heal"],
+            icon: "🗡️"
+        },
+        {
+            name: "Sun 66% (Dark Meditation)",
+            spellId: 143546,
+            firstCast: 150,         // ~2:30
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 20,
+            requiredCDs: ["any_dr"],
+            icon: "🌙"
+        },
+        {
+            name: "Rook 33% (Misery/Sorrow/Gloom)",
+            spellId: 143955,
+            firstCast: 210,         // ~3:30
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["any_dr", "additional_surv"],
+            icon: "🔥"
+        },
+        {
+            name: "He 33% (Mark of Anguish)",
+            spellId: 143812,
+            firstCast: 260,         // ~4:20
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 20,
+            requiredCDs: ["minor_heal"],
+            icon: "🗡️"
+        },
+        {
+            name: "Sun 33% (Dark Meditation)",
+            spellId: 143546,
+            firstCast: 310,         // ~5:10
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 20,
+            requiredCDs: ["any_dr", "major_heal"],
+            icon: "🌙"
+        },
+
+        // ──────────────────────────────────────────────
+        // BLOODLUST
+        // ──────────────────────────────────────────────
+        {
+            name: "Bloodlust",
+            spellId: 0,
+            firstCast: 0,           // Auf Pull oder beim ersten Sun-Measure
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 40,
+            requiredCDs: ["bloodlust"],
+            icon: "⚡"
+        }
+    ],
+
+    // Mapping auf bestehende TRIGGER_OPTIONS
+    triggerMap: {
+        "Unheil (Calamity)":                    "PROTECTORS_CALAMITY",
+        "Zusammenstoß (Clash)":                  "PROTECTORS_HEALTH",          // Kein eigener Trigger → Health als Fallback
+        "Rook 66% (Misery/Sorrow/Gloom)":       "PROTECTORS_ROOK_MEASURE",
+        "Rook 33% (Misery/Sorrow/Gloom)":       "PROTECTORS_ROOK_MEASURE",
+        "He 66% (Mark of Anguish)":             "PROTECTORS_HE_MEASURE",
+        "He 33% (Mark of Anguish)":             "PROTECTORS_HE_MEASURE",
+        "Sun 66% (Dark Meditation)":            "PROTECTORS_SUN_MEASURE",
+        "Sun 33% (Dark Meditation)":            "PROTECTORS_SUN_MEASURE",
+        "Bloodlust":                             "PROTECTORS_ENC_START"
+    }
+});
+</script>
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
