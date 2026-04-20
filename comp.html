@@ -192,76 +192,100 @@
     </div>
 </section>
 
-<section id="cooldown-editor-section" class="bg-slate-850 p-6 rounded-lg" style="display: none;">
-    <h3 class="text-xl font-semibold mb-3 text-blue-450">Cooldown Editor</h3>
-    <details>
-        <summary class="text-xl font-semibold text-blue-450 cursor-pointer">
-            Cooldown-Datenbank verwalten (klicken zum Öffnen)
-        </summary>
+<section id="cooldown-editor-section" style="display:none;" class="bg-slate-850 p-6 rounded-lg mb-6">
+    <h2 class="text-2xl font-semibold mb-3 border-b border-slate-650 pb-2 text-gold">
+        ⏱️ Cooldown-Verwaltung
+    </h2>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <div class="mt-4 pt-4 border-t border-slate-650 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- LINKE SPALTE: Formular zum Anlegen/Bearbeiten -->
+        <div>
+            <h3 id="cooldown-form-title" class="text-lg font-semibold text-gray-300 mb-3">Neuen Cooldown hinzufügen</h3>
             
-            <div>
-                <h4 id="cooldown-form-title" class="text-lg font-bold mb-3 text-gold">Neuen Cooldown hinzufügen</h4>
-                <form id="cooldown-form" class="space-y-4">
-                    <input type="hidden" id="cooldown-id-input">
-            
-            <div>
-                <label for="cooldown-spellid-input" class="block text-sm font-medium text-gray-300">Spell-ID (für MRT-Export)</label>
-                <input type="text" id="cooldown-spellid-input" placeholder="z.B. 98008" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
-            </div>
-            <div>
-                <label for="cooldown-tooltip-input" class="block text-sm font-medium text-gray-300">Tooltip Text</label>
-                <input type="text" id="cooldown-tooltip-input" placeholder="Tooltip (z.B. -20% Dmg, 3m CD)" class="w-full bg-slate-900 border border-slate-600 rounded p-2 mb-2 text-white">
-            </div>
+            <form id="cooldown-form" class="space-y-3 bg-slate-800 p-4 rounded-lg border border-slate-700">
+                <input type="hidden" id="cooldown-id-input">
+                
+                <div>
+                    <label class="text-xs text-gray-400 uppercase font-bold">Name</label>
+                    <input type="text" id="cooldown-name-input" required class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none" placeholder="z.B. Aura der Hingabe">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label for="cooldown-name-input" class="block text-sm font-medium text-gray-300">Name des Cooldowns</label>
-                        <input type="text" id="cooldown-name-input" required class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
+                        <label class="text-xs text-gray-400 uppercase font-bold">Klasse</label>
+                        <select id="cooldown-class-select" required class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none"></select>
                     </div>
                     <div>
-                        <label for="cooldown-class-select" class="block text-sm font-medium text-gray-300">Klasse</label>
-                        <select id="cooldown-class-select" required class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
-                            </select>
-                    </div>
-                    <div>
-                        <label for="cooldown-type-select" class="block text-sm font-medium text-gray-300">Typ</label>
-                        <select id="cooldown-type-select" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
-                            <option value="Raid CD">Raid CD</option>
-                            <option value="Tank External">Tank External</option>
-                            <option value="Utility">Utility</option>
+                        <label class="text-xs text-gray-400 uppercase font-bold">Typ</label>
+                        <select id="cooldown-type-select" required class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
+                            <option value="Raid">Raid</option>
                             <option value="Personal">Personal</option>
+                            <option value="Tank">Tank</option>
+                            <option value="Heal">Heal</option>
+                            <option value="DPS">DPS</option>
+                            <option value="External">External</option>
+                            <option value="Utility">Utility</option>
                         </select>
                     </div>
-                     <div>
-                        <label for="cooldown-order-input" class="block text-sm font-medium text-gray-300">Sortier-Reihenfolge (kleine Zahl = weiter oben)-</br> --- Trennzeichen</br> 1-50 Raid-CD</br> 51-100 Tank External</br> 101-150 Utility</br> 151-200 Personal </label>
-                        <input type="number" id="cooldown-order-input" value="100" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650">
-                    </div>
-                    <div class="flex gap-4">
-                        <button type="submit" id="cooldown-save-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-md">Speichern</button>
-                        <button type="button" id="cooldown-cancel-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-md" style="display: none;">Abbrechen</button>
-                    </div>
-                </form>
-            </div>
-
-            <div>
-                <h4 class="text-lg font-bold mb-3 text-gold">Vorhandene Cooldowns</h4>
-                <div class="overflow-y-auto max-h-96 pr-2">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-400 uppercase bg-slate-900/50">
-                            <tr>
-                                <th class="px-4 py-2">Name</th>
-                                <th class="px-4 py-2">Klasse</th>
-                                <th class="px-4 py-2">Aktionen</th>
-                                <th class="px-4 py-2">Spell ID</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cooldowns-table-body" class="divide-y divide-slate-700">
-                            </tbody>
-                    </table>
                 </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold">Spell-ID</label>
+                        <input type="text" id="cooldown-spellid-input" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none" placeholder="z.B. 31821">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold">Sort-Order</label>
+                        <input type="number" id="cooldown-order-input" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none" placeholder="100" value="100">
+                    </div>
+                </div>
+                
+                <!-- NEUE FELDER: Cooldown und Wirkdauer -->
+                <div class="grid grid-cols-2 gap-3 border-t border-slate-700 pt-3">
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold">Cooldown (Sek)</label>
+                        <input type="number" id="cooldown-cdsec-input" min="0" step="1" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none" placeholder="z.B. 180">
+                        <div class="text-[10px] text-gray-500 mt-1 italic">Leer = Fallback aus JS-Default</div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold">Wirkdauer (Sek)</label>
+                        <input type="number" id="cooldown-durationsec-input" min="0" step="1" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none" placeholder="z.B. 6">
+                        <div class="text-[10px] text-gray-500 mt-1 italic">Leer = Fallback aus JS-Default</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="text-xs text-gray-400 uppercase font-bold">Tooltip</label>
+                    <textarea id="cooldown-tooltip-input" rows="2" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none" placeholder="Beschreibung des Cooldowns"></textarea>
+                </div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" id="cooldown-save-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">Speichern</button>
+                    <button type="button" id="cooldown-cancel-btn" class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded" style="display:none;">Abbrechen</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- RECHTE SPALTE: Tabelle aller CDs -->
+        <div>
+            <h3 class="text-lg font-semibold text-gray-300 mb-3">Vorhandene Cooldowns</h3>
+            <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 max-h-[500px] overflow-y-auto">
+                <table class="w-full text-sm">
+                    <thead class="text-xs text-gray-400 uppercase sticky top-0 bg-slate-800">
+                        <tr class="border-b border-slate-600">
+                            <th class="px-2 py-2 text-left">Name</th>
+                            <th class="px-2 py-2 text-left">Klasse</th>
+                            <th class="px-2 py-2 text-left">SpellID</th>
+                            <th class="px-2 py-2 text-center">CD/Dauer</th>
+                            <th class="px-2 py-2 text-right">Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cooldowns-table-body"></tbody>
+                </table>
             </div>
         </div>
-    </details>
+    </div>
 </section>
 
 <!-- ==================== MASTER-VIEW: EINTEILUNGS-ÜBERSICHT ==================== -->

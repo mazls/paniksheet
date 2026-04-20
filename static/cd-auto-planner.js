@@ -21,6 +21,85 @@ window.CD_AUTO_PLANNER = (function() {
     'use strict';
 
     // ══════════════════════════════════════════════════════════════
+    // SPEC-DEFINITIONEN
+    // ──────────────────────────────────────────────────────────────
+    // Mapping: Raidhelper-Spec-Name (intern) → Lesbares Label (UI)
+    // Die "1"-Suffixe (Holy1, Protection1, Restoration1, Frost1)
+    // kommen aus dem Raidhelper-Export und dienen zur Unterscheidung
+    // von gleichnamigen Specs anderer Klassen (z.B. Priester "Holy"
+    // vs. Paladin "Holy1"). Intern verwenden wir die Raidhelper-Namen
+    // zum Matching, die UI zeigt schöne Labels.
+    // ══════════════════════════════════════════════════════════════
+
+    const SPEC_DEFINITIONS = {
+        DEATHKNIGHT: [
+            { value: 'Blood',        label: 'Blood (Tank)' },
+            { value: 'Frost1',       label: 'Frost' },
+            { value: 'Unholy',       label: 'Unholy' }
+        ],
+        DRUID: [
+            { value: 'Balance',      label: 'Balance' },
+            { value: 'Feral',        label: 'Feral' },
+            { value: 'Guardian',     label: 'Guardian (Tank)' },
+            { value: 'Restoration',  label: 'Restoration (Heal)' }
+        ],
+        HUNTER: [
+            { value: 'Beastmastery', label: 'Beastmastery' },
+            { value: 'Marksmanship', label: 'Marksmanship' },
+            { value: 'Survival',     label: 'Survival' }
+        ],
+        MAGE: [
+            { value: 'Arcane',       label: 'Arcane' },
+            { value: 'Fire',         label: 'Fire' },
+            { value: 'Frost',        label: 'Frost' }
+        ],
+        MONK: [
+            { value: 'Brewmaster',   label: 'Brewmaster (Tank)' },
+            { value: 'Mistweaver',   label: 'Mistweaver (Heal)' },
+            { value: 'Windwalker',   label: 'Windwalker' }
+        ],
+        PALADIN: [
+            { value: 'Holy1',        label: 'Holy (Heal)' },
+            { value: 'Protection1',  label: 'Protection (Tank)' },
+            { value: 'Retribution',  label: 'Retribution' }
+        ],
+        PRIEST: [
+            { value: 'Discipline',   label: 'Discipline (Heal)' },
+            { value: 'Holy',         label: 'Holy (Heal)' },
+            { value: 'Shadow',       label: 'Shadow' }
+        ],
+        ROGUE: [
+            { value: 'Assassination', label: 'Assassination' },
+            { value: 'Combat',       label: 'Combat' },
+            { value: 'Subtlety',     label: 'Subtlety' }
+        ],
+        SHAMAN: [
+            { value: 'Elemental',    label: 'Elemental' },
+            { value: 'Enhancement',  label: 'Enhancement' },
+            { value: 'Restoration1', label: 'Restoration (Heal)' }
+        ],
+        WARLOCK: [
+            { value: 'Affliction',   label: 'Affliction' },
+            { value: 'Demonology',   label: 'Demonology' },
+            { value: 'Destruction',  label: 'Destruction' }
+        ],
+        WARRIOR: [
+            { value: 'Arms',         label: 'Arms' },
+            { value: 'Fury',         label: 'Fury' },
+            { value: 'Protection',   label: 'Protection (Tank)' }
+        ]
+    };
+
+    // Hilfsfunktion: Raidhelper-Name → Label
+    function getSpecLabel(specValue) {
+        for (var cls in SPEC_DEFINITIONS) {
+            var found = SPEC_DEFINITIONS[cls].find(function(s) { return s.value === specValue; });
+            if (found) return found.label;
+        }
+        return specValue;  // Fallback wenn unbekannt
+    }
+
+    // ══════════════════════════════════════════════════════════════
     // DEFAULT CD-KATEGORIEN (spellId-basiert, wird gegen DB aufgelöst)
     //
     // cooldownSec = Fallback wenn DB kein cooldownSec hat
@@ -29,99 +108,286 @@ window.CD_AUTO_PLANNER = (function() {
     // ══════════════════════════════════════════════════════════════
 
     const DEFAULT_CATEGORIES = {
+
+        // ══════════════════════════════════════════════════════════
+        // MAGICAL DAMAGE REDUCTION
+        // Sheet-Prio: Devo(Retri) → Devo(Holy) → PW:B(Disc) → Devo(Holy) → SLT(Resto)
+        // ══════════════════════════════════════════════════════════
         magical_dr: {
             name: "Magische Schadensred.", shortName: "Magic DR", color: "#8b5cf6",
             spells: [
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6  },                           // Aura der Hingabe (Paladin - jede Spec)
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredRole: "heal" },     // Machtwort: Barriere (Disc-Priest)
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredRole: "heal" },     // Geistverbindungstotem (Resto-Schamane)
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Retribution"] },       // Devo (Retri)
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Protection1"] },       // Devo (Prot)
+                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },        // PW:Barrier (Disc)
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Holy1"] },             // Devo (Holy)
+                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },      // SLT (Resto Shaman)
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // PHYSICAL DAMAGE REDUCTION
+        // Sheet-Prio: Devo(Retri) → PW:B(Disc) → SLT(Resto)
+        // ══════════════════════════════════════════════════════════
         physical_dr: {
             name: "Physische Schadensred.", shortName: "Phys DR", color: "#d97706",
             spells: [
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6  },
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredRole: "heal" },
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredRole: "heal" },
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Retribution"] },
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Protection1"] },
+                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Holy1"] },
+                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // MAJOR HEALING
+        // Sheet-Prio: HTT(Resto) → Tranq(Resto-Druid) → Divine Hymn(Holy) → Revival(MW) → Vampiric Embrace(Shadow)
+        // ══════════════════════════════════════════════════════════
         major_heal: {
             name: "Grosse Heilung", shortName: "Major Heal", color: "#10b981",
-            requiredRole: "heal",  // Gesamte Kategorie nur für Heal-Spieler
             spells: [
-                { spellId: "108280", cooldownSec: 180, durationSec: 10 },  // Heilende Gezeiten (Resto-Schamane)
-                { spellId: "740",    cooldownSec: 480, durationSec: 8  },  // Gelassenheit (Resto-Druide)
-                { spellId: "64843",  cooldownSec: 180, durationSec: 8  },  // Gotteshymne (Heilig-Priester)
-                { spellId: "115310", cooldownSec: 180, durationSec: 0  },  // Beleben (Mistweaver-Mönch)
-                { spellId: "15286",  cooldownSec: 180, durationSec: 15 },  // Vampirische Umarmung (Schatten-Priester)
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Restoration1"] },      // HTT
+                { spellId: "740",    cooldownSec: 180, durationSec: 8,  requiredSpec: ["Restoration"] },        // Tranquility (Resto: 3min)
+                { spellId: "64843",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Holy"] },              // Divine Hymn
+                { spellId: "115310", cooldownSec: 180, durationSec: 0,  requiredSpec: ["Mistweaver"] },        // Revival
+                { spellId: "15286",  cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },            // Vampiric Embrace
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // MINOR HEALING
+        // Sheet-Prio: HTT(Elem) → HTT(Enh) → AG(Elem) → AG(Enh) → Halo(Holy) → Halo(Disc) → Halo(Shadow)
+        // ══════════════════════════════════════════════════════════
         minor_heal: {
             name: "Kleine Heilung", shortName: "Minor Heal", color: "#34d399",
-            requiredRole: "heal",
             spells: [
-                { spellId: "108280", cooldownSec: 180, durationSec: 10 },
-                { spellId: "108281", cooldownSec: 120, durationSec: 10 },  // Führung der Ahnen (Ele/Enh/Resto)
-                { spellId: "120517", cooldownSec: 25,  durationSec: 1  },  // Strahlenkranz (Priester)
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Elemental"] },         // HTT (Elem)
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Enhancement"] },       // HTT (Enh)
+                { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Elemental"] },         // AG (Elem)
+                { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Enhancement"] },       // AG (Enh)
+                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Holy"] },              // Halo (Holy)
+                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Discipline"] },        // Halo (Disc)
+                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Shadow"] },            // Halo (Shadow)
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // ANY HEALING (Kombination aus Major + Minor)
+        // ══════════════════════════════════════════════════════════
+        any_heal: {
+            name: "Beliebige Heilung", shortName: "Any Heal", color: "#6ee7b7",
+            spells: [
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Restoration1"] },      // HTT (Resto)
+                { spellId: "740",    cooldownSec: 180, durationSec: 8,  requiredSpec: ["Restoration"] },        // Tranquility
+                { spellId: "64843",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Holy"] },              // Divine Hymn
+                { spellId: "115310", cooldownSec: 180, durationSec: 0,  requiredSpec: ["Mistweaver"] },        // Revival
+                { spellId: "15286",  cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },            // Vampiric Embrace
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Elemental"] },         // HTT (Elem)
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Enhancement"] },       // HTT (Enh)
+                { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Elemental"] },         // AG (Elem)
+                { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Enhancement"] },       // AG (Enh)
+                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Holy"] },              // Halo
+                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Discipline"] },
+                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Shadow"] },
+            ]
+        },
+
+        // ══════════════════════════════════════════════════════════
+        // ADDITIONAL SURVIVAL
+        // Sheet-Prio: Rallying Cry(Warrior) → Demo Banner(Warrior) → SLT(Resto)
+        // ══════════════════════════════════════════════════════════
         additional_surv: {
             name: "Zusaetzliches Ueberleben", shortName: "Add. Surv", color: "#f59e0b",
             spells: [
-                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },                            // Schlachtruf (Warrior - jede Spec)
-                { spellId: "114203", cooldownSec: 180, durationSec: 15 },                            // Demo Banner (Warrior)
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredRole: "heal" },      // SLT (Resto)
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredRole: "heal" },      // PW:Barrier (Disc)
-                { spellId: "76577",  cooldownSec: 180, durationSec: 5  },                            // Rauchbombe (Rogue)
-                { spellId: "51052",  cooldownSec: 120, durationSec: 10 },                            // AMZ (DK)
+                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },                                       // Rallying Cry (jede Warrior-Spec)
+                { spellId: "114203", cooldownSec: 180, durationSec: 15 },                                       // Demo Banner
+                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },      // SLT
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // ANY DR / HEALTH INCREASE
+        // Mega-Kategorie: Alle DRs + wichtige Heal-CDs kombiniert
+        // ══════════════════════════════════════════════════════════
         any_dr: {
             name: "Beliebige Schadensred.", shortName: "Any DR", color: "#a78bfa",
             spells: [
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6  },
-                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },
-                { spellId: "114203", cooldownSec: 180, durationSec: 15 },
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredRole: "heal" },
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredRole: "heal" },
-                { spellId: "76577",  cooldownSec: 180, durationSec: 5  },
-                { spellId: "51052",  cooldownSec: 120, durationSec: 10 },
-                { spellId: "122278", cooldownSec: 120, durationSec: 6,  requiredRole: "tank" },      // Schaden abwenden (BM-Mönch)
+                // Prio 1-4: Devotion Aura (alle Paladin-Specs) + PW:B + SLT
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Retribution"] },
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Protection1"] },
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Holy1"] },
+                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },
+                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },
+                // Raid-Utility
+                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },                                       // Rallying Cry
+                { spellId: "76577",  cooldownSec: 180, durationSec: 5  },                                       // Smoke Bomb
+                // Heals als Notfall
+                { spellId: "740",    cooldownSec: 180, durationSec: 8,  requiredSpec: ["Restoration"] },
+                { spellId: "64843",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Holy"] },
+                { spellId: "115310", cooldownSec: 180, durationSec: 0,  requiredSpec: ["Mistweaver"] },
+                { spellId: "15286",  cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Restoration1"] },
+                { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Elemental"] },
+                { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Enhancement"] },
+                { spellId: "114203", cooldownSec: 180, durationSec: 15 },                                       // Demo Banner
+                { spellId: "51052",  cooldownSec: 120, durationSec: 10 },                                       // AMZ (alle DKs)
+                { spellId: "122278", cooldownSec: 90,  durationSec: 10 },                                       // Dampen Harm (alle Mönche)
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // ANY DEFENSIVE COOLDOWN / HEAL
+        // ══════════════════════════════════════════════════════════
+        any_def: {
+            name: "Beliebiger Defensiv-CD", shortName: "Any Def", color: "#c084fc",
+            spells: [
+                // Paladin Auras
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Retribution"] },
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Protection1"] },
+                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Holy1"] },
+                // Major Raid-CDs
+                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },
+                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },
+                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },
+                { spellId: "76577",  cooldownSec: 180, durationSec: 5  },
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Restoration1"] },
+                { spellId: "740",    cooldownSec: 180, durationSec: 8,  requiredSpec: ["Restoration"] },
+                { spellId: "64843",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Holy"] },
+                { spellId: "115310", cooldownSec: 180, durationSec: 0,  requiredSpec: ["Mistweaver"] },
+                { spellId: "15286",  cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Elemental"] },
+                { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Elemental"] },
+                { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Enhancement"] },
+                { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Enhancement"] },
+                { spellId: "114203", cooldownSec: 180, durationSec: 15 },
+                { spellId: "51052",  cooldownSec: 120, durationSec: 10 },
+            ]
+        },
+
+        // ══════════════════════════════════════════════════════════
+        // MOVEMENT SPEED
+        // Sheet-Prio: Stampeding Roar (alle Druid-Specs)
+        // ══════════════════════════════════════════════════════════
         movement: {
             name: "Bewegungsgeschw.", shortName: "Speed", color: "#22d3ee",
             spells: [
-                { spellId: "77764",  cooldownSec: 120, durationSec: 8  },  // Anstrachelndes Gebrüll (Druide - jede Spec)
+                { spellId: "77764",  cooldownSec: 120, durationSec: 8, requiredSpec: ["Guardian"] },
+                { spellId: "77764",  cooldownSec: 120, durationSec: 8, requiredSpec: ["Feral"] },
+                { spellId: "77764",  cooldownSec: 120, durationSec: 8, requiredSpec: ["Balance"] },
+                { spellId: "77764",  cooldownSec: 120, durationSec: 8, requiredSpec: ["Restoration"] },
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // BLOODLUST
+        // Sheet-Prio: Time-Warp(Fire) → Time-Warp(Frost) → BL(Resto) → BL(Enh) → BL(Elem) → Time-Warp(Arcane)
+        // ══════════════════════════════════════════════════════════
         bloodlust: {
             name: "Kampfrausch", shortName: "Lust", color: "#ef4444",
             spells: [
-                { spellId: "80353",  cooldownSec: 300, durationSec: 40 },
-                { spellId: "2825",   cooldownSec: 300, durationSec: 40 },
-                { spellId: "90355",  cooldownSec: 300, durationSec: 40 },
+                { spellId: "80353",  cooldownSec: 300, durationSec: 40, requiredSpec: ["Fire"] },              // Time-Warp (Fire)
+                { spellId: "80353",  cooldownSec: 300, durationSec: 40, requiredSpec: ["Frost"] },             // Time-Warp (Frost)
+                { spellId: "2825",   cooldownSec: 300, durationSec: 40, requiredSpec: ["Restoration1"] },      // Bloodlust (Resto)
+                { spellId: "2825",   cooldownSec: 300, durationSec: 40, requiredSpec: ["Enhancement"] },       // Bloodlust (Enh)
+                { spellId: "2825",   cooldownSec: 300, durationSec: 40, requiredSpec: ["Elemental"] },         // Bloodlust (Elem)
+                { spellId: "80353",  cooldownSec: 300, durationSec: 40, requiredSpec: ["Arcane"] },            // Time-Warp (Arcane)
+                { spellId: "90355",  cooldownSec: 300, durationSec: 40 },                                       // Ancient Hysteria (Hunter Pet)
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // MANA (NEU — für Hymn of Hope / Mana Tide)
+        // ══════════════════════════════════════════════════════════
+        mana: {
+            name: "Mana-Regeneration", shortName: "Mana", color: "#3b82f6",
+            spells: [
+                { spellId: "16190",  cooldownSec: 180, durationSec: 16, requiredSpec: ["Restoration1"] },      // Mana Tide Totem (Resto Shaman)
+                { spellId: "64901",  cooldownSec: 360, durationSec: 8,  requiredSpec: ["Holy"] },              // Hymn of Hope (Holy)
+                { spellId: "64901",  cooldownSec: 360, durationSec: 8,  requiredSpec: ["Discipline"] },        // Hymn of Hope (Disc)
+                { spellId: "64901",  cooldownSec: 360, durationSec: 8,  requiredSpec: ["Shadow"] },            // Hymn of Hope (Shadow)
+            ]
+        },
+
+        // ══════════════════════════════════════════════════════════
+        // AOE STUN
+        // Sheet-Prio: Leg Sweep(WW) → Leg Sweep(MW) → Leg Sweep(BM) → Shadowfury×3 → Cap Totem×3 → Shockwave(Prot) → Shockwave(Fury) → Shockwave(Arms)
+        // ══════════════════════════════════════════════════════════
         aoe_stun: {
             name: "AoE Stun", shortName: "AoE Stun", color: "#f97316",
             spells: [
-                { spellId: "119381", cooldownSec: 45,  durationSec: 5  },
-                { spellId: "30283",  cooldownSec: 30,  durationSec: 3  },
-                { spellId: "118905", cooldownSec: 45,  durationSec: 5  },
-                { spellId: "46968",  cooldownSec: 40,  durationSec: 4  },
+                { spellId: "119381", cooldownSec: 45, durationSec: 5, requiredSpec: ["Windwalker"] },          // Leg Sweep
+                { spellId: "119381", cooldownSec: 45, durationSec: 5, requiredSpec: ["Mistweaver"] },
+                { spellId: "119381", cooldownSec: 45, durationSec: 5, requiredSpec: ["Brewmaster"] },
+                { spellId: "30283",  cooldownSec: 30, durationSec: 3, requiredSpec: ["Destruction"] },         // Shadowfury
+                { spellId: "30283",  cooldownSec: 30, durationSec: 3, requiredSpec: ["Demonology"] },
+                { spellId: "30283",  cooldownSec: 30, durationSec: 3, requiredSpec: ["Affliction"] },
+                { spellId: "118905", cooldownSec: 45, durationSec: 5, requiredSpec: ["Enhancement"] },         // Capacitor Totem
+                { spellId: "118905", cooldownSec: 45, durationSec: 5, requiredSpec: ["Restoration1"] },
+                { spellId: "118905", cooldownSec: 45, durationSec: 5, requiredSpec: ["Elemental"] },
+                { spellId: "46968",  cooldownSec: 40, durationSec: 4, requiredSpec: ["Protection"] },          // Shockwave
+                { spellId: "46968",  cooldownSec: 40, durationSec: 4, requiredSpec: ["Fury"] },
+                { spellId: "46968",  cooldownSec: 40, durationSec: 4, requiredSpec: ["Arms"] },
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // DISARM
+        // Sheet-Prio: Disarm(Fury) → Disarm(Arms) → Disarm(Prot) → Dismantle(Combat/Assa/Sub) → Grapple(WW/MW/BM) → Psychic Horror(Shadow)
+        // ══════════════════════════════════════════════════════════
+        disarm: {
+            name: "Disarm", shortName: "Disarm", color: "#94a3b8",
+            spells: [
+                { spellId: "676",    cooldownSec: 60, durationSec: 10, requiredSpec: ["Fury"] },               // Disarm
+                { spellId: "676",    cooldownSec: 60, durationSec: 10, requiredSpec: ["Arms"] },
+                { spellId: "676",    cooldownSec: 60, durationSec: 10, requiredSpec: ["Protection"] },
+                { spellId: "51722",  cooldownSec: 60, durationSec: 8,  requiredSpec: ["Combat"] },             // Dismantle
+                { spellId: "51722",  cooldownSec: 60, durationSec: 8,  requiredSpec: ["Assassination"] },
+                { spellId: "51722",  cooldownSec: 60, durationSec: 8,  requiredSpec: ["Subtlety"] },
+                { spellId: "117368", cooldownSec: 60, durationSec: 6,  requiredSpec: ["Windwalker"] },         // Grapple Weapon
+                { spellId: "117368", cooldownSec: 60, durationSec: 6,  requiredSpec: ["Mistweaver"] },
+                { spellId: "117368", cooldownSec: 60, durationSec: 6,  requiredSpec: ["Brewmaster"] },
+                { spellId: "64044",  cooldownSec: 120, durationSec: 3, requiredSpec: ["Shadow"] },             // Psychic Horror
+            ]
+        },
+
+        // ══════════════════════════════════════════════════════════
+        // HAND OF PROTECTION (priority-basiert)
+        // Sheet-Prio: HoP(Prot) → HoP(Retri) → HoP(Holy)
+        // ══════════════════════════════════════════════════════════
         hop: {
             name: "Hand des Schutzes", shortName: "HoP", color: "#f9a8d4",
             spells: [
-                { spellId: "1022", cooldownSec: 300, durationSec: 10 },
+                { spellId: "1022", cooldownSec: 300, durationSec: 10, requiredSpec: ["Protection1"] },
+                { spellId: "1022", cooldownSec: 300, durationSec: 10, requiredSpec: ["Retribution"] },
+                { spellId: "1022", cooldownSec: 300, durationSec: 10, requiredSpec: ["Holy1"] },
             ]
         },
+
+        // ══════════════════════════════════════════════════════════
+        // HAND OF SACRIFICE
+        // Sheet-Prio: HoSac(Holy) → HoSac(Retri) → HoSac(Prot)
+        // ══════════════════════════════════════════════════════════
         hos: {
             name: "Hand der Aufopferung", shortName: "HoSac", color: "#fb7185",
             spells: [
-                { spellId: "6940", cooldownSec: 120, durationSec: 12 },
+                { spellId: "6940", cooldownSec: 120, durationSec: 12, requiredSpec: ["Holy1"] },
+                { spellId: "6940", cooldownSec: 120, durationSec: 12, requiredSpec: ["Retribution"] },
+                { spellId: "6940", cooldownSec: 120, durationSec: 12, requiredSpec: ["Protection1"] },
+            ]
+        },
+
+        // ══════════════════════════════════════════════════════════
+        // TANK EXTERNAL (NEU — Einzel-Target Tank-CDs)
+        // ══════════════════════════════════════════════════════════
+        tank_external: {
+            name: "Tank External", shortName: "Tank Ext", color: "#fbbf24",
+            spells: [
+                { spellId: "33206",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Discipline"] },        // Pain Suppression
+                { spellId: "47788",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Holy"] },              // Guardian Spirit
+                { spellId: "6940",   cooldownSec: 120, durationSec: 12 },                                       // HoSac (jeder Paladin)
+                { spellId: "102342", cooldownSec: 60,  durationSec: 12, requiredSpec: ["Restoration"] },       // Ironbark
+                { spellId: "122710", cooldownSec: 120, durationSec: 12 },                                       // Vigilance (jeder Warrior)
+                { spellId: "114039", cooldownSec: 30,  durationSec: 6 },                                        // Hand of Purity (jeder Paladin)
             ]
         }
     };
@@ -131,6 +397,8 @@ window.CD_AUTO_PLANNER = (function() {
     var categories = {};
     var assignments = [];
     var manualOverrides = {};
+    var eventOverrides = {};      // eventIdx (oder custom ID) → { disabled, firstCast, cooldown, maxCasts, name, requiredCDs, icon, delay }
+    var customEvents = [];        // Komplett selbst angelegte Events (nicht aus config)
     var rosterRef = [];
     var firebaseRef = null;
     var cooldownsDB = [];
@@ -146,17 +414,30 @@ window.CD_AUTO_PLANNER = (function() {
         return (window.classColors && window.classColors[(cls || '').toUpperCase()]) || '#FFFFFF';
     }
 
-    function getPlayersOfClass(cls, requiredRole) {
+    function getPlayersOfClass(cls, requiredRole, requiredSpec) {
         return rosterRef.filter(function(p) {
+            // 1. Klasse MUSS immer matchen
             if ((p.class || '').toUpperCase() !== (cls || '').toUpperCase()) return false;
-            if (!requiredRole) return true;  // Kein Role-Filter
-            // Role aus Roster (roles ist Array, erste Rolle zählt)
+
+            // 2. Spec-Filter hat Vorrang vor Role-Filter (präziser)
+            //    requiredSpec kann Array sein (["Holy", "Holy1"]) oder String
+            if (requiredSpec && requiredSpec.length > 0) {
+                var playerSpec = p.spec || p.specName || '';
+                // Wenn Spieler keine Spec hat → Fallback auf reinen Klassen-Match (wie gewünscht)
+                if (!playerSpec) return true;
+                var specList = Array.isArray(requiredSpec) ? requiredSpec : [requiredSpec];
+                // Case-insensitive Match
+                var pSpecLower = playerSpec.toLowerCase();
+                return specList.some(function(s) { return String(s).toLowerCase() === pSpecLower; });
+            }
+
+            // 3. Role-Filter (wenn kein Spec-Filter gesetzt)
+            if (!requiredRole) return true;
             var roles = p.roles || [];
             var firstRole = (Array.isArray(roles) ? (roles[0] || '') : roles).toString().toLowerCase();
             if (requiredRole === 'heal') return firstRole.indexOf('heal') !== -1;
             if (requiredRole === 'tank') return firstRole.indexOf('tank') !== -1;
             if (requiredRole === 'dps')  {
-                // DPS = alles was nicht Tank/Heal/Bench ist
                 return firstRole.indexOf('heal') === -1 &&
                        firstRole.indexOf('tank') === -1 &&
                        firstRole.indexOf('bench') === -1 &&
@@ -193,8 +474,8 @@ window.CD_AUTO_PLANNER = (function() {
                 spellId:     entry.spellId,
                 cooldownSec: parseInt(db.cooldownSec) || entry.cooldownSec || 180,
                 durationSec: parseInt(db.durationSec) || entry.durationSec || 0,
-                // Role-Filter: Spell-spezifisch hat Vorrang, sonst Kategorie-weit
                 requiredRole: entry.requiredRole || cat.requiredRole || null,
+                requiredSpec: entry.requiredSpec || cat.requiredSpec || null,
                 found:       true
             });
         });
@@ -202,15 +483,61 @@ window.CD_AUTO_PLANNER = (function() {
     }
 
     // ── Timeline generieren ──
+    // Gibt die effektive Event-Liste zurück: config.events + customEvents, mit Overrides angewendet
+    function getEffectiveEvents() {
+        var result = [];
+        // config.events mit Overrides
+        (config.events || []).forEach(function(evt, idx) {
+            var key = 'cfg_' + idx;
+            var ov = eventOverrides[key] || {};
+            if (ov.disabled) return;
+            result.push({
+                _key:          key,
+                _origIdx:      idx,
+                _isCustom:     false,
+                name:          ov.name          !== undefined ? ov.name          : evt.name,
+                firstCast:     ov.firstCast     !== undefined ? ov.firstCast     : evt.firstCast,
+                cooldown:      ov.cooldown      !== undefined ? ov.cooldown      : (evt.cooldown || 0),
+                maxCasts:      ov.maxCasts      !== undefined ? ov.maxCasts      : (evt.maxCasts || 1),
+                delay:         ov.delay         !== undefined ? ov.delay         : (evt.delay || 0),
+                eventDuration: ov.eventDuration !== undefined ? ov.eventDuration : (evt.eventDuration || 0),
+                requiredCDs:   ov.requiredCDs   !== undefined ? ov.requiredCDs   : (evt.requiredCDs || []),
+                icon:          ov.icon          !== undefined ? ov.icon          : (evt.icon || ''),
+                spellId:       evt.spellId
+            });
+        });
+        // customEvents (komplett vom User angelegt)
+        customEvents.forEach(function(evt) {
+            var ov = eventOverrides[evt._key] || {};
+            if (ov.disabled) return;
+            result.push({
+                _key:          evt._key,
+                _isCustom:     true,
+                name:          evt.name,
+                firstCast:     evt.firstCast,
+                cooldown:      evt.cooldown || 0,
+                maxCasts:      evt.maxCasts || 1,
+                delay:         evt.delay || 0,
+                eventDuration: evt.eventDuration || 0,
+                requiredCDs:   evt.requiredCDs || [],
+                icon:          evt.icon || '',
+                spellId:       evt.spellId || 0
+            });
+        });
+        return result;
+    }
+
     function generateTimeline() {
         var timeline = [];
-        config.events.forEach(function(event, eventIdx) {
+        var effectiveEvents = getEffectiveEvents();
+        effectiveEvents.forEach(function(event, eventIdx) {
             var casts = event.maxCasts || 1;
             for (var c = 0; c < casts; c++) {
                 var absTime = event.firstCast + (c * (event.cooldown || 0));
                 if (event.cooldown === 0 && c > 0) break;
                 timeline.push({
                     eventIdx:      eventIdx,
+                    eventKey:      event._key,
                     castNum:       c + 1,
                     absTime:       absTime,
                     delay:         event.delay || 0,
@@ -228,7 +555,8 @@ window.CD_AUTO_PLANNER = (function() {
 
     function getUniqueCategoryKeys() {
         var keys = [];
-        config.events.forEach(function(e) {
+        var effectiveEvents = getEffectiveEvents();
+        effectiveEvents.forEach(function(e) {
             (e.requiredCDs || []).forEach(function(k) {
                 if (keys.indexOf(k) === -1) keys.push(k);
             });
@@ -281,7 +609,7 @@ window.CD_AUTO_PLANNER = (function() {
                 var assigned = false;
                 for (var si = 0; si < spells.length && !assigned; si++) {
                     var spell = spells[si];
-                    var players = getPlayersOfClass(spell.dbClass, spell.requiredRole);
+                    var players = getPlayersOfClass(spell.dbClass, spell.requiredRole, spell.requiredSpec);
                     for (var pi = 0; pi < players.length && !assigned; pi++) {
                         if (isAvailable(players[pi], spell.dbName, spell.cooldownSec, row.absTime)) {
                             row.slots[catKey] = {
@@ -470,19 +798,30 @@ window.CD_AUTO_PLANNER = (function() {
             Object.entries(byClassR).forEach(function(entry) {
                 var cls = entry[0], spells = entry[1];
                 var color = getClassColor(cls);
-                // Role pro Spell kann unterschiedlich sein → pro Spell filtern
                 var anyRendered = false;
                 spells.forEach(function(s) {
-                    var players = getPlayersOfClass(cls, s.requiredRole);
+                    var players = getPlayersOfClass(cls, s.requiredRole, s.requiredSpec);
                     if (!players.length) return;
                     if (!anyRendered) {
                         html += '<option disabled style="font-weight:bold; color:' + color + '; background:#1a202c;">── ' + cls + ' ──</option>';
                         anyRendered = true;
                     }
                     var dur = s.durationSec ? ' [' + s.durationSec + 's]' : '';
-                    var roleMark = s.requiredRole ? ' (' + s.requiredRole + ')' : '';
+                    var specMark = '';
+                    if (s.requiredSpec) {
+                        var specs = Array.isArray(s.requiredSpec) ? s.requiredSpec : [s.requiredSpec];
+                        // Lesbare Labels statt Raidhelper-Namen
+                        var labels = specs.map(function(v) {
+                            var lbl = getSpecLabel(v);
+                            // Klammer-Suffix "(Tank)", "(Heal)" entfernen für kompakte Anzeige
+                            return lbl.replace(/\s*\([^)]+\)/, '');
+                        });
+                        specMark = ' [' + labels.join('/') + ']';
+                    } else if (s.requiredRole) {
+                        specMark = ' (' + s.requiredRole + ')';
+                    }
                     players.forEach(function(p) {
-                        html += '<option value="' + p + '::' + s.dbName + '" style="color:' + color + ';">★ ' + p + ' → ' + s.dbName + dur + roleMark + '</option>';
+                        html += '<option value="' + p + '::' + s.dbName + '" style="color:' + color + ';">★ ' + p + ' → ' + s.dbName + dur + specMark + '</option>';
                     });
                 });
             });
@@ -522,6 +861,254 @@ window.CD_AUTO_PLANNER = (function() {
         var timeline = generateTimeline();
         assignments = autoAssign(timeline);
         renderTimeline(assignments);
+        renderEventManager();
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // EVENT MANAGER — Events deaktivieren, editieren, hinzufügen
+    // ══════════════════════════════════════════════════════════════
+
+    function renderEventManager() {
+        var container = document.getElementById('auto-planner-events');
+        if (!container) return;
+
+        // Einmalig Styles
+        if (!document.getElementById('event-mgr-styles')) {
+            var st = document.createElement('style');
+            st.id = 'event-mgr-styles';
+            st.textContent =
+                '#auto-planner-events .evt-row { display:grid; grid-template-columns: 30px 32px 80px 1fr 60px 70px 70px 1fr 60px; gap:6px; align-items:center; padding:4px 6px; border-radius:4px; font-size:11px; }' +
+                '#auto-planner-events .evt-row.disabled { opacity:0.35; }' +
+                '#auto-planner-events .evt-row:hover { background:rgba(51,65,85,0.3); }' +
+                '#auto-planner-events .evt-row input[type="number"], #auto-planner-events .evt-row input[type="text"] { background:#0f172a; color:#e5e7eb; border:1px solid #334155; border-radius:3px; padding:2px 4px; font-size:10px; }' +
+                '#auto-planner-events .evt-row input[type="number"] { width:100%; text-align:right; }' +
+                '#auto-planner-events .evt-cat-btn { background:#0f172a; color:#cbd5e1; border:1px solid #334155; border-radius:3px; padding:2px 6px; font-size:10px; cursor:pointer; text-align:left; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }' +
+                '#auto-planner-events .evt-cat-btn:hover { background:#1e293b; }' +
+                '#auto-planner-events .evt-header { font-size:9px; text-transform:uppercase; color:#94a3b8; letter-spacing:0.05em; border-bottom:1px solid #334155; padding-bottom:4px; margin-bottom:2px; }';
+            document.head.appendChild(st);
+        }
+
+        var effectiveEvents = getEffectiveEvents.call(null); // aktuelle effektive Liste
+        // Für Anzeige brauchen wir alle Events (auch deaktivierte)
+        var allRows = [];
+        (config.events || []).forEach(function(evt, idx) {
+            var key = 'cfg_' + idx;
+            var ov = eventOverrides[key] || {};
+            allRows.push({
+                _key: key, _isCustom: false,
+                disabled:      !!ov.disabled,
+                name:          ov.name          !== undefined ? ov.name          : evt.name,
+                firstCast:     ov.firstCast     !== undefined ? ov.firstCast     : evt.firstCast,
+                cooldown:      ov.cooldown      !== undefined ? ov.cooldown      : (evt.cooldown || 0),
+                maxCasts:      ov.maxCasts      !== undefined ? ov.maxCasts      : (evt.maxCasts || 1),
+                requiredCDs:   ov.requiredCDs   !== undefined ? ov.requiredCDs   : (evt.requiredCDs || []),
+                icon:          ov.icon          !== undefined ? ov.icon          : (evt.icon || '')
+            });
+        });
+        customEvents.forEach(function(evt) {
+            var ov = eventOverrides[evt._key] || {};
+            allRows.push({
+                _key: evt._key, _isCustom: true,
+                disabled:      !!ov.disabled,
+                name:          evt.name, firstCast: evt.firstCast, cooldown: evt.cooldown || 0,
+                maxCasts:      evt.maxCasts || 1, requiredCDs: evt.requiredCDs || [], icon: evt.icon || ''
+            });
+        });
+
+        var header = '<div class="evt-row evt-header"><span></span><span>Ikon</span><span>Zeit</span><span>Name</span><span title="Cooldown zwischen Casts">CD</span><span title="Anzahl Casts">Casts</span><span title="Verzögerung">Delay</span><span>Kategorien</span><span></span></div>';
+
+        var html = allRows.map(function(r) {
+            var catLabels = (r.requiredCDs || []).map(function(k) {
+                var c = categories[k];
+                return c ? c.shortName : k;
+            }).join(', ');
+            if (!catLabels) catLabels = '—';
+
+            var customBadge = r._isCustom ? '<span class="text-[8px] text-emerald-400" title="Selbst angelegt">★</span>' : '';
+
+            return '<div class="evt-row ' + (r.disabled ? 'disabled' : '') + '" data-key="' + r._key + '">'
+                + '<input type="checkbox" class="evt-enabled" data-key="' + r._key + '"' + (r.disabled ? '' : ' checked') + ' title="Aktiv">'
+                + '<input type="text" class="evt-icon" data-key="' + r._key + '" value="' + (r.icon || '') + '" style="width:100%;text-align:center;padding:2px;" title="Emoji/Icon">'
+                + '<input type="number" class="evt-first" data-key="' + r._key + '" value="' + r.firstCast + '" step="5" title="Erste Zeit (Sekunden)">'
+                + '<input type="text" class="evt-name" data-key="' + r._key + '" value="' + (r.name || '').replace(/"/g, '&quot;') + '" placeholder="Event-Name">'
+                + '<input type="number" class="evt-cd" data-key="' + r._key + '" value="' + r.cooldown + '" step="1" title="Cooldown zwischen Casts">'
+                + '<input type="number" class="evt-max" data-key="' + r._key + '" value="' + r.maxCasts + '" min="1" step="1" title="Anzahl Casts">'
+                + '<input type="number" class="evt-delay" data-key="' + r._key + '" value="' + ((eventOverrides[r._key] && eventOverrides[r._key].delay !== undefined) ? eventOverrides[r._key].delay : (r._isCustom ? (customEvents.find(function(c){return c._key===r._key;}) || {}).delay || 0 : ((config.events[parseInt(r._key.replace("cfg_", ""))] || {}).delay || 0))) + '" step="1" title="Verzögerung (neg=vorher)">'
+                + '<button class="evt-cat-btn" data-key="' + r._key + '" title="Klicken um Kategorien zu ändern">' + catLabels + ' ' + customBadge + '</button>'
+                + (r._isCustom ? '<button class="text-red-400 hover:text-red-300 text-xs evt-delete" data-key="' + r._key + '" title="Löschen">🗑</button>' : '<span class="text-gray-600 text-[9px] text-center" title="Basis-Event aus Config">cfg</span>')
+                + '</div>';
+        }).join('');
+
+        container.innerHTML = '<div class="flex items-center justify-between mb-2">'
+            + '<div class="text-xs font-bold text-gray-300">📋 Events (' + allRows.filter(function(r){return !r.disabled;}).length + ' aktiv / ' + allRows.length + ' gesamt)</div>'
+            + '<button id="btn-add-event" class="bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] py-1 px-2 rounded border border-emerald-500">+ Event hinzufügen</button>'
+            + '</div>'
+            + header + html;
+
+        attachEventManagerListeners();
+    }
+
+    function attachEventManagerListeners() {
+        // Aktiv-Toggle
+        document.querySelectorAll('.evt-enabled').forEach(function(cb) {
+            cb.addEventListener('change', function(e) {
+                var key = e.target.dataset.key;
+                if (!eventOverrides[key]) eventOverrides[key] = {};
+                eventOverrides[key].disabled = !e.target.checked;
+                runAutoAssign();
+            });
+        });
+
+        // Icon
+        document.querySelectorAll('.evt-icon').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                setOverride(e.target.dataset.key, 'icon', e.target.value);
+            });
+        });
+
+        // FirstCast
+        document.querySelectorAll('.evt-first').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                setOverride(e.target.dataset.key, 'firstCast', parseFloat(e.target.value) || 0);
+            });
+        });
+
+        // Name
+        document.querySelectorAll('.evt-name').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                setOverride(e.target.dataset.key, 'name', e.target.value);
+            });
+        });
+
+        // Cooldown
+        document.querySelectorAll('.evt-cd').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                setOverride(e.target.dataset.key, 'cooldown', parseFloat(e.target.value) || 0);
+            });
+        });
+
+        // MaxCasts
+        document.querySelectorAll('.evt-max').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                setOverride(e.target.dataset.key, 'maxCasts', parseInt(e.target.value) || 1);
+            });
+        });
+
+        // Delay
+        document.querySelectorAll('.evt-delay').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                setOverride(e.target.dataset.key, 'delay', parseFloat(e.target.value) || 0);
+            });
+        });
+
+        // Kategorien-Button → Modal
+        document.querySelectorAll('.evt-cat-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                openEventCategoryPicker(e.currentTarget.dataset.key);
+            });
+        });
+
+        // Delete (nur Custom)
+        document.querySelectorAll('.evt-delete').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                var key = e.currentTarget.dataset.key;
+                if (!confirm('Event wirklich löschen?')) return;
+                customEvents = customEvents.filter(function(evt) { return evt._key !== key; });
+                delete eventOverrides[key];
+                runAutoAssign();
+            });
+        });
+
+        // Add Event
+        var addBtn = document.getElementById('btn-add-event');
+        if (addBtn) {
+            addBtn.addEventListener('click', function() {
+                var key = 'custom_' + Date.now();
+                customEvents.push({
+                    _key: key,
+                    name: 'Neues Event',
+                    icon: '⚡',
+                    firstCast: 30,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 0,
+                    requiredCDs: []
+                });
+                runAutoAssign();
+            });
+        }
+    }
+
+    function setOverride(key, field, value) {
+        // Bei Custom-Events direkt in customEvents schreiben statt in eventOverrides
+        var custom = customEvents.find(function(e) { return e._key === key; });
+        if (custom) {
+            custom[field] = value;
+        } else {
+            if (!eventOverrides[key]) eventOverrides[key] = {};
+            eventOverrides[key][field] = value;
+        }
+        runAutoAssign();
+    }
+
+    // ── Kategorie-Picker pro Event ──
+    function openEventCategoryPicker(eventKey) {
+        // aktuelle requiredCDs holen
+        var current = [];
+        var custom = customEvents.find(function(e) { return e._key === eventKey; });
+        if (custom) {
+            current = (custom.requiredCDs || []).slice();
+        } else {
+            var ov = eventOverrides[eventKey] || {};
+            if (ov.requiredCDs !== undefined) {
+                current = ov.requiredCDs.slice();
+            } else {
+                var cfgIdx = parseInt(eventKey.replace('cfg_', ''));
+                current = ((config.events[cfgIdx] || {}).requiredCDs || []).slice();
+            }
+        }
+
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;';
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;';
+
+        var rows = Object.entries(categories).map(function(entry) {
+            var key = entry[0], cat = entry[1];
+            var checked = current.indexOf(key) !== -1;
+            return '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
+                + '<input type="checkbox" class="cat-pick-cb" value="' + key + '"' + (checked ? ' checked' : '') + ' style="accent-color:' + cat.color + ';">'
+                + '<span class="flex-1 text-sm" style="color:' + cat.color + ';">' + cat.name + '</span>'
+                + '<span class="text-[9px] text-gray-500 font-mono">' + (cat.spells ? cat.spells.length : 0) + ' Spells</span>'
+                + '</label>';
+        }).join('');
+
+        modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-3">Kategorien für dieses Event</h4>'
+            + '<div class="text-xs text-gray-400 mb-3">Welche CD-Kategorien sollen bei diesem Event automatisch gesucht werden?</div>'
+            + '<div class="space-y-1 mb-4">' + rows + '</div>'
+            + '<div class="flex justify-end gap-2">'
+            +   '<button id="cat-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
+            +   '<button id="cat-pick-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button>'
+            + '</div>';
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        modal.querySelector('#cat-pick-save').addEventListener('click', function() {
+            var selected = [];
+            modal.querySelectorAll('.cat-pick-cb').forEach(function(cb) {
+                if (cb.checked) selected.push(cb.value);
+            });
+            setOverride(eventKey, 'requiredCDs', selected);
+            document.body.removeChild(overlay);
+        });
+        modal.querySelector('#cat-pick-cancel').addEventListener('click', function() {
+            document.body.removeChild(overlay);
+        });
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) document.body.removeChild(overlay);
+        });
     }
 
     function updateStatus(msg) {
@@ -594,7 +1181,7 @@ window.CD_AUTO_PLANNER = (function() {
     // ══════════════════════════════════════════════════════════════
 
     async function savePlan() {
-        if (!firebaseRef || !assignments.length) return;
+        if (!firebaseRef) return;
         try {
             await firebaseRef.setDoc(
                 firebaseRef.doc(firebaseRef.db, "auto-planner", config.id),
@@ -603,6 +1190,8 @@ window.CD_AUTO_PLANNER = (function() {
                     timestamp: new Date().toISOString(),
                     editor: sessionStorage.getItem('currentManager') || 'Unbekannt',
                     manualOverrides: manualOverrides,
+                    eventOverrides: eventOverrides,
+                    customEvents: customEvents,
                     assignments: assignments.map(function(r) {
                         var slots = {};
                         Object.entries(r.slots).forEach(function(e) {
@@ -622,7 +1211,13 @@ window.CD_AUTO_PLANNER = (function() {
         if (!firebaseRef) return false;
         try {
             var snap = await firebaseRef.getDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", config.id));
-            if (snap.exists()) { manualOverrides = snap.data().manualOverrides || {}; return true; }
+            if (snap.exists()) {
+                var data = snap.data();
+                manualOverrides = data.manualOverrides || {};
+                eventOverrides  = data.eventOverrides  || {};
+                customEvents    = data.customEvents    || [];
+                return true;
+            }
         } catch (e) { console.error("[Auto-Planner]", e); }
         return false;
     }
@@ -648,6 +1243,21 @@ window.CD_AUTO_PLANNER = (function() {
         var el = document.getElementById('cd-categories-container');
         if (!el) return;
 
+        // Einmalig Styles injizieren, damit der Editor korrekt scrollt und Zeilen nicht clippen
+        if (!document.getElementById('cd-admin-styles')) {
+            var styleTag = document.createElement('style');
+            styleTag.id = 'cd-admin-styles';
+            styleTag.textContent =
+                '#cd-categories-container { max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 6px; }' +
+                '#cd-categories-container > div[data-cat-key] { overflow: visible; }' +
+                '#cd-categories-container .spells-container { overflow: visible; }' +
+                '#cd-categories-container .spell-row { overflow: visible; min-height: 32px; }' +
+                '#cd-categories-container::-webkit-scrollbar { width: 8px; }' +
+                '#cd-categories-container::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }' +
+                '#cd-categories-container::-webkit-scrollbar-track { background: #1e293b; }';
+            document.head.appendChild(styleTag);
+        }
+
         var addCatBtn = '<div class="mb-3"><button id="btn-add-category" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Neue Kategorie</button></div>';
 
         var catsHtml = Object.entries(categories).map(function(entry) {
@@ -666,12 +1276,26 @@ window.CD_AUTO_PLANNER = (function() {
                     return '<option value="' + r + '"' + (role === r ? ' selected' : '') + '>' + (r || 'alle') + '</option>';
                 }).join('');
 
-                return '<div class="spell-row flex items-center gap-2 text-[11px] bg-slate-800/50 p-1.5 rounded" draggable="true" data-cat="' + key + '" data-idx="' + idx + '">'
+                // Spec-Anzeige: Lesbare Labels mit Klassen-Kontext
+                var specList = Array.isArray(sp.requiredSpec) ? sp.requiredSpec : (sp.requiredSpec ? [sp.requiredSpec] : []);
+                var specDisplay = '';
+                if (specList.length === 0) {
+                    specDisplay = '<span class="text-gray-500 italic">alle Specs</span>';
+                } else if (specList.length <= 2) {
+                    specDisplay = specList.map(function(s) { return getSpecLabel(s); }).join(', ');
+                } else {
+                    specDisplay = specList.length + ' Specs';
+                }
+
+                return '<div class="spell-row flex items-center gap-2 text-[11px] bg-slate-800/50 p-1.5 rounded flex-wrap" draggable="true" data-cat="' + key + '" data-idx="' + idx + '">'
                     + '<span class="drag-handle cursor-move text-gray-600 px-1" title="Ziehen zum Sortieren">⋮⋮</span>'
                     + '<span class="text-gray-500 w-4 text-right">' + (idx + 1) + '.</span>'
-                    + '<span style="color:' + color + ';" class="font-medium flex-1">' + (found ? '' : '❌ ') + name + '</span>'
+                    + '<span style="color:' + color + ';" class="font-medium flex-1 min-w-[140px]">' + (found ? '' : '❌ ') + name + '</span>'
                     + '<span class="text-gray-500 w-20">' + cls + '</span>'
                     + '<select class="spell-role-select bg-slate-900 text-gray-400 text-[10px] px-1 py-0.5 rounded border border-slate-600" data-cat="' + key + '" data-idx="' + idx + '" title="Nur für diese Rolle">' + roleOptions + '</select>'
+                    + '<button class="spell-spec-btn bg-slate-900 hover:bg-slate-700 text-gray-300 text-[10px] px-2 py-0.5 rounded border border-slate-600 w-44 text-left truncate" data-cat="' + key + '" data-idx="' + idx + '" title="Specs auswählen">'
+                    +   '<span class="opacity-60">Specs:</span> ' + specDisplay
+                    + '</button>'
                     + '<span class="text-gray-600 font-mono" title="Wirkdauer">' + durS + 's</span>'
                     + '<span class="text-gray-600 font-mono" title="Cooldown">' + cdS + 's CD</span>'
                     + '<span class="text-gray-700 font-mono text-[9px] w-12">' + sp.spellId + '</span>'
@@ -768,6 +1392,15 @@ window.CD_AUTO_PLANNER = (function() {
             });
         });
 
+        // Spell-Spec (Button öffnet Popup mit Checkbox-Liste)
+        document.querySelectorAll('.spell-spec-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                var cat = e.currentTarget.dataset.cat;
+                var idx = parseInt(e.currentTarget.dataset.idx);
+                openSpecPicker(cat, idx);
+            });
+        });
+
         // Spell entfernen
         document.querySelectorAll('.remove-spell-btn').forEach(function(btn) {
             btn.addEventListener('click', function(e) {
@@ -819,6 +1452,111 @@ window.CD_AUTO_PLANNER = (function() {
                 arr.splice(toIdx, 0, item);
                 renderCategoriesAdmin();
             });
+        });
+    }
+
+    // ── Spec-Picker: Multi-Select Dialog für Specs einer Klasse ──
+    function openSpecPicker(catKey, spellIdx) {
+        var sp = categories[catKey].spells[spellIdx];
+        var db = resolveSpell(sp.spellId);
+        var cls = db ? db.dbClass : null;
+        if (!cls) {
+            // Fallback: resolve über cooldownsDB
+            var cd = cooldownsDB.find(function(c) { return String(c.spellId) === String(sp.spellId); });
+            cls = cd ? cd.class : null;
+        }
+        if (!cls) {
+            alert('Klasse für diesen Spell nicht ermittelbar.');
+            return;
+        }
+        cls = cls.toUpperCase();
+        var specs = SPEC_DEFINITIONS[cls] || [];
+        if (!specs.length) {
+            alert('Keine Specs für Klasse ' + cls + ' definiert.');
+            return;
+        }
+
+        var currentSpecs = Array.isArray(sp.requiredSpec) ? sp.requiredSpec.slice() : (sp.requiredSpec ? [sp.requiredSpec] : []);
+
+        // Overlay
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;';
+
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:420px;width:90%;';
+
+        var color = getClassColor(cls);
+        var spellName = db ? db.dbName : ('SpellID ' + sp.spellId);
+
+        var checkboxesHtml = specs.map(function(spec) {
+            var checked = currentSpecs.indexOf(spec.value) !== -1;
+            return '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
+                + '<input type="checkbox" class="spec-pick-cb" value="' + spec.value + '"' + (checked ? ' checked' : '') + ' style="accent-color: ' + color + ';">'
+                + '<span class="flex-1 text-sm" style="color:' + color + ';">' + spec.label + '</span>'
+                + '<span class="text-[9px] text-gray-500 font-mono">' + spec.value + '</span>'
+                + '</label>';
+        }).join('');
+
+        modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">' + spellName + '</h4>'
+            + '<div class="text-xs mb-4" style="color:' + color + ';">' + cls + '</div>'
+            + '<div class="text-xs text-gray-400 mb-3">Welche Specs sollen diesen Spell nutzen können?</div>'
+            + '<div class="space-y-1 mb-4">'
+            +   '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer border-b border-slate-700">'
+            +   '<input type="checkbox" id="spec-pick-all" class="spec-pick-cb-all">'
+            +   '<span class="flex-1 text-xs italic text-gray-300">Alle Specs (kein Filter)</span>'
+            +   '</label>'
+            + checkboxesHtml
+            + '</div>'
+            + '<div class="flex justify-end gap-2">'
+            +   '<button id="spec-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
+            +   '<button id="spec-pick-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button>'
+            + '</div>';
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // "Alle Specs" Checkbox-Logik
+        var allCb = modal.querySelector('#spec-pick-all');
+        var specCbs = modal.querySelectorAll('.spec-pick-cb');
+
+        // Initialzustand: "Alle" wenn nichts selektiert
+        allCb.checked = currentSpecs.length === 0;
+
+        allCb.addEventListener('change', function() {
+            if (allCb.checked) {
+                specCbs.forEach(function(cb) { cb.checked = false; });
+            }
+        });
+
+        specCbs.forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                if (cb.checked) allCb.checked = false;
+            });
+        });
+
+        // Save
+        modal.querySelector('#spec-pick-save').addEventListener('click', function() {
+            var selected = [];
+            if (!allCb.checked) {
+                specCbs.forEach(function(cb) {
+                    if (cb.checked) selected.push(cb.value);
+                });
+            }
+            if (selected.length === 0) {
+                delete categories[catKey].spells[spellIdx].requiredSpec;
+            } else {
+                categories[catKey].spells[spellIdx].requiredSpec = selected;
+            }
+            document.body.removeChild(overlay);
+            renderCategoriesAdmin();
+        });
+
+        // Cancel
+        modal.querySelector('#spec-pick-cancel').addEventListener('click', function() {
+            document.body.removeChild(overlay);
+        });
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) document.body.removeChild(overlay);
         });
     }
 
@@ -907,6 +1645,8 @@ window.CD_AUTO_PLANNER = (function() {
 
     function clearPlan() {
         manualOverrides = {};
+        eventOverrides = {};
+        customEvents = [];
         assignments = [];
         var tbody = document.getElementById('auto-planner-tbody');
         if (tbody) tbody.innerHTML = '';
@@ -933,6 +1673,19 @@ window.CD_AUTO_PLANNER = (function() {
             var admin = document.getElementById('cd-categories-admin');
             if (admin) admin.style.display = '';
             renderCategoriesAdmin();
+
+            // Events-Container automatisch injizieren, falls nicht im Boss-HTML vorhanden
+            if (!document.getElementById('auto-planner-events')) {
+                var timelineEl = document.getElementById('auto-planner-timeline');
+                if (timelineEl) {
+                    var evtWrapper = document.createElement('details');
+                    evtWrapper.className = 'mb-4 bg-slate-800 rounded-lg border border-slate-700';
+                    evtWrapper.innerHTML = '<summary class="cursor-pointer p-3 text-sm font-bold text-cyan-400 hover:bg-slate-750 rounded-t-lg">📋 Events bearbeiten (Zeit / Kategorien / Aktivieren)</summary>'
+                        + '<div class="p-3" id="auto-planner-events"></div>';
+                    timelineEl.parentNode.insertBefore(evtWrapper, timelineEl);
+                }
+            }
+            renderEventManager();
         }
 
         document.getElementById('btn-auto-assign').addEventListener('click', runAutoAssign);

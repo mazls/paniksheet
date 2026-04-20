@@ -758,7 +758,7 @@ CD_AUTO_PLANNER.init({
             delay: 14,              // DBM: specWarnFallingAsh:Schedule(14) → 14s nach Cast
                                     //   (Cast = 17s, Warnung 3s vor Einschlag)
             eventDuration: 17,      // DBM: CastTimer 17s
-            requiredCDs: ["any_dr", "major_heal"],
+            requiredCDs: ["any_dr", "any_heal"],
             icon: "🔥"
         },
 
@@ -773,7 +773,7 @@ CD_AUTO_PLANNER.init({
             maxCasts: 10,
             delay: 0,
             eventDuration: 0,
-            requiredCDs: ["minor_heal"],
+            requiredCDs: ["minor_heal"],  // Kleine Heilung reicht, nicht kritisch
             icon: "💦"
         },
 
@@ -804,7 +804,7 @@ CD_AUTO_PLANNER.init({
             maxCasts: 5,
             delay: 0,
             eventDuration: 60,      // Debuff dauert 60s
-            requiredCDs: ["hos"],
+            requiredCDs: ["hos", "tank_external"],  // HoSac auf Ziel + ggf. Pain Supp/Ironbark
             icon: "⛓️"
         },
 
@@ -847,12 +847,12 @@ CD_AUTO_PLANNER.init({
     // Mapping auf deine bestehenden TRIGGER_OPTIONS
     triggerMap: {
         "Falling Ash":             "SHAMAN_ASHE_ADDS",           // Nächster passender Trigger
-        "Foul Geyser":             "SHAMAN_65",
-        "Toxic Storm":             "SHAMAN_85",
+        "Foul Geyser":             "SHAMAN_HEALTH_65",
+        "Toxic Storm":             "SHAMAN_HEALTH_85",
         "Iron Prison":             "SHAMAN_IRON_PRISON_EXPLODE",
-        "Totem 85% (Giftnebel)":   "SHAMAN_85",
-        "Totem 65% (Faulstrom)":   "SHAMAN_65",
-        "Totem 45% (Ascheflamme)": "SHAMAN_45"
+        "Totem 85% (Giftnebel)":   "SHAMAN_HEALTH_85",
+        "Totem 65% (Faulstrom)":   "SHAMAN_HEALTH_65",
+        "Totem 45% (Ascheflamme)": "SHAMAN_HEALTH_45"
     }
 });
 </script>

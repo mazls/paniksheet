@@ -1209,25 +1209,42 @@ pre {
 		</div>
 	</div>
     <div id="player-edit-modal" class="modal-overlay hidden" style="z-index: 3000;">
-    <div class="modal-content" style="max-width: 350px;">
-        <h3 class="text-xl font-bold text-gold mb-4 border-b border-gold-border pb-2">Spieler bearbeiten</h3>
-        
-        <div class="space-y-4 text-left">
-            <div>
-                <label class="text-xs text-gray-400 uppercase font-bold">Name</label>
-                <input type="text" id="edit-player-name-input" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
-            </div>
-            
-            <div>
-                <label class="text-xs text-gray-400 uppercase font-bold">Klasse</label>
-                <select id="edit-player-class-select" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
-                    </select>
-            </div>
-        </div>
+        <div class="modal-content" style="max-width: 400px;">
+            <h3 id="player-edit-modal-title" class="text-xl font-bold text-gold mb-4 border-b border-gold-border pb-2">Spieler bearbeiten</h3>
 
-        <div class="modal-buttons mt-6">
-            <button id="btn-cancel-player-edit" class="cancel-btn">Abbrechen</button>
-            <button id="btn-save-player-edit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">Speichern</button>
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="text-xs text-gray-400 uppercase font-bold">Name</label>
+                    <input type="text" id="edit-player-name-input" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs text-gray-400 uppercase font-bold">Klasse</label>
+                    <select id="edit-player-class-select" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
+                    </select>
+                </div>
+            
+                <div>
+                    <label class="text-xs text-gray-400 uppercase font-bold">Spezialisierung</label>
+                    <select id="edit-player-spec-select" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
+                    </select>
+                    <div class="text-[10px] text-gray-500 mt-1 italic">Rolle wird automatisch basierend auf Spec gesetzt</div>
+                </div>
+            
+                <div>
+                    <label class="text-xs text-gray-400 uppercase font-bold">Rolle</label>
+                    <select id="edit-player-role-select" class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
+                        <option value="DPS">DPS</option>
+                        <option value="TANK">Tank</option>
+                        <option value="HEALER">Heiler</option>
+                    </select>
+                </div>
+            </div>
+        
+            <div class="modal-buttons mt-6">
+                <button id="btn-cancel-player-edit" class="cancel-btn">Abbrechen</button>
+                <button id="btn-save-player-edit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">Speichern</button>
+            </div>
         </div>
     </div>
 </div>
@@ -5482,7 +5499,7 @@ assignmentObserver.observe(document.body, { childList: true, subtree: true });
             let role = 'DPS';
             if (tankSpecs.includes(spec)) role = 'TANK';
             else if (healerSpecs.includes(spec)) role = 'HEALER';
-            return { name: playerEntry.name, class: playerClass, roles: [role], id: crypto.randomUUID() };
+            return { name: playerEntry.name, class: playerClass, roles: [role], spec: spec, id: crypto.randomUUID() };
         }
 
 function displayRoster(roster) {
@@ -5739,98 +5756,244 @@ async function saveRosterOrder() {
         }
 let currentPlayerIdToEdit = null;
 
-function openPlayerEditModal(player) {
-    if (!window.isManager) return;
+// Event Listener für Buttons im Modal
 
-    const modal = document.getElementById('player-edit-modal');
-    const nameInput = document.getElementById('edit-player-name-input');
-    const classSelect = document.getElementById('edit-player-class-select');
-    
-    currentPlayerIdToEdit = player.id;
-    nameInput.value = player.name;
+// ══ Spec-Definitionen pro Klasse ══
+// Diese Struktur matcht die Raidhelper-specNames (inkl. Suffixe wie "Holy1")
+const CLASS_SPECS = {
+    DEATHKNIGHT: [
+        { name: 'Blood',    role: 'TANK' },
+        { name: 'Frost1',   role: 'DPS'  },
+        { name: 'Unholy',   role: 'DPS'  }
+    ],
+    DRUID: [
+        { name: 'Balance',      role: 'DPS'    },
+        { name: 'Feral',        role: 'DPS'    },
+        { name: 'Guardian',     role: 'TANK'   },
+        { name: 'Restoration',  role: 'HEALER' }
+    ],
+    HUNTER: [
+        { name: 'Beastmastery', role: 'DPS' },
+        { name: 'Marksmanship', role: 'DPS' },
+        { name: 'Survival',     role: 'DPS' }
+    ],
+    MAGE: [
+        { name: 'Arcane', role: 'DPS' },
+        { name: 'Fire',   role: 'DPS' },
+        { name: 'Frost',  role: 'DPS' }
+    ],
+    MONK: [
+        { name: 'Brewmaster', role: 'TANK'   },
+        { name: 'Mistweaver', role: 'HEALER' },
+        { name: 'Windwalker', role: 'DPS'    }
+    ],
+    PALADIN: [
+        { name: 'Holy1',        role: 'HEALER' },
+        { name: 'Protection1',  role: 'TANK'   },
+        { name: 'Retribution',  role: 'DPS'    }
+    ],
+    PRIEST: [
+        { name: 'Discipline', role: 'HEALER' },
+        { name: 'Holy',       role: 'HEALER' },
+        { name: 'Shadow',     role: 'DPS'    }
+    ],
+    ROGUE: [
+        { name: 'Assassination', role: 'DPS' },
+        { name: 'Combat',        role: 'DPS' },
+        { name: 'Subtlety',      role: 'DPS' }
+    ],
+    SHAMAN: [
+        { name: 'Elemental',     role: 'DPS'    },
+        { name: 'Enhancement',   role: 'DPS'    },
+        { name: 'Restoration1',  role: 'HEALER' }
+    ],
+    WARLOCK: [
+        { name: 'Affliction',  role: 'DPS' },
+        { name: 'Demonology',  role: 'DPS' },
+        { name: 'Destruction', role: 'DPS' }
+    ],
+    WARRIOR: [
+        { name: 'Arms',        role: 'DPS'  },
+        { name: 'Fury',        role: 'DPS'  },
+        { name: 'Protection',  role: 'TANK' }
+    ]
+};
+ 
 
-    // Klassen-Dropdown füllen (falls noch leer)
-    if (classSelect.options.length === 0) {
-        const classes = ['DEATHKNIGHT', 'DRUID', 'HUNTER', 'MAGE', 'MONK', 'PALADIN', 'PRIEST', 'ROGUE', 'SHAMAN', 'WARLOCK', 'WARRIOR'];
-        classes.forEach(cls => {
-            const opt = document.createElement('option');
-            opt.value = cls;
-            opt.textContent = cls.charAt(0) + cls.slice(1).toLowerCase();
-            opt.style.color = window.classColors[cls];
-            opt.style.fontWeight = "bold";
-            classSelect.appendChild(opt);
-        });
-    }
-    
-    classSelect.value = player.class.toUpperCase(); // Aktuelle Klasse setzen
-    
-    // Farbe beim Öffnen setzen
-    classSelect.style.color = window.classColors[classSelect.value] || '#fff';
-    
-    // Farbe bei Änderung anpassen
-    classSelect.onchange = function() {
-        this.style.color = window.classColors[this.value] || '#fff';
-    };
-
-    modal.classList.remove('hidden');
-    modal.style.display = 'flex'; // Sicherstellen, dass es sichtbar ist
-    nameInput.focus();
+let isAddingNewPlayer = false;
+ 
+function populateClassDropdown(classSelect) {
+    if (classSelect.options.length > 0) return;  // Schon befüllt
+    const classes = Object.keys(CLASS_SPECS);
+    classes.forEach(cls => {
+        const opt = document.createElement('option');
+        opt.value = cls;
+        opt.textContent = cls.charAt(0) + cls.slice(1).toLowerCase();
+        opt.style.color = window.classColors[cls];
+        opt.style.fontWeight = "bold";
+        classSelect.appendChild(opt);
+    });
 }
 
+function populateSpecDropdown(className, specSelect, selectedSpec) {
+    specSelect.innerHTML = '';
+    const specs = CLASS_SPECS[className] || [];
+    specs.forEach(spec => {
+        const opt = document.createElement('option');
+        opt.value = spec.name;
+        // Anzeige ohne Zahl-Suffix für User
+        const displayName = spec.name.replace(/1$/, '');
+        opt.textContent = displayName + ' (' + spec.role + ')';
+        opt.dataset.role = spec.role;
+        specSelect.appendChild(opt);
+    });
+    // Vorauswahl
+    if (selectedSpec) {
+        specSelect.value = selectedSpec;
+    } else if (specs.length > 0) {
+        specSelect.value = specs[0].name;  // Erste Spec als Default
+    }
+}
+ 
+function autoSetRoleFromSpec(specSelect, roleSelect) {
+    const opt = specSelect.options[specSelect.selectedIndex];
+    if (opt && opt.dataset.role) {
+        roleSelect.value = opt.dataset.role;
+    }
+}
+ 
+function openPlayerEditModal(player) {
+    if (!window.isManager) return;
+ 
+    const modal = document.getElementById('player-edit-modal');
+    const titleEl = document.getElementById('player-edit-modal-title');
+    const nameInput = document.getElementById('edit-player-name-input');
+    const classSelect = document.getElementById('edit-player-class-select');
+    const specSelect = document.getElementById('edit-player-spec-select');
+    const roleSelect = document.getElementById('edit-player-role-select');
+    
+    isAddingNewPlayer = !player;
+    currentPlayerIdToEdit = player ? player.id : null;
+ 
+    titleEl.textContent = isAddingNewPlayer ? 'Neuer Spieler' : 'Spieler bearbeiten';
+    nameInput.value = player ? player.name : '';
+ 
+    populateClassDropdown(classSelect);
+ 
+    // Klasse setzen
+    const currentClass = (player && player.class) ? player.class.toUpperCase() : 'WARRIOR';
+    classSelect.value = currentClass;
+    classSelect.style.color = window.classColors[currentClass] || '#fff';
+ 
+    // Spec-Dropdown basierend auf Klasse füllen
+    populateSpecDropdown(currentClass, specSelect, player ? player.spec : null);
+ 
+    // Rolle setzen
+    if (player && player.roles && player.roles[0]) {
+        roleSelect.value = (player.roles[0]).toString().toUpperCase();
+    } else {
+        autoSetRoleFromSpec(specSelect, roleSelect);
+    }
+ 
+    // ── Klassen-Änderung: Spec-Dropdown neu befüllen ──
+    classSelect.onchange = function() {
+        this.style.color = window.classColors[this.value] || '#fff';
+        populateSpecDropdown(this.value, specSelect, null);
+        autoSetRoleFromSpec(specSelect, roleSelect);
+    };
+ 
+    // ── Spec-Änderung: Rolle automatisch setzen ──
+    specSelect.onchange = function() {
+        autoSetRoleFromSpec(this, roleSelect);
+    };
+ 
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+    nameInput.focus();
+}
+ 
 function closePlayerEditModal() {
     const modal = document.getElementById('player-edit-modal');
     modal.classList.add('hidden');
     modal.style.display = 'none';
     currentPlayerIdToEdit = null;
+    isAddingNewPlayer = false;
 }
-
+ 
 // Event Listener für Buttons im Modal
 document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('btn-cancel-player-edit')?.addEventListener('click', closePlayerEditModal);
-        
-        document.getElementById('btn-save-player-edit')?.addEventListener('click', async () => {
-            if (!currentPlayerIdToEdit || !window.isManager) return;
-
-            const newName = document.getElementById('edit-player-name-input').value.trim();
-            const newClass = document.getElementById('edit-player-class-select').value;
-
-            // Datenbank Verbindung holen
+    document.getElementById('btn-cancel-player-edit')?.addEventListener('click', closePlayerEditModal);
+    
+    document.getElementById('btn-save-player-edit')?.addEventListener('click', async () => {
+        if (!window.isManager) return;
+ 
+        const newName = document.getElementById('edit-player-name-input').value.trim();
+        const newClass = document.getElementById('edit-player-class-select').value;
+        const newSpec = document.getElementById('edit-player-spec-select').value;
+        const newRole = document.getElementById('edit-player-role-select').value;
+ 
+        if (!newName && !isAddingNewPlayer) {
+            // Leerer Name beim Edit = Löschen
             const docSnap = await getDoc(rosterDocRef);
             if (docSnap.exists()) {
                 let roster = docSnap.data().roster || [];
                 const idx = roster.findIndex(p => p.id === currentPlayerIdToEdit);
-                
                 if (idx > -1) {
                     const oldName = roster[idx].name;
-
-                    // --- FALL 1: Name ist LEER -> LÖSCHEN ---
-                    if (!newName) {
-                        const confirmed = await window.showModal(`Soll der Spieler '${oldName}' wirklich gelöscht werden?`, true);
-                        if (confirmed) {
-                            roster.splice(idx, 1); // Spieler aus dem Array entfernen
-                            await updateDoc(rosterDocRef, { roster: roster });
-                            
-                            const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-                            window.logHistory('Roster', `Spieler gelöscht (via Edit)`, oldName, currentManager);
-                            window.showModal(`Spieler '${oldName}' wurde entfernt.`);
-                        }
-                        closePlayerEditModal();
-                        return; // Beenden, da gelöscht
+                    const confirmed = await window.showModal(`Soll der Spieler '${oldName}' wirklich gelöscht werden?`, true);
+                    if (confirmed) {
+                        roster.splice(idx, 1);
+                        await updateDoc(rosterDocRef, { roster: roster });
+                        const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                        window.logHistory('Roster', `Spieler gelöscht (via Edit)`, oldName, currentManager);
+                        window.showModal(`Spieler '${oldName}' wurde entfernt.`);
                     }
-
-                    // --- FALL 2: Name vorhanden -> UPDATE ---
-                    roster[idx].name = newName;
-                    roster[idx].class = newClass;
-                    
-                    await updateDoc(rosterDocRef, { roster: roster });
-                    
-                    const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-                    window.logHistory('Roster', `Spieler bearbeitet (${oldName})`, `${newName} / ${newClass}`, currentManager);
                 }
             }
             closePlayerEditModal();
-        });
+            return;
+        }
+ 
+        if (!newName) {
+            window.showModal("Bitte einen Namen eingeben.");
+            return;
+        }
+ 
+        const docSnap = await getDoc(rosterDocRef);
+        let roster = docSnap.exists() ? (docSnap.data().roster || []) : [];
+        const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+ 
+        if (isAddingNewPlayer) {
+            // ── NEUER SPIELER ──
+            const newPlayer = {
+                id: crypto.randomUUID(),
+                name: newName,
+                class: newClass,
+                spec: newSpec,
+                roles: [newRole]
+            };
+            roster.push(newPlayer);
+            await setDoc(rosterDocRef, { roster: roster }, { merge: true });
+            window.logHistory('Roster', `Spieler hinzugefügt`, `${newName} (${newClass}/${newSpec})`, currentManager);
+            window.showModal(`'${newName}' wurde als ${newClass}/${newSpec} hinzugefügt.`);
+        } else {
+            // ── BESTEHENDEN SPIELER UPDATE ──
+            const idx = roster.findIndex(p => p.id === currentPlayerIdToEdit);
+            if (idx > -1) {
+                const oldName = roster[idx].name;
+                roster[idx].name = newName;
+                roster[idx].class = newClass;
+                roster[idx].spec = newSpec;
+                roster[idx].roles = [newRole];
+                await updateDoc(rosterDocRef, { roster: roster });
+                window.logHistory('Roster', `Spieler bearbeitet (${oldName})`, `${newName} / ${newClass} / ${newSpec} / ${newRole}`, currentManager);
+            }
+        }
+ 
+        closePlayerEditModal();
     });
+});
+
 async function togglePlayerRole(playerId, roleToToggle) {
     if (!window.isManager) return;
     
@@ -6023,16 +6186,8 @@ async function handleImportRoster() {
 
         async function handleAddPlayer() {
             if (!window.isManager) return;
-            const name = await window.showPrompt("Name des neuen Spielers:", "NeuerSpieler");
-            if (!name) return;
-            const newPlayer = { id: crypto.randomUUID(), name: name, class: 'WARRIOR', roles: ['DPS'] };
-            const docSnap = await getDoc(rosterDocRef);
-            const roster = docSnap.exists() ? docSnap.data().roster || [] : [];
-            roster.push(newPlayer);
-            await setDoc(rosterDocRef, { roster: roster }, { merge: true });
-            const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-            window.logHistory('Roster', `Spieler hinzugefügt`, name, currentManager);
-            window.showModal(`Spieler '${name}' wurde hinzugefügt.`);
+            // Statt prompt: öffne das Edit-Modal im "Add"-Modus
+            openPlayerEditModal(null);
         }
 
         async function handleClearRoster() {
@@ -7123,27 +7278,29 @@ function initCooldownEditor() {
 async function displayCooldowns() {
     const tableBody = document.getElementById('cooldowns-table-body');
     if (!tableBody) return;
-
+ 
     const cooldownsCollectionRef = collection(db, "cooldowns");
     const q = query(cooldownsCollectionRef, orderBy("order", "asc"), orderBy("name", "asc"));
     const snapshot = await getDocs(q);
-
-    tableBody.innerHTML = ''; // Tabelle leeren
+ 
+    tableBody.innerHTML = '';
     snapshot.forEach(doc => {
         const cd = doc.data();
         const row = tableBody.insertRow();
+        const cdSec = (cd.cooldownSec !== null && cd.cooldownSec !== undefined) ? cd.cooldownSec + 's' : '—';
+        const durSec = (cd.durationSec !== null && cd.durationSec !== undefined) ? cd.durationSec + 's' : '—';
         row.innerHTML = `
-            <td class="px-4 py-2">${cd.name}</td>
-            <td class="px-4 py-2" style="color: ${window.classColors[cd.class] || '#FFFFFF'};">${cd.class}</td>
-            <td class="px-4 py-2 text-gray-400">${cd.spellId || ''}</td> <td class="px-4 py-2">
-            <td class="px-4 py-2">
+            <td class="px-2 py-2">${cd.name}</td>
+            <td class="px-2 py-2" style="color: ${window.classColors[cd.class] || '#FFFFFF'};">${cd.class}</td>
+            <td class="px-2 py-2 text-gray-400 font-mono text-xs">${cd.spellId || ''}</td>
+            <td class="px-2 py-2 text-center text-xs text-gray-400">${cdSec} / ${durSec}</td>
+            <td class="px-2 py-2 text-right">
                 <button class="text-sm text-blue-400 hover:underline edit-cd-btn" data-id="${doc.id}">Edit</button>
-                <button class="text-sm text-red-500 hover:underline delete-cd-btn ml-2" data-id="${doc.id}">X</button>
+                <button class="text-sm text-red-500 hover:underline delete-cd-btn ml-2" data-id="${doc.id}">✕</button>
             </td>
         `;
     });
-
-    // Event Listener für die neuen Buttons
+ 
     tableBody.querySelectorAll('.edit-cd-btn').forEach(btn => {
         btn.addEventListener('click', (e) => populateCooldownFormForEdit(e.target.dataset.id));
     });
@@ -7155,38 +7312,47 @@ async function displayCooldowns() {
 async function handleCooldownFormSubmit(event) {
     event.preventDefault();
     if (!window.isManager) return;
-
+ 
     const cooldownId = document.getElementById('cooldown-id-input').value;
+    
+    // Helper: leeres Feld → undefined (nicht im Dokument speichern)
+    function numOrUndef(inputId) {
+        const v = document.getElementById(inputId).value.trim();
+        if (v === '') return null;  // Firestore speichert null, planner fällt auf Fallback zurück
+        const n = parseInt(v);
+        return isNaN(n) ? null : n;
+    }
+    
     const cooldownData = {
-        name: document.getElementById('cooldown-name-input').value,
-        class: document.getElementById('cooldown-class-select').value,
-        type: document.getElementById('cooldown-type-select').value,
-        order: parseInt(document.getElementById('cooldown-order-input').value) || 100,
-        spellId: document.getElementById('cooldown-spellid-input').value || "",
-        tooltip: document.getElementById('cooldown-tooltip-input').value || "",
+        name:        document.getElementById('cooldown-name-input').value,
+        class:       document.getElementById('cooldown-class-select').value,
+        type:        document.getElementById('cooldown-type-select').value,
+        order:       parseInt(document.getElementById('cooldown-order-input').value) || 100,
+        spellId:     document.getElementById('cooldown-spellid-input').value || "",
+        tooltip:     document.getElementById('cooldown-tooltip-input').value || "",
+        // NEU: Cooldown & Wirkdauer (null wenn leer → Planner nutzt Default)
+        cooldownSec: numOrUndef('cooldown-cdsec-input'),
+        durationSec: numOrUndef('cooldown-durationsec-input')
     };
-
+ 
     try {
         if (cooldownId) {
-            // Update
             const docRef = doc(db, "cooldowns", cooldownId);
             await updateDoc(docRef, cooldownData);
             window.showModal("Cooldown erfolgreich aktualisiert!");
         } else {
-            // Create
             await addDoc(collection(db, "cooldowns"), cooldownData);
             window.showModal("Neuer Cooldown erfolgreich hinzugefügt!");
         }
         
-        // Formular zurücksetzen und Listen neu laden
         document.getElementById('cooldown-form').reset();
         document.getElementById('cooldown-id-input').value = '';
         document.getElementById('cooldown-form-title').textContent = 'Neuen Cooldown hinzufügen';
         document.getElementById('cooldown-save-btn').textContent = 'Speichern';
         document.getElementById('cooldown-cancel-btn').style.display = 'none';
         
-        await displayCooldowns(); // UI-Tabelle aktualisieren
-        await fetchAllCooldowns(); // Globale Variable für Boss-Seiten aktualisieren
+        await displayCooldowns();
+        await fetchAllCooldowns();
         
     } catch (error) {
         console.error("Fehler beim Speichern des Cooldowns:", error);
@@ -7198,20 +7364,25 @@ async function populateCooldownFormForEdit(cooldownId) {
     const docRef = doc(db, "cooldowns", cooldownId);
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) return;
-
+ 
     const cd = docSnap.data();
     document.getElementById('cooldown-id-input').value = cooldownId;
-    document.getElementById('cooldown-name-input').value = cd.name;
-    document.getElementById('cooldown-class-select').value = cd.class;
-    document.getElementById('cooldown-type-select').value = cd.type;
-    document.getElementById('cooldown-order-input').value = cd.order;
+    document.getElementById('cooldown-name-input').value = cd.name || '';
+    document.getElementById('cooldown-class-select').value = cd.class || '';
+    document.getElementById('cooldown-type-select').value = cd.type || 'Raid';
+    document.getElementById('cooldown-order-input').value = cd.order || 100;
     document.getElementById('cooldown-spellid-input').value = cd.spellId || '';
     document.getElementById('cooldown-tooltip-input').value = cd.tooltip || '';
-    
-
+    // NEU
+    document.getElementById('cooldown-cdsec-input').value = (cd.cooldownSec !== null && cd.cooldownSec !== undefined) ? cd.cooldownSec : '';
+    document.getElementById('cooldown-durationsec-input').value = (cd.durationSec !== null && cd.durationSec !== undefined) ? cd.durationSec : '';
+ 
     document.getElementById('cooldown-form-title').textContent = 'Cooldown bearbeiten';
     document.getElementById('cooldown-save-btn').textContent = 'Aktualisieren';
     document.getElementById('cooldown-cancel-btn').style.display = 'inline-block';
+    
+    // Scroll zum Formular
+    document.getElementById('cooldown-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 async function handleDeleteCooldown(cooldownId, cooldownName) {

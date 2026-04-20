@@ -279,7 +279,7 @@ CD_AUTO_PLANNER.init({
             maxCasts: 8,
             delay: -3,              // 3s vor dem Einschlag (Cast = 5s)
             eventDuration: 5,       // 5s Cast
-            requiredCDs: ["any_dr", "major_heal"],
+            requiredCDs: ["any_dr", "any_heal"],
             icon: "☀️"
         },
 
@@ -323,7 +323,7 @@ CD_AUTO_PLANNER.init({
             maxCasts: 1,
             delay: 0,
             eventDuration: 20,
-            requiredCDs: ["minor_heal"],
+            requiredCDs: ["any_heal", "tank_external"],  // Markiertes Ziel braucht Heals + Externals
             icon: "🗡️"
         },
         {
@@ -334,7 +334,7 @@ CD_AUTO_PLANNER.init({
             maxCasts: 1,
             delay: 0,
             eventDuration: 20,
-            requiredCDs: ["any_dr"],
+            requiredCDs: ["any_dr", "mana"],  // Heilung fällt aus → DR + Mana-Refill
             icon: "🌙"
         },
         {
@@ -356,7 +356,7 @@ CD_AUTO_PLANNER.init({
             maxCasts: 1,
             delay: 0,
             eventDuration: 20,
-            requiredCDs: ["minor_heal"],
+            requiredCDs: ["any_heal", "tank_external"],
             icon: "🗡️"
         },
         {
@@ -367,7 +367,7 @@ CD_AUTO_PLANNER.init({
             maxCasts: 1,
             delay: 0,
             eventDuration: 20,
-            requiredCDs: ["any_dr", "major_heal"],
+            requiredCDs: ["any_dr", "any_heal", "mana"],  // Härteste Phase: alle Tools raus
             icon: "🌙"
         },
 

@@ -825,6 +825,338 @@
 </section>
 
  
+<!-- ══════════════════════════════════════════════════════════════
+     IMMERSEUS — CD AUTO-PLANER + EINTEILUNGEN (aktualisiert)
+     ════════════════════════════════════════════════════════════
+     
+     TEIL 1: Neuer Einteilungsblock (ersetzt die alte assignments-Sektion)
+     TEIL 2: CD Auto-Planer Integration
+     
+     DBM-Quellen (Immerseus.lua):
+       timerBreathCD:              CDTimer(35, 143436)     firstCast: 10s
+       timerSwirlCD:               CDTimer(48.5, 143309)   firstCast: 20s  
+       timerSwellingCorruptionCD:  CDTimer(75, 143578)     firstCast: 10s (HC)
+       berserkTimer:               BerserkTimer(605)
+       Nach Reform: Breath +14s, Swirl +24s, Corruption +14.4s
+       
+     PHASEN:
+       Phase 1: Boss angreifen (Breath, Swirl, Corruption)
+       Phase 2: Split → Pfützen heilen/killen → Reform
+       Wiederholt sich bis 0% Verderbnis
+     ══════════════════════════════════════════════════════════ -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TEIL 1: EINTEILUNGEN (aktualisiertes Format)
+     ═══════════════════════════════════════════════════════════ -->
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <!-- Tank-Einteilung -->
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1 (Start):</span><select class="assignment-select" data-assignment-id="immerseus-tank1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="immerseus-tank2"></select></li>
+                    </ul>
+                </div>
+                
+                <!-- Sonderaufgaben -->
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">✨ Sonderaufgaben</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Zuweisungen für heroische Mechaniken oder spezielle Positionen.</p>
+                    <ul class="assignment-list">
+                        <li><span>Verantwortlich Bereich Links:</span><select data-assignment-id="immerseus-area-left" class="assignment-select"></select></li>
+                        <li><span>Verantwortlich Bereich Rechts:</span><select data-assignment-id="immerseus-area-right" class="assignment-select"></select></li>
+                        <li><span>Verantwortlich Bereich Hinten:</span><select data-assignment-id="immerseus-area-back" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <!-- Phasen-Aufteilung -->
+                <div class="xl:col-span-2 space-y-6">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-purple-400 border-b border-slate-600 mb-2">🌈 Phasen-Aufteilung (Markierungen)</h4>
+                        <p class="text-xs text-gray-400 mb-3 italic">Einteilung der Spieler auf die Plattform-Viertel für Phase 2 (Pfützen).</p>
+                        
+                        <div class="overflow-x-auto rounded border border-slate-700">
+                            <table class="w-full text-left text-xs text-gray-300">
+                                <thead class="bg-slate-900 text-gray-400 font-bold uppercase">
+                                    <tr>
+                                        <th class="p-2 w-28">Bereich</th>
+                                        <th class="p-2">Spieler 1</th>
+                                        <th class="p-2">Spieler 2</th>
+                                        <th class="p-2">Spieler 3</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700 bg-slate-800">
+                                    <tr class="hover:bg-slate-700/50">
+                                        <td class="p-2 flex items-center gap-2 font-bold text-white">
+                                            <img src="raidicons/skull.png" class="w-5 h-5" alt="Skull"> Vorne Links
+                                        </td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_1" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_2" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_3" data-assignment-pool="imm_areas"></select></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-700/50">
+                                        <td class="p-2 flex items-center gap-2 font-bold text-red-400">
+                                            <img src="raidicons/cross.png" class="w-5 h-5" alt="Cross"> Hinten Links
+                                        </td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_1" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_2" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_3" data-assignment-pool="imm_areas"></select></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-700/50">
+                                        <td class="p-2 flex items-center gap-2 font-bold text-blue-400">
+                                            <img src="raidicons/square.png" class="w-5 h-5" alt="Square"> Vorne Rechts
+                                        </td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_1" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_2" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_3" data-assignment-pool="imm_areas"></select></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-700/50">
+                                        <td class="p-2 flex items-center gap-2 font-bold text-gray-200">
+                                            <img src="raidicons/moon.png" class="w-5 h-5" alt="Moon"> Hinten Rechts
+                                        </td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_1" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_2" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_3" data-assignment-pool="imm_areas"></select></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="immerseus-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1</button>
+                        <button data-phase="immerseus-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 2</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="immerseus-p1"><strong>Phase 1:</strong> Die Gruppe verteilt sich kreisförmig. Der Tank dreht den <strong class="text-red-400">Ätzenden Schlag</strong> nach außen.</p>
+                            <p class="positioning-text hidden" data-phase="immerseus-p2"><strong>Phase 2:</strong> Alle Spieler begeben sich in ihre zugewiesenen Viertel, um die Pfützen aufzuhalten.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="siegeoforgrimmar/immerseus-p1.png" alt="Positionierung Immerseus Phase 1" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="immerseus-p1" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;immerseus-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
+                            
+                        <img src="siegeoforgrimmar/immerseus-p2.png" alt="Positionierung Immerseus Phase 2" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="immerseus-p2" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;immerseus-p2&quot;>Bild für Phase 2 noch nicht verfügbar.</div>'">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
+                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     IMMERSEUS — CD AUTO-PLANER + EINTEILUNGEN (aktualisiert)
+     ════════════════════════════════════════════════════════════
+     
+     TEIL 1: Neuer Einteilungsblock (ersetzt die alte assignments-Sektion)
+     TEIL 2: CD Auto-Planer Integration
+     
+     DBM-Quellen (Immerseus.lua):
+       timerBreathCD:              CDTimer(35, 143436)     firstCast: 10s
+       timerSwirlCD:               CDTimer(48.5, 143309)   firstCast: 20s  
+       timerSwellingCorruptionCD:  CDTimer(75, 143578)     firstCast: 10s (HC)
+       berserkTimer:               BerserkTimer(605)
+       Nach Reform: Breath +14s, Swirl +24s, Corruption +14.4s
+       
+     PHASEN:
+       Phase 1: Boss angreifen (Breath, Swirl, Corruption)
+       Phase 2: Split → Pfützen heilen/killen → Reform
+       Wiederholt sich bis 0% Verderbnis
+     ══════════════════════════════════════════════════════════ -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TEIL 1: EINTEILUNGEN (aktualisiertes Format)
+     ═══════════════════════════════════════════════════════════ -->
+<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        Einteilungen & Taktische Hilfen
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="space-y-6">
+                <!-- Tank-Einteilung -->
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                    <ul class="assignment-list">
+                        <li><span>Tank 1 (Start):</span><select class="assignment-select" data-assignment-id="immerseus-tank1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="immerseus-tank2"></select></li>
+                    </ul>
+                </div>
+                
+                <!-- Sonderaufgaben -->
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold">✨ Sonderaufgaben</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Zuweisungen für heroische Mechaniken oder spezielle Positionen.</p>
+                    <ul class="assignment-list">
+                        <li><span>Verantwortlich Bereich Links:</span><select data-assignment-id="immerseus-area-left" class="assignment-select"></select></li>
+                        <li><span>Verantwortlich Bereich Rechts:</span><select data-assignment-id="immerseus-area-right" class="assignment-select"></select></li>
+                        <li><span>Verantwortlich Bereich Hinten:</span><select data-assignment-id="immerseus-area-back" class="assignment-select"></select></li>
+                    </ul>
+                </div>
+
+                <!-- Phasen-Aufteilung -->
+                <div class="xl:col-span-2 space-y-6">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-purple-400 border-b border-slate-600 mb-2">🌈 Phasen-Aufteilung (Markierungen)</h4>
+                        <p class="text-xs text-gray-400 mb-3 italic">Einteilung der Spieler auf die Plattform-Viertel für Phase 2 (Pfützen).</p>
+                        
+                        <div class="overflow-x-auto rounded border border-slate-700">
+                            <table class="w-full text-left text-xs text-gray-300">
+                                <thead class="bg-slate-900 text-gray-400 font-bold uppercase">
+                                    <tr>
+                                        <th class="p-2 w-28">Bereich</th>
+                                        <th class="p-2">Spieler 1</th>
+                                        <th class="p-2">Spieler 2</th>
+                                        <th class="p-2">Spieler 3</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700 bg-slate-800">
+                                    <tr class="hover:bg-slate-700/50">
+                                        <td class="p-2 flex items-center gap-2 font-bold text-white">
+                                            <img src="raidicons/skull.png" class="w-5 h-5" alt="Skull"> Vorne Links
+                                        </td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_1" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_2" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_3" data-assignment-pool="imm_areas"></select></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-700/50">
+                                        <td class="p-2 flex items-center gap-2 font-bold text-red-400">
+                                            <img src="raidicons/cross.png" class="w-5 h-5" alt="Cross"> Hinten Links
+                                        </td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_1" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_2" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_3" data-assignment-pool="imm_areas"></select></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-700/50">
+                                        <td class="p-2 flex items-center gap-2 font-bold text-blue-400">
+                                            <img src="raidicons/square.png" class="w-5 h-5" alt="Square"> Vorne Rechts
+                                        </td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_1" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_2" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_3" data-assignment-pool="imm_areas"></select></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-700/50">
+                                        <td class="p-2 flex items-center gap-2 font-bold text-gray-200">
+                                            <img src="raidicons/moon.png" class="w-5 h-5" alt="Moon"> Hinten Rechts
+                                        </td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_1" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_2" data-assignment-pool="imm_areas"></select></td>
+                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_3" data-assignment-pool="imm_areas"></select></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+                
+                <div class="space-y-6">
+                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                        <button data-phase="immerseus-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1</button>
+                        <button data-phase="immerseus-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 2</button>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                            <p class="positioning-text" data-phase="immerseus-p1"><strong>Phase 1:</strong> Die Gruppe verteilt sich kreisförmig. Der Tank dreht den <strong class="text-red-400">Ätzenden Schlag</strong> nach außen.</p>
+                            <p class="positioning-text hidden" data-phase="immerseus-p2"><strong>Phase 2:</strong> Alle Spieler begeben sich in ihre zugewiesenen Viertel, um die Pfützen aufzuhalten.</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <img src="siegeoforgrimmar/immerseus-p1.png" alt="Positionierung Immerseus Phase 1" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
+                            data-phase="immerseus-p1" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;immerseus-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
+                            
+                        <img src="siegeoforgrimmar/immerseus-p2.png" alt="Positionierung Immerseus Phase 2" 
+                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
+                            data-phase="immerseus-p2" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;immerseus-p2&quot;>Bild für Phase 2 noch nicht verfügbar.</div>'">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
+                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
+                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TEIL 2: CD AUTO-PLANER
+     ═══════════════════════════════════════════════════════════ -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        ⚡ CD Auto-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
+        <div class="flex flex-wrap gap-3 mb-4">
+            <button id="btn-auto-assign" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded text-sm border border-emerald-400">⚡ Auto-Assign</button>
+            <button id="btn-export-to-planner" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm border border-blue-400">📋 → CD Planer übertragen</button>
+            <button id="btn-clear-auto" class="bg-red-700 hover:bg-red-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-500">🗑 Leeren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+        </div>
+        <details id="cd-categories-admin" class="mb-4 bg-slate-800 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-yellow-400 hover:bg-slate-750 rounded-t-lg">⚙️ CD-Kategorien & Prioritäten</summary>
+            <div class="p-4">
+                <div class="text-xs text-gray-400 mb-3">SpellID-Match gegen deine Cooldown-DB. ❌ = nicht gefunden.</div>
+                <div id="cd-categories-container" class="space-y-3"></div>
+                <button id="btn-save-categories" class="mt-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">💾 Kategorien speichern</button>
+            </div>
+        </details>
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="min-w-full text-xs border-collapse">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-4 text-[10px] text-gray-500">
+            <span>✅ Auto | ✏️ Manuell | ⚠️ Kein CD | ✖ Übersprungen | — Nicht benötigt (klickbar)</span>
+        </div>
+    </div>
+</section>
+
 <script src="static/cd-auto-planner.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════
@@ -851,12 +1183,12 @@
 // TIPP: Plane CDs nur für die ersten 2-3 Zyklen. Danach hat
 // der Boss so wenig HP dass die Splits kürzer werden und die
 // CDs nicht mehr synchron sind.
- 
+
 CD_AUTO_PLANNER.init({
     id: 'immerseus',
     name: "Immerseus",
     prefix: 'IMMERSEUS',
- 
+
     events: [
         // ──────────────────────────────────────────────
         // PHASE 1 ZYKLUS 1 (erster Kampfabschnitt)
@@ -878,10 +1210,10 @@ CD_AUTO_PLANNER.init({
             maxCasts: 1,            // In ~80s Phase 1 → nur 1
             delay: 0,
             eventDuration: 0,       // Instant AoE
-            requiredCDs: ["any_dr", "major_heal"],
+            requiredCDs: ["any_dr", "any_heal"],
             icon: "💀"
         },
- 
+
         // ──────────────────────────────────────────────
         // PHASE 2 → SPLIT (Pfützen-Phase)
         // DBM: "spell:143020" → Split
@@ -893,11 +1225,11 @@ CD_AUTO_PLANNER.init({
             maxCasts: 1,
             delay: 0,
             eventDuration: 35,      // Phase 2 dauert ~30-40s
-            requiredCDs: ["major_heal", "minor_heal"],
+            requiredCDs: ["any_heal"],
                                     // Pfützen verursachen Raid-Schaden beim Erreichen der Mitte
             icon: "💧"
         },
- 
+
         // ──────────────────────────────────────────────
         // PHASE 1 ZYKLUS 2 (nach Reform)
         // DBM: Nach Reform → Breath +14s, Swirl +24s, Corruption +14.4s
@@ -919,7 +1251,7 @@ CD_AUTO_PLANNER.init({
             maxCasts: 1,
             delay: 0,
             eventDuration: 0,
-            requiredCDs: ["any_dr", "major_heal"],
+            requiredCDs: ["any_dr", "any_heal"],
             icon: "💀"
         },
         {
@@ -932,7 +1264,7 @@ CD_AUTO_PLANNER.init({
             requiredCDs: ["movement"],
             icon: "🌊"
         },
- 
+
         // ──────────────────────────────────────────────
         // PHASE 2 → SPLIT #2
         // ──────────────────────────────────────────────
@@ -943,10 +1275,10 @@ CD_AUTO_PLANNER.init({
             maxCasts: 1,
             delay: 0,
             eventDuration: 35,
-            requiredCDs: ["major_heal", "minor_heal"],
+            requiredCDs: ["any_heal"],
             icon: "💧"
         },
- 
+
         // ──────────────────────────────────────────────
         // PHASE 1 ZYKLUS 3
         // ──────────────────────────────────────────────
@@ -967,7 +1299,7 @@ CD_AUTO_PLANNER.init({
             maxCasts: 1,
             delay: 0,
             eventDuration: 0,
-            requiredCDs: ["any_dr", "major_heal"],
+            requiredCDs: ["any_dr", "any_heal"],
             icon: "💀"
         },
         {
@@ -980,7 +1312,7 @@ CD_AUTO_PLANNER.init({
             requiredCDs: ["movement"],
             icon: "🌊"
         },
- 
+
         // ──────────────────────────────────────────────
         // LUST-TIMING
         // ──────────────────────────────────────────────
@@ -995,7 +1327,7 @@ CD_AUTO_PLANNER.init({
             icon: "⚡"
         }
     ],
- 
+
     triggerMap: {
         "Wirbel (Swirl)":               "IMMERSEUS_SWIRL",
         "Schwellendes Verderbnis":       "IMMERSEUS_SWELLING_CORRUPTION",
