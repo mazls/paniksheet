@@ -877,18 +877,20 @@ window.CD_AUTO_PLANNER = (function() {
             var st = document.createElement('style');
             st.id = 'event-mgr-styles';
             st.textContent =
-                '#auto-planner-events .evt-row { display:grid; grid-template-columns: 30px 32px 80px 1fr 60px 70px 70px 1fr 60px; gap:6px; align-items:center; padding:4px 6px; border-radius:4px; font-size:11px; }' +
+                '#auto-planner-events .evt-row { display:grid; grid-template-columns: 30px 32px 80px 1fr 60px 70px 70px 1fr 90px 60px; gap:6px; align-items:center; padding:4px 6px; border-radius:4px; font-size:11px; }' +
                 '#auto-planner-events .evt-row.disabled { opacity:0.35; }' +
                 '#auto-planner-events .evt-row:hover { background:rgba(51,65,85,0.3); }' +
                 '#auto-planner-events .evt-row input[type="number"], #auto-planner-events .evt-row input[type="text"] { background:#0f172a; color:#e5e7eb; border:1px solid #334155; border-radius:3px; padding:2px 4px; font-size:10px; }' +
                 '#auto-planner-events .evt-row input[type="number"] { width:100%; text-align:right; }' +
-                '#auto-planner-events .evt-cat-btn { background:#0f172a; color:#cbd5e1; border:1px solid #334155; border-radius:3px; padding:2px 6px; font-size:10px; cursor:pointer; text-align:left; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }' +
-                '#auto-planner-events .evt-cat-btn:hover { background:#1e293b; }' +
+                '#auto-planner-events .evt-cat-btn, #auto-planner-events .evt-trg-btn { background:#0f172a; color:#cbd5e1; border:1px solid #334155; border-radius:3px; padding:2px 6px; font-size:10px; cursor:pointer; text-align:left; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }' +
+                '#auto-planner-events .evt-cat-btn:hover, #auto-planner-events .evt-trg-btn:hover { background:#1e293b; }' +
+                '#auto-planner-events .evt-trg-btn.mode-hp { border-color:#dc2626; color:#fca5a5; }' +
+                '#auto-planner-events .evt-trg-btn.mode-cast { border-color:#0284c7; color:#7dd3fc; }' +
+                '#auto-planner-events .evt-trg-btn.mode-auto { border-color:#334155; color:#94a3b8; }' +
                 '#auto-planner-events .evt-header { font-size:9px; text-transform:uppercase; color:#94a3b8; letter-spacing:0.05em; border-bottom:1px solid #334155; padding-bottom:4px; margin-bottom:2px; }';
             document.head.appendChild(st);
         }
 
-        var effectiveEvents = getEffectiveEvents.call(null); // aktuelle effektive Liste
         // Für Anzeige brauchen wir alle Events (auch deaktivierte)
         var allRows = [];
         (config.events || []).forEach(function(evt, idx) {
@@ -902,7 +904,8 @@ window.CD_AUTO_PLANNER = (function() {
                 cooldown:      ov.cooldown      !== undefined ? ov.cooldown      : (evt.cooldown || 0),
                 maxCasts:      ov.maxCasts      !== undefined ? ov.maxCasts      : (evt.maxCasts || 1),
                 requiredCDs:   ov.requiredCDs   !== undefined ? ov.requiredCDs   : (evt.requiredCDs || []),
-                icon:          ov.icon          !== undefined ? ov.icon          : (evt.icon || '')
+                icon:          ov.icon          !== undefined ? ov.icon          : (evt.icon || ''),
+                triggerOverride: ov.triggerOverride
             });
         });
         customEvents.forEach(function(evt) {
@@ -911,11 +914,12 @@ window.CD_AUTO_PLANNER = (function() {
                 _key: evt._key, _isCustom: true,
                 disabled:      !!ov.disabled,
                 name:          evt.name, firstCast: evt.firstCast, cooldown: evt.cooldown || 0,
-                maxCasts:      evt.maxCasts || 1, requiredCDs: evt.requiredCDs || [], icon: evt.icon || ''
+                maxCasts:      evt.maxCasts || 1, requiredCDs: evt.requiredCDs || [], icon: evt.icon || '',
+                triggerOverride: ov.triggerOverride
             });
         });
 
-        var header = '<div class="evt-row evt-header"><span></span><span>Ikon</span><span>Zeit</span><span>Name</span><span title="Cooldown zwischen Casts">CD</span><span title="Anzahl Casts">Casts</span><span title="Verzögerung">Delay</span><span>Kategorien</span><span></span></div>';
+        var header = '<div class="evt-row evt-header"><span></span><span>Ikon</span><span>Zeit</span><span>Name</span><span title="Cooldown zwischen Casts">CD</span><span title="Anzahl Casts">Casts</span><span title="Verzögerung">Delay</span><span>Kategorien</span><span title="Trigger-Modus für Export">Trigger</span><span></span></div>';
 
         var html = allRows.map(function(r) {
             var catLabels = (r.requiredCDs || []).map(function(k) {
@@ -926,6 +930,19 @@ window.CD_AUTO_PLANNER = (function() {
 
             var customBadge = r._isCustom ? '<span class="text-[8px] text-emerald-400" title="Selbst angelegt">★</span>' : '';
 
+            // Trigger-Button: zeigt aktuellen Modus
+            var tMode = 'auto', tLabel = 'Auto';
+            if (r.triggerOverride) {
+                tMode = r.triggerOverride.mode || 'auto';
+                if (tMode === 'hp' && r.triggerOverride.percent !== undefined) {
+                    tLabel = 'HP ' + r.triggerOverride.percent + '%';
+                } else if (tMode === 'cast') {
+                    tLabel = 'Cast #';
+                } else {
+                    tLabel = 'Auto';
+                }
+            }
+
             return '<div class="evt-row ' + (r.disabled ? 'disabled' : '') + '" data-key="' + r._key + '">'
                 + '<input type="checkbox" class="evt-enabled" data-key="' + r._key + '"' + (r.disabled ? '' : ' checked') + ' title="Aktiv">'
                 + '<input type="text" class="evt-icon" data-key="' + r._key + '" value="' + (r.icon || '') + '" style="width:100%;text-align:center;padding:2px;" title="Emoji/Icon">'
@@ -935,6 +952,7 @@ window.CD_AUTO_PLANNER = (function() {
                 + '<input type="number" class="evt-max" data-key="' + r._key + '" value="' + r.maxCasts + '" min="1" step="1" title="Anzahl Casts">'
                 + '<input type="number" class="evt-delay" data-key="' + r._key + '" value="' + ((eventOverrides[r._key] && eventOverrides[r._key].delay !== undefined) ? eventOverrides[r._key].delay : (r._isCustom ? (customEvents.find(function(c){return c._key===r._key;}) || {}).delay || 0 : ((config.events[parseInt(r._key.replace("cfg_", ""))] || {}).delay || 0))) + '" step="1" title="Verzögerung (neg=vorher)">'
                 + '<button class="evt-cat-btn" data-key="' + r._key + '" title="Klicken um Kategorien zu ändern">' + catLabels + ' ' + customBadge + '</button>'
+                + '<button class="evt-trg-btn mode-' + tMode + '" data-key="' + r._key + '" title="Trigger-Modus für Export anpassen">' + tLabel + '</button>'
                 + (r._isCustom ? '<button class="text-red-400 hover:text-red-300 text-xs evt-delete" data-key="' + r._key + '" title="Löschen">🗑</button>' : '<span class="text-gray-600 text-[9px] text-center" title="Basis-Event aus Config">cfg</span>')
                 + '</div>';
         }).join('');
@@ -1008,6 +1026,13 @@ window.CD_AUTO_PLANNER = (function() {
             });
         });
 
+        // Trigger-Button → Trigger-Modus-Modal
+        document.querySelectorAll('.evt-trg-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                openEventTriggerPicker(e.currentTarget.dataset.key);
+            });
+        });
+
         // Delete (nur Custom)
         document.querySelectorAll('.evt-delete').forEach(function(btn) {
             btn.addEventListener('click', function(e) {
@@ -1050,6 +1075,141 @@ window.CD_AUTO_PLANNER = (function() {
             eventOverrides[key][field] = value;
         }
         runAutoAssign();
+    }
+
+    // ── Trigger-Picker pro Event ──
+    // Erlaubt dem User zu wählen: Auto (triggerMap), Cast-Counter (#1..#n) oder HP-Prozent (NPC+%)
+    function openEventTriggerPicker(eventKey) {
+        var currentOverride = (eventOverrides[eventKey] && eventOverrides[eventKey].triggerOverride) || null;
+        var currentMode = (currentOverride && currentOverride.mode) || 'auto';
+        var currentPercent = (currentOverride && currentOverride.percent !== undefined) ? currentOverride.percent : 65;
+        var currentNpc = (currentOverride && currentOverride.npc) || '';
+        var currentTrigger = (currentOverride && currentOverride.trigger) || '';
+
+        // Aus Boss-HTML die verfügbaren Trigger und NPCs lesen (falls vorhanden)
+        var triggerOptions = [];
+        var npcOptions = [];
+        try {
+            // globale Variablen die die Boss-HTML gesetzt hat
+            if (typeof TRIGGER_OPTIONS !== 'undefined') triggerOptions = TRIGGER_OPTIONS;
+            if (typeof NPC_OPTIONS !== 'undefined') npcOptions = NPC_OPTIONS;
+        } catch (e) { /* ignore */ }
+        // Fallback: Versuche über window (falls in globalem Scope)
+        if (!triggerOptions.length && window.TRIGGER_OPTIONS) triggerOptions = window.TRIGGER_OPTIONS;
+        if (!npcOptions.length && window.NPC_OPTIONS) npcOptions = window.NPC_OPTIONS;
+
+        // HEALTH-Trigger aus den Options filtern (nur der mit "HEALTH" im Val)
+        var healthTrigger = triggerOptions.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+
+        // Overlay
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;';
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:520px;width:90%;';
+
+        // Trigger-Auswahl (alle verfügbaren Trigger aus Boss-HTML, sofern vorhanden)
+        var triggerDropdown = '';
+        if (triggerOptions.length) {
+            triggerDropdown = '<select id="trg-pick-trigger" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">'
+                + '<option value="">— Aus triggerMap (Default) —</option>'
+                + triggerOptions.map(function(t) {
+                    return '<option value="' + t.val + '"' + (currentTrigger === t.val ? ' selected' : '') + '>' + t.text + '</option>';
+                }).join('')
+                + '</select>';
+        }
+
+        // NPC-Dropdown (nur wenn HEALTH-Trigger)
+        var npcDropdown = '';
+        if (npcOptions.length) {
+            npcDropdown = '<select id="trg-pick-npc" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">'
+                + '<option value="">— NPC wählen —</option>'
+                + npcOptions.map(function(n) {
+                    return '<option value="' + n + '"' + (currentNpc === n ? ' selected' : '') + '>' + n + '</option>';
+                }).join('')
+                + '</select>';
+        }
+
+        modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">Trigger-Modus</h4>'
+            + '<div class="text-xs text-gray-400 mb-4">Wie soll dieses Event beim Export in den CD-Planer geschrieben werden?</div>'
+
+            + '<div class="space-y-3 mb-4">'
+
+            // Modus: Auto
+            + '<label class="block p-3 bg-slate-900/50 rounded border border-slate-700 cursor-pointer hover:border-slate-500">'
+            +   '<div class="flex items-start gap-2">'
+            +     '<input type="radio" name="trg-mode" value="auto" class="mt-1"' + (currentMode === 'auto' ? ' checked' : '') + '>'
+            +     '<div class="flex-1">'
+            +       '<div class="text-sm font-bold text-gray-200">Auto (aus triggerMap)</div>'
+            +       '<div class="text-[10px] text-gray-500">Nutzt die Standard-Zuordnung aus der Boss-Config</div>'
+            +     '</div>'
+            +   '</div>'
+            + '</label>'
+
+            // Modus: Cast-Counter
+            + '<label class="block p-3 bg-slate-900/50 rounded border border-slate-700 cursor-pointer hover:border-slate-500">'
+            +   '<div class="flex items-start gap-2">'
+            +     '<input type="radio" name="trg-mode" value="cast" class="mt-1"' + (currentMode === 'cast' ? ' checked' : '') + '>'
+            +     '<div class="flex-1">'
+            +       '<div class="text-sm font-bold text-sky-300">Cast-Counter (#1, #2, #3...)</div>'
+            +       '<div class="text-[10px] text-gray-500 mb-2">Condition-Feld wird die fortlaufende Cast-Nummer</div>'
+            +       (triggerDropdown ? '<div class="text-[10px] text-gray-400 mb-1">Trigger-Typ im Planer:</div>' + triggerDropdown : '<div class="text-[10px] text-gray-500 italic">Trigger aus triggerMap wird genutzt</div>')
+            +     '</div>'
+            +   '</div>'
+            + '</label>'
+
+            // Modus: HP-Prozent
+            + '<label class="block p-3 bg-slate-900/50 rounded border border-slate-700 cursor-pointer hover:border-slate-500">'
+            +   '<div class="flex items-start gap-2">'
+            +     '<input type="radio" name="trg-mode" value="hp" class="mt-1"' + (currentMode === 'hp' ? ' checked' : '') + '>'
+            +     '<div class="flex-1">'
+            +       '<div class="text-sm font-bold text-red-300">HP-Prozent</div>'
+            +       '<div class="text-[10px] text-gray-500 mb-2">Condition wird der HP-%-Wert, NPC wird ausgewählt</div>'
+            +       '<div class="grid grid-cols-2 gap-2">'
+            +         '<div><label class="text-[10px] text-gray-400">Prozent</label><input type="number" id="trg-pick-percent" value="' + currentPercent + '" min="1" max="100" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm"></label></div>'
+            +         '<div><label class="text-[10px] text-gray-400">NPC</label>' + (npcDropdown || '<input type="text" id="trg-pick-npc" value="' + currentNpc + '" placeholder="NPC-Name" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">') + '</div>'
+            +       '</div>'
+            +     '</div>'
+            +   '</div>'
+            + '</label>'
+
+            + '</div>'
+
+            + '<div class="flex justify-end gap-2">'
+            +   '<button id="trg-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
+            +   '<button id="trg-pick-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button>'
+            + '</div>';
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        modal.querySelector('#trg-pick-save').addEventListener('click', function() {
+            var mode = modal.querySelector('input[name="trg-mode"]:checked').value;
+            if (mode === 'auto') {
+                // Override löschen
+                if (eventOverrides[eventKey]) delete eventOverrides[eventKey].triggerOverride;
+            } else {
+                var ov = { mode: mode };
+                if (mode === 'hp') {
+                    var pEl = modal.querySelector('#trg-pick-percent');
+                    var nEl = modal.querySelector('#trg-pick-npc');
+                    ov.percent = parseInt(pEl.value) || 65;
+                    ov.npc = nEl ? nEl.value : '';
+                } else if (mode === 'cast') {
+                    var tEl = modal.querySelector('#trg-pick-trigger');
+                    if (tEl && tEl.value) ov.trigger = tEl.value;
+                }
+                if (!eventOverrides[eventKey]) eventOverrides[eventKey] = {};
+                eventOverrides[eventKey].triggerOverride = ov;
+            }
+            document.body.removeChild(overlay);
+            renderEventManager();
+        });
+        modal.querySelector('#trg-pick-cancel').addEventListener('click', function() {
+            document.body.removeChild(overlay);
+        });
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) document.body.removeChild(overlay);
+        });
     }
 
     // ── Kategorie-Picker pro Event ──
@@ -1121,7 +1281,7 @@ window.CD_AUTO_PLANNER = (function() {
     // Trigger = Event-Typ | Condition = # | Zeit = Delay | CD = DB-Name
     // ══════════════════════════════════════════════════════════════
 
-    function exportToPlanner() {
+    async function exportToPlanner() {
         if (!assignments.length) return window.showModal && window.showModal("Erst Auto-Assign ausführen!");
         var container = document.querySelector('[id$="-planner-container"]');
         if (!container) return window.showModal && window.showModal("CD-Planer nicht gefunden.");
@@ -1130,50 +1290,141 @@ window.CD_AUTO_PLANNER = (function() {
         var rowNum = 1, exported = 0, skipped = 0;
         var catKeys = getUniqueCategoryKeys();
 
-        assignments.forEach(function(row) {
-            catKeys.forEach(function(catKey) {
-                var slot = row.slots[catKey];
-                if (!slot || slot.skipped || !slot.player || !slot.dbName || slot.player === '__SKIP__') return;
-                if (rowNum > 100) return;
+        // BATCH-MODE aktivieren: keine change-Events → keine setDoc-Calls aus handleAssignmentChange
+        window._suspendAssignListeners = true;
 
-                var triggerVal = (config.triggerMap && config.triggerMap[row.eventName]) || '';
-                setPlannerSelect(prefix + '-planner-row' + rowNum + '-trigger', triggerVal);
-                setPlannerInput(prefix + '-planner-row' + rowNum + '-condition', String(row.castNum));
-                setPlannerInput(prefix + '-planner-row' + rowNum + '-time', String(row.delay || 0));
-                setPlannerSelect(prefix + '-planner-row' + rowNum + '-player', slot.player);
+        // Alle Änderungen sammeln für EINEN einzigen setDoc
+        var batchPayload = {};
+        var currentManager = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('currentManager')) || 'Unbekannt';
+        var serverTs = null;
+        if (window.firebaseTools && window.firebaseTools.serverTimestamp) {
+            serverTs = window.firebaseTools.serverTimestamp();
+        }
 
-                var ok = setPlannerSelect(prefix + '-planner-row' + rowNum + '-cooldown', slot.dbName);
-                if (ok) exported++; else {
-                    skipped++;
-                    console.warn('[Auto-Planner] CD nicht gefunden: "' + slot.dbName + '" (' + slot.spellId + ')');
-                }
-                rowNum++;
+        function addToBatch(fieldId, data) {
+            batchPayload[fieldId] = data;
+        }
+
+        try {
+            assignments.forEach(function(row) {
+                catKeys.forEach(function(catKey) {
+                    var slot = row.slots[catKey];
+                    if (!slot || slot.skipped || !slot.player || !slot.dbName || slot.player === '__SKIP__') return;
+                    if (rowNum > 100) return;
+
+                    // triggerMap kann String (nur Trigger) oder Object ({ trigger, npc, percent }) sein
+                    var mapEntry = config.triggerMap && config.triggerMap[row.eventName];
+                    var triggerVal = '';
+                    var npcVal = '';
+                    var percentVal = null;
+                    if (typeof mapEntry === 'string') {
+                        triggerVal = mapEntry;
+                    } else if (mapEntry && typeof mapEntry === 'object') {
+                        triggerVal = mapEntry.trigger || '';
+                        npcVal = mapEntry.npc || '';
+                        if (mapEntry.percent !== undefined && mapEntry.percent !== null) {
+                            percentVal = mapEntry.percent;
+                        }
+                    }
+
+                    // triggerOverride aus Event-Manager überschreibt triggerMap
+                    var ovEntry = eventOverrides[row.eventKey];
+                    var triggerOv = ovEntry && ovEntry.triggerOverride;
+                    if (triggerOv) {
+                        if (triggerOv.mode === 'hp') {
+                            var healthTrigger = null;
+                            try {
+                                if (typeof TRIGGER_OPTIONS !== 'undefined') {
+                                    var found = TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+                                    if (found) healthTrigger = found.val;
+                                }
+                            } catch (e) { /* ignore */ }
+                            if (!healthTrigger && window.TRIGGER_OPTIONS) {
+                                var found2 = window.TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+                                if (found2) healthTrigger = found2.val;
+                            }
+                            if (healthTrigger) triggerVal = healthTrigger;
+                            npcVal = triggerOv.npc || '';
+                            percentVal = (triggerOv.percent !== undefined) ? triggerOv.percent : null;
+                        } else if (triggerOv.mode === 'cast') {
+                            if (triggerOv.trigger) triggerVal = triggerOv.trigger;
+                            npcVal = '';
+                            percentVal = null;
+                        }
+                    }
+
+                    var isHealthTrigger = triggerVal && triggerVal.indexOf('HEALTH') !== -1;
+                    var rowPrefix = prefix + '-planner-row' + rowNum;
+
+                    // DOM aktualisieren (für sofortige Anzeige, aber OHNE change-Events)
+                    setPlannerSelect(rowPrefix + '-trigger', triggerVal, true);
+                    addToBatch(rowPrefix + '-trigger', { player: triggerVal, editor: currentManager, timestamp: serverTs });
+
+                    if (isHealthTrigger && npcVal) {
+                        setPlannerSelect(rowPrefix + '-npc', npcVal, true);
+                        addToBatch(rowPrefix + '-npc', { player: npcVal, editor: currentManager, timestamp: serverTs });
+                    }
+
+                    var conditionVal = (isHealthTrigger && percentVal !== null) ? String(percentVal) : String(row.castNum);
+                    setPlannerInput(rowPrefix + '-condition', conditionVal, true);
+                    addToBatch(rowPrefix + '-condition', { text: conditionVal, editor: currentManager, timestamp: serverTs });
+
+                    setPlannerInput(rowPrefix + '-time', String(row.delay || 0), true);
+                    addToBatch(rowPrefix + '-time', { text: String(row.delay || 0), editor: currentManager, timestamp: serverTs });
+
+                    setPlannerSelect(rowPrefix + '-player', slot.player, true);
+                    addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
+
+                    var ok = setPlannerSelect(rowPrefix + '-cooldown', slot.dbName, true);
+                    addToBatch(rowPrefix + '-cooldown', { cooldown: slot.dbName, editor: currentManager, timestamp: serverTs });
+
+                    if (ok) exported++; else {
+                        skipped++;
+                        console.warn('[Auto-Planner] CD nicht gefunden: "' + slot.dbName + '" (' + slot.spellId + ')');
+                    }
+                    rowNum++;
+                });
             });
-        });
 
-        container.dispatchEvent(new Event('change', { bubbles: true }));
+            // EIN einziger Firestore-Write für alle Felder
+            if (firebaseRef && firebaseRef.setDoc && Object.keys(batchPayload).length > 0) {
+                var bossDocId = "boss-" + prefix.toLowerCase();
+                await firebaseRef.setDoc(
+                    firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
+                    batchPayload,
+                    { merge: true }
+                );
+            }
+        } finally {
+            window._suspendAssignListeners = false;
+        }
+
         if (window.updatePlannerSummary) setTimeout(window.updatePlannerSummary, 200);
-        var msg = exported + ' Zeilen exportiert!';
+        var msg = exported + ' Zeilen exportiert (1 Firebase-Write)!';
         if (skipped > 0) msg += '\n⚠ ' + skipped + ' CDs nicht im Dropdown.';
         if (window.showModal) window.showModal(msg);
     }
 
-    function setPlannerSelect(id, value) {
+    function setPlannerSelect(id, value, suppressEvent) {
         var el = document.querySelector('[data-assignment-id="' + id + '"]');
         if (!el) return false;
         var exists = Array.from(el.options).some(function(o) { return o.value === value; });
         el.value = value;
         var opt = el.options[el.selectedIndex];
         if (opt) el.style.color = (opt.dataset && opt.dataset.color) || '#FFFFFF';
-        el.dispatchEvent(new Event('change', { bubbles: true }));
+        if (!suppressEvent) {
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
         return exists;
     }
 
-    function setPlannerInput(id, value) {
+    function setPlannerInput(id, value, suppressEvent) {
         var el = document.querySelector('[data-assignment-id="' + id + '"]');
         if (!el) return;
         el.value = value;
-        el.dispatchEvent(new Event('change', { bubbles: true }));
+        if (!suppressEvent) {
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -1700,12 +1951,154 @@ window.CD_AUTO_PLANNER = (function() {
             } else { if (confirm("Auto-Plan leeren?")) clearPlan(); }
         });
 
+        // ── DB-Wipe Button dynamisch einfügen (nur für Manager) ──
+        injectWipeButton();
+
         // Wenn ein gespeicherter Plan existiert, direkt anzeigen
         if (hasSavedPlan) {
             runAutoAssign();
         } else {
             updateStatus('Bereit. ' + found + '/' + total + ' Spells in DB. Roster: ' + rosterRef.length + ' Spieler.');
         }
+    }
+
+    // ── Dynamischer Wipe-Button für DB-Einträge ──
+    function injectWipeButton() {
+        if (!window.isManager) return;
+        if (document.getElementById('btn-wipe-db')) return;  // Schon da
+
+        var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
+        if (!btnContainer) return;
+
+        var wipeBtn = document.createElement('button');
+        wipeBtn.id = 'btn-wipe-db';
+        wipeBtn.className = 'bg-red-900 hover:bg-red-950 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-700';
+        wipeBtn.innerHTML = '☢️ DB-Einträge löschen';
+        wipeBtn.title = 'Löscht ALLE Datenbank-Einträge für diesen Boss (CD-Planer + Auto-Planer)';
+        btnContainer.appendChild(wipeBtn);
+
+        wipeBtn.addEventListener('click', wipeBossFromDb);
+    }
+
+    // ── Löscht ALLE DB-Einträge für diesen Boss ──
+    async function wipeBossFromDb() {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Manager dürfen DB-Einträge löschen.");
+            return;
+        }
+        if (!firebaseRef) {
+            if (window.showModal) window.showModal("Firebase nicht verfügbar.");
+            return;
+        }
+
+        // deleteDoc ist nicht im Standard-firebaseTools, dynamisch nachladen
+        var deleteDocFn = firebaseRef.deleteDoc;
+        if (!deleteDocFn) {
+            try {
+                var fbModule = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+                deleteDocFn = fbModule.deleteDoc;
+            } catch (e) {
+                if (window.showModal) window.showModal("Firestore deleteDoc konnte nicht geladen werden: " + e.message);
+                return;
+            }
+        }
+
+        // Doppelte Bestätigung wegen Destruktiv
+        var confirmed = false;
+        if (typeof window.showModal === 'function') {
+            var r = window.showModal(
+                "⚠️ ACHTUNG: Alle Datenbank-Einträge für '" + config.name + "' werden GELÖSCHT.\n\n" +
+                "Das betrifft:\n" +
+                "• Den CD-Planer (alle 100 Zeilen)\n" +
+                "• Den Auto-Planer (gespeicherter Plan + Overrides + Custom-Events)\n" +
+                "• Sonstige Boss-Einteilungen (Tank-Zuteilungen, Bereich-Zuteilungen etc.)\n\n" +
+                "Diese Aktion kann NICHT rückgängig gemacht werden!\n\n" +
+                "Fortfahren?",
+                true
+            );
+            confirmed = (r && typeof r.then === 'function') ? await r : !!r;
+        } else {
+            confirmed = confirm("ALLE DB-Einträge für '" + config.name + "' löschen? NICHT rückgängig zu machen!");
+        }
+        if (!confirmed) return;
+
+        // Zweite Bestätigung mit Tippcode
+        var typed = prompt('Sicherheitsabfrage: Tippe "LÖSCHEN" (in Großbuchstaben), um zu bestätigen:');
+        if (typed !== 'LÖSCHEN') {
+            if (window.showModal) window.showModal("Abgebrochen — Sicherheitsabfrage nicht bestanden.");
+            return;
+        }
+
+        var prefix = config.prefix.toLowerCase();
+        var bossDocId1 = "boss-" + prefix;             // Standard-Pattern aus index.html
+        var bossDocId2 = config.id;                     // Fallback (manche Bosse nutzen direkt id)
+        var autoPlannerDocId = config.id;               // Auto-Planner doc
+
+        var deleted = [];
+        var errors = [];
+
+        // 1. raid-tool-data/boss-{prefix} löschen
+        try {
+            await deleteDocFn(firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId1));
+            deleted.push("raid-tool-data/" + bossDocId1);
+        } catch (e) {
+            // Fehler nur loggen wenn Doc tatsächlich existierte
+            if (e.code !== 'not-found') errors.push(bossDocId1 + ": " + e.message);
+        }
+
+        // 2. Falls Boss-ID anders ist, auch versuchen
+        if (bossDocId2 !== bossDocId1) {
+            try {
+                await deleteDocFn(firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId2));
+                deleted.push("raid-tool-data/" + bossDocId2);
+            } catch (e) {
+                if (e.code !== 'not-found') errors.push(bossDocId2 + ": " + e.message);
+            }
+        }
+
+        // 3. auto-planner/{bossId} löschen
+        try {
+            await deleteDocFn(firebaseRef.doc(firebaseRef.db, "auto-planner", autoPlannerDocId));
+            deleted.push("auto-planner/" + autoPlannerDocId);
+        } catch (e) {
+            if (e.code !== 'not-found') errors.push("auto-planner/" + autoPlannerDocId + ": " + e.message);
+        }
+
+        // Logbuch
+        if (typeof window.logHistory === 'function') {
+            var mgr = sessionStorage.getItem('currentManager') || 'Unbekannt';
+            window.logHistory('Auto-Planner', 'DB-Wipe für Boss "' + config.name + '"',
+                deleted.join(", ") || "(nichts gelöscht)", mgr);
+        }
+
+        // Lokalen State leeren
+        clearPlan();
+
+        // Auch CD-Planer-Felder im DOM leeren wenn vorhanden
+        var plannerContainer = document.querySelector('[id$="-planner-container"]');
+        if (plannerContainer) {
+            plannerContainer.querySelectorAll('select, input').forEach(function(el) {
+                if (el.tagName === 'SELECT') {
+                    el.value = '';
+                } else if (el.type === 'number' || el.type === 'text') {
+                    el.value = '';
+                }
+            });
+            plannerContainer.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        // Status-Meldung
+        var msg = "✓ Gelöscht: " + (deleted.length ? deleted.join("\n• ") : "Keine Einträge gefunden");
+        if (errors.length) msg += "\n\n⚠ Fehler:\n• " + errors.join("\n• ");
+        if (window.showModal) window.showModal(msg);
+        else alert(msg);
+
+        // Seite reload empfehlen für sauberen Zustand
+        setTimeout(function() {
+            if (confirm("Empfehlung: Seite neu laden für sauberen Zustand. Jetzt reloaden?")) {
+                location.reload();
+            }
+        }, 500);
     }
 
     return {

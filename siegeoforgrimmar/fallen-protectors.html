@@ -316,7 +316,7 @@ CD_AUTO_PLANNER.init({
             icon: "🔥"
         },
         {
-            name: "He 66% (Mark of Anguish)",
+            name: "Hee 66% (Mark of Anguish)",
             spellId: 143812,
             firstCast: 120,         // ~2:00
             cooldown: 0,
@@ -349,7 +349,7 @@ CD_AUTO_PLANNER.init({
             icon: "🔥"
         },
         {
-            name: "He 33% (Mark of Anguish)",
+            name: "Hee 33% (Mark of Anguish)",
             spellId: 143812,
             firstCast: 260,         // ~4:20
             cooldown: 0,
@@ -388,16 +388,19 @@ CD_AUTO_PLANNER.init({
     ],
 
     // Mapping auf bestehende TRIGGER_OPTIONS
+    // HEALTH-Trigger mit NPC-Feld + percent-Feld für HP-basierte Phasen (Desperate Measures)
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH-Trigger
     triggerMap: {
-        "Unheil (Calamity)":                    "PROTECTORS_CALAMITY",
-        "Zusammenstoß (Clash)":                  "PROTECTORS_HEALTH",          // Kein eigener Trigger → Health als Fallback
-        "Rook 66% (Misery/Sorrow/Gloom)":       "PROTECTORS_ROOK_MEASURE",
-        "Rook 33% (Misery/Sorrow/Gloom)":       "PROTECTORS_ROOK_MEASURE",
-        "He 66% (Mark of Anguish)":             "PROTECTORS_HE_MEASURE",
-        "He 33% (Mark of Anguish)":             "PROTECTORS_HE_MEASURE",
-        "Sun 66% (Dark Meditation)":            "PROTECTORS_SUN_MEASURE",
-        "Sun 33% (Dark Meditation)":            "PROTECTORS_SUN_MEASURE",
-        "Bloodlust":                             "PROTECTORS_ENC_START"
+        "Unheil (Calamity)":                "PROTECTORS_CALAMITY",
+        "Zusammenstoß (Clash)":              "PROTECTORS_ENC_START",  // Fallback: kein eigener Trigger, Clash läuft ab Pull
+        // Desperate Measures sind HP-basiert → HEALTH-Trigger + NPC + percent
+        "Rook 66% (Misery/Sorrow/Gloom)":   { trigger: "PROTECTORS_HEALTH", npc: "Rook Steinzeh", percent: 66 },
+        "Rook 33% (Misery/Sorrow/Gloom)":   { trigger: "PROTECTORS_HEALTH", npc: "Rook Steinzeh", percent: 33 },
+        "Hee 66% (Mark of Anguish)":        { trigger: "PROTECTORS_HEALTH", npc: "Hee Samtfuß",   percent: 66 },
+        "Hee 33% (Mark of Anguish)":        { trigger: "PROTECTORS_HEALTH", npc: "Hee Samtfuß",   percent: 33 },
+        "Sun 66% (Dark Meditation)":        { trigger: "PROTECTORS_HEALTH", npc: "Sun Zartherz",  percent: 66 },
+        "Sun 33% (Dark Meditation)":        { trigger: "PROTECTORS_HEALTH", npc: "Sun Zartherz",  percent: 33 },
+        "Bloodlust":                         "PROTECTORS_ENC_START"
     }
 });
 </script>
@@ -489,8 +492,8 @@ CD_AUTO_PLANNER.init({
 
         const NPC_OPTIONS = [
             "Rook Steinzeh",
-            "He der Leisetreter",
-            "Sun zartes Herz",
+            "Hee Samtfuß",
+            "Sun Zartherz",
             "Verkörperung der Qual"
         ];
         

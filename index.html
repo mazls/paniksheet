@@ -1139,6 +1139,59 @@ pre {
     background-color: rgba(36, 61, 51, 0.9);
     border-color: var(--color-gold);
 }
+/* ══ SoO-Theme: Blut/Bronze (Schlacht um Orgrimmar) ══ */
+ 
+[data-theme="soo"] {
+    --color-gold: #d97706;
+    --color-jade: #ef4444;
+    --color-parchment: #f5e6d3;
+    --color-dark-green-bg: rgba(45, 18, 18, 0.92);
+    --color-medium-green-bg: rgba(65, 30, 25, 0.88);
+    --color-dark-text: #2d0d0d;
+    --color-gold-border: rgba(217, 119, 6, 0.5);
+    --color-gold-border-light: rgba(217, 119, 6, 0.25);
+}
+ 
+html[data-theme="soo"] body {
+    background-color: #180909 !important;
+}
+ 
+/* Video bei SoO komplett ausblenden */
+html[data-theme="soo"] #background-video {
+    display: none !important;
+}
+ 
+/* Video-Toggle-Button bei SoO ausblenden (sinnlos da kein Video) */
+html[data-theme="soo"] #toggle-video-btn {
+    display: none !important;
+}
+ 
+/* Nav-Links im SoO-Theme */
+[data-theme="soo"] .nav-link {
+    background-color: rgba(120, 40, 30, 0.6) !important;
+}
+ 
+[data-theme="soo"] .nav-link:hover,
+[data-theme="soo"] .nav-link.active-tab {
+    background-color: rgba(180, 60, 40, 0.85) !important;
+}
+ 
+/* Accent-Farben umdrehen */
+[data-theme="soo"] .text-blue-450 {
+    color: var(--color-gold) !important;
+}
+ 
+/* Blaue Button-Farben auf Crimson ändern */
+[data-theme="soo"] .bg-blue-600 { background-color: #b91c1c !important; }
+[data-theme="soo"] .bg-blue-700 { background-color: #991b1b !important; }
+[data-theme="soo"] .hover\:bg-blue-500:hover { background-color: #dc2626 !important; }
+[data-theme="soo"] .hover\:bg-blue-700:hover { background-color: #7f1d1d !important; }
+ 
+/* Raid-Selector Styling */
+[data-theme="soo"] #raid-selector {
+    border-color: var(--color-gold-border) !important;
+    color: var(--color-parchment) !important;
+}
 	</style>
 </head>
 <body class="pt-4">
@@ -1325,6 +1378,81 @@ const debouncedUpdatePools = debounce(updateAssignmentPools, 300);
 const debouncedUpdateSummary = debounce(() => {
     if (window.updatePlannerSummary) window.updatePlannerSummary();
 }, 500);
+// ── Raid-ID aus URL-Hash oder sessionStorage extrahieren ──
+function getCurrentRaidId() {
+    // 1. URL-Hash hat höchste Priorität (z.B. "#siegeoforgrimmar/immerseus")
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        const pageId = hash.split('&')[0]; // vor & für Sektionen
+        // Format: "raidId/bossId" (Boss-Seite) oder nur "pageId" (comp, loot, etc.)
+        if (pageId.includes('/')) {
+            const raidFromHash = pageId.split('/')[0];
+            // Validieren dass es eine bekannte Raid-ID ist
+            if (window.RAID_THEME_CONFIG && window.RAID_THEME_CONFIG[raidFromHash]) {
+                return raidFromHash;
+            }
+            // Fallback: Auch wenn kein Theme-Config, Raid-ID akzeptieren
+            // (weil das immer noch die richtige Info ist)
+            if (raidFromHash === 'throneofthunder' || raidFromHash === 'siegeoforgrimmar') {
+                return raidFromHash;
+            }
+        }
+    }
+    
+    // 2. sessionStorage als Fallback
+    const stored = sessionStorage.getItem('lastSelectedRaid');
+    if (stored) return stored;
+    
+    // 3. raid-selector wenn da
+    const selector = document.getElementById('raid-selector');
+    if (selector && selector.value) return selector.value;
+    
+    // 4. Default
+    return 'throneofthunder';
+}
+ 
+// ── Theme anhand aktueller URL/State anwenden ──
+function applyThemeFromContext() {
+    const raidId = getCurrentRaidId();
+    if (window.applyThemeForRaid) {
+        window.applyThemeForRaid(raidId);
+    }
+}
+ 
+// ── Initial beim Page-Load (möglichst früh) ──
+// Kein Warten auf DOMContentLoaded hier — wir setzen das Attribute
+// direkt auf <html>, das funktioniert auch ohne body.
+(function immediateThemeInit() {
+    try {
+        const raidId = getCurrentRaidId();
+        // RAID_THEME_CONFIG ist evtl. noch nicht da, daher Inline-Mapping
+        const isSoo = raidId === 'siegeoforgrimmar';
+        if (isSoo) {
+            document.documentElement.setAttribute('data-theme', 'soo');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+    } catch (e) { /* Silent */ }
+})();
+ 
+// ── Bei hashchange neu anwenden ──
+window.addEventListener('hashchange', applyThemeFromContext);
+ 
+// ── Bei DOMContentLoaded voll-initialisieren (Banner etc.) ──
+document.addEventListener('DOMContentLoaded', applyThemeFromContext);
+ 
+// ── Mutation-Observer für dynamisch geladenes Banner ──
+const bannerObserver = new MutationObserver(() => {
+    if (document.getElementById('raid-main-banner')) {
+        applyThemeFromContext();
+    }
+});
+// Observer erst nach DOMContentLoaded starten
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.body) {
+        bannerObserver.observe(document.body, { childList: true, subtree: true });
+    }
+});
 
 function updateAssignmentPools() {
     const pools = {};
@@ -3139,13 +3267,13 @@ window.showModal = function(message, isConfirm = false) {
                 setDoc(userStatusRef, { online: true, last_changed: serverTimestamp() }, { merge: true });
             };
             updatePresenceTimestamp();
-            heartbeatIntervalId = setInterval(updatePresenceTimestamp, 5 * 60 * 1000);
+            heartbeatIntervalId = setInterval(updatePresenceTimestamp, 15 * 60 * 1000);
 
             onSnapshot(collection(db, "presence"), snap => {
                 const nowInSeconds = Date.now() / 1000;
                 const onlineUsersCount = snap.docs.filter(doc => {
                     const data = doc.data();
-                    return data.online && data.last_changed && (nowInSeconds - data.last_changed.seconds < 360);
+                    return data.online && data.last_changed && (nowInSeconds - data.last_changed.seconds < 1000);
                 }).length;
                 presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div><span>${onlineUsersCount}</span> Online`;
             });
@@ -3356,6 +3484,61 @@ mainNav.innerHTML = mainNavHTML;
                 updateVideoState();
             });
             updateVideoState();
+            // ── Theme-Konfiguration pro Raid ──
+window.RAID_THEME_CONFIG = {
+    "throneofthunder": {
+        theme: "mop",   // Standard Jade/Gold
+        banner: "static/8d4ce2f0-7e56-444d-a321-4e5c9a26ec20.jpg"
+    },
+    "siegeoforgrimmar": {
+        theme: "soo",   // Blut/Bronze
+        banner: "static/banner-soo.jpg"
+    }
+    // Weitere Raids hier ergänzen — die behalten das Standard-Theme
+};
+ 
+// Default-Banner für alle Raids ohne eigene Config
+const DEFAULT_BANNER = "static/8d4ce2f0-7e56-444d-a321-4e5c9a26ec20.jpg";
+ 
+window.applyThemeForRaid = function(raidId) {
+    const cfg = window.RAID_THEME_CONFIG[raidId] || { theme: "mop", banner: DEFAULT_BANNER };
+ 
+    // 1. CSS-Theme setzen
+    if (cfg.theme === "mop") {
+        document.documentElement.removeAttribute("data-theme");
+    } else {
+        document.documentElement.setAttribute("data-theme", cfg.theme);
+    }
+ 
+    // 2. Banner auf Comp-Seite wechseln
+    const bannerImg = document.getElementById("raid-main-banner");
+    if (bannerImg) {
+        const newSrc = cfg.banner || DEFAULT_BANNER;
+        // Fallback wenn Banner nicht existiert
+        bannerImg.onerror = () => {
+            console.warn("[Theme] Banner nicht gefunden, Fallback:", newSrc);
+            bannerImg.src = DEFAULT_BANNER;
+            bannerImg.onerror = null;
+        };
+        // Nur aktualisieren wenn sich die Quelle wirklich ändert
+        if (!bannerImg.src.endsWith(newSrc) && !bannerImg.src.endsWith(newSrc.replace("static/", ""))) {
+            bannerImg.src = newSrc;
+        }
+    }
+ 
+    // 3. Hintergrundvideo steuern (CSS versteckt es, aber wir pausieren es auch)
+    const video = document.getElementById("background-video");
+    if (video) {
+        if (cfg.theme === "soo") {
+            video.pause();
+        } else {
+            const videoState = localStorage.getItem('backgroundVideoState') || 'on';
+            if (videoState === 'on') {
+                video.play().catch(() => {});
+            }
+        }
+    }
+};
             raidSelector.addEventListener('change', async (e) => {
                 const newRaidId = e.target.value;
                 
@@ -3365,6 +3548,7 @@ mainNav.innerHTML = mainNavHTML;
 
                 console.log("Raid gewechselt auf:", newRaidId);
                 updateBossNav(newRaidId);
+                window.applyThemeForRaid(newRaidId); 
                 // 2. Setup Grid neu initialisieren (Wichtig für Import!)
                 // Wir prüfen, ob wir auf der Comp-Seite sind, und erzwingen ein Neuladen
                 if (window.location.hash === '#comp' || window.location.hash === '') {
@@ -7463,6 +7647,7 @@ window.makePlannerSortable = function(containerId) {
         };
     });
 };
+
     </script>
 <button id="toggle-video-btn" title="Hintergrundvideo an/aus" class="fixed bottom-4 right-4 z-50">
         <i class="fas fa-video"></i>

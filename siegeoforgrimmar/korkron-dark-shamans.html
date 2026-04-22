@@ -844,15 +844,18 @@ CD_AUTO_PLANNER.init({
         }
     ],
 
-    // Mapping auf deine bestehenden TRIGGER_OPTIONS
+    // Mapping auf TRIGGER_OPTIONS
+    // HEALTH-Trigger mit NPC + percent für HP-basierte Phasen
+    // Dark Shamans: Haromm und Kardris teilen HP-Pool. NPC = "Haromm" als Referenz.
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH-Trigger
     triggerMap: {
-        "Falling Ash":             "SHAMAN_ASHE_ADDS",           // Nächster passender Trigger
-        "Foul Geyser":             "SHAMAN_HEALTH_65",
-        "Toxic Storm":             "SHAMAN_HEALTH_85",
-        "Iron Prison":             "SHAMAN_IRON_PRISON_EXPLODE",
-        "Totem 85% (Giftnebel)":   "SHAMAN_HEALTH_85",
-        "Totem 65% (Faulstrom)":   "SHAMAN_HEALTH_65",
-        "Totem 45% (Ascheflamme)": "SHAMAN_HEALTH_45"
+        "Falling Ash":              "SHAMAN_ASHE_ADDS",
+        "Foul Geyser":              { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 65 },
+        "Toxic Storm":              { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 85 },
+        "Iron Prison":              "SHAMAN_IRON_PRISON_EXPLODE",
+        "Totem 85% (Giftnebel)":    { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 85 },
+        "Totem 65% (Faulstrom)":    { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 65 },
+        "Totem 45% (Ascheflamme)":  { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 45 }
     }
 });
 </script>
@@ -934,17 +937,14 @@ CD_AUTO_PLANNER.init({
         
         const TRIGGER_OPTIONS = [
             { val: "SHAMAN_ENC_START", text: "Kampfbeginn" },
-            { val: "SHAMAN_85", text: "85% (Giftnebel)" },
-            { val: "SHAMAN_65", text: "65% (Faulstrom)" },
-            { val: "SHAMAN_45", text: "45% (Ascheflamme)" },
-            { val: "SHAMAN_25", text: "25% (Eisernes Gefängnis)" },
+            { val: "SHAMAN_HEALTH", text: "Gesundheit % (Wähle NPC)" },
             { val: "SHAMAN_IRON_PRISON_EXPLODE", text: "Gefängnis Explosion" },
             { val: "SHAMAN_ASHE_ADDS", text: "Ascheelementare Spawns" }
         ];
 
         const NPC_OPTIONS = [
-            "Erdelementarist Haromm",
-            "Schlickruferin Kardris",
+            "Haromm",
+            "Kardris",
             "Ascheelementar"
         ];
         
