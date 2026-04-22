@@ -781,6 +781,15 @@ window.CD_AUTO_PLANNER = (function() {
             return Object.values(r.slots).some(function(s) { return s.unavailable; });
         }).length;
         updateStatus(timeline.length + ' Events, ' + missing + ' ohne CD');
+        if (!window.isManager) {
+            var tabellenInhalt = document.getElementById('auto-planner-tbody');
+            if (tabellenInhalt) {
+                var bedienelemente = tabellenInhalt.querySelectorAll('select, input');
+                for (var i = 0; i < bedienelemente.length; i++) {
+                    bedienelemente[i].disabled = true;
+                }
+            }
+        }
     }
 
     // ── Dropdown: Empfohlen + Alle CDs ──
@@ -964,6 +973,15 @@ window.CD_AUTO_PLANNER = (function() {
             + header + html;
 
         attachEventManagerListeners();
+        if (!window.isManager) {
+            var ereignisBereich = document.getElementById('auto-planner-events');
+            if (ereignisBereich) {
+                var ereignisElemente = ereignisBereich.querySelectorAll('input, button');
+                for (var j = 0; j < ereignisElemente.length; j++) {
+                    ereignisElemente[j].disabled = true;
+                }
+            }
+        }
     }
 
     function attachEventManagerListeners() {
@@ -1939,17 +1957,28 @@ window.CD_AUTO_PLANNER = (function() {
             renderEventManager();
         }
 
-        document.getElementById('btn-auto-assign').addEventListener('click', runAutoAssign);
-        document.getElementById('btn-export-to-planner').addEventListener('click', exportToPlanner);
-        document.getElementById('btn-save-auto-plan').addEventListener('click', savePlan);
-        document.getElementById('btn-save-categories').addEventListener('click', saveCategories);
-        document.getElementById('btn-clear-auto').addEventListener('click', function() {
-            if (typeof window.showModal === 'function') {
-                var r = window.showModal("Auto-Plan leeren?", true);
-                if (r && typeof r.then === 'function') { r.then(function(ok) { if (ok) clearPlan(); }); }
-                else clearPlan();
-            } else { if (confirm("Auto-Plan leeren?")) clearPlan(); }
-        });
+// Prüfung: Ist die Person kein Gildenrat?
+        if (!window.isManager) {
+            // Schaltflächen unsichtbar machen
+            if (document.getElementById('btn-auto-assign')) document.getElementById('btn-auto-assign').style.display = 'none';
+            if (document.getElementById('btn-export-to-planner')) document.getElementById('btn-export-to-planner').style.display = 'none';
+            if (document.getElementById('btn-save-auto-plan')) document.getElementById('btn-save-auto-plan').style.display = 'none';
+            if (document.getElementById('btn-save-categories')) document.getElementById('btn-save-categories').style.display = 'none';
+            if (document.getElementById('btn-clear-auto')) document.getElementById('btn-clear-auto').style.display = 'none';
+        } else {
+            // Person ist Gildenrat: Klick-Aktionen normal zuweisen
+            document.getElementById('btn-auto-assign').addEventListener('click', runAutoAssign);
+            document.getElementById('btn-export-to-planner').addEventListener('click', exportToPlanner);
+            document.getElementById('btn-save-auto-plan').addEventListener('click', savePlan);
+            document.getElementById('btn-save-categories').addEventListener('click', saveCategories);
+            document.getElementById('btn-clear-auto').addEventListener('click', function() {
+                if (typeof window.showModal === 'function') {
+                    var r = window.showModal("Auto-Plan leeren?", true);
+                    if (r && typeof r.then === 'function') { r.then(function(ok) { if (ok) clearPlan(); }); }
+                    else clearPlan();
+                } else { if (confirm("Auto-Plan leeren?")) clearPlan(); }
+            });
+        }
 
         // ── DB-Wipe Button dynamisch einfügen (nur für Manager) ──
         injectWipeButton();
