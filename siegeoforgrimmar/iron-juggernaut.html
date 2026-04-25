@@ -158,6 +158,330 @@
     </div>
 </section>
 
+
+<!-- ════════════════════════════════════════════════════════════════════
+     IRON JUGGERNAUT (EISERNER KOLOSS) AUTO-PLANNER
+     ════════════════════════════════════════════════════════════════════
+     
+     Mechaniken-Übersicht (aus DBM + BigWigs konsolidiert):
+     
+     PHASEN-SYSTEM:
+     - Encounter startet im Assault Mode (62s)
+     - Wechselt zu Siege Mode (64s) bei 120.5s
+     - Danach alterniert es kontinuierlich Assault ↔ Siege
+     - Jeder Wechsel = "Deploy Siege Mode" / "Regeneration"
+     
+     ASSAULT MODE Spells:
+     - Ignite Armor (Tank-Buster, alle 8.5s)
+     - Borer Drill (Movement, alle 15.7s)
+     - Crawler Mine (Soak-Mechanik, alle 30s)
+     - Ricochet (Mythic, alle 15s)
+     
+     SIEGE MODE Spells:
+     - Shock Pulse (3x mit 15s CD = Raid-AoE)
+     - Explosive Tar (Raid-AoE alle 30s)
+     - Cutter Laser (Run!)
+     - Mortar Barrage (Mythic, alle 30s)
+     
+     Berserk: 600s Heroic / 450s Mythic
+     
+     Werte konsolidiert aus:
+     - DBM IronJuggernaut.lua (genaue CD-Werte)
+     - BigWigs IronJuggernaut.lua (Phase-Timing-Validation)
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!-- HTML-Block für iron-juggernaut.html (oder juggernaut.html) -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            Plant automatisch Cooldown-Zuteilungen. Boss alterniert zwischen Assault Mode (62s) und Siege Mode (64s).
+            Hauptfokus: Shock Pulse + Explosive Tar in Siege Mode, Ignite Armor in Assault Mode.
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline mit Tabelle -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Iron Juggernaut Auto-Planner Config ════════════════════════════
+CD_AUTO_PLANNER.init({
+    id: 'iron-juggernaut',
+    name: 'Eiserner Koloss',
+    prefix: 'juggernaut',  // Container-Prefix in der Boss-HTML (juggernaut-planner-container)
+    
+    events: [
+        // ═══════════════════════════════════════════════════════
+        // ASSAULT MODE #1 (0s - 120s) - Initial
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Ignite Armor (Tank #1)",
+            spellId: 144467,
+            firstCast: 9,         // DBM: 9s nach Pull
+            cooldown: 8.5,        // 8.5s CD
+            maxCasts: 13,         // ~13 Casts in 120s Assault
+            delay: -1,
+            eventDuration: 30,    // 30s Stack-Debuff
+            requiredCDs: ["tank_external"],
+            icon: "🔥"
+        },
+        {
+            name: "Borer Drill #1 (Movement)",
+            spellId: 144218,
+            firstCast: 15,        // 15s nach Pull
+            cooldown: 19,         // 15.7-19s CD
+            maxCasts: 5,
+            delay: 0,
+            eventDuration: 8,
+            requiredCDs: ["movement"],
+            icon: "🪛"
+        },
+        {
+            name: "Crawler Mine #1 (Soak)",
+            spellId: 144673,
+            firstCast: 20,        // ~20s nach Pull
+            cooldown: 30,         // 30s CD
+            maxCasts: 4,
+            delay: 0,
+            eventDuration: 18,    // 18s bis zur Detonation
+            requiredCDs: ["any_dr"],
+            icon: "💣"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // SIEGE MODE #1 (120s - 184s) - Kritisch!
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Siege Mode #1 Start",
+            spellId: 144483,
+            firstCast: 120,       // DBM: 120.5s
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 64,    // 64s Siege-Phase
+            requiredCDs: ["any_dr", "any_heal"],  // Phasenwechsel = Heavy Damage
+            icon: "⚙️"
+        },
+        {
+            name: "Explosive Tar #1 (Raid AoE)",
+            spellId: 144492,
+            firstCast: 125,       // 4.8s nach Siege-Start
+            cooldown: 30,         // 30s CD
+            maxCasts: 2,          // 2 Casts in Siege-Phase
+            delay: -2,
+            eventDuration: 8,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "💥"
+        },
+        {
+            name: "Shock Pulse #1 (3x)",
+            spellId: 144485,
+            firstCast: 135,       // ~15s nach Siege-Start
+            cooldown: 16,         // 14.5-16s CD
+            maxCasts: 3,          // EXAKT 3 Pulse pro Siege-Phase
+            delay: -2,
+            eventDuration: 5,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "⚡"
+        },
+        {
+            name: "Cutter Laser #1 (Run!)",
+            spellId: 146325,
+            firstCast: 140,       // Variable, ~11-21s nach Siege
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 10,
+            requiredCDs: ["movement"],  // Speed-Boost zum wegrennen
+            icon: "🎯"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // ASSAULT MODE #2 (184s - 246s)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Assault Mode #2 Start",
+            spellId: 146359,      // Regeneration
+            firstCast: 184,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 62,
+            requiredCDs: [],       // optional, Heal-Phase ist easy
+            icon: "🔋"
+        },
+        {
+            name: "Ignite Armor (Tank #2)",
+            spellId: 144467,
+            firstCast: 193,       // 9s nach Assault-Start
+            cooldown: 8.5,
+            maxCasts: 7,          // ~7 Casts in 62s
+            delay: -1,
+            eventDuration: 30,
+            requiredCDs: ["tank_external"],
+            icon: "🔥"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // SIEGE MODE #2 (246s - 310s)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Siege Mode #2 Start",
+            spellId: 144483,
+            firstCast: 246,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 64,
+            requiredCDs: ["bloodlust", "any_dr", "any_heal"],  // Bloodlust hier optimal
+            icon: "⚙️"
+        },
+        {
+            name: "Explosive Tar #2 (Raid AoE)",
+            spellId: 144492,
+            firstCast: 251,
+            cooldown: 30,
+            maxCasts: 2,
+            delay: -2,
+            eventDuration: 8,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "💥"
+        },
+        {
+            name: "Shock Pulse #2 (3x)",
+            spellId: 144485,
+            firstCast: 261,       // 15s nach Siege #2
+            cooldown: 16,
+            maxCasts: 3,
+            delay: -2,
+            eventDuration: 5,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "⚡"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // ASSAULT MODE #3 (310s - 372s) - Execute Phase
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Assault Mode #3 (Execute)",
+            spellId: 146359,
+            firstCast: 310,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 62,
+            requiredCDs: ["additional_surv"],
+            icon: "🔋"
+        }
+    ],
+    
+    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: JUGGERNAUT_*)
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+    triggerMap: {
+        "Ignite Armor (Tank #1)":            "JUGGERNAUT_IGNITE_ARMOR",
+        "Ignite Armor (Tank #2)":            "JUGGERNAUT_IGNITE_ARMOR",
+        "Borer Drill #1 (Movement)":         "JUGGERNAUT_BORER_DRILL",
+        "Crawler Mine #1 (Soak)":            "JUGGERNAUT_CRAWLER_MINE",
+        "Siege Mode #1 Start":                "JUGGERNAUT_SIEGE_MODE",
+        "Siege Mode #2 Start":                "JUGGERNAUT_SIEGE_MODE",
+        "Explosive Tar #1 (Raid AoE)":       "JUGGERNAUT_EXPLOSIVE_TAR",
+        "Explosive Tar #2 (Raid AoE)":       "JUGGERNAUT_EXPLOSIVE_TAR",
+        "Shock Pulse #1 (3x)":               "JUGGERNAUT_SHOCK_PULSE",
+        "Shock Pulse #2 (3x)":               "JUGGERNAUT_SHOCK_PULSE",
+        "Cutter Laser #1 (Run!)":            "JUGGERNAUT_CUTTER_LASER",
+        "Assault Mode #2 Start":              "JUGGERNAUT_ASSAULT_MODE",
+        "Assault Mode #3 (Execute)":          "JUGGERNAUT_ASSAULT_MODE"
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EVENT-MANAGER HINWEISE
+     ════════════════════════════════════════════════════════════════════
+     
+     Im Event-Manager kannst du anpassen:
+     
+     - "Crawler Mine" hat any_dr — falls eure Soaker individuell sind und
+       keine Raid-CD nötig ist, "Kategorien" auf leer setzen
+     
+     - "Cutter Laser" Timing ist sehr variabel (11-21s) — der firstCast
+       ist eine grobe Schätzung. Wenn ihr nach Cast-Counter triggern wollt,
+       Trigger im Event-Manager auf "Cast-Counter" umstellen
+     
+     - "Borer Drill" ist eine Movement-Mechanik — Speed-Boosts wie 
+       Stampede, Aspect of the Cheetah, etc. sind hier nützlich
+     
+     KALIBRIERUNG NACH ERSTEM KILL:
+     
+     Aus eurer ersten Iron Juggernaut-WCL:
+     1. Wann startet der erste Siege Mode? → "Siege Mode #1 Start" firstCast
+        (sollte ~120s sein, kann variieren)
+     2. Wieviele Phasen-Wechsel bis Kill? → maxCasts der Phase-Events
+     3. Wann landet die erste Crawler Mine? → "Crawler Mine #1" firstCast
+     
+     PHASEN-RHYTHMUS (alle 62-64s wechseln):
+     0-120s:    Assault #1
+     120-184s:  Siege #1   ← Heavy Raid-Damage
+     184-246s:  Assault #2
+     246-310s:  Siege #2   ← Bloodlust empfohlen
+     310-372s:  Assault #3 (Execute)
+     
+     MYTHIC-ZUSATZ:
+     
+     Wenn ihr Mythic geht, müssen folgende zusätzliche Events ergänzt werden
+     (kommen nicht im Standard-Setup vor):
+     - Ricochet (alle 15s, Mythic only) — Raid-DR
+     - Mortar Barrage (alle 30s in Siege Mode, Mythic only) — Heavy AoE
+     
+     Diese können über den Event-Manager als Custom-Events hinzugefügt werden.
+     ════════════════════════════════════════════════════════════════════ -->
+
+
+<!-- ════════════════════════════════════════════════════════════════════
+     ZUSÄTZLICH: TRIGGER_OPTIONS für iron-juggernaut.html
+     
+     Falls die Boss-HTML die TRIGGER_OPTIONS noch nicht definiert hat,
+     hier die offiziellen Keys aus deiner WeakAura-Liste:
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!--
+
+-->
+
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -235,18 +559,21 @@
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "JUGGERNAUT_ENC_START", text: "Kampfbeginn" },
-            { val: "JUGGERNAUT_P1", text: "Phase 1 (Sturmmodus)" },
-            { val: "JUGGERNAUT_P2", text: "Phase 2 (Belagerungsmodus)" },
-            { val: "JUGGERNAUT_MINES", text: "Krabblerminen Spawn" },
-            { val: "JUGGERNAUT_SHOCK_PULSE", text: "Schockimpuls (Knockback)" },
-            { val: "JUGGERNAUT_LASER", text: "Schneidelaser" },
-            { val: "JUGGERNAUT_HEALTH", text: "Gesundheit %" }
+            { val: "JUGGERNAUT_ENC_START",      text: "Kampfbeginn" },
+            { val: "JUGGERNAUT_HEALTH",         text: "Gesundheit % (Wähle NPC)" },
+            { val: "JUGGERNAUT_ASSAULT_MODE",   text: "Sturmangriff-Modus" },
+            { val: "JUGGERNAUT_IGNITE_ARMOR",   text: "Brennende Rüstung (Tank)" },
+            { val: "JUGGERNAUT_BORER_DRILL",    text: "Bohrer (Movement)" },
+            { val: "JUGGERNAUT_CRAWLER_MINE",   text: "Krabbel-Mine (Soak)" },
+            { val: "JUGGERNAUT_RICOCHET",       text: "Querschläger (Mythic)" },
+            { val: "JUGGERNAUT_SIEGE_MODE",     text: "Belagerungs-Modus" },
+            { val: "JUGGERNAUT_CUTTER_LASER",   text: "Schneidlaser (Run!)" },
+            { val: "JUGGERNAUT_SHOCK_PULSE",    text: "Schockwelle" },
+            { val: "JUGGERNAUT_EXPLOSIVE_TAR",  text: "Explosiver Teer" }
         ];
-
+        
         const NPC_OPTIONS = [
-            "Eiserner Koloss",
-            "Krabblermine"
+            "Eiserner Koloss"
         ];
         
         const container = document.getElementById('juggernaut-planner-container');

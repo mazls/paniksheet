@@ -91,171 +91,6 @@
     </div>
 </section>
 
-<style>
-/* ══ ROSTER PANEL — Desktop Side Panel ══ */
-#rs-float-panel{
-    position:fixed; right:0; top:0; bottom:0; margin:auto;
-    height:fit-content; max-height:90vh;
-    width:220px; z-index:9500;
-    background:rgba(19,35,27,0.97); border:1px solid rgba(204,163,76,0.35);
-    border-right:none; border-radius:10px 0 0 10px;
-    box-shadow:-4px 0 24px rgba(0,0,0,0.6);
-    transition:right 0.28s cubic-bezier(.4,0,.2,1); display:none;
-}
-#rs-float-panel.rs-collapsed{ right:-220px; }
-#rs-tab-btn{
-    position:absolute; left:-28px; top:50%; transform:translateY(-50%);
-    width:28px; padding:16px 0; background:rgba(19,35,27,0.97);
-    border:1px solid rgba(204,163,76,0.35); border-right:none;
-    border-radius:8px 0 0 8px; cursor:pointer; writing-mode:vertical-rl;
-    font-size:10px; font-weight:700; color:#fcd34d; letter-spacing:0.1em;
-    font-family:'Cinzel',serif; text-align:center; user-select:none;
-    min-height:60px; touch-action:manipulation;
-}
-#rs-tab-btn:hover,#rs-tab-btn:active{ background:rgba(36,61,51,0.97); }
-#rs-panel-inner{
-    padding:10px 10px 14px; overflow-y:auto;
-    max-height:85vh;
-    scrollbar-width:thin; scrollbar-color:rgba(204,163,76,0.3) transparent;
-}
-
-/* ══ ROSTER PANEL — Mobile Bottom Sheet ══ */
-#rs-mobile-btn{
-    display:none; position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
-    z-index:2000; background:rgba(19,35,27,0.97); border:1px solid rgba(204,163,76,0.5);
-    border-radius:24px; padding:10px 22px; font-size:13px; font-weight:700;
-    color:#fcd34d; font-family:'Cinzel',serif; cursor:pointer; letter-spacing:0.06em;
-    box-shadow:0 4px 20px rgba(0,0,0,0.5); white-space:nowrap;
-}
-#rs-mobile-btn:active{ transform:translateX(-50%) scale(0.97); }
-#rs-bottom-sheet{
-    display:none; position:fixed; bottom:0; left:0; right:0; z-index:2001;
-    background:rgba(19,35,27,0.99); border-top:1px solid rgba(204,163,76,0.4);
-    border-radius:16px 16px 0 0;
-    transform:translateY(100%); transition:transform 0.3s cubic-bezier(.4,0,.2,1);
-    max-height:70vh; flex-direction:column;
-}
-#rs-bottom-sheet.rs-open{ transform:translateY(0); display:flex !important; }
-#rs-sheet-handle{
-    width:36px; height:4px; background:rgba(204,163,76,0.4); border-radius:2px;
-    margin:10px auto 6px; flex-shrink:0;
-}
-#rs-sheet-inner{
-    padding:0 14px 20px; overflow-y:auto; flex:1;
-    scrollbar-width:thin; scrollbar-color:rgba(204,163,76,0.3) transparent;
-}
-#rs-sheet-close{
-    position:absolute; top:10px; right:14px; background:none; border:none;
-    color:#64748b; font-size:18px; cursor:pointer; padding:4px 8px; line-height:1;
-}
-#rs-sheet-close:hover{ color:#f5f2e8; }
-
-/* ══ Chips ══ */
-.rs-chip{
-    display:inline-flex; align-items:center; gap:4px;
-    padding:6px 10px; border-radius:20px; font-size:12px; font-weight:600;
-    cursor:pointer; border:1.5px solid rgba(204,163,76,0.2);
-    background:rgba(10,20,15,0.6); color:#f5f2e8;
-    transition:border-color 0.12s,transform 0.1s; white-space:nowrap;
-    user-select:none; position:relative; font-family:'Inter',sans-serif;
-    /* 44px touch target via padding */
-    min-height:36px;
-}
-.rs-chip:hover{ border-color:rgba(204,163,76,0.7); }
-.rs-chip:active{ transform:scale(0.96); }
-.rs-chip.rs-benched{ opacity:0.3; cursor:not-allowed; border-style:dashed; }
-.rs-chip.rs-multi{ border-color:#fcd34d; background:rgba(252,211,77,0.12); }
-.rs-chip.rs-clear-chip{
-    border-color:rgba(239,68,68,0.4); color:#f87171;
-    background:rgba(239,68,68,0.08); width:100%; justify-content:center;
-    margin-bottom:6px;
-}
-.rs-chip.rs-clear-chip:hover{ border-color:#f87171; background:rgba(239,68,68,0.15); }
-.rs-count{
-    position:absolute; top:-4px; right:-4px; background:#fcd34d; color:#102a23;
-    border-radius:6px; font-size:8px; font-weight:800; padding:1px 3px;
-    min-width:12px; text-align:center; line-height:12px;
-}
-.rs-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-
-/* ══ Slots (Seite) ══ */
-.rs-slot{
-    display:flex; align-items:center; gap:8px;
-    padding:8px 10px; border-radius:8px;
-    border:1.5px dashed rgba(204,163,76,0.3);
-    background:rgba(10,20,15,0.4);
-    min-height:44px; /* 44px touch target */
-    font-size:13px; color:#64748b;
-    transition:all 0.15s; flex:1; font-family:'Inter',sans-serif;
-}
-.rs-slot.rs-manager{ cursor:pointer; }
-.rs-slot.rs-filled{ border-style:solid; border-color:rgba(204,163,76,0.25); color:#f5f2e8; background:rgba(10,20,15,0.7); }
-.rs-slot.rs-filled.rs-multi-warn{ border-color:#fcd34d; }
-.rs-slot.rs-active{ border-color:#fcd34d; border-style:solid; background:rgba(252,211,77,0.07); }
-.rs-slot.rs-manager:not(.rs-filled):hover{ border-color:rgba(204,163,76,0.6); }
-.rs-xbtn{
-    display:none; margin-left:auto; min-width:28px; height:28px; border-radius:50%;
-    background:rgba(239,68,68,0.1); border:none; cursor:pointer;
-    align-items:center; justify-content:center; font-size:12px;
-    color:#f87171; flex-shrink:0;
-}
-.rs-slot.rs-filled .rs-xbtn{ display:flex; }
-.rs-xbtn:hover{ background:rgba(239,68,68,0.25); }
-.rs-row{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-.rs-lbl{ font-size:12px; color:#94a3b8; min-width:100px; flex-shrink:0; font-family:'Inter',sans-serif; }
-.rs-role-lbl{
-    font-size:9px; font-weight:700; color:#64748b; text-transform:uppercase;
-    letter-spacing:0.08em; margin:8px 0 4px; font-family:'Cinzel',serif;
-}
-.rs-role-lbl:first-child{ margin-top:0; }
-.rs-chips-wrap{ display:flex; flex-wrap:wrap; gap:4px; }
-.rs-hint-bar{
-    padding:6px 10px; border-radius:6px; background:rgba(252,211,77,0.07);
-    border:1px solid rgba(252,211,77,0.3); font-size:11px; color:#fcd34d;
-    margin-top:8px; font-family:'Inter',sans-serif;
-}
-.rs-prog{ height:3px; border-radius:2px; background:rgba(255,255,255,0.08); margin-bottom:10px; overflow:hidden; }
-.rs-prog-fill{ height:100%; border-radius:2px; background:#fcd34d; transition:width 0.3s; }
-.rs-bench-sect{ border-top:1px solid rgba(204,163,76,0.15); margin-top:10px; padding-top:8px; }
-.rs-sep{ border-top:1px solid rgba(204,163,76,0.15); margin:10px 0 8px; }
-
-/* ══ Responsive ══ */
-@media (max-width: 768px){
-    #rs-float-panel{ display:none !important; }
-    #rs-mobile-btn{ display:block; }
-    .rs-row{ flex-wrap:wrap; }
-    .rs-lbl{ min-width:80px; }
-}
-</style>
-
-<!-- DESKTOP: Side Panel -->
-<div id="rs-float-panel" class="rs-collapsed">
-    <div id="rs-tab-btn" onclick="rsTogglePanel()">ROSTER</div>
-    <div id="rs-panel-inner">
-        <div style="font-size:11px;font-weight:700;color:#fcd34d;margin-bottom:3px;font-family:'Cinzel',serif;letter-spacing:0.05em;">Raid-Roster</div>
-        <div style="font-size:10px;color:#64748b;margin-bottom:5px;font-family:'Inter',sans-serif;" id="rs-prog-text">0 / 0 zugeteilt</div>
-        <div class="rs-prog"><div class="rs-prog-fill" id="rs-prog-fill" style="width:0%"></div></div>
-        <div id="rs-clear-wrap"></div>
-        <div class="rs-role-lbl">Tank</div>
-        <div class="rs-chips-wrap" id="rs-grp-tank"></div>
-        <div class="rs-role-lbl">Heal</div>
-        <div class="rs-chips-wrap" id="rs-grp-heal"></div>
-        <div class="rs-role-lbl">DPS</div>
-        <div class="rs-chips-wrap" id="rs-grp-dps"></div>
-        <div class="rs-bench-sect" id="rs-bench-sect" style="display:none;">
-            <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;font-family:'Cinzel',serif;">Bench</div>
-            <div class="rs-chips-wrap" id="rs-bench-chips"></div>
-        </div>
-        <div class="rs-sep"></div>
-        <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;font-family:'Cinzel',serif;">Klassen</div>
-        <div class="rs-chips-wrap" id="rs-grp-classes"></div>
-        <div id="rs-hint" class="rs-hint-bar" style="display:none;">Slot aktiv — Spieler wählen</div>
-        <div style="margin-top:8px;display:flex;align-items:center;gap:4px;font-size:9px;color:#64748b;font-family:'Inter',sans-serif;">
-            <div style="width:8px;height:8px;border-radius:2px;background:rgba(252,211,77,0.12);border:1px solid #fcd34d;flex-shrink:0;"></div>Mehrfach belegt
-        </div>
-    </div>
-</div>
-
 <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
         Einteilungen & Taktische Hilfen
@@ -268,32 +103,40 @@
             <div class="space-y-6">
                 <div class="assignment-block">
                     <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung & Camps</h4>
-                    <div class="rs-row"><span class="rs-lbl">Haromm Tank 1</span><div class="rs-slot" data-slot="shaman-tank-haromm-1" data-assignment-id="shaman-tank-haromm-1">Nicht zugeteilt</div></div>
-                    <div class="rs-row"><span class="rs-lbl">Haromm Tank 2</span><div class="rs-slot" data-slot="shaman-tank-haromm-2" data-assignment-id="shaman-tank-haromm-2">Nicht zugeteilt</div></div>
-                    <div class="rs-row"><span class="rs-lbl">Kardris Tank</span><div class="rs-slot" data-slot="shaman-tank-kardris" data-assignment-id="shaman-tank-kardris">Nicht zugeteilt</div></div>
+                    <ul class="assignment-list">
+                        <li><span>Haromm Tank 1:</span><select class="assignment-select" data-assignment-id="shaman-tank-haromm-1"></select></li>
+                        <li><span>Haromm Tank 2:</span><select class="assignment-select" data-assignment-id="shaman-tank-haromm-2"></select></li>
+                        <li><span>Kardris Tank:</span><select class="assignment-select" data-assignment-id="shaman-tank-kardris"></select></li>
+                    </ul>
                 </div>
 
                 <div class="assignment-block">
                     <h4 class="text-lg font-bold text-orange-400">⚕️ Heiler-Aufteilung</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-1">Wer fokussiert welche Gruppe?</p>
-                    <div class="rs-row"><span class="rs-lbl" style="color:#fb923c">Haromm-Camp</span><div class="rs-slot" data-slot="shaman-heal-haromm" data-assignment-id="shaman-heal-haromm">Nicht zugeteilt</div></div>
-                    <div class="rs-row"><span class="rs-lbl" style="color:#fb923c">Kardris-Camp</span><div class="rs-slot" data-slot="shaman-heal-kardris" data-assignment-id="shaman-heal-kardris">Nicht zugeteilt</div></div>
-                    <div class="rs-row"><span class="rs-lbl" style="color:#fb923c">Flex (Beide)</span><div class="rs-slot" data-slot="shaman-heal-flex" data-assignment-id="shaman-heal-flex">Nicht zugeteilt</div></div>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Wer fokussiert welche Gruppe?</p>
+                    <ul class="assignment-list">
+                        <li><span style="color:#fb923c">Haromm-Camp:</span><select class="assignment-select" data-assignment-id="shaman-heal-haromm"></select></li>
+                        <li><span style="color:#fb923c">Kardris-Camp:</span><select class="assignment-select" data-assignment-id="shaman-heal-kardris"></select></li>
+                        <li><span style="color:#fb923c">Flex (Beide):</span><select class="assignment-select" data-assignment-id="shaman-heal-flex"></select></li>
+                    </ul>
                 </div>
 
                 <div class="assignment-block">
                     <h4 class="text-lg font-bold text-blue-400">⚡ Interrupt-Rotation (Kardris)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-1">Froststurmbogen unterbrechen — feste Rotation nötig</p>
-                    <div class="rs-row"><span class="rs-lbl">Kick 1</span><div class="rs-slot" data-slot="shaman-kick-1" data-assignment-id="shaman-kick-1">Nicht zugeteilt</div></div>
-                    <div class="rs-row"><span class="rs-lbl">Kick 2</span><div class="rs-slot" data-slot="shaman-kick-2" data-assignment-id="shaman-kick-2">Nicht zugeteilt</div></div>
-                    <div class="rs-row"><span class="rs-lbl">Kick 3</span><div class="rs-slot" data-slot="shaman-kick-3" data-assignment-id="shaman-kick-3">Nicht zugeteilt</div></div>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Froststurmbogen unterbrechen — feste Rotation nötig</p>
+                    <ul class="assignment-list">
+                        <li><span>Kick 1:</span><select class="assignment-select" data-assignment-id="shaman-kick-1"></select></li>
+                        <li><span>Kick 2:</span><select class="assignment-select" data-assignment-id="shaman-kick-2"></select></li>
+                        <li><span>Kick 3:</span><select class="assignment-select" data-assignment-id="shaman-kick-3"></select></li>
+                    </ul>
                 </div>
 
                 <div class="assignment-block">
                     <h4 class="text-lg font-bold text-purple-400">🌪️ Tornado-Kiter</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-1">Spieler die Tornados wegkiten / warnen</p>
-                    <div class="rs-row"><span class="rs-lbl">Kiter 1</span><div class="rs-slot" data-slot="shaman-kiter-1" data-assignment-id="shaman-kiter-1">Nicht zugeteilt</div></div>
-                    <div class="rs-row"><span class="rs-lbl">Kiter 2</span><div class="rs-slot" data-slot="shaman-kiter-2" data-assignment-id="shaman-kiter-2">Nicht zugeteilt</div></div>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler die Tornados wegkiten / warnen</p>
+                    <ul class="assignment-list">
+                        <li><span>Kiter 1:</span><select class="assignment-select" data-assignment-id="shaman-kiter-1"></select></li>
+                        <li><span>Kiter 2:</span><select class="assignment-select" data-assignment-id="shaman-kiter-2"></select></li>
+                    </ul>
                 </div>
             </div>
 
@@ -333,321 +176,6 @@
         </div>
     </div>
 </section>
-
-<script>
-(function() {
-    const CC = {
-        'DEATHKNIGHT':'#C41F3B','DK':'#C41F3B','DRUID':'#FF7D0A','HUNTER':'#AAD372',
-        'MAGE':'#3FC7EB','MONK':'#00FF96','PALADIN':'#F48CBA','PRIEST':'#FFFFFF',
-        'ROGUE':'#FFF569','SHAMAN':'#0070DD','WARLOCK':'#8788EE','WARRIOR':'#C69B6D'
-    };
-    const CLASS_LIST = ['ALL','DEATHKNIGHT','DRUID','HUNTER','MAGE','MONK','PALADIN','PRIEST','ROGUE','SHAMAN','WARLOCK','WARRIOR'];
-    const SLOT_KEYS = [
-        'shaman-tank-haromm-1','shaman-tank-haromm-2','shaman-tank-kardris',
-        'shaman-heal-haromm','shaman-heal-kardris','shaman-heal-flex',
-        'shaman-kick-1','shaman-kick-2','shaman-kick-3',
-        'shaman-kiter-1','shaman-kiter-2'
-    ];
-
-    let rsActive = [];
-    let rsBenched = [];
-    let rsAssignments = {};
-    let rsActiveSlot = null;
-    let rsIsManager = false;
-    let rsPanelOpen = false;
-
-    function getColor(p) {
-        return CC[(p.class||'').toUpperCase()] || p.color || '#AAAAAA';
-    }
-
-    function getPrimaryRole(p) {
-        // roles ist ein Array z.B. ["tank"], ["healer"], ["dps"], ["Absence"]
-        const roles = p.roles || [];
-        const first = (Array.isArray(roles) ? (roles[0] || '') : roles).toString().toLowerCase();
-        if (first.includes('tank')) return 'tank';
-        if (first.includes('heal')) return 'heal';
-        if (first.includes('absence') || first.includes('bench')) return 'bench';
-        return 'dps';
-    }
-
-    function countAssigned(name) {
-        return Object.values(rsAssignments).filter(n => n === name).length;
-    }
-
-    // ── Panel Toggle (Desktop) ──
-    window.rsTogglePanel = function() {
-        rsPanelOpen = !rsPanelOpen;
-        const panel = document.getElementById('rs-float-panel');
-        panel.style.right = rsPanelOpen ? '0' : '-220px';
-    };
-
-    // ── Bottom Sheet Toggle (Mobile) ──
-    window.rsOpenSheet = function() {
-        const sheet = document.getElementById('rs-bottom-sheet');
-        sheet.style.display = 'flex';
-        requestAnimationFrame(() => sheet.classList.add('rs-open'));
-    };
-    window.rsCloseSheet = function() {
-        const sheet = document.getElementById('rs-bottom-sheet');
-        sheet.classList.remove('rs-open');
-        setTimeout(() => { sheet.style.display = 'none'; }, 300);
-    };
-
-    // ── Clear-Chip aktualisieren ──
-    function updateClearChip() {
-        const wrap = document.getElementById('rs-clear-wrap');
-        const sheetWrap = document.getElementById('rs-sheet-clear-wrap');
-        [wrap, sheetWrap].forEach(w => {
-            if (!w) return;
-            if (rsActiveSlot) {
-                w.innerHTML = '<div class="rs-chip rs-clear-chip" onclick="rsClearActive()">✕ Slot leeren</div>';
-            } else {
-                w.innerHTML = '';
-            }
-        });
-    }
-
-    // Aktiven Slot leeren (ohne Spieler zu wählen)
-    window.rsClearActive = function() {
-        if (rsActiveSlot) {
-            rsClear(rsActiveSlot);
-            rsActiveSlot = null;
-            updateClearChip();
-            document.getElementById('rs-hint') && (document.getElementById('rs-hint').style.display = 'none');
-            document.getElementById('rs-sheet-hint') && (document.getElementById('rs-sheet-hint').style.display = 'none');
-        }
-    };
-
-    // ── Slot aktivieren ──
-    function rsActivateSlot(slotEl) {
-        if (!rsIsManager) return;
-        if (slotEl.classList.contains('rs-filled')) { rsClear(slotEl); return; }
-        document.querySelectorAll('.rs-slot.rs-active').forEach(s => s.classList.remove('rs-active'));
-        const hint = document.getElementById('rs-hint');
-        const sheetHint = document.getElementById('rs-sheet-hint');
-        if (rsActiveSlot === slotEl) {
-            rsActiveSlot = null;
-            if (hint) hint.style.display = 'none';
-            if (sheetHint) sheetHint.style.display = 'none';
-            updateClearChip();
-            return;
-        }
-        rsActiveSlot = slotEl;
-        slotEl.classList.add('rs-active');
-        if (hint) hint.style.display = 'block';
-        if (sheetHint) sheetHint.style.display = 'block';
-        updateClearChip();
-        // Desktop: Panel öffnen
-        if (!rsPanelOpen && window.innerWidth > 768) {
-            rsPanelOpen = true;
-            document.getElementById('rs-float-panel').style.right = '0';
-        }
-        // Mobile: Sheet öffnen
-        if (window.innerWidth <= 768) window.rsOpenSheet();
-    }
-
-    // ── Slot leeren ──
-    function rsClear(slotEl) {
-        if (!rsIsManager) return;
-        const slot = slotEl.dataset.slot;
-        delete rsAssignments[slot];
-        slotEl.classList.remove('rs-filled','rs-active','rs-multi-warn');
-        slotEl.innerHTML = 'Nicht zugeteilt';
-        if (rsIsManager) slotEl.onclick = () => rsActivateSlot(slotEl);
-        rsFirebaseSave(slot, '');
-        renderChips();
-        updateProgress();
-        refreshWarnings();
-        updateClearChip();
-    }
-
-    window.rsClearBySlot = function(slot) {
-        const el = document.querySelector('.rs-slot[data-slot="'+slot+'"]');
-        if (el) rsClear(el);
-    };
-
-    // ── Spieler/Klasse zuweisen ──
-    function rsAssign(name, color) {
-        if (!rsActiveSlot || !rsIsManager) return;
-        const slot = rsActiveSlot.dataset.slot;
-        rsAssignments[slot] = name;
-        rsActiveSlot.classList.add('rs-filled');
-        rsActiveSlot.classList.remove('rs-active');
-        rsActiveSlot.innerHTML =
-            '<span class="rs-dot" style="background:'+color+'"></span>' +
-            '<span>'+name+'</span>' +
-            '<button class="rs-xbtn" onclick="event.stopPropagation();rsClearBySlot(\''+slot+'\')">✕</button>';
-        rsActiveSlot.onclick = null;
-        rsActiveSlot = null;
-        ['rs-hint','rs-sheet-hint'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = 'none';
-        });
-        document.querySelectorAll('.rs-slot.rs-active').forEach(s => s.classList.remove('rs-active'));
-        rsFirebaseSave(slot, name);
-        renderChips();
-        updateProgress();
-        refreshWarnings();
-        updateClearChip();
-        // Mobile: Sheet schließen nach Zuweisung
-        if (window.innerWidth <= 768) window.rsCloseSheet();
-    }
-
-    // ── Firebase ──
-    function rsFirebaseSave(slotId, value) {
-        if (!window.firebaseTools?.db) return;
-        try {
-            const { db, doc, setDoc } = window.firebaseTools;
-            setDoc(doc(db, 'raid-tool-data', 'boss-korkron-dark-shamans'),
-                { [slotId]: { player: value, timestamp: Date.now() } }, { merge: true });
-        } catch(e) { console.warn('rs-save:', e); }
-    }
-
-    // ── Chips rendern (Desktop + Sheet) ──
-    function makeChip(p, isClass) {
-        const name = isClass ? p.name : p.name;
-        const color = isClass ? (CC[p.name]||'#AAAAAA') : getColor(p);
-        const n = countAssigned(name);
-        const chip = document.createElement('div');
-        chip.className = 'rs-chip' + (n > 1 ? ' rs-multi' : '') + (p.benched ? ' rs-benched' : '');
-        const label = isClass ? (name==='ALL'?'Alle':name.charAt(0)+name.slice(1).toLowerCase()) : name;
-        chip.innerHTML = '<span class="rs-dot" style="background:'+color+'"></span>'+label;
-        if (n > 1) chip.innerHTML += '<span class="rs-count">'+n+'</span>';
-        if (rsIsManager && !p.benched) chip.onclick = () => rsAssign(name, color);
-        else chip.style.cursor = p.benched ? 'not-allowed' : 'default';
-        return chip;
-    }
-
-    function renderChips() {
-        const groups = { tank:[], heal:[], dps:[] };
-        rsActive.forEach(p => {
-            const r = getPrimaryRole(p);
-            (groups[r] || groups.dps).push(p);
-        });
-
-        // Beide Container-Paare befüllen (Desktop + Sheet)
-        ['','sheet-'].forEach(prefix => {
-            ['tank','heal','dps'].forEach(role => {
-                const wrap = document.getElementById('rs-'+prefix+'grp-'+role);
-                if (!wrap) return;
-                wrap.innerHTML = '';
-                groups[role].forEach(p => wrap.appendChild(makeChip(p, false)));
-            });
-
-            const benchWrap = document.getElementById('rs-'+prefix+'bench-chips');
-            const benchSect = document.getElementById('rs-'+prefix+'bench-sect');
-            if (benchWrap) {
-                benchWrap.innerHTML = '';
-                rsBenched.forEach(p => benchWrap.appendChild(makeChip({...p, benched:true}, false)));
-                if (benchSect) benchSect.style.display = rsBenched.length ? 'block' : 'none';
-            }
-
-            const clsWrap = document.getElementById('rs-'+prefix+'grp-classes');
-            if (clsWrap) {
-                clsWrap.innerHTML = '';
-                CLASS_LIST.forEach(cls => clsWrap.appendChild(makeChip({name:cls}, true)));
-            }
-        });
-
-        // Slot-Klickbarkeit
-        document.querySelectorAll('.rs-slot').forEach(el => {
-            if (rsIsManager) {
-                el.classList.add('rs-manager');
-                if (!el.classList.contains('rs-filled'))
-                    el.onclick = () => rsActivateSlot(el);
-            } else {
-                el.classList.remove('rs-manager');
-                el.onclick = null;
-                el.style.cursor = 'default';
-            }
-        });
-    }
-
-    function refreshWarnings() {
-        document.querySelectorAll('.rs-slot.rs-filled').forEach(el => {
-            const nameEl = el.querySelector('span:not(.rs-dot)');
-            if (!nameEl) return;
-            el.classList.toggle('rs-multi-warn', countAssigned(nameEl.textContent) > 1);
-        });
-    }
-
-    function updateProgress() {
-        const unique = new Set(Object.values(rsAssignments).filter(Boolean)).size;
-        const total = rsActive.length;
-        ['rs-prog-text','rs-sheet-prog-text'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = unique + ' / ' + total + ' zugeteilt';
-        });
-        ['rs-prog-fill','rs-sheet-prog-fill'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.width = (total > 0 ? Math.round(unique/total*100) : 0) + '%';
-        });
-    }
-
-    function loadRoster(raw) {
-        raw = raw || window.rosterData || [];
-        rsActive = raw.filter(p => getPrimaryRole(p) !== 'bench' && p.name);
-        rsBenched = raw.filter(p => getPrimaryRole(p) === 'bench');
-        renderChips();
-        updateProgress();
-    }
-
-    function loadSaved(assignments) {
-        SLOT_KEYS.forEach(slot => {
-            const val = assignments[slot]?.player || '';
-            if (!val) return;
-            const el = document.querySelector('.rs-slot[data-slot="'+slot+'"]');
-            if (!el) return;
-            const p = (window.rosterData||[]).find(r => r.name === val);
-            const color = p ? getColor(p) : (CC[val.toUpperCase()]||'#AAAAAA');
-            rsAssignments[slot] = val;
-            el.classList.add('rs-filled');
-            el.innerHTML =
-                '<span class="rs-dot" style="background:'+color+'"></span><span>'+val+'</span>' +
-                (rsIsManager ? '<button class="rs-xbtn" onclick="event.stopPropagation();rsClearBySlot(\''+slot+'\')">✕</button>' : '');
-            if (rsIsManager) el.onclick = null;
-        });
-        refreshWarnings();
-        updateProgress();
-    }
-
-    function applyManagerState() {
-        rsIsManager = !!window.isManager;
-        // Desktop Panel
-        const panel = document.getElementById('rs-float-panel');
-        if (panel) {
-            panel.style.display = rsIsManager ? 'block' : 'none';
-            // Beim ersten Anzeigen: eingeklappt starten
-            if (rsIsManager && !panel.dataset.initialized) {
-                panel.style.right = '-220px';
-                panel.dataset.initialized = '1';
-            }
-        }
-        // Mobile Button
-        const mBtn = document.getElementById('rs-mobile-btn');
-        if (mBtn) mBtn.style.display = rsIsManager ? 'block' : 'none';
-        renderChips();
-    }
-
-    const _orig = window.initializePageSpecificCode;
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        if (_orig) _orig(assignments, roster, firebaseTools, allCooldowns);
-        if (roster?.length > 0) window.rosterData = roster;
-        setTimeout(() => {
-            applyManagerState();
-            loadRoster(window.rosterData);
-            loadSaved(assignments || {});
-        }, 200);
-    };
-
-    let _poll = setInterval(() => {
-        if (rsIsManager !== !!window.isManager) applyManagerState();
-        if (window.rosterData?.length > 0) { clearInterval(_poll); loadRoster(window.rosterData); }
-    }, 500);
-
-    setTimeout(applyManagerState, 300);
-})();
-</script>
 <!-- ══════════════════════════════════════════════════════════════
      DUNKELSCHAMANEN DER KOR'KRON — CD AUTO-PLANER
      ════════════════════════════════════════════════════════════
@@ -844,18 +372,19 @@ CD_AUTO_PLANNER.init({
         }
     ],
 
-    // Mapping auf TRIGGER_OPTIONS
-    // HEALTH-Trigger mit NPC + percent für HP-basierte Phasen
-    // Dark Shamans: Haromm und Kardris teilen HP-Pool. NPC = "Haromm" als Referenz.
+    // Mapping auf TRIGGER_OPTIONS (SoO-Keys: KORKRON_*)
+    // - Phasen-Starts: KORKRON_P1/P2/P3/P4 (einmalige Trigger ohne HEALTH)
+    // - Wiederholte Spells: eigene KORKRON_* Trigger
+    // - Iron Prison (einmalig bei 25%): KORKRON_HEALTH mit npc+percent
     // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH-Trigger
     triggerMap: {
-        "Falling Ash":              "SHAMAN_ASHE_ADDS",
-        "Foul Geyser":              { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 65 },
-        "Toxic Storm":              { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 85 },
-        "Iron Prison":              "SHAMAN_IRON_PRISON_EXPLODE",
-        "Totem 85% (Giftnebel)":    { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 85 },
-        "Totem 65% (Faulstrom)":    { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 65 },
-        "Totem 45% (Ascheflamme)":  { trigger: "SHAMAN_HEALTH", npc: "Haromm", percent: 45 }
+        "Falling Ash":              "KORKRON_FALLING_ASH",
+        "Foul Geyser":              "KORKRON_FOUL_GEYSER",
+        "Toxic Storm":              "KORKRON_TOXIC_STORM",
+        "Iron Prison":              { trigger: "KORKRON_HEALTH", npc: "Haromm", percent: 25 },
+        "Totem 85% (Giftnebel)":    "KORKRON_P1",
+        "Totem 65% (Faulstrom)":    "KORKRON_P2",
+        "Totem 45% (Ascheflamme)":  "KORKRON_P3"
     }
 });
 </script>
@@ -936,10 +465,20 @@ CD_AUTO_PLANNER.init({
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "SHAMAN_ENC_START", text: "Kampfbeginn" },
-            { val: "SHAMAN_HEALTH", text: "Gesundheit % (Wähle NPC)" },
-            { val: "SHAMAN_IRON_PRISON_EXPLODE", text: "Gefängnis Explosion" },
-            { val: "SHAMAN_ASHE_ADDS", text: "Ascheelementare Spawns" }
+            { val: "KORKRON_ENC_START",     text: "Kampfbeginn" },
+            { val: "KORKRON_HEALTH",        text: "Gesundheit % (Wähle NPC)" },
+            { val: "KORKRON_P1",            text: "Phase 1 Start" },
+            { val: "KORKRON_P2",            text: "Phase 2 Start (85%)" },
+            { val: "KORKRON_P3",            text: "Phase 3 Start (65%)" },
+            { val: "KORKRON_P4",            text: "Phase 4 Start (45%)" },
+            { val: "KORKRON_TOXIC_MIST",    text: "Giftnebel" },
+            { val: "KORKRON_FOUL_STREAM",   text: "Faulstrom" },
+            { val: "KORKRON_ASHEN_WALL",    text: "Aschewand" },
+            { val: "KORKRON_IRON_TOMB",     text: "Eisengrab" },
+            { val: "KORKRON_TOXIC_STORM",   text: "Giftsturm" },
+            { val: "KORKRON_FOUL_GEYSER",   text: "Faulgeysir" },
+            { val: "KORKRON_FALLING_ASH",   text: "Aschefall" },
+            { val: "KORKRON_IRON_PRISON",   text: "Eisernes Gefängnis" }
         ];
 
         const NPC_OPTIONS = [
@@ -1059,46 +598,4 @@ CD_AUTO_PLANNER.init({
     };
 </script>
 
-<!-- MOBILE: Button + Bottom Sheet -->
-<button id="rs-mobile-btn" onclick="rsOpenSheet()" style="display:none;">
-    ▲ Roster
-</button>
-
-<div id="rs-bottom-sheet">
-    <div id="rs-sheet-handle"></div>
-    <button id="rs-sheet-close" onclick="rsCloseSheet()">✕</button>
-    <div id="rs-sheet-inner">
-        <div style="font-size:12px;font-weight:700;color:#fcd34d;margin-bottom:3px;font-family:'Cinzel',serif;letter-spacing:0.05em;">Raid-Roster</div>
-        <div style="font-size:11px;color:#64748b;margin-bottom:5px;font-family:'Inter',sans-serif;" id="rs-sheet-prog-text">0 / 0 zugeteilt</div>
-        <div class="rs-prog"><div class="rs-prog-fill" id="rs-sheet-prog-fill" style="width:0%"></div></div>
-        <div id="rs-sheet-clear-wrap"></div>
-        <div class="rs-role-lbl">Tank</div>
-        <div class="rs-chips-wrap" id="rs-sheet-grp-tank"></div>
-        <div class="rs-role-lbl">Heal</div>
-        <div class="rs-chips-wrap" id="rs-sheet-grp-heal"></div>
-        <div class="rs-role-lbl">DPS</div>
-        <div class="rs-chips-wrap" id="rs-sheet-grp-dps"></div>
-        <div class="rs-bench-sect" id="rs-sheet-bench-sect" style="display:none;">
-            <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;font-family:'Cinzel',serif;">Bench</div>
-            <div class="rs-chips-wrap" id="rs-sheet-bench-chips"></div>
-        </div>
-        <div class="rs-sep"></div>
-        <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;font-family:'Cinzel',serif;">Klassen</div>
-        <div class="rs-chips-wrap" id="rs-sheet-grp-classes"></div>
-        <div id="rs-sheet-hint" class="rs-hint-bar" style="display:none;">Slot aktiv — Spieler wählen</div>
-    </div>
-</div>
-
-<script>
-// Panel + Sheet + Button direkt ins body verschieben,
-// damit backdrop-filter im main-container position:fixed nicht kapert
-(function movePanelsToBody() {
-    ['rs-float-panel','rs-bottom-sheet','rs-mobile-btn'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el && el.parentElement !== document.body) {
-            document.body.appendChild(el);
-        }
-    });
-})();
-</script>
 </main>

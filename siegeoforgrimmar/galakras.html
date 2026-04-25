@@ -159,6 +159,277 @@
     </div>
 </section>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     GALAKRAS AUTO-PLANNER
+     ════════════════════════════════════════════════════════════════════
+     
+     Mechaniken-Übersicht (aus DBM + BigWigs konsolidiert):
+     
+     Phase 1 (Wellen + Türme, ca. 4-5 Min):
+     - Adds-Wellen alle 54.7s (Korkron Sturmtruppen)
+     - Proto-Drakes alle ~220s (jede 5. Welle, Heavy Adds)
+     - Tower Open (HC: ~116s erster, dann variabel)
+     - Crusher's Call (Thranok, Straße): 30s CD
+     - Shattering Cleave (Thranok, Straße): 7.5s CD (Tank-Buster!)
+     - Demolisher 20s nach Tower-Open
+     - Tower Grunt: alle 60s im Turm (Mythic)
+     
+     Phase 2 (Galakras Drache):
+     - Trigger: Eject All Passengers (nach Tower-Breach)
+     - Flames of Galakrond: alle 5.7s (Fixate auf 1 Spieler)
+     - Pulsing Flames: alle 25s (Heal-Push)
+     
+     Werte konsolidiert aus:
+     - DBM Galakras.lua (genaue CD-Werte)
+     - BigWigs Galakras.lua (Add-Wellen-Timing, Proto-Drakes)
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!-- HTML-Block für galakras.html -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            Plant automatisch Cooldown-Zuteilungen. Phase 1 = Wellen + Türme, Phase 2 = Drachen-Kampf.
+            Hauptfokus: Adds-Wellen, Pulsing Flames in Phase 2.
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline mit Tabelle -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Galakras Auto-Planner Config ══════════════════════════════════
+CD_AUTO_PLANNER.init({
+    id: 'galakras',
+    name: 'Galakras',
+    prefix: 'galakras',  // Container-Prefix in der Boss-HTML (galakras-planner-container)
+    
+    events: [
+        // ── PHASE 1: Wellen, Türme, Straße ──
+        
+        {
+            name: "Adds-Welle (Sturmtruppen)",
+            spellId: 0,
+            firstCast: 10,        // Erste Welle 10s nach Pull
+            cooldown: 55,         // 54.7s zwischen Wellen
+            maxCasts: 5,          // ~5 Wellen in Phase 1
+            delay: -2,
+            eventDuration: 20,
+            requiredCDs: ["aoe_stun", "any_dr"],
+            icon: "⚔️"
+        },
+        {
+            name: "Proto-Drakes (Heavy Adds)",
+            spellId: 0,
+            firstCast: 175,       // Jede 4.-5. Welle, ~3 Min
+            cooldown: 220,        // 220s zwischen Drake-Wellen
+            maxCasts: 2,          // ~2 Drake-Wellen in P1
+            delay: -3,
+            eventDuration: 30,
+            requiredCDs: ["any_dr", "aoe_stun", "additional_surv"],
+            icon: "🐉"
+        },
+        {
+            name: "Tower Open #1",
+            spellId: 0,
+            firstCast: 116,       // ~116s erster Tower
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["any_dr"],
+            icon: "🗼"
+        },
+        {
+            name: "Tower Open #2",
+            spellId: 0,
+            firstCast: 240,       // ~150s nach Tower #1
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["any_dr"],
+            icon: "🗼"
+        },
+        {
+            name: "Demolisher CD",
+            spellId: 116040,
+            firstCast: 130,       // 20s nach Tower-Open #1
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 10,
+            requiredCDs: ["any_dr"],
+            icon: "💣"
+        },
+        {
+            name: "Tower Grunt CD",
+            spellId: 0,
+            firstCast: 75,        // ~15s nach erstem Tower-Defender
+            cooldown: 60,         // alle 60s im Turm
+            maxCasts: 5,
+            delay: 0,
+            eventDuration: 10,
+            requiredCDs: [],       // optional, keine fixen CDs nötig
+            icon: "👤"
+        },
+        {
+            name: "Crusher's Call (Thranok)",
+            spellId: 146769,
+            firstCast: 25,        // Thranok auf der Straße
+            cooldown: 30,         // 30s CD
+            maxCasts: 4,
+            delay: 0,
+            eventDuration: 5,
+            requiredCDs: ["movement"],  // Pull-In, Bewegungs-CDs nützlich
+            icon: "🪝"
+        },
+        {
+            name: "Shattering Cleave (Tank)",
+            spellId: 146849,
+            firstCast: 15,        // Erster Cast früh
+            cooldown: 7,          // 7.5s CD - sehr häufig
+            maxCasts: 8,          // viele Casts
+            delay: 0,
+            eventDuration: 3,
+            requiredCDs: ["tank_external"],  // Tank-Externals
+            icon: "🛡️"
+        },
+        
+        // ── PHASE 2 ÜBERGANG ──
+        {
+            name: "Phase 2 Start (Galakras landet)",
+            spellId: 50630,       // Eject All Passengers
+            firstCast: 280,       // nach Tower-Breach
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["bloodlust", "any_dr", "any_heal"],
+            icon: "⚡"
+        },
+        
+        // ── PHASE 2: Drachen-Kampf ──
+        {
+            name: "Pulsing Flames #1",
+            spellId: 147042,
+            firstCast: 306,       // 26.2s nach P2-Start
+            cooldown: 25,         // 25s CD
+            maxCasts: 5,
+            delay: -2,
+            eventDuration: 7,
+            requiredCDs: ["any_heal"],
+            icon: "🔥"
+        },
+        {
+            name: "Flames of Galakrond (Fixate)",
+            spellId: 147068,
+            firstCast: 292,       // 12s nach P2-Start
+            cooldown: 6,          // 5.7s CD - sehr häufig
+            maxCasts: 10,
+            delay: 0,
+            eventDuration: 5,
+            requiredCDs: [],       // Fixate auf 1 Person, keine Raid-CDs
+            icon: "🎯"
+        }
+    ],
+    
+    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: GALAKRAS_*)
+    // - Phase 2 Start hat eigenen GALAKRAS_P2 Trigger
+    // - HEALTH-Trigger nicht standardmäßig verwendet, aber im Event-Manager umstellbar
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+    triggerMap: {
+        "Adds-Welle (Sturmtruppen)":          "GALAKRAS_ADDS",
+        "Proto-Drakes (Heavy Adds)":           "GALAKRAS_ADDS",
+        "Tower Open #1":                        "GALAKRAS_TOWER_GRUNT",
+        "Tower Open #2":                        "GALAKRAS_TOWER_GRUNT",
+        "Demolisher CD":                        "GALAKRAS_DEMOLISHER",
+        "Tower Grunt CD":                       "GALAKRAS_TOWER_GRUNT",
+        "Crusher's Call (Thranok)":             "GALAKRAS_CRUSHERS_CALL",
+        "Shattering Cleave (Tank)":             "GALAKRAS_SHATTERING_CLEAVE",
+        "Phase 2 Start (Galakras landet)":      "GALAKRAS_P2",
+        "Pulsing Flames #1":                    "GALAKRAS_PULSING",
+        "Flames of Galakrond (Fixate)":         "GALAKRAS_FLAMES"
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EVENT-MANAGER HINWEISE
+     ════════════════════════════════════════════════════════════════════
+     
+     Im Event-Manager kannst du anpassen:
+     
+     - "Tower Grunt CD" hat keine festen CDs (leer) — nur informativ
+     - "Flames of Galakrond" ebenfalls leer (Fixate auf 1 Person, kein Raid-CD)
+     - "Shattering Cleave" alle 7.5s — wenn euer Tank-External-Pool zu klein
+       wird, einzelne Casts deaktivieren oder maxCasts reduzieren
+     
+     KALIBRIERUNG NACH ERSTEM KILL:
+     
+     Aus eurer ersten Galakras-WCL:
+     1. Wann startet erste Add-Welle? → firstCast "Adds-Welle" anpassen
+     2. Wann öffnet sich der erste Turm? → "Tower Open #1" firstCast
+     3. Wann landet Galakras (Phase 2)? → "Phase 2 Start" firstCast
+     4. Wieviele Add-Wellen vor Phase 2? → maxCasts
+     
+     SPEZIAL FÜR DIESEN KAMPF:
+     
+     Galakras hat ZWEI parallele "Schauplätze" in Phase 1:
+     - Boden/Straße: Thranok mit Cleave/Crusher's Call
+     - Türme: Tower Grunt + Demolisher
+     
+     Eure Spieler sind aufgeteilt — der CD-Planer kann nicht wissen wer wo ist.
+     Nutze den Event-Manager um nicht relevante Events zu deaktivieren.
+     
+     PHASE 2 TIMING:
+     
+     "firstCast: 280" für Phase 2 ist eine Schätzung. In Wirklichkeit hängt
+     das davon ab wie schnell ihr den 2. Turm breached. Nach erstem Kill
+     genau anpassen.
+     ════════════════════════════════════════════════════════════════════ -->
+
+
+<!-- ════════════════════════════════════════════════════════════════════
+     ZUSÄTZLICH: TRIGGER_OPTIONS für galakras.html
+     ════════════════════════════════════════════════════════════════════
+     
+     Falls die galakras.html (oder amalgam-style HTML) die TRIGGER_OPTIONS
+     noch nicht definiert hat, hier die offiziellen Keys:
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!--
+
+-->
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -235,20 +506,25 @@
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "GALAKRAS_ENC_START", text: "Kampfbeginn" },
-            { val: "GALAKRAS_P2_START", text: "Phase 2 (Galakras landet)" },
-            { val: "GALAKRAS_HEALTH", text: "Gesundheit %" },
-            { val: "GALAKRAS_WAVE", text: "Add-Welle #" },
-            { val: "GALAKRAS_TOWER_1", text: "Turm 1 erobert" },
-            { val: "GALAKRAS_TOWER_2", text: "Turm 2 erobert" },
-            { val: "GALAKRAS_FLAMES", text: "Pulsierende Flammen (Phase 2)" }
+            { val: "GALAKRAS_ENC_START",         text: "Kampfbeginn" },
+            { val: "GALAKRAS_HEALTH",            text: "Gesundheit % (Wähle NPC)" },
+            { val: "GALAKRAS_SHATTERING_CLEAVE", text: "Zermalmender Schwung (Thranok Tank)" },
+            { val: "GALAKRAS_CRUSHERS_CALL",     text: "Ruf des Zermalmers (Pull-In)" },
+            { val: "GALAKRAS_P2",                text: "Phase 2 Start (Drache landet)" },
+            { val: "GALAKRAS_FLAMES",            text: "Flammen Galakronds (Fixate)" },
+            { val: "GALAKRAS_PULSING",           text: "Pulsierende Flammen (Heal-Push)" },
+            { val: "GALAKRAS_ADDS",              text: "Adds-Welle / Proto-Drakes" },
+            { val: "GALAKRAS_TOWER_GRUNT",       text: "Turmwächter / Tower Open" },
+            { val: "GALAKRAS_DEMOLISHER",        text: "Demolisher Spawn" }
         ];
-
+        
         const NPC_OPTIONS = [
             "Galakras",
-            "Knochenbrecher der Kor'kron",
-            "Schamane der Kor'kron",
-            "Befehlshaber"
+            "Hochaufseher Thranok",
+            "Korkron Sturmtruppe",
+            "Drachenmaul Gezeitenschamane",
+            "Kor'kron Demolisher",
+            "Lieutenant General Krugruk"
         ];
         
         const container = document.getElementById('galakras-planner-container');

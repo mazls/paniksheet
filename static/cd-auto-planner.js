@@ -781,15 +781,6 @@ window.CD_AUTO_PLANNER = (function() {
             return Object.values(r.slots).some(function(s) { return s.unavailable; });
         }).length;
         updateStatus(timeline.length + ' Events, ' + missing + ' ohne CD');
-        if (!window.isManager) {
-            var tabellenInhalt = document.getElementById('auto-planner-tbody');
-            if (tabellenInhalt) {
-                var bedienelemente = tabellenInhalt.querySelectorAll('select, input');
-                for (var i = 0; i < bedienelemente.length; i++) {
-                    bedienelemente[i].disabled = true;
-                }
-            }
-        }
     }
 
     // ── Dropdown: Empfohlen + Alle CDs ──
@@ -973,15 +964,6 @@ window.CD_AUTO_PLANNER = (function() {
             + header + html;
 
         attachEventManagerListeners();
-        if (!window.isManager) {
-            var ereignisBereich = document.getElementById('auto-planner-events');
-            if (ereignisBereich) {
-                var ereignisElemente = ereignisBereich.querySelectorAll('input, button');
-                for (var j = 0; j < ereignisElemente.length; j++) {
-                    ereignisElemente[j].disabled = true;
-                }
-            }
-        }
     }
 
     function attachEventManagerListeners() {
@@ -1115,6 +1097,24 @@ window.CD_AUTO_PLANNER = (function() {
         // Fallback: Versuche über window (falls in globalem Scope)
         if (!triggerOptions.length && window.TRIGGER_OPTIONS) triggerOptions = window.TRIGGER_OPTIONS;
         if (!npcOptions.length && window.NPC_OPTIONS) npcOptions = window.NPC_OPTIONS;
+        
+        // Letzter Fallback: Aus dem DOM extrahieren (vom CD-Planer-Container der Trigger-Selects hat)
+        if (!triggerOptions.length) {
+            var anyTriggerSelect = document.querySelector('select[data-assignment-id$="-trigger"]');
+            if (anyTriggerSelect) {
+                triggerOptions = Array.from(anyTriggerSelect.options)
+                    .filter(function(o) { return o.value; })
+                    .map(function(o) { return { val: o.value, text: o.textContent }; });
+            }
+        }
+        if (!npcOptions.length) {
+            var anyNpcSelect = document.querySelector('select[data-assignment-id$="-npc"]');
+            if (anyNpcSelect) {
+                npcOptions = Array.from(anyNpcSelect.options)
+                    .filter(function(o) { return o.value; })
+                    .map(function(o) { return o.value; });
+            }
+        }
 
         // HEALTH-Trigger aus den Options filtern (nur der mit "HEALTH" im Val)
         var healthTrigger = triggerOptions.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
@@ -1170,7 +1170,8 @@ window.CD_AUTO_PLANNER = (function() {
             +     '<div class="flex-1">'
             +       '<div class="text-sm font-bold text-sky-300">Cast-Counter (#1, #2, #3...)</div>'
             +       '<div class="text-[10px] text-gray-500 mb-2">Condition-Feld wird die fortlaufende Cast-Nummer</div>'
-            +       (triggerDropdown ? '<div class="text-[10px] text-gray-400 mb-1">Trigger-Typ im Planer:</div>' + triggerDropdown : '<div class="text-[10px] text-gray-500 italic">Trigger aus triggerMap wird genutzt</div>')
+            +       '<div class="text-[10px] text-gray-400 mb-1">Trigger-Typ im Planer (leer = aus triggerMap):</div>'
+            +       (triggerDropdown || '<input type="text" id="trg-pick-trigger" value="' + (currentTrigger || '').replace(/"/g, '&quot;') + '" placeholder="z.B. SHAPRIDE_BANISHMENT" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm font-mono">')
             +     '</div>'
             +   '</div>'
             + '</label>'
@@ -1957,28 +1958,17 @@ window.CD_AUTO_PLANNER = (function() {
             renderEventManager();
         }
 
-// Prüfung: Ist die Person kein Gildenrat?
-        if (!window.isManager) {
-            // Schaltflächen unsichtbar machen
-            if (document.getElementById('btn-auto-assign')) document.getElementById('btn-auto-assign').style.display = 'none';
-            if (document.getElementById('btn-export-to-planner')) document.getElementById('btn-export-to-planner').style.display = 'none';
-            if (document.getElementById('btn-save-auto-plan')) document.getElementById('btn-save-auto-plan').style.display = 'none';
-            if (document.getElementById('btn-save-categories')) document.getElementById('btn-save-categories').style.display = 'none';
-            if (document.getElementById('btn-clear-auto')) document.getElementById('btn-clear-auto').style.display = 'none';
-        } else {
-            // Person ist Gildenrat: Klick-Aktionen normal zuweisen
-            document.getElementById('btn-auto-assign').addEventListener('click', runAutoAssign);
-            document.getElementById('btn-export-to-planner').addEventListener('click', exportToPlanner);
-            document.getElementById('btn-save-auto-plan').addEventListener('click', savePlan);
-            document.getElementById('btn-save-categories').addEventListener('click', saveCategories);
-            document.getElementById('btn-clear-auto').addEventListener('click', function() {
-                if (typeof window.showModal === 'function') {
-                    var r = window.showModal("Auto-Plan leeren?", true);
-                    if (r && typeof r.then === 'function') { r.then(function(ok) { if (ok) clearPlan(); }); }
-                    else clearPlan();
-                } else { if (confirm("Auto-Plan leeren?")) clearPlan(); }
-            });
-        }
+        document.getElementById('btn-auto-assign').addEventListener('click', runAutoAssign);
+        document.getElementById('btn-export-to-planner').addEventListener('click', exportToPlanner);
+        document.getElementById('btn-save-auto-plan').addEventListener('click', savePlan);
+        document.getElementById('btn-save-categories').addEventListener('click', saveCategories);
+        document.getElementById('btn-clear-auto').addEventListener('click', function() {
+            if (typeof window.showModal === 'function') {
+                var r = window.showModal("Auto-Plan leeren?", true);
+                if (r && typeof r.then === 'function') { r.then(function(ok) { if (ok) clearPlan(); }); }
+                else clearPlan();
+            } else { if (confirm("Auto-Plan leeren?")) clearPlan(); }
+        });
 
         // ── DB-Wipe Button dynamisch einfügen (nur für Manager) ──
         injectWipeButton();

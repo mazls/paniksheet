@@ -110,13 +110,32 @@
                 
                 <div class="assignment-block">
                     <h4 class="text-lg font-bold text-yellow-400">✨ Reihenfolge für die Prüfung (Lichtkugeln)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Wer sich in welcher Gruppe läutern lassen soll.</p>
-                    <ul class="assignment-list">
-                        <li><span class="text-yellow-200">Gruppe 1 (Frühzeitige Läuterung):</span><select data-assignment-id="amalgam-group-1" class="assignment-select"></select></li>
-                        <li><span class="text-yellow-300">Gruppe 2:</span><select data-assignment-id="amalgam-group-2" class="assignment-select"></select></li>
-                        <li><span class="text-yellow-400">Gruppe 3:</span><select data-assignment-id="amalgam-group-3" class="assignment-select"></select></li>
-                        <li><span class="text-yellow-500">Gruppe 4:</span><select data-assignment-id="amalgam-group-4" class="assignment-select"></select></li>
-                    </ul>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Reihenfolge wer wann in die Lichtkugel geht, mit Delay (Sekunden).</p>
+                    
+                    <div class="overflow-x-auto rounded border border-slate-700 mb-3">
+                        <table class="w-full text-left text-xs text-gray-300">
+                            <thead class="bg-slate-900 text-gray-400 font-bold uppercase">
+                                <tr>
+                                    <th class="p-2 w-10 text-center">#</th>
+                                    <th class="p-2">Spieler</th>
+                                    <th class="p-2 w-24" title="Verzögerung in Sekunden ab Encounter-Start">Delay (s)</th>
+                                    <th class="p-2 w-10"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="norushen-orb-order-body" class="divide-y divide-slate-700 bg-slate-800"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-2 mb-3">
+                        <button id="norushen-orb-add-row" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Zeile hinzufügen</button>
+                        <button id="norushen-orb-clear" class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded border border-slate-500">🗑 Alle leeren</button>
+                        <button id="norushen-orb-copy-wa" class="bg-purple-700 hover:bg-purple-800 text-white text-xs py-1.5 px-3 rounded border border-purple-500 ml-auto">📋 WeakAura-String kopieren</button>
+                    </div>
+                    
+                    <div class="bg-slate-900 border border-slate-700 rounded p-2">
+                        <div class="text-[10px] text-gray-500 uppercase mb-1 tracking-wide">WeakAura Export:</div>
+                        <code id="norushen-orb-wa-output" class="text-xs text-purple-300 font-mono break-all select-all block">—</code>
+                    </div>
                 </div>
             </div>
 
@@ -157,7 +176,223 @@
         </div>
     </div>
 </section>
+<!-- ════════════════════════════════════════════════════════════════════
+     NORUSHEN AUTO-PLANNER
+     ════════════════════════════════════════════════════════════════════
+     
+     Phasen-Übersicht:
+     - Phase 1 (100% → 50%): Lichtkugel-Prüfungen, einzelne Spieler raus
+       Hauptaufgabe: Blind Hatred (Raid-Damage) timen
+     - Phase 2 Übergang (50%): Bloodlust + Heavy CDs
+     - Phase 2: Big Adds spawnen alle 10% HP, Blind Hatred weiterhin
+     
+     Werte konsolidiert aus:
+     - DBM Norushen.lua (Cooldown-Werte, Phasen-Trigger)
+     - BigWigs Norushen.lua (timing-Validation, Berserk)
+     ════════════════════════════════════════════════════════════════════ -->
 
+<!-- HTML-Block für die Boss-HTML-Datei (norushen.html) -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            Plant automatisch Cooldown-Zuteilungen für Blind Hatred und Phasenübergänge.
+            Phase 2 startet bei 50% HP (Adds und erhöhter Boss-Damage).
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Norushen Auto-Planner Config ═══════════════════════════════════
+CD_AUTO_PLANNER.init({
+    id: 'norushen',
+    name: 'Norushen',
+    prefix: 'amalgam',  // Container-Prefix in der Boss-HTML (amalgam-planner-container)
+    
+    events: [
+        // ── PHASE 1 (100% → 50% HP) ──
+        // Spieler-Tests laufen, Boss steht ruhig. Hauptaufgabe: Blind Hatred Raid-CDs
+        {
+            name: "Blind Hatred #1 (Raid AOE)",
+            spellId: 145226,
+            firstCast: 25,        // Erster Cast 25s nach Pull
+            cooldown: 60,         // CD ~60s zwischen Casts
+            maxCasts: 4,          // ~4 Casts in Phase 1 (50%-100% HP)
+            delay: -3,            // CDs 3s vor Cast zünden
+            eventDuration: 30,    // 30s aktive Aura mit Raid-Damage
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "💢"
+        },
+        {
+            name: "Tank-Test Block (Look Within)",
+            spellId: 144851,
+            firstCast: 30,        // Tank betritt erste Lichtkugel ~30s
+            cooldown: 90,         // Wechsel-Tank alle ~90s
+            maxCasts: 3,          // ~3 Tank-Tests in Phase 1
+            delay: 0,
+            eventDuration: 60,    // Test dauert 60s
+            requiredCDs: ["tank_external"],  // Aktiver Tank braucht Externals
+            icon: "🛡️"
+        },
+        {
+            name: "Heiler-Test (Lingering Corruption)",
+            spellId: 144850,
+            firstCast: 60,        // Heiler-Test ~60s nach Pull
+            cooldown: 90,         // Heiler-Tests alle ~90s
+            maxCasts: 3,          // ~3 Tests in Phase 1
+            delay: -2,
+            eventDuration: 60,
+            requiredCDs: ["mana"],  // Mana-Refill für Heiler im Test
+            icon: "✨"
+        },
+        
+        // ── PHASE 2 ÜBERGANG (50% HP) ──
+        {
+            name: "Phase 2 Start (50% HP)",
+            spellId: 146179,
+            firstCast: 240,       // ~4 Min nach Pull, je nach DPS
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 20,
+            requiredCDs: ["bloodlust", "any_dr", "any_heal"],
+            icon: "⚡"
+        },
+        
+        // ── PHASE 2: Big Adds bei jedem 10%-Schwellwert ──
+        // 50% → 40% → 30% → 20% → 10%
+        {
+            name: "Big Add 40% (Phase 2)",
+            spellId: 145769,
+            firstCast: 270,       // ~30s nach P2-Start
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["any_dr", "aoe_stun"],
+            icon: "👹"
+        },
+        {
+            name: "Big Add 30% (Phase 2)",
+            spellId: 145769,
+            firstCast: 310,       // ~70s nach P2-Start
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["any_dr", "aoe_stun"],
+            icon: "👹"
+        },
+        {
+            name: "Big Add 20% (Phase 2)",
+            spellId: 145769,
+            firstCast: 350,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["any_dr", "aoe_stun"],
+            icon: "👹"
+        },
+        {
+            name: "Big Add 10% (Phase 2)",
+            spellId: 145769,
+            firstCast: 390,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["any_dr", "additional_surv"],
+            icon: "👹"
+        },
+        
+        // Blind Hatred läuft auch in Phase 2 weiter
+        {
+            name: "Blind Hatred #2 (Phase 2)",
+            spellId: 145226,
+            firstCast: 250,       // ~10s nach P2-Start
+            cooldown: 60,
+            maxCasts: 3,          // 3 weitere Casts bis Kill
+            delay: -3,
+            eventDuration: 30,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "💢"
+        }
+    ],
+    
+    // Mapping auf TRIGGER_OPTIONS (offizielle SoO-Keys: NORUSHEN_*)
+    // - Big Adds sind HP-basiert → HEALTH-Trigger mit NPC + percent
+    // - Blind Hatred = eigener Trigger
+    // - Phase-Tests = HEALTH oder eigene Spell-Trigger
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+    triggerMap: {
+        "Blind Hatred #1 (Raid AOE)":         "NORUSHEN_BLIND_HATRED",
+        "Blind Hatred #2 (Phase 2)":          "NORUSHEN_BLIND_HATRED",
+        "Tank-Test Block (Look Within)":      "NORUSHEN_ENC_START",       // läuft ab Pull, kein eigener Trigger
+        "Heiler-Test (Lingering Corruption)": "NORUSHEN_LINGERING_CORRUPTION",
+        "Phase 2 Start (50% HP)":             { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 50 },
+        "Big Add 40% (Phase 2)":              { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 40 },
+        "Big Add 30% (Phase 2)":              { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 30 },
+        "Big Add 20% (Phase 2)":              { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 20 },
+        "Big Add 10% (Phase 2)":              { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 10 }
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     HINWEISE ZUM EVENT-MANAGER
+     ════════════════════════════════════════════════════════════════════
+     
+     Im Event-Manager (klappt automatisch über der Timeline auf) kannst du:
+     - Events deaktivieren (z.B. "Tank-Test Block" wenn euer Tank nie reingeht)
+     - firstCast-Zeiten an euren echten Pull-Verlauf anpassen
+     - Events hinzufügen für gildenspezifische Mechaniken
+     
+     Per Event den Trigger umschalten:
+     - "Auto" (Default) — nutzt das triggerMap oben
+     - "Cast-Counter" — wenn deine WeakAura mit #1, #2... arbeitet
+     - "HP-Prozent" — wenn die WeakAura HP-basiert triggern soll
+     
+     KALIBRIERUNG NACH ERSTEM KILL:
+     
+     Aus eurer ersten Norushen-WCL:
+     1. Wann kommt erstes "Blind Hatred"? → firstCast anpassen
+     2. Wann erreicht ihr 50% HP? → "Phase 2 Start" firstCast korrigieren
+     3. Wann erreicht ihr 40/30/20/10%? → entsprechende Events
+     4. Wie viele Blind Hatred Casts vor 50%? → maxCasts in #1 anpassen
+     
+     Das gibt dir 90% Genauigkeit nach 1 Kill.
+     ════════════════════════════════════════════════════════════════════ -->
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -234,13 +469,17 @@
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "AMALGAM_ENC_START", text: "Kampfbeginn" },
-            { val: "AMALGAM_HEALTH", text: "Gesundheit %" },
-            { val: "AMALGAM_BLIND_HATRED", text: "Blinder Hass" },
-            { val: "AMALGAM_UNLEASHED_ANGER", text: "Entfesselter Zorn" },
-            { val: "AMALGAM_TEST_GROUP_1", text: "Prüfungsgruppe 1" },
-            { val: "AMALGAM_TEST_GROUP_2", text: "Prüfungsgruppe 2" },
-            { val: "AMALGAM_TEST_GROUP_3", text: "Prüfungsgruppe 3" }
+            { val: "NORUSHEN_ENC_START",            text: "Kampfbeginn" },
+            { val: "NORUSHEN_HEALTH",               text: "Gesundheit % (Wähle NPC)" },
+            { val: "NORUSHEN_UNLEASHED_ANGER",      text: "Entfesselter Zorn" },
+            { val: "NORUSHEN_BLIND_HATRED",         text: "Blinder Hass" },
+            { val: "NORUSHEN_DISHEARTENING_LAUGH",  text: "Entmutigendes Gelächter" },
+            { val: "NORUSHEN_LINGERING_CORRUPTION", text: "Anhaltende Verderbnis" },
+            { val: "NORUSHEN_TITANIC_SMASH",        text: "Titanischer Schlag" },
+            { val: "NORUSHEN_PIERCING_CORRUPTION",  text: "Durchbohrende Verderbnis" },
+            { val: "NORUSHEN_HURL_CORRUPTION",      text: "Verderbnis schleudern" },
+            { val: "NORUSHEN_MANIFESTATION",        text: "Manifestation" },
+            { val: "NORUSHEN_SELF_DOUBT",           text: "Selbstzweifel" }
         ];
 
         const NPC_OPTIONS = [
@@ -357,6 +596,209 @@
             });
             setTimeout(window.updatePlannerSummary, 500);
         }
+
+        // ══════════════════════════════════════════════════════════
+        // REIHENFOLGE LICHTKUGELN — Tabelle + WeakAura Export
+        // ══════════════════════════════════════════════════════════
+        (function initOrbOrder() {
+            const tbody      = document.getElementById('norushen-orb-order-body');
+            const addBtn     = document.getElementById('norushen-orb-add-row');
+            const clearBtn   = document.getElementById('norushen-orb-clear');
+            const copyBtn    = document.getElementById('norushen-orb-copy-wa');
+            const waOutput   = document.getElementById('norushen-orb-wa-output');
+            if (!tbody || !addBtn) return;
+
+            const ASSIGNMENT_ID = 'norushen-orb-order';
+            const DEFAULT_ROWS = 10;
+            let orderData = []; // [{ player: "Fojji", delay: 3 }, ...]
+            let saveTimer = null;
+
+            function getPlayerOptions(selectedName) {
+                let html = '<option value="">-- Spieler --</option>';
+                if (Array.isArray(roster)) {
+                    roster.forEach(p => {
+                        const name = p.name || p;
+                        const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
+                        const sel = name === selectedName ? ' selected' : '';
+                        html += `<option value="${name}" style="color:${color};"${sel}>${name}</option>`;
+                    });
+                }
+                return html;
+            }
+
+            function renderRows() {
+                tbody.innerHTML = '';
+                const targetRows = Math.max(DEFAULT_ROWS, orderData.length + 1);
+                for (let i = 0; i < targetRows; i++) {
+                    const row = orderData[i] || { player: '', delay: '' };
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-700/40';
+                    tr.innerHTML = `
+                        <td class="p-1 text-center text-gray-500 font-mono">${i + 1}</td>
+                        <td class="p-1">
+                            <select class="orb-select text-xs w-full h-7 bg-slate-900 border border-slate-600 rounded text-white" data-orb-idx="${i}" data-orb-field="player">
+                                ${getPlayerOptions(row.player)}
+                            </select>
+                        </td>
+                        <td class="p-1">
+                            <input type="number" min="0" step="1" class="orb-input bg-slate-900 border border-slate-600 rounded text-xs text-center w-full h-7 text-white" 
+                                   data-orb-idx="${i}" data-orb-field="delay" value="${row.delay}" placeholder="Sek.">
+                        </td>
+                        <td class="p-1 text-center">
+                            ${row.player || row.delay ? '<button class="orb-row-del text-red-400 hover:text-red-300 text-xs" data-orb-idx="' + i + '" title="Leeren">✕</button>' : ''}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                    // Farbe an gewählten Spieler anpassen
+                    const sel = tr.querySelector('select');
+                    if (sel && row.player) {
+                        const selectedOpt = sel.options[sel.selectedIndex];
+                        if (selectedOpt) sel.style.color = selectedOpt.style.color || '#FFFFFF';
+                    }
+                }
+                updateWaString();
+            }
+
+            function updateWaString() {
+                const entries = orderData
+                    .filter(r => r.player && (r.delay !== '' && r.delay !== null && r.delay !== undefined))
+                    .map(r => `${r.player}-${r.delay}`);
+                waOutput.textContent = entries.length > 0 ? entries.join(',') : '—';
+            }
+
+            function normalizeData() {
+                // Entferne komplett leere Zeilen am Ende, aber behalte Lücken in der Mitte
+                while (orderData.length > 0) {
+                    const last = orderData[orderData.length - 1];
+                    if (!last.player && (last.delay === '' || last.delay === null || last.delay === undefined)) {
+                        orderData.pop();
+                    } else break;
+                }
+            }
+
+            function scheduleSave() {
+                if (saveTimer) clearTimeout(saveTimer);
+                saveTimer = setTimeout(saveOrder, 600);
+            }
+
+            async function saveOrder() {
+                if (!window.isManager) return;
+                if (!firebaseTools || !firebaseTools.db) return;
+                normalizeData();
+                const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                try {
+                    const hash = location.hash.substring(1);
+                    const bossId = hash.split('/')[1] || 'norushen';
+                    const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                    await firebaseTools.setDoc(docRef, {
+                        [ASSIGNMENT_ID]: {
+                            orderData: orderData,
+                            editor: currentManager,
+                            timestamp: new Date().toISOString()
+                        }
+                    }, { merge: true });
+                    if (window.logHistory) {
+                        window.logHistory(bossId, `Reihenfolge Lichtkugeln (${orderData.length} Einträge)`, 'aktualisiert', currentManager);
+                    }
+                } catch (e) {
+                    console.error('[Norushen Orb-Order] Save fehlgeschlagen:', e);
+                }
+            }
+
+            function loadFromAssignments() {
+                if (!assignments) return;
+                const saved = assignments[ASSIGNMENT_ID];
+                if (saved && Array.isArray(saved.orderData)) {
+                    orderData = saved.orderData.slice();
+                    renderRows();
+                }
+            }
+
+            // Events: Änderungen in Dropdowns/Inputs
+            tbody.addEventListener('change', (e) => {
+                const idx = parseInt(e.target.dataset.orbIdx);
+                const field = e.target.dataset.orbField;
+                if (isNaN(idx) || !field) return;
+                
+                // Ensure slot exists
+                while (orderData.length <= idx) orderData.push({ player: '', delay: '' });
+                
+                const wasEmpty = !orderData[idx].player && (orderData[idx].delay === '' || orderData[idx].delay === null || orderData[idx].delay === undefined);
+                
+                if (field === 'delay') {
+                    const v = e.target.value.trim();
+                    orderData[idx].delay = v === '' ? '' : parseInt(v);
+                } else {
+                    orderData[idx][field] = e.target.value;
+                    // Bei Spieler-Auswahl: Farbe des Dropdowns live anpassen
+                    if (field === 'player') {
+                        const opt = e.target.options[e.target.selectedIndex];
+                        e.target.style.color = opt ? (opt.style.color || '#FFFFFF') : '#FFFFFF';
+                    }
+                }
+                
+                const nowFilled = orderData[idx].player || (orderData[idx].delay !== '' && orderData[idx].delay !== null && orderData[idx].delay !== undefined);
+                
+                updateWaString();
+                scheduleSave();
+                
+                // ✕-Button sichtbar machen wenn Zeile erstmalig gefüllt wurde
+                // (ohne das ganze Dropdown zu re-rendern, damit User-Focus erhalten bleibt)
+                if (wasEmpty && nowFilled) {
+                    const cell = e.target.closest('tr')?.querySelector('td:last-child');
+                    if (cell && !cell.querySelector('button.orb-row-del')) {
+                        cell.innerHTML = '<button class="orb-row-del text-red-400 hover:text-red-300 text-xs" data-orb-idx="' + idx + '" title="Leeren">✕</button>';
+                    }
+                }
+            });
+            
+            tbody.addEventListener('click', (e) => {
+                if (e.target.classList.contains('orb-row-del')) {
+                    const idx = parseInt(e.target.dataset.orbIdx);
+                    if (!isNaN(idx) && orderData[idx]) {
+                        orderData[idx] = { player: '', delay: '' };
+                        updateWaString();
+                        scheduleSave();
+                        renderRows();
+                    }
+                }
+            });
+
+            addBtn.addEventListener('click', () => {
+                orderData.push({ player: '', delay: '' });
+                renderRows();
+            });
+
+            clearBtn.addEventListener('click', () => {
+                if (!confirm('Alle Reihenfolge-Einträge leeren?')) return;
+                orderData = [];
+                renderRows();
+                scheduleSave();
+            });
+
+            copyBtn.addEventListener('click', () => {
+                const text = waOutput.textContent;
+                if (!text || text === '—') {
+                    if (window.showModal) window.showModal('Keine Einträge zum Kopieren.');
+                    return;
+                }
+                navigator.clipboard.writeText(text).then(() => {
+                    const old = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '✓ Kopiert!';
+                    copyBtn.classList.add('bg-emerald-700');
+                    setTimeout(() => {
+                        copyBtn.innerHTML = old;
+                        copyBtn.classList.remove('bg-emerald-700');
+                    }, 1500);
+                }).catch(() => {
+                    if (window.showModal) window.showModal('Kopieren fehlgeschlagen. String manuell markieren.');
+                });
+            });
+
+            // Initial load
+            loadFromAssignments();
+            if (orderData.length === 0) renderRows();  // leere Tabelle rendern
+        })();
     };
 </script>
 </main>

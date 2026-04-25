@@ -157,7 +157,257 @@
         </div>
     </div>
 </section>
+<!-- ════════════════════════════════════════════════════════════════════
+     SHA OF PRIDE AUTO-PLANNER
+     ════════════════════════════════════════════════════════════════════
+     
+     Mechaniken-Übersicht (aus DBM + BigWigs konsolidiert):
+     
+     Phase 1 (100% → 30% HP):
+     - Swelling Pride alle ~75s (Raid-AOE, Bursting Pride explodiert)
+     - Wounded Pride alle 30s (Tank-Buster)
+     - Self Reflection alle 25s (Add-Spawn, kleine Adds)
+     - Mark of Arrogance alle 20.5s (Heiler-Debuff, dispellbar)
+     - Manifestation of Pride alle 60s (Big Add)
+     - Imprison (Corrupted Prison) alle 53s
+     - Gift of the Titans alle 25.5s (Heiler-Buff, kein CD nötig)
+     
+     Phase 2 (ab 30% HP, Unleashed):
+     - Bloodlust spätestens hier!
+     - Alle Timer schneller (74s Swelling, 43s Imprison, 16s small adds)
+     - Berserk 600s gesamt
+     
+     Mythic-Zusatz:
+     - Banishment alle 37.5s (Players banished, Mythic only)
+     
+     Werte konsolidiert aus:
+     - DBM ShaofPride.lua (genaue CD-Werte)
+     - BigWigs ShaOfPride.lua (Phase 2 Timing-Validation)
+     ════════════════════════════════════════════════════════════════════ -->
 
+<!-- HTML-Block für die Boss-HTML-Datei (sha-of-pride.html) -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            Plant automatisch Cooldown-Zuteilungen. Hauptfokus: Swelling Pride (Raid-AOE) + Tank-Externals für Wounded Pride.
+            Phase 2 startet bei 30% HP — Bloodlust dort einplanen!
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline (mit Tabelle für renderTimeline) -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Sha of Pride Auto-Planner Config ═══════════════════════════════
+CD_AUTO_PLANNER.init({
+    id: 'sha-of-pride',
+    name: 'Sha des Stolzes',
+    prefix: 'shapride',  // Container-Prefix in der Boss-HTML (shapride-planner-container)
+    
+    events: [
+        // ── PHASE 1: Wiederkehrende Mechaniken (100% → 30% HP) ──
+        
+        {
+            name: "Swelling Pride (Raid AOE)",
+            spellId: 144400,
+            firstCast: 77,        // Erster Cast bei ~77s (BigWigs)
+            cooldown: 75,         // ~75s zwischen Casts (DBM)
+            maxCasts: 4,          // ~4 Casts in Phase 1
+            delay: -3,            // CDs 3s vor Cast zünden
+            eventDuration: 6,     // 6s Cast + Bursting-Explosion
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "💥"
+        },
+        {
+            name: "Wounded Pride (Tank)",
+            spellId: 144358,
+            firstCast: 11,        // 10-11s nach Pull (DBM)
+            cooldown: 30,         // 30s CD
+            maxCasts: 8,          // ~8 Casts in Phase 1 (4 Min)
+            delay: -2,
+            eventDuration: 8,
+            requiredCDs: ["tank_external"],  // Externals für aktiven Tank
+            icon: "🛡️"
+        },
+        {
+            name: "Manifestation of Pride (Big Add)",
+            spellId: 144379,      // Mocking Blast (vom Big Add)
+            firstCast: 60,        // Spawnt bei ~60s
+            cooldown: 75,         // Spawnt nach Swelling Pride
+            maxCasts: 4,          // ~4 Adds in Phase 1
+            delay: 0,
+            eventDuration: 30,    // Add-Lebensdauer
+            requiredCDs: ["aoe_stun", "any_dr"],  // Add muss kontrolliert werden
+            icon: "👹"
+        },
+        {
+            name: "Imprison (Corrupted Prison)",
+            spellId: 144563,
+            firstCast: 52,        // 52.5s erster Cast
+            cooldown: 53,         // 53s CD
+            maxCasts: 5,          // ~5 Casts in Phase 1
+            delay: -2,
+            eventDuration: 12,
+            requiredCDs: ["any_heal"],  // Imprisoned Spieler brauchen Heal
+            icon: "🔒"
+        },
+        {
+            name: "Self Reflection (Small Adds)",
+            spellId: 144800,
+            firstCast: 25,
+            cooldown: 25,         // Adds kommen alle 25s
+            maxCasts: 10,         // viele kleine Adds
+            delay: 0,
+            eventDuration: 10,
+            requiredCDs: [],       // braucht keine CDs (kleiner Schaden)
+            icon: "🐭"
+        },
+        
+        // ── PHASE 2 ÜBERGANG (30% HP) ──
+        {
+            name: "Phase 2 Start (30% HP - Unleashed)",
+            spellId: 144832,
+            firstCast: 240,       // ~4 Min nach Pull (DPS-abhängig)
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["bloodlust", "any_dr", "any_heal", "additional_surv"],
+            icon: "⚡"
+        },
+        
+        // ── PHASE 2: Schnellere Mechaniken ──
+        {
+            name: "Swelling Pride P2",
+            spellId: 144400,
+            firstCast: 314,       // ~74s nach P2-Start (BigWigs)
+            cooldown: 74,         // 74s in P2
+            maxCasts: 3,          // bis Kill
+            delay: -3,
+            eventDuration: 6,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "💥"
+        },
+        {
+            name: "Imprison P2",
+            spellId: 144563,
+            firstCast: 283,       // ~43.6s nach P2-Start
+            cooldown: 43,         // schneller in P2
+            maxCasts: 4,
+            delay: -2,
+            eventDuration: 12,
+            requiredCDs: ["any_heal"],
+            icon: "🔒"
+        }
+    ],
+    
+    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: SHAPRIDE_*)
+    // - Phase 2 hat eigenen SHAPRIDE_P2 Trigger (nicht HP-basiert)
+    // - HEALTH-Trigger nur falls du im Event-Manager etwas auf HP umstellst
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+    triggerMap: {
+        "Swelling Pride (Raid AOE)":              "SHAPRIDE_SWELLING_PRIDE",
+        "Swelling Pride P2":                       "SHAPRIDE_SWELLING_PRIDE",
+        "Wounded Pride (Tank)":                    "SHAPRIDE_WOUNDED_PRIDE",
+        "Manifestation of Pride (Big Add)":        "SHAPRIDE_MANIFESTATION",
+        "Imprison (Corrupted Prison)":             "SHAPRIDE_CORRUPTED_PRISON",
+        "Imprison P2":                             "SHAPRIDE_CORRUPTED_PRISON",
+        "Self Reflection (Small Adds)":            "SHAPRIDE_SELF_REFLECTION",
+        "Phase 2 Start (30% HP - Unleashed)":      "SHAPRIDE_P2"
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EVENT-MANAGER HINWEISE
+     ════════════════════════════════════════════════════════════════════
+     
+     Im Event-Manager kannst du anpassen:
+     
+     - "Self Reflection" hat keine CDs (leer) — nur informativ.
+       Falls ihr CDs für die kleinen Adds wollt, im Event-Manager
+       Kategorien hinzufügen (z.B. "aoe_stun")
+     
+     - "Wounded Pride" feuert sehr oft (8x in P1) — falls dein
+       Tank-External-Pool zu klein wird, Casts reduzieren oder
+       aktiv über "deaktivieren" einzelne Events ausnehmen
+     
+     - Phase 2 Übergang (30% HP) ist DPS-abhängig — firstCast nach
+       erstem Kill kalibrieren
+     
+     KALIBRIERUNG NACH ERSTEM KILL:
+     
+     Aus eurer ersten Sha-WCL:
+     1. Wann erstes "Swelling Pride"? → firstCast anpassen (sollte ~77s sein)
+     2. Wann erreicht ihr 30% HP? → "Phase 2 Start" firstCast korrigieren
+     3. Anzahl Swelling Pride Casts vor 30%? → maxCasts in #1 anpassen
+     4. Wie viele Casts danach bis Kill? → maxCasts in P2 anpassen
+     
+     MYTHIC-ZUSATZ:
+     
+     Wenn ihr Mythic geht: Banishment (alle 37.5s) hinzufügen.
+     Ist hier weggelassen weil Heroic-Standard.
+     ════════════════════════════════════════════════════════════════════ -->
+
+
+<!-- ════════════════════════════════════════════════════════════════════
+     ZUSÄTZLICH: TRIGGER_OPTIONS für die Boss-HTML
+     ════════════════════════════════════════════════════════════════════
+     
+     Falls die sha-of-pride.html (oder shapride.html) die TRIGGER_OPTIONS
+     noch nicht definiert hat, hier die offiziellen SoO-Keys:
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!--
+        const TRIGGER_OPTIONS = [
+            { val: "SHAPRIDE_ENC_START",          text: "Kampfbeginn" },
+            { val: "SHAPRIDE_HEALTH",             text: "Gesundheit % (Wähle NPC)" },
+            { val: "SHAPRIDE_MARK_OF_ARROGANCE",  text: "Mal der Arroganz" },
+            { val: "SHAPRIDE_SELF_REFLECTION",    text: "Selbstreflexion (kleine Adds)" },
+            { val: "SHAPRIDE_WOUNDED_PRIDE",      text: "Verwundeter Stolz (Tank)" },
+            { val: "SHAPRIDE_BANISHMENT",         text: "Verbannung (Mythic)" },
+            { val: "SHAPRIDE_CORRUPTED_PRISON",   text: "Korrumpiertes Gefängnis" },
+            { val: "SHAPRIDE_SWELLING_PRIDE",     text: "Anschwellender Stolz (Raid AOE)" },
+            { val: "SHAPRIDE_UNLEASHED",          text: "Entfesselt (30% HP)" },
+            { val: "SHAPRIDE_MANIFESTATION",      text: "Manifestation des Stolzes (Big Add)" },
+            { val: "SHAPRIDE_P2",                 text: "Phase 2 Start" }
+        ];
+        
+        const NPC_OPTIONS = [
+            "Sha des Stolzes",
+            "Manifestation des Stolzes",
+            "Verkörperung des Stolzes"
+        ];
+-->
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -235,18 +485,23 @@
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "SHA_ENC_START", text: "Kampfbeginn" },
-            { val: "SHA_HEALTH", text: "Gesundheit %" },
-            { val: "SHA_SWELLING_PRIDE", text: "Schwellender Stolz" },
-            { val: "SHA_MANIFESTATION", text: "Manifestation Spawns" },
-            { val: "SHA_BANISHMENT", text: "Verbannung" },
-            { val: "SHA_PRISON", text: "Verderbtes Gefängnis" }
+            { val: "SHAPRIDE_ENC_START",          text: "Kampfbeginn" },
+            { val: "SHAPRIDE_HEALTH",             text: "Gesundheit % (Wähle NPC)" },
+            { val: "SHAPRIDE_MARK_OF_ARROGANCE",  text: "Mal der Arroganz" },
+            { val: "SHAPRIDE_SELF_REFLECTION",    text: "Selbstreflexion (kleine Adds)" },
+            { val: "SHAPRIDE_WOUNDED_PRIDE",      text: "Verwundeter Stolz (Tank)" },
+            { val: "SHAPRIDE_BANISHMENT",         text: "Verbannung (Mythic)" },
+            { val: "SHAPRIDE_CORRUPTED_PRISON",   text: "Korrumpiertes Gefängnis" },
+            { val: "SHAPRIDE_SWELLING_PRIDE",     text: "Anschwellender Stolz (Raid AOE)" },
+            { val: "SHAPRIDE_UNLEASHED",          text: "Entfesselt (30% HP)" },
+            { val: "SHAPRIDE_MANIFESTATION",      text: "Manifestation des Stolzes (Big Add)" },
+            { val: "SHAPRIDE_P2",                 text: "Phase 2 Start" }
         ];
-
+        
         const NPC_OPTIONS = [
             "Sha des Stolzes",
             "Manifestation des Stolzes",
-            "Spiegelbild des Stolzes"
+            "Verkörperung des Stolzes"
         ];
         
         const container = document.getElementById('sha-planner-container');

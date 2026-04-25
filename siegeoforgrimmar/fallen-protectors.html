@@ -387,23 +387,26 @@ CD_AUTO_PLANNER.init({
         }
     ],
 
-    // Mapping auf bestehende TRIGGER_OPTIONS
-    // HEALTH-Trigger mit NPC-Feld + percent-Feld für HP-basierte Phasen (Desperate Measures)
+    // Mapping auf TRIGGER_OPTIONS (SoO-Keys: FALLEN_*)
+    // - Desperate Measures haben eigene explizite Trigger (kein HEALTH)
+    // - Wiederholte Spells: eigene FALLEN_* Trigger
     // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH-Trigger
     triggerMap: {
-        "Unheil (Calamity)":                "PROTECTORS_CALAMITY",
-        "Zusammenstoß (Clash)":              "PROTECTORS_ENC_START",  // Fallback: kein eigener Trigger, Clash läuft ab Pull
-        // Desperate Measures sind HP-basiert → HEALTH-Trigger + NPC + percent
-        "Rook 66% (Misery/Sorrow/Gloom)":   { trigger: "PROTECTORS_HEALTH", npc: "Rook Steinzeh", percent: 66 },
-        "Rook 33% (Misery/Sorrow/Gloom)":   { trigger: "PROTECTORS_HEALTH", npc: "Rook Steinzeh", percent: 33 },
-        "Hee 66% (Mark of Anguish)":        { trigger: "PROTECTORS_HEALTH", npc: "Hee Samtfuß",   percent: 66 },
-        "Hee 33% (Mark of Anguish)":        { trigger: "PROTECTORS_HEALTH", npc: "Hee Samtfuß",   percent: 33 },
-        "Sun 66% (Dark Meditation)":        { trigger: "PROTECTORS_HEALTH", npc: "Sun Zartherz",  percent: 66 },
-        "Sun 33% (Dark Meditation)":        { trigger: "PROTECTORS_HEALTH", npc: "Sun Zartherz",  percent: 33 },
-        "Bloodlust":                         "PROTECTORS_ENC_START"
+        "Unheil (Calamity)":                "FALLEN_CALAMITY",
+        "Zusammenstoß (Clash)":              "FALLEN_CLASH",
+        // Desperate Measures haben eigene explizite Trigger
+        "Rook 66% (Misery/Sorrow/Gloom)":   "FALLEN_DESPERATE_MEASURES_ROOK",
+        "Rook 33% (Misery/Sorrow/Gloom)":   "FALLEN_DESPERATE_MEASURES_ROOK",
+        "Hee 66% (Mark of Anguish)":        "FALLEN_DESPERATE_MEASURES_HE",
+        "Hee 33% (Mark of Anguish)":        "FALLEN_DESPERATE_MEASURES_HE",
+        "Sun 66% (Dark Meditation)":        "FALLEN_DESPERATE_MEASURES_SUN",
+        "Sun 33% (Dark Meditation)":        "FALLEN_DESPERATE_MEASURES_SUN",
+        "Bloodlust":                         "FALLEN_ENC_START"
     }
 });
 </script>
+
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -481,13 +484,21 @@ CD_AUTO_PLANNER.init({
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "PROTECTORS_ENC_START", text: "Kampfbeginn" },
-            { val: "PROTECTORS_HEALTH", text: "Gesundheit %" },
-            { val: "PROTECTORS_ROOK_MEASURE", text: "Verzweifelte Maßnahme: Rook (66/33)" },
-            { val: "PROTECTORS_HE_MEASURE", text: "Verzweifelte Maßnahme: He (66/33)" },
-            { val: "PROTECTORS_SUN_MEASURE", text: "Verzweifelte Maßnahme: Sun (66/33)" },
-            { val: "PROTECTORS_CALAMITY", text: "Unheil (Sun)" },
-            { val: "PROTECTORS_GARROTE", text: "Erdrosseln (He)" }
+            { val: "FALLEN_ENC_START",                text: "Kampfbeginn" },
+            { val: "FALLEN_HEALTH",                   text: "Gesundheit % (Wähle NPC)" },
+            { val: "FALLEN_VENGEFUL_STRIKES",         text: "Rachsüchtige Schläge" },
+            { val: "FALLEN_CORRUPTED_BREW",           text: "Korrumpiertes Gebräu" },
+            { val: "FALLEN_CLASH",                    text: "Zusammenstoß" },
+            { val: "FALLEN_DEFILED_GROUND",           text: "Geschändeter Boden" },
+            { val: "FALLEN_INFERNO_STRIKE",           text: "Infernoschlag" },
+            { val: "FALLEN_GOUGE",                    text: "Stechen" },
+            { val: "FALLEN_GARROTE",                  text: "Erdrosseln" },
+            { val: "FALLEN_BANE",                     text: "Schattenwort: Qual" },
+            { val: "FALLEN_CALAMITY",                 text: "Unheil (Sun)" },
+            { val: "FALLEN_DESPERATE_MEASURES_ROOK",  text: "Verzweifelte Maßnahme: Rook" },
+            { val: "FALLEN_DESPERATE_MEASURES_HE",    text: "Verzweifelte Maßnahme: Hee" },
+            { val: "FALLEN_DESPERATE_MEASURES_SUN",   text: "Verzweifelte Maßnahme: Sun" },
+            { val: "FALLEN_MARK",                     text: "Mal der Qual" }
         ];
 
         const NPC_OPTIONS = [
