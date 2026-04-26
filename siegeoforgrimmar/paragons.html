@@ -162,6 +162,373 @@
     </div>
 </section>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     PARAGONS OF THE KLAXXI AUTO-PLANNER
+     ════════════════════════════════════════════════════════════════════
+     
+     ENCOUNTER-STRUKTUR:
+     9-Boss Council-Encounter. Bosse aktivieren sich basierend auf
+     dem HP-Pool des aktiven Trios. Immer 3 aktive Bosse gleichzeitig
+     (außer am Anfang und Ende).
+     
+     TYPISCHE AKTIVIERUNGSREIHENFOLGE:
+     1. Skeer (Tank-Stack)
+     2. Rik'kal (Adds via Mutate)
+     3. Hisek (Spieler-Targeting Aim/Rapid Fire)
+     4. Ka'roz (Movement + Whirling)
+     5. Korven (Shield Bash + Amber Encase)
+     6. Iyyokuk (Insane Calculation)
+     7. Kaz'tik (Mesmerize/Mind Control)
+     8. Xaril (Poison Pools)
+     9. Kil'ruk (Final Boss - Reave + Death from Above)
+     
+     PARAGON-MECHANIKEN:
+     - Skeer: Bloodletting (Tank Stack)
+     - Rik'kal: Mutate (spawnt Adds), Injection (Tank-Debuff)
+     - Hisek: Aim (Sniper-Mechanik), Rapid Fire
+     - Ka'roz: Whirling (Tornado), Hurl Amber
+     - Korven: Shield Bash (Tank), Encase in Amber (CC)
+     - Iyyokuk: Insane Calculation: Fiery Edge (Raid-DR)
+     - Kaz'tik: Mesmerize (Mind Control)
+     - Xaril: Toxic Catalyst, Toxic Injection (Poison Pools)
+     - Kil'ruk: Gouge, Reave, Death from Above
+     
+     STRATEGIE:
+     Bosse werden in fester Reihenfolge "abgearbeitet". Spieler fokussieren
+     auf Interrupts und kontrollieren Adds. Final Phase mit Kil'ruk ist
+     typischerweise mit Bloodlust.
+     
+     Werte konsolidiert aus den LUA-Dateien.
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!-- HTML-Block für paragons.html -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            Plant automatisch Cooldown-Zuteilungen für alle 9 Paragonen.
+            Aktivierungsreihenfolge und Mechaniken sind nur grobe Schätzungen — nach erstem Kill kalibrieren!
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline mit Tabelle -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Paragons of the Klaxxi Auto-Planner Config ══════════════════════
+CD_AUTO_PLANNER.init({
+    id: 'paragons-of-the-klaxxi',
+    name: 'Paragonen der Klaxxi',
+    prefix: 'paragons',  // Container-Prefix in der Boss-HTML (paragons-planner-container)
+    
+    events: [
+        // ═══════════════════════════════════════════════════════
+        // PHASE 1: Skeer + Rik'kal + Hisek (Start-Trio)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Skeer: Bloodletting #1",
+            spellId: 0,
+            firstCast: 15,        // ~15s nach Pull
+            cooldown: 30,         // ~30s zwischen Bloodlettings
+            maxCasts: 4,          // bis Skeer down
+            delay: -1,
+            eventDuration: 10,
+            requiredCDs: ["tank_external"],  // Tank-Externals
+            icon: "🩸"
+        },
+        {
+            name: "Rik'kal: Mutate Adds",
+            spellId: 0,
+            firstCast: 25,        // erste Mutate-Welle
+            cooldown: 45,         // ~45s CD
+            maxCasts: 3,
+            delay: -2,
+            eventDuration: 20,
+            requiredCDs: ["aoe_stun", "any_dr"],
+            icon: "🧪"
+        },
+        {
+            name: "Hisek: Aim/Rapid Fire",
+            spellId: 0,
+            firstCast: 30,        // ~30s
+            cooldown: 25,         // ~25s CD
+            maxCasts: 5,
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["tank_external", "any_dr"],
+            icon: "🏹"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // PHASE 2: Ka'roz aktiviert (~25-33% von Trio HP)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Ka'roz: Whirling #1",
+            spellId: 0,
+            firstCast: 90,        // ~90s nach Pull, je nach DPS
+            cooldown: 30,
+            maxCasts: 4,
+            delay: -2,
+            eventDuration: 10,
+            requiredCDs: ["movement", "any_dr"],  // Tornado kiten
+            icon: "🌪️"
+        },
+        {
+            name: "Ka'roz: Hurl Amber #1",
+            spellId: 0,
+            firstCast: 100,
+            cooldown: 25,
+            maxCasts: 4,
+            delay: 0,
+            eventDuration: 5,
+            requiredCDs: ["any_heal"],  // Damage-CDs für Hurl
+            icon: "🪨"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // PHASE 3: Korven aktiviert (Shield-Mechanik)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Korven: Shield Bash",
+            spellId: 0,
+            firstCast: 150,       // Korven kommt später dazu
+            cooldown: 25,         // ~25s CD
+            maxCasts: 4,
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["tank_external"],  // Tank-Buster
+            icon: "🛡️"
+        },
+        {
+            name: "Korven: Encase in Amber",
+            spellId: 0,
+            firstCast: 165,
+            cooldown: 30,         // ~30s CD
+            maxCasts: 4,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["any_heal"],  // Eingeschlossene Spieler heilen
+            icon: "🟫"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // PHASE 4: Iyyokuk + Kaz'tik (Mid-Phase)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Iyyokuk: Insane Calculation #1",
+            spellId: 0,
+            firstCast: 220,       // ~220s
+            cooldown: 60,         // ~60s CD
+            maxCasts: 4,
+            delay: -3,            // Heavy Raid-DR
+            eventDuration: 10,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "🔢"
+        },
+        {
+            name: "Kaz'tik: Mesmerize (Mind Control)",
+            spellId: 0,
+            firstCast: 240,
+            cooldown: 45,         // ~45s CD
+            maxCasts: 4,
+            delay: -2,
+            eventDuration: 12,
+            requiredCDs: ["any_heal"],  // MC-Spieler heilen
+            icon: "🧠"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // PHASE 5: Xaril aktiviert (Poison Pools)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Xaril: Toxic Catalyst",
+            spellId: 0,
+            firstCast: 320,
+            cooldown: 35,
+            maxCasts: 3,
+            delay: -2,
+            eventDuration: 15,
+            requiredCDs: ["any_dr"],
+            icon: "☠️"
+        },
+        {
+            name: "Xaril: Toxic Injection",
+            spellId: 0,
+            firstCast: 335,
+            cooldown: 30,
+            maxCasts: 3,
+            delay: -1,
+            eventDuration: 10,
+            requiredCDs: ["any_heal"],
+            icon: "💉"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // FINAL PHASE: Kil'ruk (Bloodlust)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Kil'ruk Spawn (Final Boss)",
+            spellId: 0,
+            firstCast: 420,       // ~7 Min nach Pull
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 60,
+            requiredCDs: ["bloodlust", "any_dr", "any_heal"],
+            icon: "🦅"
+        },
+        {
+            name: "Kil'ruk: Death from Above",
+            spellId: 0,
+            firstCast: 435,
+            cooldown: 30,
+            maxCasts: 5,
+            delay: -2,
+            eventDuration: 8,
+            requiredCDs: ["any_dr", "movement"],
+            icon: "✈️"
+        },
+        {
+            name: "Kil'ruk: Reave (Tank Cleave)",
+            spellId: 0,
+            firstCast: 425,
+            cooldown: 20,
+            maxCasts: 8,
+            delay: -1,
+            eventDuration: 5,
+            requiredCDs: ["tank_external"],
+            icon: "🦅"
+        },
+        {
+            name: "Kil'ruk: Gouge",
+            spellId: 0,
+            firstCast: 440,
+            cooldown: 25,
+            maxCasts: 5,
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["tank_external"],
+            icon: "🗡️"
+        }
+    ],
+    
+    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: PARAGONS_*)
+    // Jeder Paragon hat eigene Trigger für seine Mechaniken
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+    triggerMap: {
+        "Skeer: Bloodletting #1":              "PARAGONS_BLOODLETTING",
+        "Rik'kal: Mutate Adds":                 "PARAGONS_MUTATE",
+        "Hisek: Aim/Rapid Fire":                "PARAGONS_AIM",
+        "Ka'roz: Whirling #1":                  "PARAGONS_FLASH",
+        "Ka'roz: Hurl Amber #1":                "PARAGONS_HURL_AMBER",
+        "Korven: Shield Bash":                  "PARAGONS_SHIELD_BASH",
+        "Korven: Encase in Amber":              "PARAGONS_ENCASE_IN_AMBER",
+        "Iyyokuk: Insane Calculation #1":       "PARAGONS_INSANE_CALCULATION",
+        "Kaz'tik: Mesmerize (Mind Control)":   "PARAGONS_MESMERIZE",
+        "Xaril: Toxic Catalyst":                "PARAGONS_CATALYST",
+        "Xaril: Toxic Injection":               "PARAGONS_TOXIC_INJECTION",
+        "Kil'ruk Spawn (Final Boss)":           "PARAGONS_KILRUK",
+        "Kil'ruk: Death from Above":            "PARAGONS_DEATH_FROM_ABOVE",
+        "Kil'ruk: Reave (Tank Cleave)":         "PARAGONS_REAVE",
+        "Kil'ruk: Gouge":                        "PARAGONS_GOUGE"
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EVENT-MANAGER HINWEISE
+     ════════════════════════════════════════════════════════════════════
+     
+     WICHTIG: Dieser Encounter ist SEHR komplex (9 Bosse, dynamische
+     Aktivierungsreihenfolge). Die hier angegebenen Werte sind grobe
+     Schätzungen — nach erstem Kill MUSS kalibriert werden!
+     
+     AKTIVIERUNGSREIHENFOLGE:
+     Bosse aktivieren sich basierend auf HP-Schwellen des aktiven Trios.
+     Eure Reihenfolge kann von der Standard-Reihenfolge abweichen wenn
+     ihr Bosse unterschiedlich priorisiert (Skeer-Reset, Hisek-Skip, etc).
+     
+     TYPISCHE STRATEGIEN:
+     - "Skeer-Reset": Skeer wird nicht gekillt, Bloodletting-Stack reset
+     - "Hisek-Skip": Hisek wird ignoriert während andere gefocused werden
+     - "Mythic-Cleave": Spezielle Reihenfolge auf Mythic
+     
+     ANPASSUNGEN NACH ERSTEM KILL:
+     
+     1. Welche Reihenfolge habt ihr gewählt? → firstCast-Zeiten anpassen
+     2. Wann wurde Kil'ruk aktiv? → "Kil'ruk Spawn" firstCast (kritisch!)
+     3. Welcher Boss verursacht die meisten Wipes? → Mehr CDs darauf
+     4. Bloodlust-Zeitpunkt: Pull oder Kil'ruk? → firstCast anpassen
+     
+     PRO PARAGON KOMMENTAR:
+     
+     - Skeer: Bloodletting alle 30s. Tank-Externals ESSENTIELL.
+     - Rik'kal: Mutate spawnt Adds → AoE-Stuns + DPS-Burst
+     - Hisek: Aim/Rapid Fire = Sniper-Mechanik. Spieler bewegen!
+     - Ka'roz: Whirling = Tornado → kiten. Hurl Amber = Big Damage
+     - Korven: Shield Bash = Tank-Buster. Encase in Amber = CC.
+     - Iyyokuk: Insane Calculation = Heavy Raid-DR Mechanik!
+     - Kaz'tik: Mesmerize = Mind Control. CC-Break + Heal.
+     - Xaril: Toxic Pools auf dem Boden. Movement + Heal.
+     - Kil'ruk: Final Phase. Bloodlust hier!
+     
+     INTERRUPTS:
+     Viele Paragons haben unterbrechbare Casts. Eine Kick-Rotation ist
+     essentiell. Im CD-Planer als separate Liste pflegen.
+     
+     MYTHIC-ZUSATZ:
+     Auf Mythic gibt's zusätzliche Mechaniken pro Paragon. Diese müssen
+     als Custom-Events im Event-Manager hinzugefügt werden — die Liste
+     hier ist auf Heroic optimiert.
+     
+     KALIBRIERUNG-WORKFLOW:
+     
+     1. Erster Pull (lerne den Encounter)
+     2. WCL-Log analysieren:
+        - Wann starb welcher Paragon?
+        - Welche Mechaniken kamen wann?
+     3. firstCast-Werte aller Events nach WCL anpassen
+     4. maxCasts pro Boss anpassen (wieviele Casts vor Death)
+     5. Save Plan
+     6. Im nächsten Pull: Auto-Zuweisen → Plan kommt zurück
+     ════════════════════════════════════════════════════════════════════ -->
+
+
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -238,20 +605,49 @@
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "PARAGONS_ENC_START", text: "Kampfbeginn" },
-            { val: "PARAGONS_BOSS_DIES", text: "Boss tot (Sprung #)" },
-            { val: "PARAGONS_AIM", text: "Zielen (Soaken)" },
-            { val: "PARAGONS_AMBER", text: "In Bernstein hüllen" },
-            { val: "PARAGONS_BLOOD", text: "Blutadds spawnen" },
-            { val: "PARAGONS_CALCULATE", text: "Berechnen (Iyyokuk)" }
+            { val: "PARAGONS_ENC_START",          text: "Kampfbeginn" },
+            { val: "PARAGONS_HEALTH",             text: "Gesundheit % (Wähle NPC)" },
+            
+            // Boss-Aktivierungs-Trigger
+            { val: "PARAGONS_KILRUK",             text: "Kil'ruk Spawn (Final Boss)" },
+            { val: "PARAGONS_XARIL",              text: "Xaril aktiviert" },
+            { val: "PARAGONS_KAZTIK",             text: "Kaz'tik aktiviert" },
+            { val: "PARAGONS_KORVEN",             text: "Korven aktiviert" },
+            { val: "PARAGONS_IYYOKUK",            text: "Iyyokuk aktiviert" },
+            { val: "PARAGONS_KAROZ",              text: "Ka'roz aktiviert" },
+            { val: "PARAGONS_SKEER",              text: "Skeer aktiviert" },
+            { val: "PARAGONS_RIKKAL",             text: "Rik'kal aktiviert" },
+            { val: "PARAGONS_HISEK",              text: "Hisek aktiviert" },
+            
+            // Mechanik-Trigger
+            { val: "PARAGONS_GOUGE",              text: "Kil'ruk: Stechen" },
+            { val: "PARAGONS_REAVE",              text: "Kil'ruk: Spalten (Tank Cleave)" },
+            { val: "PARAGONS_DEATH_FROM_ABOVE",   text: "Kil'ruk: Tod von Oben" },
+            { val: "PARAGONS_CATALYST",           text: "Xaril: Giftiger Katalysator" },
+            { val: "PARAGONS_TOXIC_INJECTION",    text: "Xaril: Giftinjektion" },
+            { val: "PARAGONS_MESMERIZE",          text: "Kaz'tik: Hypnose (Mind Control)" },
+            { val: "PARAGONS_SHIELD_BASH",        text: "Korven: Schildschlag" },
+            { val: "PARAGONS_ENCASE_IN_AMBER",    text: "Korven: In Bernstein einschließen" },
+            { val: "PARAGONS_INSANE_CALCULATION", text: "Iyyokuk: Wahnsinnige Berechnung" },
+            { val: "PARAGONS_FLASH",              text: "Ka'roz: Wirbeln" },
+            { val: "PARAGONS_HURL_AMBER",         text: "Ka'roz: Bernstein schleudern" },
+            { val: "PARAGONS_BLOODLETTING",       text: "Skeer: Aderlass (Tank)" },
+            { val: "PARAGONS_MUTATE",             text: "Rik'kal: Mutieren (Adds)" },
+            { val: "PARAGONS_INJECTION",          text: "Rik'kal: Injektion (Tank)" },
+            { val: "PARAGONS_AIM",                text: "Hisek: Zielen" },
+            { val: "PARAGONS_RAPID_FIRE",         text: "Hisek: Schnellfeuer" }
         ];
-
+        
         const NPC_OPTIONS = [
-            "Die Getreuen der Klaxxi",
-            "Kil'ruk der Schlächter",
-            "Korven der Primus",
+            "Kil'ruk der Windschinder",
+            "Xaril der vergiftete Verstand",
+            "Kaz'tik der Manipulator",
+            "Korven der Erstgeborene",
+            "Iyyokuk der Helle",
+            "Ka'roz die Heuschrecke",
             "Skeer der Blutsucher",
-            "Hungriger Kunchong"
+            "Rik'kal der Sezierer",
+            "Hisek der Schwarmwächter"
         ];
         
         const container = document.getElementById('paragons-planner-container');

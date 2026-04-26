@@ -158,6 +158,340 @@
     </div>
 </section>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     MALKOROK AUTO-PLANNER
+     ════════════════════════════════════════════════════════════════════
+     
+     Mechaniken-Übersicht (aus DBM + BigWigs konsolidiert):
+     
+     PHASEN-SYSTEM:
+     - Non-Rage Phase (Standard, ~70s):
+       3x Arcing Smash + 3x Seismic Slam → Breath of Y'Shaarj
+     - Rage Phase (Blood Rage, 22.5s):
+       Shield-Mechanik (Heal-Absorb), Displaced Energy spammt
+     - Expel Miasma beendet Rage Phase → zurück zu Non-Rage
+     
+     SHIELD-MECHANIK (wichtig!):
+     Während Blood Rage absorbiert ein Shield den Boss-Damage.
+     HEALER MÜSSEN den Shield rauf-heilen sonst sterben Spieler.
+     → Heavy Heal-CDs in der Phase essentiell
+     
+     KONTINUIERLICHE MECHANIKEN:
+     - Arcing Smash: 3x mit 19s CD (Imploding Energy 4s danach)
+     - Seismic Slam: 3x mit 19.5s CD (Adds auf Mythic)
+     - Breath of Y'Shaarj: alle 70s (Raid-AOE)
+     - Fatal Strike: Tank-Stack-Debuff (kontinuierlich)
+     
+     Berserk: 360s Heroic / 720s LFR
+     
+     Werte konsolidiert aus:
+     - DBM Malkorok.lua (genaue CD-Werte, Phase-Counter)
+     - BigWigs Malkorok.lua (Phase-Übergänge, Shield-Mechanik)
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!-- HTML-Block für malkorok.html -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            Plant automatisch Cooldown-Zuteilungen. Boss alterniert zwischen Non-Rage Phase (~70s) und Blood Rage (22.5s, Shield-Mechanik).
+            Hauptfokus: Heal-CDs während Blood Rage, Raid-DR für Breath of Y'Shaarj.
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline mit Tabelle -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Malkorok Auto-Planner Config ════════════════════════════════════
+CD_AUTO_PLANNER.init({
+    id: 'malkorok',
+    name: 'Malkorok',
+    prefix: 'malkorok',  // Container-Prefix in der Boss-HTML (malkorok-planner-container)
+    
+    events: [
+        // ═══════════════════════════════════════════════════════
+        // NON-RAGE PHASE #1 (0-70s)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Arcing Smash #1.1 (Tank)",
+            spellId: 142826,
+            firstCast: 11,        // 11s nach Pull
+            cooldown: 19,         // 19s zwischen den 3 Smashes
+            maxCasts: 3,          // 3 Smashes pro Phase
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["tank_external"],  // Tank-Externals
+            icon: "💥"
+        },
+        {
+            name: "Imploding Energy #1 (Raid AOE)",
+            spellId: 142986,
+            firstCast: 17,        // ~6s nach Arcing Smash #1
+            cooldown: 19,         // folgt jedem Arcing Smash
+            maxCasts: 3,
+            delay: -2,
+            eventDuration: 4,
+            requiredCDs: ["any_dr"],  // Raid-DR vor Implosion
+            icon: "💢"
+        },
+        {
+            name: "Seismic Slam #1 (3x)",
+            spellId: 142851,
+            firstCast: 5,         // 5s nach Pull
+            cooldown: 19.5,       // 19.5s zwischen den 3 Slams
+            maxCasts: 3,
+            delay: 0,
+            eventDuration: 8,
+            requiredCDs: ["aoe_stun"],  // Mythic: Adds zum stunnen
+            icon: "🌊"
+        },
+        {
+            name: "Breath of Y'Shaarj #1 (Raid AOE)",
+            spellId: 142842,
+            firstCast: 67,        // 67.3s erster Cast
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -3,            // CDs vor Cast zünden
+            eventDuration: 8,
+            requiredCDs: ["any_dr", "any_heal"],  // Heavy Raid-Damage
+            icon: "🐉"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // BLOOD RAGE PHASE #1 (~70-92s) - SHIELD-MECHANIK
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Blood Rage #1 (Shield-Phase)",
+            spellId: 142879,
+            firstCast: 70,        // direkt nach Breath
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 22,    // 22.5s Dauer
+            requiredCDs: ["any_heal"],  // Healer müssen Shield aufrechthalten
+            icon: "🩸"
+        },
+        {
+            name: "Displaced Energy #1 (Spam)",
+            spellId: 142913,
+            firstCast: 73,        // ~3s nach Blood Rage Start
+            cooldown: 11,         // alle 11s während Rage
+            maxCasts: 2,          // ~2 Casts in 22s Phase
+            delay: -1,
+            eventDuration: 5,
+            requiredCDs: ["any_heal", "additional_surv"],  // Heavy Heal + Survival
+            icon: "⚡"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // NON-RAGE PHASE #2 (~92-162s)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Arcing Smash #2.1 (Tank)",
+            spellId: 142826,
+            firstCast: 109,       // 17s nach Expel Miasma
+            cooldown: 19,
+            maxCasts: 3,
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["tank_external"],
+            icon: "💥"
+        },
+        {
+            name: "Seismic Slam #2 (3x)",
+            spellId: 142851,
+            firstCast: 101,       // 9s nach Expel Miasma
+            cooldown: 19.5,
+            maxCasts: 3,
+            delay: 0,
+            eventDuration: 8,
+            requiredCDs: ["aoe_stun"],
+            icon: "🌊"
+        },
+        {
+            name: "Breath of Y'Shaarj #2",
+            spellId: 142842,
+            firstCast: 164,       // 72.2s nach Expel
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -3,
+            eventDuration: 8,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "🐉"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // BLOOD RAGE PHASE #2 (~167-189s)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Blood Rage #2 (Shield-Phase)",
+            spellId: 142879,
+            firstCast: 167,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 22,
+            requiredCDs: ["any_heal", "any_dr"],
+            icon: "🩸"
+        },
+        {
+            name: "Displaced Energy #2 (Spam)",
+            spellId: 142913,
+            firstCast: 170,
+            cooldown: 11,
+            maxCasts: 2,
+            delay: -1,
+            eventDuration: 5,
+            requiredCDs: ["any_heal", "additional_surv"],
+            icon: "⚡"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // NON-RAGE PHASE #3 + EXECUTE (Bloodlust hier optimal)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Arcing Smash #3.1 (Tank)",
+            spellId: 142826,
+            firstCast: 206,       // 17s nach Expel Miasma #2
+            cooldown: 19,
+            maxCasts: 3,
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["tank_external"],
+            icon: "💥"
+        },
+        {
+            name: "Bloodlust (Execute Push)",
+            spellId: 0,
+            firstCast: 200,       // mittlere Phase 3, vor Berserk
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 40,
+            requiredCDs: ["bloodlust"],
+            icon: "⚡"
+        },
+        {
+            name: "Breath of Y'Shaarj #3",
+            spellId: 142842,
+            firstCast: 261,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -3,
+            eventDuration: 8,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "🐉"
+        }
+    ],
+    
+    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: MALKOROK_*)
+    // - Spell-spezifische Trigger
+    // - Bloodlust-Event hat keinen passenden Trigger → ENC_START als Fallback
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+    triggerMap: {
+        "Arcing Smash #1.1 (Tank)":            "MALKOROK_ARCING_SMASH",
+        "Arcing Smash #2.1 (Tank)":            "MALKOROK_ARCING_SMASH",
+        "Arcing Smash #3.1 (Tank)":            "MALKOROK_ARCING_SMASH",
+        "Imploding Energy #1 (Raid AOE)":      "MALKOROK_IMPLODING_ENERGY",
+        "Seismic Slam #1 (3x)":                "MALKOROK_SEISMIC_SLAM",
+        "Seismic Slam #2 (3x)":                "MALKOROK_SEISMIC_SLAM",
+        "Breath of Y'Shaarj #1 (Raid AOE)":    "MALKOROK_BREATH",
+        "Breath of Y'Shaarj #2":                "MALKOROK_BREATH",
+        "Breath of Y'Shaarj #3":                "MALKOROK_BREATH",
+        "Blood Rage #1 (Shield-Phase)":        "MALKOROK_BLOOD_RAGE",
+        "Blood Rage #2 (Shield-Phase)":        "MALKOROK_BLOOD_RAGE",
+        "Displaced Energy #1 (Spam)":          "MALKOROK_DISPLACED_ENERGY",
+        "Displaced Energy #2 (Spam)":          "MALKOROK_DISPLACED_ENERGY",
+        "Bloodlust (Execute Push)":             "MALKOROK_ENC_START"  // kein eigener Trigger, optional anpassbar
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EVENT-MANAGER HINWEISE
+     ════════════════════════════════════════════════════════════════════
+     
+     Im Event-Manager kannst du anpassen:
+     
+     - "Arcing Smash" hat Tank-Externals — alle 3 Smashes feuern in 38s.
+       Nicht jeder Smash braucht einen Tank-CD. maxCasts ggf. reduzieren.
+     
+     - "Blood Rage" + "Displaced Energy" sind die kritische Phase!
+       Der Shield muss von Heilern aufrecht erhalten werden, sonst sterben
+       Spieler durch Boss-Damage. Hier liegen die meisten Wipes.
+     
+     - "Seismic Slam" hat aoe_stun — auf Heroic gibt's keine Adds, dann
+       Kategorien leeren oder any_dr verwenden. Auf Mythic spawnen Adds
+       die mit AoE-Stuns kontrolliert werden müssen.
+     
+     - "Bloodlust" ist als separates Event modelliert ohne festen Trigger.
+       Setze im Event-Manager den Trigger manuell auf einen passenden Key
+       (z.B. MALKOROK_HEALTH bei 30% HP für Execute) oder Cast-Counter.
+     
+     KALIBRIERUNG NACH ERSTEM KILL:
+     
+     Aus eurer ersten Malkorok-WCL:
+     1. Wann startet erste Blood Rage? → "Blood Rage #1" firstCast (sollte 70s sein)
+     2. Wann startet zweite Blood Rage? → "Blood Rage #2" firstCast
+     3. Wieviele Phasen schafft ihr bis Kill? → Phase #3 events anpassen
+     4. Bloodlust: bei Pull oder bei 30% HP? → firstCast oder Trigger anpassen
+     
+     PHASEN-RHYTHMUS:
+     0-70s:    Non-Rage #1     (3x Smash + 3x Slam → Breath)
+     70-92s:   Blood Rage #1   (Shield + Displaced Energy)
+     92-167s:  Non-Rage #2     (3x Smash + 3x Slam → Breath)
+     167-189s: Blood Rage #2
+     189s+:    Non-Rage #3     (Execute, Bloodlust hier)
+     
+     SHIELD-MECHANIK ERKLÄRUNG:
+     
+     Während Blood Rage absorbiert ein Shield Boss-Damage. Wenn der Shield
+     leer wird, sterben Spieler. Heiler müssen aktiv den Shield rauf-heilen.
+     
+     Typische CD-Strategie:
+     - Healing Tide Totem (Resto Sham)
+     - Tranquility (Resto Druid)
+     - Divine Hymn (Holy Priest)
+     - Revival (Mistweaver)
+     
+     Diese Heal-CDs gehören in "any_heal" oder eigene Kategorie.
+     ════════════════════════════════════════════════════════════════════ -->
+
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -234,17 +568,19 @@
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "MALKOROK_ENC_START", text: "Kampfbeginn" },
-            { val: "MALKOROK_ENERGY", text: "Implodierende Energie" },
-            { val: "MALKOROK_BREATH", text: "Atem von Y'Shaarj" },
-            { val: "MALKOROK_BLOOD_RAGE", text: "Phase 2 (Blutrausch)" },
-            { val: "MALKOROK_DISPLACED_ENERGY", text: "Verschobene Energie (Dispel)" },
-            { val: "MALKOROK_MIASMA_RETURN", text: "Phase 1 (Miasma Rückkehr)" }
+            { val: "MALKOROK_ENC_START",         text: "Kampfbeginn" },
+            { val: "MALKOROK_HEALTH",            text: "Gesundheit % (Wähle NPC)" },
+            { val: "MALKOROK_BLOOD_RAGE",        text: "Blutige Wut (Shield-Phase)" },
+            { val: "MALKOROK_DISPLACED_ENERGY",  text: "Verschobene Energie (Dispel)" },
+            { val: "MALKOROK_ARCING_SMASH",      text: "Bogenschlag (Tank)" },
+            { val: "MALKOROK_IMPLODING_ENERGY",  text: "Implodierende Energie (AOE)" },
+            { val: "MALKOROK_SEISMIC_SLAM",      text: "Seismischer Schlag (Adds)" },
+            { val: "MALKOROK_BREATH",            text: "Hauch von Y'Shaarj (Raid AOE)" },
+            { val: "MALKOROK_EXPEL_MIASMA",      text: "Miasma vertreiben (Phase-Ende)" }
         ];
-
+        
         const NPC_OPTIONS = [
-            "Malkorok",
-            "Essenz von Y'Shaarj"
+            "Malkorok"
         ];
         
         const container = document.getElementById('malkorok-planner-container');

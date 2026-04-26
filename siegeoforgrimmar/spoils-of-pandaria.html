@@ -152,6 +152,228 @@
     </div>
 </section>
 
+
+<!-- ════════════════════════════════════════════════════════════════════
+     SPOILS OF PANDARIA AUTO-PLANNER (SCHLANKE VERSION)
+     ════════════════════════════════════════════════════════════════════
+     
+     ⚠️ WICHTIGER HINWEIS:
+     
+     Spoils ist taktisch anders als andere Bosse — es gibt KEINE feste
+     Boss-Timeline. Stattdessen:
+     
+     - Raid teilt sich in 2 GRUPPEN (Mogu-Seite + Mantid-Seite)
+     - Beide kämpfen parallel in eigenen Räumen
+     - Mechaniken kommen aus den Kisten die gerade geöffnet werden
+     - Reihenfolge ist NICHT deterministisch
+     
+     Daher fokussiert dieser Planer nur auf die wirklich planbaren
+     Schlüsselmechaniken:
+     - Set to Blow (regelmäßig in beiden Räumen)
+     - Matter Scramble (Mogu-Seite, Tank-Buster)
+     - Crimson Reconstitution (Mogu-Seite, Heal-Push)
+     - Rage of the Empress (Endphase Stress)
+     - Phase 2 Start (Bloodlust-Zeitpunkt)
+     
+     Die meisten anderen Mechaniken (Path of Blossoms, Mantid Swarm,
+     Residue, etc.) sind besser als FREIE CDs zu nutzen die der
+     Raidleiter situativ ruft.
+     
+     EMPFEHLUNG:
+     Plant nur 3-5 wirklich kritische Events. Lasst den Rest dem
+     Raidleiter — der sieht was gerade passiert.
+     
+     Werte aus den LUA-Dateien konsolidiert.
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!-- HTML-Block für spoils-of-pandaria.html -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer (Schlank)
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            ⚠️ Spoils hat keine feste Timeline — Mechaniken kommen je nach geöffneter Kiste.
+            Dieser Planer plant nur die wirklich vorhersagbaren Schlüsselmechaniken.
+            Den Rest ruft euer Raidleiter situativ.
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline mit Tabelle -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Spoils of Pandaria Auto-Planner Config (Schlank) ════════════════
+CD_AUTO_PLANNER.init({
+    id: 'spoils-of-pandaria',
+    name: 'Beute von Pandaria',
+    prefix: 'spoils',  // Container-Prefix in der Boss-HTML (spoils-planner-container)
+    
+    events: [
+        // ═══════════════════════════════════════════════════════
+        // SET TO BLOW (regelmäßig in beiden Räumen)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Set to Blow #1 (Raid Bomb)",
+            spellId: 145987,
+            firstCast: 30,        // ~30s nach Pull
+            cooldown: 60,         // ~60s zwischen Bombs
+            maxCasts: 5,          // ~5 Casts in Phase 1
+            delay: -2,
+            eventDuration: 30,    // 30s Bomb-Timer
+            requiredCDs: ["any_heal"],  // Heal-CDs für Bomb-Damage
+            icon: "💣"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // MOGU-SEITE: Matter Scramble (Tank-Buster + Explosion)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Matter Scramble #1 (Mogu Tank)",
+            spellId: 145288,
+            firstCast: 45,        // ~45s nach Pull
+            cooldown: 60,         // ~60s CD
+            maxCasts: 4,
+            delay: -1,
+            eventDuration: 8,     // 8s Explosion-Timer
+            requiredCDs: ["tank_external"],  // Mogu-Tank-Externals
+            icon: "💥"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // MOGU-SEITE: Crimson Reconstitution (Heal-Push)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Crimson Reconstitution (Mogu)",
+            spellId: 142947,
+            firstCast: 60,        // ~60s nach Pull
+            cooldown: 90,         // ~90s CD
+            maxCasts: 3,
+            delay: -2,
+            eventDuration: 10,
+            requiredCDs: ["any_heal"],  // Heavy Heal damit Boss nicht heilt
+            icon: "❤️‍🩹"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // PHASE 2 START (Bloodlust-Zeitpunkt)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Phase 2 Start (Bloodlust)",
+            spellId: 0,
+            firstCast: 240,       // ~4 Min, je nach Crate-Speed
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 60,
+            requiredCDs: ["bloodlust", "any_dr", "any_heal"],
+            icon: "⚡"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // RAGE OF THE EMPRESS (Endphase, Zeitdruck)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Rage of the Empress (Soft Berserk)",
+            spellId: 0,
+            firstCast: 360,       // ~6 Min, wenn ihr nicht schnell genug seid
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["any_dr", "additional_surv"],
+            icon: "👑"
+        }
+    ],
+    
+    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: SPOILS_*)
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+    triggerMap: {
+        "Set to Blow #1 (Raid Bomb)":              "SPOILS_SET_TO_BLOW",
+        "Matter Scramble #1 (Mogu Tank)":           "SPOILS_MATTER_SCRAMBLE",
+        "Crimson Reconstitution (Mogu)":            "SPOILS_CRIMSON_RECON",
+        "Phase 2 Start (Bloodlust)":                "SPOILS_P2",
+        "Rage of the Empress (Soft Berserk)":       "SPOILS_RAGE"
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EVENT-MANAGER HINWEISE
+     ════════════════════════════════════════════════════════════════════
+     
+     Im Event-Manager kannst du:
+     
+     1. Custom-Events hinzufügen für:
+        - Mantid Swarm (Mantid-Seite, Add-Welle)
+        - Windstorm (Mantid-Seite, Movement)
+        - Gusting Bomb / Crane Kick (Mantid-Seite, Aoe)
+        - Path of Blossoms (Brewmaster-Crate)
+        - Return to Stone (Mogu-Crate)
+        - Residue (Mantid-Crate, dispellbar)
+     
+     2. Events deaktivieren falls eure Strategie sie nicht braucht
+     
+     STRATEGIE-EMPFEHLUNG:
+     
+     Plant für jede SEITE separat:
+     - Mogu-Seite: Tank-Externals für Matter Scramble + Heal für Crimson
+     - Mantid-Seite: Heal für Set to Blow + Movement für Mantid Swarm
+     
+     Da jede Seite andere Mechaniken hat, ist es sinnvoll im CD-Planer
+     unterschiedliche Spalten/Bereiche für Mogu/Mantid zu haben.
+     
+     KALIBRIERUNG NACH ERSTEM KILL:
+     
+     Spoils ist DPS-getrieben (schneller = weniger Mechaniken):
+     1. Wieviele Set to Blow Casts hattet ihr? → maxCasts anpassen
+     2. Wann startete Phase 2 (Empress)? → "Phase 2" firstCast
+     3. Habt ihr Rage of the Empress getriggert? → ggf. deaktivieren
+     
+     WICHTIG: ROOM-SWITCH (Mythic):
+     Auf Mythic wechseln Spieler zwischen den Räumen. Eure Plans müssen
+     dann sowohl Mogu- als auch Mantid-Mechaniken pro Spieler abdecken.
+     Im Standard-Setup nicht modelliert.
+     
+     ALTERNATIVE: KEIN AUTO-PLAN
+     
+     Wenn euer Raidleiter alle CDs lieber manuell ruft, könnt ihr auch
+     komplett ohne Auto-Planner arbeiten und nur die Rohdaten im
+     CD-Planer pflegen. Spoils funktioniert beides.
+     ════════════════════════════════════════════════════════════════════ -->
+
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -229,17 +451,31 @@
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "SPOILS_ENC_START", text: "Kampfbeginn" },
-            { val: "SPOILS_ROOM_SWITCH", text: "Raumwechsel (Hebel gezogen)" },
-            { val: "SPOILS_LARGE_MOGU", text: "Große Kiste: Mogu" },
-            { val: "SPOILS_LARGE_MANTID", text: "Große Kiste: Mantid" },
-            { val: "SPOILS_SPARK_HC", text: "Lebensfunke spawnt (HC)" }
+            { val: "SPOILS_ENC_START",          text: "Kampfbeginn" },
+            { val: "SPOILS_HEALTH",             text: "Gesundheit % (Wähle NPC)" },
+            { val: "SPOILS_P2",                 text: "Phase 2 Start" },
+            { val: "SPOILS_SET_TO_BLOW",        text: "Bombe (Spieler explodiert)" },
+            { val: "SPOILS_MATTER_SCRAMBLE",    text: "Materie-Verwirrung (Mogu Tank)" },
+            { val: "SPOILS_CRIMSON_RECON",      text: "Karmesinrote Wiederherstellung (Mogu Heal)" },
+            { val: "SPOILS_MANTID_SWARM",       text: "Mantid-Schwarm" },
+            { val: "SPOILS_RESIDUE",            text: "Rückstand (Mantid Dispel)" },
+            { val: "SPOILS_WINDSTORM",          text: "Windsturm (Mantid)" },
+            { val: "SPOILS_RAGE",               text: "Wut der Kaiserin (Soft Berserk)" },
+            { val: "SPOILS_GUSTING_CHARGE",     text: "Stürmische Bombe" },
+            { val: "SPOILS_GUSTING_CRANE_KICK", text: "Stürmischer Krantritt" },
+            { val: "SPOILS_PATH_OF_BLOSSOMS",   text: "Pfad der Blüten (Brewmaster)" },
+            { val: "SPOILS_RETURN_TO_STONE",    text: "Rückkehr zu Stein (Mogu)" }
         ];
-
+        
         const NPC_OPTIONS = [
-            "Lebensfunke (HC)",
-            "Mogu Schattenritualist",
-            "Mantid-Kommandant"
+            "Mogu-Beute",
+            "Mantid-Beute",
+            "Lagerraum-Wächter",
+            "Vermächtnis von Hauptmann Brakk",
+            "Vermächtnis des Mogu-Königs",
+            "Vermächtnis der Empress",
+            "Brauereimeister-Krug-Beute",
+            "Kaiser-Schatz"
         ];
         
         const container = document.getElementById('spoils-planner-container');

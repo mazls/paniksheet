@@ -158,6 +158,534 @@
     </div>
 </section>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     GARROSH HELLSCREAM (HÖLLSCHREI) AUTO-PLANNER
+     ════════════════════════════════════════════════════════════════════
+     
+     ENDBOSS! Komplexester Encounter in SoO mit 4 Phasen + 2 Intermissions.
+     
+     PHASEN-STRUKTUR:
+     
+     Phase 1 (100% → 10% von Phase-1-HP):
+     - Hellscream's Warsong (alle 22s)
+     - Desecrate (alle 11s, P1-Variante)
+     - Add-Wellen: Warbringers, Farseer Wolf Riders, Siege Engineers
+     - Iron Star (Mythic-Mechanik)
+     - Manifest Rage bei 100 Energy → Adds + Iron Star nutzen!
+     
+     Intermission #1 (Realm of Y'Shaarj):
+     - Boss casts Annihilate I1 (3 Casts: I1, I2, I3)
+     - Spieler werden in Realm of Y'Shaarj gezogen
+     - Whirling Corruption + Touch of Y'Shaarj im Realm
+     - Y'Shaarj's Despair (Heavy Damage)
+     
+     Phase 2 (nach 1. Intermission):
+     - Wie Phase 1, aber mit Y'Shaarj-Mechaniken
+     - Whirling Corruption P2
+     - Touch of Y'Shaarj P2
+     - Desecrate P2-Variante
+     
+     Intermission #2:
+     - Weitere Annihilate-Casts
+     - Y'Shaarj's Protection
+     
+     Phase 3:
+     - Whirling Corruption P3
+     - Touch of Y'Shaarj P3
+     - Desecrate P3-Variante
+     - Malice (Heavy Mechanik)
+     - Bombardment
+     - Clump Check
+     - Fixate
+     
+     Phase 4 (Execute, ab ~10% HP):
+     - Bloodlust hier!
+     - Schneller Push zum Kill
+     
+     Berserk: 1500s (25 Min!)
+     Werte aus DBM/BigWigs konsolidiert.
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!-- HTML-Block für garrosh.html -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            Endboss-Encounter mit 4 Phasen + 2 Intermissions. 25min Berserk, daher höchste Komplexität in SoO.
+            Bloodlust auf Phase 4 (Execute). Plan nach erstem Kill MUSS kalibriert werden!
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline mit Tabelle -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Garrosh Hellscream Auto-Planner Config ══════════════════════════
+CD_AUTO_PLANNER.init({
+    id: 'garrosh-hellscream',
+    name: 'Garrosh Höllschrei',
+    prefix: 'garrosh',  // Container-Prefix in der Boss-HTML (garrosh-planner-container)
+    
+    events: [
+        // ═══════════════════════════════════════════════════════
+        // PHASE 1 (0-180s, ca. 3 Min)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Warbringers (Add-Welle #1)",
+            spellId: 144582,
+            firstCast: 2,         // erste Welle bei 2s
+            cooldown: 40,         // 40s zwischen Wellen
+            maxCasts: 4,          // 4 Wellen in P1
+            delay: -1,
+            eventDuration: 15,
+            requiredCDs: ["aoe_stun", "any_dr"],
+            icon: "⚔️"
+        },
+        {
+            name: "Hellscream's Warsong #1",
+            spellId: 144821,
+            firstCast: 22,        // 22s nach Pull
+            cooldown: 22,         // 22s CD
+            maxCasts: 7,          // ~7 Casts in P1
+            delay: -2,
+            eventDuration: 5,
+            requiredCDs: ["any_dr"],  // Raid-DR bei Warsong
+            icon: "📯"
+        },
+        {
+            name: "Desecrate P1",
+            spellId: 144758,
+            firstCast: 11,        // 11s nach Pull
+            cooldown: 42,         // 42s CD
+            maxCasts: 4,
+            delay: -1,
+            eventDuration: 10,
+            requiredCDs: ["any_heal"],  // Bodenflächen heilen
+            icon: "🟫"
+        },
+        {
+            name: "Farseer Wolf Riders",
+            spellId: 144584,
+            firstCast: 30,        // 30s nach Pull
+            cooldown: 40,         // 40s CD
+            maxCasts: 4,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["aoe_stun"],  // Adds zum stunnen
+            icon: "🐺"
+        },
+        {
+            name: "Siege Engineers",
+            spellId: 144616,
+            firstCast: 20,        // 20s nach Pull
+            cooldown: 42,         // 45/40s CD
+            maxCasts: 4,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["aoe_stun"],
+            icon: "🔧"
+        },
+        {
+            name: "Power Iron Star",
+            spellId: 144653,
+            firstCast: 60,        // ~60s, je nach Engineer
+            cooldown: 60,         // ~60s zwischen Iron Stars
+            maxCasts: 3,
+            delay: 0,
+            eventDuration: 9,
+            requiredCDs: [],       // Spieler-Aktion (Iron Star kiten)
+            icon: "⭐"
+        },
+        {
+            name: "Manifest Rage (Adds)",
+            spellId: 147011,
+            firstCast: 100,       // bei 100 Energy
+            cooldown: 100,        // ~100s zwischen Manifest Rage
+            maxCasts: 2,
+            delay: -3,
+            eventDuration: 15,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "💢"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // INTERMISSION #1 (~180s, Realm of Y'Shaarj)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Intermission #1 Start",
+            spellId: 0,
+            firstCast: 180,       // ~3 Min nach Pull
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 62,    // 62s Intermission
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "🌌"
+        },
+        {
+            name: "Annihilate I1",
+            spellId: 144969,
+            firstCast: 185,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -2,
+            eventDuration: 8,
+            requiredCDs: ["any_dr"],
+            icon: "💥"
+        },
+        {
+            name: "Annihilate I2",
+            spellId: 144969,
+            firstCast: 200,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -2,
+            eventDuration: 8,
+            requiredCDs: ["any_dr"],
+            icon: "💥"
+        },
+        {
+            name: "Annihilate I3",
+            spellId: 144969,
+            firstCast: 215,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -2,
+            eventDuration: 8,
+            requiredCDs: ["any_dr"],
+            icon: "💥"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // PHASE 2 (~242s)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Phase 2 Start",
+            spellId: 0,
+            firstCast: 242,       // nach Intermission #1
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "⚡"
+        },
+        {
+            name: "Whirling Corruption P2 #1",
+            spellId: 144985,
+            firstCast: 260,       // ~18s nach P2-Start
+            cooldown: 50,         // 50s zwischen Whirling Casts
+            maxCasts: 4,          // ~4 Casts in P2
+            delay: -3,
+            eventDuration: 8.5,   // 2.5s Cast + 6s Channel
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "🌀"
+        },
+        {
+            name: "Touch of Y'Shaarj P2",
+            spellId: 0,
+            firstCast: 280,
+            cooldown: 35,
+            maxCasts: 5,
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["any_heal"],
+            icon: "👁️"
+        },
+        {
+            name: "Desecrate P2",
+            spellId: 0,
+            firstCast: 252,
+            cooldown: 42,
+            maxCasts: 5,
+            delay: -1,
+            eventDuration: 10,
+            requiredCDs: ["any_heal"],
+            icon: "🟫"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // INTERMISSION #2 (~440s)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Intermission #2 Start",
+            spellId: 0,
+            firstCast: 440,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 62,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "🌌"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // PHASE 3 (~502s) - schwerste Phase!
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Phase 3 Start",
+            spellId: 0,
+            firstCast: 502,       // nach Intermission #2
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["any_dr", "any_heal", "additional_surv"],
+            icon: "💀"
+        },
+        {
+            name: "Whirling Corruption P3 #1",
+            spellId: 145037,
+            firstCast: 520,
+            cooldown: 50,
+            maxCasts: 4,
+            delay: -3,
+            eventDuration: 8.5,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "🌀"
+        },
+        {
+            name: "Touch of Y'Shaarj P3",
+            spellId: 0,
+            firstCast: 540,
+            cooldown: 35,
+            maxCasts: 5,
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["any_heal"],
+            icon: "👁️"
+        },
+        {
+            name: "Desecrate P3",
+            spellId: 0,
+            firstCast: 512,
+            cooldown: 42,
+            maxCasts: 5,
+            delay: -1,
+            eventDuration: 10,
+            requiredCDs: ["any_heal"],
+            icon: "🟫"
+        },
+        {
+            name: "Malice #1",
+            spellId: 0,
+            firstCast: 525,       // P3-spezifisch
+            cooldown: 30,
+            maxCasts: 6,
+            delay: -2,
+            eventDuration: 10,
+            requiredCDs: ["any_heal", "any_dr"],
+            icon: "💀"
+        },
+        {
+            name: "Call Bombardment",
+            spellId: 0,
+            firstCast: 530,
+            cooldown: 15,
+            maxCasts: 8,
+            delay: 0,
+            eventDuration: 13,
+            requiredCDs: ["movement", "any_dr"],
+            icon: "💣"
+        },
+        {
+            name: "Fixate (P3)",
+            spellId: 0,
+            firstCast: 545,
+            cooldown: 45,
+            maxCasts: 4,
+            delay: -1,
+            eventDuration: 10,
+            requiredCDs: ["movement"],
+            icon: "🎯"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // PHASE 4 (Execute, Bloodlust)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Phase 4 Start (Execute)",
+            spellId: 0,
+            firstCast: 720,       // ~12 Min, je nach DPS
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 60,
+            requiredCDs: ["bloodlust", "any_dr", "any_heal", "additional_surv"],
+            icon: "🔥"
+        }
+    ],
+    
+    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: GARROSH_*)
+    // - Phase-Übergänge: GARROSH_P2/P3/P4
+    // - Intermissions: GARROSH_INTERMISSION
+    // - Annihilate hat 3 separate Trigger I1/I2/I3
+    // - Desecrate hat 3 phase-spezifische Trigger P1/P2/P3
+    // - Whirling/Touch haben P2/P3 Varianten
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+    triggerMap: {
+        // Phase 1
+        "Warbringers (Add-Welle #1)":          "GARROSH_WARBRINGERS",
+        "Hellscream's Warsong #1":              "GARROSH_HELLSCREAM_WARSONG",
+        "Desecrate P1":                         "GARROSH_DESECRATE_P1",
+        "Farseer Wolf Riders":                  "GARROSH_SHAMANS",
+        "Siege Engineers":                      "GARROSH_ENGINEERS",
+        "Power Iron Star":                      "GARROSH_IRON_STAR",
+        "Manifest Rage (Adds)":                 "GARROSH_MANIFEST_RAGE",
+        
+        // Intermission #1
+        "Intermission #1 Start":                "GARROSH_INTERMISSION",
+        "Annihilate I1":                        "GARROSH_ANNIHILATE_I1",
+        "Annihilate I2":                        "GARROSH_ANNIHILATE_I2",
+        "Annihilate I3":                        "GARROSH_ANNIHILATE_I3",
+        
+        // Phase 2
+        "Phase 2 Start":                        "GARROSH_P2",
+        "Whirling Corruption P2 #1":            "GARROSH_WHIRLING_P2",
+        "Touch of Y'Shaarj P2":                 "GARROSH_TOUCH_P2",
+        "Desecrate P2":                         "GARROSH_DESECRATE_P2",
+        
+        // Intermission #2
+        "Intermission #2 Start":                "GARROSH_DESPAIR_P2",
+        
+        // Phase 3
+        "Phase 3 Start":                        "GARROSH_P3",
+        "Whirling Corruption P3 #1":            "GARROSH_WHIRLING_P3",
+        "Touch of Y'Shaarj P3":                 "GARROSH_TOUCH_P3",
+        "Desecrate P3":                         "GARROSH_DESECRATE_P3",
+        "Malice #1":                            "GARROSH_MALICE",
+        "Call Bombardment":                     "GARROSH_BOMBARDMENT",
+        "Fixate (P3)":                          "GARROSH_FIXATE",
+        
+        // Phase 4
+        "Phase 4 Start (Execute)":              "GARROSH_P4"
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EVENT-MANAGER HINWEISE
+     ════════════════════════════════════════════════════════════════════
+     
+     ENDBOSS-WARNUNG: Dies ist der komplexeste Boss-Encounter in SoO.
+     Die hier angegebenen Werte sind grobe Schätzungen — nach erstem 
+     Kill MUSS sehr sorgfältig kalibriert werden!
+     
+     KRITISCHE PHASEN-ÜBERGÄNGE:
+     
+     Phase 1 → Intermission #1 (~180s):
+     - Garrosh casted Annihilate (3x I1, I2, I3)
+     - Spieler werden in Realm of Y'Shaarj gezogen
+     - Heavy Damage durch Y'Shaarj's Despair
+     
+     Phase 2 → Intermission #2 (~440s):
+     - Zweite Annihilate-Phase
+     - Y'Shaarj's Protection aktiviert
+     
+     Phase 3 (~502-720s):
+     - SCHWERSTE PHASE - viele parallele Mechaniken:
+       * Whirling Corruption (Heavy AoE)
+       * Touch of Y'Shaarj (Tank/Heal)
+       * Malice (Massive Damage)
+       * Bombardment (Movement)
+       * Fixate (Run-Mechanik)
+     
+     Phase 4 (Execute, ~720s+):
+     - Bloodlust hier!
+     - Schneller Push zum Kill
+     
+     KALIBRIERUNG NACH ERSTEM KILL:
+     
+     Aus eurer ersten Garrosh-WCL:
+     1. Wann startet Intermission #1? → "Intermission #1 Start" firstCast
+     2. Wann startet Phase 2? → "Phase 2 Start" firstCast
+     3. Wann startet Intermission #2? → "Intermission #2 Start" firstCast
+     4. Wann startet Phase 3? → "Phase 3 Start" firstCast (ENTSCHEIDEND!)
+     5. Wann startet Phase 4? → "Phase 4 Start" firstCast (Bloodlust!)
+     
+     Phase 3 ist die längste/schwerste Phase — mehrere Mechaniken
+     überlagern sich. Wenn euer Plan dort nicht stimmt, verliert ihr
+     wahrscheinlich Spieler.
+     
+     STRATEGIE-NOTIZEN:
+     
+     Manifest Rage (P1):
+     - Boss casted bei 100 Energy
+     - Ein Iron Star muss in ihn gekitet werden um den Cast zu unterbrechen
+     - Sonst spawnen Adds die schwer zu handeln sind
+     
+     Whirling Corruption:
+     - Empowered Whirling Adds spawnen (markieren!)
+     - Müssen einzeln gehandelt werden
+     - In Phase 3 noch wichtiger
+     
+     Bombardment in Phase 3:
+     - Kommt alle 15s
+     - Spieler müssen aus Bombardement-Zone raus
+     - Clump Check 3s vor Bombardment - Stack/Spread!
+     
+     Annihilate-Casts:
+     - 3 Casts pro Intermission (I1, I2, I3)
+     - JEDER Cast muss überlebt werden
+     - Personal-Defensives + Heal-CDs gestaffelt einsetzen
+     
+     MYTHIC-ZUSATZ:
+     
+     Auf Mythic gibt's zusätzliche Mechaniken:
+     - Iron Star auf Mythic = 10s Bar (nicht 15)
+     - Mind Control auf Mythic
+     - Empowered Whirling auf Mythic
+     
+     Diese müssen als Custom-Events im Event-Manager hinzugefügt werden.
+     
+     BERSERK-TIMER: 1500s (25 Minuten!)
+     Längster Berserk im ganzen Raid → DPS-Race ist nicht das Problem,
+     sondern Mechaniken überleben.
+     
+     EMPFEHLUNG:
+     Vor dem ersten ernsthaften Pull:
+     1. Plan auf konservative Schätzungen setzen
+     2. Erste 3-5 Pulls beobachten und Logs sammeln
+     3. firstCast-Werte aller Phase-Übergänge anpassen
+     4. Phase 3 Events besonders genau kalibrieren
+     5. Bloodlust-Zeitpunkt finalisieren
+     ════════════════════════════════════════════════════════════════════ -->
+
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -236,21 +764,55 @@
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "GARROSH_ENC_START", text: "Kampfbeginn" },
-            { val: "GARROSH_P2_START", text: "Phase 2" },
-            { val: "GARROSH_P3_START", text: "Phase 3 (100 Energie)" },
-            { val: "GARROSH_P4_START", text: "Phase 4 (Heroisch)" },
-            { val: "GARROSH_WHIRL", text: "Wirbelnde Verderbnis #" },
-            { val: "GARROSH_MC", text: "Gedankenkontrolle #" },
-            { val: "GARROSH_INTERMISSION", text: "Intermission (Reich von Y'Shaarj)" },
-            { val: "GARROSH_MALICE", text: "Bösartigkeit (HC)" }
+            { val: "GARROSH_ENC_START",          text: "Kampfbeginn" },
+            { val: "GARROSH_HEALTH",             text: "Gesundheit % (Wähle NPC)" },
+            
+            // Phase Triggers
+            { val: "GARROSH_P2",                 text: "Phase 2 Start" },
+            { val: "GARROSH_P3",                 text: "Phase 3 Start" },
+            { val: "GARROSH_P4",                 text: "Phase 4 Start (Execute)" },
+            { val: "GARROSH_INTERMISSION",       text: "Intermission Start" },
+            { val: "GARROSH_DESPAIR_P2",         text: "Y'Shaarj Verzweiflung (Realm P2)" },
+            { val: "GARROSH_DESPAIR_P3",         text: "Y'Shaarj Schutz (P3)" },
+            
+            // Phase 1
+            { val: "GARROSH_HELLSCREAM_WARSONG", text: "Höllschreis Schlachtgesang" },
+            { val: "GARROSH_WARBRINGERS",        text: "Kriegsbringer Welle" },
+            { val: "GARROSH_SHAMANS",            text: "Fernsicht-Wolfreiter" },
+            { val: "GARROSH_ENGINEERS",          text: "Belagerungstechniker" },
+            { val: "GARROSH_IRON_STAR",          text: "Eisenstern (Power)" },
+            { val: "GARROSH_DESECRATE_P1",       text: "Schänden P1" },
+            { val: "GARROSH_MANIFEST_RAGE",      text: "Manifestierte Wut (Adds)" },
+            
+            // Annihilate
+            { val: "GARROSH_ANNIHILATE_I1",      text: "Vernichten I1" },
+            { val: "GARROSH_ANNIHILATE_I2",      text: "Vernichten I2" },
+            { val: "GARROSH_ANNIHILATE_I3",      text: "Vernichten I3" },
+            
+            // Phase 2
+            { val: "GARROSH_WHIRLING_P2",        text: "Wirbelnde Verderbnis P2" },
+            { val: "GARROSH_TOUCH_P2",           text: "Berührung von Y'Shaarj P2" },
+            { val: "GARROSH_DESECRATE_P2",       text: "Schänden P2" },
+            
+            // Phase 3
+            { val: "GARROSH_WHIRLING_P3",        text: "Wirbelnde Verderbnis P3" },
+            { val: "GARROSH_TOUCH_P3",           text: "Berührung von Y'Shaarj P3" },
+            { val: "GARROSH_DESECRATE_P3",       text: "Schänden P3" },
+            { val: "GARROSH_MALICE",             text: "Bösartigkeit" },
+            { val: "GARROSH_BOMBARDMENT",        text: "Bombardement" },
+            { val: "GARROSH_CLUMP_CHECK",        text: "Cluster-Prüfung" },
+            { val: "GARROSH_FIXATE",             text: "Fixierung" }
         ];
-
+        
         const NPC_OPTIONS = [
             "Garrosh Höllschrei",
-            "Belagerungsingenieur",
-            "Diener von Y'Shaarj",
-            "Manifestation von Y'Shaarj"
+            "Y'Shaarj",
+            "Verkörperung der Wut",
+            "Wirbelnde Verderbnis",
+            "Empowered Wirbelnde Verderbnis",
+            "Kor'kron Kriegsbringer",
+            "Kor'kron Fernsicht",
+            "Kor'kron Belagerungstechniker"
         ];
         
         const container = document.getElementById('garrosh-planner-container');

@@ -157,6 +157,432 @@
     </div>
 </section>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     SIEGECRAFTER BLACKFUSE AUTO-PLANNER
+     ════════════════════════════════════════════════════════════════════
+     
+     Mechaniken-Übersicht (aus DBM + BigWigs konsolidiert):
+     
+     KAMPF-STRUKTUR:
+     - Boss steht im Boden, Spieler kämpfen auf 2 Plattformen:
+       1. Boss-Plattform: Tank, Melee, Heiler
+       2. Belt-Plattform: Belt-Team killt Items vom Fließband
+     
+     BOSS-MECHANIKEN (auf Boss-Plattform):
+     - Launch Sawblade: alle 10-15s (Sawblade fliegt zu zufälligem Spieler)
+     - Electrostatic Charge: alle 17-22s (Tank-Stack-Debuff)
+     - Protective Frenzy: bei jedem zerstörten Belt-Item (HP-basiert)
+     
+     SHREDDER-MECHANIKEN (alle 60s):
+     - Shredder Spawn → muss getötet werden
+     - Death From Above (16s nach Spawn): Tank-Mechanik
+     - Overload (Stacks 1-10): kontinuierlich, Healer-Druck
+     
+     BELT-MECHANIKEN (alle 40s, je nach Item):
+     - Crawler Mines: Soak-Mechanik
+     - Shockwave Missile: Heavy AoE
+     - Laser Turret: Fixate-Mechanik
+     - Electromagnet (Magnetic Crush): Heavy Raid-Damage
+     - Deathdealer Turret (Mythic): zusätzliche Mechanik
+     
+     MYTHIC-ZUSATZ:
+     - 5x Overcharge-Typen für Belt-Items (Mine/Missile/Turret/Electro/Laser)
+     - Overcharged Mines (mit Overcharge-Buff)
+     - Goro'dan Trash (Drillstorm)
+     
+     Berserk: 600s Heroic / 540s Mythic
+     
+     Werte konsolidiert aus:
+     - DBM SiegecrafterBlackfuse.lua (genaue CD-Werte, Overload-Stacks)
+     - BigWigs SiegecrafterBlackfuse.lua (Belt-Items, Phasen)
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!-- HTML-Block für siegecrafter-blackfuse.html -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            Plant automatisch Cooldown-Zuteilungen. Boss + Belt-Mechaniken parallel.
+            Hauptfokus: Magnetic Crush (Heavy AoE), Shockwave Missile, Shredder-Tank-Damage.
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline mit Tabelle -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Siegecrafter Blackfuse Auto-Planner Config ══════════════════════
+CD_AUTO_PLANNER.init({
+    id: 'siegecrafter-blackfuse',
+    name: 'Belagerungsbauer Schwarzfaust',
+    prefix: 'blackfuse',  // Container-Prefix in der Boss-HTML (blackfuse-planner-container)
+    
+    events: [
+        // ═══════════════════════════════════════════════════════
+        // BOSS-MECHANIKEN (kontinuierlich)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Electrostatic Charge (Tank Stack)",
+            spellId: 143385,
+            firstCast: 8,         // ~8s nach Pull
+            cooldown: 17,         // 17-22s CD
+            maxCasts: 25,         // sehr häufig (~25 in 600s)
+            delay: -1,
+            eventDuration: 60,    // 60s Stack-Debuff
+            requiredCDs: ["tank_external"],  // Tank bei höheren Stacks
+            icon: "⚡"
+        },
+        {
+            name: "Launch Sawblade #1",
+            spellId: 143265,
+            firstCast: 9,         // 9s nach Pull
+            cooldown: 12,         // 10-15s CD
+            maxCasts: 20,         // viele Casts
+            delay: 0,
+            eventDuration: 8,
+            requiredCDs: ["movement"],  // Speed-Boosts zum kiten
+            icon: "🪚"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // SHREDDER-MECHANIKEN (alle 60s)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Shredder #1 Spawn",
+            spellId: 144208,      // Death From Above (Shredder spell)
+            firstCast: 35,        // erster Shredder bei 35s
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["aoe_stun"],
+            icon: "🤖"
+        },
+        {
+            name: "Death From Above #1 (Tank)",
+            spellId: 144208,
+            firstCast: 51,        // 16s nach Shredder Spawn
+            cooldown: 41,         // 40-41s CD (DBM)
+            maxCasts: 3,          // ~3 Casts pro Shredder
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["tank_external", "any_dr"],  // Tank-CDs + Raid-DR
+            icon: "💥"
+        },
+        {
+            name: "Overload Stacks 5-10",
+            spellId: 145444,
+            firstCast: 60,        // ~7s nach Shredder
+            cooldown: 11,         // 11s zwischen Stacks
+            maxCasts: 6,          // Stacks 5-10 (kritisch)
+            delay: 0,
+            eventDuration: 11,
+            requiredCDs: ["any_heal"],  // Healer-Druck mit Stacks
+            icon: "📈"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // BELT-MECHANIKEN (alle 40s, je nach Item)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Assembly Line #1 (Item Spawn)",
+            spellId: 0,
+            firstCast: 40,        // erste Welle bei 40s
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 13,
+            requiredCDs: [],       // informativ
+            icon: "📦"
+        },
+        {
+            name: "Crawler Mines #1 (Soak)",
+            spellId: 145269,
+            firstCast: 53,        // ~13s nach Assembly Line
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["any_dr"],  // Raid-DR für Soaks
+            icon: "💣"
+        },
+        {
+            name: "Magnetic Crush #1 (Raid AOE)",
+            spellId: 144466,
+            firstCast: 130,       // ~3. Belt-Item, je nach Setup
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -3,            // CDs 3s vor Cast
+            eventDuration: 30,    // 30s aktiv
+            requiredCDs: ["any_dr", "any_heal"],  // Heavy Raid-Damage
+            icon: "🧲"
+        },
+        {
+            name: "Shockwave Missile #1 (Big AOE)",
+            spellId: 143641,
+            firstCast: 90,        // ~2. Belt-Item
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -3,
+            eventDuration: 10,
+            requiredCDs: ["any_dr"],  // Raid-DR
+            icon: "🚀"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // SHREDDER #2 (~95s)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Shredder #2 Spawn",
+            spellId: 144208,
+            firstCast: 95,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["aoe_stun"],
+            icon: "🤖"
+        },
+        {
+            name: "Death From Above #2 (Tank)",
+            spellId: 144208,
+            firstCast: 111,
+            cooldown: 41,
+            maxCasts: 3,
+            delay: -1,
+            eventDuration: 8,
+            requiredCDs: ["tank_external", "any_dr"],
+            icon: "💥"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // PROTECTIVE FRENZY (HP-basiert, nicht alle Items zerstört)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Protective Frenzy #1 (Heavy Damage)",
+            spellId: 145365,
+            firstCast: 180,       // ~3 Min, je nach Belt-Erfolg
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 10,    // 10s aktive Frenzy
+            requiredCDs: ["any_heal", "any_dr"],
+            icon: "🔥"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // BELT #2 + Magnetic Crush #2
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Magnetic Crush #2 (Raid AOE)",
+            spellId: 144466,
+            firstCast: 250,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -3,
+            eventDuration: 30,
+            requiredCDs: ["any_dr", "any_heal"],
+            icon: "🧲"
+        },
+        {
+            name: "Shockwave Missile #2",
+            spellId: 143641,
+            firstCast: 290,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -3,
+            eventDuration: 10,
+            requiredCDs: ["any_dr"],
+            icon: "🚀"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // EXECUTE-PHASE (Bloodlust)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Bloodlust (Execute)",
+            spellId: 0,
+            firstCast: 350,       // mittlere Phase, vor Berserk
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 40,
+            requiredCDs: ["bloodlust"],
+            icon: "⚡"
+        },
+        {
+            name: "Magnetic Crush #3 (Execute)",
+            spellId: 144466,
+            firstCast: 370,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -3,
+            eventDuration: 30,
+            requiredCDs: ["any_dr", "any_heal", "additional_surv"],
+            icon: "🧲"
+        },
+        
+        // ═══════════════════════════════════════════════════════
+        // MYTHIC: Overcharge-Mechaniken (optional)
+        // ═══════════════════════════════════════════════════════
+        
+        {
+            name: "Overcharge Mine (Mythic)",
+            spellId: 145774,
+            firstCast: 200,       // erste Overcharge ~200s (Mythic)
+            cooldown: 90,         // alle ~90s
+            maxCasts: 4,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["aoe_stun"],
+            icon: "💣"
+        },
+        {
+            name: "Overcharge Missile (Mythic)",
+            spellId: 145774,
+            firstCast: 290,
+            cooldown: 90,
+            maxCasts: 3,
+            delay: 0,
+            eventDuration: 15,
+            requiredCDs: ["any_dr"],
+            icon: "🚀"
+        }
+    ],
+    
+    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: BLACKFUSE_*)
+    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+    triggerMap: {
+        "Electrostatic Charge (Tank Stack)":     "BLACKFUSE_ELECTRO_STATIC",
+        "Launch Sawblade #1":                     "BLACKFUSE_SAWBLADE",
+        "Shredder #1 Spawn":                      "BLACKFUSE_SHREDDER",
+        "Shredder #2 Spawn":                      "BLACKFUSE_SHREDDER",
+        "Death From Above #1 (Tank)":             "BLACKFUSE_DEATH_FROM_ABOVE",
+        "Death From Above #2 (Tank)":             "BLACKFUSE_DEATH_FROM_ABOVE",
+        "Overload Stacks 5-10":                   "BLACKFUSE_OVERLOAD_5",  // Standard ab Stack 5
+        "Assembly Line #1 (Item Spawn)":          "BLACKFUSE_ASSEMBLY",
+        "Crawler Mines #1 (Soak)":                "BLACKFUSE_MINES",
+        "Magnetic Crush #1 (Raid AOE)":           "BLACKFUSE_MAGNETIC_CRUSH",
+        "Magnetic Crush #2 (Raid AOE)":           "BLACKFUSE_MAGNETIC_CRUSH",
+        "Magnetic Crush #3 (Execute)":            "BLACKFUSE_MAGNETIC_CRUSH",
+        "Shockwave Missile #1 (Big AOE)":         "BLACKFUSE_MISSILE",
+        "Shockwave Missile #2":                    "BLACKFUSE_MISSILE",
+        "Protective Frenzy #1 (Heavy Damage)":    "BLACKFUSE_PROTECTIVE_FRENZY",
+        "Bloodlust (Execute)":                     "BLACKFUSE_ENC_START",  // optional anpassbar
+        "Overcharge Mine (Mythic)":               "BLACKFUSE_OVERCHARGE_MINE",
+        "Overcharge Missile (Mythic)":            "BLACKFUSE_OVERCHARGE_MISSILE"
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EVENT-MANAGER HINWEISE
+     ════════════════════════════════════════════════════════════════════
+     
+     Im Event-Manager kannst du anpassen:
+     
+     - "Electrostatic Charge" feuert sehr oft (25+ Casts) — nicht jeder
+       Stack braucht Tank-CD. maxCasts deutlich reduzieren oder nur
+       hohe Stacks targetieren (manuell im Event-Manager).
+     
+     - "Launch Sawblade" hat Movement — Speed-Boosts zum kiten. Wenn euer
+       Raid die Sawblade anders handled (z.B. Tank-Soak), Kategorien leeren.
+     
+     - "Overload Stacks 5-10" nimmt nur die hohen Stacks (5+ ist gefährlich).
+       Stacks 1-4 sind harmlos, daher nicht modelliert.
+     
+     - "Assembly Line" ist informativ (kein CD nötig). Belt-Team killt Items.
+       Der eigentliche Damage kommt erst wenn Items aktiv werden.
+     
+     - "Magnetic Crush" + "Shockwave Missile" + "Crawler Mines" sind die
+       kritischen Belt-Items. Reihenfolge ist NICHT deterministisch — Boss
+       wählt zufällig. Standard-Setup hat sie zu plausiblen Zeiten.
+       Im Event-Manager nach erstem Pull anpassen.
+     
+     - "Protective Frenzy" ist HP-basiert (jedes 7. Items oder so) — die
+       firstCast-Schätzung von 180s ist grob. Anpassen nach erstem Kill.
+     
+     - "Mythic Overcharge" Events sind nur Mythic. Auf Heroic deaktivieren.
+     
+     KALIBRIERUNG NACH ERSTEM KILL:
+     
+     Aus eurer ersten Blackfuse-WCL:
+     1. Wann kommt 1. Magnetic Crush? → "Magnetic Crush #1" firstCast
+     2. Wann erste Protective Frenzy? → firstCast anpassen
+     3. Belt-Item-Reihenfolge? → triggerMap & firstCast der Belt-Events
+     4. Wann ist Execute-Phase? → Bloodlust firstCast
+     
+     STRATEGIE-NOTIZ:
+     
+     Belt-Items sollten in einer optimalen Reihenfolge zerstört werden:
+     1. Mines (sonst Soaker überfordert)
+     2. Laser (sonst Fixate-Spam)
+     3. Missile (sonst Raid-Damage)
+     4. Magnet (sonst Magnetic Crush)
+     
+     Wenn Items NICHT zerstört werden, aktivieren sie:
+     - Mine activated → kontinuierliche Crawler Mines
+     - Laser activated → kontinuierliche Laser Fixates
+     - Missile activated → kontinuierliche Shockwave Missiles
+     - Magnet activated → Magnetic Crush (10s aktiv pro Aktivierung!)
+     
+     OVERLOAD-MECHANIK:
+     
+     Shredder bekommt Overload-Stacks (1-10). Jeder Stack erhöht seine
+     Schadens-Output. Bei 10 Stacks = Wipe. Tank muss Shredder schnell
+     killen oder auf nächste Plattform werfen.
+     
+     Bei Stack 5+ wird's gefährlich → AoE-Stuns + Healer-CDs.
+     
+     MYTHIC-ZUSATZ:
+     
+     Auf Mythic gibt es 5 Overcharge-Typen für Belt-Items:
+     - Overcharge Mine (zusätzliche kleine Adds)
+     - Overcharge Missile (verstärkte Missiles)
+     - Overcharge Turret (Deathdealer Turret)
+     - Overcharge Electro (verstärkter Magnet)
+     - Overcharge Laser (verstärkter Laser)
+     
+     Alle 90s eine zufällige Overcharge → Standard-Setup hat 2 Beispiele.
+     Im Event-Manager weitere als Custom-Events hinzufügen.
+     ════════════════════════════════════════════════════════════════════ -->
+
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -234,18 +660,43 @@
     window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
         
         const TRIGGER_OPTIONS = [
-            { val: "BLACKFUSE_ENC_START", text: "Kampfbeginn" },
-            { val: "BLACKFUSE_BELT_WAVE", text: "Waffen-Welle #" },
-            { val: "BLACKFUSE_SHREDDER", text: "Schredder Spawnt" },
-            { val: "BLACKFUSE_MAGNET", text: "Elektromagnet Aktiv" },
-            { val: "BLACKFUSE_MINES", text: "Minen auf Plattform" },
-            { val: "BLACKFUSE_OVERLOAD", text: "Schredder: Überladung" }
+            { val: "BLACKFUSE_ENC_START",            text: "Kampfbeginn" },
+            { val: "BLACKFUSE_HEALTH",               text: "Gesundheit % (Wähle NPC)" },
+            { val: "BLACKFUSE_PROTECTIVE_FRENZY",    text: "Schützender Wahn (Heavy Damage)" },
+            { val: "BLACKFUSE_ELECTRO_STATIC",       text: "Elektrostatische Aufladung (Tank)" },
+            { val: "BLACKFUSE_SAWBLADE",             text: "Sägeblatt schleudern" },
+            { val: "BLACKFUSE_SHREDDER",             text: "Schredder Spawn" },
+            { val: "BLACKFUSE_MINES",                text: "Krabbel-Minen (Soak)" },
+            { val: "BLACKFUSE_DEATH_FROM_ABOVE",     text: "Tod von Oben (Tank)" },
+            { val: "BLACKFUSE_ASSEMBLY",             text: "Fließband Item-Welle" },
+            { val: "BLACKFUSE_MAGNETIC_CRUSH",       text: "Magnetisches Zerquetschen (Raid AOE)" },
+            { val: "BLACKFUSE_MISSILE",              text: "Schockwellen-Rakete" },
+            { val: "BLACKFUSE_OVERCHARGE_MINE",      text: "Überladen: Mine (Mythic)" },
+            { val: "BLACKFUSE_OVERCHARGE_MISSILE",   text: "Überladen: Rakete (Mythic)" },
+            { val: "BLACKFUSE_OVERCHARGE_TURRET",    text: "Überladen: Geschütz (Mythic)" },
+            { val: "BLACKFUSE_OVERCHARGE_ELECTRO",   text: "Überladen: Magnet (Mythic)" },
+            { val: "BLACKFUSE_OVERCHARGE_LASER",     text: "Überladen: Laser (Mythic)" },
+            { val: "BLACKFUSE_OVERLOAD_1",           text: "Überlastung Stack 1" },
+            { val: "BLACKFUSE_OVERLOAD_2",           text: "Überlastung Stack 2" },
+            { val: "BLACKFUSE_OVERLOAD_3",           text: "Überlastung Stack 3" },
+            { val: "BLACKFUSE_OVERLOAD_4",           text: "Überlastung Stack 4" },
+            { val: "BLACKFUSE_OVERLOAD_5",           text: "Überlastung Stack 5 (Gefahr!)" },
+            { val: "BLACKFUSE_OVERLOAD_6",           text: "Überlastung Stack 6" },
+            { val: "BLACKFUSE_OVERLOAD_7",           text: "Überlastung Stack 7" },
+            { val: "BLACKFUSE_OVERLOAD_8",           text: "Überlastung Stack 8" },
+            { val: "BLACKFUSE_OVERLOAD_9",           text: "Überlastung Stack 9" },
+            { val: "BLACKFUSE_OVERLOAD_10",          text: "Überlastung Stack 10 (Wipe!)" }
         ];
-
+        
         const NPC_OPTIONS = [
-            "Belagerungsschmied Rußschmied",
+            "Belagerungsbauer Schwarzfaust",
             "Automatischer Schredder",
-            "Krabblermine"
+            "Aktivierter Raketenwerfer",
+            "Aktivierte Krabbelmine",
+            "Aktiviertes Lasergeschütz",
+            "Aktivierter Elektromagnet",
+            "Aktiviertes Todbringergeschütz",
+            "Goro'dan"
         ];
         
         const container = document.getElementById('blackfuse-planner-container');
