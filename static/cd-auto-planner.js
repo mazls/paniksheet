@@ -862,6 +862,10 @@ window.CD_AUTO_PLANNER = (function() {
         assignments = autoAssign(timeline);
         renderTimeline(assignments);
         renderEventManager();
+        // Manager-Schutz erneut anwenden (neu erzeugte Felder)
+        if (typeof window._autoPlannerApplyProtection === 'function') {
+            window._autoPlannerApplyProtection();
+        }
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -1301,6 +1305,10 @@ window.CD_AUTO_PLANNER = (function() {
     // ══════════════════════════════════════════════════════════════
 
     async function exportToPlanner() {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
         if (!assignments.length) return window.showModal && window.showModal("Erst Auto-Assign ausführen!");
         var container = document.querySelector('[id$="-planner-container"]');
         if (!container) return window.showModal && window.showModal("CD-Planer nicht gefunden.");
@@ -1451,6 +1459,10 @@ window.CD_AUTO_PLANNER = (function() {
     // ══════════════════════════════════════════════════════════════
 
     async function savePlan() {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
         if (!firebaseRef) return;
         try {
             await firebaseRef.setDoc(
@@ -1493,6 +1505,10 @@ window.CD_AUTO_PLANNER = (function() {
     }
 
     async function saveCategories() {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
         if (!firebaseRef) return;
         try {
             await firebaseRef.setDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", "_cd-categories"), { categories: categories }, { merge: false });
@@ -1839,9 +1855,15 @@ window.CD_AUTO_PLANNER = (function() {
         var modal = document.createElement('div');
         modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:700px;max-height:80vh;overflow-y:auto;width:90%;';
 
-        var existingIds = new Set(categories[catKey].spells.map(function(s) { return String(s.spellId); }));
+        // Zähle wie oft jeder Spell bereits in der Kategorie ist (für Anzeige)
+        var existingCounts = {};
+        categories[catKey].spells.forEach(function(s) {
+            var sid = String(s.spellId);
+            existingCounts[sid] = (existingCounts[sid] || 0) + 1;
+        });
+        // Alle Spells aus der DB anzeigen — Duplikate explizit erlaubt für spec-spezifische Prio
         var availableCDs = cooldownsDB.filter(function(cd) {
-            return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 && !existingIds.has(String(cd.spellId));
+            return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0;
         });
 
         // Gruppiere nach Klasse
@@ -1856,8 +1878,14 @@ window.CD_AUTO_PLANNER = (function() {
             var cls = entry[0], cds = entry[1];
             var color = getClassColor(cls);
             var rows = cds.map(function(cd) {
+                var sid = String(cd.spellId);
+                var count = existingCounts[sid] || 0;
+                var badge = count > 0
+                    ? '<span class="text-[9px] bg-amber-700/60 text-amber-200 px-1.5 py-0.5 rounded font-mono" title="Bereits ' + count + 'x in dieser Kategorie">×' + count + '</span>'
+                    : '';
                 return '<div class="picker-row flex items-center gap-2 text-[11px] hover:bg-slate-700/40 p-1 rounded cursor-pointer" data-spellid="' + cd.spellId + '">'
                     + '<span style="color:' + color + ';" class="flex-1">' + cd.name + '</span>'
+                    + badge
                     + '<span class="text-gray-500 font-mono text-[9px]">' + cd.spellId + '</span>'
                     + '</div>';
             }).join('');
@@ -1866,7 +1894,8 @@ window.CD_AUTO_PLANNER = (function() {
                 + rows + '</div>';
         }).join('');
 
-        modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-3">Spell zu "' + categories[catKey].name + '" hinzufügen</h4>'
+        modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">Spell zu "' + categories[catKey].name + '" hinzufügen</h4>'
+            + '<div class="text-[11px] text-gray-400 mb-3">💡 Spells können <strong>mehrfach</strong> hinzugefügt werden — z.B. um denselben Spell für unterschiedliche Specs mit eigener Priorität zu hinterlegen. <span class="text-amber-300">×N</span> zeigt wie oft schon vorhanden.</div>'
             + '<input type="text" id="picker-search" placeholder="Suchen..." class="w-full bg-slate-900 text-white px-3 py-2 rounded mb-3 border border-slate-600">'
             + '<div id="picker-list">' + classSections + '</div>'
             + '<div class="flex justify-end mt-3"><button id="picker-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button></div>';
@@ -1914,6 +1943,10 @@ window.CD_AUTO_PLANNER = (function() {
     // ══════════════════════════════════════════════════════════════
 
     function clearPlan() {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
         manualOverrides = {};
         eventOverrides = {};
         customEvents = [];
@@ -1958,11 +1991,112 @@ window.CD_AUTO_PLANNER = (function() {
             renderEventManager();
         }
 
-        document.getElementById('btn-auto-assign').addEventListener('click', runAutoAssign);
-        document.getElementById('btn-export-to-planner').addEventListener('click', exportToPlanner);
-        document.getElementById('btn-save-auto-plan').addEventListener('click', savePlan);
-        document.getElementById('btn-save-categories').addEventListener('click', saveCategories);
+        // ══════════════════════════════════════════════════════════
+        // MANAGER-SCHUTZ — Nur Manager können Auto-Plan modifizieren
+        // ══════════════════════════════════════════════════════════
+        function applyManagerProtection() {
+            var isManager = !!window.isManager;
+            
+            // 1. Aktions-Buttons komplett verstecken bei Nicht-Manager
+            var managerOnlyButtons = [
+                'btn-auto-assign',
+                'btn-export-to-planner',
+                'btn-save-auto-plan',
+                'btn-save-categories',
+                'btn-clear-auto'
+            ];
+            managerOnlyButtons.forEach(function(btnId) {
+                var btn = document.getElementById(btnId);
+                if (btn) btn.style.display = isManager ? '' : 'none';
+            });
+            
+            // Hinweis-Banner für Nicht-Manager (statt leerer Button-Reihe)
+            var hint = document.getElementById('auto-planner-readonly-hint');
+            if (!isManager && !hint) {
+                var statusEl = document.getElementById('auto-planner-status');
+                if (statusEl) {
+                    hint = document.createElement('div');
+                    hint.id = 'auto-planner-readonly-hint';
+                    hint.className = 'text-xs italic mb-3 p-2 rounded bg-slate-700/40 border border-slate-600/50 text-gray-400';
+                    hint.innerHTML = '🔒 <strong>Nur lesen</strong> — Änderungen am Auto-Plan können nur Gildenräte vornehmen.';
+                    statusEl.parentNode.insertBefore(hint, statusEl);
+                }
+            } else if (isManager && hint) {
+                hint.remove();
+            }
+            
+            // 2. Timeline-Tabelle: alle Selects/Inputs deaktivieren
+            var tbody = document.getElementById('auto-planner-tbody');
+            if (tbody) {
+                tbody.querySelectorAll('select, input, button').forEach(function(el) {
+                    el.disabled = !isManager;
+                });
+            }
+            
+            // 3. Event-Manager-Bereich: alle Steuer-Elemente deaktivieren
+            var eventArea = document.getElementById('auto-planner-events');
+            if (eventArea) {
+                eventArea.querySelectorAll('input, button, select').forEach(function(el) {
+                    el.disabled = !isManager;
+                });
+            }
+            
+            // 4. CD-Kategorien-Editor: gar nicht erst anzeigen
+            var catAdmin = document.getElementById('cd-categories-admin');
+            if (catAdmin) catAdmin.style.display = isManager ? '' : 'none';
+        }
+        
+        // Initial anwenden
+        applyManagerProtection();
+        
+        // Bei Re-Renders (z.B. nach Auto-Assign) erneut anwenden
+        window._autoPlannerApplyProtection = applyManagerProtection;
+        
+        // Polling: bei isManager-Status-Wechsel (Login/Logout) erneut anwenden
+        var lastManagerState = !!window.isManager;
+        var managerWatcher = setInterval(function() {
+            var current = !!window.isManager;
+            if (current !== lastManagerState) {
+                lastManagerState = current;
+                applyManagerProtection();
+            }
+        }, 1500);
+        // Stop bei Page-Unload (verhindert Memory Leaks)
+        window.addEventListener('beforeunload', function() { clearInterval(managerWatcher); });
+
+        document.getElementById('btn-auto-assign').addEventListener('click', function() {
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
+            runAutoAssign();
+        });
+        document.getElementById('btn-export-to-planner').addEventListener('click', function() {
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
+            exportToPlanner();
+        });
+        document.getElementById('btn-save-auto-plan').addEventListener('click', function() {
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
+            savePlan();
+        });
+        document.getElementById('btn-save-categories').addEventListener('click', function() {
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
+            saveCategories();
+        });
         document.getElementById('btn-clear-auto').addEventListener('click', function() {
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
             if (typeof window.showModal === 'function') {
                 var r = window.showModal("Auto-Plan leeren?", true);
                 if (r && typeof r.then === 'function') { r.then(function(ok) { if (ok) clearPlan(); }); }
