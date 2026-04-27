@@ -51,7 +51,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Verteidiger (Tanks)</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
                     <li>Immerseus ist stationär und wendet sich automatisch dem Bedrohungsziel zu.</li>
                     <li><strong class="text-red-400">Ätzender Schlag:</strong> Trifft kegelförmig nach vorne und hinterlässt einen Schwächungszauber. Zwingender Wechsel nach jedem Schlag!</li>
@@ -59,10 +59,10 @@
                 </ul>
             </div>
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ Schadensausteiler & Heiler</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
                     <li><strong>Phase 1:</strong> Dem <strong class="text-purple-400">Wirbel</strong> (Wasserstrahl) unbedingt ausweichen! Er dreht sich im oder gegen den Uhrzeigersinn.</li>
-                    <li><strong>Phase 2 (Schadensausteiler):</strong> Schwarze <strong class="text-gray-400">Sha-Pfützen</strong> zerstören, bevor sie die Mitte erreichen.</li>
+                    <li><strong>Phase 2 (DPS):</strong> Schwarze <strong class="text-gray-400">Sha-Pfützen</strong> zerstören, bevor sie die Mitte erreichen.</li>
                     <li><strong>Phase 2 (Heiler):</strong> Blaue <strong class="text-blue-400">Kontaminierte Pfützen</strong> auf 100% Gesundheit heilen.</li>
                 </ul>
             </div>
@@ -73,11 +73,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                 <div>
                     <strong class="text-emerald-200">Klassen mit Verlangsamung:</strong><br>
-                    Frostmagier, Jäger und Hexenmeister sind in Phase 2 enorm wichtig, um die schwarzen Pfützen aufzuhalten.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Klassen mit hoher Mobilität:</strong><br>
-                    Schurken und Mönche sollten sich in Phase 2 um die am weitesten entfernten schwarzen Pfützen kümmern.
+                    Magier, Jäger, Schurken und Hexenmeister sind in Phase 2 enorm wichtig, um die schwarzen Pfützen zu verlangsamen.
                 </div>
                 <div>
                     <strong class="text-emerald-200">Heiler:</strong><br>
@@ -285,16 +281,17 @@
      ═══════════════════════════════════════════════════════════ -->
 <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        ⚡ CD Auto-Planer
+        🤖 Auto-CD-Planer
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
         <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
-        <div class="flex flex-wrap gap-3 mb-4">
-            <button id="btn-auto-assign" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded text-sm border border-emerald-400">⚡ Auto-Assign</button>
-            <button id="btn-export-to-planner" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm border border-blue-400">📋 → CD Planer übertragen</button>
-            <button id="btn-clear-auto" class="bg-red-700 hover:bg-red-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-500">🗑 Leeren</button>
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
             <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
         </div>
         <details id="cd-categories-admin" class="mb-4 bg-slate-800 rounded-lg border border-slate-700" style="display:none;">
             <summary class="cursor-pointer p-3 text-sm font-bold text-yellow-400 hover:bg-slate-750 rounded-t-lg">⚙️ CD-Kategorien & Prioritäten</summary>

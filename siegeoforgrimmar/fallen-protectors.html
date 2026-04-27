@@ -51,15 +51,15 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Verteidiger</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tank</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
                     <li><strong class="text-red-400">Rook Steinzeh:</strong> Nutzt frontale Angriffe. Niemals in die Gruppe drehen. Bei seiner Spezialphase müssen die erscheinenden Begleiter schnell an sich gebunden werden.</li>
-                    <li><strong class="text-purple-400">He der Leisetreter:</strong> Fixiert regelmäßige Ziele und hinterlässt Gifte. Der aufbauende Schaden erfordert einen zügigen Wechsel zwischen den Verteidigern.</li>
-                    <li>Sun zartes Herz benötigt keinen direkten Verteidiger, muss aber unterbrochen werden.</li>
+                    <li><strong class="text-purple-400">He der Leisetreter:</strong> Fixiert regelmäßige Ziele und hinterlässt Gifte. Der aufbauende Schaden erfordert einen zügigen Wechsel zwischen den Tanks.</li>
+                    <li>Sun zartes Herz benötigt keinen direkten Tank, muss aber unterbrochen werden.</li>
                 </ul>
             </div>
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ Schadensausteiler & Heiler</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
                     <li><strong class="text-blue-400">Unterbrechungen:</strong> Das "Sha-Sengen" von Sun zartes Herz muss konsequent verhindert werden.</li>
                     <li><strong class="text-red-400">Unheil:</strong> Eine gewaltige Fähigkeit von Sun, die einen Großteil der Gesundheit des gesamten Schlachtzugs abzieht. Heiler müssen sofort reagieren.</li>
@@ -72,11 +72,11 @@
             <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                 <div>
-                    <strong class="text-emerald-200">Schadensausteiler (Nahkampf):</strong><br>
+                    <strong class="text-emerald-200">DPS (Nahkampf):</strong><br>
                     Kümmert euch vorrangig um die Unterbrechungs-Reihenfolge bei Sun zartes Herz. Eure kurzen Reaktionszeiten sind hier gefragt.
                 </div>
                 <div>
-                    <strong class="text-emerald-200">Schadensausteiler (Fernkampf):</strong><br>
+                    <strong class="text-emerald-200">DPS (Fernkampf):</strong><br>
                     Verteilt euch weiträumig, um den Schaden durch das "Verderbte Gebräu" auf einzelne Personen zu begrenzen.
                 </div>
                 <div>
@@ -102,7 +102,7 @@
 
             <div class="space-y-6">
                 <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Verteidiger-Zuteilung</h4>
+                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
                     <ul class="assignment-list">
                         <li><span>Rook Steinzeh:</span><select class="assignment-select" data-assignment-id="protectors-tank-rook"></select></li>
                         <li><span>He der Leisetreter:</span><select class="assignment-select" data-assignment-id="protectors-tank-he"></select></li>
@@ -197,16 +197,17 @@
 <!-- HTML-Sektion (Copy & Paste, nicht verändern) -->
 <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        ⚡ CD Auto-Planer
+        🤖 Auto-CD-Planer
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
         <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
-        <div class="flex flex-wrap gap-3 mb-4">
-            <button id="btn-auto-assign" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded text-sm border border-emerald-400">⚡ Auto-Assign</button>
-            <button id="btn-export-to-planner" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm border border-blue-400">📋 → CD Planer übertragen</button>
-            <button id="btn-clear-auto" class="bg-red-700 hover:bg-red-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-500">🗑 Leeren</button>
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
             <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
         </div>
         <details id="cd-categories-admin" class="mb-4 bg-slate-800 rounded-lg border border-slate-700" style="display:none;">
             <summary class="cursor-pointer p-3 text-sm font-bold text-yellow-400 hover:bg-slate-750 rounded-t-lg">⚙️ CD-Kategorien & Prioritäten</summary>
@@ -455,7 +456,7 @@ CD_AUTO_PLANNER.init({
             <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
                 <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Die Kontrahenten</h4>
                 <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-red-400">Vergeltende Stöße (Rook):</strong> Richtet in einem Bereich vor dem Ausführenden schweren Schaden an. Nur der fixierte Verteidiger darf hier stehen.</li>
+                    <li><strong class="text-red-400">Vergeltende Stöße (Rook):</strong> Richtet in einem Bereich vor dem Ausführenden schweren Schaden an. Nur der fixierte Tank darf hier stehen.</li>
                     <li><strong class="text-purple-400">Erdrosseln (He):</strong> Ein stetig tickender Schaden, der erst bei einer Spezialphase wieder entfernt wird. Erschwert den Kampf massiv, je länger er andauert.</li>
                     <li><strong class="text-cyan-400">Unheil (Sun):</strong> Zieht jedem Mitglied des Schlachtzugs exakt 30% der momentanen Gesundheit ab.</li>
                 </ul>
@@ -463,7 +464,7 @@ CD_AUTO_PLANNER.init({
             <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
                 <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Verzweifelte Maßnahmen (66% / 33%)</h4>
                 <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-gray-400">Rook:</strong> Ruft Manifestationen des Kummers, der Düsternis und der Pein. Diese müssen von Verteidigern rasch gebunden werden.</li>
+                    <li><strong class="text-gray-400">Rook:</strong> Ruft Manifestationen des Kummers, der Düsternis und der Pein. Diese müssen von Tanks rasch gebunden werden.</li>
                     <li><strong class="text-green-400">He:</strong> Beschwört das Zeichen der Qual. Der Träger dieses Zeichens erleidet massiven Schaden und muss es rechtzeitig an andere weitergeben.</li>
                     <li><strong class="text-yellow-400">Sun:</strong> Aktiviert die Dunkle Meditation. Der Schlachtzug nimmt fortlaufenden Schaden, kann diesen jedoch in der schützenden Kuppel reduzieren. Feinde außerhalb der Kuppel müssen zeitgleich eliminiert werden.</li>
                 </ul>

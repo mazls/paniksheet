@@ -51,18 +51,18 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Verteidiger</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tank</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Entfesselter Zorn:</strong> Die Hauptkreatur schlägt hart zu. Ein stetiger Wechsel zwischen den Verteidigern ist Pflicht, um die Schwächungseffekte gering zu halten.</li>
+                    <li><strong class="text-red-400">Entfesselter Zorn:</strong> Die Hauptkreatur schlägt hart zu. Ein stetiger Wechsel zwischen den Tanks ist Pflicht, um die Schwächungseffekte gering zu halten.</li>
                     <li><strong class="text-purple-400">Die Prüfung:</strong> In der Einzelprüfung müsst ihr einen großen Feind eine Minute lang überleben. Sammelt die fallengelassenen Kugeln ein, um den Schaden abzumildern.</li>
                 </ul>
             </div>
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ Schadensausteiler & Heiler</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
                     <li><strong class="text-blue-400">Blinder Hass:</strong> Ein gewaltiger Strahl, der sich langsam über die Plattform dreht. Diesem muss unter allen Umständen ausgewichen werden.</li>
                     <li><strong class="text-yellow-400">Reinigendes Licht (Heiler):</strong> In eurer Prüfung müsst ihr verbündete Kämpfer am Leben erhalten, während ihr feindliche Ziele besiegt.</li>
-                    <li><strong class="text-red-400">Restverderbnis (Schadensausteiler):</strong> Besiegte Feinde auf der Hauptplattform hinterlassen schwarze Kugeln. Nur Spieler, deren eigene Verderbnis auf null gesunken ist, dürfen diese aufsammeln.</li>
+                    <li><strong class="text-red-400">Restverderbnis (DPS):</strong> Besiegte Feinde auf der Hauptplattform hinterlassen schwarze Kugeln. Nur Spieler, deren eigene Verderbnis auf null gesunken ist, dürfen diese aufsammeln.</li>
                 </ul>
             </div>
         </div>
@@ -71,7 +71,7 @@
             <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                 <div>
-                    <strong class="text-emerald-200">Schadensausteiler mit hohem Anfangsschaden:</strong><br>
+                    <strong class="text-emerald-200">DPS mit hohem Anfangsschaden:</strong><br>
                     Sollten als Erste in die Prüfung geschickt werden, damit der gesamte Schlachtzug möglichst früh von ihrer maximalen Leistung profitiert.
                 </div>
                 <div>
@@ -79,8 +79,8 @@
                     Nutzt schnelle Fortbewegungsmittel, um rechtzeitig in die Lichtkugeln zu treten, wenn ihr für die Prüfung an der Reihe seid, und um dem "Blinden Hass" zu entkommen.
                 </div>
                 <div>
-                    <strong class="text-emerald-200">Verteidiger:</strong><br>
-                    Stimmt euren Wechsel genau mit den Prüfungsphasen ab. Der aktive Verteidiger darf die Ebene niemals verlassen.
+                    <strong class="text-emerald-200">Tanks:</strong><br>
+                    Stimmt euren Wechsel genau mit den Prüfungsphasen ab. Der aktive Tank darf die Ebene niemals verlassen.
                 </div>
                 <div>
                     <strong class="text-emerald-200">Alle Spieler:</strong><br>
@@ -101,10 +101,10 @@
 
             <div class="space-y-6">
                 <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Verteidiger-Zuteilung</h4>
+                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
                     <ul class="assignment-list">
-                        <li><span>Verteidiger 1 (Start & 1. Prüfung):</span><select class="assignment-select" data-assignment-id="amalgam-tank-1"></select></li>
-                        <li><span>Verteidiger 2 (Übernahme & 2. Prüfung):</span><select class="assignment-select" data-assignment-id="amalgam-tank-2"></select></li>
+                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="amalgam-tank-1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="amalgam-tank-2"></select></li>
                     </ul>
                 </div>
                 
@@ -449,7 +449,7 @@ CD_AUTO_PLANNER.init({
             <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
                 <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Erschaffene Feinde</h4>
                 <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-gray-400">Blinde Manifestation (Groß):</strong> Wird durch Schadensausteiler während ihrer Prüfung besiegt. Entsteht sie auf der Hauptplattform, wirkt sie Flächenschaden, der unbedingt verhindert werden muss.</li>
+                    <li><strong class="text-gray-400">Blinde Manifestation (Groß):</strong> Wird durch DPS während ihrer Prüfung besiegt. Entsteht sie auf der Hauptplattform, wirkt sie Flächenschaden, der unbedingt verhindert werden muss.</li>
                     <li><strong class="text-gray-400">Manifestation der Verderbnis (Klein):</strong> Wirkt schädliche Geschosse auf die Gruppe. Nach dem Sieg hinterlassen sie einen schwarzen Bereich, der von geläuterten Spielern absorbiert werden muss, um großen Schaden an allen Kämpfern zu verhindern.</li>
                 </ul>
             </div>
@@ -483,7 +483,7 @@ CD_AUTO_PLANNER.init({
         ];
 
         const NPC_OPTIONS = [
-            "Amalgam des Stolzes",
+            "Amalgam der Verderbnis",
             "Blinde Manifestation",
             "Manifestation der Verderbnis"
         ];
