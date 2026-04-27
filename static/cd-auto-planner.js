@@ -1427,7 +1427,7 @@ window.CD_AUTO_PLANNER = (function() {
         }
 
         if (window.updatePlannerSummary) setTimeout(window.updatePlannerSummary, 200);
-        var msg = exported + ' Zeilen exportiert (1 Firebase-Write)!';
+        var msg = exported + ' Zeilen exportiert!';
         if (skipped > 0) msg += '\n⚠ ' + skipped + ' CDs nicht im Dropdown.';
         if (window.showModal) window.showModal(msg);
     }

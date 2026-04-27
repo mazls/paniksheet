@@ -228,7 +228,13 @@
         border-color: var(--color-gold-border) !important;
     }
 }
+.auto-plan-select option {
+    background-color: #334155;
+}
 
+.auto-plan-select:focus {
+    background-color: #792904;
+}
 /* Leere Zeilen etwas ausgrauen (Optional, wenn Value leer ist - per JS schwer, aber CSS :empty geht nicht auf Values) */
 /* Workaround: Wir machen den Placeholder-Text grau */
 .assignment-select option[value=""] {
