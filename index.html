@@ -2340,6 +2340,567 @@ window.showPrompt = function(message, defaultValue = '') {
     });
 };
     // 3. Neuen Listener starten (Das ist der Code von vorhin, sicher verpackt)
+// ════════════════════════════════════════════════════════════════════════
+// ROSTER-PATCHES — Pro-Boss Override des Standard-Rosters
+// ════════════════════════════════════════════════════════════════════════
+// Patch-Schema:
+//   { "PlayerName": { class?:"Priest", spec?:"Discipline", role?:"healer", note?:"..." } }
+// Effektiver Roster = globalRoster | applied(bossPatches)
+// Patches überschreiben pro Spieler nur die Felder, die sie definieren.
+//
+// Storage: raid-tool-data/{bossId} enthält Feld _rosterPatches: { patches: {...}, editor, timestamp }
+window.RosterPatches = (function() {
+    let bossPatchesById = {};        // bossId → patches-object
+
+    function applyPatchObject(player, patch) {
+        if (!patch) return player;
+        const out = { ...player };
+        // class wird in unterschiedlichen Feldern gespeichert je nach Quelle
+        if (patch.class)  { out.class = patch.class; out.className = patch.class; }
+        if (patch.spec)   { out.spec = patch.spec; out.specName = patch.spec; out.specialization = patch.spec; }
+        if (patch.role) {
+            out.role = patch.role;
+            // roles[] ist die kanonische Form im Roster — überschreiben damit alle Filter konsistent matchen
+            out.roles = [patch.role];
+        }
+        // Marker zur Anzeige im UI
+        out._patched = true;
+        return out;
+    }
+
+    function buildEffectiveRoster(globalRoster, bossId) {
+        if (!Array.isArray(globalRoster)) return [];
+        const bossPatches = bossPatchesById[bossId] || {};
+        if (Object.keys(bossPatches).length === 0) return globalRoster;
+        return globalRoster.map(p => {
+            const name = p.name || p;
+            if (bossPatches[name]) {
+                return applyPatchObject({ ...p, name: name }, bossPatches[name]);
+            }
+            return p;
+        });
+    }
+
+    function setBossPatches(bossId, patches) {
+        bossPatchesById[bossId] = patches || {};
+    }
+
+    async function saveBossPatches(bossId, patches, firebaseTools, editorName) {
+        if (!firebaseTools) return;
+        const ref = firebaseTools.doc(firebaseTools.db, "raid-tool-data", bossId);
+        await firebaseTools.setDoc(ref, {
+            _rosterPatches: {
+                patches: patches,
+                editor: editorName || 'Unbekannt',
+                timestamp: new Date().toISOString()
+            }
+        }, { merge: true });
+    }
+
+    return {
+        setBossPatches,
+        buildEffectiveRoster,
+        saveBossPatches,
+        getBossPatches: (bossId) => ({ ...(bossPatchesById[bossId] || {}) })
+    };
+})();
+
+// ════════════════════════════════════════════════════════════════════════
+// ROSTER-PATCHES UI — Banner auf Boss-Seite + Modal-Editor
+// ════════════════════════════════════════════════════════════════════════
+
+// Klassen-/Spec-Definitionen für die Modal-Dropdowns (analog zu Sha-of-Pride)
+window.ROSTER_PATCH_SPECS = {
+    DEATHKNIGHT: ['Blood', 'Frost1', 'Unholy'],
+    DRUID: ['Balance', 'Feral', 'Guardian', 'Restoration'],
+    HUNTER: ['Beastmastery', 'Marksmanship', 'Survival'],
+    MAGE: ['Arcane', 'Fire', 'Frost'],
+    MONK: ['Brewmaster', 'Mistweaver', 'Windwalker'],
+    PALADIN: ['Holy1', 'Protection1', 'Retribution'],
+    PRIEST: ['Discipline', 'Holy', 'Shadow'],
+    ROGUE: ['Assassination', 'Combat', 'Subtlety'],
+    SHAMAN: ['Elemental', 'Enhancement', 'Restoration1'],
+    WARLOCK: ['Affliction', 'Demonology', 'Destruction'],
+    WARRIOR: ['Arms', 'Fury', 'Protection']
+};
+window.ROSTER_PATCH_CLASS_DISPLAY = {
+    DEATHKNIGHT: 'Todesritter', DRUID: 'Druide', HUNTER: 'Jäger',
+    MAGE: 'Magier', MONK: 'Mönch', PALADIN: 'Paladin',
+    PRIEST: 'Priester', ROGUE: 'Schurke', SHAMAN: 'Schamane',
+    WARLOCK: 'Hexenmeister', WARRIOR: 'Krieger'
+};
+
+window.injectRosterPatchBanner = function(bossId) {
+    console.log('[RosterPatches] injectRosterPatchBanner called for', bossId);
+    // Banner wird in den Boss-Page-Container ganz oben eingefügt
+    const contentContainer = document.getElementById('content-container') || document.querySelector('main');
+    if (!contentContainer) {
+        console.warn('[RosterPatches] content-container nicht gefunden');
+        return;
+    }
+    
+    // Falls schon ein Banner existiert, entfernen
+    const existing = document.getElementById('roster-patch-banner');
+    if (existing) existing.remove();
+    
+    const banner = document.createElement('div');
+    banner.id = 'roster-patch-banner';
+    banner.className = 'mb-4 bg-slate-800/80 border border-purple-700/40 rounded-lg p-3 text-sm';
+    banner.dataset.bossId = bossId;
+    
+    contentContainer.insertBefore(banner, contentContainer.firstChild);
+    console.log('[RosterPatches] Banner eingefügt in #content-container');
+    window.updateRosterPatchBanner(bossId);
+};
+
+window.updateRosterPatchBanner = function(bossId) {
+    const banner = document.getElementById('roster-patch-banner');
+    if (!banner) return;
+    if (banner.dataset.bossId !== bossId) return;  // veraltetes Banner, ignorieren
+    
+    const bossPatches = window.RosterPatches.getBossPatches(bossId);
+    const totalCount = Object.keys(bossPatches).length;
+    
+    let html = `
+        <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-purple-300 font-bold flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                Roster-Anpassungen
+            </span>
+    `;
+    
+    if (totalCount === 0) {
+        html += `<span class="text-gray-400 text-xs">- keine aktiv (Standard-Roster wird verwendet)</span>`;
+    } else {
+        Object.entries(bossPatches).forEach(([name, patch]) => {
+            const summary = formatPatchSummary(patch);
+            html += `<span class="inline-flex items-center gap-1 text-xs bg-purple-900/40 border border-purple-700 rounded px-2 py-0.5">
+                <span class="text-white">${name}</span>
+                <span class="text-purple-200">→ ${summary}</span>
+            </span>`;
+        });
+    }
+    
+    html += `
+            <button id="roster-patch-banner-edit" class="ml-auto text-xs bg-purple-700 hover:bg-purple-800 disabled:opacity-50 disabled:cursor-not-allowed text-white py-1 px-3 rounded">
+                ${totalCount > 0 ? '✎ Bearbeiten' : '+ Patch hinzufügen'}
+            </button>
+        </div>
+    `;
+    
+    banner.innerHTML = html;
+    
+    const editBtn = document.getElementById('roster-patch-banner-edit');
+    if (editBtn) {
+        editBtn.disabled = !window.isManager;
+        editBtn.addEventListener('click', () => window.openRosterPatchModal(bossId));
+    }
+};
+
+function formatPatchSummary(patch) {
+    if (!patch) return '';
+    const parts = [];
+    if (patch.class) parts.push(window.ROSTER_PATCH_CLASS_DISPLAY[patch.class.toUpperCase()] || patch.class);
+    if (patch.spec)  parts.push(patch.spec.replace(/1$/, ''));
+    if (patch.role)  parts.push(`[${patch.role}]`);
+    return parts.length ? parts.join(' ') : '(leer)';
+}
+
+// ── Modal-Editor ──
+window.openRosterPatchModal = function(bossId) {
+    if (!window.isManager) return window.showModal && window.showModal('Nur Gildenräte können Patches editieren.');
+    
+    // Vorhandenes Modal entfernen
+    const existing = document.getElementById('roster-patch-modal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'roster-patch-modal';
+    modal.className = 'fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4';
+    modal.innerHTML = `
+        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-700">
+                <h3 class="text-lg font-bold text-purple-300">Roster-Anpassungen für diesen Boss</h3>
+                <button id="rp-close" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div class="mb-3 text-xs text-gray-400">
+                Patches überschreiben den Standard-Roster nur für diesen einen Boss.
+                Du kannst Klasse, Spec oder Rolle einzeln ändern - alle anderen Bosse bleiben unberührt.
+            </div>
+            
+            <ul id="rp-boss-list" class="space-y-1 mb-3"></ul>
+            <button id="rp-add-boss" class="text-xs bg-purple-700 hover:bg-purple-800 text-white py-1.5 px-3 rounded">+ Patch hinzufügen</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    function renderList() {
+        const bossPatches = window.RosterPatches.getBossPatches(bossId);
+        document.getElementById('rp-boss-list').innerHTML = renderPatchList(bossPatches);
+        
+        // Click-Handler für Edit/Del
+        modal.querySelectorAll('.rp-edit').forEach(b => b.addEventListener('click', () => {
+            window.openRosterPatchEditor(bossId, b.dataset.name, () => renderList());
+        }));
+        modal.querySelectorAll('.rp-del').forEach(b => b.addEventListener('click', async () => {
+            const name = b.dataset.name;
+            if (!confirm(`Patch für "${name}" wirklich löschen?`)) return;
+            await deletePatch(bossId, name);
+            renderList();
+        }));
+    }
+    
+    function renderPatchList(patches) {
+        const names = Object.keys(patches);
+        if (names.length === 0) {
+            return '<li class="text-xs text-gray-500 italic px-2">Keine Patches.</li>';
+        }
+        return names.map(name => {
+            const summary = formatPatchSummary(patches[name]);
+            const note = patches[name].note ? `<span class="text-gray-500 ml-1 italic">- ${patches[name].note}</span>` : '';
+            return `
+                <li class="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs">
+                    <span class="font-bold text-white">${name}</span>
+                    <span class="text-gray-300">→ ${summary}</span>
+                    ${note}
+                    <button class="rp-edit ml-auto text-blue-400 hover:text-blue-300 px-1" data-name="${name}" title="Bearbeiten">✎</button>
+                    <button class="rp-del text-red-400 hover:text-red-300 px-1" data-name="${name}" title="Löschen">✕</button>
+                </li>
+            `;
+        }).join('');
+    }
+    
+    document.getElementById('rp-close').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+    document.getElementById('rp-add-boss').addEventListener('click', () => {
+        window.openRosterPatchEditor(bossId, null, () => renderList());
+    });
+    
+    renderList();
+};
+
+async function deletePatch(bossId, name) {
+    const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+    const patches = { ...window.RosterPatches.getBossPatches(bossId) };
+    delete patches[name];
+    await window.RosterPatches.saveBossPatches(bossId, patches, window.firebaseTools, editorName);
+    window.RosterPatches.setBossPatches(bossId, patches);
+    if (window.updateRosterPatchBanner) window.updateRosterPatchBanner(bossId);
+}
+
+// Editor für einen einzelnen Patch (entweder add oder edit)
+window.openRosterPatchEditor = function(bossId, existingName, onSaved) {
+    if (!bossId) {
+        alert('Kein Boss ausgewählt - Patches können nur auf einer Boss-Seite oder über die Comp-Verwaltung angelegt werden.');
+        return;
+    }
+    const existingPatches = window.RosterPatches.getBossPatches(bossId);
+    const existing = existingName ? existingPatches[existingName] : null;
+    
+    // Spielerliste aus globalem Roster
+    const players = (window.rosterData || []).map(p => p.name).sort();
+    
+    const editorEl = document.createElement('div');
+    editorEl.id = 'roster-patch-editor';
+    editorEl.className = 'fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4';
+    editorEl.innerHTML = `
+        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 max-w-md w-full">
+            <h4 class="text-base font-bold text-yellow-300 mb-3">${existingName ? 'Patch bearbeiten' : 'Neuer Patch'}</h4>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Spieler</label>
+                    <select id="rpe-player" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white" ${existingName ? 'disabled' : ''}>
+                        <option value="">— Spieler wählen —</option>
+                        ${players.map(n => `<option value="${n}" ${n === existingName ? 'selected' : ''}>${n}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Klasse <span class="text-gray-500">(leer = unverändert)</span></label>
+                    <select id="rpe-class" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
+                        <option value="">— unverändert —</option>
+                        ${Object.keys(window.ROSTER_PATCH_SPECS).map(c => `<option value="${c}" ${existing && existing.class && existing.class.toUpperCase() === c ? 'selected' : ''}>${window.ROSTER_PATCH_CLASS_DISPLAY[c]}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Spec <span class="text-gray-500">(leer = unverändert)</span></label>
+                    <select id="rpe-spec" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
+                        <option value="">— unverändert —</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Rolle <span class="text-gray-500">(leer = unverändert)</span></label>
+                    <select id="rpe-role" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
+                        <option value="">— unverändert —</option>
+                        <option value="tank"  ${existing && existing.role === 'tank'  ? 'selected' : ''}>Tank</option>
+                        <option value="healer"${existing && existing.role === 'healer'? 'selected' : ''}>Healer</option>
+                        <option value="dps"   ${existing && existing.role === 'dps'   ? 'selected' : ''}>DPS</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Notiz <span class="text-gray-500">(optional)</span></label>
+                    <input id="rpe-note" type="text" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white" placeholder="z.B. 'off-spec heal für Phase 2'" value="${existing && existing.note ? String(existing.note).replace(/"/g, '&quot;') : ''}">
+                </div>
+                <div class="text-[10px] text-amber-400 bg-amber-900/20 border border-amber-700/40 rounded p-2">
+                    💡 Mindestens eines der Felder Klasse/Spec/Rolle muss gesetzt sein, damit der Patch wirkt.
+                </div>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button id="rpe-save" class="bg-emerald-700 hover:bg-emerald-800 text-white py-1.5 px-3 rounded text-sm">Speichern</button>
+                <button id="rpe-cancel" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-sm">Abbrechen</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(editorEl);
+    
+    const classSel = document.getElementById('rpe-class');
+    const specSel = document.getElementById('rpe-spec');
+    
+    function refillSpecs(selectedClass, currentSpec) {
+        specSel.innerHTML = '<option value="">— unverändert —</option>';
+        if (selectedClass && window.ROSTER_PATCH_SPECS[selectedClass]) {
+            window.ROSTER_PATCH_SPECS[selectedClass].forEach(s => {
+                const opt = new Option(s, s);
+                if (currentSpec && s === currentSpec) opt.selected = true;
+                specSel.appendChild(opt);
+            });
+        }
+    }
+    refillSpecs(classSel.value, existing && existing.spec ? existing.spec : '');
+    classSel.addEventListener('change', () => refillSpecs(classSel.value, ''));
+    
+    document.getElementById('rpe-cancel').addEventListener('click', () => editorEl.remove());
+    editorEl.addEventListener('click', (e) => { if (e.target === editorEl) editorEl.remove(); });
+    
+    document.getElementById('rpe-save').addEventListener('click', async () => {
+        const playerName = document.getElementById('rpe-player').value || existingName;
+        if (!playerName) {
+            alert('Bitte einen Spieler auswählen.');
+            return;
+        }
+        const cls = classSel.value.trim();
+        const spec = specSel.value.trim();
+        const role = document.getElementById('rpe-role').value.trim();
+        const note = document.getElementById('rpe-note').value.trim();
+        
+        if (!cls && !spec && !role) {
+            alert('Mindestens Klasse, Spec oder Rolle muss gesetzt sein.');
+            return;
+        }
+        
+        const patchData = {};
+        // Klasse wird im Roster als "Priest" gespeichert, nicht "PRIEST"; konvertieren zu Title-Case
+        if (cls)  patchData.class = cls.charAt(0).toUpperCase() + cls.slice(1).toLowerCase();
+        if (spec) patchData.spec = spec;
+        if (role) patchData.role = role;
+        if (note) patchData.note = note;
+        
+        const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+        
+        try {
+            const all = { ...window.RosterPatches.getBossPatches(bossId) };
+            all[playerName] = patchData;
+            await window.RosterPatches.saveBossPatches(bossId, all, window.firebaseTools, editorName);
+            window.RosterPatches.setBossPatches(bossId, all);
+            
+            if (window.updateRosterPatchBanner) window.updateRosterPatchBanner(bossId);
+            // Wenn wir auf der Boss-Seite dieses bossIds sind, Listener neu starten
+            // damit der effektive Roster sofort an alle Module weitergegeben wird.
+            if (window.currentBossIdForPatches === bossId && typeof window.setupBossListener === 'function') {
+                window.setupBossListener(bossId);
+            }
+            editorEl.remove();
+            if (typeof onSaved === 'function') onSaved();
+        } catch (err) {
+            console.error('[RosterPatches] Save fehlgeschlagen:', err);
+            alert('Speichern fehlgeschlagen: ' + err.message);
+        }
+    });
+};
+
+// ════════════════════════════════════════════════════════════════════════
+// ROSTER-PATCHES — Zentrale Verwaltungs-UI in comp.html
+// ════════════════════════════════════════════════════════════════════════
+window.initRosterPatchesCompUI = function(bosses) {
+    const section = document.getElementById('roster-patches-section');
+    if (!section) {
+        console.warn('[RosterPatches] roster-patches-section nicht im DOM gefunden');
+        return;
+    }
+    
+    if (!Array.isArray(bosses) || bosses.length === 0) {
+        section.innerHTML += '<div class="text-xs text-yellow-400 italic mt-2">Keine Bosse für die aktuelle Raid gefunden.</div>';
+        return;
+    }
+    
+    if (!window.isManager) {
+        section.classList.add('opacity-60');
+    }
+    
+    const tabsEl = document.getElementById('rp-comp-boss-tabs');
+    const contentEl = document.getElementById('rp-comp-boss-content');
+    const emptyHint = document.getElementById('rp-comp-empty-hint');
+    
+    if (!tabsEl || !contentEl) {
+        console.warn('[RosterPatches] Tab/Content-Container nicht gefunden');
+        return;
+    }
+    
+    // Aktuell ausgewählter Boss-Tab
+    let selectedBossTab = null;
+    // Cache aller Boss-Patches für die anzeigbaren Bosse
+    let bossPatchesCache = {};  // bossId → { name, patches }
+    
+    // Lade Patches aller Bosse der aktuellen Raid (einmalig + bei Updates)
+    async function loadAllBossPatches() {
+        bossPatchesCache = {};
+        
+        if (!window.firebaseTools) {
+            console.warn('[RosterPatches] firebaseTools nicht verfügbar');
+            return;
+        }
+        const { getDoc, doc, db } = window.firebaseTools;
+        
+        for (const boss of bosses) {
+            const bossId = 'boss-' + boss.id;
+            try {
+                const snap = await getDoc(doc(db, "raid-tool-data", bossId));
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data._rosterPatches && data._rosterPatches.patches && Object.keys(data._rosterPatches.patches).length > 0) {
+                        bossPatchesCache[bossId] = { name: boss.name, patches: data._rosterPatches.patches };
+                    }
+                }
+            } catch (err) {
+                console.warn(`[RosterPatches] Boss ${bossId} laden fehlgeschlagen:`, err);
+            }
+        }
+        
+        renderBossTabs();
+        updateEmptyHint();
+    }
+    
+    function renderBossTabs() {
+        if (!tabsEl || !contentEl) return;
+        
+        // Wenn der aktuell ausgewählte Tab nicht existiert, fallback auf Boss mit Patches oder ersten
+        if (!selectedBossTab || !bosses.find(b => 'boss-' + b.id === selectedBossTab)) {
+            const firstWithPatches = bosses.find(b => bossPatchesCache['boss-' + b.id]);
+            selectedBossTab = 'boss-' + (firstWithPatches ? firstWithPatches.id : bosses[0].id);
+        }
+        
+        tabsEl.innerHTML = bosses.map(b => {
+            const bid = 'boss-' + b.id;
+            const data = bossPatchesCache[bid];
+            const count = data ? Object.keys(data.patches).length : 0;
+            const active = bid === selectedBossTab;
+            const badge = count > 0 ? `<span class="opacity-70">(${count})</span>` : '';
+            return `<button class="rpc-tab text-xs px-3 py-1.5 rounded ${active ? 'bg-purple-700 text-white' : count > 0 ? 'bg-slate-700 text-purple-200 hover:bg-slate-600' : 'bg-slate-800 text-gray-400 hover:bg-slate-700'}" data-boss-id="${bid}" data-boss-name="${b.name}">
+                ${b.name} ${badge}
+            </button>`;
+        }).join('');
+        
+        tabsEl.querySelectorAll('.rpc-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectedBossTab = btn.dataset.bossId;
+                renderBossTabs();
+            });
+        });
+        
+        renderBossTabContent();
+    }
+    
+    function renderBossTabContent() {
+        if (!contentEl || !selectedBossTab) return;
+        const bossEntry = bosses.find(b => 'boss-' + b.id === selectedBossTab);
+        const bossName = bossEntry ? bossEntry.name : selectedBossTab;
+        const data = bossPatchesCache[selectedBossTab];
+        const patches = data ? data.patches : {};
+        const names = Object.keys(patches);
+        
+        let html = `<div class="text-xs text-gray-400 mb-2">${bossName}:</div>`;
+        if (names.length === 0) {
+            html += '<div class="text-xs text-gray-500 italic mb-2">Keine Patches für diesen Boss.</div>';
+        } else {
+            html += '<ul class="space-y-1 mb-2">' + names.map(name => {
+                const p = patches[name];
+                const summary = formatPatchSummaryComp(p);
+                const note = p.note ? `<span class="text-gray-500 ml-1 italic">— ${p.note}</span>` : '';
+                return `
+                    <li class="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs">
+                        <span class="font-bold text-white">${name}</span>
+                        <span class="text-gray-300">→ ${summary}</span>
+                        ${note}
+                        <button class="rpc-edit ml-auto text-blue-400 hover:text-blue-300 disabled:opacity-50 px-1" data-boss-id="${selectedBossTab}" data-name="${name}" title="Bearbeiten" ${window.isManager ? '' : 'disabled'}>✎</button>
+                        <button class="rpc-del text-red-400 hover:text-red-300 disabled:opacity-50 px-1" data-boss-id="${selectedBossTab}" data-name="${name}" title="Löschen" ${window.isManager ? '' : 'disabled'}>✕</button>
+                    </li>
+                `;
+            }).join('') + '</ul>';
+        }
+        html += `<button class="rpc-add-boss text-xs bg-purple-700 hover:bg-purple-800 disabled:opacity-50 text-white py-1 px-3 rounded" data-boss-id="${selectedBossTab}" ${window.isManager ? '' : 'disabled'}>+ Patch für ${bossName}</button>`;
+        contentEl.innerHTML = html;
+        
+        contentEl.querySelector('.rpc-add-boss')?.addEventListener('click', (e) => {
+            const bid = e.currentTarget.dataset.bossId;
+            // RosterPatches lokal befüllen damit der Editor existierende Daten findet
+            if (bossPatchesCache[bid]) {
+                window.RosterPatches.setBossPatches(bid, bossPatchesCache[bid].patches);
+            } else {
+                window.RosterPatches.setBossPatches(bid, {});
+            }
+            window.openRosterPatchEditor(bid, null, () => loadAllBossPatches());
+        });
+        
+        contentEl.querySelectorAll('.rpc-edit').forEach(b => {
+            b.onclick = () => {
+                const bid = b.dataset.bossId;
+                const name = b.dataset.name;
+                if (bossPatchesCache[bid]) {
+                    window.RosterPatches.setBossPatches(bid, bossPatchesCache[bid].patches);
+                }
+                window.openRosterPatchEditor(bid, name, () => loadAllBossPatches());
+            };
+        });
+        contentEl.querySelectorAll('.rpc-del').forEach(b => {
+            b.onclick = async () => {
+                const bid = b.dataset.bossId;
+                const name = b.dataset.name;
+                if (!confirm(`Patch für "${name}" löschen?`)) return;
+                const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                const all = { ...(bossPatchesCache[bid]?.patches || {}) };
+                delete all[name];
+                await window.RosterPatches.saveBossPatches(bid, all, window.firebaseTools, editorName);
+                window.RosterPatches.setBossPatches(bid, all);
+                if (Object.keys(all).length > 0) {
+                    bossPatchesCache[bid] = { name: bosses.find(b2 => 'boss-' + b2.id === bid)?.name || bid, patches: all };
+                } else {
+                    delete bossPatchesCache[bid];
+                }
+                renderBossTabs();
+                updateEmptyHint();
+            };
+        });
+    }
+    
+    function updateEmptyHint() {
+        if (!emptyHint) return;
+        const hasBoss = Object.keys(bossPatchesCache).length > 0;
+        emptyHint.classList.toggle('hidden', hasBoss);
+    }
+    
+    function formatPatchSummaryComp(patch) {
+        if (!patch) return '';
+        const parts = [];
+        if (patch.class) parts.push(window.ROSTER_PATCH_CLASS_DISPLAY[patch.class.toUpperCase()] || patch.class);
+        if (patch.spec)  parts.push(patch.spec);
+        if (patch.role)  parts.push(`[${patch.role}]`);
+        return parts.length ? parts.join(' ') : '(leer)';
+    }
+    
+    // Initial laden
+    loadAllBossPatches();
+};
+
 window.setupBossListener = function(bossId) {
     if (window.assignmentUnsubscribe) {
         window.assignmentUnsubscribe();
@@ -2358,8 +2919,31 @@ window.setupBossListener = function(bossId) {
     // ENTFERNT: let snapshotTimer = null;  (war unbenutzt)
 
     window.assignmentUnsubscribe = onSnapshot(assignmentsDocRef, (docSnap) => {
-        const assignments = docSnap.exists() ? docSnap.data() : {};
-        const rosterPlayerNames = window.rosterData ? window.rosterData.map(p => p.name) : [];
+        const rawData = docSnap.exists() ? docSnap.data() : {};
+        
+        // ── ROSTER-PATCHES extrahieren ────────────────────────────────
+        // _rosterPatches ist ein Meta-Feld im Boss-Doc (kein Assignment).
+        // Wir trennen es ab, bevor 'assignments' an die Boss-Module geht.
+        const bossPatchesPayload = rawData._rosterPatches;
+        const bossPatches = (bossPatchesPayload && bossPatchesPayload.patches) ? bossPatchesPayload.patches : {};
+        window.RosterPatches.setBossPatches(bossId, bossPatches);
+        
+        // 'assignments' = alles außer den Meta-Feldern
+        const assignments = { ...rawData };
+        delete assignments._rosterPatches;
+        
+        // Effektiver Roster = globalRoster + bossPatches
+        const effectiveRoster = window.RosterPatches.buildEffectiveRoster(window.rosterData || [], bossId);
+        // Kompatibilität: window.effectiveRoster für Module die später nachladen wollen
+        window.effectiveRoster = effectiveRoster;
+        window.currentBossIdForPatches = bossId;
+        
+        // Banner aktualisieren (falls bereits gerendert)
+        if (typeof window.updateRosterPatchBanner === 'function') {
+            window.updateRosterPatchBanner(bossId);
+        }
+        
+        const rosterPlayerNames = effectiveRoster.map(p => p.name);
 
         const applyValues = () => {
             document.querySelectorAll('.assignment-select').forEach(select => {
@@ -2412,7 +2996,7 @@ window.setupBossListener = function(bossId) {
             applyValues();
 
             if (typeof window.initializePageSpecificCode === 'function') {
-                window.initializePageSpecificCode(assignments, window.rosterData, window.firebaseTools, window.allCooldowns);
+                window.initializePageSpecificCode(assignments, effectiveRoster, window.firebaseTools, window.allCooldowns);
             }
 
             setTimeout(() => {
@@ -2441,8 +3025,23 @@ window.setupBossListener = function(bossId) {
             if (typeof window.initializePageSpecificCode === 'function') {
                 // Lade Daten manuell
                 getDoc(assignmentsDocRef).then(docSnap => {
-                    const assignments = docSnap.exists() ? docSnap.data() : {};
-                    window.initializePageSpecificCode(assignments, window.rosterData, window.firebaseTools, window.allCooldowns);
+                    const rawData = docSnap.exists() ? docSnap.data() : {};
+                    const bossPatchesPayload = rawData._rosterPatches;
+                    const bossPatches = (bossPatchesPayload && bossPatchesPayload.patches) ? bossPatchesPayload.patches : {};
+                    window.RosterPatches.setBossPatches(bossId, bossPatches);
+                    
+                    const assignments = { ...rawData };
+                    delete assignments._rosterPatches;
+                    
+                    const effectiveRoster = window.RosterPatches.buildEffectiveRoster(window.rosterData || [], bossId);
+                    window.effectiveRoster = effectiveRoster;
+                    window.currentBossIdForPatches = bossId;
+                    
+                    if (typeof window.updateRosterPatchBanner === 'function') {
+                        window.updateRosterPatchBanner(bossId);
+                    }
+                    
+                    window.initializePageSpecificCode(assignments, effectiveRoster, window.firebaseTools, window.allCooldowns);
                     
                     // applyValues inline
                     document.querySelectorAll('.assignment-select').forEach(select => {
@@ -3388,9 +3987,17 @@ mainNav.innerHTML = mainNavHTML;
                 const bossSlug = parts[1]; // Nimmt "jinrokh" (ohne &assignments)
                 
                 const currentBossId = 'boss-' + bossSlug;
+                console.log('[RosterPatches] Boss-Page geladen, ID:', currentBossId);
 
                 // RUFE DIE NEUE FUNKTION AUF:
                 window.setupBossListener(currentBossId);
+                
+                // Banner für Roster-Patches einfügen (oben in der Boss-Page)
+                if (typeof window.injectRosterPatchBanner === 'function') {
+                    window.injectRosterPatchBanner(currentBossId);
+                } else {
+                    console.error('[RosterPatches] injectRosterPatchBanner ist nicht verfügbar!');
+                }
             }
 		}
 
@@ -3661,6 +4268,13 @@ window.applyThemeForRaid = function(raidId) {
             initCooldownEditor();
         }
         initSnapshotPlayerAdder();
+    }
+    
+    // Roster-Patches Verwaltungs-UI initialisieren
+    if (typeof window.initRosterPatchesCompUI === 'function') {
+        const selectedRaid = document.getElementById('raid-selector')?.value;
+        const bosses = (raidData[selectedRaid] && raidData[selectedRaid].bosses) || [];
+        window.initRosterPatchesCompUI(bosses);
     }
 	
 			

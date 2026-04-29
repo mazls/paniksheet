@@ -415,18 +415,17 @@ window.CD_AUTO_PLANNER = (function() {
     }
 
     function getPlayersOfClass(cls, requiredRole, requiredSpec) {
-        return rosterRef.filter(function(p) {
+        // Immer dynamisch das aktuellste Roster laden
+        var currentRoster = window.effectiveRoster || window.rosterData || [];
+        return currentRoster.filter(function(p) {
             // 1. Klasse MUSS immer matchen
             if ((p.class || '').toUpperCase() !== (cls || '').toUpperCase()) return false;
 
-            // 2. Spec-Filter hat Vorrang vor Role-Filter (präziser)
-            //    requiredSpec kann Array sein (["Holy", "Holy1"]) oder String
+            // 2. Spec-Filter hat Vorrang vor Role-Filter
             if (requiredSpec && requiredSpec.length > 0) {
                 var playerSpec = p.spec || p.specName || '';
-                // Wenn Spieler keine Spec hat → Fallback auf reinen Klassen-Match (wie gewünscht)
                 if (!playerSpec) return true;
                 var specList = Array.isArray(requiredSpec) ? requiredSpec : [requiredSpec];
-                // Case-insensitive Match
                 var pSpecLower = playerSpec.toLowerCase();
                 return specList.some(function(s) { return String(s).toLowerCase() === pSpecLower; });
             }
@@ -858,6 +857,9 @@ window.CD_AUTO_PLANNER = (function() {
     }
 
     function runAutoAssign() {
+
+        rosterRef = window.effectiveRoster || window.rosterData || [];
+        
         var timeline = generateTimeline();
         assignments = autoAssign(timeline);
         renderTimeline(assignments);
@@ -1895,7 +1897,7 @@ window.CD_AUTO_PLANNER = (function() {
         }).join('');
 
         modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">Spell zu "' + categories[catKey].name + '" hinzufügen</h4>'
-            + '<div class="text-[11px] text-gray-400 mb-3">💡 Spells können <strong>mehrfach</strong> hinzugefügt werden — z.B. um denselben Spell für unterschiedliche Specs mit eigener Priorität zu hinterlegen. <span class="text-amber-300">×N</span> zeigt wie oft schon vorhanden.</div>'
+            + '<div class="text-[11px] text-gray-400 mb-3">💡 Spells können <strong>mehrfach</strong> hinzugefügt werden - z.B. um denselben Spell für unterschiedliche Specs mit eigener Priorität zu hinterlegen. <span class="text-amber-300">×N</span> zeigt wie oft schon vorhanden.</div>'
             + '<input type="text" id="picker-search" placeholder="Suchen..." class="w-full bg-slate-900 text-white px-3 py-2 rounded mb-3 border border-slate-600">'
             + '<div id="picker-list">' + classSections + '</div>'
             + '<div class="flex justify-end mt-3"><button id="picker-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button></div>';
@@ -1942,23 +1944,58 @@ window.CD_AUTO_PLANNER = (function() {
     // INIT
     // ══════════════════════════════════════════════════════════════
 
-    function clearPlan() {
+    async function clearPlan() {
         if (!window.isManager) {
             if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
             return;
         }
+        
+        // Lokalen State auf "wie frisch geladen, ohne gespeicherten Plan" setzen
         manualOverrides = {};
         eventOverrides = {};
         customEvents = [];
         assignments = [];
+        
+        // Tabelle visuell leeren
         var tbody = document.getElementById('auto-planner-tbody');
         if (tbody) tbody.innerHTML = '';
-        updateStatus("Plan geleert.");
+        var thead = document.getElementById('auto-planner-thead');
+        if (thead) thead.innerHTML = '';
+        
+        // Event-Manager re-rendern (Häkchen entfernt)
+        renderEventManager();
+        if (typeof window._autoPlannerApplyProtection === 'function') {
+            window._autoPlannerApplyProtection();
+        }
+        
+        // Auto-Plan-Doc aus Firestore löschen — Defaults aus config.events bleiben damit erhalten
+        if (firebaseRef) {
+            var deleteDocFn = firebaseRef.deleteDoc;
+            if (!deleteDocFn) {
+                try {
+                    var fbModule = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+                    deleteDocFn = fbModule.deleteDoc;
+                } catch (e) {
+                    console.error("[Auto-Planner] Konnte deleteDoc nicht laden:", e);
+                    updateStatus("Plan lokal geleert (DB-Fehler beim Nachladen).");
+                    return;
+                }
+            }
+            try {
+                await deleteDocFn(firebaseRef.doc(firebaseRef.db, "auto-planner", config.id));
+                updateStatus("Auto-Plan geleert (lokal + DB).");
+            } catch (e) {
+                console.error("[Auto-Planner] clearPlan DB-Delete error:", e);
+                updateStatus("Plan lokal geleert (DB-Fehler: " + e.message + ")");
+            }
+        } else {
+            updateStatus("Plan geleert.");
+        }
     }
 
     async function doInit(bossConfig) {
         config = bossConfig;
-        rosterRef = window.rosterData || [];
+        rosterRef = window.effectiveRoster || window.rosterData || [];
         firebaseRef = window.firebaseTools;
         cooldownsDB = window.allCooldowns || [];
 
@@ -2018,7 +2055,7 @@ window.CD_AUTO_PLANNER = (function() {
                     hint = document.createElement('div');
                     hint.id = 'auto-planner-readonly-hint';
                     hint.className = 'text-xs italic mb-3 p-2 rounded bg-slate-700/40 border border-slate-600/50 text-gray-400';
-                    hint.innerHTML = '🔒 <strong>Nur lesen</strong> — Änderungen am Auto-Plan können nur Gildenräte vornehmen.';
+                    hint.innerHTML = '🔒 <strong>Nur lesen</strong> - Änderungen am Auto-Plan können nur Gildenräte vornehmen.';
                     statusEl.parentNode.insertBefore(hint, statusEl);
                 }
             } else if (isManager && hint) {
@@ -2097,11 +2134,12 @@ window.CD_AUTO_PLANNER = (function() {
                 if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
                 return;
             }
+            var msg = "Auto-Plan leeren?\n\nLöscht den gespeicherten Auto-Plan dieses Bosses (Tabelle + auto-planner DB-Eintrag).\nDie CD-Planer-Einträge im Raidplan bleiben unangetastet.";
             if (typeof window.showModal === 'function') {
-                var r = window.showModal("Auto-Plan leeren?", true);
+                var r = window.showModal(msg, true);
                 if (r && typeof r.then === 'function') { r.then(function(ok) { if (ok) clearPlan(); }); }
                 else clearPlan();
-            } else { if (confirm("Auto-Plan leeren?")) clearPlan(); }
+            } else { if (confirm(msg)) clearPlan(); }
         });
 
         // ── DB-Wipe Button dynamisch einfügen (nur für Manager) ──
@@ -2178,7 +2216,7 @@ window.CD_AUTO_PLANNER = (function() {
         // Zweite Bestätigung mit Tippcode
         var typed = prompt('Sicherheitsabfrage: Tippe "LÖSCHEN" (in Großbuchstaben), um zu bestätigen:');
         if (typed !== 'LÖSCHEN') {
-            if (window.showModal) window.showModal("Abgebrochen — Sicherheitsabfrage nicht bestanden.");
+            if (window.showModal) window.showModal("Abgebrochen - Sicherheitsabfrage nicht bestanden.");
             return;
         }
 

@@ -24,6 +24,13 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+    /* Drop-Indikatoren für Drag&Drop in der Prio-Liste */
+    #norushen-orb-prio-list li.drop-above {
+        box-shadow: 0 -2px 0 0 #fbbf24;
+    }
+    #norushen-orb-prio-list li.drop-below {
+        box-shadow: 0 2px 0 0 #fbbf24;
+    }
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Amalgam des Stolzes (Norushen)</h1>
@@ -124,6 +131,116 @@
                             </thead>
                             <tbody id="norushen-orb-order-body" class="divide-y divide-slate-700 bg-slate-800"></tbody>
                         </table>
+                    </div>
+                    
+                    <!-- ✨ AUTO-FÜLLEN: Prio-Konfiguration -->
+                    <details id="norushen-orb-auto-section" class="mb-3 bg-slate-900/60 border border-slate-700 rounded">
+                        <summary class="cursor-pointer p-2 text-xs font-bold text-yellow-300 hover:bg-slate-800 rounded">
+                            ⚡ Auto-Füllen nach Spec-Priorität
+                        </summary>
+                        <div class="p-3 space-y-3">
+                            <p class="text-[11px] text-gray-400">
+                                Kategorien definieren Reihenfolge + Limits. "Auto-Füllen" trägt Spieler aus dem Kader nach Priorität ein, respektiert dabei deine Limits (z.B. "max 1 Tank in den ersten 4 Plätzen").
+                            </p>
+                            
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-[10px] text-gray-500 uppercase tracking-wide">Prioritäts-Reihenfolge:</span>
+                                    <span class="text-[10px] text-gray-500">⋮⋮ ziehen | ✎ bearbeiten | ✕ löschen</span>
+                                </div>
+                                <ul id="norushen-orb-prio-list" class="space-y-1"></ul>
+                                
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <button id="norushen-orb-prio-add" class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">
+                                        + Eigene Kategorie
+                                    </button>
+                                    <button id="norushen-orb-prio-detect" class="bg-blue-700 hover:bg-blue-800 text-white text-[11px] py-1 px-2 rounded border border-blue-500" title="Liest die Specs aus dem Kader und legt automatisch passende Kategorien an">
+                                        🪄 Aus Kader ableiten
+                                    </button>
+                                    <button id="norushen-orb-prio-reset" class="bg-slate-700 hover:bg-slate-800 text-white text-[11px] py-1 px-2 rounded border border-slate-500">
+                                        ↺ Defaults
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t border-slate-700 pt-3 flex flex-wrap gap-2 items-center">
+                                <button id="norushen-orb-auto-fill" class="bg-yellow-700 hover:bg-yellow-800 text-white text-xs py-1.5 px-3 rounded border border-yellow-500">
+                                    ⚡ Auto-Füllen
+                                </button>
+                                <button id="norushen-orb-show-debug" class="bg-slate-700 hover:bg-slate-800 text-gray-300 text-[11px] py-1 px-2 rounded border border-slate-600" title="Zeigt welcher Spieler welcher Kategorie zugeordnet wird">
+                                    🔍 Zuordnung anzeigen
+                                </button>
+                                <span class="text-[10px] text-gray-500 ml-auto">
+                                    Spec → Klasse → Rolle (Fallback-Kette)
+                                </span>
+                            </div>
+                            
+                            <div id="norushen-orb-debug-output" class="hidden bg-slate-900 border border-slate-700 rounded p-2 max-h-48 overflow-y-auto text-[11px]"></div>
+                        </div>
+                    </details>
+                    
+                    <!-- Modal für Kategorie-Bearbeitung -->
+                    <div id="norushen-orb-prio-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+                        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 max-w-md w-full" style="font-size: 13px;">
+                            <h4 class="text-base font-bold text-yellow-300 mb-3" id="norushen-orb-prio-modal-title">Kategorie bearbeiten</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Anzeigename</label>
+                                    <input id="norushen-orb-prio-modal-label" type="text" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="z.B. Shadow Priester">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Klasse</label>
+                                    <select id="norushen-orb-prio-modal-class" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— alle Klassen —</option>
+                                        <!-- wird von JS gefüllt -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Spec</label>
+                                    <select id="norushen-orb-prio-modal-spec" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— alle Specs —</option>
+                                        <!-- wird von JS gefüllt, abhängig von Klasse -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Rolle</label>
+                                    <select id="norushen-orb-prio-modal-role" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— beliebig —</option>
+                                        <option value="tank">Tank</option>
+                                        <option value="healer">Healer</option>
+                                        <option value="dps">DPS</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="border-t border-slate-700 pt-3">
+                                    <div class="text-xs font-bold text-yellow-300 mb-2">Limits (optional)</div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 mb-1">Max in ersten N Zeilen</label>
+                                            <div class="flex gap-1">
+                                                <input id="norushen-orb-prio-modal-limit-rows" type="number" min="1" class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="4">
+                                                <span class="text-gray-500 text-xs flex items-center">Zeilen:</span>
+                                                <input id="norushen-orb-prio-modal-limit-count" type="number" min="0" class="flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="1">
+                                            </div>
+                                            <div class="text-[10px] text-gray-500 mt-1">z.B. "in den ersten 4 Zeilen max 1 Tank"</div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 mb-1">Max gesamt</label>
+                                            <input id="norushen-orb-prio-modal-max-total" type="number" min="0" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="leer = unbegrenzt">
+                                            <div class="text-[10px] text-gray-500 mt-1">Maximalanzahl in der gesamten Tabelle</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-[10px] text-gray-500 italic">
+                                    Tipp: Filter sind UND-verknüpft. Leer lassen = nicht filtern.
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mt-4">
+                                <button id="norushen-orb-prio-modal-save" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded">Speichern</button>
+                                <button id="norushen-orb-prio-modal-cancel" class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded">Abbrechen</button>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="flex flex-wrap items-center gap-2 mb-3">
@@ -795,9 +912,761 @@ CD_AUTO_PLANNER.init({
                 });
             });
 
+            // ════════════════════════════════════════════════════════
+            // AUTO-FÜLLEN nach Spec-Priorität (vollständig editierbar)
+            // ════════════════════════════════════════════════════════
+            
+            // ── Klassen + Specs (Quelle der Wahrheit für die Dropdowns) ──
+            // Die Spec-Werte hier müssen mit dem matchen, was im Roster (p.spec) steht.
+            // Quelle: Raidhelper-Specnamen wie sie der Auto-CD-Planer verwendet.
+            const SPEC_DEFINITIONS = {
+                DEATHKNIGHT: [
+                    { value: 'Blood',        label: 'Blood (Tank)',        role: 'tank' },
+                    { value: 'Frost1',       label: 'Frost',               role: 'dps' },
+                    { value: 'Unholy',       label: 'Unholy',              role: 'dps' }
+                ],
+                DRUID: [
+                    { value: 'Balance',      label: 'Balance',             role: 'dps' },
+                    { value: 'Feral',        label: 'Feral',               role: 'dps' },
+                    { value: 'Guardian',     label: 'Guardian (Tank)',     role: 'tank' },
+                    { value: 'Restoration',  label: 'Restoration (Heal)',  role: 'healer' }
+                ],
+                HUNTER: [
+                    { value: 'Beastmastery', label: 'Beastmastery',        role: 'dps' },
+                    { value: 'Marksmanship', label: 'Marksmanship',        role: 'dps' },
+                    { value: 'Survival',     label: 'Survival',            role: 'dps' }
+                ],
+                MAGE: [
+                    { value: 'Arcane',       label: 'Arcane',              role: 'dps' },
+                    { value: 'Fire',         label: 'Fire',                role: 'dps' },
+                    { value: 'Frost',        label: 'Frost',               role: 'dps' }
+                ],
+                MONK: [
+                    { value: 'Brewmaster',   label: 'Brewmaster (Tank)',   role: 'tank' },
+                    { value: 'Mistweaver',   label: 'Mistweaver (Heal)',   role: 'healer' },
+                    { value: 'Windwalker',   label: 'Windwalker',          role: 'dps' }
+                ],
+                PALADIN: [
+                    { value: 'Holy1',        label: 'Holy (Heal)',         role: 'healer' },
+                    { value: 'Protection1',  label: 'Protection (Tank)',   role: 'tank' },
+                    { value: 'Retribution',  label: 'Retribution',         role: 'dps' }
+                ],
+                PRIEST: [
+                    { value: 'Discipline',   label: 'Discipline (Heal)',   role: 'healer' },
+                    { value: 'Holy',         label: 'Holy (Heal)',         role: 'healer' },
+                    { value: 'Shadow',       label: 'Shadow',              role: 'dps' }
+                ],
+                ROGUE: [
+                    { value: 'Assassination', label: 'Assassination',      role: 'dps' },
+                    { value: 'Combat',       label: 'Combat',              role: 'dps' },
+                    { value: 'Subtlety',     label: 'Subtlety',            role: 'dps' }
+                ],
+                SHAMAN: [
+                    { value: 'Elemental',    label: 'Elemental',           role: 'dps' },
+                    { value: 'Enhancement',  label: 'Enhancement',         role: 'dps' },
+                    { value: 'Restoration1', label: 'Restoration (Heal)',  role: 'healer' }
+                ],
+                WARLOCK: [
+                    { value: 'Affliction',   label: 'Affliction',          role: 'dps' },
+                    { value: 'Demonology',   label: 'Demonology',          role: 'dps' },
+                    { value: 'Destruction',  label: 'Destruction',         role: 'dps' }
+                ],
+                WARRIOR: [
+                    { value: 'Arms',         label: 'Arms',                role: 'dps' },
+                    { value: 'Fury',         label: 'Fury',                role: 'dps' },
+                    { value: 'Protection',   label: 'Protection (Tank)',   role: 'tank' }
+                ]
+            };
+            
+            // Mapping: deutsche/englische Klassennamen → kanonischer Schlüssel
+            const CLASS_ALIASES = {
+                'death knight': 'DEATHKNIGHT', 'deathknight': 'DEATHKNIGHT', 'dk': 'DEATHKNIGHT', 'todesritter': 'DEATHKNIGHT',
+                'druid': 'DRUID', 'druide': 'DRUID',
+                'hunter': 'HUNTER', 'jäger': 'HUNTER', 'jaeger': 'HUNTER',
+                'mage': 'MAGE', 'magier': 'MAGE',
+                'monk': 'MONK', 'mönch': 'MONK', 'moench': 'MONK',
+                'paladin': 'PALADIN',
+                'priest': 'PRIEST', 'priester': 'PRIEST',
+                'rogue': 'ROGUE', 'schurke': 'ROGUE',
+                'shaman': 'SHAMAN', 'schamane': 'SHAMAN',
+                'warlock': 'WARLOCK', 'hexenmeister': 'WARLOCK',
+                'warrior': 'WARRIOR', 'krieger': 'WARRIOR'
+            };
+            const CLASS_DISPLAY = {
+                'DEATHKNIGHT': 'Todesritter', 'DRUID': 'Druide', 'HUNTER': 'Jäger',
+                'MAGE': 'Magier', 'MONK': 'Mönch', 'PALADIN': 'Paladin',
+                'PRIEST': 'Priester', 'ROGUE': 'Schurke', 'SHAMAN': 'Schamane',
+                'WARLOCK': 'Hexenmeister', 'WARRIOR': 'Krieger'
+            };
+            
+            function normalizeClass(cls) {
+                if (!cls) return '';
+                return CLASS_ALIASES[String(cls).toLowerCase().trim()] || '';
+            }
+            
+            // Default-Kategorien. Jede hat:
+            //   id: stabile ID
+            //   label: Anzeigename
+            //   class: kanonischer Klassenschlüssel (DEATHKNIGHT, DRUID, ...) oder ''
+            //   spec:  Spec-Wert wie im Roster (z.B. 'Shadow', 'Frost1') oder ''
+            //   role:  'tank' | 'healer' | 'dps' | ''
+            //   limitRows / limitCount: max N in den ersten X Zeilen
+            //   maxTotal: max gesamt in der Tabelle
+            const DEFAULT_PRIO_CATEGORIES = [
+                { id: 'healer',      label: 'Healer',      class: '',            spec: '',             role: 'healer' },
+                { id: 'tank',        label: 'Tank',        class: '',            spec: '',             role: 'tank',   limitRows: 4, limitCount: 1 },
+                { id: 'shadow',      label: 'Shadow',      class: 'PRIEST',      spec: 'Shadow',       role: 'dps' },
+                { id: 'elemental',   label: 'Elementar',   class: 'SHAMAN',      spec: 'Elemental',    role: 'dps' },
+                { id: 'enhancement', label: 'Enhancement', class: 'SHAMAN',      spec: 'Enhancement',  role: 'dps' },
+                { id: 'unholy',      label: 'Unholy',      class: 'DEATHKNIGHT', spec: 'Unholy',       role: 'dps' }
+            ];
+            
+            const PRIO_STORAGE_KEY = 'norushen-orb-prio-categories-v4';
+            let prioCategories = [];
+            
+            function loadPrio() {
+                try {
+                    const saved = localStorage.getItem(PRIO_STORAGE_KEY);
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        if (Array.isArray(parsed) && parsed.every(c => c && c.id && c.label)) {
+                            prioCategories = parsed;
+                            return;
+                        }
+                    }
+                } catch (e) { /* ignore */ }
+                prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+            }
+            
+            function savePrio() {
+                try { localStorage.setItem(PRIO_STORAGE_KEY, JSON.stringify(prioCategories)); } catch (e) { /* ignore */ }
+            }
+            
+            loadPrio();
+            
+            // ── DOM-Refs ──
+            const prioListEl   = document.getElementById('norushen-orb-prio-list');
+            const autoFillBtn  = document.getElementById('norushen-orb-auto-fill');
+            const prioResetBtn = document.getElementById('norushen-orb-prio-reset');
+            const prioAddBtn   = document.getElementById('norushen-orb-prio-add');
+            const prioDetectBtn= document.getElementById('norushen-orb-prio-detect');
+            const showDebugBtn = document.getElementById('norushen-orb-show-debug');
+            const debugOutEl   = document.getElementById('norushen-orb-debug-output');
+            const modalEl      = document.getElementById('norushen-orb-prio-modal');
+            const modalTitle   = document.getElementById('norushen-orb-prio-modal-title');
+            const modalLabel   = document.getElementById('norushen-orb-prio-modal-label');
+            const modalClass   = document.getElementById('norushen-orb-prio-modal-class');
+            const modalSpec    = document.getElementById('norushen-orb-prio-modal-spec');
+            const modalRole    = document.getElementById('norushen-orb-prio-modal-role');
+            const modalLimitRows  = document.getElementById('norushen-orb-prio-modal-limit-rows');
+            const modalLimitCount = document.getElementById('norushen-orb-prio-modal-limit-count');
+            const modalMaxTotal   = document.getElementById('norushen-orb-prio-modal-max-total');
+            const modalSave    = document.getElementById('norushen-orb-prio-modal-save');
+            const modalCancel  = document.getElementById('norushen-orb-prio-modal-cancel');
+            
+            // Klassen-Dropdown initial füllen
+            if (modalClass) {
+                Object.keys(SPEC_DEFINITIONS).forEach(clsKey => {
+                    const opt = new Option(CLASS_DISPLAY[clsKey] || clsKey, clsKey);
+                    modalClass.appendChild(opt);
+                });
+            }
+            
+            // Spec-Dropdown abhängig von Klasse füllen
+            function updateSpecDropdown(selectedClass, selectedSpec) {
+                if (!modalSpec) return;
+                modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
+                if (selectedClass && SPEC_DEFINITIONS[selectedClass]) {
+                    SPEC_DEFINITIONS[selectedClass].forEach(s => {
+                        const opt = new Option(s.label, s.value);
+                        modalSpec.appendChild(opt);
+                    });
+                }
+                modalSpec.value = selectedSpec || '';
+                // Wenn der gespeicherte Spec-Wert nicht in den Optionen ist (z.B. Klasse gewechselt) → reset
+                if (modalSpec.value !== (selectedSpec || '')) modalSpec.value = '';
+            }
+            
+            // Auto-Update Spec-Dropdown wenn Klasse geändert wird; Rolle gleich mit vorschlagen
+            if (modalClass) {
+                modalClass.addEventListener('change', () => {
+                    updateSpecDropdown(modalClass.value, '');
+                });
+            }
+            // Wenn Spec gewählt wird → Rolle automatisch vorschlagen (User kann überschreiben)
+            if (modalSpec) {
+                modalSpec.addEventListener('change', () => {
+                    const cls = modalClass.value;
+                    const spec = modalSpec.value;
+                    if (cls && spec && SPEC_DEFINITIONS[cls]) {
+                        const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
+                        if (def && !modalRole.value) modalRole.value = def.role;
+                    }
+                });
+            }
+            
+            // ── Roster-Helpers ──
+            function getPlayerRoleNormalized(p) {
+                if (Array.isArray(p.roles) && p.roles.length > 0) return String(p.roles[0]).toLowerCase();
+                if (p.role) return String(p.role).toLowerCase();
+                return '';
+            }
+            function getPlayerSpec(p) {
+                return (p.spec || p.specName || p.specialization || '').toString();
+            }
+            function getPlayerClass(p) {
+                return (p.class || p.className || '').toString();
+            }
+            
+            // ── Match-Funktion (class + spec + role, alle UND-verknüpft) ──
+            function playerMatchesCategory(p, cat) {
+                const playerClass = normalizeClass(getPlayerClass(p));
+                const playerSpec  = getPlayerSpec(p);
+                const playerRole  = getPlayerRoleNormalized(p);
+                
+                if (cat.class && cat.class.trim()) {
+                    if (playerClass !== cat.class) return false;
+                }
+                if (cat.spec && cat.spec.trim()) {
+                    if (playerSpec !== cat.spec) return false;
+                }
+                if (cat.role && cat.role.trim()) {
+                    if (playerRole !== cat.role.toLowerCase()) return false;
+                }
+                
+                return true;
+            }
+            
+            // ── Aus Roster Specs/Klassen ableiten und Kategorien generieren ──
+            // Erstellt EINE Kategorie pro tatsächlich im Roster gefundene (Klasse, Spec)-Kombi.
+            // Wenn dieselbe Kategorie schon existiert (gleiche class+spec+role), werden die
+            // Limits aus der existierenden Definition übernommen.
+            function detectCategoriesFromRoster() {
+                if (!Array.isArray(roster) || roster.length === 0) return [];
+                
+                const cats = [];
+                
+                // Hilfsfunktion: existierende Kategorie mit gleichem Filter finden (für Limits-Übernahme)
+                function findExistingMatch(filter) {
+                    return prioCategories.find(c =>
+                        (c.class || '') === (filter.class || '') &&
+                        (c.spec  || '') === (filter.spec  || '') &&
+                        (c.role  || '') === (filter.role  || '')
+                    );
+                }
+                function withLimits(base) {
+                    const ex = findExistingMatch(base);
+                    if (ex) {
+                        if (ex.limitRows  !== undefined) base.limitRows  = ex.limitRows;
+                        if (ex.limitCount !== undefined) base.limitCount = ex.limitCount;
+                        if (ex.maxTotal   !== undefined) base.maxTotal   = ex.maxTotal;
+                    }
+                    return base;
+                }
+                
+                // 1. Healer + Tank (basiert auf Rolle, klassenübergreifend)
+                const healers = roster.filter(p => getPlayerRoleNormalized(p) === 'healer');
+                const tanks   = roster.filter(p => getPlayerRoleNormalized(p) === 'tank');
+                if (healers.length > 0) {
+                    cats.push(withLimits({ id: 'auto_healer', label: `Healer (${healers.length})`, class: '', spec: '', role: 'healer' }));
+                }
+                if (tanks.length > 0) {
+                    const t = withLimits({ id: 'auto_tank', label: `Tank (${tanks.length})`, class: '', spec: '', role: 'tank' });
+                    // Falls noch keine Limits aus existierender Kategorie übernommen wurden → Default für Tank setzen
+                    if (t.limitRows === undefined) { t.limitRows = 4; t.limitCount = 1; }
+                    cats.push(t);
+                }
+                
+                // 2. Pro DPS-Spec eine Kategorie (Spec MUSS in SPEC_DEFINITIONS existieren, sonst ignoriert)
+                const specBuckets = {};  // key = "CLASS|spec" → { class, spec, label, count }
+                roster.forEach(p => {
+                    if (getPlayerRoleNormalized(p) !== 'dps') return;
+                    const cls  = normalizeClass(getPlayerClass(p));
+                    const spec = getPlayerSpec(p);
+                    if (!cls || !spec) return;
+                    
+                    // Spec muss in SPEC_DEFINITIONS bekannt sein
+                    const known = (SPEC_DEFINITIONS[cls] || []).find(s => s.value === spec);
+                    if (!known) return;
+                    
+                    const key = cls + '|' + spec;
+                    if (!specBuckets[key]) {
+                        specBuckets[key] = {
+                            class: cls,
+                            spec: spec,
+                            label: known.label + ' ' + (CLASS_DISPLAY[cls] || cls),
+                            count: 0
+                        };
+                    }
+                    specBuckets[key].count++;
+                });
+                
+                // Sortiere DPS-Buckets nach Häufigkeit (häufigste zuerst)
+                const sortedDps = Object.values(specBuckets).sort((a, b) => b.count - a.count);
+                sortedDps.forEach(b => {
+                    const id = 'auto_' + b.class.toLowerCase() + '_' + b.spec.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                    cats.push(withLimits({
+                        id: id,
+                        label: b.label + ' (' + b.count + ')',
+                        class: b.class,
+                        spec: b.spec,
+                        role: 'dps'
+                    }));
+                });
+                
+                return cats;
+            }
+            
+            // ── Render Prio-Liste ──
+            function renderPrioList() {
+                if (!prioListEl) return;
+                prioListEl.innerHTML = '';
+                if (prioCategories.length === 0) {
+                    prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien — auf "+" klicken oder "Aus Kader ableiten".</li>';
+                    return;
+                }
+                prioCategories.forEach((cat, idx) => {
+                    const li = document.createElement('li');
+                    li.draggable = !!window.isManager;
+                    li.dataset.catId = cat.id;
+                    li.className = 'flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs';
+                    
+                    // Filter-Summary
+                    const filters = [];
+                    if (cat.class) filters.push(CLASS_DISPLAY[cat.class] || cat.class);
+                    if (cat.spec)  filters.push(cat.spec);
+                    if (cat.role)  filters.push(cat.role);
+                    const filterStr = filters.length > 0 ? filters.join(' · ') : '<span class="text-yellow-500">⚠ kein Filter</span>';
+                    
+                    // Limits-Summary
+                    const limits = [];
+                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '') {
+                        limits.push(`max ${cat.limitCount} in ersten ${cat.limitRows}`);
+                    }
+                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                        limits.push(`max ${cat.maxTotal} gesamt`);
+                    }
+                    const limitStr = limits.length > 0 ? `<span class="text-amber-400 ml-1">[${limits.join(', ')}]</span>` : '';
+                    
+                    li.innerHTML = `
+                        <span class="text-gray-500 font-mono w-6 text-center">${idx + 1}</span>
+                        <span class="text-gray-400 select-none cursor-move drag-handle">⋮⋮</span>
+                        <span class="flex-1 text-white truncate" title="${cat.label}">${cat.label}${limitStr}</span>
+                        <span class="text-[10px] text-gray-500 hidden md:inline">${filterStr}</span>
+                        <button class="prio-edit text-blue-400 hover:text-blue-300 text-xs px-1" data-cat-id="${cat.id}" title="Bearbeiten">✎</button>
+                        <button class="prio-del text-red-400 hover:text-red-300 text-xs px-1" data-cat-id="${cat.id}" title="Löschen">✕</button>
+                    `;
+                    prioListEl.appendChild(li);
+                });
+            }
+            
+            // ── Drag & Drop (sauber: nur Indizes manipulieren, DOM nur über renderPrioList) ──
+            // Der vorige Ansatz hat das DOM live in dragover bewegt, was bei abgebrochenen
+            // Drops oder beim Wechsel zwischen Targets zu Geister-Duplikaten führte.
+            // Neuer Ansatz: Wir merken uns nur die catId des dragged-Elements und berechnen
+            // erst beim drop die neue Position. Visual feedback per Klassen.
+            let dragSourceId = null;
+            
+            if (prioListEl) {
+                prioListEl.addEventListener('dragstart', (e) => {
+                    if (!window.isManager) { e.preventDefault(); return; }
+                    const li = e.target.closest('[data-cat-id]');
+                    if (!li) { e.preventDefault(); return; }
+                    dragSourceId = li.dataset.catId;
+                    li.classList.add('opacity-50');
+                    e.dataTransfer.effectAllowed = 'move';
+                    // Manche Browser brauchen setData damit dragover/drop überhaupt feuert
+                    try { e.dataTransfer.setData('text/plain', dragSourceId); } catch (err) {}
+                });
+                
+                prioListEl.addEventListener('dragover', (e) => {
+                    if (!dragSourceId) return;
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    // Visuelles Feedback: Drop-Indikator-Klasse auf Target
+                    const target = e.target.closest('[data-cat-id]');
+                    prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => {
+                        el.classList.remove('drop-above', 'drop-below');
+                    });
+                    if (!target || target.dataset.catId === dragSourceId) return;
+                    const rect = target.getBoundingClientRect();
+                    const after = (e.clientY - rect.top) > rect.height / 2;
+                    target.classList.add(after ? 'drop-below' : 'drop-above');
+                });
+                
+                prioListEl.addEventListener('dragleave', (e) => {
+                    // Nur wenn wir die Liste komplett verlassen, alle Indikatoren entfernen
+                    if (!prioListEl.contains(e.relatedTarget)) {
+                        prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => {
+                            el.classList.remove('drop-above', 'drop-below');
+                        });
+                    }
+                });
+                
+                prioListEl.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (!dragSourceId) return;
+                    
+                    const target = e.target.closest('[data-cat-id]');
+                    if (!target || target.dataset.catId === dragSourceId) {
+                        // Drop auf sich selbst oder außerhalb → nichts ändern, nur Cleanup
+                        return;
+                    }
+                    
+                    const rect = target.getBoundingClientRect();
+                    const dropAfter = (e.clientY - rect.top) > rect.height / 2;
+                    
+                    // Indizes im Array bestimmen
+                    const fromIdx = prioCategories.findIndex(c => c.id === dragSourceId);
+                    const toIdxRaw = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                    if (fromIdx < 0 || toIdxRaw < 0) return;
+                    
+                    // Element rausnehmen
+                    const [moved] = prioCategories.splice(fromIdx, 1);
+                    
+                    // Neuen Zielindex berechnen (nach dem Splice!)
+                    let toIdx = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                    if (dropAfter) toIdx += 1;
+                    
+                    // Sicherheitsnetz: in gültigen Bereich klemmen
+                    if (toIdx < 0) toIdx = 0;
+                    if (toIdx > prioCategories.length) toIdx = prioCategories.length;
+                    
+                    prioCategories.splice(toIdx, 0, moved);
+                    savePrio();
+                });
+                
+                prioListEl.addEventListener('dragend', () => {
+                    // Cleanup unabhängig davon, ob drop erfolgreich war oder abgebrochen wurde
+                    prioListEl.querySelectorAll('.opacity-50, .drop-above, .drop-below').forEach(el => {
+                        el.classList.remove('opacity-50', 'drop-above', 'drop-below');
+                    });
+                    dragSourceId = null;
+                    // Einmaliges Re-Render am Ende (aktualisiert Indizes + setzt cleanen DOM-State)
+                    renderPrioList();
+                });
+                
+                // Edit / Delete
+                prioListEl.addEventListener('click', (e) => {
+                    if (!window.isManager) return;
+                    const editBtn = e.target.closest('.prio-edit');
+                    const delBtn  = e.target.closest('.prio-del');
+                    if (editBtn) {
+                        openPrioModal(editBtn.dataset.catId);
+                    } else if (delBtn) {
+                        const id = delBtn.dataset.catId;
+                        const cat = prioCategories.find(c => c.id === id);
+                        if (cat && confirm(`Kategorie "${cat.label}" wirklich löschen?`)) {
+                            prioCategories = prioCategories.filter(c => c.id !== id);
+                            savePrio();
+                            renderPrioList();
+                        }
+                    }
+                });
+            }
+            
+            // ── Modal ──
+            let editingCatId = null;
+            
+            function openPrioModal(catId) {
+                if (!window.isManager) return;
+                editingCatId = catId || null;
+                if (catId) {
+                    const cat = prioCategories.find(c => c.id === catId);
+                    if (!cat) return;
+                    modalTitle.textContent = 'Kategorie bearbeiten';
+                    modalLabel.value      = cat.label || '';
+                    modalClass.value      = cat.class || '';
+                    updateSpecDropdown(cat.class || '', cat.spec || '');
+                    modalRole.value       = cat.role || '';
+                    modalLimitRows.value  = cat.limitRows ?? '';
+                    modalLimitCount.value = cat.limitCount ?? '';
+                    modalMaxTotal.value   = cat.maxTotal ?? '';
+                } else {
+                    modalTitle.textContent = 'Neue Kategorie';
+                    modalLabel.value = '';
+                    modalClass.value = '';
+                    updateSpecDropdown('', '');
+                    modalRole.value = '';
+                    modalLimitRows.value = '';
+                    modalLimitCount.value = '';
+                    modalMaxTotal.value = '';
+                }
+                modalEl.classList.remove('hidden');
+                setTimeout(() => modalLabel.focus(), 50);
+            }
+            
+            function closePrioModal() {
+                modalEl.classList.add('hidden');
+                editingCatId = null;
+            }
+            
+            if (prioAddBtn) prioAddBtn.addEventListener('click', () => openPrioModal(null));
+            if (modalCancel) modalCancel.addEventListener('click', closePrioModal);
+            if (modalEl) modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closePrioModal(); });
+            
+            if (modalSave) {
+                modalSave.addEventListener('click', () => {
+                    const label = modalLabel.value.trim();
+                    if (!label) {
+                        modalLabel.focus();
+                        modalLabel.style.borderColor = '#ef4444';
+                        return;
+                    }
+                    modalLabel.style.borderColor = '';
+                    
+                    const data = {
+                        label: label,
+                        class: modalClass.value.trim(),
+                        spec:  modalSpec.value.trim(),
+                        role:  modalRole.value.trim()
+                    };
+                    
+                    // Limits parsen (leer = nicht setzen)
+                    const lr = parseInt(modalLimitRows.value, 10);
+                    const lc = parseInt(modalLimitCount.value, 10);
+                    if (!isNaN(lr) && lr > 0 && !isNaN(lc) && lc >= 0) {
+                        data.limitRows = lr;
+                        data.limitCount = lc;
+                    }
+                    const mt = parseInt(modalMaxTotal.value, 10);
+                    if (!isNaN(mt) && mt >= 0) {
+                        data.maxTotal = mt;
+                    }
+                    
+                    if (editingCatId) {
+                        const cat = prioCategories.find(c => c.id === editingCatId);
+                        if (cat) {
+                            // Erst alte limit-/maxTotal-Felder + Legacy-Felder entfernen, dann neue setzen
+                            delete cat.limitRows;
+                            delete cat.limitCount;
+                            delete cat.maxTotal;
+                            delete cat.pattern;   // Legacy-Cleanup
+                            delete cat.classes;   // Legacy-Cleanup
+                            Object.assign(cat, data);
+                        }
+                    } else {
+                        const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20) + '_' + Date.now().toString(36);
+                        prioCategories.push({ id, ...data });
+                    }
+                    savePrio();
+                    renderPrioList();
+                    closePrioModal();
+                });
+            }
+            
+            // ── Reset ──
+            if (prioResetBtn) {
+                prioResetBtn.addEventListener('click', () => {
+                    if (!window.isManager) return;
+                    if (!confirm('Alle Kategorien auf die Defaults zurücksetzen? Eigene gehen verloren.')) return;
+                    prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+                    savePrio();
+                    renderPrioList();
+                });
+            }
+            
+            // ── Aus Kader ableiten ──
+            if (prioDetectBtn) {
+                prioDetectBtn.addEventListener('click', () => {
+                    if (!window.isManager) return;
+                    const detected = detectCategoriesFromRoster();
+                    if (detected.length === 0) {
+                        if (window.showModal) window.showModal('Konnte aus dem Kader keine Kategorien ableiten.\nIst das Roster geladen? Hat es Klassen-/Spec-Daten?');
+                        return;
+                    }
+                    const msg = `${detected.length} Kategorien aus dem Kader erkannt:\n${detected.map(c => '• ' + c.label).join('\n')}\n\nVorhandene Kategorien überschreiben?`;
+                    if (!confirm(msg)) return;
+                    prioCategories = detected;
+                    savePrio();
+                    renderPrioList();
+                });
+            }
+            
+            // ── Build sortierte Spielerliste mit Kategorie-Info ──
+            function buildSortedRoster() {
+                if (!Array.isArray(roster)) return [];
+                const used = new Set();
+                const out = [];
+                
+                prioCategories.forEach(cat => {
+                    roster.forEach(p => {
+                        const name = p.name || p;
+                        if (used.has(name)) return;
+                        if (playerMatchesCategory(p, cat)) {
+                            out.push({ player: p, name: name, category: cat });
+                            used.add(name);
+                        }
+                    });
+                });
+                
+                roster.forEach(p => {
+                    const name = p.name || p;
+                    if (!used.has(name)) {
+                        out.push({ player: p, name: name, category: null });
+                        used.add(name);
+                    }
+                });
+                
+                return out;
+            }
+            
+            // ── Debug-Anzeige ──
+            if (showDebugBtn) {
+                showDebugBtn.addEventListener('click', () => {
+                    const sorted = buildSortedRoster();
+                    if (sorted.length === 0) {
+                        debugOutEl.innerHTML = '<div class="text-gray-500 italic">Kader leer.</div>';
+                    } else {
+                        const byGroup = {};
+                        sorted.forEach(s => {
+                            const grp = s.category ? s.category.label : '(Sonstige)';
+                            if (!byGroup[grp]) byGroup[grp] = [];
+                            byGroup[grp].push(s);
+                        });
+                        let html = '';
+                        Object.keys(byGroup).forEach(grp => {
+                            html += `<div class="mb-2"><div class="font-bold text-yellow-400">${grp} (${byGroup[grp].length})</div><div class="ml-2">`;
+                            byGroup[grp].forEach(s => {
+                                const cls  = getPlayerClass(s.player) || '?';
+                                const spec = getPlayerSpec(s.player)  || '—';
+                                const role = getPlayerRoleNormalized(s.player) || '—';
+                                html += `<div class="text-gray-400">• <span class="text-white">${s.name}</span> <span class="text-gray-500">[${cls}/${spec}/${role}]</span></div>`;
+                            });
+                            html += '</div></div>';
+                        });
+                        debugOutEl.innerHTML = html;
+                    }
+                    debugOutEl.classList.toggle('hidden');
+                });
+            }
+            
+            // ── Auto-Füllen (mit Limits!) ──
+            if (autoFillBtn) {
+                autoFillBtn.addEventListener('click', () => {
+                    if (!window.isManager) {
+                        if (window.showModal) window.showModal('Nur Gildenräte können diese Aktion ausführen.');
+                        return;
+                    }
+                    if (!Array.isArray(roster) || roster.length === 0) {
+                        if (window.showModal) window.showModal('Kader leer — keine Spieler zum Eintragen.');
+                        return;
+                    }
+                    
+                    const currentRowCount = tbody.querySelectorAll('tr').length;
+                    if (currentRowCount === 0) {
+                        if (window.showModal) window.showModal('Keine Zeilen vorhanden. Erst "+ Zeile hinzufügen" klicken.');
+                        return;
+                    }
+                    
+                    // Schon eingetragene Spieler ausschließen + bereits genutzte Kategorie-Counts vorberechnen
+                    const alreadyAssigned = new Set();
+                    const usedInRows = {};  // catId → [rowIdx, rowIdx, ...]
+                    orderData.forEach((r, idx) => {
+                        if (r && r.player) {
+                            alreadyAssigned.add(r.player);
+                            // Welche Kategorie matcht der schon eingetragene Spieler?
+                            const p = roster.find(rp => (rp.name || rp) === r.player);
+                            if (p) {
+                                for (const cat of prioCategories) {
+                                    if (playerMatchesCategory(p, cat)) {
+                                        if (!usedInRows[cat.id]) usedInRows[cat.id] = [];
+                                        usedInRows[cat.id].push(idx);
+                                        break;  // erste passende Kategorie zählt
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    
+                    const sorted = buildSortedRoster().filter(s => !alreadyAssigned.has(s.name));
+                    
+                    let pickIdx = 0;
+                    let fillCount = 0;
+                    let skippedDueLimit = 0;
+                    
+                    for (let i = 0; i < currentRowCount; i++) {
+                        const existing = orderData[i] || { player: '', delay: '' };
+                        if (existing.player) continue;
+                        
+                        // Versuche, einen Spieler zu finden, dessen Kategorie-Limit nicht überschritten wäre
+                        let found = -1;
+                        for (let j = pickIdx; j < sorted.length; j++) {
+                            const candidate = sorted[j];
+                            const cat = candidate.category;
+                            
+                            if (cat) {
+                                // Prüfe limitRows / limitCount: max N in den ersten X Zeilen
+                                if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && i < cat.limitRows) {
+                                    const usedInFirstN = (usedInRows[cat.id] || []).filter(idx => idx < cat.limitRows).length;
+                                    if (usedInFirstN >= cat.limitCount) continue;  // skip dieser Spieler hier
+                                }
+                                // Prüfe maxTotal
+                                if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                                    const usedTotal = (usedInRows[cat.id] || []).length;
+                                    if (usedTotal >= cat.maxTotal) continue;
+                                }
+                            }
+                            
+                            found = j;
+                            break;
+                        }
+                        
+                        if (found < 0) {
+                            skippedDueLimit++;
+                            continue;  // kein passender Spieler für diese Zeile
+                        }
+                        
+                        const candidate = sorted[found];
+                        // sorted-Array sequentiell konsumieren: gefundenen Eintrag rauslöschen
+                        sorted.splice(found, 1);
+                        // pickIdx bleibt gleich (Array ist um eins kürzer geworden)
+                        
+                        while (orderData.length <= i) orderData.push({ player: '', delay: '' });
+                        orderData[i] = {
+                            player: candidate.name,
+                            delay: existing.delay !== undefined ? existing.delay : ''
+                        };
+                        if (candidate.category) {
+                            if (!usedInRows[candidate.category.id]) usedInRows[candidate.category.id] = [];
+                            usedInRows[candidate.category.id].push(i);
+                        }
+                        fillCount++;
+                    }
+                    
+                    renderRows();
+                    scheduleSave();
+                    
+                    let msg = `Auto-Füllen: ${fillCount} Spieler eingetragen.`;
+                    if (skippedDueLimit > 0) msg += `\n(${skippedDueLimit} Zeilen übersprungen wegen Limits.)`;
+                    if (window.showModal) window.showModal(msg);
+                });
+            }
+            
+            // ── Manager-Schutz ──
+            function applyPrioProtection() {
+                const isManager = !!window.isManager;
+                [autoFillBtn, prioResetBtn, prioAddBtn, prioDetectBtn].forEach(btn => {
+                    if (btn) btn.disabled = !isManager;
+                });
+                if (prioListEl) {
+                    prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
+                        el.draggable = isManager;
+                        const handle = el.querySelector('.drag-handle');
+                        if (handle) handle.style.cursor = isManager ? 'move' : 'not-allowed';
+                        el.style.opacity = isManager ? '' : '0.6';
+                        el.querySelectorAll('button').forEach(b => b.disabled = !isManager);
+                    });
+                }
+            }
+            
+            renderPrioList();
+            applyPrioProtection();
+            setInterval(applyPrioProtection, 1500);
+            
             // Initial load
             loadFromAssignments();
-            if (orderData.length === 0) renderRows();  // leere Tabelle rendern
+            if (orderData.length === 0) renderRows();
         })();
     };
 </script>
