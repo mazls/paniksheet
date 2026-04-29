@@ -24,6 +24,75 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+    /* ─── Kill Order ─── */
+    .blackfuse-ko-row {
+        display: grid;
+        grid-template-columns: 22px 1fr;
+        align-items: center;
+        gap: 4px;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 3px;
+        padding: 1px 4px;
+    }
+    .blackfuse-ko-row .ko-num {
+        font-family: monospace;
+        font-weight: 700;
+        color: #e2e8f0;
+        text-align: center;
+        font-size: 0.75rem;
+    }
+    .blackfuse-ko-select {
+        background-color: transparent;
+        border: 1px solid transparent;
+        color: white;
+        padding: 2px 4px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-align: center;
+        border-radius: 3px;
+        cursor: pointer;
+        width: 100%;
+        height: 22px;
+    }
+    .blackfuse-ko-select.opt-Missile { background-color: #059669; border-color: #10b981; }
+    .blackfuse-ko-select.opt-Mine    { background-color: #d97706; border-color: #f59e0b; }
+    .blackfuse-ko-select.opt-Laser   { background-color: #dc2626; border-color: #ef4444; }
+    
+    /* ─── Line Assignments ─── */
+    .blackfuse-line-card {
+        display: grid;
+        grid-template-columns: 60px repeat(5, 1fr);
+        gap: 4px;
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid #334155;
+        border-radius: 4px;
+        padding: 4px 6px;
+        align-items: center;
+    }
+    .blackfuse-line-label {
+        font-weight: 700;
+        color: #e2e8f0;
+        font-size: 0.75rem;
+        text-align: center;
+    }
+    .blackfuse-line-slot {
+        background-color: #0f172a;
+        border: 1px solid #475569;
+        border-radius: 3px;
+        padding: 2px 4px;
+        font-size: 0.7rem;
+        color: #fff;
+        width: 100%;
+        height: 22px;
+    }
+    .blackfuse-line-slot.is-duplicate {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 1px #ef4444;
+    }
+    /* Drop-Indikatoren */
+    #blackfuse-lines-prio-list li.drop-above { box-shadow: 0 -2px 0 0 #fbbf24; }
+    #blackfuse-lines-prio-list li.drop-below { box-shadow: 0 2px 0 0 #fbbf24; }
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Belagerungsschmied Rußschmied</h1>
@@ -108,14 +177,96 @@
                     </ul>
                 </div>
                 
+                <!-- ════ LINE ASSIGNMENTS ════════════════════════════════════ -->
                 <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-cyan-400">⚙️ Fließband-Teams (Rotation)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Wechseln sich auf dem Band ab. Im 10er meist nur 1-2 DPS pro Team, im 25er mehr.</p>
-                    <ul class="assignment-list">
-                        <li><span class="text-cyan-200">Team 1 (Welle 1, 4, 7):</span><select data-assignment-id="blackfuse-belt-1" class="assignment-select" multiple></select></li>
-                        <li><span class="text-cyan-300">Team 2 (Welle 2, 5, 8):</span><select data-assignment-id="blackfuse-belt-2" class="assignment-select" multiple></select></li>
-                        <li><span class="text-cyan-400">Team 3 (Welle 3, 6, 9):</span><select data-assignment-id="blackfuse-belt-3" class="assignment-select" multiple></select></li>
-                    </ul>
+                    <h4 class="text-lg font-bold text-emerald-300">📋 Line Assignments (LINE1-9)</h4>
+                    <p class="text-sm text-gray-400 mb-3 px-3">Pro Line bis zu 5 Spieler. Auto-Füllen verteilt aus dem Kader.</p>
+                    
+                    <div id="blackfuse-lines-grid" class="space-y-2 mb-3"></div>
+                    
+                    <details class="mb-2 bg-slate-900/60 border border-slate-700 rounded">
+                        <summary class="cursor-pointer p-2 text-xs font-bold text-yellow-300 hover:bg-slate-800 rounded">
+                            ⚡ Auto-Füllen Konfiguration
+                        </summary>
+                        <div class="p-3 space-y-2">
+                            <p class="text-[11px] text-gray-400">
+                                Round-Robin nach Prio. Limits gelten <strong>pro Line</strong>.
+                            </p>
+                            <ul id="blackfuse-lines-prio-list" class="space-y-1"></ul>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <button id="blackfuse-lines-prio-add" class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">+ Eigene Kategorie</button>
+                                <button id="blackfuse-lines-prio-detect" class="bg-blue-700 hover:bg-blue-800 text-white text-[11px] py-1 px-2 rounded border border-blue-500">🪄 Aus Kader ableiten</button>
+                                <button id="blackfuse-lines-prio-reset" class="bg-slate-700 hover:bg-slate-800 text-white text-[11px] py-1 px-2 rounded border border-slate-500">↺ Defaults</button>
+                            </div>
+                        </div>
+                    </details>
+                    
+                    <div class="flex items-center gap-2 px-2">
+                        <button id="blackfuse-lines-autofill" class="text-xs bg-yellow-700 hover:bg-yellow-800 text-white py-1 px-2 rounded border border-yellow-500">⚡ Auto-Füllen</button>
+                        <button id="blackfuse-lines-clear" class="text-xs bg-slate-700 hover:bg-slate-800 text-white py-1 px-2 rounded border border-slate-500">🗑 Leeren</button>
+                        <button id="blackfuse-lines-copy" class="ml-auto text-xs bg-purple-700 hover:bg-purple-800 text-white py-1 px-2 rounded border border-purple-500">📋 WA Export</button>
+                    </div>
+                    <code id="blackfuse-lines-wa" class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">—</code>
+                    
+                    <!-- Modal für Kategorie-Edit -->
+                    <div id="blackfuse-lines-prio-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+                        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 max-w-md w-full" style="font-size: 13px;">
+                            <h4 class="text-base font-bold text-yellow-300 mb-3" id="blackfuse-lines-prio-modal-title">Kategorie bearbeiten</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Anzeigename</label>
+                                    <input id="blackfuse-lines-prio-modal-label" type="text" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Klasse</label>
+                                    <select id="blackfuse-lines-prio-modal-class" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— alle Klassen —</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Spec</label>
+                                    <select id="blackfuse-lines-prio-modal-spec" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— alle Specs —</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Rolle</label>
+                                    <select id="blackfuse-lines-prio-modal-role" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— beliebig —</option>
+                                        <option value="tank">Tank</option>
+                                        <option value="healer">Healer</option>
+                                        <option value="dps">DPS</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Archetyp</label>
+                                    <select id="blackfuse-lines-prio-modal-archetype" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— beliebig —</option>
+                                        <option value="melee">Melee</option>
+                                        <option value="ranged_physical">Ranged Physical</option>
+                                        <option value="caster">Caster</option>
+                                    </select>
+                                </div>
+                                <div class="border-t border-slate-700 pt-3 grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] text-gray-400 mb-1">Max in ersten N Slots</label>
+                                        <div class="flex gap-1">
+                                            <input id="blackfuse-lines-prio-modal-limit-rows" type="number" min="1" class="w-12 bg-slate-900 border border-slate-600 rounded px-1 py-1 text-sm text-white">
+                                            <input id="blackfuse-lines-prio-modal-limit-count" type="number" min="0" class="flex-1 bg-slate-900 border border-slate-600 rounded px-1 py-1 text-sm text-white">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] text-gray-400 mb-1">Max gesamt pro Line</label>
+                                        <input id="blackfuse-lines-prio-modal-max-total" type="number" min="0" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mt-4">
+                                <button id="blackfuse-lines-prio-modal-save" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded">Speichern</button>
+                                <button id="blackfuse-lines-prio-modal-cancel" class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded">Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -144,6 +295,18 @@
                             data-phase="blackfuse-p2" 
                             onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;blackfuse-p2&quot;>Bild für den Magneten noch nicht verfügbar.</div>'">
                     </div>
+                </div>
+
+                <!-- ════ KILL ORDER ════════════════════════════════════════════ -->
+                <div class="assignment-block mt-6">
+                    <h4 class="text-lg font-bold text-orange-300">🎯 Kill Order (Belt Items)</h4>
+                    <p class="text-sm text-gray-400 mb-3 px-3">Reihenfolge der zu zerstörenden Belt-Items. Default: alle Missile.</p>
+                    <div id="blackfuse-killorder-grid" class="grid grid-cols-3 gap-1 mb-2 px-2"></div>
+                    <div class="flex items-center gap-2 mt-2 px-2">
+                        <button id="blackfuse-killorder-reset" class="text-xs bg-slate-700 hover:bg-slate-800 text-white py-1 px-2 rounded border border-slate-500">↺ Alle auf Missile</button>
+                        <button id="blackfuse-killorder-copy" class="ml-auto text-xs bg-purple-700 hover:bg-purple-800 text-white py-1 px-2 rounded border border-purple-500">📋 WA Export</button>
+                    </div>
+                    <code id="blackfuse-killorder-wa" class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">—</code>
                 </div>
 
                 <div class="mt-6">
@@ -807,6 +970,868 @@ CD_AUTO_PLANNER.init({
             });
             setTimeout(window.updatePlannerSummary, 500);
         }
+        
+        // ════════════════════════════════════════════════════════════════
+        // KILL ORDER (15 Slots: Missile/Mine/Laser)
+        // ════════════════════════════════════════════════════════════════
+        (function initKillOrder() {
+            const gridEl = document.getElementById('blackfuse-killorder-grid');
+            if (!gridEl) return;
+            
+            const ASSIGNMENT_ID = 'blackfuse-killorder';
+            const NUM_SLOTS = 15;
+            const OPTIONS = ['Missile', 'Mine', 'Laser'];
+            const DEFAULT_VALUE = 'Missile';
+            
+            let killOrder = Array(NUM_SLOTS).fill(DEFAULT_VALUE);
+            let saveTimer = null;
+            
+            const resetBtn = document.getElementById('blackfuse-killorder-reset');
+            const copyBtn  = document.getElementById('blackfuse-killorder-copy');
+            const waOut    = document.getElementById('blackfuse-killorder-wa');
+            
+            function buildWa() {
+                return killOrder.join(',');
+            }
+            function updateWaDisplay() {
+                if (waOut) waOut.textContent = buildWa();
+            }
+            
+            function render() {
+                gridEl.innerHTML = '';
+                for (let i = 0; i < NUM_SLOTS; i++) {
+                    const v = killOrder[i] || DEFAULT_VALUE;
+                    const row = document.createElement('div');
+                    row.className = 'blackfuse-ko-row';
+                    row.innerHTML = `
+                        <span class="ko-num">${i + 1}</span>
+                        <select class="blackfuse-ko-select opt-${v}" data-slot="${i}">
+                            ${OPTIONS.map(o => `<option value="${o}" ${o === v ? 'selected' : ''}>${o}</option>`).join('')}
+                        </select>
+                    `;
+                    gridEl.appendChild(row);
+                }
+                updateWaDisplay();
+            }
+            
+            gridEl.addEventListener('change', (e) => {
+                const sel = e.target.closest('.blackfuse-ko-select');
+                if (!sel) return;
+                const slot = parseInt(sel.dataset.slot);
+                if (isNaN(slot)) return;
+                killOrder[slot] = sel.value;
+                // Klassen-Update für Farbänderung
+                sel.classList.remove('opt-Missile', 'opt-Mine', 'opt-Laser');
+                sel.classList.add('opt-' + sel.value);
+                updateWaDisplay();
+                scheduleSave();
+            });
+            
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    if (!window.isManager) {
+                        if (window.showModal) window.showModal('Nur Gildenräte können das ändern.');
+                        return;
+                    }
+                    killOrder = Array(NUM_SLOTS).fill(DEFAULT_VALUE);
+                    render();
+                    scheduleSave();
+                });
+            }
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const text = buildWa();
+                    navigator.clipboard.writeText(text).then(() => {
+                        const old = copyBtn.textContent;
+                        copyBtn.textContent = '✓ Kopiert';
+                        setTimeout(() => copyBtn.textContent = old, 1200);
+                    }).catch(() => {
+                        if (window.showModal) window.showModal('Kopieren fehlgeschlagen — String manuell markieren.');
+                    });
+                });
+            }
+            
+            function scheduleSave() {
+                if (saveTimer) clearTimeout(saveTimer);
+                saveTimer = setTimeout(saveData, 600);
+            }
+            async function saveData() {
+                if (!window.isManager || !firebaseTools || !firebaseTools.db) return;
+                const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                try {
+                    const hash = location.hash.substring(1);
+                    const bossId = hash.split('/')[1] || 'siegecrafter';
+                    const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                    await firebaseTools.setDoc(docRef, {
+                        [ASSIGNMENT_ID]: {
+                            killOrder: killOrder,
+                            editor: editorName,
+                            timestamp: new Date().toISOString()
+                        }
+                    }, { merge: true });
+                    if (window.logHistory) window.logHistory(bossId, 'Kill-Order aktualisiert', 'aktualisiert', editorName);
+                } catch (e) {
+                    console.error('[KillOrder] Save fehlgeschlagen:', e);
+                }
+            }
+            
+            // Daten aus assignments laden, falls vorhanden
+            if (assignments && assignments[ASSIGNMENT_ID] && Array.isArray(assignments[ASSIGNMENT_ID].killOrder)) {
+                const saved = assignments[ASSIGNMENT_ID].killOrder;
+                killOrder = saved.slice(0, NUM_SLOTS).concat(Array(NUM_SLOTS).fill(DEFAULT_VALUE)).slice(0, NUM_SLOTS);
+                killOrder = killOrder.map(v => OPTIONS.includes(v) ? v : DEFAULT_VALUE);
+            }
+            
+            // Manager-Schutz
+            function applyKoProtection() {
+                const isM = !!window.isManager;
+                gridEl.querySelectorAll('select, button').forEach(el => el.disabled = !isM);
+                if (resetBtn) resetBtn.disabled = !isM;
+            }
+            
+            render();
+            applyKoProtection();
+            setInterval(applyKoProtection, 1500);
+        })();
+        
+        // ════════════════════════════════════════════════════════════════
+        // LINE ASSIGNMENTS (LINE1-9, je 5 Slots)
+        // ════════════════════════════════════════════════════════════════
+        (function initLineAssignments() {
+            const gridEl = document.getElementById('blackfuse-lines-grid');
+            if (!gridEl) return;
+            
+            const ASSIGNMENT_ID = 'blackfuse-lines';
+            const NUM_LINES = 9;
+            const SLOTS_PER_LINE = 5;
+            
+            // linesData = [ ['Player1', '', ...], ... ] (9 arrays, je 5 Strings)
+            let linesData = Array.from({ length: NUM_LINES }, () => Array(SLOTS_PER_LINE).fill(''));
+            let saveTimer = null;
+            
+            // ── Spec-Definitionen (kanonisch, wie in Sha-of-Pride) ──
+            const SPEC_DEFINITIONS = {
+                DEATHKNIGHT: [
+                    { value: 'Blood',        label: 'Blood (Tank)',        role: 'tank' },
+                    { value: 'Frost1',       label: 'Frost',               role: 'dps',    archetype: 'melee' },
+                    { value: 'Unholy',       label: 'Unholy',              role: 'dps',    archetype: 'melee' }
+                ],
+                DRUID: [
+                    { value: 'Balance',      label: 'Balance',             role: 'dps',    archetype: 'caster' },
+                    { value: 'Feral',        label: 'Feral',               role: 'dps',    archetype: 'melee' },
+                    { value: 'Guardian',     label: 'Guardian (Tank)',     role: 'tank' },
+                    { value: 'Restoration',  label: 'Restoration (Heal)',  role: 'healer' }
+                ],
+                HUNTER: [
+                    { value: 'Beastmastery', label: 'Beastmastery',        role: 'dps',    archetype: 'ranged_physical' },
+                    { value: 'Marksmanship', label: 'Marksmanship',        role: 'dps',    archetype: 'ranged_physical' },
+                    { value: 'Survival',     label: 'Survival',            role: 'dps',    archetype: 'ranged_physical' }
+                ],
+                MAGE: [
+                    { value: 'Arcane',       label: 'Arcane',              role: 'dps',    archetype: 'caster' },
+                    { value: 'Fire',         label: 'Fire',                role: 'dps',    archetype: 'caster' },
+                    { value: 'Frost',        label: 'Frost',               role: 'dps',    archetype: 'caster' }
+                ],
+                MONK: [
+                    { value: 'Brewmaster',   label: 'Brewmaster (Tank)',   role: 'tank' },
+                    { value: 'Mistweaver',   label: 'Mistweaver (Heal)',   role: 'healer' },
+                    { value: 'Windwalker',   label: 'Windwalker',          role: 'dps',    archetype: 'melee' }
+                ],
+                PALADIN: [
+                    { value: 'Holy1',        label: 'Holy (Heal)',         role: 'healer' },
+                    { value: 'Protection1',  label: 'Protection (Tank)',   role: 'tank' },
+                    { value: 'Retribution',  label: 'Retribution',         role: 'dps',    archetype: 'melee' }
+                ],
+                PRIEST: [
+                    { value: 'Discipline',   label: 'Discipline (Heal)',   role: 'healer' },
+                    { value: 'Holy',         label: 'Holy (Heal)',         role: 'healer' },
+                    { value: 'Shadow',       label: 'Shadow',              role: 'dps',    archetype: 'caster' }
+                ],
+                ROGUE: [
+                    { value: 'Assassination', label: 'Assassination',      role: 'dps',    archetype: 'melee' },
+                    { value: 'Combat',       label: 'Combat',              role: 'dps',    archetype: 'melee' },
+                    { value: 'Subtlety',     label: 'Subtlety',            role: 'dps',    archetype: 'melee' }
+                ],
+                SHAMAN: [
+                    { value: 'Elemental',    label: 'Elemental',           role: 'dps',    archetype: 'caster' },
+                    { value: 'Enhancement',  label: 'Enhancement',         role: 'dps',    archetype: 'melee' },
+                    { value: 'Restoration1', label: 'Restoration (Heal)',  role: 'healer' }
+                ],
+                WARLOCK: [
+                    { value: 'Affliction',   label: 'Affliction',          role: 'dps',    archetype: 'caster' },
+                    { value: 'Demonology',   label: 'Demonology',          role: 'dps',    archetype: 'caster' },
+                    { value: 'Destruction',  label: 'Destruction',         role: 'dps',    archetype: 'caster' }
+                ],
+                WARRIOR: [
+                    { value: 'Arms',         label: 'Arms',                role: 'dps',    archetype: 'melee' },
+                    { value: 'Fury',         label: 'Fury',                role: 'dps',    archetype: 'melee' },
+                    { value: 'Protection',   label: 'Protection (Tank)',   role: 'tank' }
+                ]
+            };
+            const SPEC_ARCHETYPE_LOOKUP = (() => {
+                const m = {};
+                Object.keys(SPEC_DEFINITIONS).forEach(cls => {
+                    SPEC_DEFINITIONS[cls].forEach(s => { if (s.archetype) m[cls + '|' + s.value] = s.archetype; });
+                });
+                return m;
+            })();
+            const ARCHETYPE_LABELS = { melee: 'Melee', ranged_physical: 'Ranged Physical', caster: 'Caster' };
+            const CLASS_ALIASES = {
+                'death knight':'DEATHKNIGHT','deathknight':'DEATHKNIGHT','dk':'DEATHKNIGHT','todesritter':'DEATHKNIGHT',
+                'druid':'DRUID','druide':'DRUID','hunter':'HUNTER','jäger':'HUNTER','jaeger':'HUNTER',
+                'mage':'MAGE','magier':'MAGE','monk':'MONK','mönch':'MONK','moench':'MONK',
+                'paladin':'PALADIN','priest':'PRIEST','priester':'PRIEST','rogue':'ROGUE','schurke':'ROGUE',
+                'shaman':'SHAMAN','schamane':'SHAMAN','warlock':'WARLOCK','hexenmeister':'WARLOCK',
+                'warrior':'WARRIOR','krieger':'WARRIOR'
+            };
+            const CLASS_DISPLAY = {
+                DEATHKNIGHT:'Todesritter',DRUID:'Druide',HUNTER:'Jäger',MAGE:'Magier',MONK:'Mönch',
+                PALADIN:'Paladin',PRIEST:'Priester',ROGUE:'Schurke',SHAMAN:'Schamane',
+                WARLOCK:'Hexenmeister',WARRIOR:'Krieger'
+            };
+            function normalizeClass(cls) {
+                if (!cls) return '';
+                return CLASS_ALIASES[String(cls).toLowerCase().trim()] || '';
+            }
+            
+            // ── Default-Kategorien ──
+            const DEFAULT_PRIO_CATEGORIES = [
+                { id: 'healer', label: 'Healer', class: '', spec: '', role: 'healer', archetype: '' },
+                { id: 'tank',   label: 'Tank',   class: '', spec: '', role: 'tank',   archetype: '', maxTotal: 1 },
+                { id: 'caster', label: 'Caster DPS', class: '', spec: '', role: 'dps', archetype: 'caster' },
+                { id: 'ranged', label: 'Ranged Physical DPS', class: '', spec: '', role: 'dps', archetype: 'ranged_physical' },
+                { id: 'melee',  label: 'Melee DPS', class: '', spec: '', role: 'dps', archetype: 'melee' }
+            ];
+            const PRIO_STORAGE_KEY = 'blackfuse-lines-prio-categories-v1';
+            let prioCategories = [];
+            
+            function loadPrio() {
+                try {
+                    const saved = localStorage.getItem(PRIO_STORAGE_KEY);
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        if (Array.isArray(parsed) && parsed.every(c => c && c.id && c.label)) {
+                            prioCategories = parsed;
+                            return;
+                        }
+                    }
+                } catch (e) {}
+                prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+            }
+            function savePrio() {
+                try { localStorage.setItem(PRIO_STORAGE_KEY, JSON.stringify(prioCategories)); } catch (e) {}
+            }
+            loadPrio();
+            
+            // ── Helpers ──
+            function getPlayerRoleNormalized(p) {
+                if (Array.isArray(p.roles) && p.roles.length > 0) return String(p.roles[0]).toLowerCase();
+                if (p.role) return String(p.role).toLowerCase();
+                return '';
+            }
+            function getPlayerSpec(p)  { return (p.spec || p.specName || p.specialization || '').toString(); }
+            function getPlayerClass(p) { return (p.class || p.className || '').toString(); }
+            function getPlayerArchetype(p) {
+                const cls = normalizeClass(getPlayerClass(p));
+                const spec = getPlayerSpec(p);
+                if (!cls || !spec) return '';
+                return SPEC_ARCHETYPE_LOOKUP[cls + '|' + spec] || '';
+            }
+            function playerMatchesCategory(p, cat) {
+                const playerClass = normalizeClass(getPlayerClass(p));
+                const playerSpec  = getPlayerSpec(p);
+                const playerRole  = getPlayerRoleNormalized(p);
+                if (cat.class && playerClass !== cat.class) return false;
+                if (cat.spec  && playerSpec  !== cat.spec)  return false;
+                if (cat.role  && playerRole  !== cat.role.toLowerCase()) return false;
+                if (cat.archetype && cat.archetype.trim()) {
+                    if (getPlayerArchetype(p) !== cat.archetype) return false;
+                }
+                return true;
+            }
+            function getPlayerCategory(p) {
+                if (!p) return null;
+                for (const cat of prioCategories) {
+                    if (playerMatchesCategory(p, cat)) return cat;
+                }
+                return null;
+            }
+            
+            function getPlayerOptions(selectedName) {
+                let html = '<option value="">—</option>';
+                if (Array.isArray(roster)) {
+                    roster.forEach(p => {
+                        const name = p.name || p;
+                        const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
+                        const sel = name === selectedName ? ' selected' : '';
+                        html += `<option value="${name}" style="color:${color};" data-color="${color}"${sel}>${name}</option>`;
+                    });
+                }
+                return html;
+            }
+            
+            // ── Findet alle Lines (außer lIdx selbst), in denen ein Spieler bereits steht ──
+            function findOtherLinesWithPlayer(name, exceptIdx) {
+                const result = [];
+                if (!name) return result;
+                for (let l = 0; l < NUM_LINES; l++) {
+                    if (l === exceptIdx) continue;
+                    if (linesData[l].includes(name)) result.push(l + 1);
+                }
+                return result;
+            }
+            
+            // ── Aktualisiert Duplikat-Markierungen ohne Re-Render ──
+            function refreshDuplicateMarkers() {
+                gridEl.querySelectorAll('.blackfuse-line-slot').forEach(sel => {
+                    const l = parseInt(sel.dataset.line);
+                    const s = parseInt(sel.dataset.slot);
+                    const val = linesData[l]?.[s] || '';
+                    const dupOn = val ? findOtherLinesWithPlayer(val, l) : [];
+                    if (dupOn.length > 0) {
+                        sel.classList.add('is-duplicate');
+                        sel.title = `⚠ Auch in LINE${dupOn.join(', LINE')}`;
+                    } else {
+                        sel.classList.remove('is-duplicate');
+                        sel.title = '';
+                    }
+                });
+            }
+            
+            // ── Render Lines ──
+            function render() {
+                gridEl.innerHTML = '';
+                for (let l = 0; l < NUM_LINES; l++) {
+                    const card = document.createElement('div');
+                    card.className = 'blackfuse-line-card';
+                    card.innerHTML = `<span class="blackfuse-line-label">LINE${l + 1}</span>` +
+                        Array.from({ length: SLOTS_PER_LINE }, (_, s) => {
+                            const v = linesData[l][s] || '';
+                            return `<select class="blackfuse-line-slot" data-line="${l}" data-slot="${s}">${getPlayerOptions(v)}</select>`;
+                        }).join('');
+                    gridEl.appendChild(card);
+                    
+                    // Farbe anwenden
+                    card.querySelectorAll('.blackfuse-line-slot').forEach(sel => {
+                        const opt = sel.options[sel.selectedIndex];
+                        if (opt && opt.value) sel.style.color = opt.dataset.color || '#fff';
+                    });
+                }
+                refreshDuplicateMarkers();
+                updateWaDisplay();
+            }
+            
+            // ── WA-Export ──
+            // Format: LINE1-Player1,Player2,LINE2-Player1,...
+            function buildWa() {
+                const parts = [];
+                for (let l = 0; l < NUM_LINES; l++) {
+                    const players = linesData[l].filter(s => s && s.trim()).join(',');
+                    if (players) parts.push(`LINE${l + 1}-${players}`);
+                }
+                return parts.join(',');
+            }
+            const waOut = document.getElementById('blackfuse-lines-wa');
+            function updateWaDisplay() {
+                if (waOut) waOut.textContent = buildWa() || '—';
+            }
+            
+            // ── Event-Handling ──
+            gridEl.addEventListener('change', (e) => {
+                const sel = e.target.closest('.blackfuse-line-slot');
+                if (!sel) return;
+                const l = parseInt(sel.dataset.line);
+                const s = parseInt(sel.dataset.slot);
+                if (isNaN(l) || isNaN(s)) return;
+                linesData[l][s] = sel.value;
+                const opt = sel.options[sel.selectedIndex];
+                sel.style.color = opt ? (opt.dataset.color || '#fff') : '#fff';
+                refreshDuplicateMarkers();
+                updateWaDisplay();
+                scheduleSave();
+            });
+            
+            // ── Persistenz ──
+            function scheduleSave() {
+                if (saveTimer) clearTimeout(saveTimer);
+                saveTimer = setTimeout(saveData, 600);
+            }
+            async function saveData() {
+                if (!window.isManager || !firebaseTools || !firebaseTools.db) return;
+                const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                try {
+                    const hash = location.hash.substring(1);
+                    const bossId = hash.split('/')[1] || 'siegecrafter';
+                    const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                    await firebaseTools.setDoc(docRef, {
+                        [ASSIGNMENT_ID]: {
+                            linesData: linesData,
+                            editor: editorName,
+                            timestamp: new Date().toISOString()
+                        }
+                    }, { merge: true });
+                    if (window.logHistory) window.logHistory(bossId, 'Line-Assignments aktualisiert', 'aktualisiert', editorName);
+                } catch (e) {
+                    console.error('[Lines] Save fehlgeschlagen:', e);
+                }
+            }
+            // Daten laden
+            if (assignments && assignments[ASSIGNMENT_ID] && Array.isArray(assignments[ASSIGNMENT_ID].linesData)) {
+                const saved = assignments[ASSIGNMENT_ID].linesData;
+                if (saved.length === NUM_LINES) {
+                    linesData = saved.map(line => {
+                        if (!Array.isArray(line)) return Array(SLOTS_PER_LINE).fill('');
+                        return line.slice(0, SLOTS_PER_LINE).concat(Array(SLOTS_PER_LINE).fill('')).slice(0, SLOTS_PER_LINE);
+                    });
+                }
+            }
+            
+            // ── Buttons ──
+            const copyBtn = document.getElementById('blackfuse-lines-copy');
+            const clearBtn = document.getElementById('blackfuse-lines-clear');
+            const autoFillBtn = document.getElementById('blackfuse-lines-autofill');
+            
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const text = buildWa();
+                    if (!text) {
+                        if (window.showModal) window.showModal('Nichts zum Kopieren — alle Lines sind leer.');
+                        return;
+                    }
+                    navigator.clipboard.writeText(text).then(() => {
+                        const old = copyBtn.textContent;
+                        copyBtn.textContent = '✓ Kopiert';
+                        setTimeout(() => copyBtn.textContent = old, 1200);
+                    }).catch(() => {
+                        if (window.showModal) window.showModal('Kopieren fehlgeschlagen — String manuell markieren.');
+                    });
+                });
+            }
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    if (!window.isManager) return;
+                    if (!confirm('Alle Lines komplett leeren?')) return;
+                    linesData = Array.from({ length: NUM_LINES }, () => Array(SLOTS_PER_LINE).fill(''));
+                    render();
+                    scheduleSave();
+                });
+            }
+            
+            // ── Auto-Füllen (Round-Robin durch Lines, Limits pro Line) ──
+            if (autoFillBtn) {
+                autoFillBtn.addEventListener('click', () => {
+                    if (!window.isManager) {
+                        if (window.showModal) window.showModal('Nur Gildenräte können diese Aktion ausführen.');
+                        return;
+                    }
+                    if (!Array.isArray(roster) || roster.length === 0) {
+                        if (window.showModal) window.showModal('Kader leer.');
+                        return;
+                    }
+                    
+                    const alreadyAssigned = new Set();
+                    const usedInRowsByLine = Array.from({ length: NUM_LINES }, () => ({}));
+                    
+                    for (let l = 0; l < NUM_LINES; l++) {
+                        linesData[l].forEach((name, sIdx) => {
+                            if (!name) return;
+                            alreadyAssigned.add(name);
+                            const ply = roster.find(rp => (rp.name || rp) === name);
+                            const cat = ply ? getPlayerCategory(ply) : null;
+                            if (cat) {
+                                if (!usedInRowsByLine[l][cat.id]) usedInRowsByLine[l][cat.id] = [];
+                                usedInRowsByLine[l][cat.id].push(sIdx);
+                            }
+                        });
+                    }
+                    
+                    // Pool: Spieler in Prio-Reihenfolge
+                    const pool = [];
+                    const used = new Set();
+                    prioCategories.forEach(cat => {
+                        roster.forEach(p => {
+                            const name = p.name || p;
+                            if (used.has(name) || alreadyAssigned.has(name)) return;
+                            if (playerMatchesCategory(p, cat)) {
+                                pool.push({ name: name, category: cat });
+                                used.add(name);
+                            }
+                        });
+                    });
+                    roster.forEach(p => {
+                        const name = p.name || p;
+                        if (!used.has(name) && !alreadyAssigned.has(name)) {
+                            pool.push({ name: name, category: null });
+                        }
+                    });
+                    
+                    let fillCount = 0;
+                    let skippedDueLimit = 0;
+                    
+                    for (let sIdx = 0; sIdx < SLOTS_PER_LINE; sIdx++) {
+                        for (let l = 0; l < NUM_LINES; l++) {
+                            if (linesData[l][sIdx]) continue;
+                            
+                            let foundIdx = -1;
+                            for (let j = 0; j < pool.length; j++) {
+                                const cand = pool[j];
+                                const cat = cand.category;
+                                if (cat) {
+                                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && sIdx < cat.limitRows) {
+                                        const usedInFirstN = (usedInRowsByLine[l][cat.id] || []).filter(idx => idx < cat.limitRows).length;
+                                        if (usedInFirstN >= cat.limitCount) continue;
+                                    }
+                                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                                        const usedTotal = (usedInRowsByLine[l][cat.id] || []).length;
+                                        if (usedTotal >= cat.maxTotal) continue;
+                                    }
+                                }
+                                foundIdx = j;
+                                break;
+                            }
+                            
+                            if (foundIdx < 0) { skippedDueLimit++; continue; }
+                            
+                            const cand = pool[foundIdx];
+                            pool.splice(foundIdx, 1);
+                            linesData[l][sIdx] = cand.name;
+                            if (cand.category) {
+                                if (!usedInRowsByLine[l][cand.category.id]) usedInRowsByLine[l][cand.category.id] = [];
+                                usedInRowsByLine[l][cand.category.id].push(sIdx);
+                            }
+                            fillCount++;
+                        }
+                    }
+                    
+                    render();
+                    scheduleSave();
+                    
+                    let msg = `Auto-Füllen: ${fillCount} Spieler eingetragen.`;
+                    if (skippedDueLimit > 0) msg += `\n(${skippedDueLimit} Slots übersprungen wegen Limits.)`;
+                    if (window.showModal) window.showModal(msg);
+                });
+            }
+            
+            // ════════════════ PRIO-LISTE & MODAL ═════════════════════
+            const prioListEl   = document.getElementById('blackfuse-lines-prio-list');
+            const prioAddBtn   = document.getElementById('blackfuse-lines-prio-add');
+            const prioDetectBtn= document.getElementById('blackfuse-lines-prio-detect');
+            const prioResetBtn = document.getElementById('blackfuse-lines-prio-reset');
+            const modalEl      = document.getElementById('blackfuse-lines-prio-modal');
+            const modalTitle   = document.getElementById('blackfuse-lines-prio-modal-title');
+            const modalLabel   = document.getElementById('blackfuse-lines-prio-modal-label');
+            const modalClass   = document.getElementById('blackfuse-lines-prio-modal-class');
+            const modalSpec    = document.getElementById('blackfuse-lines-prio-modal-spec');
+            const modalRole    = document.getElementById('blackfuse-lines-prio-modal-role');
+            const modalArchetype = document.getElementById('blackfuse-lines-prio-modal-archetype');
+            const modalLimitRows = document.getElementById('blackfuse-lines-prio-modal-limit-rows');
+            const modalLimitCount = document.getElementById('blackfuse-lines-prio-modal-limit-count');
+            const modalMaxTotal = document.getElementById('blackfuse-lines-prio-modal-max-total');
+            const modalSave    = document.getElementById('blackfuse-lines-prio-modal-save');
+            const modalCancel  = document.getElementById('blackfuse-lines-prio-modal-cancel');
+            
+            if (modalClass) {
+                Object.keys(SPEC_DEFINITIONS).forEach(c => {
+                    modalClass.appendChild(new Option(CLASS_DISPLAY[c] || c, c));
+                });
+            }
+            function updateSpecDropdown(selCls, selSpec) {
+                if (!modalSpec) return;
+                modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
+                if (selCls && SPEC_DEFINITIONS[selCls]) {
+                    SPEC_DEFINITIONS[selCls].forEach(s => {
+                        const opt = new Option(s.label, s.value);
+                        modalSpec.appendChild(opt);
+                    });
+                }
+                modalSpec.value = selSpec || '';
+                if (modalSpec.value !== (selSpec || '')) modalSpec.value = '';
+            }
+            if (modalClass) modalClass.addEventListener('change', () => updateSpecDropdown(modalClass.value, ''));
+            if (modalSpec) modalSpec.addEventListener('change', () => {
+                const cls = modalClass.value;
+                const spec = modalSpec.value;
+                if (cls && spec && SPEC_DEFINITIONS[cls]) {
+                    const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
+                    if (def) {
+                        if (!modalRole.value) modalRole.value = def.role;
+                        if (!modalArchetype.value && def.archetype) modalArchetype.value = def.archetype;
+                    }
+                }
+            });
+            
+            function renderPrioList() {
+                if (!prioListEl) return;
+                prioListEl.innerHTML = '';
+                if (prioCategories.length === 0) {
+                    prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien.</li>';
+                    return;
+                }
+                prioCategories.forEach((cat, idx) => {
+                    const li = document.createElement('li');
+                    li.draggable = !!window.isManager;
+                    li.dataset.catId = cat.id;
+                    li.className = 'flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs';
+                    
+                    const filters = [];
+                    if (cat.class) filters.push(CLASS_DISPLAY[cat.class] || cat.class);
+                    if (cat.spec)  filters.push(cat.spec);
+                    if (cat.role)  filters.push(cat.role);
+                    if (cat.archetype) filters.push(ARCHETYPE_LABELS[cat.archetype] || cat.archetype);
+                    const filterStr = filters.length > 0 ? filters.join(' · ') : '<span class="text-yellow-500">⚠ kein Filter</span>';
+                    
+                    const limits = [];
+                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '') {
+                        limits.push(`max ${cat.limitCount}/${cat.limitRows}`);
+                    }
+                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                        limits.push(`max ${cat.maxTotal}/Line`);
+                    }
+                    const limitStr = limits.length > 0 ? `<span class="text-amber-400 ml-1">[${limits.join(', ')}]</span>` : '';
+                    
+                    li.innerHTML = `
+                        <span class="text-gray-500 font-mono w-6 text-center">${idx + 1}</span>
+                        <span class="text-gray-400 select-none cursor-move drag-handle">⋮⋮</span>
+                        <span class="flex-1 text-white truncate">${cat.label}${limitStr}</span>
+                        <span class="text-[10px] text-gray-500 hidden md:inline">${filterStr}</span>
+                        <button class="prio-edit text-blue-400 hover:text-blue-300 text-xs px-1" data-cat-id="${cat.id}">✎</button>
+                        <button class="prio-del text-red-400 hover:text-red-300 text-xs px-1" data-cat-id="${cat.id}">✕</button>
+                    `;
+                    prioListEl.appendChild(li);
+                });
+            }
+            
+            // Drag & Drop
+            let dragSourceId = null;
+            if (prioListEl) {
+                prioListEl.addEventListener('dragstart', (e) => {
+                    if (!window.isManager) { e.preventDefault(); return; }
+                    const li = e.target.closest('[data-cat-id]');
+                    if (!li) { e.preventDefault(); return; }
+                    dragSourceId = li.dataset.catId;
+                    li.classList.add('opacity-50');
+                    e.dataTransfer.effectAllowed = 'move';
+                    try { e.dataTransfer.setData('text/plain', dragSourceId); } catch(err) {}
+                });
+                prioListEl.addEventListener('dragover', (e) => {
+                    if (!dragSourceId) return;
+                    e.preventDefault();
+                    const target = e.target.closest('[data-cat-id]');
+                    prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
+                    if (!target || target.dataset.catId === dragSourceId) return;
+                    const rect = target.getBoundingClientRect();
+                    const after = (e.clientY - rect.top) > rect.height / 2;
+                    target.classList.add(after ? 'drop-below' : 'drop-above');
+                });
+                prioListEl.addEventListener('dragleave', (e) => {
+                    if (!prioListEl.contains(e.relatedTarget)) {
+                        prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
+                    }
+                });
+                prioListEl.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (!dragSourceId) return;
+                    const target = e.target.closest('[data-cat-id]');
+                    if (!target || target.dataset.catId === dragSourceId) return;
+                    const rect = target.getBoundingClientRect();
+                    const dropAfter = (e.clientY - rect.top) > rect.height / 2;
+                    const fromIdx = prioCategories.findIndex(c => c.id === dragSourceId);
+                    if (fromIdx < 0) return;
+                    const [moved] = prioCategories.splice(fromIdx, 1);
+                    let toIdx = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                    if (dropAfter) toIdx += 1;
+                    if (toIdx < 0) toIdx = 0;
+                    if (toIdx > prioCategories.length) toIdx = prioCategories.length;
+                    prioCategories.splice(toIdx, 0, moved);
+                    savePrio();
+                });
+                prioListEl.addEventListener('dragend', () => {
+                    prioListEl.querySelectorAll('.opacity-50, .drop-above, .drop-below').forEach(el => el.classList.remove('opacity-50', 'drop-above', 'drop-below'));
+                    dragSourceId = null;
+                    renderPrioList();
+                });
+                prioListEl.addEventListener('click', (e) => {
+                    if (!window.isManager) return;
+                    const editBtn = e.target.closest('.prio-edit');
+                    const delBtn  = e.target.closest('.prio-del');
+                    if (editBtn) openPrioModal(editBtn.dataset.catId);
+                    else if (delBtn) {
+                        const id = delBtn.dataset.catId;
+                        const cat = prioCategories.find(c => c.id === id);
+                        if (cat && confirm(`"${cat.label}" löschen?`)) {
+                            prioCategories = prioCategories.filter(c => c.id !== id);
+                            savePrio();
+                            renderPrioList();
+                        }
+                    }
+                });
+            }
+            
+            let editingCatId = null;
+            function openPrioModal(catId) {
+                if (!window.isManager) return;
+                editingCatId = catId || null;
+                if (catId) {
+                    const cat = prioCategories.find(c => c.id === catId);
+                    if (!cat) return;
+                    modalTitle.textContent = 'Kategorie bearbeiten';
+                    modalLabel.value = cat.label || '';
+                    modalClass.value = cat.class || '';
+                    updateSpecDropdown(cat.class || '', cat.spec || '');
+                    modalRole.value = cat.role || '';
+                    modalArchetype.value = cat.archetype || '';
+                    modalLimitRows.value = cat.limitRows ?? '';
+                    modalLimitCount.value = cat.limitCount ?? '';
+                    modalMaxTotal.value = cat.maxTotal ?? '';
+                } else {
+                    modalTitle.textContent = 'Neue Kategorie';
+                    modalLabel.value = '';
+                    modalClass.value = '';
+                    updateSpecDropdown('', '');
+                    modalRole.value = '';
+                    modalArchetype.value = '';
+                    modalLimitRows.value = '';
+                    modalLimitCount.value = '';
+                    modalMaxTotal.value = '';
+                }
+                modalEl.classList.remove('hidden');
+                setTimeout(() => modalLabel.focus(), 50);
+            }
+            function closePrioModal() {
+                modalEl.classList.add('hidden');
+                editingCatId = null;
+            }
+            if (prioAddBtn) prioAddBtn.addEventListener('click', () => openPrioModal(null));
+            if (modalCancel) modalCancel.addEventListener('click', closePrioModal);
+            if (modalEl) modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closePrioModal(); });
+            if (modalSave) {
+                modalSave.addEventListener('click', () => {
+                    const label = modalLabel.value.trim();
+                    if (!label) { modalLabel.focus(); modalLabel.style.borderColor = '#ef4444'; return; }
+                    modalLabel.style.borderColor = '';
+                    const data = {
+                        label: label,
+                        class: modalClass.value.trim(),
+                        spec:  modalSpec.value.trim(),
+                        role:  modalRole.value.trim(),
+                        archetype: modalArchetype.value.trim()
+                    };
+                    const lr = parseInt(modalLimitRows.value, 10);
+                    const lc = parseInt(modalLimitCount.value, 10);
+                    if (!isNaN(lr) && lr > 0 && !isNaN(lc) && lc >= 0) {
+                        data.limitRows = lr; data.limitCount = lc;
+                    }
+                    const mt = parseInt(modalMaxTotal.value, 10);
+                    if (!isNaN(mt) && mt >= 0) data.maxTotal = mt;
+                    
+                    if (editingCatId) {
+                        const cat = prioCategories.find(c => c.id === editingCatId);
+                        if (cat) {
+                            delete cat.limitRows; delete cat.limitCount; delete cat.maxTotal;
+                            Object.assign(cat, data);
+                        }
+                    } else {
+                        const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20) + '_' + Date.now().toString(36);
+                        prioCategories.push({ id, ...data });
+                    }
+                    savePrio();
+                    renderPrioList();
+                    closePrioModal();
+                });
+            }
+            
+            if (prioResetBtn) {
+                prioResetBtn.addEventListener('click', () => {
+                    if (!window.isManager) return;
+                    if (!confirm('Defaults wiederherstellen?')) return;
+                    prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+                    savePrio();
+                    renderPrioList();
+                });
+            }
+            
+            if (prioDetectBtn) {
+                prioDetectBtn.addEventListener('click', () => {
+                    if (!window.isManager) return;
+                    const detected = detectCategoriesFromRoster();
+                    if (detected.length === 0) {
+                        if (window.showModal) window.showModal('Konnte aus dem Kader keine Kategorien ableiten.');
+                        return;
+                    }
+                    if (!confirm(`${detected.length} Kategorien erkannt. Vorhandene überschreiben?`)) return;
+                    prioCategories = detected;
+                    savePrio();
+                    renderPrioList();
+                });
+            }
+            
+            function detectCategoriesFromRoster() {
+                if (!Array.isArray(roster) || roster.length === 0) return [];
+                const cats = [];
+                function findExisting(filter) {
+                    return prioCategories.find(c =>
+                        (c.class || '') === (filter.class || '') &&
+                        (c.spec  || '') === (filter.spec  || '') &&
+                        (c.role  || '') === (filter.role  || '') &&
+                        (c.archetype || '') === (filter.archetype || '')
+                    );
+                }
+                function withLimits(base) {
+                    const ex = findExisting(base);
+                    if (ex) {
+                        if (ex.limitRows  !== undefined) base.limitRows  = ex.limitRows;
+                        if (ex.limitCount !== undefined) base.limitCount = ex.limitCount;
+                        if (ex.maxTotal   !== undefined) base.maxTotal   = ex.maxTotal;
+                    }
+                    return base;
+                }
+                
+                const healers = roster.filter(p => getPlayerRoleNormalized(p) === 'healer');
+                const tanks   = roster.filter(p => getPlayerRoleNormalized(p) === 'tank');
+                if (healers.length > 0) {
+                    cats.push(withLimits({ id: 'auto_healer', label: `Healer (${healers.length})`, class: '', spec: '', role: 'healer', archetype: '' }));
+                }
+                if (tanks.length > 0) {
+                    const t = withLimits({ id: 'auto_tank', label: `Tank (${tanks.length})`, class: '', spec: '', role: 'tank', archetype: '' });
+                    if (t.maxTotal === undefined) t.maxTotal = 1;
+                    cats.push(t);
+                }
+                ['caster', 'ranged_physical', 'melee'].forEach(arch => {
+                    const count = roster.filter(p => getPlayerRoleNormalized(p) === 'dps' && getPlayerArchetype(p) === arch).length;
+                    if (count > 0) {
+                        cats.push(withLimits({
+                            id: 'auto_' + arch,
+                            label: `${ARCHETYPE_LABELS[arch]} DPS (${count})`,
+                            class: '', spec: '', role: 'dps', archetype: arch
+                        }));
+                    }
+                });
+                return cats;
+            }
+            
+            // ── Manager-Schutz ──
+            function applyLinesProtection() {
+                const isM = !!window.isManager;
+                [autoFillBtn, clearBtn, prioResetBtn, prioAddBtn, prioDetectBtn].forEach(b => {
+                    if (b) b.disabled = !isM;
+                });
+                gridEl.querySelectorAll('select').forEach(el => el.disabled = !isM);
+                if (prioListEl) {
+                    prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
+                        el.draggable = isM;
+                        const handle = el.querySelector('.drag-handle');
+                        if (handle) handle.style.cursor = isM ? 'move' : 'not-allowed';
+                        el.style.opacity = isM ? '' : '0.6';
+                        el.querySelectorAll('button').forEach(b => b.disabled = !isM);
+                    });
+                }
+            }
+            
+            renderPrioList();
+            render();
+            applyLinesProtection();
+            setInterval(applyLinesProtection, 1500);
+        })();
     };
 </script>
 </main>
