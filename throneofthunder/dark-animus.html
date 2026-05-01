@@ -267,6 +267,46 @@
     </div>
 </section>
 
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            ⚠️ Spoils hat keine feste Timeline - Mechaniken kommen je nach geöffneter Kiste.
+            Dieser Planer plant nur die wirklich vorhersagbaren Mechaniken der Mogu- und Mantid-Seiten.
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline mit Tabelle -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Global WA Export
@@ -283,7 +323,7 @@
         <span class="text-xl">📜</span> CD-Einteilung Übersicht
     </h3>
     
-    <div id="animus-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+    <div id="dark-animus-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
         <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
             Warte auf Eingabe... <br>
             <span class="opacity-50">(Ändere etwas im Planer, um die Vorschau zu laden)</span>
@@ -296,7 +336,7 @@
                     <strong>% / #:</strong> Entweder % Lebenspunkte (bei Health) oder Reihenfolge (1, 2, 3...)
                 </div>
 
-                <div id="animus-planner-container" class="space-y-2 planner-scroll-container"></div>
+                <div id="dark-animus-planner-container" class="space-y-2 planner-scroll-container"></div>
                 
                 <div class="mt-4 text-xs text-gray-500 italic">
                     * <strong>NPC:</strong> Wähle hier den Boss/Add, wenn du "Health %" nutzt.
@@ -374,7 +414,7 @@
             });
             return html;
         };
-        const container = document.getElementById('animus-planner-container');
+        const container = document.getElementById('dark-animus-planner-container');
         
         if (container && container.innerHTML.trim() === "") {
             
@@ -600,6 +640,173 @@ window.updatePlannerSummary = function() {
 
     container.innerHTML = html;
 };
+
+
+CD_AUTO_PLANNER.init({
+    id: 'dark-animus',
+    name: 'Dark Animus',
+    prefix: 'ANIMUS',
+
+    events: [
+        // ──────────────────────────────────────────────
+        // PHASE 1: ADD-PHASE (0:00 - 2:00)
+        // Anima Golems werden eines nach dem anderen aktiviert.
+        // Wir verteilen Pre-Pull-CDs (Devo, Banner, Heal-Stream)
+        // über die ersten ~40 Sekunden.
+        // ──────────────────────────────────────────────
+        {
+            name: 'Pull-Phase (Adds)',
+            firstCast: 3,
+            cooldown: 9,
+            maxCasts: 5,
+            delay: 0,
+            eventDuration: 0,
+            requiredCDs: ['magical_dr', 'additional_surv', 'minor_heal'],
+            icon: '⚔'
+        },
+        {
+            name: 'Pre-Boss-Spawn',
+            firstCast: 110,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 0,
+            requiredCDs: ['minor_heal', 'any_heal'],
+            icon: '🛡'
+        },
+
+        // ──────────────────────────────────────────────
+        // PHASE 2: BOSS SPAWN (~02:00)
+        // ──────────────────────────────────────────────
+        {
+            name: 'Boss Spawn',
+            firstCast: 120,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 0,
+            requiredCDs: [],
+            icon: '⚙'
+        },
+
+        // ──────────────────────────────────────────────
+        // EMPOWER GOLEM
+        // BigWigs: Bar(138780, 7) beim Engage, dann alle ~15.5s
+        // ──────────────────────────────────────────────
+        {
+            name: 'Empower Golem',
+            firstCast: 127,
+            cooldown: 15.5,
+            maxCasts: 3,
+            delay: 0,
+            eventDuration: 0,
+            requiredCDs: ['additional_surv'],
+            icon: '⚡'
+        },
+
+        // ──────────────────────────────────────────────
+        // ANIMA RING (25 Power)
+        // BigWigs: Bar(args.spellId, 22) — alle ~22s
+        // ──────────────────────────────────────────────
+        {
+            name: 'Anima Ring',
+            firstCast: 145,
+            cooldown: 22,
+            maxCasts: 6,
+            delay: 0,
+            eventDuration: 0,
+            requiredCDs: ['minor_heal'],
+            icon: '💫'
+        },
+
+        // ──────────────────────────────────────────────
+        // ANIMA FONT (50 Power)
+        // BigWigs: TargetBar(args.spellId, 30) — Spieler-Debuff
+        // ──────────────────────────────────────────────
+        {
+            name: 'Anima Font',
+            firstCast: 160,
+            cooldown: 30,
+            maxCasts: 5,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ['tank_external'],
+            icon: '🔥'
+        },
+
+        // ──────────────────────────────────────────────
+        // INTERRUPTING JOLT (75 Power)
+        // BigWigs: Bar(138763, 22) — alle ~22s
+        // 5s pre-warn → delay -5
+        // ──────────────────────────────────────────────
+        {
+            name: 'Interrupting Jolt',
+            firstCast: 143,
+            cooldown: 22,
+            maxCasts: 12,
+            delay: -5,
+            eventDuration: 1.4,
+            requiredCDs: ['magical_dr', 'minor_heal', 'any_heal'],
+            icon: '🌀'
+        },
+
+        // ──────────────────────────────────────────────
+        // SIPHON ANIMA
+        // HC: Bar(138644, 120) erst, dann alle 20s
+        // ──────────────────────────────────────────────
+        {
+            name: 'Siphon Anima',
+            firstCast: 240,
+            cooldown: 20,
+            maxCasts: 10,
+            delay: 0,
+            eventDuration: 0,
+            requiredCDs: [],
+            icon: '🌑'
+        },
+
+        // ──────────────────────────────────────────────
+        // FULL POWER (Soft Enrage bei 100 Power)
+        // ──────────────────────────────────────────────
+        {
+            name: 'Full Power (Enrage)',
+            firstCast: 480,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -10,
+            eventDuration: 0,
+            requiredCDs: ['any_dr', 'any_heal'],
+            icon: '💥'
+        },
+
+        // ──────────────────────────────────────────────
+        // BLOODLUST
+        // ──────────────────────────────────────────────
+        {
+            name: 'Bloodlust',
+            firstCast: 0,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 40,
+            requiredCDs: ['bloodlust'],
+            icon: '⚡'
+        }
+    ],
+
+    triggerMap: {
+        'Pull-Phase (Adds)':   'ANIMUS_ENC_START',
+        'Pre-Boss-Spawn':      'ANIMUS_ENC_START',
+        'Boss Spawn':          'ANIMUS_BOSS_SPAWN',
+        'Empower Golem':       'ANIMUS_EMPOWER_GOLEM',
+        'Anima Ring':          'ANIMUS_ANIMA_RING',
+        'Anima Font':          'ANIMUS_ANIMA_FONT',
+        'Interrupting Jolt':   'ANIMUS_INTERRUPTING_JOLT',
+        'Siphon Anima':        'ANIMUS_SIPHON_ANIMA',
+        'Full Power (Enrage)': 'ANIMUS_INTERRUPTING_JOLT',
+        'Bloodlust':           'ANIMUS_ENC_START'
+    }
+});
 
 </script>
 </main>
