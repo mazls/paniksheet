@@ -1999,6 +1999,19 @@ if (typeof Sortable !== 'undefined') {
                 // Wenn nichts verschoben wurde, abbrechen
                 if (evt.newIndex === evt.oldIndex) return;
 
+                // Manager-Schutz — nicht-eingeloggte User dürfen nicht reordern
+                if (!window.isManager) {
+                    if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                    // Visuell zurücksetzen (Sortable hat das DOM bereits geändert)
+                    if (typeof evt.from !== 'undefined' && typeof evt.oldIndex === 'number') {
+                        const moved = evt.item;
+                        const siblings = Array.from(evt.from.children);
+                        const refNode = siblings[evt.oldIndex] || null;
+                        evt.from.insertBefore(moved, refNode);
+                    }
+                    return;
+                }
+
                 console.log("Sortierung erkannt. Speichere sicher...");
                 container.style.borderLeft = "4px solid #fcd34d"; // Gelb = Arbeitet
 
@@ -2091,6 +2104,11 @@ if (typeof Sortable !== 'undefined') {
 
         // --- EINFÜGEN ---
         if (btn.classList.contains('paste-row-btn')) {
+            // Manager-Schutz — nicht-eingeloggte User dürfen nichts schreiben
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
             const dataStr = localStorage.getItem('plannerClipboard');
             if (!dataStr) return window.showModal('Zwischenablage ist leer.');
             const data = JSON.parse(dataStr);
@@ -2122,6 +2140,11 @@ if (typeof Sortable !== 'undefined') {
 
         // --- LÖSCHEN (NEU) ---
         if (btn.classList.contains('delete-row-btn')) {
+            // Manager-Schutz — nicht-eingeloggte User dürfen nichts löschen
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
             // Eigenen Dialog erstellen
             const dialog = document.createElement('div');
             dialog.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[9999]';
