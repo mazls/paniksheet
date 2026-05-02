@@ -441,6 +441,364 @@
     </div>
 </section>
 
+<!-- ════════════════════════════════════════════════════════════════════════
+     LEI SHEN — CD AUTO-PLANER
+     ════════════════════════════════════════════════════════════════════════ -->
+<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        🤖 Auto-CD-Planer
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <p class="text-sm text-gray-400 mb-4 italic">
+            Plant automatisch Cooldown-Zuteilungen für Lei Shen. Default-Werte basieren auf Heroic 25.
+        </p>
+        
+        <!-- Steuerung -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
+            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
+            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
+            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+        </div>
+        
+        <!-- Status -->
+        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+        
+        <!-- Timeline -->
+        <div id="auto-planner-timeline" class="overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead id="auto-planner-thead"></thead>
+                <tbody id="auto-planner-tbody"></tbody>
+            </table>
+        </div>
+        
+        <!-- Kategorien-Editor (nur Manager) -->
+        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
+            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
+            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+        </details>
+    </div>
+</section>
+
+<script src="static/cd-auto-planner.js"></script>
+<script>
+// ══ Lei Shen Auto-Planner Config ════════════════════════════════════════
+// Timeline aus dem Master-Sheet rekonstruiert (HC25), Spell-IDs aus BigWigs LeiShen.lua
+//
+// Phase-Struktur (Heroic 25):
+//   P1: 100% → 65%     (Pull bis ~03:15)   — Crashing Thunder, Thunderstruck, Diffusion Chain
+//   Intermission #1:   ~03:15 - 03:33      — Conduits aktiv, Helm of Command
+//   P2: 65% → 35%      (~03:33 - 07:30)    — Ball Lightning, Diffusion Chain P2
+//   Intermission #2:   ~07:30 - 08:00      — Bloodlust hier
+//   P3: 35% → Tot      (~08:00 - 10:30)    — Thunderstruck P3, Ball Lightning P3, Violent Gale
+//
+// Werte: cooldown (CD zwischen Casts), firstCast (Zeit ab Pull), maxCasts (in dieser Phase)
+// ════════════════════════════════════════════════════════════════════════
+CD_AUTO_PLANNER.init({
+    id: 'leishen',
+    name: 'Lei Shen',
+    prefix: 'leishen',
+    
+    events: [
+        // ══════════════════════════════════════════════
+        // PHASE 1 (100% → 65%, ca. 0-195s)
+        // ══════════════════════════════════════════════
+        {
+            name: "Crashing Thunder #1",
+            spellId: 135150,
+            firstCast: 11,        // Pre-Warn 5s vorher → ETA 00:06 im Sheet → Cast bei 00:11
+            cooldown: 30,
+            maxCasts: 5,          // 5 Casts in P1 (00:11, 00:40, 01:10, 01:42, 02:12)
+            delay: -5,            // CDs 5s vor Cast (Pre-Warn)
+            eventDuration: 8,
+            requiredCDs: ["magical_dr"],
+            icon: "⚡"
+        },
+        {
+            name: "Mass Spell Reflection #1 (Tank-Stack)",
+            spellId: 0,           // Kein eigener Cast — ist nur "Tank stackt MR"
+            firstCast: 8,         // Tank stackt 8s nach Pull
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 6,
+            requiredCDs: ["magical_dr"],
+            icon: "🛡️"
+        },
+        {
+            name: "Thunderstruck (P1) #1",
+            spellId: 135095,
+            firstCast: 30,        // ETA 00:25 + 5s pre = Cast 00:30
+            cooldown: 40,         // ~36-46s laut lua, im Sheet ~40s
+            maxCasts: 4,          // 4 Casts in P1 (00:30, 01:10, 01:55, 02:35)
+            delay: -5,
+            eventDuration: 6,
+            requiredCDs: ["movement", "any_dr"],
+            icon: "🌩️"
+        },
+        {
+            name: "Healing Tide Totem #1 (P1)",
+            spellId: 0,
+            firstCast: 40,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 10,
+            requiredCDs: ["any_heal"],
+            icon: "💚"
+        },
+        {
+            name: "Major Healing #1 (P1)",
+            spellId: 0,
+            firstCast: 90,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 8,
+            requiredCDs: ["major_heal"],
+            icon: "💖"
+        },
+        {
+            name: "Diffusion Chain #1 (P1)",
+            spellId: 135991,
+            firstCast: 131,       // ETA 02:06 + 5s pre = Cast 02:11
+            cooldown: 30,         // ~30s
+            maxCasts: 3,          // 3 Casts in P1 (02:11, 02:42, 03:07)
+            delay: -5,
+            eventDuration: 8,
+            requiredCDs: ["magical_dr"],   // Grounding Totem deckt Schaden, Magic DR als Approx.
+            icon: "🔗"
+        },
+        
+        // ══════════════════════════════════════════════
+        // INTERMISSION #1 (Phase Übergang, Conduits aktiv)
+        // ══════════════════════════════════════════════
+        {
+            name: "Phase 2 Start (65% HP)",
+            spellId: 137045,      // Intermission Start
+            firstCast: 195,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 18,
+            requiredCDs: ["any_dr"],
+            icon: "⚡"
+        },
+        {
+            name: "Helm of Command (INT #1)",
+            spellId: 139011,
+            firstCast: 209,       // 14s nach Phase-Start laut lua
+            cooldown: 0,
+            maxCasts: 1,
+            delay: -3,
+            eventDuration: 6,
+            requiredCDs: ["aoe_stun"],
+            icon: "👑"
+        },
+        
+        // ══════════════════════════════════════════════
+        // PHASE 2 (65% → 35%, ca. 195-450s)
+        // ══════════════════════════════════════════════
+        {
+            name: "Ball Lightning (P2) #1",
+            spellId: 136543,
+            firstCast: 213,       // ETA 03:28 + 5s pre = Cast 03:33
+            cooldown: 50,         // ~45-50s im Sheet
+            maxCasts: 5,          // 5 Casts in P2 (03:33, 04:23, 05:08, 05:53, 06:40)
+            delay: -5,
+            eventDuration: 8,
+            requiredCDs: ["aoe_stun", "magical_dr"],
+            icon: "⚡"
+        },
+        {
+            name: "Diffusion Chain (P2) #1",
+            spellId: 135991,
+            firstCast: 335,       // ETA 05:30 → Cast 05:35
+            cooldown: 35,         // 30-40s in P2
+            maxCasts: 5,          // ~5 Casts (05:35, 06:15, 06:55, 07:10, 07:35)
+            delay: -5,
+            eventDuration: 8,
+            requiredCDs: ["magical_dr"],
+            icon: "🔗"
+        },
+        {
+            name: "Major Healing #2 (P2)",
+            spellId: 0,
+            firstCast: 245,       // 04:05 nach Pull
+            cooldown: 80,
+            maxCasts: 3,
+            delay: 0,
+            eventDuration: 8,
+            requiredCDs: ["major_heal"],
+            icon: "💖"
+        },
+        
+        // ══════════════════════════════════════════════
+        // INTERMISSION #2 + Bloodlust
+        // ══════════════════════════════════════════════
+        {
+            name: "Phase 3 Start (35% HP)",
+            spellId: 137045,
+            firstCast: 465,       // ETA 07:45
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 25,
+            requiredCDs: ["any_dr"],
+            icon: "⚡"
+        },
+        {
+            name: "Bloodlust (P3 Start)",
+            spellId: 0,
+            firstCast: 475,       // ETA 07:55
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 40,
+            requiredCDs: ["bloodlust"],
+            icon: "🩸"
+        },
+        {
+            name: "Mass Spell Reflection #2 (P3 Start)",
+            spellId: 0,
+            firstCast: 485,       // 08:05 nach Pull
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 6,
+            requiredCDs: ["magical_dr"],
+            icon: "🛡️"
+        },
+        
+        // ══════════════════════════════════════════════
+        // PHASE 3 (35% → Tot, ca. 480s+)
+        // ══════════════════════════════════════════════
+        {
+            name: "Violent Gale Winds #1 (P3)",
+            spellId: 136889,
+            firstCast: 490,       // ETA 08:10
+            cooldown: 30,         // ~30s laut lua
+            maxCasts: 4,          // 4 Casts (08:10, 08:45, 09:15, 09:45)
+            delay: 0,
+            eventDuration: 6,
+            requiredCDs: ["movement", "any_heal"],
+            icon: "🌪️"
+        },
+        {
+            name: "Thunderstruck (P3) #1",
+            spellId: 135095,
+            firstCast: 500,       // ETA 08:20 + 5s pre = Cast 08:25 (oder 08:35 mit Damage Red)
+            cooldown: 30,         // ~30s laut lua
+            maxCasts: 5,          // 5 Casts (08:35, 09:05, 09:38, 10:00, 10:30)
+            delay: -5,
+            eventDuration: 6,
+            requiredCDs: ["magical_dr", "additional_surv"],
+            icon: "🌩️"
+        },
+        {
+            name: "Ball Lightning (P3) #1",
+            spellId: 136543,
+            firstCast: 521,       // ETA 08:36 + 5s pre = Cast 08:38
+            cooldown: 32,         // ~30s in P3
+            maxCasts: 4,          // 4 Casts (08:38, 09:08, 09:38, 10:05)
+            delay: -5,
+            eventDuration: 8,
+            requiredCDs: ["aoe_stun", "any_dr"],
+            icon: "⚡"
+        },
+        {
+            name: "Diffusion Chain (P3) #1",
+            spellId: 135991,
+            firstCast: 530,       // ETA 08:45
+            cooldown: 40,         // ~40s in P3
+            maxCasts: 3,          // (08:45, 09:25, 10:05)
+            delay: -5,
+            eventDuration: 8,
+            requiredCDs: ["magical_dr"],
+            icon: "🔗"
+        },
+        {
+            name: "Lightning Whip (P3, Tank)",
+            spellId: 136850,
+            firstCast: 510,
+            cooldown: 25,         // ~22s laut lua
+            maxCasts: 6,
+            delay: 0,
+            eventDuration: 4,
+            requiredCDs: ["tank_external"],
+            icon: "🪡"
+        },
+        {
+            name: "Major Healing #3 (P3)",
+            spellId: 0,
+            firstCast: 600,
+            cooldown: 90,
+            maxCasts: 2,
+            delay: 0,
+            eventDuration: 8,
+            requiredCDs: ["major_heal"],
+            icon: "💖"
+        }
+    ],
+    
+    // ══════════════════════════════════════════════════════════════════════
+    // TRIGGER MAPPING — Event-Name → WeakAura Trigger-Key
+    // (Aus deiner WA-Trigger-Liste übernommen)
+    // ══════════════════════════════════════════════════════════════════════
+    triggerMap: {
+        // Phase 1
+        "Crashing Thunder #1":              "LEISHEN_CRASHING_THUNDER",
+        "Mass Spell Reflection #1 (Tank-Stack)": "LEISHEN_ENC_START",
+        "Thunderstruck (P1) #1":            "LEISHEN_THUNDERSTRUCK",
+        "Healing Tide Totem #1 (P1)":       "LEISHEN_ENC_START",
+        "Major Healing #1 (P1)":            "LEISHEN_ENC_START",
+        "Diffusion Chain #1 (P1)":          "LEISHEN_DIFFUSION_CHAIN",
+        
+        // Intermission 1
+        "Phase 2 Start (65% HP)":           "LEISHEN_P2_START",
+        "Helm of Command (INT #1)":         "LEISHEN_HELM_OF_COMMAND",
+        
+        // Phase 2
+        "Ball Lightning (P2) #1":           "LEISHEN_BALL_LIGHTNING",
+        "Diffusion Chain (P2) #1":          "LEISHEN_DIFFUSION_CHAIN_P2",
+        "Major Healing #2 (P2)":            "LEISHEN_P2_START",
+        
+        // Intermission 2 + P3 Start
+        "Phase 3 Start (35% HP)":           "LEISHEN_P3_START",
+        "Bloodlust (P3 Start)":             "LEISHEN_P3_START",
+        "Mass Spell Reflection #2 (P3 Start)": "LEISHEN_P3_START",
+        
+        // Phase 3
+        "Violent Gale Winds #1 (P3)":       "LEISHEN_VIOLENT_GALE",
+        "Thunderstruck (P3) #1":            "LEISHEN_THUNDERSTRUCK_P3",
+        "Ball Lightning (P3) #1":           "LEISHEN_BALL_LIGHTNING_P3",
+        "Diffusion Chain (P3) #1":          "LEISHEN_DIFFUSION_CHAIN_P3",
+        "Lightning Whip (P3, Tank)":        "LEISHEN_LIGHTNING_WHIP_P3",
+        "Major Healing #3 (P3)":            "LEISHEN_P3_START"
+    }
+});
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     KALIBRIERUNG NACH EUREM ERSTEN KILL
+     ════════════════════════════════════════════════════════════════════
+     
+     1. Wann erreicht ihr 65% HP? → "Phase 2 Start" firstCast anpassen
+     2. Wann erreicht ihr 35% HP? → "Phase 3 Start" firstCast anpassen
+     3. Wann triggert das erste Crashing Thunder? → firstCast in #1 setzen
+     4. Wie viele Crashing Thunder vor 65%? → maxCasts anpassen
+     
+     Verfügbare Trigger laut deiner WA-Liste:
+     - Diffusion Chain hat 4 Varianten (normal, P2, P3, INT)
+     - Static Shock, Overcharge, Bouncing Bolt jeweils 4 Varianten — sind hier
+       nicht in den Events drin, weil sie target-basiert sind und die Spieler
+       bekommen sie zugewiesen. Falls ihr für eine bestimmte Wave Cooldowns
+       wollt, einfach im Event-Manager (klappt unter dieser Section auf) 
+       neue Events hinzufügen.
+     ════════════════════════════════════════════════════════════════════ -->
+
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Global WA Export
