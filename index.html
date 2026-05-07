@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="static/cd-auto-planner.js"></script>
+    <script src="static/slot-system.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -1372,7 +1373,7 @@ const offensiveBuffsForAssignment = {
 		const lootCollectionRef = collection(db, LOOT_COLLECTION);
         const denylistCollectionRef = collection(db, "snapshot_player_denylist");
         const aliasDocRef = doc(db, DATA_COLLECTION, "nameAliasMap"); // Referenz definieren
-        window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc };
+        window.firebaseTools = { db, doc, getDoc, setDoc, collection, getDocs, updateDoc };
 function debounce(fn, ms) {
     let timer;
     return function(...args) {
@@ -1542,12 +1543,27 @@ window.generateGlobalWaString = async function() {
 
             const condition = data[`${base}-condition`]?.text || "0";
             const time = data[`${base}-time`]?.text || "0";
-            const player = data[`${base}-player`]?.player || "ALL";
+            const rawPlayer = data[`${base}-player`]?.player || "ALL";
             const rowNpc = data[`${base}-npc`]?.player;
             const valText = data[`${base}-note`]?.text || "nil";
             const valTTS = data[`${base}-tts`]?.text || "nil";
             const valName = data[`${base}-varname`]?.text || "nil";
             const valIcon = data[`${base}-icon`]?.text || "nil";
+
+            // Slot-Wert (z.B. HPALA1) zu echtem Spielernamen auflösen.
+            // Wenn der Slot nicht gemappt ist → Zeile auslassen.
+            // Wenn der gemappte Spieler nicht im Roster ist → ebenfalls auslassen.
+            // Group-Keys (ALL, MAGE, TANKS, ...) gehen unverändert durch.
+            let player = rawPlayer;
+            if (window.SlotSystem && window.SlotSystem.isSlotKey(rawPlayer)) {
+                player = window.SlotSystem.resolvePlayerName(rawPlayer, true);
+                if (player === null) return; // Ungemappter Slot → skip
+            }
+            const isGroupKey = window.SlotSystem && window.SlotSystem.isGroupKey(player);
+            const rosterNamesSet = new Set((window.rosterData || []).map(p => p.name));
+            if (player && !isGroupKey && !rosterNamesSet.has(player)) {
+                return; // Spieler nicht im Roster → skip
+            }
 
             const spellName = data[`${base}-cooldown`]?.cooldown;
             let spellId = "nil";
@@ -1784,7 +1800,23 @@ window.generateGlobalWaString = async function() {
                           class="w-full bg-black text-green-400 font-mono text-[10px] p-2 rounded border border-slate-700 resize-none cursor-text"></textarea>
                 <span id="export-cd-count" class="text-[9px] text-gray-500"></span>
             </div>
-            
+
+            <div class="bg-slate-900/60 p-3 rounded border border-slate-700 mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-bold text-cyan-300">
+                        <i class="fas fa-users mr-1"></i> WA Master-Roster-Mapping
+                    </span>
+                    <button id="export-mapping-copy-btn" class="export-copy-btn bg-cyan-800 hover:bg-cyan-700 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors"
+                            data-target="export-mapping-output">Kopieren</button>
+                </div>
+                <p class="text-[9px] text-gray-400 mb-1">
+                    Format: <code class="text-cyan-300">HPALA1-Spieler1,HPALA2-Spieler2,...</code> &mdash; Slots ohne Spieler im Kader werden ausgelassen.
+                </p>
+                <textarea id="export-mapping-output" readonly rows="2"
+                          class="w-full bg-black text-cyan-300 font-mono text-[10px] p-2 rounded border border-slate-700 resize-none cursor-text"></textarea>
+                <span id="export-mapping-count" class="text-[9px] text-gray-500"></span>
+            </div>
+
             ${extrasHtml}
             
             <div class="modal-buttons mt-6">
@@ -1800,20 +1832,54 @@ window.generateGlobalWaString = async function() {
     function updateCdExport() {
         const checked = Array.from(modal.querySelectorAll('.boss-export-cb:checked'));
         let allEntries = [];
-        
+        let totalRows = 0;
+
         checked.forEach(cb => {
             const bossId = cb.dataset.bossId;
             const data = bossDataMap[bossId];
             if (data) {
+                // Roh-Anzahl der Trigger-Zeilen für Skip-Statistik
+                const rawCount = Object.keys(data)
+                    .filter(k => k.includes('planner-row') && k.endsWith('-trigger'))
+                    .filter(k => data[k]?.player && data[k].player !== "")
+                    .length;
+                totalRows += rawCount;
                 allEntries.push(...buildCdExportForBoss(bossId, data));
             }
         });
-        
+
         const output = modal.querySelector('#export-cd-output');
         const count = modal.querySelector('#export-cd-count');
         const exportStr = allEntries.join('*');
         output.value = exportStr;
-        count.textContent = allEntries.length > 0 ? `${allEntries.length} Einträge von ${checked.length} Bossen` : 'Keine Bosse ausgewählt';
+
+        const skipped = totalRows - allEntries.length;
+        let countText;
+        if (allEntries.length === 0 && checked.length === 0) {
+            countText = 'Keine Bosse ausgewählt';
+        } else {
+            countText = `${allEntries.length} Einträge von ${checked.length} Bossen`;
+            if (skipped > 0) countText += ` (${skipped} ausgelassen — Slot/Spieler nicht im Kader)`;
+        }
+        count.textContent = countText;
+
+        // Master-Roster-Mapping aktualisieren
+        const mappingOutput = modal.querySelector('#export-mapping-output');
+        const mappingCount = modal.querySelector('#export-mapping-count');
+        if (mappingOutput && window.SlotSystem) {
+            const validNames = new Set((window.rosterData || []).map(p => p.name));
+            const mappingStr = window.SlotSystem.buildSlotMappingString(validNames);
+            mappingOutput.value = mappingStr;
+
+            const mappedCount = mappingStr ? mappingStr.split(',').length : 0;
+            const fullMapping = window.SlotSystem.getMapping();
+            const totalMappedSlots = Object.values(fullMapping).filter(n => n && n.trim()).length;
+            const skippedMapping = totalMappedSlots - mappedCount;
+
+            let mappingText = `${mappedCount} ${mappedCount === 1 ? 'Slot' : 'Slots'}`;
+            if (skippedMapping > 0) mappingText += ` (${skippedMapping} ohne Kader-Spieler übersprungen)`;
+            mappingCount.textContent = mappingText;
+        }
     }
 
     // Checkboxen → Update
@@ -2411,13 +2477,31 @@ window.RosterPatches = (function() {
     async function saveBossPatches(bossId, patches, firebaseTools, editorName) {
         if (!firebaseTools) return;
         const ref = firebaseTools.doc(firebaseTools.db, "raid-tool-data", bossId);
-        await firebaseTools.setDoc(ref, {
-            _rosterPatches: {
-                patches: patches,
-                editor: editorName || 'Unbekannt',
-                timestamp: new Date().toISOString()
+
+        // WICHTIG: Mit setDoc(..., { merge: true }) macht Firestore einen
+        // rekursiven Map-Merge. Dadurch würden gelöschte Patch-Einträge nicht
+        // tatsächlich entfernt, sondern alte+neue gemergt. Lösung: Wir nutzen
+        // updateDoc und setzen das ganze _rosterPatches-Feld als Atom — dann
+        // ersetzt Firestore das Feld komplett (kein Map-Merge).
+        const updateDoc = firebaseTools.updateDoc;
+        const setDoc = firebaseTools.setDoc;
+        const newValue = {
+            patches: patches,
+            editor: editorName || 'Unbekannt',
+            timestamp: new Date().toISOString()
+        };
+
+        try {
+            // updateDoc ersetzt einzelne Felder als Ganzes (kein Deep-Merge auf Maps)
+            await updateDoc(ref, { _rosterPatches: newValue });
+        } catch (e) {
+            // Falls das Doc noch nicht existiert (z.B. neuer Boss), legen wir es an.
+            if (e.code === 'not-found') {
+                await setDoc(ref, { _rosterPatches: newValue }, { merge: true });
+            } else {
+                throw e;
             }
-        }, { merge: true });
+        }
     }
 
     return {
@@ -2986,9 +3070,12 @@ window.setupBossListener = function(bossId) {
                 const oldInvalid = select.querySelector('.invalid-option');
                 if (oldInvalid && oldInvalid.value !== val) oldInvalid.remove(); 
 
-                const ALLOWED_EXTRAS = ['ALL', 'DEATHKNIGHT', 'DRUID', 'HUNTER', 'MAGE', 'MONK', 'PALADIN', 'PRIEST', 'ROGUE', 'SHAMAN', 'WARLOCK', 'WARRIOR'];
+                const ALLOWED_EXTRAS = ['ALL', 'DEATHKNIGHT', 'DRUID', 'HUNTER', 'MAGE', 'MONK', 'PALADIN', 'PRIEST', 'ROGUE', 'SHAMAN', 'WARLOCK', 'WARRIOR', 'TANKS', 'HEALERS', 'MELEEDPS', 'RANGEDDPS'];
 
-                if (val && !isCooldown && !isManual && !rosterPlayerNames.includes(val) && !ALLOWED_EXTRAS.includes(val) && val !== "Niemand") {
+                // Slot-Keys (HPALA1 etc.) sind ebenfalls gültig — werden vom Slot-System verwaltet
+                const isSlotValue = window.SlotSystem && window.SlotSystem.isSlotKey(val);
+
+                if (val && !isCooldown && !isManual && !rosterPlayerNames.includes(val) && !ALLOWED_EXTRAS.includes(val) && !isSlotValue && val !== "Niemand") {
                     select.classList.add('invalid-assignment');
                     if (!Array.from(select.options).some(o => o.value === val)) {
                          const invalidOption = new Option(`❌ ${val} (Nicht im Roster)`, val);
@@ -3496,8 +3583,47 @@ window.populateDropdownOptions = function(selectElement, players) {
         option.dataset.color = color;
         selectElement.appendChild(option);
     });
-    // 1. SPEZIAL-GRUPPEN
-    const specialGroups = ['ALL'];
+
+    // 1.5 SPEC-SLOTS — werden vom Slot-System bereitgestellt
+    if (window.SlotSystem) {
+        const mapping = window.SlotSystem.getMapping();
+        const activeSlots = Object.keys(mapping)
+            .filter(k => window.SlotSystem.isSlotKey(k))
+            .sort();
+
+        if (activeSlots.length > 0) {
+            const dividerSlots = document.createElement('option');
+            dividerSlots.textContent = '── SPEC-SLOTS ──';
+            dividerSlots.disabled = true;
+            dividerSlots.style.backgroundColor = '#1a202c';
+            dividerSlots.style.fontWeight = 'bold';
+            dividerSlots.style.color = '#fbbf24';
+            selectElement.appendChild(dividerSlots);
+
+            activeSlots.forEach(slotKey => {
+                const opt = document.createElement('option');
+                const mappedName = mapping[slotKey];
+                const meta = window.SlotSystem.parseSlotKey(slotKey);
+
+                let color = '#FFFFFF';
+                if (mappedName) {
+                    const player = players.find(p => p.name === mappedName);
+                    if (player) color = window.classColors[player.class.toUpperCase()] || '#FFFFFF';
+                } else if (meta) {
+                    color = window.classColors[meta.class] || '#FFFFFF';
+                }
+
+                opt.value = slotKey;
+                opt.textContent = mappedName ? `${slotKey} (${mappedName})` : `${slotKey} (—)`;
+                opt.style.color = color;
+                opt.dataset.color = color;
+                selectElement.appendChild(opt);
+            });
+        }
+    }
+
+    // 1. SPEZIAL-GRUPPEN — ALL + Rollen-Aliase
+    const specialGroups = ['ALL', 'TANKS', 'HEALERS', 'MELEEDPS', 'RANGEDDPS'];
     const divider1 = document.createElement('option');
     divider1.textContent = '── GRUPPEN ──';
     divider1.disabled = true;
@@ -3510,8 +3636,8 @@ window.populateDropdownOptions = function(selectElement, players) {
         const opt = document.createElement('option');
         opt.value = grp;
         opt.textContent = grp;
-        opt.style.color = '#FFFFFF'; // Weiß für Gruppen
-        opt.dataset.color = '#FFFFFF';
+        opt.style.color = '#fcd34d'; // Gold für Rollen-Aliase
+        opt.dataset.color = '#fcd34d';
         selectElement.appendChild(opt);
     });
 
@@ -3524,9 +3650,8 @@ window.populateDropdownOptions = function(selectElement, players) {
     divider2.style.color = '#fbbf24'; // Gold
     selectElement.appendChild(divider2);
 
-    // Wir nutzen die globalen window.classColors Keys, filtern aber TANK/DK raus, um Dopplungen zu vermeiden, falls nötig
     const classes = ['DEATHKNIGHT', 'DRUID', 'HUNTER', 'MAGE', 'MONK', 'PALADIN', 'PRIEST', 'ROGUE', 'SHAMAN', 'WARLOCK', 'WARRIOR'];
-    
+
     classes.forEach(cls => {
         const opt = document.createElement('option');
         opt.value = cls; // Wert in DB
@@ -4298,6 +4423,22 @@ window.applyThemeForRaid = function(raidId) {
         const selectedRaid = document.getElementById('raid-selector')?.value;
         const bosses = (raidData[selectedRaid] && raidData[selectedRaid].bosses) || [];
         window.initRosterPatchesCompUI(bosses);
+    }
+
+    // Spec-Slots-System initialisieren
+    if (window.SlotSystem) {
+        window.SlotSystem.init().then(() => {
+            const slotToggleBtn = document.getElementById('btn-slot-toggle');
+            const slotContainer = document.getElementById('slot-mapping-container');
+            if (slotToggleBtn && slotContainer) {
+                slotToggleBtn.addEventListener('click', () => {
+                    const isHidden = slotContainer.style.display === 'none';
+                    slotContainer.style.display = isHidden ? 'block' : 'none';
+                    slotToggleBtn.textContent = isHidden ? '▲ Verbergen' : '▼ Anzeigen';
+                    if (isHidden) window.SlotSystem.renderMappingUI(slotContainer);
+                });
+            }
+        });
     }
 	
 			
@@ -5315,8 +5456,9 @@ async function setMasterViewValues() {
 
                 // Invalid-Check für Nicht-Roster Spieler
                 const rosterNames = (window.rosterData || []).map(p => p.name);
-                const ALLOWED = ['ALL','DEATHKNIGHT','DRUID','HUNTER','MAGE','MONK','PALADIN','PRIEST','ROGUE','SHAMAN','WARLOCK','WARRIOR','Niemand',''];
-                if (val && !isCooldown && !isManual && !rosterNames.includes(val) && !ALLOWED.includes(val)) {
+                const ALLOWED = ['ALL','DEATHKNIGHT','DRUID','HUNTER','MAGE','MONK','PALADIN','PRIEST','ROGUE','SHAMAN','WARLOCK','WARRIOR','TANKS','HEALERS','MELEEDPS','RANGEDDPS','Niemand',''];
+                const isSlotValue = window.SlotSystem && window.SlotSystem.isSlotKey(val);
+                if (val && !isCooldown && !isManual && !rosterNames.includes(val) && !ALLOWED.includes(val) && !isSlotValue) {
                     select.classList.add('invalid-assignment');
                     if (!Array.from(select.options).some(o => o.value === val)) {
                         const invalidOpt = new Option(`❌ ${val} (Nicht im Roster)`, val);

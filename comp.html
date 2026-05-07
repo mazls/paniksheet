@@ -199,7 +199,27 @@
         Noch keine Patches definiert. Klicke auf einen Boss-Tab und dann auf "+ Patch hinzufügen".
     </div>
 </section>
-
+    <!-- ════════════════════════════════════════════════════════════════════
+         SPEC-SLOTS - Mapping zwischen festen Slot-Keys (HPALA1, BLOODDK1, ...)
+         und realen Spielern. Wenn Spieler wechseln, ändert man hier nur das
+         Mapping - alle CD-Einteilungen, die auf den Slot zeigen, bleiben gültig.
+         ════════════════════════════════════════════════════════════════════ -->
+    <section class="bg-slate-850 p-6 rounded-lg">
+        <div class="flex justify-between items-start gap-4 flex-wrap">
+            <div>
+                <h3 class="text-xl font-semibold text-blue-450">🎯 Spec-Slots</h3>
+                <p class="text-gray-400 text-sm mt-1">
+                    Statt Spielernamen kannst du in CD-Einteilungen Slots wie
+                    <code class="text-yellow-200">HPALA1</code>, <code class="text-yellow-200">BLOODDK1</code> etc. nutzen.
+                    Beim Spielerwechsel änderst du nur das Mapping hier - alle CDs bleiben gültig.
+                </p>
+            </div>
+            <button id="btn-slot-toggle" class="bg-slate-700 hover:bg-slate-600 text-gray-200 font-medium py-2 px-4 rounded-md transition-colors text-sm" title="Slots ein-/ausklappen">
+                ▼ Anzeigen
+            </button>
+        </div>
+        <div id="slot-mapping-container" style="display:none; margin-top:16px;"></div>
+    </section>
 <section id="utility-assignment-section" class="bg-slate-850 p-6 rounded-lg">
     <h3 class="text-xl font-semibold mb-3 text-blue-450">Buff & Utility Einteilung</h3>
 
@@ -415,4 +435,6 @@
             </div>
         </div>
     </section>
+
+
 </main>
