@@ -155,8 +155,8 @@
             </h4>
             
             <div class="flex bg-slate-900 rounded p-0.5 border border-slate-600">
-                <button onclick="switchTactic('nhc')" id="btn-nhc" class="px-3 py-0.5 text-[10px] font-bold rounded bg-blue-600 text-white transition-all">NHC</button>
-                <button onclick="switchTactic('hc')" id="btn-hc" class="px-3 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white transition-all">HC</button>
+                <button onclick="switchTactic('nhc')" id="btn-nhc" class="px-3 py-0.5 text-[10px] font-bold rounded text-gray-400 hover:text-white transition-all">NHC</button>
+                <button onclick="switchTactic('hc')" id="btn-hc" class="px-3 py-0.5 text-[10px] font-bold rounded bg-red-600 text-white transition-all">HC</button>
             </div>
         </div>
 
@@ -170,7 +170,7 @@
                 </tr>
             </thead>
 
-            <tbody id="body-nhc" class="divide-y divide-slate-700/50">
+            <tbody id="body-nhc" class="divide-y divide-slate-700/50  hidden">
                 <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">1</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">0:00</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NE</span> Team 1</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
                 <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">2</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">0:30</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SE</span> Team 2</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
                 <tr class="hover:bg-slate-800/30"><td class="text-center font-bold text-white bg-slate-800/30">3</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">1:00</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SW</span> Team 3</td><td class="px-2 py-0.5 border-l border-slate-700/50 opacity-10">-</td></tr>
@@ -188,7 +188,7 @@
                 <tr class="bg-yellow-900/10"><td class="text-center font-bold text-gold bg-slate-800/30">15</td><td class="text-center font-mono text-gray-400 border-r border-slate-700/30">7:00</td><td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ SE</span> Team 2</td><td class="px-2 py-0.5 border-l border-slate-700/50"><span class="text-sky-400 font-bold">↑ SW</span> Team 3</td></tr>
             </tbody>
 
-            <tbody id="body-hc" class="divide-y divide-slate-700/50 hidden">
+            <tbody id="body-hc" class="divide-y divide-slate-700/50">
                 <tr class="hover:bg-slate-800/30">
                     <td class="text-center font-bold text-white bg-slate-800/30">1</td><td class="text-center font-mono text-gray-500 border-r border-slate-700/30">0:00</td>
                     <td class="px-2 py-0.5"><span class="text-emerald-400 font-bold">↓ NE</span> Team 1</td>
@@ -310,7 +310,7 @@
 
         <div class="assignment-block border border-gold-border">
             <div class="flex justify-between items-center mb-4 border-b border-slate-650 pb-2">
-                <h3 class="text-xl font-bold text-gold">2. Wellen Zuweisung (19 Wellen)</h3>
+                <h3 class="text-xl font-bold text-gold">2. Wellen Zuweisung</h3>
             </div>
             
             <div class="overflow-x-auto">
@@ -320,7 +320,6 @@
                             <th class="p-2 w-16 text-center">#</th>
                             <th class="p-2 border-l border-slate-700 text-center">Einsatz A</th>
                             <th class="p-2 border-l border-slate-700 text-center">Einsatz B</th>
-                            <th class="p-2 border-l border-slate-700 text-center">Einsatz C</th>
                         </tr>
                     </thead>
                     <tbody id="waves-schedule-container" class="divide-y divide-slate-700">
@@ -418,12 +417,7 @@
             { id: 6, count: 1 }, 
             { id: 7, count: 2 }, { id: 8, count: 2 },
             { id: 9, count: 2 },
-            { id: 10, count: 2 }, { id: 11, count: 2 }, { id: 12, count: 2 }, { id: 13, count: 2 },
-            { id: 14, count: 3 },
-            { id: 15, count: 2 },
-            { id: 16, count: 3 },
-            { id: 17, count: 2 },
-            { id: 18, count: 3 }, { id: 19, count: 3 }
+            { id: 10, count: 2 },
         ];
 
         // Positionen & Defaults
@@ -438,15 +432,6 @@
             "8-0": { lvl: "LOWER", dir: "SE" }, "8-1": { lvl: "UPPER", dir: "NW" },
             "9-0": { lvl: "LOWER", dir: "SW" }, "9-1": { lvl: "UPPER", dir: "NW" },
             "10-0": { lvl: "LOWER", dir: "W" },  "10-1": { lvl: "UPPER", dir: "NE" },
-            "11-0": { lvl: "LOWER", dir: "NW" }, "11-1": { lvl: "UPPER", dir: "SE" },
-            "12-0": { lvl: "LOWER", dir: "NE" }, "12-1": { lvl: "UPPER", dir: "M" },
-            "13-0": { lvl: "LOWER", dir: "SE" }, "13-1": { lvl: "UPPER", dir: "SW" },
-            "14-0": { lvl: "LOWER", dir: "SW" }, "14-1": { lvl: "UPPER", dir: "NE" }, "14-2": { lvl: "UPPER", dir: "NW" },
-            "15-0": { lvl: "LOWER", dir: "W" },  "15-1": { lvl: "UPPER", dir: "SE" },
-            "16-0": { lvl: "LOWER", dir: "NW" }, "16-1": { lvl: "LOWER", dir: "NE" }, "16-2": { lvl: "UPPER", dir: "MIDDLE" },
-            "17-0": { lvl: "LOWER", dir: "SE" }, "17-1": { lvl: "UPPER", dir: "SW" },
-            "18-0": { lvl: "LOWER", dir: "SW" }, "18-1": { lvl: "UPPER", dir: "NE" }, "18-2": { lvl: "UPPER", dir: "NW" },
-            "19-0": { lvl: "LOWER", dir: "NW" }, "19-1": { lvl: "LOWER", dir: "NE" }, "19-2": { lvl: "UPPER", dir: "SE" }
         };
 
         const formatTime = (seconds) => {
@@ -583,11 +568,11 @@
 
             WAVES_CONFIG.forEach(wave => {
                 let cells = '';
-                const suffixes = ['', 'b', 'c']; 
+                const suffixes = ['', 'b']; 
                 const timeStr = formatTime(currentTime);
                 currentTime += 30;
 
-                for(let i=0; i<3; i++) {
+                for(let i=0; i<2; i++) {
                     if (i < wave.count) {
                         const suffix = suffixes[i];
                         const dbKey = `jikun-wave-${wave.id}${suffix}`;
