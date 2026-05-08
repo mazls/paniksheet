@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="static/cd-auto-planner.js"></script>
-    <script src="static/slot-system.js"></script>
+    <script src="static/slot-system.js"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -1373,7 +1373,7 @@ const offensiveBuffsForAssignment = {
 		const lootCollectionRef = collection(db, LOOT_COLLECTION);
         const denylistCollectionRef = collection(db, "snapshot_player_denylist");
         const aliasDocRef = doc(db, DATA_COLLECTION, "nameAliasMap"); // Referenz definieren
-        window.firebaseTools = { db, doc, getDoc, setDoc, collection, getDocs, updateDoc };
+        window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc };
 function debounce(fn, ms) {
     let timer;
     return function(...args) {
@@ -1528,7 +1528,21 @@ window.generateGlobalWaString = async function() {
     function buildCdExportForBoss(bossId, data) {
         let entries = [];
         const npcName = data[`${bossId}-npc_name`]?.text || "Unknown NPC";
-        
+
+        // Boss-spezifisches Slot-Mapping (global + Slot-Overrides aus _rosterPatches)
+        const globalMapping = (window.SlotSystem && window.SlotSystem.getMapping)
+            ? window.SlotSystem.getMapping() : {};
+        const bossSlotOverrides = (data._rosterPatches && data._rosterPatches.slotOverrides) || {};
+        const effectiveMapping = { ...globalMapping };
+        Object.entries(bossSlotOverrides).forEach(([slotKey, value]) => {
+            if (value === null || value === '') {
+                delete effectiveMapping[slotKey];
+            } else {
+                effectiveMapping[slotKey] = value;
+            }
+        });
+        const rosterNamesSet = new Set((window.rosterData || []).map(p => p.name));
+
         const rows = Object.keys(data)
             .filter(k => k.includes('planner-row') && k.endsWith('-trigger'))
             .sort((a, b) => {
@@ -1550,19 +1564,19 @@ window.generateGlobalWaString = async function() {
             const valName = data[`${base}-varname`]?.text || "nil";
             const valIcon = data[`${base}-icon`]?.text || "nil";
 
-            // Slot-Wert (z.B. HPALA1) zu echtem Spielernamen auflösen.
-            // Wenn der Slot nicht gemappt ist → Zeile auslassen.
-            // Wenn der gemappte Spieler nicht im Roster ist → ebenfalls auslassen.
-            // Group-Keys (ALL, MAGE, TANKS, ...) gehen unverändert durch.
+            // Slot-Wert (z.B. HPALA1) zu echtem Spielernamen auflösen mit dem
+            // Boss-spezifischen Mapping.
+            //   - Slot ungemappt (oder Override = leer) → Zeile auslassen
+            //   - Aufgelöster Spieler nicht im Roster → Zeile auslassen
+            //   - Group-Keys (ALL, MAGE, TANKS, ...) gehen unverändert durch
             let player = rawPlayer;
             if (window.SlotSystem && window.SlotSystem.isSlotKey(rawPlayer)) {
-                player = window.SlotSystem.resolvePlayerName(rawPlayer, true);
-                if (player === null) return; // Ungemappter Slot → skip
+                player = effectiveMapping[rawPlayer];
+                if (!player) return;
             }
             const isGroupKey = window.SlotSystem && window.SlotSystem.isGroupKey(player);
-            const rosterNamesSet = new Set((window.rosterData || []).map(p => p.name));
             if (player && !isGroupKey && !rosterNamesSet.has(player)) {
-                return; // Spieler nicht im Roster → skip
+                return;
             }
 
             const spellName = data[`${base}-cooldown`]?.cooldown;
@@ -1810,7 +1824,7 @@ window.generateGlobalWaString = async function() {
                             data-target="export-mapping-output">Kopieren</button>
                 </div>
                 <p class="text-[9px] text-gray-400 mb-1">
-                    Format: <code class="text-cyan-300">HPALA1-Spieler1,HPALA2-Spieler2,...</code> &mdash; Slots ohne Spieler im Kader werden ausgelassen.
+                    Format: <code class="text-cyan-300">HPALA1-Spieler1,HPALA2-Spieler2,...</code> &mdash; nur globales Mapping. Boss-Slot-Overrides werden im CD-Export oben angewendet.
                 </p>
                 <textarea id="export-mapping-output" readonly rows="2"
                           class="w-full bg-black text-cyan-300 font-mono text-[10px] p-2 rounded border border-slate-700 resize-none cursor-text"></textarea>
@@ -1833,6 +1847,7 @@ window.generateGlobalWaString = async function() {
         const checked = Array.from(modal.querySelectorAll('.boss-export-cb:checked'));
         let allEntries = [];
         let totalRows = 0;
+        let bossesWithOverrides = 0;
 
         checked.forEach(cb => {
             const bossId = cb.dataset.bossId;
@@ -1844,6 +1859,9 @@ window.generateGlobalWaString = async function() {
                     .filter(k => data[k]?.player && data[k].player !== "")
                     .length;
                 totalRows += rawCount;
+                // Boss hat Slot-Overrides aktiv?
+                const overrides = (data._rosterPatches && data._rosterPatches.slotOverrides) || {};
+                if (Object.keys(overrides).length > 0) bossesWithOverrides++;
                 allEntries.push(...buildCdExportForBoss(bossId, data));
             }
         });
@@ -1860,10 +1878,11 @@ window.generateGlobalWaString = async function() {
         } else {
             countText = `${allEntries.length} Einträge von ${checked.length} Bossen`;
             if (skipped > 0) countText += ` (${skipped} ausgelassen — Slot/Spieler nicht im Kader)`;
+            if (bossesWithOverrides > 0) countText += ` · ${bossesWithOverrides} mit Slot-Overrides`;
         }
         count.textContent = countText;
 
-        // Master-Roster-Mapping aktualisieren
+        // Master-Roster-Mapping aktualisieren (globales Mapping)
         const mappingOutput = modal.querySelector('#export-mapping-output');
         const mappingCount = modal.querySelector('#export-mapping-count');
         if (mappingOutput && window.SlotSystem) {
@@ -2440,6 +2459,7 @@ window.showPrompt = function(message, defaultValue = '') {
 // Storage: raid-tool-data/{bossId} enthält Feld _rosterPatches: { patches: {...}, editor, timestamp }
 window.RosterPatches = (function() {
     let bossPatchesById = {};        // bossId → patches-object
+    let bossSlotOverridesById = {};  // bossId → slotOverrides-object { SlotKey: PlayerName | null }
 
     function applyPatchObject(player, patch) {
         if (!patch) return player;
@@ -2470,11 +2490,54 @@ window.RosterPatches = (function() {
         });
     }
 
+    /**
+     * Liefert das effektive Slot-Mapping für einen Boss.
+     * Globales Mapping + Slot-Overrides:
+     *   - Override-Wert ist Spielername → ersetzt globalen Wert
+     *   - Override-Wert ist null → Slot ist bei diesem Boss leer (delete)
+     *   - Slot nicht in Overrides → globaler Wert bleibt
+     */
+    function getEffectiveSlotMapping(bossId) {
+        const globalMapping = (window.SlotSystem && window.SlotSystem.getMapping)
+            ? window.SlotSystem.getMapping()
+            : {};
+        const overrides = bossSlotOverridesById[bossId] || {};
+        if (Object.keys(overrides).length === 0) return globalMapping;
+
+        const result = { ...globalMapping };
+        Object.entries(overrides).forEach(([slotKey, value]) => {
+            if (value === null || value === '') {
+                delete result[slotKey];
+            } else {
+                result[slotKey] = value;
+            }
+        });
+        return result;
+    }
+
     function setBossPatches(bossId, patches) {
         bossPatchesById[bossId] = patches || {};
     }
 
-    async function saveBossPatches(bossId, patches, firebaseTools, editorName) {
+    function setBossSlotOverrides(bossId, slotOverrides) {
+        bossSlotOverridesById[bossId] = slotOverrides || {};
+    }
+
+    function getBossSlotOverrides(bossId) {
+        return { ...(bossSlotOverridesById[bossId] || {}) };
+    }
+
+    function hasAnyPatches(bossId) {
+        const p = bossPatchesById[bossId] || {};
+        const o = bossSlotOverridesById[bossId] || {};
+        return Object.keys(p).length > 0 || Object.keys(o).length > 0;
+    }
+
+    /**
+     * Speichert Patches (und optional Slot-Overrides) für einen Boss.
+     * Wenn slotOverrides nicht übergeben wird, wird der existing Stand beibehalten.
+     */
+    async function saveBossPatches(bossId, patches, firebaseTools, editorName, slotOverrides) {
         if (!firebaseTools) return;
         const ref = firebaseTools.doc(firebaseTools.db, "raid-tool-data", bossId);
 
@@ -2485,8 +2548,12 @@ window.RosterPatches = (function() {
         // ersetzt Firestore das Feld komplett (kein Map-Merge).
         const updateDoc = firebaseTools.updateDoc;
         const setDoc = firebaseTools.setDoc;
+        const effectiveSlotOverrides = (slotOverrides !== undefined)
+            ? slotOverrides
+            : (bossSlotOverridesById[bossId] || {});
         const newValue = {
             patches: patches,
+            slotOverrides: effectiveSlotOverrides,
             editor: editorName || 'Unbekannt',
             timestamp: new Date().toISOString()
         };
@@ -2506,6 +2573,10 @@ window.RosterPatches = (function() {
 
     return {
         setBossPatches,
+        setBossSlotOverrides,
+        getBossSlotOverrides,
+        getEffectiveSlotMapping,
+        hasAnyPatches,
         buildEffectiveRoster,
         saveBossPatches,
         getBossPatches: (bossId) => ({ ...(bossPatchesById[bossId] || {}) })
@@ -2566,7 +2637,10 @@ window.updateRosterPatchBanner = function(bossId) {
     if (banner.dataset.bossId !== bossId) return;  // veraltetes Banner, ignorieren
     
     const bossPatches = window.RosterPatches.getBossPatches(bossId);
-    const totalCount = Object.keys(bossPatches).length;
+    const slotOverrides = window.RosterPatches.getBossSlotOverrides(bossId);
+    const patchCount = Object.keys(bossPatches).length;
+    const slotOverrideCount = Object.keys(slotOverrides).length;
+    const totalCount = patchCount + slotOverrideCount;
     
     let html = `
         <div class="flex items-center gap-2 flex-wrap">
@@ -2579,6 +2653,7 @@ window.updateRosterPatchBanner = function(bossId) {
     if (totalCount === 0) {
         html += `<span class="text-gray-400 text-xs">- keine aktiv (Standard-Roster wird verwendet)</span>`;
     } else {
+        // Spieler-Patches als violette Chips
         Object.entries(bossPatches).forEach(([name, patch]) => {
             const summary = formatPatchSummary(patch);
             html += `<span class="inline-flex items-center gap-1 text-xs bg-purple-900/40 border border-purple-700 rounded px-2 py-0.5">
@@ -2586,11 +2661,19 @@ window.updateRosterPatchBanner = function(bossId) {
                 <span class="text-purple-200">→ ${summary}</span>
             </span>`;
         });
+        // Slot-Overrides als gold/gelbe Chips
+        Object.entries(slotOverrides).forEach(([slotKey, value]) => {
+            const display = (value === null || value === '') ? '<em>(leer)</em>' : value;
+            html += `<span class="inline-flex items-center gap-1 text-xs bg-yellow-900/40 border border-yellow-700 rounded px-2 py-0.5">
+                <span class="text-yellow-200 font-mono">${slotKey}</span>
+                <span class="text-yellow-100">→ ${display}</span>
+            </span>`;
+        });
     }
     
     html += `
             <button id="roster-patch-banner-edit" class="ml-auto text-xs bg-purple-700 hover:bg-purple-800 disabled:opacity-50 disabled:cursor-not-allowed text-white py-1 px-3 rounded">
-                ${totalCount > 0 ? '✎ Bearbeiten' : '+ Patch hinzufügen'}
+                ${totalCount > 0 ? '✎ Bearbeiten' : '+ Anpassung hinzufügen'}
             </button>
         </div>
     `;
@@ -2635,9 +2718,28 @@ window.openRosterPatchModal = function(bossId) {
                 Patches überschreiben den Standard-Roster nur für diesen einen Boss.
                 Du kannst Klasse, Spec oder Rolle einzeln ändern - alle anderen Bosse bleiben unberührt.
             </div>
-            
-            <ul id="rp-boss-list" class="space-y-1 mb-3"></ul>
-            <button id="rp-add-boss" class="text-xs bg-purple-700 hover:bg-purple-800 text-white py-1.5 px-3 rounded">+ Patch hinzufügen</button>
+
+            <!-- SPIELER-PATCHES -->
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-sm font-bold text-purple-300">👤 Spieler-Patches</h4>
+                </div>
+                <ul id="rp-boss-list" class="space-y-1 mb-2"></ul>
+                <button id="rp-add-boss" class="text-xs bg-purple-700 hover:bg-purple-800 text-white py-1.5 px-3 rounded">+ Patch hinzufügen</button>
+            </div>
+
+            <!-- SLOT-OVERRIDES -->
+            <div class="pt-3 border-t border-slate-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-sm font-bold text-yellow-300">🎯 Slot-Overrides</h4>
+                </div>
+                <p class="text-xs text-gray-400 mb-2">
+                    Bei diesem Boss zeigt ein Slot wie <code class="text-yellow-200">HPALA1</code>
+                    auf einen anderen Spieler als global &mdash; oder bleibt leer.
+                </p>
+                <ul id="rp-slot-list" class="space-y-1 mb-2"></ul>
+                <button id="rp-add-slot" class="text-xs bg-yellow-700 hover:bg-yellow-600 text-white py-1.5 px-3 rounded">+ Slot-Override hinzufügen</button>
+            </div>
         </div>
     `;
     document.body.appendChild(modal);
@@ -2655,6 +2757,48 @@ window.openRosterPatchModal = function(bossId) {
             if (!confirm(`Patch für "${name}" wirklich löschen?`)) return;
             await deletePatch(bossId, name);
             renderList();
+        }));
+
+        // Slot-Overrides rendern
+        renderSlotList();
+    }
+
+    function renderSlotList() {
+        const slotOverrides = window.RosterPatches.getBossSlotOverrides(bossId);
+        const list = document.getElementById('rp-slot-list');
+        const keys = Object.keys(slotOverrides);
+        if (keys.length === 0) {
+            list.innerHTML = '<li class="text-xs text-gray-500 italic px-2">Keine Slot-Overrides.</li>';
+            return;
+        }
+        const globalMapping = (window.SlotSystem && window.SlotSystem.getMapping)
+            ? window.SlotSystem.getMapping() : {};
+
+        list.innerHTML = keys.sort().map(slotKey => {
+            const value = slotOverrides[slotKey];
+            const isEmpty = (value === null || value === '');
+            const display = isEmpty ? '<em class="text-gray-500">(leer)</em>' : `<span class="text-yellow-100">${value}</span>`;
+            const globalVal = globalMapping[slotKey] || '(leer)';
+            return `
+                <li class="flex items-center gap-2 bg-slate-900 border border-yellow-800/40 rounded px-2 py-1.5 text-xs">
+                    <code class="text-yellow-200 font-mono bg-yellow-900/30 px-2 py-0.5 rounded">${slotKey}</code>
+                    <span class="text-gray-400">→</span>
+                    ${display}
+                    <span class="text-gray-500 ml-2 text-[10px]">(global: ${globalVal})</span>
+                    <button class="rp-slot-edit ml-auto text-blue-400 hover:text-blue-300 px-1" data-slot="${slotKey}" title="Bearbeiten">✎</button>
+                    <button class="rp-slot-del text-red-400 hover:text-red-300 px-1" data-slot="${slotKey}" title="Override entfernen">✕</button>
+                </li>
+            `;
+        }).join('');
+
+        modal.querySelectorAll('.rp-slot-edit').forEach(b => b.addEventListener('click', () => {
+            window.openSlotOverrideEditor(bossId, b.dataset.slot, () => renderSlotList());
+        }));
+        modal.querySelectorAll('.rp-slot-del').forEach(b => b.addEventListener('click', async () => {
+            const slotKey = b.dataset.slot;
+            if (!confirm(`Slot-Override für "${slotKey}" entfernen?`)) return;
+            await deleteSlotOverride(bossId, slotKey);
+            renderSlotList();
         }));
     }
     
@@ -2683,15 +2827,164 @@ window.openRosterPatchModal = function(bossId) {
     document.getElementById('rp-add-boss').addEventListener('click', () => {
         window.openRosterPatchEditor(bossId, null, () => renderList());
     });
+    document.getElementById('rp-add-slot').addEventListener('click', () => {
+        window.openSlotOverrideEditor(bossId, null, () => renderSlotList());
+    });
     
     renderList();
+};
+
+async function deleteSlotOverride(bossId, slotKey) {
+    const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+    const slotOverrides = window.RosterPatches.getBossSlotOverrides(bossId);
+    delete slotOverrides[slotKey];
+    const patches = window.RosterPatches.getBossPatches(bossId);
+    await window.RosterPatches.saveBossPatches(bossId, patches, window.firebaseTools, editorName, slotOverrides);
+    window.RosterPatches.setBossSlotOverrides(bossId, slotOverrides);
+    if (window.updateRosterPatchBanner) window.updateRosterPatchBanner(bossId);
+}
+
+// Editor-Modal für einzelnen Slot-Override
+window.openSlotOverrideEditor = function(bossId, existingKey, onSaved) {
+    if (!bossId) {
+        alert('Kein Boss ausgewählt');
+        return;
+    }
+    const slotOverrides = window.RosterPatches.getBossSlotOverrides(bossId);
+    const existing = existingKey ? slotOverrides[existingKey] : undefined;
+    const isEdit = !!existingKey;
+
+    // Slot-Liste — nur welche, die noch keinen Override haben (oder der gerade editierte)
+    // Mit defensivem Fallback: direkt aus SPEC_DEFINITIONS bauen falls getSlotsByClass fehlt
+    let allSlotsByClass = {};
+    if (window.SlotSystem) {
+        if (typeof window.SlotSystem.getSlotsByClass === 'function') {
+            allSlotsByClass = window.SlotSystem.getSlotsByClass();
+        } else if (Array.isArray(window.SlotSystem.SPEC_DEFINITIONS)) {
+            // Fallback: aus SPEC_DEFINITIONS bauen
+            window.SlotSystem.SPEC_DEFINITIONS.forEach(([prefix, cls, spec, maxSlots]) => {
+                if (!allSlotsByClass[cls]) allSlotsByClass[cls] = [];
+                allSlotsByClass[cls].push({ prefix, spec, maxSlots });
+            });
+        }
+    }
+
+    // Diagnose-Log falls leer
+    if (Object.keys(allSlotsByClass).length === 0) {
+        console.warn('[SlotOverrideEditor] Keine Slots gefunden. Prüfe ob slot-system.js geladen ist und getSlotsByClass / SPEC_DEFINITIONS exposed sind.', {
+            slotSystem: !!window.SlotSystem,
+            getSlotsByClass: typeof window.SlotSystem?.getSlotsByClass,
+            SPEC_DEFINITIONS: Array.isArray(window.SlotSystem?.SPEC_DEFINITIONS)
+        });
+        alert('Slot-System nicht initialisiert. Bitte die Seite neu laden — falls das Problem bleibt, prüfe in der Browser-Konsole, ob slot-system.js korrekt geladen ist.');
+        return;
+    }
+
+    const availableSlots = [];
+    Object.entries(allSlotsByClass).forEach(([cls, specs]) => {
+        specs.forEach(({ prefix, spec, maxSlots }) => {
+            for (let i = 1; i <= maxSlots; i++) {
+                const key = prefix + i;
+                if (!slotOverrides.hasOwnProperty(key) || key === existingKey) {
+                    availableSlots.push({ key, cls, spec });
+                }
+            }
+        });
+    });
+
+    // Spieler-Liste mit Patches drauf
+    const effectiveRoster = window.RosterPatches.buildEffectiveRoster(window.rosterData || [], bossId);
+
+    const editorEl = document.createElement('div');
+    editorEl.id = 'slot-override-editor';
+    editorEl.className = 'fixed inset-0 z-[60] bg-black/70 flex items-center justify-center p-4';
+
+    const slotOptionsHtml = availableSlots.map(({ key, cls }) => {
+        const color = window.classColors[cls] || '#FFFFFF';
+        const selected = key === existingKey ? 'selected' : '';
+        return `<option value="${key}" style="color:${color};" ${selected}>${key}</option>`;
+    }).join('');
+
+    const playerOptionsHtml = effectiveRoster.map(p => {
+        const color = window.classColors[(p.class || '').toUpperCase()] || '#FFFFFF';
+        const selected = p.name === existing ? 'selected' : '';
+        return `<option value="${p.name}" style="color:${color};" ${selected}>${p.name}</option>`;
+    }).join('');
+
+    const isEmpty = (existing === null);
+
+    editorEl.innerHTML = `
+        <div class="bg-slate-800 border border-yellow-700 rounded-lg p-4 max-w-md w-full">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-700">
+                <h3 class="text-lg font-bold text-yellow-300">${isEdit ? 'Slot-Override bearbeiten' : 'Slot-Override hinzufügen'}</h3>
+                <button id="so-close" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs text-gray-300 mb-1">Slot</label>
+                    <select id="so-key" class="w-full bg-slate-900 border border-slate-600 text-gray-200 text-sm rounded px-2 py-1" ${isEdit ? 'disabled' : ''}>
+                        <option value="">— Slot wählen —</option>
+                        ${slotOptionsHtml}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-300 mb-1">Bei diesem Boss zeigt der Slot auf:</label>
+                    <select id="so-value" class="w-full bg-slate-900 border border-slate-600 text-gray-200 text-sm rounded px-2 py-1">
+                        <option value="__EMPTY__" ${isEmpty ? 'selected' : ''}>(leer / unmapped bei diesem Boss)</option>
+                        ${playerOptionsHtml}
+                    </select>
+                </div>
+
+                <p class="text-[10px] text-gray-500 italic">
+                    Tipp: Wenn der Slot auf <em>(leer)</em> gesetzt ist, wird er für diesen Boss
+                    in CD-Einteilungen nicht aufgelöst und im Export ausgelassen.
+                </p>
+            </div>
+
+            <div class="flex gap-2 justify-end mt-4 pt-3 border-t border-slate-700">
+                <button id="so-cancel" class="text-xs bg-slate-700 hover:bg-slate-600 text-gray-200 py-1.5 px-3 rounded">Abbrechen</button>
+                <button id="so-save" class="text-xs bg-yellow-700 hover:bg-yellow-600 text-white py-1.5 px-3 rounded">Speichern</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(editorEl);
+
+    const close = () => editorEl.remove();
+    document.getElementById('so-close').addEventListener('click', close);
+    document.getElementById('so-cancel').addEventListener('click', close);
+    editorEl.addEventListener('click', e => { if (e.target === editorEl) close(); });
+
+    document.getElementById('so-save').addEventListener('click', async () => {
+        const keySel = document.getElementById('so-key');
+        const valSel = document.getElementById('so-value');
+        const slotKey = isEdit ? existingKey : keySel.value;
+        if (!slotKey) {
+            alert('Bitte einen Slot wählen.');
+            return;
+        }
+        const newValue = valSel.value === '__EMPTY__' ? null : valSel.value;
+        const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+
+        const allOverrides = window.RosterPatches.getBossSlotOverrides(bossId);
+        allOverrides[slotKey] = newValue;
+        const patches = window.RosterPatches.getBossPatches(bossId);
+
+        await window.RosterPatches.saveBossPatches(bossId, patches, window.firebaseTools, editorName, allOverrides);
+        window.RosterPatches.setBossSlotOverrides(bossId, allOverrides);
+        if (window.updateRosterPatchBanner) window.updateRosterPatchBanner(bossId);
+        if (typeof onSaved === 'function') onSaved();
+        close();
+    });
 };
 
 async function deletePatch(bossId, name) {
     const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
     const patches = { ...window.RosterPatches.getBossPatches(bossId) };
     delete patches[name];
-    await window.RosterPatches.saveBossPatches(bossId, patches, window.firebaseTools, editorName);
+    const slotOverrides = window.RosterPatches.getBossSlotOverrides(bossId);
+    await window.RosterPatches.saveBossPatches(bossId, patches, window.firebaseTools, editorName, slotOverrides);
     window.RosterPatches.setBossPatches(bossId, patches);
     if (window.updateRosterPatchBanner) window.updateRosterPatchBanner(bossId);
 }
@@ -3033,7 +3326,15 @@ window.setupBossListener = function(bossId) {
         // Wir trennen es ab, bevor 'assignments' an die Boss-Module geht.
         const bossPatchesPayload = rawData._rosterPatches;
         const bossPatches = (bossPatchesPayload && bossPatchesPayload.patches) ? bossPatchesPayload.patches : {};
+        const bossSlotOverrides = (bossPatchesPayload && bossPatchesPayload.slotOverrides) ? bossPatchesPayload.slotOverrides : {};
+
+        // Vorherigen Stand merken — wenn Slot-Overrides sich geändert haben, müssen
+        // die Dropdowns auf der Boss-Seite frisch befüllt werden.
+        const previousOverrides = window.RosterPatches.getBossSlotOverrides(bossId);
+        const slotOverridesChanged = JSON.stringify(previousOverrides) !== JSON.stringify(bossSlotOverrides);
+
         window.RosterPatches.setBossPatches(bossId, bossPatches);
+        window.RosterPatches.setBossSlotOverrides(bossId, bossSlotOverrides);
         
         // 'assignments' = alles außer den Meta-Feldern
         const assignments = { ...rawData };
@@ -3071,8 +3372,6 @@ window.setupBossListener = function(bossId) {
                 if (oldInvalid && oldInvalid.value !== val) oldInvalid.remove(); 
 
                 const ALLOWED_EXTRAS = ['ALL', 'DEATHKNIGHT', 'DRUID', 'HUNTER', 'MAGE', 'MONK', 'PALADIN', 'PRIEST', 'ROGUE', 'SHAMAN', 'WARLOCK', 'WARRIOR', 'TANKS', 'HEALERS', 'MELEEDPS', 'RANGEDDPS'];
-
-                // Slot-Keys (HPALA1 etc.) sind ebenfalls gültig — werden vom Slot-System verwaltet
                 const isSlotValue = window.SlotSystem && window.SlotSystem.isSlotKey(val);
 
                 if (val && !isCooldown && !isManual && !rosterPlayerNames.includes(val) && !ALLOWED_EXTRAS.includes(val) && !isSlotValue && val !== "Niemand") {
@@ -3116,6 +3415,26 @@ window.setupBossListener = function(bossId) {
             }, 100);
             
             return;
+        }
+
+        // Wenn Slot-Overrides sich geändert haben → Dropdowns neu befüllen, damit
+        // die SPEC-SLOTS-Sektion das aktuelle Boss-spezifische Mapping zeigt.
+        if (slotOverridesChanged) {
+            document.querySelectorAll('.assignment-select').forEach(select => {
+                if (select.getAttribute('data-manual-options') === 'true') return;
+                const assignmentIdLower = (select.dataset.assignmentId || '').toLowerCase();
+                if (assignmentIdLower.includes('cooldown')) return; // CD-Selects haben Spell-Optionen, keine Spieler
+
+                let playersForDropdown = effectiveRoster;
+                if (assignmentIdLower.includes('tank')) {
+                    playersForDropdown = effectiveRoster.filter(p => p.roles && p.roles.includes('TANK'));
+                } else if (assignmentIdLower.includes('healer')) {
+                    playersForDropdown = effectiveRoster.filter(p => p.roles && p.roles.includes('HEALER'));
+                } else if (assignmentIdLower.includes('dps') || assignmentIdLower.includes('dd')) {
+                    playersForDropdown = effectiveRoster.filter(p => p.roles && p.roles.includes('DPS'));
+                }
+                window.populateDropdownOptions(select, playersForDropdown, bossId);
+            });
         }
 
         clearTimeout(window._snapshotTimer);
@@ -3562,7 +3881,7 @@ async function fetchRoster() {
         window.rosterData = [];
     }
 }
-window.populateDropdownOptions = function(selectElement, players) {
+window.populateDropdownOptions = function(selectElement, players, bossId) {
     // Standard-Option (Wichtig: data-color für Reset auf Weiß)
     selectElement.innerHTML = '<option value="" data-color="#FFFFFF">-- Spieler wählen --</option>';
         // 3. ECHTE SPIELER
@@ -3585,8 +3904,12 @@ window.populateDropdownOptions = function(selectElement, players) {
     });
 
     // 1.5 SPEC-SLOTS — werden vom Slot-System bereitgestellt
+    // Wenn bossId angegeben ist, wird das Boss-spezifische Mapping verwendet
+    // (mit Slot-Overrides aus _rosterPatches.slotOverrides). Sonst global.
     if (window.SlotSystem) {
-        const mapping = window.SlotSystem.getMapping();
+        const mapping = (bossId && window.RosterPatches && window.RosterPatches.getEffectiveSlotMapping)
+            ? window.RosterPatches.getEffectiveSlotMapping(bossId)
+            : window.SlotSystem.getMapping();
         const activeSlots = Object.keys(mapping)
             .filter(k => window.SlotSystem.isSlotKey(k))
             .sort();
@@ -4423,22 +4746,6 @@ window.applyThemeForRaid = function(raidId) {
         const selectedRaid = document.getElementById('raid-selector')?.value;
         const bosses = (raidData[selectedRaid] && raidData[selectedRaid].bosses) || [];
         window.initRosterPatchesCompUI(bosses);
-    }
-
-    // Spec-Slots-System initialisieren
-    if (window.SlotSystem) {
-        window.SlotSystem.init().then(() => {
-            const slotToggleBtn = document.getElementById('btn-slot-toggle');
-            const slotContainer = document.getElementById('slot-mapping-container');
-            if (slotToggleBtn && slotContainer) {
-                slotToggleBtn.addEventListener('click', () => {
-                    const isHidden = slotContainer.style.display === 'none';
-                    slotContainer.style.display = isHidden ? 'block' : 'none';
-                    slotToggleBtn.textContent = isHidden ? '▲ Verbergen' : '▼ Anzeigen';
-                    if (isHidden) window.SlotSystem.renderMappingUI(slotContainer);
-                });
-            }
-        });
     }
 	
 			
@@ -5416,7 +5723,10 @@ function populateMasterViewDropdowns() {
     const roster = window.rosterData || [];
     document.querySelectorAll('.mv-assignment-select:not([data-manual-options="true"])').forEach(select => {
         if (select.options.length > 1) return; // Bereits gefüllt
-        window.populateDropdownOptions(select, roster);
+        // Boss-ID aus dem nächsten mv-boss-content-Container holen für boss-spezifisches Slot-Mapping
+        const bossContainer = select.closest('.mv-boss-content');
+        const bossId = bossContainer ? bossContainer.dataset.mvBossDocid : null;
+        window.populateDropdownOptions(select, roster, bossId);
         if (!window.isManager) select.disabled = true;
     });
 }
@@ -5456,9 +5766,8 @@ async function setMasterViewValues() {
 
                 // Invalid-Check für Nicht-Roster Spieler
                 const rosterNames = (window.rosterData || []).map(p => p.name);
-                const ALLOWED = ['ALL','DEATHKNIGHT','DRUID','HUNTER','MAGE','MONK','PALADIN','PRIEST','ROGUE','SHAMAN','WARLOCK','WARRIOR','TANKS','HEALERS','MELEEDPS','RANGEDDPS','Niemand',''];
-                const isSlotValue = window.SlotSystem && window.SlotSystem.isSlotKey(val);
-                if (val && !isCooldown && !isManual && !rosterNames.includes(val) && !ALLOWED.includes(val) && !isSlotValue) {
+                const ALLOWED = ['ALL','DEATHKNIGHT','DRUID','HUNTER','MAGE','MONK','PALADIN','PRIEST','ROGUE','SHAMAN','WARLOCK','WARRIOR','Niemand',''];
+                if (val && !isCooldown && !isManual && !rosterNames.includes(val) && !ALLOWED.includes(val)) {
                     select.classList.add('invalid-assignment');
                     if (!Array.from(select.options).some(o => o.value === val)) {
                         const invalidOpt = new Option(`❌ ${val} (Nicht im Roster)`, val);
@@ -6343,7 +6652,7 @@ if (select.getAttribute('data-manual-options') === "true") {
     } else {
       playersForDropdown = rosterData;
     }
-    populateDropdownOptions(select, playersForDropdown);
+    populateDropdownOptions(select, playersForDropdown, window.currentBossIdForPatches);
   }
 const tooltipEl = document.getElementById('global-custom-tooltip');
 
