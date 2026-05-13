@@ -1,0 +1,1206 @@
+/* =========================================================================
+   PÄNIK Raidsheet — Stylesheet
+   =========================================================================
+   Alle Styles für das Tool. CSS-Variablen ganz oben (Theme), dann
+   nach Sektion organisiert.
+
+   STRUKTUR:
+   - :root          → Theme-Variablen (Farben)
+   - Base           → body, Typography
+   - Layout         → Main-Container, Navigation
+   - Components     → Buttons, Selects, Cards, Tooltips
+   - Planner        → CD-Planner-Grid (planner-row, planner-header etc.)
+   - Roster         → Spieler-Karten, Klassen-Farben
+   - Modals         → Login, Player-Edit, Lightbox
+   - Utilities      → .hidden-feet, .invalid-assignment, etc.
+   - Responsive     → @media-Queries (768px Mobile-Breakpoint)
+   ========================================================================= */
+
+.invalid-assignment {
+		border: 5px solid #ef4444 !important; /* Roter, auffälliger Rahmen */
+		background-color: rgba(185, 28, 28, 0.2) !important; /* Leichter roter Hintergrund */
+		box-shadow: 0 0 22px rgba(239, 68, 68, 0.5); /* Rotes Leuchten */
+	}
+	
+	/* Stil für die temporär hinzugefügte, ungültige Option im Dropdown */
+	.invalid-option {
+		color: #fca5a5 !important; /* Helleres Rot für die Schrift, gut lesbar */
+		font-style: italic;
+		background-color: rgba(185, 28, 28, 0.3);
+	}
+#toggle-video-btn {
+    background-color: rgba(10, 20, 15, 0.7);
+    border: 1px solid var(--color-gold-border);
+    color: var(--color-parchment);
+    width: 44px;  /* Etwas größer für bessere Klickbarkeit */
+    height: 44px;
+    border-radius: 50%; /* Macht den Button rund */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+#planner .bg-slate-800 {
+    background-color: var(--color-dark-green-bg) !important;
+    border: 1px solid var(--color-gold-border);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* 2. Die Kopfzeile */
+.planner-header,
+.planner-row {
+    display: grid; 
+    /* Griff | Trigger | NPC | % | Zeit | Spieler | CD | Toggle | Actions */
+    grid-template-columns: 20px 1.4fr 0.9fr 50px 50px 1.1fr 1.1fr 30px 45px; 
+    gap: 4px;
+    align-items: center;
+    padding: 6px 4px;
+    margin-bottom: 4px;
+    background-color: rgba(10, 20, 15, 0.4); 
+    border-radius: 6px;
+    border: 1px solid var(--color-gold-border-light);
+}
+/* 2. Versteckte Spalten (Standard) */
+.planner-col-extended { display: none; }
+
+/* 3. ERWEITERTER MODUS (Wenn Klasse .show-extended aktiv ist) */
+.planner-container.show-extended .planner-header,
+.planner-container.show-extended .planner-row {
+    /* Griff | Trigger | NPC | % | Zeit | Spieler | CD | Note | TTS | Name | Icon | Toggle | Actions */
+    grid-template-columns: 20px 1.4fr 0.9fr 50px 50px 1.1fr 1.1fr 0.8fr 0.8fr 0.8fr 0.6fr 30px 45px;
+}
+.planner-container.show-extended .planner-col-extended {
+    display: block; 
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* 4. Der Griff zum Ziehen */
+.row-drag-handle {
+    cursor: grab;
+    color: #64748b;
+    text-align: center;
+    display: flex; justify-content: center; align-items: center;
+}
+.row-drag-handle:hover { color: var(--color-gold); }
+.row-drag-handle:active { cursor: grabbing; }
+
+/* 5. Action Buttons (Copy/Paste) */
+.row-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+}
+.icon-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 2px;
+    transition: color 0.2s;
+}
+.icon-btn:hover { color: #e2e8f0; }
+
+/* 6. Toggle Button Rotation */
+#planner-expand-btn { transition: transform 0.3s; }
+.planner-container.show-extended #planner-expand-btn { transform: rotate(180deg); color: var(--color-gold); }
+
+.planner-row:hover {
+    background-color: rgba(36, 61, 51, 0.6);
+    border-color: var(--color-gold);
+    transform: translateX(2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 4. Styling der Dropdowns (Selects) - KORRIGIERT */
+.planner-row .assignment-select {
+    background-color: rgba(10, 20, 15, 0.6) !important;
+    border: 1px solid var(--color-gold-border-light) !important;
+    border-radius: 4px;
+    
+    /* WICHTIG: Hier habe ich !important ENTFERNT. 
+       Jetzt gewinnt wieder die Farbe, die das Skript setzt (Klassenfarben). */
+    color: var(--color-parchment); 
+    
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    height: 32px;
+    transition: all 0.2s;
+}
+
+.planner-row .assignment-select:focus {
+    border-color: var(--color-gold) !important;
+    background-color: var(--color-dark-green-bg) !important;
+    outline: none;
+    box-shadow: 0 0 5px rgba(252, 211, 77, 0.2);
+}
+
+/* Damit die Liste beim Aufklappen dunkel ist */
+.planner-row .assignment-select option {
+    background-color: #1a202c;
+}
+
+/* Speziell für den Trigger (Bleibt Gold) */
+.planner-row select[data-assignment-id*="-trigger"] {
+    font-weight: bold;
+    color: var(--color-gold) !important; /* Trigger sollen immer Gold sein */
+    background-color: rgba(202, 138, 4, 0.1) !important;
+    border-color: var(--color-gold-border) !important;
+}
+
+/* 5. Styling der kleinen Text-Inputs (% und Zeit) */
+.planner-row .assignment-text-input {
+    background-color: rgba(10, 20, 15, 0.4) !important;
+    border: 1px solid var(--color-gold-border-light) !important;
+    border-radius: 4px;
+    text-align: center;
+    color: var(--color-jade) !important;
+    font-family: monospace;
+    height: 32px;
+}
+.planner-scroll-container {
+    max-height: 120vh; /* Nutzt 60% der Bildschirmhöhe, passt sich an */
+    overflow-y: auto; /* Vertikales Scrollen aktivieren */
+    overflow-x: hidden;
+    padding-right: 6px; /* Abstand zur Scrollleiste */
+    
+    /* Scrollbar Design (Firefox) */
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gold) rgba(10, 20, 15, 0.5);
+}
+
+/* Scrollbar Design (Chrome, Edge, Safari) */
+.planner-scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+.planner-scroll-container::-webkit-scrollbar-track {
+    background: rgba(10, 20, 15, 0.5);
+    border-radius: 4px;
+}
+.planner-scroll-container::-webkit-scrollbar-thumb {
+    background-color: var(--color-gold);
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.2);
+}
+.planner-row .assignment-text-input:focus {
+    border-color: var(--color-gold) !important;
+    color: var(--color-parchment) !important;
+}
+
+.planner-row .assignment-text-input::placeholder {
+    color: rgba(245, 242, 232, 0.3);
+}
+.planner-header > div {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: color 0.2s;
+}
+.planner-header > div:hover {
+    color: var(--color-parchment);
+    text-shadow: 0 0 5px rgba(252, 211, 77, 0.5);
+}
+.planner-header > div::after {
+    content: '↕';
+    font-size: 0.7em;
+    margin-left: 4px;
+    opacity: 0.3;
+}
+.planner-header > div:hover::after {
+    opacity: 1;
+}
+/* 6. MOBILE ANPASSUNG */
+@media (max-width: 768px) {
+    .planner-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        background-color: var(--color-medium-green-bg) !important;
+        height: auto !important;
+    }
+    .planner-row > select[data-assignment-id*="-trigger"] {
+        grid-column: span 2;
+        background-color: rgba(10, 20, 15, 0.8) !important;
+    }
+    .planner-row > select[data-assignment-id*="-player"] {
+        grid-column: span 2;
+        margin-top: 8px;
+        background-color: rgba(10, 20, 15, 0.5) !important;
+        border-color: var(--color-gold-border) !important;
+    }
+}
+.auto-plan-select option {
+    background-color: #334155;
+}
+
+.auto-plan-select:focus {
+    background-color: #792904;
+}
+/* Leere Zeilen etwas ausgrauen (Optional, wenn Value leer ist - per JS schwer, aber CSS :empty geht nicht auf Values) */
+/* Workaround: Wir machen den Placeholder-Text grau */
+.assignment-select option[value=""] {
+    color: #64748b;
+}
+#toggle-video-btn:hover {
+    background-color: rgba(36, 61, 51, 0.9);
+    border-color: var(--color-gold);
+}
+/* Stile für die neue Sprungmarken-Navigation */
+.quick-nav-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: rgba(10, 20, 15, 0.7);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-gold-border);
+}
+.quick-nav-bar a {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    color: var(--color-parchment);
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.quick-nav-bar a:hover {
+    background-color: var(--color-jade);
+    color: var(--color-dark-text);
+}
+
+/* Stile für die einklappbaren Sektionen */
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: margin-bottom 0.3s ease; /* Fügt Abstand hinzu, wenn Sektion geschlossen */
+}
+.collapsible-header:not(.active) {
+    margin-bottom: 0 !important;
+}
+.toggle-icon {
+    transition: transform 0.3s ease-in-out;
+    font-size: 1.5rem;
+    color: var(--color-gold);
+}
+.collapsible-header:not(.active) .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.collapsible-content {
+    max-height: 5000px; /* Eine ausreichend große Höhe, damit nichts abgeschnitten wird */
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+.collapsible-content.collapsed {
+    max-height: 0;
+}
+/* In der Datei: index.html */
+
+/* ================================================= */
+/* NEU: Stile für editierbare Text-Inputs in Listen  */
+/* ================================================= */
+.assignment-text-input {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    color: var(--color-jade); /* Selbe Farbe wie die list-subheader */
+    font-weight: bold;
+    padding: 0.2rem 0.4rem; /* Etwas Padding für leichtere Klickbarkeit */
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.assignment-text-input:hover:not(:disabled),
+.assignment-text-input:focus:not(:disabled) {
+    background-color: rgba(10, 20, 15, 0.5);
+    outline: none;
+}
+
+.assignment-text-input:disabled {
+    cursor: not-allowed;
+    background-color: transparent !important; /* Sicherstellen, dass kein Hover-Effekt bleibt */
+}
+    /* cinzel-regular - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Cinzel';
+      font-style: normal;
+      font-weight: 400;
+      src: url('../fonts/cinzel-v25-latin-regular.woff2') format('woff2');
+    }
+    /* cinzel-700 - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Cinzel';
+      font-style: normal;
+      font-weight: 700;
+      src: url('../fonts/cinzel-v25-latin-700.woff2') format('woff2');
+    }
+    /* inter-regular - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      src: url('../fonts/inter-v19-latin-regular.woff2') format('woff2');
+    }
+    /* inter-600 - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 600;
+      src: url('../fonts/inter-v19-latin-600.woff2') format('woff2');
+    }
+    /* inter-700 - latin */
+    @font-face {
+      font-display: swap;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 700;
+      src: url('../fonts/inter-v19-latin-700.woff2') format('woff2');
+    }
+
+    :root {
+        --color-gold: #fcd34d;
+    }
+        /* FINALES "MISTS OF PANDARIA" THEMA */
+        :root {
+            --color-gold: #fcd34d;
+            --color-jade: #5eead4;
+            --color-parchment: #f5f2e8;
+            --color-dark-green-bg: rgba(25, 42, 35, 0.92);
+            --color-medium-green-bg: rgba(36, 61, 51, 0.88);
+            --color-dark-text: #102a23;
+            --color-gold-border: rgba(204, 163, 76, 0.4);
+            --color-gold-border-light: rgba(204, 163, 76, 0.2);
+        }
+        body { 
+            font-family: 'Inter', sans-serif;
+            color: var(--color-parchment);
+            background-color: #101815;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.05em;
+        }
+        .main-container {
+            background-color: var(--color-dark-green-bg);
+            border: 1px solid var(--color-gold-border);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        /* Diese Klassen überschreiben die alten, falls sie im dynamischen HTML noch vorkommen */
+        .bg-slate-850, .bg-slate-750 {
+            background-color: var(--color-medium-green-bg) !important;
+            border: 1px solid var(--color-gold-border-light) !important;
+        }
+        .text-blue-450 { color: var(--color-gold) !important; }
+        .border-slate-650 { border-color: var(--color-gold-border) !important; }
+        .text-gold { color: var(--color-gold); }
+
+        .nav-link { 
+            background-color: rgba(74, 115, 95, 0.6); 
+            border: 1px solid var(--color-gold-border-light);
+            transition: all 0.2s ease-in-out;
+            color: var(--color-parchment);
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+        }
+        .nav-link:hover {
+            background-color: rgba(87, 135, 111, 0.8);
+            border-color: var(--color-gold-border);
+        }
+        .nav-link.active-tab { 
+            background-color: var(--color-jade);
+            color: var(--color-dark-text) !important;
+            border-color: #99f6e4;
+            box-shadow: 0 0 15px rgba(94, 234, 212, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        button, .btn { font-family: 'Cinzel', serif; font-weight: bold; transition: all 0.2s ease-in-out; }
+        button:disabled { opacity: 0.5 !important; cursor: not-allowed !important; }
+
+        .bg-blue-600 { background-color: #ca8a04 !important; color: var(--color-dark-text) !important; }
+        .bg-blue-600:hover { background-color: #eab308 !important; }
+        .bg-green-600, .bg-green-700 { background-color: #15803d !important; color: var(--color-parchment) !important; }
+        .bg-green-600:hover, .bg-green-700:hover { background-color: #16a34a !important; }
+        .bg-red-700, .bg-red-800, .cancel-btn { background-color: #b91c1c !important; color: var(--color-parchment) !important; }
+        .bg-red-700:hover, .bg-red-800:hover, .cancel-btn:hover { background-color: #dc2626 !important; }
+
+        #raid-selector, .assignment-select {
+            background-color: rgba(10, 20, 15, 0.7) !important;
+            border: 1px solid var(--color-gold-border) !important;
+            color: var(--color-parchment);
+            border-radius: 0.25rem;
+        }
+        
+        .editable-name {
+            background-color: transparent !important;
+            border: 1px solid transparent !important;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+        .editable-name:hover:not(:disabled), .editable-name:focus {
+             background-color: rgba(10, 20, 15, 0.7) !important;
+             border: 1px solid var(--color-gold-border) !important;
+        }
+        .editable-class-select {
+             background-color: rgba(10, 20, 15, 0.7) !important;
+             border: 1px solid var(--color-gold-border) !important;
+             color: var(--color-parchment) !important;
+        }
+        #json-input, #loot-json-input { background-color: rgba(10, 20, 15, 0.7) !important; border: 1px solid var(--color-gold-border) !important; color: #a0aec0 !important; }
+
+        #background-video { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -100; object-fit: cover; filter: brightness(0.4); }
+        .content-wrapper { position: relative; z-index: 2; }
+
+        .login-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .login-modal-content {
+            background-color: var(--color-dark-green-bg);
+            border: 1px solid var(--color-gold-border);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        .login-modal-content h3 { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--color-gold); }
+        .login-modal-content input { background-color: rgba(10, 20, 15, 0.7) !important; border: 1px solid var(--color-gold-border) !important; color: var(--color-parchment) !important; border-radius: 0.25rem; padding: 0.5rem; width: 100%; margin-bottom: 1rem; }
+        .login-modal-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+
+		/* KORREKTUR: Roster-Button Farben und Hervorhebung */
+		.role-btn { 
+			border: 2px solid transparent; /* Transparenter Rand, um Layout-Sprünge zu vermeiden */
+			background-color: rgba(0,0,0,0.2); 
+			color: rgba(204, 163, 76, 0.7); 
+			opacity: 0.7; 
+			border-radius: 6px;
+		}
+		.role-btn:not(:disabled):hover { 
+			opacity: 1;
+			border-color: #ca8a04;
+		}
+		.role-btn.active { 
+			opacity: 1; 
+			transform: scale(1.1); /* Aktives Icon leicht vergrößern */
+			background-color: transparent !important; /* Sicherstellen, dass der Hintergrund weg ist */
+		}
+		.role-btn.role-tank.active { 
+			border-color: #60a5fa !important;
+			box-shadow: 0 0 8px #60a5fa;
+		}
+		.role-btn.role-healer.active { 
+			border-color: #34d399 !important; 
+			box-shadow: 0 0 8px #34d399;
+		}
+		.role-btn.role-dps.active { 
+			border-color: #f87171 !important; 
+			box-shadow: 0 0 8px #f87171;
+		}
+
+        /* Originale Klassen zur Sicherheit beibehalten und überschreiben */
+        .text-gray-200, .text-white { color: var(--color-parchment); }
+        .text-gray-400 { color: #a0aec0; }
+        .buff-tooltip { position: absolute; z-index: 100; background-color: #1a202c; border: 1px solid #4a5568; padding: 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; color: #e2e8f0; white-space: nowrap; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
+    /* KORREKTUR: Fehlende Stile für das allgemeine Modal-Fenster */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background-color: var(--color-dark-green-bg);
+            border: 1px solid var(--color-gold-border);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+        .modal-content h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-gold);
+        }
+	.modal-content h2 {
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+            color: var(--color-jade);
+        }
+	.modal-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--color-parchment);
+        }
+        .modal-content p {
+            margin-bottom: 1.5rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--color-parchment);
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .modal-buttons button {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.25rem;
+            color: var(--color-dark-text) !important;
+            background-color: #ca8a04 !important;
+        }
+        .modal-buttons button:hover {
+            background-color: #eab308 !important;
+        }
+        .modal-buttons .cancel-btn {
+            background-color: #b91c1c !important;
+            color: var(--color-parchment) !important;
+        }
+        .modal-buttons .cancel-btn:hover {
+            background-color: #dc2626 !important;
+        }
+
+		.player-details {
+			display: flex;
+			flex-direction: column; /* Stellt Name und Klasse untereinander dar */
+			align-items: flex-start;
+			gap: 0.25rem;
+			min-width: 0; 
+		}
+		.editable-name, .editable-class-select {
+			width: 160px; /* Gibt beiden eine feste Breite für einheitliches Aussehen */
+		}
+		@media (max-width: 1200px) {
+			.player-row-container {
+				flex-direction: column; /* Stellt Details und Symbole untereinander dar */
+				align-items: flex-start; /* Richtet alles linksbündig aus */
+				gap: 0.75rem; /* Abstand zwischen den Elementen */
+				padding-bottom: 0.75rem;
+				border-bottom: 1px solid var(--color-gold-border-light);
+			}
+			.player-row-container:last-child {
+				border-bottom: none;
+			}
+		}
+		.border-gold-faded {
+			border-color: var(--color-gold-border);
+		}
+		/* Stile für responsive YouTube-Videos */
+		.video-container {
+			position: relative;
+			overflow: hidden;
+			width: 100%;
+			padding-top: 56.25%; /* 16:9 Seitenverhältnis */
+			border: 1px solid var(--color-gold-border);
+			border-radius: 0.5rem;
+		}
+		
+		.video-container iframe {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+.positioning-btn {
+    transition: background-color 0.3s, color 0.3s;
+}
+.active-position-btn {
+    background-color: #ca8a04 !important; /* Goldener Hintergrund für aktiven Button */
+    color: var(--color-dark-text) !important;
+    font-weight: 600;
+}
+@media (max-width: 768px) {
+    
+    /* 1. Die Kopfzeile (Trigger, NPC, Player...) ausblenden, da sie im Karten-Layout stört */
+    #planner .grid.grid-cols-12, /* Falls du Grid nutzt */
+    #planner .flex.font-bold     /* Falls du Flex nutzt */ 
+    {
+        display: none !important;
+    }
+
+    /* 2. Die Planer-Zeile in eine "Karte" verwandeln */
+    .planner-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; /* 2 Spalten Layout */
+        gap: 8px !important;
+        background-color: #1e293b; /* Dunklerer Hintergrund für Kontrast */
+        border: 1px solid #475569;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+        height: auto !important; /* Feste Höhe entfernen */
+    }
+
+    /* 3. Elemente neu anordnen (Grid-Magie) */
+    
+    /* TRIGGER: Sollte ganz oben über die volle Breite gehen */
+    .planner-row > select[data-assignment-id*="-trigger"] {
+        grid-column: span 2; /* Volle Breite */
+        border-color: #ca8a04; /* Goldener Rand zur Hervorhebung */
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+
+    /* NPC: Ebenfalls volle Breite darunter */
+    .planner-row > select[data-assignment-id*="-npc"] {
+        grid-column: span 2;
+        font-size: 0.8rem;
+        opacity: 0.9;
+    }
+
+    /* PROZENT & ZEIT: Teilen sich eine Zeile (50% / 50%) */
+    .planner-row > input[data-assignment-id*="-condition"], 
+    .planner-row > input[data-assignment-id*="-time"] {
+        grid-column: span 1;
+        text-align: center;
+    }
+
+    /* SPIELER: Volle Breite, etwas Abstand nach oben */
+    .planner-row > select[data-assignment-id*="-player"] {
+        grid-column: span 2;
+        margin-top: 8px; /* Optische Trennung */
+        background-color: #0f172a; /* Dunklerer Hintergrund */
+    }
+
+    /* COOLDOWN: Volle Breite ganz unten */
+    .planner-row > select[data-assignment-id*="-cooldown"] {
+        grid-column: span 2;
+    }
+
+    /* Löschen-Button (falls vorhanden, das leere div am Ende) */
+    .planner-row > div:last-child {
+        display: none; /* Auf Mobile oft schwer zu treffen, oder optional einblenden */
+    }
+
+    /* 4. Touch-Optimierung: Größere Felder */
+    .planner-row select, 
+    .planner-row input {
+        height: 40px !important; /* Größere Touch-Targets */
+        font-size: 14px !important; /* Lesbare Schriftgröße */
+    }
+    
+    /* Platzhalter-Texte sichtbar machen (da Header fehlt) */
+    .planner-row input[data-assignment-id*="-condition"]::placeholder { color: #94a3b8; opacity: 1; }
+    .planner-row input[data-assignment-id*="-time"]::placeholder { color: #94a3b8; opacity: 1; }
+}
+.login-modal-buttons button {
+    padding: 0.6rem 1.5rem;          /* Etwas mehr vertikales Padding für eine bessere Klickfläche */
+    border: 1px solid transparent;   /* Initial kein sichtbarer Rand */
+    border-radius: 0.25rem;          /* Abgerundete Ecken wie bei den Inputs */
+    font-family: 'Cinzel', serif;    /* Deine definierte Schriftart für Buttons */
+    font-weight: bold;               /* Fetter Text für bessere Lesbarkeit */
+    text-transform: uppercase;       /* Sorgt für einen einheitlichen Look */
+    letter-spacing: 0.05em;          /* Etwas mehr Zeichenabstand */
+    cursor: pointer;
+    transition: all 0.2s ease-in-out; /* Weicher Übergang für Hover-Effekte */
+}
+
+/* Spezifisches Styling für den "Login"-Button (Bestätigungs-Aktion) */
+#login-modal-submit-btn {
+    background-color: #ca8a04;        /* Gold-gelbe Hintergrundfarbe (wie .bg-blue-600) */
+    color: var(--color-dark-text);   /* Dunkler Text für Kontrast */
+    border-color: #eab308;           /* Etwas hellerer Rand für einen dezenten 3D-Effekt */
+}
+
+#login-modal-submit-btn:hover {
+    background-color: #eab308;        /* Hellerer Gold-Ton beim Hover */
+    box-shadow: 0 0 10px rgba(252, 211, 77, 0.4); /* Leucht-Effekt beim Hover */
+}
+
+/* Spezifisches Styling für den "Abbrechen"-Button */
+#login-modal-cancel-btn {
+    background-color: #b91c1c;        /* Rote Farbe aus deiner .cancel-btn Klasse */
+    color: var(--color-parchment);   /* Heller Text für Kontrast */
+    border-color: #dc2626;           /* Etwas hellerer roter Rand */
+}
+
+#login-modal-cancel-btn:hover {
+    background-color: #dc2626;        /* Helleres Rot beim Hover */
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.4); /* Roter Leucht-Effekt beim Hover */
+}
+/* NEUE STILE FÜR DAS TABELLEN-LAYOUT DER EINTEILUNGEN */
+
+/* Der Haupt-Container für einen Einteilungs-Block (z.B. "Tank-Zuweisungen") */
+.assignment-block {
+    background-color: var(--color-medium-green-bg); /* Hintergrund vom alten .bg-slate-750 */
+    border: 1px solid var(--color-gold-border-light);
+    border-radius: 0.5rem; /* Abgerundete Ecken für den ganzen Block */
+    padding: 0.3rem; /* Etwas Innenabstand */
+    margin-bottom: 0.3rem; /* Abstand zum nächsten Block */
+}
+
+/* Der Titel über der Tabelle (z.B. "Tank-Zuweisungen") */
+.assignment-block h4 {
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.3rem;
+    border-bottom: 1px solid var(--color-gold-border-light);
+}
+
+/* Die Kopfzeile der Tabelle ("Aufgabe", "Spieler") */
+.assignment-header,
+.assignment-list li {
+    display: grid; /* Wir benutzen CSS Grid für die Spalten */
+    grid-template-columns: 1fr 1.2fr; /* 1. Spalte kleiner, 2. Spalte größer */
+    align-items: center;
+    gap: 0.5rem; /* Abstand zwischen den Spalten */
+    padding: 0.1rem 0.1em; /* Kompakterer vertikaler Abstand */
+}
+
+/* Nur die Kopfzeile extra stylen */
+.assignment-header {
+    font-weight: bold;
+    color: var(--color-gold);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--color-gold-border);
+}
+
+/* Die Liste selbst (entfernt Standard-Listen-Stile) */
+.assignment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Jede Zeile in der Liste bekommt eine untere Trennlinie */
+.assignment-list li {
+    border-bottom: 1px solid rgba(204, 163, 76, 0.1); /* Sehr dezente Trennlinie */
+}
+
+/* Die letzte Zeile bekommt keine Trennlinie */
+.assignment-list li:last-child {
+    border-bottom: none;
+}
+
+/* Zebra-Streifen für bessere Lesbarkeit (wie in Sheets) */
+.assignment-list li:nth-child(even) {
+    background-color: rgba(10, 20, 15, 0.3); /* Etwas dunklerer Hintergrund für jede zweite Zeile */
+}
+
+/* Das Dropdown-Menü soll die ganze Breite der Spalte füllen */
+.assignment-list .assignment-select {
+    width: 100%;
+}
+.assignment-text-input:disabled {
+    cursor: not-allowed;
+}
+.lightbox-overlay {
+    position: fixed; /* Bleibt an einer festen Position im Fenster */
+    inset: 0; /* Füllt den gesamten Bildschirm (top:0, right:0, bottom:0, left:0) */
+    background-color: rgba(0, 0, 0, 0.85); /* Halbtransparenter schwarzer Hintergrund */
+    display: none; /* Standardmäßig unsichtbar */
+    justify-content: center; /* Zentriert den Inhalt horizontal */
+    align-items: center; /* Zentriert den Inhalt vertikal */
+    z-index: 5000; /* Stellt sicher, dass es über allem anderen liegt */
+    cursor: pointer; /* Zeigt an, dass man klicken kann (zum Schließen) */
+}
+
+.lightbox-content {
+    max-width: 90vw;  /* Maximale Breite ist 90% der Fensterbreite */
+    max-height: 90vh; /* Maximale Höhe ist 90% der Fensterhöhe */
+    display: block;   /* Verhält sich wie ein Bild */
+    border: 3px solid var(--color-gold); /* Goldener Rahmen */
+    border-radius: 0.5rem; /* Abgerundete Ecken */
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.lightbox-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 3rem; /* Macht das '×' schön groß */
+    font-weight: bold;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.lightbox-close-btn:hover {
+    color: var(--color-gold); /* Gold beim Darüberfahren */
+}
+/* In der Datei: index.html im -Bereich */
+
+/* Die Boss-Navigation behält einen ähnlichen Stil wie bisher */
+#boss-nav .nav-link { 
+    background-color: rgba(74, 115, 95, 0.6); 
+    border: 1px solid var(--color-gold-border-light);
+    transition: all 0.2s ease-in-out;
+    color: var(--color-parchment);
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    padding: 0.5rem 1rem; /* Kompakteres Padding */
+    border-radius: 0.25rem;
+}
+#boss-nav .nav-link:hover {
+    background-color: rgba(108, 135, 87, 0.8);
+    border-color: var(--color-gold-border);
+}
+
+/* NEUER, ELEGANTER STIL FÜR DIE HAUPTNAVIGATION */
+#main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+#main-nav .nav-link {
+    background-color: transparent; /* Kein Hintergrund */
+    border: none;
+    border-bottom: 2px solid transparent; /* Platz für die aktive Linie */
+    border-radius: 0; /* Keine abgerundeten Ecken */
+    padding: 0.25rem 0.5rem;
+    color: var(--color-parchment);
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    opacity: 0.8;
+    transition: all 0.2s ease-in-out;
+}
+.nav-separator {
+    color: var(--color-gold-border);
+    opacity: 0.6;
+    user-select: none;
+    align-self: center;
+}
+#main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem; 
+    flex-wrap: wrap;
+    align-items: center;
+}
+#main-nav .nav-link:hover {
+    opacity: 1;
+    color: var(--color-gold);
+    background-color: rgba(204, 163, 76, 0.1);
+}
+#main-nav .nav-link.active-tab {
+    opacity: 1;
+    color: var(--color-gold) !important; /* Goldener Text */
+    border-bottom-color: var(--color-gold); /* Goldene Linie */
+    background-color: transparent !important; /* Wichtig: Kein Hintergrund */
+    transform: none;
+    box-shadow: none;
+}
+
+#boss-nav .nav-link.active-tab {
+    background-color: var(--color-jade);
+    color: var(--color-gold); /* Geändert zu Gold */
+    border-color: #99f6e4;
+    box-shadow: 0 0 15px rgba(94, 234, 212, 0.4);
+    transform: translateY(-2px);
+}
+.text-like-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    background-color: transparent !important;
+    border: none !important;                 
+    padding: 0 4px;
+    margin: 0;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.text-like-select:hover {
+    background-color: rgba(204, 163, 76, 0.15); /* Dezenter goldener Hover-Effekt */
+}
+
+/* Wichtig, um den Standard-Fokus-Ring zu entfernen */
+.text-like-select:focus {
+    outline: none;
+    background-color: rgba(204, 163, 76, 0.2);
+}
+.text-like-select option {
+    background: var(--color-dark-green-bg);
+}
+    	.assignment-list li:last-child {
+		border-bottom: none;
+	}
+	
+	.assignment-list .list-subheader {
+		grid-column: 1 / -1; /* Nimmt die volle Breite ein */
+		font-weight: bold;
+		color: var(--color-jade); /* Jade-Farbe für die Überschrift */
+		padding: 0.5rem 0.2rem 0.2rem; /* Etwas Abstand */
+		background-color: transparent !important; /* Kein Zebra-Streifen */
+		border-bottom: 1px solid var(--color-gold-border-light);
+		margin-top: 0.5rem;
+	}
+	.assignment-list .list-subheader:first-child {
+		margin-top: 0;
+	}
+    	/* Zebra-Streifen für bessere Lesbarkeit (wie in Sheets) */
+	.assignment-list li:nth-child(even) {
+		background-color: rgba(10, 20, 15, 0.3); /* Etwas dunklerer Hintergrund für jede zweite Zeile */
+	}
+	pre,
+code {
+    font-family: 'Courier New', Courier, monospace; /* Klassische Schriftart für Code */
+}
+
+pre {
+    background-color: rgba(10, 20, 15, 0.7); /* Dunkler, durchsichtiger Hintergrund */
+    border: 1px solid var(--color-gold-border); /* Goldener Rahmen, passend zum Theme */
+    border-radius: 0.5rem; /* Abgerundete Ecken */
+    padding: 1rem; /* Innenabstand */
+    color: var(--color-parchment); /* Helle Schriftfarbe */
+    white-space: pre-wrap;       /* Sorgt für Zeilenumbrüche bei langen Zeilen */
+    overflow-x: auto;          /* Fügt eine Scrollbar hinzu, falls eine Zeile zu lang ist */
+
+}
+.assignment-header.collapsible-header {
+    display: flex !important; /* Stellt sicher, dass Flexbox immer gewinnt */
+    gap: 1rem; /* Fügt einen schönen Abstand zwischen Text und Pfeil hinzu */
+}
+#roster-groups-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+}
+@media (min-width: 768px) {
+    #roster-groups-container { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1280px) {
+    #roster-groups-container { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* Die Gruppen-Box */
+.roster-group {
+    background-color: rgba(36, 61, 51, 0.6); /* Transparenter Hintergrund */
+    border: 1px solid var(--color-gold-border-light);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    min-height: 200px; /* Mindesthöhe damit man immer hinein droppen kann */
+    display: flex;
+    flex-direction: column;
+}
+
+.group-header {
+    text-align: center;
+    font-weight: bold;
+    color: var(--color-gold);
+    border-bottom: 1px solid var(--color-gold-border-light);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
+    font-family: 'Cinzel', serif;
+}
+
+/* Die Spieler-Karte (kompakt) */
+.player-card {
+    background-color: rgba(10, 20, 15, 0.8);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: grab;
+    transition: all 0.2s;
+    user-select: none; /* Verhindert Textmarkierung beim Ziehen */
+}
+
+.player-card:hover {
+    border-color: var(--color-gold-border);
+    background-color: rgba(20, 40, 30, 0.9);
+}
+
+.player-card:active {
+    cursor: grabbing;
+}
+
+/* Drag & Drop Ghost (das Element, das man zieht) */
+.sortable-ghost {
+    opacity: 0.4;
+    background-color: var(--color-gold) !important;
+}
+
+/* Kompakte Elemente innerhalb der Karte */
+.player-icon-role {
+    font-size: 1rem;
+    margin-right: 6px;
+    width: 20px;
+    text-align: center;
+}
+
+.player-name-compact {
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 1px 1px 2px black;
+}
+
+.player-class-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-left: 6px;
+    border: 1px solid #444;
+}
+.role-icon-group {
+    display: flex;
+    gap: 3px;
+    margin-right: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.role-toggle-icon {
+    font-size: 0.75rem; /* Klein aber erkennbar */
+    opacity: 0.2;       /* Standard: Inaktiv / Ausgegraut */
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.role-toggle-icon:hover {
+    opacity: 0.6;
+    transform: scale(1.1);
+}
+
+/* Aktive Zustände (Volle Deckkraft & Farbe) */
+.role-toggle-icon.active-tank { opacity: 1; color: #60a5fa; text-shadow: 0 0 5px rgba(96, 165, 250, 0.4); }
+.role-toggle-icon.active-healer { opacity: 1; color: #4ade80; text-shadow: 0 0 5px rgba(74, 222, 128, 0.4); }
+.role-toggle-icon.active-dps { opacity: 1; color: #f87171; text-shadow: 0 0 5px rgba(248, 113, 113, 0.4); }
+
+/* Wenn gesperrt (Nicht-Manager) */
+.role-toggle-icon.disabled {
+    pointer-events: none;
+    cursor: default;
+}
+.player-card.is-placeholder {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    opacity: 0.5;
+    color: transparent; /* Text unsichtbar machen */
+}
+.player-card.is-placeholder:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: var(--color-gold-border-light);
+}
+.player-card.is-placeholder .player-name-compact {
+    color: #4a5568 !important; /* Dunkelgrauer Text für "Leerer Platz" */
+    font-style: italic;
+    font-size: 0.8rem;
+}
+.player-card.is-placeholder .role-icon-group,
+.player-card.is-placeholder .player-icon-role {
+    visibility: hidden; /* Icons verstecken */
+}
+#xalatath-feet {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    pointer-events: none;
+    max-height: 30vh;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    mix-blend-mode: screen;
+}
+#xalatath-feet.hidden-feet {
+    opacity: 0;
+    pointer-events: none;
+}
+#toggle-feet-btn {
+    background-color: rgba(10, 20, 15, 0.7);
+    border: 1px solid var(--color-gold-border);
+    color: var(--color-parchment);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+#toggle-feet-btn:hover {
+    background-color: rgba(36, 61, 51, 0.9);
+    border-color: var(--color-gold);
+}
+/* ══ SoO-Theme: Blut/Bronze (Schlacht um Orgrimmar) ══ */
+ 
+[data-theme="soo"] {
+    --color-gold: #d97706;
+    --color-jade: #ef4444;
+    --color-parchment: #f5e6d3;
+    --color-dark-green-bg: rgba(45, 18, 18, 0.92);
+    --color-medium-green-bg: rgba(65, 30, 25, 0.88);
+    --color-dark-text: #2d0d0d;
+    --color-gold-border: rgba(217, 119, 6, 0.5);
+    --color-gold-border-light: rgba(217, 119, 6, 0.25);
+}
+ 
+html[data-theme="soo"] body {
+    background-color: #180909 !important;
+}
+ 
+/* Video bei SoO komplett ausblenden */
+html[data-theme="soo"] #background-video {
+    display: none !important;
+}
+ 
+/* Video-Toggle-Button bei SoO ausblenden (sinnlos da kein Video) */
+html[data-theme="soo"] #toggle-video-btn {
+    display: none !important;
+}
+ 
+/* Nav-Links im SoO-Theme */
+[data-theme="soo"] .nav-link {
+    background-color: rgba(120, 40, 30, 0.6) !important;
+}
+ 
+[data-theme="soo"] .nav-link:hover,
+[data-theme="soo"] .nav-link.active-tab {
+    background-color: rgba(180, 60, 40, 0.85) !important;
+}
+ 
+/* Accent-Farben umdrehen */
+[data-theme="soo"] .text-blue-450 {
+    color: var(--color-gold) !important;
+}
+ 
+/* Blaue Button-Farben auf Crimson ändern */
+[data-theme="soo"] .bg-blue-600 { background-color: #b91c1c !important; }
+[data-theme="soo"] .bg-blue-700 { background-color: #991b1b !important; }
+[data-theme="soo"] .hover\:bg-blue-500:hover { background-color: #dc2626 !important; }
+[data-theme="soo"] .hover\:bg-blue-700:hover { background-color: #7f1d1d !important; }
+ 
+/* Raid-Selector Styling */
+[data-theme="soo"] #raid-selector {
+    border-color: var(--color-gold-border) !important;
+    color: var(--color-parchment) !important;
+}
