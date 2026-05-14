@@ -62,17 +62,43 @@ window.RosterPatches = (function() {
         return out;
     }
 
-    function buildEffectiveRoster(globalRoster, bossId) {
+    function buildEffectiveRoster(globalRoster, bossId, options) {
         if (!Array.isArray(globalRoster)) return [];
+        const opts = options || {};
         const bossPatches = bossPatchesById[bossId] || {};
-        if (Object.keys(bossPatches).length === 0) return globalRoster;
-        return globalRoster.map(p => {
-            const name = p.name || p;
-            if (bossPatches[name]) {
-                return applyPatchObject({ ...p, name: name }, bossPatches[name]);
-            }
-            return p;
-        });
+
+        // 1. Patches anwenden (Klasse/Spec/Rolle pro Boss überschreiben)
+        let roster = (Object.keys(bossPatches).length === 0)
+            ? globalRoster
+            : globalRoster.map(p => {
+                const name = p.name || p;
+                if (bossPatches[name]) {
+                    return applyPatchObject({ ...p, name: name }, bossPatches[name]);
+                }
+                return p;
+            });
+
+        // 2. Bench-Spieler optional rausfiltern.
+        //    Regel: Bench-Spieler sind alle ab Index 25 in globalRoster.
+        //    Ausnahme: hat der Spieler für diesen Boss einen Patch → bleibt drin
+        //    (Patch = User hat ihn bewusst für diesen Boss konfiguriert).
+        if (opts.excludeBench) {
+            const RAID_SLOT_COUNT = 25;
+            // Map name → original global index (Bench-Erkennung über globalRoster, nicht über roster
+            //  — der könnte schon umsortiert sein, aber Indizes in globalRoster sind die Wahrheitsquelle)
+            const benchNames = new Set(
+                globalRoster.slice(RAID_SLOT_COUNT).map(p => p.name || p)
+            );
+            roster = roster.filter(p => {
+                const name = p.name || p;
+                const isOnBench = benchNames.has(name);
+                const hasPatch = !!bossPatches[name];
+                // Drin lassen wenn NICHT Bench, ODER Bench-mit-Patch
+                return !isOnBench || hasPatch;
+            });
+        }
+
+        return roster;
     }
 
     /**
@@ -927,8 +953,12 @@ window.setupBossListener = function(bossId) {
         
         // Effektiver Roster = globalRoster + bossPatches
         const effectiveRoster = window.RosterPatches.buildEffectiveRoster(window.rosterData || [], bossId);
-        // Kompatibilität: window.effectiveRoster für Module die später nachladen wollen
-        window.effectiveRoster = effectiveRoster;
+        // window.effectiveRoster wird vom Autoplaner gelesen → ohne Bench-Spieler (außer mit Boss-Patch),
+        // damit der Autoplaner sie nicht versehentlich für Zuweisungen nutzt.
+        // Die lokale 'effectiveRoster' bleibt komplett (mit Bench) für die Dropdowns auf der Boss-Seite.
+        window.effectiveRoster = window.RosterPatches.buildEffectiveRoster(
+            window.rosterData || [], bossId, { excludeBench: true }
+        );
         window.currentBossIdForPatches = bossId;
         
         // Banner aktualisieren (falls bereits gerendert)
@@ -1048,7 +1078,10 @@ window.setupBossListener = function(bossId) {
                     delete assignments._rosterPatches;
                     
                     const effectiveRoster = window.RosterPatches.buildEffectiveRoster(window.rosterData || [], bossId);
-                    window.effectiveRoster = effectiveRoster;
+                    // Autoplaner-Variante: ohne Bench (außer Bench-mit-Patch)
+                    window.effectiveRoster = window.RosterPatches.buildEffectiveRoster(
+                        window.rosterData || [], bossId, { excludeBench: true }
+                    );
                     window.currentBossIdForPatches = bossId;
                     
                     if (typeof window.updateRosterPatchBanner === 'function') {
@@ -1888,14 +1921,12 @@ function openPlayerEditModal(player) {
     };
  
     modal.classList.remove('hidden');
-    modal.style.display = 'flex';
     nameInput.focus();
 }
  
 function closePlayerEditModal() {
     const modal = document.getElementById('player-edit-modal');
     modal.classList.add('hidden');
-    modal.style.display = 'none';
     currentPlayerIdToEdit = null;
     isAddingNewPlayer = false;
 }

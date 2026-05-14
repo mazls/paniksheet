@@ -473,6 +473,13 @@
             align-items: center;
             z-index: 1000;
         }
+        /* Wichtig: `.hidden` muss auch ohne Tailwind funktionieren.
+           Tailwind-CDN lädt asynchron, und auf Mobile kann das Modal sonst
+           kurzzeitig (oder dauerhaft, falls Tailwind nicht lädt) sichtbar sein. */
+        .login-modal-overlay.hidden,
+        .modal-overlay.hidden {
+            display: none !important;
+        }
         .login-modal-content {
             background-color: var(--color-dark-green-bg);
             border: 1px solid var(--color-gold-border);

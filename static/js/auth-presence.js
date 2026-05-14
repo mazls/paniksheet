@@ -35,7 +35,7 @@ window.showModal = function(message, isConfirm = false) {
             const allOverlays = document.querySelectorAll('.modal-overlay');
             allOverlays.forEach(el => {
                 // Wir prüfen anhand der ID, ob es ein "wichtiges" statisches Fenster ist
-                const isStatic = (el.id === 'player-edit-modal' || el.id === 'login-modal-overlay' || el.id === 'image-window.lightbox');
+                const isStatic = (el.id === 'player-edit-modal' || el.id === 'login-modal-overlay' || el.id === 'image-lightbox');
                 
                 // Nur löschen, wenn es KEIN statisches Fenster ist
                 if (!isStatic) {
