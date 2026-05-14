@@ -1009,6 +1009,13 @@ pre {
     flex-direction: column;
 }
 
+/* Bench: horizontale Anordnung der Spielerkarten mit Umbruch */
+#roster-bench.roster-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 60px;
+}
+
 .group-header {
     text-align: center;
     font-weight: bold;

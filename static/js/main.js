@@ -247,6 +247,19 @@ mainNav.innerHTML = mainNavHTML;
 // =============================================================================
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Dropdown aus sessionStorage syncen — sonst zeigt der Dropdown den HTML-Default
+            // (z.B. "throneofthunder") an, während getCurrentRaidId() den gespeicherten Wert
+            // (z.B. "siegeoforgrimmar") liefert → Theme passt nicht zur visuellen Auswahl.
+            const initialRaidSelector = document.getElementById('raid-selector');
+            const storedRaid = sessionStorage.getItem('lastSelectedRaid');
+            if (initialRaidSelector && storedRaid) {
+                // Nur setzen wenn die gespeicherte ID eine gültige Option ist
+                const hasOption = Array.from(initialRaidSelector.options).some(o => o.value === storedRaid);
+                if (hasOption) {
+                    initialRaidSelector.value = storedRaid;
+                }
+            }
+
             await window.fetchAllCooldowns(); 
             await window.fetchRoster();
             try {
