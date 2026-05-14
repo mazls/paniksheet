@@ -262,6 +262,69 @@ mainNav.innerHTML = mainNavHTML;
 
             await window.fetchAllCooldowns(); 
             await window.fetchRoster();
+
+            // ──────────────────────────────────────────────────────────────────
+            // GLOBALER ROSTER-LISTENER (persistent über alle Seiten)
+            //
+            // Wird einmal im DOMContentLoaded registriert und NIE gecancelt.
+            // Sorgt dafür, dass Roster-Änderungen (Spieler hinzufügen/entfernen,
+            // Klasse/Spec/Rolle ändern) auf JEDER Seite ankommen — nicht nur
+            // wenn der User gerade auf der Comp-Seite ist.
+            //
+            // Auf der Comp-Seite: lokale UI (displayRoster, Buffs, Soulstones).
+            // Auf Boss-Seiten: CD-Assignment-Dropdowns neu befüllen.
+            // Auf allen Seiten: window.rosterData immer aktuell halten.
+            // ──────────────────────────────────────────────────────────────────
+            window.globalRosterListener = onSnapshot(rosterDocRef, (docSnap) => {
+                const currentRosterData = docSnap.exists() ? docSnap.data().roster || [] : [];
+                window.rosterData = currentRosterData;
+
+                // 1. Comp-Seite-Updates (alle Funktionen prüfen DOM-Container selbst)
+                if (window.displayRoster) window.displayRoster(currentRosterData);
+                if (window.initBuffAssignments) window.initBuffAssignments(currentRosterData);
+                if (window.initSoulstoneAssignments) window.initSoulstoneAssignments(currentRosterData);
+                if (window.updateRaidBuffsDisplay) window.updateRaidBuffsDisplay(currentRosterData);
+
+                // 2. JSON-Input auf der Comp-Seite befüllen (falls leer)
+                const jsonInput = document.getElementById('json-input');
+                if (jsonInput && jsonInput.value === '' && docSnap.data()?.rawJson) {
+                    jsonInput.value = docSnap.data().rawJson;
+                }
+
+                // 3. Boss-Seite: CD-Dropdowns refreshen
+                // Aktuelle Auswahl pro Select merken, neu befüllen, Auswahl wiederherstellen.
+                const bossId = window.currentBossIdForPatches;
+                if (bossId && window.RosterPatches && window.populateDropdownOptions) {
+                    const fullRoster = window.RosterPatches.buildEffectiveRoster(currentRosterData, bossId);
+                    document.querySelectorAll('.assignment-select').forEach(select => {
+                        // Buff-/Soulstone-Selects auf der Comp-Seite überspringen
+                        // (haben eigene Handler oben)
+                        if (select.classList.contains('buff-player-select') ||
+                            select.classList.contains('soulstone-target-select') ||
+                            select.classList.contains('buff-class-select')) {
+                            return;
+                        }
+                        const previousValue = select.value;
+                        window.populateDropdownOptions(select, fullRoster, bossId);
+                        // Auswahl wiederherstellen — falls Spieler noch im Roster
+                        const stillExists = Array.from(select.options).some(o => o.value === previousValue);
+                        if (stillExists) {
+                            select.value = previousValue;
+                            const opt = select.options[select.selectedIndex];
+                            if (opt?.dataset?.color) select.style.color = opt.dataset.color;
+                            select.style.fontStyle = (opt?.dataset?.bench === '1') ? 'italic' : 'normal';
+                        }
+                    });
+                }
+
+                // 4. Auto-Planner ggf. neu fütterm: window.effectiveRoster für aktuellen Boss neu bauen
+                if (bossId && window.RosterPatches) {
+                    window.effectiveRoster = window.RosterPatches.buildEffectiveRoster(
+                        currentRosterData, bossId, { excludeBench: true }
+                    );
+                }
+            });
+
             try {
                 const rosterSnap = await getDoc(rosterDocRef);
                 window.rosterData = rosterSnap.exists() ? rosterSnap.data().roster || [] : [];
@@ -542,24 +605,17 @@ window.applyThemeForRaid = function(raidId) {
         });
     }
 
-window.currentRosterUnsubscribe = onSnapshot(rosterDocRef, (docSnap) => {
-    const jsonInput = document.getElementById('json-input');
-    const currentRosterData = docSnap.exists() ? docSnap.data().roster || [] : [];
-    window.rosterData = currentRosterData;
-    // Reihenfolge der Aufrufe:
-    window.displayRoster(currentRosterData);
-    window.initBuffAssignments(currentRosterData);
-    window.initSoulstoneAssignments(currentRosterData);
-
-    if (window.updateRaidBuffsDisplay) {
-        window.updateRaidBuffsDisplay(currentRosterData);
+    // Roster-Updates kommen jetzt zentral aus dem globalen Listener (siehe DOMContentLoaded oben).
+    // Wir müssen aber einmal beim Betreten der Comp-Seite manuell die UI mit dem aktuellen
+    // window.rosterData füttern, weil der globale Listener nur bei Daten-Änderungen feuert.
+    if (window.rosterData) {
+        window.displayRoster(window.rosterData);
+        window.initBuffAssignments(window.rosterData);
+        window.initSoulstoneAssignments(window.rosterData);
+        if (window.updateRaidBuffsDisplay) {
+            window.updateRaidBuffsDisplay(window.rosterData);
+        }
     }
-    
-    if (jsonInput && jsonInput.value === '' && docSnap.data()?.rawJson) {
-        jsonInput.value = docSnap.data().rawJson;
-    }
-
-});
         // Master-View initialisieren
         if (window.isManager) {
             window.initMasterView();
