@@ -403,6 +403,16 @@ window.CD_AUTO_PLANNER = (function() {
     var firebaseRef = null;
     var cooldownsDB = [];
 
+    // ── Verteilungs-Strategien (pro Boss konfigurierbar, in Firestore gespeichert) ──
+    var assignStrategy = {
+        spread: false,                // A: Lookahead — bei Knappheit gleichmäßig über Zeit verteilen
+        prioritizeCategories: false,  // B: Hochpriore Kategorie zuerst, niedrige weglassen bei Knappheit
+        roundRobin: false             // C: Spieler reihum nutzen statt immer den ersten in Prio-Liste
+    };
+
+    // Round-Robin Counter (wird pro Run zurückgesetzt)
+    var _rrCounters = {};
+
     // ── Helpers ──
     function fmt(sec) {
         var m = Math.floor(Math.abs(sec) / 60);
@@ -570,7 +580,7 @@ window.CD_AUTO_PLANNER = (function() {
     function autoAssign(timeline) {
         var usedUntil = {};
 
-        function isAvailable(player, dbName, cdSec, atTime) {
+        function isAvailable(player, dbName, atTime) {
             var key = player + '::' + dbName;
             return !usedUntil[key] || atTime >= usedUntil[key];
         }
@@ -580,9 +590,141 @@ window.CD_AUTO_PLANNER = (function() {
 
         var allCatKeys = getUniqueCategoryKeys();
 
+        // ──────────────────────────────────────────────────────────────
+        // STRATEGIE A — SPREAD-MASKE
+        // Vor dem Verteilen für jedes (Event-Name, Kategorie)-Paar prüfen:
+        // Wie viele Casts gibt es vs. wie viele Spieler stehen zur Verfügung?
+        // Wenn Casts > Capacity → eine Spread-Maske bauen, die nur jeden
+        // n-ten Cast als "auto-fill" markiert. Lücken werden gleichmäßig
+        // über die Zeit verteilt statt am Ende geballt.
+        //
+        // capacity = Anzahl Spieler die DIESEN Spell jemals casten könnten
+        //   × floor(eventSpanInSec / minPlayerCooldown) + 1
+        // ──────────────────────────────────────────────────────────────
+        var spreadAllow = {};   // eventIdx + '-' + catKey + '-' + castNum → true/false
+        if (assignStrategy.spread) {
+            // Events nach Name+Kategorie gruppieren
+            var groups = {};
+            timeline.forEach(function(row) {
+                row.requiredCDs.forEach(function(catKey) {
+                    var gKey = row.eventName + '||' + catKey;
+                    if (!groups[gKey]) groups[gKey] = [];
+                    groups[gKey].push(row);
+                });
+            });
+
+            Object.keys(groups).forEach(function(gKey) {
+                var rows = groups[gKey];
+                if (rows.length <= 1) {
+                    rows.forEach(function(r) {
+                        spreadAllow[r.eventIdx + '-' + r.castNum + '-' + r._catKey] = true;
+                    });
+                    return;
+                }
+                var parts = gKey.split('||');
+                var catKey = parts[1];
+                var spells = resolveCategory(catKey);
+
+                // Capacity = wieviele verschiedene Player+Spell Kombinationen verfügbar?
+                var totalPlayers = 0;
+                spells.forEach(function(spell) {
+                    totalPlayers += getPlayersOfClass(spell.dbClass, spell.requiredRole, spell.requiredSpec).length;
+                });
+                if (totalPlayers === 0) return;
+
+                // Wie oft kann jeder Spieler im Event-Span casten?
+                var minCd = spells.length ? Math.min.apply(null, spells.map(function(s) { return s.cooldownSec || 180; })) : 180;
+                var firstT = rows[0].absTime;
+                var lastT = rows[rows.length - 1].absTime;
+                var span = lastT - firstT;
+                var castsPerPlayer = 1 + Math.floor(span / minCd);
+                var capacity = Math.max(1, totalPlayers * castsPerPlayer);
+
+                if (capacity >= rows.length) {
+                    // Alles abgedeckt → jeder Cast erlaubt
+                    rows.forEach(function(r) {
+                        spreadAllow[r.eventIdx + '-' + r.castNum + '-' + catKey] = true;
+                    });
+                } else {
+                    // Knappheit → genau "capacity" Casts gleichmäßig markieren
+                    var step = rows.length / capacity;
+                    var marked = {};
+                    for (var i = 0; i < capacity; i++) {
+                        var idx = Math.round(i * step);
+                        if (idx >= rows.length) idx = rows.length - 1;
+                        marked[idx] = true;
+                    }
+                    rows.forEach(function(r, ri) {
+                        spreadAllow[r.eventIdx + '-' + r.castNum + '-' + catKey] =
+                            !!marked[ri];
+                    });
+                }
+            });
+        }
+
+        // ──────────────────────────────────────────────────────────────
+        // STRATEGIE B — KATEGORIEN-PRIORISIERUNG
+        // Innerhalb eines Events werden Kategorien in der Reihenfolge
+        // ihres requiredCDs-Arrays abgearbeitet (Index 0 = höchste Prio).
+        // Wenn niedrigere Kategorien keine Slots mehr finden, bleiben
+        // sie leer — statt einen wichtigen Spell für eine unwichtigere
+        // Kategorie zu verbrennen.
+        //
+        // Greift implizit, weil wir die Kategorie-Schleife durch
+        // row.requiredCDs ersetzen (statt allCatKeys). Außerdem wird
+        // bei eingeschaltetem prioritizeCategories die Player-Capacity
+        // pro Event budgetiert.
+        // ──────────────────────────────────────────────────────────────
+
+        // ──────────────────────────────────────────────────────────────
+        // STRATEGIE C — ROUND-ROBIN
+        // Counter pro (Spell+Spieler-Klasse-Kombo) zurücksetzen, damit
+        // wir Spieler-Listen rotieren können statt immer Index 0 zu nehmen.
+        // ──────────────────────────────────────────────────────────────
+        _rrCounters = {};
+
+        function pickPlayer(players, spell, atTime) {
+            // Liefert ersten verfügbaren Spieler aus der Liste,
+            // unter Berücksichtigung von Round-Robin wenn aktiv.
+            if (!players.length) return null;
+
+            if (assignStrategy.roundRobin) {
+                var rrKey = spell.dbName + '::' + spell.dbClass;
+                var start = _rrCounters[rrKey] || 0;
+                for (var k = 0; k < players.length; k++) {
+                    var idx = (start + k) % players.length;
+                    if (isAvailable(players[idx], spell.dbName, atTime)) {
+                        _rrCounters[rrKey] = (idx + 1) % players.length;
+                        return players[idx];
+                    }
+                }
+                return null;
+            }
+
+            for (var i = 0; i < players.length; i++) {
+                if (isAvailable(players[i], spell.dbName, atTime)) return players[i];
+            }
+            return null;
+        }
+
+        // ──────────────────────────────────────────────────────────────
+        // HAUPT-SCHLEIFE
+        // ──────────────────────────────────────────────────────────────
         timeline.forEach(function(row) {
+            // Alle Kategorien initial mit leeren Slots vorbelegen,
+            // damit die UI-Spalten stimmen.
             allCatKeys.forEach(function(catKey) {
-                var isRequired = row.requiredCDs.indexOf(catKey) !== -1;
+                if (!row.slots[catKey]) row.slots[catKey] = {};
+            });
+
+            // Reihenfolge: bei prioritizeCategories die Boss-Reihenfolge
+            // aus requiredCDs verwenden, sonst die globale Liste.
+            var iterCats = assignStrategy.prioritizeCategories
+                ? (row.requiredCDs || []).slice()
+                : allCatKeys;
+
+            iterCats.forEach(function(catKey) {
+                var isRequired = (row.requiredCDs || []).indexOf(catKey) !== -1;
                 var oKey = row.eventIdx + '-' + row.castNum + '-' + catKey;
                 var hasOverride = !!manualOverrides[oKey];
 
@@ -604,23 +746,33 @@ window.CD_AUTO_PLANNER = (function() {
 
                 if (!isRequired) return;
 
+                // Spread-Check: wenn diese (Event, Kategorie, Cast) durch
+                // die Spread-Maske blockiert ist → leerer "geplante Lücke"-Slot
+                if (assignStrategy.spread) {
+                    row._catKey = catKey;  // tmp für Spread-Lookup
+                    var allow = spreadAllow[row.eventIdx + '-' + row.castNum + '-' + catKey];
+                    if (allow === false) {
+                        row.slots[catKey] = { player: null, dbName: null, auto: true, spreadGap: true };
+                        return;
+                    }
+                }
+
                 var spells = resolveCategory(catKey);
                 var assigned = false;
                 for (var si = 0; si < spells.length && !assigned; si++) {
                     var spell = spells[si];
                     var players = getPlayersOfClass(spell.dbClass, spell.requiredRole, spell.requiredSpec);
-                    for (var pi = 0; pi < players.length && !assigned; pi++) {
-                        if (isAvailable(players[pi], spell.dbName, spell.cooldownSec, row.absTime)) {
-                            row.slots[catKey] = {
-                                player: players[pi], dbName: spell.dbName,
-                                dbClass: spell.dbClass, spellId: spell.spellId,
-                                cooldownSec: spell.cooldownSec,
-                                durationSec: spell.durationSec,
-                                auto: true
-                            };
-                            markUsed(players[pi], spell.dbName, spell.cooldownSec, row.absTime);
-                            assigned = true;
-                        }
+                    var picked = pickPlayer(players, spell, row.absTime);
+                    if (picked) {
+                        row.slots[catKey] = {
+                            player: picked, dbName: spell.dbName,
+                            dbClass: spell.dbClass, spellId: spell.spellId,
+                            cooldownSec: spell.cooldownSec,
+                            durationSec: spell.durationSec,
+                            auto: true
+                        };
+                        markUsed(picked, spell.dbName, spell.cooldownSec, row.absTime);
+                        assigned = true;
                     }
                 }
                 if (!assigned) {
@@ -683,6 +835,15 @@ window.CD_AUTO_PLANNER = (function() {
                     return '<td class="py-1 px-1 bg-slate-900/30 border border-slate-800/40">'
                         + '<select class="auto-plan-select w-full bg-transparent text-[11px] border-none outline-none cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '" style="color:#4b5563;">'
                         + '<option value="" selected>—</option>' + options + '</select></td>';
+                }
+
+                // Spread-Gap: geplante Lücke durch Strategie A (Spread)
+                if (slot && slot.spreadGap) {
+                    return '<td class="py-1 px-1 bg-cyan-900/15 border border-cyan-700/30" title="Geplante Lücke (Spread-Strategie): hier wurde absichtlich kein Spieler eingeplant, um die verfügbaren CDs über die Zeit zu strecken.">'
+                        + '<select class="auto-plan-select w-full bg-transparent text-[11px] border-none outline-none cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '" style="color:#67e8f9;">'
+                        + '<option value="" selected>~ Spread-Lücke</option>'
+                        + '<option value="__SKIP__" style="color:#ef4444;">✖ Kein CD nötig</option>'
+                        + options + '</select></td>';
                 }
 
                 // Unavailable
@@ -1383,6 +1544,11 @@ window.CD_AUTO_PLANNER = (function() {
                     }
 
                     var isHealthTrigger = triggerVal && triggerVal.indexOf('HEALTH') !== -1;
+                    // Encounter Start ist ein Sonderfall: Trigger feuert nur 1x beim Pull.
+                    // Mehrere Casts auf ENC_START würden im Planner zu #1, #2, #3... werden,
+                    // was inhaltlich falsch ist. Stattdessen: Condition immer "1",
+                    // und die Zeit ist die absolute Kampfzeit (absTime + delay) als ETA ab Pull.
+                    var isEncStartTrigger = triggerVal && triggerVal.indexOf('ENC_START') !== -1;
                     var rowPrefix = prefix + '-planner-row' + rowNum;
 
                     // DOM aktualisieren (für sofortige Anzeige, aber OHNE change-Events)
@@ -1394,12 +1560,27 @@ window.CD_AUTO_PLANNER = (function() {
                         addToBatch(rowPrefix + '-npc', { player: npcVal, editor: currentManager, timestamp: serverTs });
                     }
 
-                    var conditionVal = (isHealthTrigger && percentVal !== null) ? String(percentVal) : String(row.castNum);
+                    var conditionVal;
+                    if (isEncStartTrigger) {
+                        conditionVal = '1';
+                    } else if (isHealthTrigger && percentVal !== null) {
+                        conditionVal = String(percentVal);
+                    } else {
+                        conditionVal = String(row.castNum);
+                    }
                     setPlannerInput(rowPrefix + '-condition', conditionVal, true);
                     addToBatch(rowPrefix + '-condition', { text: conditionVal, editor: currentManager, timestamp: serverTs });
 
-                    setPlannerInput(rowPrefix + '-time', String(row.delay || 0), true);
-                    addToBatch(rowPrefix + '-time', { text: String(row.delay || 0), editor: currentManager, timestamp: serverTs });
+                    // Bei ENC_START: Zeit = absolute Kampfzeit + Delay (das echte ETA ab Pull)
+                    // Sonst: Zeit = Delay relativ zum jeweiligen Trigger-Cast
+                    var timeVal;
+                    if (isEncStartTrigger) {
+                        timeVal = String(Math.round((row.absTime || 0) + (row.delay || 0)));
+                    } else {
+                        timeVal = String(row.delay || 0);
+                    }
+                    setPlannerInput(rowPrefix + '-time', timeVal, true);
+                    addToBatch(rowPrefix + '-time', { text: timeVal, editor: currentManager, timestamp: serverTs });
 
                     setPlannerSelect(rowPrefix + '-player', slot.player, true);
                     addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
@@ -1476,6 +1657,7 @@ window.CD_AUTO_PLANNER = (function() {
                     manualOverrides: manualOverrides,
                     eventOverrides: eventOverrides,
                     customEvents: customEvents,
+                    assignStrategy: assignStrategy,
                     assignments: assignments.map(function(r) {
                         var slots = {};
                         Object.entries(r.slots).forEach(function(e) {
@@ -1500,6 +1682,11 @@ window.CD_AUTO_PLANNER = (function() {
                 manualOverrides = data.manualOverrides || {};
                 eventOverrides  = data.eventOverrides  || {};
                 customEvents    = data.customEvents    || [];
+                if (data.assignStrategy && typeof data.assignStrategy === 'object') {
+                    assignStrategy.spread              = !!data.assignStrategy.spread;
+                    assignStrategy.prioritizeCategories = !!data.assignStrategy.prioritizeCategories;
+                    assignStrategy.roundRobin          = !!data.assignStrategy.roundRobin;
+                }
                 return true;
             }
         } catch (e) { console.error("[Auto-Planner]", e); }
@@ -2026,6 +2213,7 @@ window.CD_AUTO_PLANNER = (function() {
                 }
             }
             renderEventManager();
+            renderStrategyPanel();
         }
 
         // ══════════════════════════════════════════════════════════
@@ -2040,7 +2228,8 @@ window.CD_AUTO_PLANNER = (function() {
                 'btn-export-to-planner',
                 'btn-save-auto-plan',
                 'btn-save-categories',
-                'btn-clear-auto'
+                'btn-clear-auto',
+                'btn-clear-planner'
             ];
             managerOnlyButtons.forEach(function(btnId) {
                 var btn = document.getElementById(btnId);
@@ -2142,6 +2331,9 @@ window.CD_AUTO_PLANNER = (function() {
             } else { if (confirm(msg)) clearPlan(); }
         });
 
+        // ── Clear-Planner-Button dynamisch einfügen (nur für Manager) ──
+        injectClearPlannerButton();
+
         // ── DB-Wipe Button dynamisch einfügen (nur für Manager) ──
         injectWipeButton();
 
@@ -2150,6 +2342,189 @@ window.CD_AUTO_PLANNER = (function() {
             runAutoAssign();
         } else {
             updateStatus('Bereit. ' + found + '/' + total + ' Spells in DB. Roster: ' + rosterRef.length + ' Spieler.');
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // STRATEGIE-PANEL — UI für die 3 Verteilungs-Toggles
+    // ══════════════════════════════════════════════════════════════
+    function renderStrategyPanel() {
+        if (!window.isManager) return;
+
+        var anchor = document.getElementById('auto-planner-events');
+        if (!anchor) return;
+        // Anker ist der Wrapper-Container des Events-Panels
+        var wrapper = anchor.closest('details') || anchor.parentNode;
+        if (!wrapper) return;
+
+        var existing = document.getElementById('auto-planner-strategy');
+        if (existing) existing.remove();
+
+        var panel = document.createElement('details');
+        panel.id = 'auto-planner-strategy';
+        panel.className = 'mb-4 bg-slate-800 rounded-lg border border-slate-700';
+        panel.open = false;
+
+        var s = assignStrategy;
+        panel.innerHTML =
+            '<summary class="cursor-pointer p-3 text-sm font-bold text-cyan-400 hover:bg-slate-750 rounded-t-lg">⚙ Verteilungs-Strategie</summary>' +
+            '<div class="p-3 space-y-2 text-xs text-gray-300">' +
+                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+                    '<input type="checkbox" id="strat-spread" class="mt-1 accent-cyan-500" ' + (s.spread ? 'checked' : '') + '>' +
+                    '<div>' +
+                        '<div class="font-semibold text-gray-200">A — Spread (Lookahead)</div>' +
+                        '<div class="text-[10px] text-gray-400">Bei Knappheit Casts gleichmäßig über die Zeit verteilen statt am Anfang ballen. Lücken werden als "geplante Lücken" markiert.</div>' +
+                    '</div>' +
+                '</label>' +
+                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+                    '<input type="checkbox" id="strat-prio" class="mt-1 accent-cyan-500" ' + (s.prioritizeCategories ? 'checked' : '') + '>' +
+                    '<div>' +
+                        '<div class="font-semibold text-gray-200">B — Kategorien-Priorisierung</div>' +
+                        '<div class="text-[10px] text-gray-400">Wichtigere Kategorien (erste in der requiredCDs-Liste) zuerst füllen. Niedrige bleiben leer wenn die Wichtigen bereits Spieler verbraucht haben.</div>' +
+                    '</div>' +
+                '</label>' +
+                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+                    '<input type="checkbox" id="strat-rr" class="mt-1 accent-cyan-500" ' + (s.roundRobin ? 'checked' : '') + '>' +
+                    '<div>' +
+                        '<div class="font-semibold text-gray-200">C — Round-Robin</div>' +
+                        '<div class="text-[10px] text-gray-400">Spieler reihum nutzen statt immer den ersten. Bringt Fairness, hilft bei Lücken nur wenn Spieler-CD &lt; Event-Abstand ist.</div>' +
+                    '</div>' +
+                '</label>' +
+                '<div class="text-[10px] text-gray-500 italic pt-1 border-t border-slate-700">Änderungen werden mit dem nächsten "Auto-Assign" wirksam und beim Speichern persistiert.</div>' +
+            '</div>';
+
+        wrapper.parentNode.insertBefore(panel, wrapper);
+
+        function bind(id, key) {
+            var el = panel.querySelector('#' + id);
+            if (!el) return;
+            el.addEventListener('change', function() {
+                assignStrategy[key] = !!el.checked;
+                runAutoAssign();
+            });
+        }
+        bind('strat-spread', 'spread');
+        bind('strat-prio', 'prioritizeCategories');
+        bind('strat-rr', 'roundRobin');
+    }
+
+    // ── Dynamischer Clear-Button für Advanced CD-Plan ──
+    function injectClearPlannerButton() {
+        if (!window.isManager) return;
+        if (document.getElementById('btn-clear-planner')) return;  // Schon da
+
+        var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
+        if (!btnContainer) return;
+
+        var clearBtn = document.createElement('button');
+        clearBtn.id = 'btn-clear-planner';
+        clearBtn.className = 'bg-orange-700 hover:bg-orange-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-orange-600';
+        clearBtn.innerHTML = '🧹 CD-Plan leeren';
+        clearBtn.title = 'Leert ALLE 100 Zeilen des Advanced CD-Plans dieses Bosses (Auto-Plan bleibt unangetastet)';
+        btnContainer.appendChild(clearBtn);
+
+        clearBtn.addEventListener('click', function() {
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
+            var msg = "Advanced CD-Plan leeren?\n\nLöscht ALLE 100 Zeilen des CD-Planers dieses Bosses (Trigger, Spieler, Cooldowns, Zeiten, Texte).\nDer Auto-CD-Plan bleibt unangetastet.\n\nFortfahren?";
+            if (typeof window.showModal === 'function') {
+                var r = window.showModal(msg, true);
+                if (r && typeof r.then === 'function') {
+                    r.then(function(ok) { if (ok) clearPlannerOnly(); });
+                } else {
+                    clearPlannerOnly();
+                }
+            } else {
+                if (confirm(msg)) clearPlannerOnly();
+            }
+        });
+    }
+
+    // ── Leert ALLE 100 Zeilen des Advanced CD-Plans (DOM + Firestore) ──
+    async function clearPlannerOnly() {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
+
+        var container = document.querySelector('[id$="-planner-container"]');
+        if (!container) {
+            if (window.showModal) window.showModal("CD-Planer nicht gefunden.");
+            return;
+        }
+
+        var prefix = container.id.replace('-planner-container', '');
+
+        // BATCH-MODE aktivieren: keine change-Events während wir leeren
+        window._suspendAssignListeners = true;
+
+        var currentManager = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('currentManager')) || 'Unbekannt';
+        var serverTs = null;
+        if (firebaseRef && firebaseRef.serverTimestamp) {
+            serverTs = firebaseRef.serverTimestamp();
+        }
+
+        var batchPayload = {};
+        var fields = ['trigger', 'npc', 'condition', 'time', 'player', 'cooldown', 'text', 'tts', 'name', 'icon'];
+
+        try {
+            // DOM leeren + Batch füllen
+            for (var i = 1; i <= 100; i++) {
+                var rowPrefix = prefix + '-planner-row' + i;
+                fields.forEach(function(f) {
+                    var fieldId = rowPrefix + '-' + f;
+                    var el = document.querySelector('[data-assignment-id="' + fieldId + '"]');
+                    if (el) {
+                        if (el.tagName === 'SELECT') {
+                            el.value = '';
+                            var opt = el.options[el.selectedIndex];
+                            if (opt) el.style.color = (opt.dataset && opt.dataset.color) || '#FFFFFF';
+                        } else {
+                            el.value = '';
+                        }
+                    }
+                    // Auch wenn DOM-Element nicht da ist (z.B. text/tts/name/icon nicht in allen Bossen):
+                    // Wenn Feld existiert hatte, in Firestore leeren — dafür ein leerer Eintrag.
+                    // Wir setzen nur das gängige Schema; ungenutzte Felder werden einfach überschrieben.
+                    if (f === 'trigger' || f === 'npc' || f === 'player' || f === 'cooldown') {
+                        batchPayload[fieldId] = { player: '', editor: currentManager, timestamp: serverTs };
+                    } else {
+                        batchPayload[fieldId] = { text: '', editor: currentManager, timestamp: serverTs };
+                    }
+                });
+            }
+
+            // Firestore-Write
+            if (firebaseRef && firebaseRef.setDoc) {
+                var bossDocId = "boss-" + prefix.toLowerCase();
+                try {
+                    await firebaseRef.setDoc(
+                        firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
+                        batchPayload,
+                        { merge: true }
+                    );
+                } catch (e) {
+                    console.error("[Auto-Planner] clearPlannerOnly DB-Error:", e);
+                    if (window.showModal) window.showModal("CD-Plan lokal geleert, DB-Fehler: " + e.message);
+                    return;
+                }
+            }
+
+            // Logbuch
+            if (typeof window.logHistory === 'function') {
+                window.logHistory('Auto-Planner', 'Advanced CD-Plan geleert für Boss "' + config.name + '"',
+                    '100 Zeilen', currentManager);
+            }
+
+            updateStatus("Advanced CD-Plan geleert (100 Zeilen, lokal + DB).");
+            if (window.showModal) window.showModal("✓ Advanced CD-Plan geleert.");
+
+            // Planner-Summary neu rendern, falls verfügbar
+            if (window.updatePlannerSummary) setTimeout(window.updatePlannerSummary, 200);
+        } finally {
+            window._suspendAssignListeners = false;
         }
     }
 
