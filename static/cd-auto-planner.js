@@ -424,6 +424,28 @@ window.CD_AUTO_PLANNER = (function() {
         return (window.classColors && window.classColors[(cls || '').toUpperCase()]) || '#FFFFFF';
     }
 
+    // Normalisiert einen Spec-Namen für toleranten Vergleich:
+    //   - Kleinschreibung, Whitespace weg
+    //   - "1"-Suffix entfernen (Protection1 → protection, Holy1 → holy, ...)
+    //   - deutsche/alternative Schreibweisen auf den englischen Kern mappen
+    // So matchen Roster-Spec und required-Spec auch bei Format-Unterschieden.
+    var _SPEC_ALIASES = {
+        'schutz': 'protection', 'vergeltung': 'retribution', 'heilig': 'holy',
+        'wiederherstellung': 'restoration', 'verstaerkung': 'enhancement',
+        'verstärkung': 'enhancement', 'elementar': 'elemental',
+        'disziplin': 'discipline', 'schatten': 'shadow', 'waechter': 'guardian',
+        'wächter': 'guardian', 'wildheit': 'feral', 'gleichgewicht': 'balance',
+        'blut': 'blood', 'frost': 'frost', 'unheilig': 'unholy',
+        'braumeister': 'brewmaster', 'nebelwirker': 'mistweaver', 'windläufer': 'windwalker',
+        'windlaeufer': 'windwalker'
+    };
+    function normalizeSpec(spec) {
+        var s = String(spec || '').toLowerCase().trim().replace(/\s+/g, '');
+        s = s.replace(/[0-9]+$/, '');        // "protection1" → "protection"
+        if (_SPEC_ALIASES[s]) s = _SPEC_ALIASES[s];
+        return s;
+    }
+
     function getPlayersOfClass(cls, requiredRole, requiredSpec) {
         // Immer dynamisch das aktuellste Roster laden
         var currentRoster = window.effectiveRoster || window.rosterData || [];
@@ -433,11 +455,11 @@ window.CD_AUTO_PLANNER = (function() {
 
             // 2. Spec-Filter hat Vorrang vor Role-Filter
             if (requiredSpec && requiredSpec.length > 0) {
-                var playerSpec = p.spec || p.specName || '';
-                if (!playerSpec) return true;
+                var playerSpec = p.spec || p.specName || p.specialization || '';
+                if (!playerSpec) return true;   // Spieler ohne Spec-Angabe nicht ausschließen
                 var specList = Array.isArray(requiredSpec) ? requiredSpec : [requiredSpec];
-                var pSpecLower = playerSpec.toLowerCase();
-                return specList.some(function(s) { return String(s).toLowerCase() === pSpecLower; });
+                var pSpecNorm = normalizeSpec(playerSpec);
+                return specList.some(function(s) { return normalizeSpec(s) === pSpecNorm; });
             }
 
             // 3. Role-Filter (wenn kein Spec-Filter gesetzt)
@@ -987,10 +1009,12 @@ window.CD_AUTO_PLANNER = (function() {
             });
         }
 
-        var recIds = {};
-        recommended.forEach(function(s) { recIds[String(s.spellId)] = true; });
+        // "Alle CDs" zeigt ALLE wählbaren Cooldowns — auch die oben empfohlenen.
+        // (Früher wurden empfohlene spellIds hier ausgeschlossen, wodurch z.B. die
+        //  Aura der Hingabe komplett fehlte, sobald sie für irgendeine Spec empfohlen
+        //  war. Das hat den Prot-Pala-Eintrag unauffindbar gemacht.)
         var allCDs = cooldownsDB.filter(function(cd) {
-            return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 && cd.type !== 'Personal' && !recIds[String(cd.spellId)];
+            return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 && cd.type !== 'Personal';
         });
         var byClassA = {};
         allCDs.forEach(function(cd) {
@@ -1017,14 +1041,39 @@ window.CD_AUTO_PLANNER = (function() {
         return html;
     }
 
+    // Markiert die Auto-Assign-Vorschau als veraltet (nach Event-Änderungen),
+    // ohne sie neu zu berechnen. Wird durch "Auto-Assign" wieder aufgehoben.
+    function markPreviewStale() {
+        var btn = document.getElementById('btn-auto-assign');
+        if (btn && !btn.dataset._origText) {
+            btn.dataset._origText = btn.innerHTML;
+        }
+        if (btn) {
+            btn.classList.add('animate-pulse');
+            btn.style.boxShadow = '0 0 0 2px #f59e0b';
+            btn.title = 'Events wurden geändert — klicke Auto-Assign, um die Vorschau zu aktualisieren.';
+        }
+        updateStatus('Events geändert — "Auto-Assign" klicken, um die Vorschau neu zu berechnen.');
+    }
+
+    function clearPreviewStale() {
+        var btn = document.getElementById('btn-auto-assign');
+        if (btn) {
+            btn.classList.remove('animate-pulse');
+            btn.style.boxShadow = '';
+            btn.title = '';
+        }
+    }
+
     function runAutoAssign() {
 
         rosterRef = window.effectiveRoster || window.rosterData || [];
-        
+
         var timeline = generateTimeline();
         assignments = autoAssign(timeline);
         renderTimeline(assignments);
         renderEventManager();
+        clearPreviewStale();
         // Manager-Schutz erneut anwenden (neu erzeugte Felder)
         if (typeof window._autoPlannerApplyProtection === 'function') {
             window._autoPlannerApplyProtection();
@@ -1140,7 +1189,8 @@ window.CD_AUTO_PLANNER = (function() {
                 var key = e.target.dataset.key;
                 if (!eventOverrides[key]) eventOverrides[key] = {};
                 eventOverrides[key].disabled = !e.target.checked;
-                runAutoAssign();
+                renderEventManager();
+                markPreviewStale();
             });
         });
 
@@ -1207,7 +1257,8 @@ window.CD_AUTO_PLANNER = (function() {
                 if (!confirm('Event wirklich löschen?')) return;
                 customEvents = customEvents.filter(function(evt) { return evt._key !== key; });
                 delete eventOverrides[key];
-                runAutoAssign();
+                renderEventManager();
+                markPreviewStale();
             });
         });
 
@@ -1227,7 +1278,8 @@ window.CD_AUTO_PLANNER = (function() {
                     eventDuration: 0,
                     requiredCDs: []
                 });
-                runAutoAssign();
+                renderEventManager();
+                markPreviewStale();
             });
         }
     }
@@ -1241,7 +1293,10 @@ window.CD_AUTO_PLANNER = (function() {
             if (!eventOverrides[key]) eventOverrides[key] = {};
             eventOverrides[key][field] = value;
         }
-        runAutoAssign();
+        // Event-Änderungen NICHT mehr sofort in die Vorschau verteilen — erst auf
+        // "Auto-Assign". Nur den Event-Manager neu zeichnen und Vorschau als veraltet markieren.
+        renderEventManager();
+        markPreviewStale();
     }
 
     // ── Trigger-Picker pro Event ──
@@ -1389,6 +1444,7 @@ window.CD_AUTO_PLANNER = (function() {
             }
             document.body.removeChild(overlay);
             renderEventManager();
+            markPreviewStale();
         });
         modal.querySelector('#trg-pick-cancel').addEventListener('click', function() {
             document.body.removeChild(overlay);
@@ -2676,6 +2732,52 @@ window.CD_AUTO_PLANNER = (function() {
                 }
             }, 500);
             setTimeout(function() { clearInterval(w); }, 15000);
+        },
+
+        // Diagnose-Helper: in der Browser-Konsole `CD_AUTO_PLANNER.debugRoster()` aufrufen,
+        // um zu sehen, welche class/spec/roles-Werte die Spieler tatsächlich haben.
+        // Zeigt auch, wie normalizeSpec sie interpretiert.
+        debugRoster: function(filterClass) {
+            var roster = window.effectiveRoster || window.rosterData || [];
+            var rows = roster
+                .filter(function(p) { return !filterClass || (p.class || '').toUpperCase() === filterClass.toUpperCase(); })
+                .map(function(p) {
+                    return {
+                        name: p.name,
+                        class: p.class,
+                        spec: p.spec || p.specName || p.specialization || '(keine)',
+                        specNormalisiert: normalizeSpec(p.spec || p.specName || p.specialization || ''),
+                        roles: (p.roles || []).join(',')
+                    };
+                });
+            console.table(rows);
+            return rows;
+        },
+
+        // Testet, welche Spieler für eine Klasse+Spec gefunden werden.
+        // z.B. CD_AUTO_PLANNER.debugMatch('PALADIN', 'Protection1')
+        debugMatch: function(cls, spec) {
+            var players = getPlayersOfClass(cls, null, spec ? [spec] : null);
+            console.log('Treffer für', cls, spec || '(alle)', '→', players);
+
+            // Detail-Analyse: warum matcht/matcht nicht jeder Spieler der Klasse?
+            var roster = window.effectiveRoster || window.rosterData || [];
+            var detail = roster
+                .filter(function(p) { return (p.class || '').toUpperCase() === (cls || '').toUpperCase(); })
+                .map(function(p) {
+                    var pSpec = p.spec || p.specName || p.specialization || '';
+                    var pNorm = normalizeSpec(pSpec);
+                    var reqNorm = spec ? normalizeSpec(spec) : '(kein Spec-Filter)';
+                    return {
+                        name: p.name,
+                        spec_roh: pSpec || '(keine)',
+                        spec_normalisiert: pNorm,
+                        gesucht_normalisiert: reqNorm,
+                        match: spec ? (pNorm === normalizeSpec(spec)) : true
+                    };
+                });
+            console.table(detail);
+            return players;
         }
     };
 })();
