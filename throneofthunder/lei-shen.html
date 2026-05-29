@@ -815,7 +815,7 @@ CD_AUTO_PLANNER.init({
         <span class="text-xl">📜</span> CD-Einteilung Übersicht
     </h3>
     
-    <div id="leishen-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+    <div id="lei-shen-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
         <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
             Warte auf Eingabe... <br>
             <span class="opacity-50">(Ändere etwas im Planer, um die Vorschau zu laden)</span>
@@ -828,7 +828,7 @@ CD_AUTO_PLANNER.init({
                     <strong>% / #:</strong> Entweder % Lebenspunkte (bei Health) oder Reihenfolge (1, 2, 3...)
                 </div>
 
-                <div id="leishen-planner-container" class="space-y-2 planner-scroll-container"></div>
+                <div id="lei-shen-planner-container" class="space-y-2 planner-scroll-container"></div>
                 
                 <div class="mt-4 text-xs text-gray-500 italic">
                     * <strong>NPC:</strong> Wähle hier den Boss/Add, wenn du "Health %" nutzt.
@@ -929,7 +929,7 @@ const TRIGGER_OPTIONS = [
         const NPC_OPTIONS = [
             "Lei Shen"
         ];
-        const container = document.getElementById('leishen-planner-container');
+        const container = document.getElementById('lei-shen-planner-container');
                 const getCooldownOptions = () => {
             let html = '<option value="">-- Cooldown --</option>';
             allCooldowns.forEach(cd => {
