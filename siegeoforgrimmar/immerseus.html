@@ -24,6 +24,114 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+    /* ─── Immerseus Lane Groups (basierend auf Sha-of-Pride Plates) ─── */
+    .imm-lane-card {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid #475569;
+        border-radius: 6px;
+        padding: 8px;
+    }
+    .imm-lane-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #334155;
+    }
+    .imm-lane-title {
+        font-weight: 600;
+        color: #fcd34d;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .imm-lane-rt-icon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        background: #0f172a;
+        border: 1px solid #475569;
+        border-radius: 3px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .imm-lane-slots-table {
+        width: 100%;
+        font-size: 0.7rem;
+    }
+    .imm-lane-slots-table td {
+        padding: 1px 3px;
+    }
+    .imm-lane-slots-table .slot-num {
+        color: #64748b;
+        font-family: monospace;
+        text-align: center;
+        width: 20px;
+    }
+    .imm-lane-slots-table .slot-del {
+        text-align: center;
+        width: 20px;
+    }
+    .imm-lane-slot-select {
+        background-color: #0f172a;
+        border: 1px solid #475569;
+        border-radius: 3px;
+        padding: 2px 4px;
+        font-size: 0.7rem;
+        color: #fff;
+        width: 100%;
+        height: 22px;
+    }
+    /* Drop-Indikatoren für Drag&Drop in der Prio-Liste */
+    #imm-lanes-prio-list li.drop-above {
+        box-shadow: 0 -2px 0 0 #fbbf24;
+    }
+    #imm-lanes-prio-list li.drop-below {
+        box-shadow: 0 2px 0 0 #fbbf24;
+    }
+    /* ─── Kategorie-Tags pro Lane ─── */
+    .imm-lane-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        margin-top: 6px;
+        padding-top: 6px;
+        border-top: 1px dashed #334155;
+    }
+    .imm-lane-tag {
+        display: inline-block;
+        padding: 1px 6px;
+        font-size: 0.65rem;
+        border-radius: 9999px;
+        cursor: pointer;
+        user-select: none;
+        border: 1px solid;
+        transition: all 0.15s;
+        line-height: 1.4;
+    }
+    .imm-lane-tag.tag-on {
+        background-color: #065f46;
+        color: #d1fae5;
+        border-color: #10b981;
+    }
+    .imm-lane-tag.tag-off {
+        background-color: #1e293b;
+        color: #64748b;
+        border-color: #334155;
+        text-decoration: line-through;
+        text-decoration-color: #475569;
+    }
+    .imm-lane-tag:hover {
+        filter: brightness(1.2);
+    }
+    .imm-lane-tags-label {
+        font-size: 0.6rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-right: 2px;
+        align-self: center;
+    }
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Immerseus</h1>
@@ -145,130 +253,141 @@
                         <li><span>Tank 1 (Start):</span><select class="assignment-select" data-assignment-id="immerseus-tank1"></select></li>
                         <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="immerseus-tank2"></select></li>
                     </ul>
-                </div>
-                
+                       <!-- ═══════════ LANE GROUPS (8 Gruppen × 4 Spieler, Sha-Style) ═══════════ -->
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-purple-400">🌈 Lane Groups</h4>
+                    <p class="text-sm text-gray-400 mb-3 px-3">8 Sektoren (Skull, Cross, Square, Triangle, Diamond, Circle, Star, Moon), pro Sektor 4 Spieler-Slots. Auto-Füllen nach Spec-Priorität und Limits — wie bei Sha.</p>
 
-                <!-- Phasen-Aufteilung -->
-                <div class="xl:col-span-2 space-y-6">
-                    <div class="assignment-block">
-                        <h4 class="text-lg font-bold text-purple-400 border-b border-slate-600 mb-2">🌈 Phasen-Aufteilung (Markierungen)</h4>
-                        <p class="text-xs text-gray-400 mb-3 italic">Einteilung der Spieler auf die Plattform-Viertel für Phase 2 (Pfützen).</p>
-                        
-                        <div class="overflow-x-auto rounded border border-slate-700">
-                            <table class="w-full text-left text-xs text-gray-300">
-                                <thead class="bg-slate-900 text-gray-400 font-bold uppercase">
-                                    <tr>
-                                        <th class="p-2 w-28">Bereich</th>
-                                        <th class="p-2">Spieler 1/4</th>
-                                        <th class="p-2">Spieler 2/5</th>
-                                        <th class="p-2">Spieler 3/6</th>
+                    <!-- ─── 8 Lanes als Grid (2 Reihen × 4 Spalten auf großen Screens) ─── -->
+                    <div id="imm-lanes-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3"></div>
 
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-700 bg-slate-800">
-                                    <tr class="hover:bg-slate-700/50">
-                                        <td class="p-2 flex items-center gap-2 font-bold text-white">
-                                            <img src="raidicons/skull.png" class="w-5 h-5" alt="Skull"> Vorne Links
-                                        </td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_1" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_2" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_3" data-assignment-pool="imm_areas"></select></td>
-                                    </tr>
-                                         <td class="p-2 flex items-center gap-2 font-bold text-white">
-                                            <img src="raidicons/skull.png" class="w-5 h-5" alt="Skull"> Vorne Links
-                                        </td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_4" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_5" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_left_6" data-assignment-pool="imm_areas"></select></td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-700/50">
-                                        <td class="p-2 flex items-center gap-2 font-bold text-red-400">
-                                            <img src="raidicons/cross.png" class="w-5 h-5" alt="Cross"> Hinten Links
-                                        </td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_1" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_2" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_3" data-assignment-pool="imm_areas"></select></td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-700/50">
-                                        <td class="p-2 flex items-center gap-2 font-bold text-red-400">
-                                            <img src="raidicons/cross.png" class="w-5 h-5" alt="Cross"> Hinten Links
-                                        </td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_4" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_5" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_left_6" data-assignment-pool="imm_areas"></select></td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-700/50">
-                                        <td class="p-2 flex items-center gap-2 font-bold text-blue-400">
-                                            <img src="raidicons/square.png" class="w-5 h-5" alt="Square"> Vorne Rechts
-                                        </td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_1" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_2" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_3" data-assignment-pool="imm_areas"></select></td>
+                    <!-- ─── Auto-Füllen-Panel ─── -->
+                    <details id="imm-lanes-auto-section" class="mb-3 bg-slate-900/60 border border-slate-700 rounded">
+                        <summary class="cursor-pointer p-2 text-xs font-bold text-yellow-300 hover:bg-slate-800 rounded">
+                            ⚡ Auto-Füllen nach Spec-Priorität (alle 8 Lanes)
+                        </summary>
+                        <div class="p-3 space-y-3">
+                            <p class="text-[11px] text-gray-400">
+                                Kategorien definieren Reihenfolge + Limits. „Auto-Füllen" verteilt Spieler aus dem Kader gleichmäßig auf alle 8 Lanes, respektiert dabei Limits (z.B. „max 1 Tank pro Lane"). Limits gelten <strong>pro Lane</strong>.
+                            </p>
 
-                                    </tr>
-                                                                        <tr class="hover:bg-slate-700/50">
-                                        <td class="p-2 flex items-center gap-2 font-bold text-blue-400">
-                                            <img src="raidicons/square.png" class="w-5 h-5" alt="Square"> Vorne Rechts
-                                        </td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_4" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_5" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_front_right_6" data-assignment-pool="imm_areas"></select></td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-700/50">
-                                        <td class="p-2 flex items-center gap-2 font-bold text-gray-200">
-                                            <img src="raidicons/moon.png" class="w-5 h-5" alt="Moon"> Hinten Rechts
-                                        </td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_1" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_2" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_3" data-assignment-pool="imm_areas"></select></td>
-                                    </tr>
-                                                                     <tr class="hover:bg-slate-700/50">
-                                        <td class="p-2 flex items-center gap-2 font-bold text-gray-200">
-                                            <img src="raidicons/moon.png" class="w-5 h-5" alt="Moon"> Hinten Rechts
-                                        </td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_4" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_5" data-assignment-pool="imm_areas"></select></td>
-                                        <td class="p-1"><select class="assignment-select text-xs w-full h-7" data-assignment-id="imm_back_right_6" data-assignment-pool="imm_areas"></select></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-[10px] text-gray-500 uppercase tracking-wide">Prioritäts-Reihenfolge:</span>
+                                    <span class="text-[10px] text-gray-500">⋮⋮ ziehen | ✎ bearbeiten | ✕ löschen</span>
+                                </div>
+                                <ul id="imm-lanes-prio-list" class="space-y-1"></ul>
+
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <button id="imm-lanes-prio-add" class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">
+                                        + Eigene Kategorie
+                                    </button>
+                                    <button id="imm-lanes-prio-detect" class="bg-blue-700 hover:bg-blue-800 text-white text-[11px] py-1 px-2 rounded border border-blue-500" title="Liest Specs aus dem Kader und legt automatisch Kategorien an">
+                                        🪄 Aus Kader ableiten
+                                    </button>
+                                    <button id="imm-lanes-prio-reset" class="bg-slate-700 hover:bg-slate-800 text-white text-[11px] py-1 px-2 rounded border border-slate-500">
+                                        ↺ Defaults
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-700 pt-3 flex flex-wrap gap-2 items-center">
+                                <button id="imm-lanes-auto-fill" class="bg-yellow-700 hover:bg-yellow-800 text-white text-xs py-1.5 px-3 rounded border border-yellow-500">
+                                    ⚡ Auto-Füllen (alle Lanes)
+                                </button>
+                                <button id="imm-lanes-clear-all" class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded border border-slate-500">
+                                    🗑 Alle Lanes leeren
+                                </button>
+                                <span class="text-[10px] text-gray-500 ml-auto">Limits gelten pro Lane</span>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- ─── Modal für Kategorie-Bearbeitung ─── -->
+                    <div id="imm-lanes-prio-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+                        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 max-w-md w-full" style="font-size: 13px;">
+                            <h4 class="text-base font-bold text-yellow-300 mb-3" id="imm-lanes-prio-modal-title">Kategorie bearbeiten</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Anzeigename</label>
+                                    <input id="imm-lanes-prio-modal-label" type="text" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="z.B. Shadow Priester">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Klasse</label>
+                                    <select id="imm-lanes-prio-modal-class" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— alle Klassen —</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Spec</label>
+                                    <select id="imm-lanes-prio-modal-spec" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— alle Specs —</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Rolle</label>
+                                    <select id="imm-lanes-prio-modal-role" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— beliebig —</option>
+                                        <option value="tank">Tank</option>
+                                        <option value="healer">Healer</option>
+                                        <option value="dps">DPS</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Archetyp <span class="text-[10px] text-gray-500">(für DPS-Gruppen)</span></label>
+                                    <select id="imm-lanes-prio-modal-archetype" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                        <option value="">— beliebig —</option>
+                                        <option value="melee">Melee</option>
+                                        <option value="ranged_physical">Ranged Physical (Hunter)</option>
+                                        <option value="caster">Caster</option>
+                                    </select>
+                                </div>
+
+                                <div class="border-t border-slate-700 pt-3">
+                                    <div class="text-xs font-bold text-yellow-300 mb-2">Limits pro Lane (optional)</div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 mb-1">Max in ersten N Slots</label>
+                                            <div class="flex gap-1">
+                                                <input id="imm-lanes-prio-modal-limit-rows" type="number" min="1" class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="2">
+                                                <span class="text-gray-500 text-xs flex items-center">Slots:</span>
+                                                <input id="imm-lanes-prio-modal-limit-count" type="number" min="0" class="flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="1">
+                                            </div>
+                                            <div class="text-[10px] text-gray-500 mt-1">z.B. „in den ersten 2 Slots max 1 Tank"</div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 mb-1">Max gesamt pro Lane</label>
+                                            <input id="imm-lanes-prio-modal-max-total" type="number" min="0" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="leer = unbegrenzt">
+                                            <div class="text-[10px] text-gray-500 mt-1">Maximalanzahl pro einzelner Lane</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-[10px] text-gray-500 italic">
+                                    Tipp: Filter sind UND-verknüpft. Leer lassen = nicht filtern.
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mt-4">
+                                <button id="imm-lanes-prio-modal-save" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded">Speichern</button>
+                                <button id="imm-lanes-prio-modal-cancel" class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded">Abbrechen</button>
+                            </div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
 
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="immerseus-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1</button>
-                        <button data-phase="immerseus-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 2</button>
-                    </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="immerseus-p1"><strong>Phase 1:</strong> Die Gruppe verteilt sich kreisförmig. Der Tank dreht den <strong class="text-red-400">Ätzenden Schlag</strong> nach außen.</p>
-                            <p class="positioning-text hidden" data-phase="immerseus-p2"><strong>Phase 2:</strong> Alle Spieler begeben sich in ihre zugewiesenen Viertel, um die Pfützen aufzuhalten.</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/immerseus-p1.png" alt="Positionierung Immerseus Phase 1" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="immerseus-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;immerseus-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
-                            
-                        <img src="siegeoforgrimmar/immerseus-p2.png" alt="Positionierung Immerseus Phase 2" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
-                            data-phase="immerseus-p2" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;immerseus-p2&quot;>Bild für Phase 2 noch nicht verfügbar.</div>'">
-                    </div>
-                </div>
+            <div class="space-y-6">
 
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Guide</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
-                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
-                    </div>
+             
+                
+
+                <!-- Bild + Video -->
+                <h3 class="text-xl font-semibold text-blue-450 mb-2">Visuelle Hilfen</h3>
+                <div class="mt-2">
+                    <img src="siegeoforgrimmar/immerseus.png" alt="Positionierung Immerseus"
+                        class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                        onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild noch nicht verfügbar.</div>'">
                 </div>
             </div>
         </div>
@@ -664,6 +783,993 @@ CD_AUTO_PLANNER.init({
             });
             setTimeout(window.updatePlannerSummary, 500);
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        // LANE GROUPS — 8 Lanes (Skull/Cross/Square/Triangle/Diamond/Circle/Star/Moon)
+        // Adaptiert von Sha-of-Pride Platten (NUM=4→8, SLOTS=10→4, Marker fix).
+        // ═══════════════════════════════════════════════════════════════
+                (function initImmerseusLanes() {
+            const gridEl = document.getElementById('imm-lanes-grid');
+            if (!gridEl) return;
+            
+            const ASSIGNMENT_ID = 'imm-lanes';
+            const NUM_LANES = 8;
+            const SLOTS_PER_LANE = 4;
+            
+            // ── 8 Lanes mit fest zugewiesenen Raid-Targets ──
+            // Reihenfolge entsprechend Screenshot: Skull, Cross, Square, Triangle (oben)
+            //                                     Diamond, Circle, Star, Moon (unten)
+            // Im Gegensatz zu Sha-of-Pride sind die Marker hier FIX pro Lane —
+            // der User wählt nicht aus, welche Lane welchen Marker bekommt.
+            const LANE_MARKERS = [
+                { id: 'skull',    label: 'Skull',    file: 'skull.png',    color: '#e5e7eb' },
+                { id: 'cross',    label: 'Cross',    file: 'cross.png',    color: '#f87171' },
+                { id: 'square',   label: 'Square',   file: 'square.png',   color: '#60a5fa' },
+                { id: 'triangle', label: 'Triangle', file: 'triangle.png', color: '#4ade80' },
+                { id: 'diamond',  label: 'Diamond',  file: 'diamond.png',  color: '#f9a8d4' },
+                { id: 'circle',   label: 'Circle',   file: 'circle.png',   color: '#fb923c' },
+                { id: 'star',     label: 'Star',     file: 'star.png',     color: '#fde047' },
+                { id: 'moon',     label: 'Moon',     file: 'moon.png',     color: '#93c5fd' }
+            ];
+
+            // ── State ──
+            // lanesData = [ { slots:[4], allowedCats:[catId,...] | null }, ... ]
+            //   allowedCats === null  → keine Beschränkung (alle Kategorien erlaubt)
+            //   allowedCats === []    → KEINE Kategorie erlaubt (Lane ist explizit leer/aus)
+            //   allowedCats === ['x'] → nur Kategorien mit diesen IDs erlaubt
+            let lanesData = Array.from({ length: NUM_LANES }, () => ({
+                slots: Array(SLOTS_PER_LANE).fill(''), allowedCats: null
+            }));
+            let saveTimer = null;
+            
+            // ── Klassen + Specs (Quelle der Wahrheit für die Dropdowns) ──
+            // archetype: 'melee' | 'ranged_physical' | 'caster' (nur DPS, sonst undefined)
+            const SPEC_DEFINITIONS = {
+                DEATHKNIGHT: [
+                    { value: 'Blood',        label: 'Blood (Tank)',        role: 'tank' },
+                    { value: 'Frost1',       label: 'Frost',               role: 'dps',    archetype: 'melee' },
+                    { value: 'Unholy',       label: 'Unholy',              role: 'dps',    archetype: 'melee' }
+                ],
+                DRUID: [
+                    { value: 'Balance',      label: 'Balance',             role: 'dps',    archetype: 'caster' },
+                    { value: 'Feral',        label: 'Feral',               role: 'dps',    archetype: 'melee' },
+                    { value: 'Guardian',     label: 'Guardian (Tank)',     role: 'tank' },
+                    { value: 'Restoration',  label: 'Restoration (Heal)',  role: 'healer' }
+                ],
+                HUNTER: [
+                    { value: 'Beastmastery', label: 'Beastmastery',        role: 'dps',    archetype: 'ranged_physical' },
+                    { value: 'Marksmanship', label: 'Marksmanship',        role: 'dps',    archetype: 'ranged_physical' },
+                    { value: 'Survival',     label: 'Survival',            role: 'dps',    archetype: 'ranged_physical' }
+                ],
+                MAGE: [
+                    { value: 'Arcane',       label: 'Arcane',              role: 'dps',    archetype: 'caster' },
+                    { value: 'Fire',         label: 'Fire',                role: 'dps',    archetype: 'caster' },
+                    { value: 'Frost',        label: 'Frost',               role: 'dps',    archetype: 'caster' }
+                ],
+                MONK: [
+                    { value: 'Brewmaster',   label: 'Brewmaster (Tank)',   role: 'tank' },
+                    { value: 'Mistweaver',   label: 'Mistweaver (Heal)',   role: 'healer' },
+                    { value: 'Windwalker',   label: 'Windwalker',          role: 'dps',    archetype: 'melee' }
+                ],
+                PALADIN: [
+                    { value: 'Holy1',        label: 'Holy (Heal)',         role: 'healer' },
+                    { value: 'Protection1',  label: 'Protection (Tank)',   role: 'tank' },
+                    { value: 'Retribution',  label: 'Retribution',         role: 'dps',    archetype: 'melee' }
+                ],
+                PRIEST: [
+                    { value: 'Discipline',   label: 'Discipline (Heal)',   role: 'healer' },
+                    { value: 'Holy',         label: 'Holy (Heal)',         role: 'healer' },
+                    { value: 'Shadow',       label: 'Shadow',              role: 'dps',    archetype: 'caster' }
+                ],
+                ROGUE: [
+                    { value: 'Assassination', label: 'Assassination',      role: 'dps',    archetype: 'melee' },
+                    { value: 'Combat',       label: 'Combat',              role: 'dps',    archetype: 'melee' },
+                    { value: 'Subtlety',     label: 'Subtlety',            role: 'dps',    archetype: 'melee' }
+                ],
+                SHAMAN: [
+                    { value: 'Elemental',    label: 'Elemental',           role: 'dps',    archetype: 'caster' },
+                    { value: 'Enhancement',  label: 'Enhancement',         role: 'dps',    archetype: 'melee' },
+                    { value: 'Restoration1', label: 'Restoration (Heal)',  role: 'healer' }
+                ],
+                WARLOCK: [
+                    { value: 'Affliction',   label: 'Affliction',          role: 'dps',    archetype: 'caster' },
+                    { value: 'Demonology',   label: 'Demonology',          role: 'dps',    archetype: 'caster' },
+                    { value: 'Destruction',  label: 'Destruction',         role: 'dps',    archetype: 'caster' }
+                ],
+                WARRIOR: [
+                    { value: 'Arms',         label: 'Arms',                role: 'dps',    archetype: 'melee' },
+                    { value: 'Fury',         label: 'Fury',                role: 'dps',    archetype: 'melee' },
+                    { value: 'Protection',   label: 'Protection (Tank)',   role: 'tank' }
+                ]
+            };
+            
+            // Schneller Lookup: Klasse+Spec → archetype
+            const SPEC_ARCHETYPE_LOOKUP = (() => {
+                const m = {};
+                Object.keys(SPEC_DEFINITIONS).forEach(cls => {
+                    SPEC_DEFINITIONS[cls].forEach(s => {
+                        if (s.archetype) m[cls + '|' + s.value] = s.archetype;
+                    });
+                });
+                return m;
+            })();
+            const ARCHETYPE_LABELS = {
+                melee: 'Melee',
+                ranged_physical: 'Ranged Physical',
+                caster: 'Caster'
+            };
+            const CLASS_ALIASES = {
+                'death knight': 'DEATHKNIGHT', 'deathknight': 'DEATHKNIGHT', 'dk': 'DEATHKNIGHT', 'todesritter': 'DEATHKNIGHT',
+                'druid': 'DRUID', 'druide': 'DRUID',
+                'hunter': 'HUNTER', 'jäger': 'HUNTER', 'jaeger': 'HUNTER',
+                'mage': 'MAGE', 'magier': 'MAGE',
+                'monk': 'MONK', 'mönch': 'MONK', 'moench': 'MONK',
+                'paladin': 'PALADIN',
+                'priest': 'PRIEST', 'priester': 'PRIEST',
+                'rogue': 'ROGUE', 'schurke': 'ROGUE',
+                'shaman': 'SHAMAN', 'schamane': 'SHAMAN',
+                'warlock': 'WARLOCK', 'hexenmeister': 'WARLOCK',
+                'warrior': 'WARRIOR', 'krieger': 'WARRIOR'
+            };
+            const CLASS_DISPLAY = {
+                'DEATHKNIGHT': 'Todesritter', 'DRUID': 'Druide', 'HUNTER': 'Jäger',
+                'MAGE': 'Magier', 'MONK': 'Mönch', 'PALADIN': 'Paladin',
+                'PRIEST': 'Priester', 'ROGUE': 'Schurke', 'SHAMAN': 'Schamane',
+                'WARLOCK': 'Hexenmeister', 'WARRIOR': 'Krieger'
+            };
+            function normalizeClass(cls) {
+                if (!cls) return '';
+                return CLASS_ALIASES[String(cls).toLowerCase().trim()] || '';
+            }
+            
+            // ── Default-Kategorien ──
+            const DEFAULT_PRIO_CATEGORIES = [
+                { id: 'healer', label: 'Healer', class: '', spec: '', role: 'healer', archetype: '' },
+                { id: 'tank',   label: 'Tank',   class: '', spec: '', role: 'tank',   archetype: '', maxTotal: 1 },
+                { id: 'caster', label: 'Caster DPS', class: '', spec: '', role: 'dps', archetype: 'caster' },
+                { id: 'ranged', label: 'Ranged Physical DPS', class: '', spec: '', role: 'dps', archetype: 'ranged_physical' },
+                { id: 'melee',  label: 'Melee DPS',  class: '', spec: '', role: 'dps', archetype: 'melee' }
+            ];
+            const PRIO_STORAGE_KEY = 'imm-lanes-prio-categories-v2';
+            let prioCategories = [];
+            
+            function loadPrio() {
+                try {
+                    const saved = localStorage.getItem(PRIO_STORAGE_KEY);
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        if (Array.isArray(parsed) && parsed.every(c => c && c.id && c.label)) {
+                            prioCategories = parsed;
+                            return;
+                        }
+                    }
+                } catch (e) {}
+                prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+            }
+            function savePrio() {
+                // Cleanup: aus allen Platten allowedCats Referenzen auf nicht mehr existierende Kategorien entfernen
+                const validIds = new Set(prioCategories.map(c => c.id));
+                let platesChanged = false;
+                lanesData.forEach(plate => {
+                    if (Array.isArray(plate.allowedCats)) {
+                        const filtered = plate.allowedCats.filter(id => validIds.has(id));
+                        if (filtered.length !== plate.allowedCats.length) {
+                            plate.allowedCats = filtered;
+                            platesChanged = true;
+                        }
+                    }
+                });
+                try { localStorage.setItem(PRIO_STORAGE_KEY, JSON.stringify(prioCategories)); } catch (e) {}
+                if (platesChanged) scheduleSave();  // Plates-Daten asynchron mit-speichern
+            }
+            loadPrio();
+            
+            // ── Roster-Helpers ──
+            function getPlayerRoleNormalized(p) {
+                if (Array.isArray(p.roles) && p.roles.length > 0) return String(p.roles[0]).toLowerCase();
+                if (p.role) return String(p.role).toLowerCase();
+                return '';
+            }
+            function getPlayerSpec(p)  { return (p.spec || p.specName || p.specialization || '').toString(); }
+            function getPlayerClass(p) { return (p.class || p.className || '').toString(); }
+            
+            // Liefert den Archetyp eines Spielers anhand seiner Klasse+Spec.
+            // Returns 'melee' | 'ranged_physical' | 'caster' | '' (für Tanks/Healer/Unbekannt)
+            function getPlayerArchetype(p) {
+                const cls = normalizeClass(getPlayerClass(p));
+                const spec = getPlayerSpec(p);
+                if (!cls || !spec) return '';
+                return SPEC_ARCHETYPE_LOOKUP[cls + '|' + spec] || '';
+            }
+            
+            function playerMatchesCategory(p, cat) {
+                const playerClass = normalizeClass(getPlayerClass(p));
+                const playerSpec  = getPlayerSpec(p);
+                const playerRole  = getPlayerRoleNormalized(p);
+                if (cat.class && playerClass !== cat.class) return false;
+                if (cat.spec  && playerSpec  !== cat.spec)  return false;
+                if (cat.role  && playerRole  !== cat.role.toLowerCase()) return false;
+                if (cat.archetype && cat.archetype.trim()) {
+                    if (getPlayerArchetype(p) !== cat.archetype) return false;
+                }
+                return true;
+            }
+            
+            // Erste passende Kategorie für einen Spieler in Prio-Reihenfolge.
+            // Liefert null, wenn keine Kategorie matcht.
+            function getPlayerCategory(p) {
+                if (!p) return null;
+                for (const cat of prioCategories) {
+                    if (playerMatchesCategory(p, cat)) return cat;
+                }
+                return null;
+            }
+            function findRosterPlayer(name) {
+                if (!Array.isArray(roster) || !name) return null;
+                return roster.find(rp => (rp.name || rp) === name) || null;
+            }
+            
+            // Ist Spieler auf Platte pIdx erlaubt? (basierend auf allowedCats)
+            function isPlayerAllowedOnPlate(name, pIdx) {
+                const plate = lanesData[pIdx];
+                if (!plate || plate.allowedCats === null) return true;  // null = alles erlaubt
+                if (plate.allowedCats.length === 0) return false;       // leer = nichts erlaubt
+                const ply = findRosterPlayer(name);
+                const cat = getPlayerCategory(ply);
+                if (!cat) return false;  // Spieler ohne Kategorie → nicht erlaubt wenn Filter aktiv
+                return plate.allowedCats.includes(cat.id);
+            }
+            
+            // Findet alle Platten (außer pIdx selbst), auf denen ein Spieler bereits eingetragen ist
+            function findOtherPlatesWithPlayer(name, exceptIdx) {
+                const result = [];
+                if (!name) return result;
+                for (let p = 0; p < NUM_LANES; p++) {
+                    if (p === exceptIdx) continue;
+                    if (lanesData[p].slots.includes(name)) result.push(p + 1);
+                }
+                return result;
+            }
+            
+            // ── Player Options Helper ──
+            // Wenn pIdx gesetzt ist und die Platte allowedCats konfiguriert hat,
+            // werden nur erlaubte Spieler gezeigt — der aktuell ausgewählte Spieler
+            // bleibt aber immer sichtbar (sonst würde das Dropdown den Eintrag verlieren).
+            function getPlayerOptions(selectedName, pIdx) {
+                let html = '<option value="">—</option>';
+                if (!Array.isArray(roster)) return html;
+                
+                const plate = (typeof pIdx === 'number') ? lanesData[pIdx] : null;
+                const filterActive = !!(plate && plate.allowedCats !== null);
+                
+                roster.forEach(p => {
+                    const name = p.name || p;
+                    const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
+                    const isSelected = name === selectedName;
+                    
+                    // Filterung anwenden — aber selektierten Spieler immer zeigen
+                    if (filterActive && !isSelected && !isPlayerAllowedOnPlate(name, pIdx)) {
+                        return;
+                    }
+                    
+                    const sel = isSelected ? ' selected' : '';
+                    html += `<option value="${name}" style="color:${color};" data-color="${color}"${sel}>${name}</option>`;
+                });
+                return html;
+            }
+            
+            // Festes Lane-Icon — nicht user-wählbar (anders als Sha).
+            function laneIconHtml(laneIdx) {
+                const m = LANE_MARKERS[laneIdx];
+                if (!m) return '<span class="imm-lane-rt-icon"></span>';
+                return `<img src="raidicons/${m.file}" alt="${m.label}" class="imm-lane-rt-icon" title="${m.label}" onerror="this.style.display='none'">`;
+            }
+            
+            // ── Render: Tags-Leiste (erlaubte Kategorien) für eine Platte ──
+            function renderTagsHtml(pIdx) {
+                const plate = lanesData[pIdx];
+                if (prioCategories.length === 0) {
+                    return `<div class="imm-lane-tags"><span class="imm-lane-tags-label">Keine Kategorien definiert</span></div>`;
+                }
+                const allowed = plate.allowedCats;
+                let html = `<div class="imm-lane-tags" data-plate-idx="${pIdx}"><span class="imm-lane-tags-label">Erlaubt:</span>`;
+                
+                // "Alle"-Toggle: aktiv wenn allowedCats === null
+                const allOn = (allowed === null);
+                html += `<span class="imm-lane-tag ${allOn ? 'tag-on' : 'tag-off'}" data-plate-idx="${pIdx}" data-cat-id="__ALL__" title="Klick: alle erlauben (Filter aus)">${allOn ? '✓' : '○'} Alle</span>`;
+                
+                prioCategories.forEach(cat => {
+                    const on = (allowed === null) || (Array.isArray(allowed) && allowed.includes(cat.id));
+                    html += `<span class="imm-lane-tag ${on ? 'tag-on' : 'tag-off'}" data-plate-idx="${pIdx}" data-cat-id="${cat.id}" title="Klick: erlauben/sperren">${cat.label}</span>`;
+                });
+                html += '</div>';
+                return html;
+            }
+            
+            // ── Render: alle 4 Platten ──
+            function renderAllPlates() {
+                gridEl.innerHTML = '';
+                for (let pIdx = 0; pIdx < NUM_LANES; pIdx++) {
+                    const plate = lanesData[pIdx];
+                    const card = document.createElement('div');
+                    card.className = 'imm-lane-card';
+                    card.dataset.plateIdx = pIdx;
+                    
+                    // Slots-Tabelle
+                    let slotsHtml = '<table class="imm-lane-slots-table"><tbody>';
+                    for (let s = 0; s < SLOTS_PER_LANE; s++) {
+                        const val = plate.slots[s] || '';
+                        const dupOn = val ? findOtherPlatesWithPlayer(val, pIdx) : [];
+                        const dupClass = dupOn.length > 0 ? ' is-duplicate' : '';
+                        const dupTitle = dupOn.length > 0 ? ` title="⚠ Auch auf Platte ${dupOn.join(', ')}"` : '';
+                        slotsHtml += `
+                            <tr>
+                                <td class="slot-num">${s + 1}</td>
+                                <td>
+                                    <select class="imm-lane-slot-select${dupClass}" data-plate-idx="${pIdx}" data-slot-idx="${s}"${dupTitle}>
+                                        ${getPlayerOptions(val, pIdx)}
+                                    </select>
+                                </td>
+                                <td class="slot-del">${val ? `<button class="text-red-400 hover:text-red-300 text-xs imm-lane-slot-clear" data-plate-idx="${pIdx}" data-slot-idx="${s}" title="Leeren">✕</button>` : ''}</td>
+                            </tr>
+                        `;
+                    }
+                    slotsHtml += '</tbody></table>';
+                    
+                    card.innerHTML = `
+                        <div class="imm-lane-header">
+                            <span class="imm-lane-rt-display">${laneIconHtml(pIdx)}</span>
+                            <span class="imm-lane-title" style="color:${LANE_MARKERS[pIdx].color}">${LANE_MARKERS[pIdx].label}</span>
+                            <button class="ml-auto text-xs text-red-400 hover:text-red-300 imm-lane-clear" data-plate-idx="${pIdx}" title="Diese Lane leeren">🗑</button>
+                        </div>
+                        ${renderTagsHtml(pIdx)}
+                        ${slotsHtml}
+                    `;
+                    gridEl.appendChild(card);
+                    
+                    // Farbe des aktuell selektierten Spielers anwenden
+                    card.querySelectorAll('.imm-lane-slot-select').forEach(sel => {
+                        const opt = sel.options[sel.selectedIndex];
+                        if (opt && opt.value) sel.style.color = opt.dataset.color || '#fff';
+                    });
+                }
+                updateAllWaStrings();
+            }
+            
+            // ── WA-String: bei Sha-of-Pride pro Platte ein eigener Marker-Prefix-String.
+            // Bei Immerseus brauchen wir das nicht (keine pro-Lane-WeakAura).
+            // No-Ops belassen, damit die ursprünglichen Aufrufstellen nicht brechen.
+            function buildWaString(pIdx) { return ''; }
+            function updateAllWaStrings() { /* no-op bei Immerseus */ }
+            
+            // ── Persistenz ──
+            function scheduleSave() {
+                if (saveTimer) clearTimeout(saveTimer);
+                saveTimer = setTimeout(saveData, 600);
+            }
+            async function saveData() {
+                if (!window.isManager) return;
+                if (!firebaseTools || !firebaseTools.db) return;
+                const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                try {
+                    const hash = location.hash.substring(1);
+                    const bossId = hash.split('/')[1] || 'immerseus';
+                    const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                    await firebaseTools.setDoc(docRef, {
+                        [ASSIGNMENT_ID]: {
+                            lanesData: lanesData,
+                            editor: currentManager,
+                            timestamp: new Date().toISOString()
+                        }
+                    }, { merge: true });
+                    if (window.logHistory) {
+                        window.logHistory(bossId, `Immerseus-Lanes aktualisiert`, 'aktualisiert', currentManager);
+                    }
+                } catch (e) {
+                    console.error('[Immerseus Lanes] Save fehlgeschlagen:', e);
+                }
+            }
+            function loadFromAssignments() {
+                if (!assignments) return;
+                const saved = assignments[ASSIGNMENT_ID];
+                if (saved && Array.isArray(saved.lanesData) && saved.lanesData.length === NUM_LANES) {
+                    lanesData = saved.lanesData.map(p => ({
+                        slots: Array.isArray(p.slots)
+                            ? p.slots.slice(0, SLOTS_PER_LANE).concat(Array(SLOTS_PER_LANE).fill('')).slice(0, SLOTS_PER_LANE)
+                            : Array(SLOTS_PER_LANE).fill(''),
+                        // allowedCats: null = nicht beschränkt, Array = explizite Erlaubnisliste
+                        // Backwards-Kompatibel: alte Daten ohne allowedCats → null
+                        allowedCats: Array.isArray(p.allowedCats) ? p.allowedCats.slice() : null
+                    }));
+                    renderAllPlates();
+                }
+            }
+            
+            // ── Aktualisiert nur die Duplikat-Markierungen aller Slots ──
+            // (vermeidet komplettes Re-Render → kein Focus-Verlust beim aktiven Dropdown)
+            function refreshDuplicateMarkers() {
+                gridEl.querySelectorAll('.imm-lane-slot-select').forEach(sel => {
+                    const pIdx = parseInt(sel.dataset.plateIdx);
+                    const sIdx = parseInt(sel.dataset.slotIdx);
+                    const val = lanesData[pIdx]?.slots[sIdx] || '';
+                    const dupOn = val ? findOtherPlatesWithPlayer(val, pIdx) : [];
+                    if (dupOn.length > 0) {
+                        sel.classList.add('is-duplicate');
+                        sel.title = `⚠ Auch auf Platte ${dupOn.join(', ')}`;
+                    } else {
+                        sel.classList.remove('is-duplicate');
+                        sel.title = '';
+                    }
+                });
+            }
+            
+            // ── Event-Handling auf grid-Ebene (Delegation) ──
+            gridEl.addEventListener('change', (e) => {
+                const t = e.target;
+                const pIdx = parseInt(t.dataset.plateIdx);
+                if (isNaN(pIdx)) return;
+
+                if (t.classList.contains('imm-lane-slot-select')) {
+                    const sIdx = parseInt(t.dataset.slotIdx);
+                    if (isNaN(sIdx)) return;
+                    const wasFilled = !!lanesData[pIdx].slots[sIdx];
+                    const nowVal = t.value;
+                    lanesData[pIdx].slots[sIdx] = nowVal;
+                    
+                    const opt = t.options[t.selectedIndex];
+                    t.style.color = opt ? (opt.dataset.color || '#fff') : '#fff';
+                    
+                    const delCell = t.closest('tr')?.querySelector('.slot-del');
+                    if (delCell) {
+                        if (nowVal && !wasFilled) {
+                            delCell.innerHTML = `<button class="text-red-400 hover:text-red-300 text-xs imm-lane-slot-clear" data-plate-idx="${pIdx}" data-slot-idx="${sIdx}" title="Leeren">✕</button>`;
+                        } else if (!nowVal && wasFilled) {
+                            delCell.innerHTML = '';
+                        }
+                    }
+                    refreshDuplicateMarkers();
+                    updateAllWaStrings();
+                    scheduleSave();
+                }
+            });
+            
+            gridEl.addEventListener('click', (e) => {
+                // Tag-Toggle
+                const tag = e.target.closest('.imm-lane-tag');
+                if (tag) {
+                    if (!window.isManager) return;
+                    const pIdx = parseInt(tag.dataset.plateIdx);
+                    const catId = tag.dataset.catId;
+                    if (isNaN(pIdx) || !catId) return;
+                    const plate = lanesData[pIdx];
+                    
+                    if (catId === '__ALL__') {
+                        // Alle ein/aus-Toggle
+                        plate.allowedCats = (plate.allowedCats === null) ? [] : null;
+                    } else {
+                        // Wenn aktuell "alles erlaubt" (null) → in expliziten Modus wechseln (alle Cats außer dieser)
+                        if (plate.allowedCats === null) {
+                            plate.allowedCats = prioCategories.map(c => c.id).filter(id => id !== catId);
+                        } else if (plate.allowedCats.includes(catId)) {
+                            plate.allowedCats = plate.allowedCats.filter(id => id !== catId);
+                        } else {
+                            plate.allowedCats = [...plate.allowedCats, catId];
+                        }
+                        // Wenn jetzt wieder ALLE Kategorien drin sind → auf null zurück (saubere Repräsentation)
+                        if (plate.allowedCats.length === prioCategories.length &&
+                            prioCategories.every(c => plate.allowedCats.includes(c.id))) {
+                            plate.allowedCats = null;
+                        }
+                    }
+                    renderAllPlates();  // Re-Render nötig: Tags + Slot-Optionen ändern sich
+                    scheduleSave();
+                    return;
+                }
+                
+                const clearBtn = e.target.closest('.imm-lane-slot-clear');
+                const plateClearBtn = e.target.closest('.imm-lane-clear');
+
+                if (clearBtn) {
+                    const pIdx = parseInt(clearBtn.dataset.plateIdx);
+                    const sIdx = parseInt(clearBtn.dataset.slotIdx);
+                    if (!isNaN(pIdx) && !isNaN(sIdx)) {
+                        lanesData[pIdx].slots[sIdx] = '';
+                        renderAllPlates();
+                        scheduleSave();
+                    }
+                } else if (plateClearBtn) {
+                    const pIdx = parseInt(plateClearBtn.dataset.plateIdx);
+                    if (!isNaN(pIdx) && confirm(`${LANE_MARKERS[pIdx].label}-Lane komplett leeren?`)) {
+                        lanesData[pIdx].slots = Array(SLOTS_PER_LANE).fill('');
+                        renderAllPlates();
+                        scheduleSave();
+                    }
+                }
+            });
+            
+            // ══════════════════════════════════════════════════════════
+            // PRIO-LISTE + AUTO-FÜLLEN
+            // ══════════════════════════════════════════════════════════
+            const prioListEl   = document.getElementById('imm-lanes-prio-list');
+            const autoFillBtn  = document.getElementById('imm-lanes-auto-fill');
+            const clearAllBtn  = document.getElementById('imm-lanes-clear-all');
+            const prioResetBtn = document.getElementById('imm-lanes-prio-reset');
+            const prioAddBtn   = document.getElementById('imm-lanes-prio-add');
+            const prioDetectBtn= document.getElementById('imm-lanes-prio-detect');
+            const modalEl      = document.getElementById('imm-lanes-prio-modal');
+            const modalTitle   = document.getElementById('imm-lanes-prio-modal-title');
+            const modalLabel   = document.getElementById('imm-lanes-prio-modal-label');
+            const modalClass   = document.getElementById('imm-lanes-prio-modal-class');
+            const modalSpec    = document.getElementById('imm-lanes-prio-modal-spec');
+            const modalRole    = document.getElementById('imm-lanes-prio-modal-role');
+            const modalArchetype = document.getElementById('imm-lanes-prio-modal-archetype');
+            const modalLimitRows  = document.getElementById('imm-lanes-prio-modal-limit-rows');
+            const modalLimitCount = document.getElementById('imm-lanes-prio-modal-limit-count');
+            const modalMaxTotal   = document.getElementById('imm-lanes-prio-modal-max-total');
+            const modalSave    = document.getElementById('imm-lanes-prio-modal-save');
+            const modalCancel  = document.getElementById('imm-lanes-prio-modal-cancel');
+            
+            // Klassen-Dropdown füllen
+            if (modalClass) {
+                Object.keys(SPEC_DEFINITIONS).forEach(clsKey => {
+                    const opt = new Option(CLASS_DISPLAY[clsKey] || clsKey, clsKey);
+                    modalClass.appendChild(opt);
+                });
+            }
+            function updateSpecDropdown(selectedClass, selectedSpec) {
+                if (!modalSpec) return;
+                modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
+                if (selectedClass && SPEC_DEFINITIONS[selectedClass]) {
+                    SPEC_DEFINITIONS[selectedClass].forEach(s => {
+                        const opt = new Option(s.label, s.value);
+                        modalSpec.appendChild(opt);
+                    });
+                }
+                modalSpec.value = selectedSpec || '';
+                if (modalSpec.value !== (selectedSpec || '')) modalSpec.value = '';
+            }
+            if (modalClass) modalClass.addEventListener('change', () => updateSpecDropdown(modalClass.value, ''));
+            if (modalSpec) {
+                modalSpec.addEventListener('change', () => {
+                    const cls = modalClass.value;
+                    const spec = modalSpec.value;
+                    if (cls && spec && SPEC_DEFINITIONS[cls]) {
+                        const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
+                        if (def) {
+                            if (!modalRole.value) modalRole.value = def.role;
+                            if (!modalArchetype.value && def.archetype) modalArchetype.value = def.archetype;
+                        }
+                    }
+                });
+            }
+            
+            // ── Prio-Liste rendern ──
+            function renderPrioList() {
+                if (!prioListEl) return;
+                prioListEl.innerHTML = '';
+                if (prioCategories.length === 0) {
+                    prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien — auf "+" klicken oder "Aus Kader ableiten".</li>';
+                    return;
+                }
+                prioCategories.forEach((cat, idx) => {
+                    const li = document.createElement('li');
+                    li.draggable = !!window.isManager;
+                    li.dataset.catId = cat.id;
+                    li.className = 'flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs';
+                    
+                    const filters = [];
+                    if (cat.class)     filters.push(CLASS_DISPLAY[cat.class] || cat.class);
+                    if (cat.spec)      filters.push(cat.spec);
+                    if (cat.role)      filters.push(cat.role);
+                    if (cat.archetype) filters.push(ARCHETYPE_LABELS[cat.archetype] || cat.archetype);
+                    const filterStr = filters.length > 0 ? filters.join(' · ') : '<span class="text-yellow-500">⚠ kein Filter</span>';
+                    
+                    const limits = [];
+                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '') {
+                        limits.push(`max ${cat.limitCount} in ersten ${cat.limitRows}`);
+                    }
+                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                        limits.push(`max ${cat.maxTotal}/Platte`);
+                    }
+                    const limitStr = limits.length > 0 ? `<span class="text-amber-400 ml-1">[${limits.join(', ')}]</span>` : '';
+                    
+                    li.innerHTML = `
+                        <span class="text-gray-500 font-mono w-6 text-center">${idx + 1}</span>
+                        <span class="text-gray-400 select-none cursor-move drag-handle">⋮⋮</span>
+                        <span class="flex-1 text-white truncate" title="${cat.label}">${cat.label}${limitStr}</span>
+                        <span class="text-[10px] text-gray-500 hidden md:inline">${filterStr}</span>
+                        <button class="prio-edit text-blue-400 hover:text-blue-300 text-xs px-1" data-cat-id="${cat.id}" title="Bearbeiten">✎</button>
+                        <button class="prio-del text-red-400 hover:text-red-300 text-xs px-1" data-cat-id="${cat.id}" title="Löschen">✕</button>
+                    `;
+                    prioListEl.appendChild(li);
+                });
+            }
+            
+            // ── Drag & Drop (sauber: nur Indizes, DOM nur via renderPrioList) ──
+            let dragSourceId = null;
+            if (prioListEl) {
+                prioListEl.addEventListener('dragstart', (e) => {
+                    if (!window.isManager) { e.preventDefault(); return; }
+                    const li = e.target.closest('[data-cat-id]');
+                    if (!li) { e.preventDefault(); return; }
+                    dragSourceId = li.dataset.catId;
+                    li.classList.add('opacity-50');
+                    e.dataTransfer.effectAllowed = 'move';
+                    try { e.dataTransfer.setData('text/plain', dragSourceId); } catch (err) {}
+                });
+                prioListEl.addEventListener('dragover', (e) => {
+                    if (!dragSourceId) return;
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    const target = e.target.closest('[data-cat-id]');
+                    prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
+                    if (!target || target.dataset.catId === dragSourceId) return;
+                    const rect = target.getBoundingClientRect();
+                    const after = (e.clientY - rect.top) > rect.height / 2;
+                    target.classList.add(after ? 'drop-below' : 'drop-above');
+                });
+                prioListEl.addEventListener('dragleave', (e) => {
+                    if (!prioListEl.contains(e.relatedTarget)) {
+                        prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
+                    }
+                });
+                prioListEl.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (!dragSourceId) return;
+                    const target = e.target.closest('[data-cat-id]');
+                    if (!target || target.dataset.catId === dragSourceId) return;
+                    const rect = target.getBoundingClientRect();
+                    const dropAfter = (e.clientY - rect.top) > rect.height / 2;
+                    const fromIdx = prioCategories.findIndex(c => c.id === dragSourceId);
+                    const toIdxRaw = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                    if (fromIdx < 0 || toIdxRaw < 0) return;
+                    const [moved] = prioCategories.splice(fromIdx, 1);
+                    let toIdx = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                    if (dropAfter) toIdx += 1;
+                    if (toIdx < 0) toIdx = 0;
+                    if (toIdx > prioCategories.length) toIdx = prioCategories.length;
+                    prioCategories.splice(toIdx, 0, moved);
+                    savePrio();
+                });
+                prioListEl.addEventListener('dragend', () => {
+                    prioListEl.querySelectorAll('.opacity-50, .drop-above, .drop-below').forEach(el => el.classList.remove('opacity-50', 'drop-above', 'drop-below'));
+                    dragSourceId = null;
+                    renderPrioList();
+                });
+                prioListEl.addEventListener('click', (e) => {
+                    if (!window.isManager) return;
+                    const editBtn = e.target.closest('.prio-edit');
+                    const delBtn  = e.target.closest('.prio-del');
+                    if (editBtn) {
+                        openPrioModal(editBtn.dataset.catId);
+                    } else if (delBtn) {
+                        const id = delBtn.dataset.catId;
+                        const cat = prioCategories.find(c => c.id === id);
+                        if (cat && confirm(`Kategorie "${cat.label}" wirklich löschen?`)) {
+                            prioCategories = prioCategories.filter(c => c.id !== id);
+                            savePrio();
+                            renderPrioList();
+                        }
+                    }
+                });
+            }
+            
+            // ── Modal ──
+            let editingCatId = null;
+            function openPrioModal(catId) {
+                if (!window.isManager) return;
+                editingCatId = catId || null;
+                if (catId) {
+                    const cat = prioCategories.find(c => c.id === catId);
+                    if (!cat) return;
+                    modalTitle.textContent = 'Kategorie bearbeiten';
+                    modalLabel.value      = cat.label || '';
+                    modalClass.value      = cat.class || '';
+                    updateSpecDropdown(cat.class || '', cat.spec || '');
+                    modalRole.value       = cat.role || '';
+                    modalArchetype.value  = cat.archetype || '';
+                    modalLimitRows.value  = cat.limitRows ?? '';
+                    modalLimitCount.value = cat.limitCount ?? '';
+                    modalMaxTotal.value   = cat.maxTotal ?? '';
+                } else {
+                    modalTitle.textContent = 'Neue Kategorie';
+                    modalLabel.value = '';
+                    modalClass.value = '';
+                    updateSpecDropdown('', '');
+                    modalRole.value = '';
+                    modalArchetype.value = '';
+                    modalLimitRows.value = '';
+                    modalLimitCount.value = '';
+                    modalMaxTotal.value = '';
+                }
+                modalEl.classList.remove('hidden');
+                setTimeout(() => modalLabel.focus(), 50);
+            }
+            function closePrioModal() {
+                modalEl.classList.add('hidden');
+                editingCatId = null;
+            }
+            if (prioAddBtn)   prioAddBtn.addEventListener('click', () => openPrioModal(null));
+            if (modalCancel)  modalCancel.addEventListener('click', closePrioModal);
+            if (modalEl)      modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closePrioModal(); });
+            if (modalSave) {
+                modalSave.addEventListener('click', () => {
+                    const label = modalLabel.value.trim();
+                    if (!label) {
+                        modalLabel.focus();
+                        modalLabel.style.borderColor = '#ef4444';
+                        return;
+                    }
+                    modalLabel.style.borderColor = '';
+                    const data = {
+                        label: label,
+                        class: modalClass.value.trim(),
+                        spec:  modalSpec.value.trim(),
+                        role:  modalRole.value.trim(),
+                        archetype: modalArchetype.value.trim()
+                    };
+                    const lr = parseInt(modalLimitRows.value, 10);
+                    const lc = parseInt(modalLimitCount.value, 10);
+                    if (!isNaN(lr) && lr > 0 && !isNaN(lc) && lc >= 0) {
+                        data.limitRows = lr;
+                        data.limitCount = lc;
+                    }
+                    const mt = parseInt(modalMaxTotal.value, 10);
+                    if (!isNaN(mt) && mt >= 0) data.maxTotal = mt;
+                    
+                    if (editingCatId) {
+                        const cat = prioCategories.find(c => c.id === editingCatId);
+                        if (cat) {
+                            delete cat.limitRows;
+                            delete cat.limitCount;
+                            delete cat.maxTotal;
+                            Object.assign(cat, data);
+                        }
+                    } else {
+                        const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20) + '_' + Date.now().toString(36);
+                        prioCategories.push({ id, ...data });
+                    }
+                    savePrio();
+                    renderPrioList();
+                    closePrioModal();
+                });
+            }
+            
+            // ── Reset / Detect ──
+            if (prioResetBtn) {
+                prioResetBtn.addEventListener('click', () => {
+                    if (!window.isManager) return;
+                    if (!confirm('Alle Kategorien auf Defaults zurücksetzen?')) return;
+                    prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+                    savePrio();
+                    renderPrioList();
+                });
+            }
+            if (prioDetectBtn) {
+                prioDetectBtn.addEventListener('click', () => {
+                    if (!window.isManager) return;
+                    const detected = detectCategoriesFromRoster();
+                    if (detected.length === 0) {
+                        if (window.showModal) window.showModal('Konnte aus dem Kader keine Kategorien ableiten.');
+                        return;
+                    }
+                    const msg = `${detected.length} Kategorien aus dem Kader erkannt:\n${detected.map(c => '• ' + c.label).join('\n')}\n\nVorhandene Kategorien überschreiben?`;
+                    if (!confirm(msg)) return;
+                    prioCategories = detected;
+                    savePrio();
+                    renderPrioList();
+                });
+            }
+            
+            function detectCategoriesFromRoster() {
+                if (!Array.isArray(roster) || roster.length === 0) return [];
+                const cats = [];
+                function findExisting(filter) {
+                    return prioCategories.find(c =>
+                        (c.class || '')     === (filter.class || '') &&
+                        (c.spec  || '')     === (filter.spec  || '') &&
+                        (c.role  || '')     === (filter.role  || '') &&
+                        (c.archetype || '') === (filter.archetype || '')
+                    );
+                }
+                function withLimits(base) {
+                    const ex = findExisting(base);
+                    if (ex) {
+                        if (ex.limitRows  !== undefined) base.limitRows  = ex.limitRows;
+                        if (ex.limitCount !== undefined) base.limitCount = ex.limitCount;
+                        if (ex.maxTotal   !== undefined) base.maxTotal   = ex.maxTotal;
+                    }
+                    return base;
+                }
+                
+                const healers = roster.filter(p => getPlayerRoleNormalized(p) === 'healer');
+                const tanks   = roster.filter(p => getPlayerRoleNormalized(p) === 'tank');
+                if (healers.length > 0) {
+                    cats.push(withLimits({ id: 'auto_healer', label: `Healer (${healers.length})`, class: '', spec: '', role: 'healer', archetype: '' }));
+                }
+                if (tanks.length > 0) {
+                    const t = withLimits({ id: 'auto_tank', label: `Tank (${tanks.length})`, class: '', spec: '', role: 'tank', archetype: '' });
+                    if (t.maxTotal === undefined) t.maxTotal = 1;
+                    cats.push(t);
+                }
+                
+                // Archetype-Gruppen für DPS (wenn Spieler vorhanden)
+                ['caster', 'ranged_physical', 'melee'].forEach(arch => {
+                    const count = roster.filter(p =>
+                        getPlayerRoleNormalized(p) === 'dps' && getPlayerArchetype(p) === arch
+                    ).length;
+                    if (count > 0) {
+                        cats.push(withLimits({
+                            id: 'auto_' + arch,
+                            label: `${ARCHETYPE_LABELS[arch]} DPS (${count})`,
+                            class: '', spec: '', role: 'dps', archetype: arch
+                        }));
+                    }
+                });
+                
+                return cats;
+            }
+            
+            // ── Sortierte Spielerliste mit Kategorie-Info (Spieler-Pool) ──
+            function buildSortedRoster() {
+                if (!Array.isArray(roster)) return [];
+                const used = new Set();
+                const out = [];
+                prioCategories.forEach(cat => {
+                    roster.forEach(p => {
+                        const name = p.name || p;
+                        if (used.has(name)) return;
+                        if (playerMatchesCategory(p, cat)) {
+                            out.push({ player: p, name: name, category: cat });
+                            used.add(name);
+                        }
+                    });
+                });
+                roster.forEach(p => {
+                    const name = p.name || p;
+                    if (!used.has(name)) {
+                        out.push({ player: p, name: name, category: null });
+                        used.add(name);
+                    }
+                });
+                return out;
+            }
+            
+            // ── Auto-Füllen für ALLE 4 Platten ──
+            // Strategy: Round-Robin durch die 4 Platten, jeder Platte den nächsten passenden
+            // Spieler aus der priorisierten Liste, dabei pro Platte die Limits + erlaubte
+            // Kategorien (allowedCats) respektieren.
+            // Bereits eingetragene Spieler werden global ausgeschlossen.
+            if (autoFillBtn) {
+                autoFillBtn.addEventListener('click', () => {
+                    if (!window.isManager) {
+                        if (window.showModal) window.showModal('Nur Gildenräte können diese Aktion ausführen.');
+                        return;
+                    }
+                    if (!Array.isArray(roster) || roster.length === 0) {
+                        if (window.showModal) window.showModal('Kader leer.');
+                        return;
+                    }
+                    
+                    const alreadyAssigned = new Set();
+                    const usedInRowsByPlate = Array.from({ length: NUM_LANES }, () => ({}));
+                    
+                    for (let p = 0; p < NUM_LANES; p++) {
+                        lanesData[p].slots.forEach((name, sIdx) => {
+                            if (!name) return;
+                            alreadyAssigned.add(name);
+                            const ply = findRosterPlayer(name);
+                            if (ply) {
+                                const cat = getPlayerCategory(ply);
+                                if (cat) {
+                                    if (!usedInRowsByPlate[p][cat.id]) usedInRowsByPlate[p][cat.id] = [];
+                                    usedInRowsByPlate[p][cat.id].push(sIdx);
+                                }
+                            }
+                        });
+                    }
+                    
+                    const pool = buildSortedRoster().filter(s => !alreadyAssigned.has(s.name));
+                    
+                    let fillCount = 0;
+                    let skippedDueLimit = 0;
+                    
+                    for (let sIdx = 0; sIdx < SLOTS_PER_LANE; sIdx++) {
+                        for (let p = 0; p < NUM_LANES; p++) {
+                            if (lanesData[p].slots[sIdx]) continue;
+                            
+                            // Suche nächsten passenden Spieler im Pool
+                            let foundIdx = -1;
+                            for (let j = 0; j < pool.length; j++) {
+                                const cand = pool[j];
+                                const cat  = cand.category;
+                                
+                                // Prüfung 1: Ist die Kategorie auf dieser Platte erlaubt?
+                                const plate = lanesData[p];
+                                if (plate.allowedCats !== null) {
+                                    if (plate.allowedCats.length === 0) continue;  // gar nichts erlaubt
+                                    if (!cat || !plate.allowedCats.includes(cat.id)) continue;
+                                }
+                                
+                                if (cat) {
+                                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && sIdx < cat.limitRows) {
+                                        const usedInFirstN = (usedInRowsByPlate[p][cat.id] || []).filter(idx => idx < cat.limitRows).length;
+                                        if (usedInFirstN >= cat.limitCount) continue;
+                                    }
+                                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                                        const usedTotal = (usedInRowsByPlate[p][cat.id] || []).length;
+                                        if (usedTotal >= cat.maxTotal) continue;
+                                    }
+                                }
+                                foundIdx = j;
+                                break;
+                            }
+                            
+                            if (foundIdx < 0) {
+                                skippedDueLimit++;
+                                continue;
+                            }
+                            
+                            const cand = pool[foundIdx];
+                            pool.splice(foundIdx, 1);
+                            lanesData[p].slots[sIdx] = cand.name;
+                            if (cand.category) {
+                                if (!usedInRowsByPlate[p][cand.category.id]) usedInRowsByPlate[p][cand.category.id] = [];
+                                usedInRowsByPlate[p][cand.category.id].push(sIdx);
+                            }
+                            fillCount++;
+                        }
+                    }
+                    
+                    renderAllPlates();
+                    scheduleSave();
+                    
+                    let msg = `Auto-Füllen: ${fillCount} Spieler eingetragen.`;
+                    if (skippedDueLimit > 0) msg += `\n(${skippedDueLimit} Slots übersprungen wegen Limits/Kategorien.)`;
+                    if (window.showModal) window.showModal(msg);
+                });
+            }
+            
+            if (clearAllBtn) {
+                clearAllBtn.addEventListener('click', () => {
+                    if (!window.isManager) return;
+                    if (!confirm('Alle 4 Platten komplett leeren (Spieler + RTs)?')) return;
+                    lanesData = Array.from({ length: NUM_LANES }, () => ({
+                        rt: '', slots: Array(SLOTS_PER_LANE).fill('')
+                    }));
+                    renderAllPlates();
+                    scheduleSave();
+                });
+            }
+            
+            // ── Manager-Schutz ──
+            function applyProtection() {
+                const isM = !!window.isManager;
+                [autoFillBtn, clearAllBtn, prioResetBtn, prioAddBtn, prioDetectBtn].forEach(b => {
+                    if (b) b.disabled = !isM;
+                });
+                gridEl.querySelectorAll('select, button').forEach(el => {
+                    el.disabled = !isM;
+                });
+                if (prioListEl) {
+                    prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
+                        el.draggable = isM;
+                        const handle = el.querySelector('.drag-handle');
+                        if (handle) handle.style.cursor = isM ? 'move' : 'not-allowed';
+                        el.style.opacity = isM ? '' : '0.6';
+                        el.querySelectorAll('button').forEach(b => b.disabled = !isM);
+                    });
+                }
+            }
+            
+            // Initial
+            renderPrioList();
+            renderAllPlates();
+            applyProtection();
+            setInterval(applyProtection, 1500);
+            loadFromAssignments();
+        })();
+
     };
 </script>
 </main>

@@ -102,41 +102,9 @@
             <!-- LINKE SPALTE: Einteilungen -->
             <div class="space-y-6">
                 <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung & Camps</h4>
-                    <ul class="assignment-list">
-                        <li><span>Haromm Tank 1:</span><select class="assignment-select" data-assignment-id="shaman-tank-haromm-1"></select></li>
-                        <li><span>Haromm Tank 2:</span><select class="assignment-select" data-assignment-id="shaman-tank-haromm-2"></select></li>
-                        <li><span>Kardris Tank:</span><select class="assignment-select" data-assignment-id="shaman-tank-kardris"></select></li>
-                    </ul>
-                </div>
-
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-orange-400">⚕️ Heiler-Aufteilung</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Wer fokussiert welche Gruppe?</p>
-                    <ul class="assignment-list">
-                        <li><span style="color:#fb923c">Haromm-Camp:</span><select class="assignment-select" data-assignment-id="shaman-heal-haromm"></select></li>
-                        <li><span style="color:#fb923c">Kardris-Camp:</span><select class="assignment-select" data-assignment-id="shaman-heal-kardris"></select></li>
-                        <li><span style="color:#fb923c">Flex (Beide):</span><select class="assignment-select" data-assignment-id="shaman-heal-flex"></select></li>
-                    </ul>
-                </div>
-
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-blue-400">⚡ Interrupt-Rotation (Kardris)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Froststurmbogen unterbrechen - feste Rotation nötig</p>
-                    <ul class="assignment-list">
-                        <li><span>Kick 1:</span><select class="assignment-select" data-assignment-id="shaman-kick-1"></select></li>
-                        <li><span>Kick 2:</span><select class="assignment-select" data-assignment-id="shaman-kick-2"></select></li>
-                        <li><span>Kick 3:</span><select class="assignment-select" data-assignment-id="shaman-kick-3"></select></li>
-                    </ul>
-                </div>
-
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-purple-400">🌪️ Tornado-Kiter</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Spieler die Tornados wegkiten / warnen</p>
-                    <ul class="assignment-list">
-                        <li><span>Kiter 1:</span><select class="assignment-select" data-assignment-id="shaman-kiter-1"></select></li>
-                        <li><span>Kiter 2:</span><select class="assignment-select" data-assignment-id="shaman-kiter-2"></select></li>
-                    </ul>
+                    <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
+                    <div id="korkron-lane-groups"></div>
                 </div>
             </div>
 
@@ -146,7 +114,7 @@
                 <div class="space-y-6">
                     <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
                         <button data-phase="shaman-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Aufstellung (Split)</button>
-                        <button data-phase="shaman-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Kiting-Route</button>
+                        
                     </div>
                     <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
                         <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
@@ -155,20 +123,11 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <img src="siegeoforgrimmar/shaman-p1.png" alt="Aufstellung Split"
+                        <img src="siegeoforgrimmar/korkron-dark-shamans.png" alt="Aufstellung Split"
                             class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
                             data-phase="shaman-p1"
                             onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;shaman-p1&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
-                        <img src="siegeoforgrimmar/shaman-p2.png" alt="Aufstellung Kiting"
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden"
-                            data-phase="shaman-p2"
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;shaman-p2&quot;>Bild für die Kiting-Route noch nicht verfügbar.</div>'">
-                    </div>
-                </div>
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Ratgeber</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
-                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
+                        
                     </div>
                 </div>
             </div>
@@ -590,11 +549,42 @@ CD_AUTO_PLANNER.init({
             }
         }
 
-        if (container) {
+if (container) {
             container.addEventListener('change', () => {
                 setTimeout(window.updatePlannerSummary, 100);
             });
             setTimeout(window.updatePlannerSummary, 500);
+        }
+
+        if (window.LaneGroups) {
+            try {
+                window.LaneGroups.init({
+                    containerId: 'korkron-lane-groups',
+                    bossId: 'korkron-dark-shamans',
+                    assignmentId: 'korkron-lane-assignments',
+                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                    defaultBlocks: [
+                        {
+                            title: 'Harom',
+                            type: 'single-list',
+                            autoFill: true,
+                            slots: ['', '', '', '', '', '']
+                        },
+                        {
+                            title: 'Kardris',
+                            type: 'single-list',
+                            autoFill: true,
+                            slots: ['', '', '', '', '', '']
+                        }
+                    ]
+                });
+            } catch (e) {
+                console.error('[Korkron] LaneGroups.init Fehler:', e);
+            }
+        } else {
+            console.warn('[Korkron] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
         }
     };
 </script>

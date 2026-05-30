@@ -268,6 +268,22 @@
                     
                     <!-- ─── 4 Platten als Grid ─── -->
                     <div id="sha-plates-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3"></div>
+
+                    <!-- ─── Kombinierter WeakAura-Export (alle Platten untereinander) ─── -->
+                    <div class="bg-slate-900/60 border border-slate-700 rounded p-3 mb-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider">📋 WeakAura Export (alle Platten)</span>
+                            <button id="sha-plates-wa-all-copy"
+                                    class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">
+                                Kopieren
+                            </button>
+                        </div>
+                        <textarea id="sha-plates-wa-all-output" readonly rows="4"
+                                  class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-[11px] text-green-300 font-mono resize-y"
+                                  placeholder="Wird automatisch aktualisiert, sobald Spieler in den Platten stehen..."></textarea>
+                        <p class="text-[10px] text-gray-500 italic mt-1">Leere Platten werden weggelassen. Eine Platte pro Zeile.</p>
+                    </div>
+
                     
                     <!-- ─── Auto-Füllen-Panel (gemeinsam für alle Platten) ─── -->
                     <details id="sha-plates-auto-section" class="mb-3 bg-slate-900/60 border border-slate-700 rounded">
@@ -390,7 +406,7 @@
                 <div class="space-y-6">
                     <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
                         <button data-phase="sha-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Reguläre Aufstellung</button>
-                        <button data-phase="sha-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Schattenwelt (Verbannung)</button>
+                        
                     </div>
                     <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
                         <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
@@ -399,22 +415,11 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <img src="siegeoforgrimmar/sha-main.png" alt="Aufstellung Hauptplattform" 
+                        <img src="siegeoforgrimmar/sha-of-pride.png" alt="Aufstellung Hauptplattform" 
                             class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
                             data-phase="sha-p1" 
                             onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;sha-p1&quot;>Bild für die Hauptaufstellung noch nicht verfügbar.</div>'">
                             
-                        <img src="siegeoforgrimmar/sha-banish.png" alt="Aufstellung Verbannung" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
-                            data-phase="sha-p2" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;sha-p2&quot;>Bild für die Verbannung noch nicht verfügbar.</div>'">
-                    </div>
-                </div>
-
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Ratgeber</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
-                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
                     </div>
                 </div>
             </div>
@@ -1143,12 +1148,19 @@ CD_AUTO_PLANNER.init({
                 return prefix + players;
             }
             function updateAllWaStrings() {
+                const allLines = [];
                 for (let p = 0; p < NUM_PLATES; p++) {
+                    const s = buildWaString(p);
                     const out = gridEl.querySelector(`.sha-plate-wa-output[data-plate-idx="${p}"]`);
                     if (out) {
-                        const s = buildWaString(p);
                         out.textContent = s || '—';
                     }
+                    // Für den kombinierten Export: leere Platten weglassen
+                    if (s) allLines.push(s);
+                }
+                const allOut = document.getElementById('sha-plates-wa-all-output');
+                if (allOut) {
+                    allOut.value = allLines.join('\n');
                 }
             }
             
@@ -1340,6 +1352,27 @@ CD_AUTO_PLANNER.init({
             const modalMaxTotal   = document.getElementById('sha-plates-prio-modal-max-total');
             const modalSave    = document.getElementById('sha-plates-prio-modal-save');
             const modalCancel  = document.getElementById('sha-plates-prio-modal-cancel');
+
+            // Kombinierter WA-Export "alle Platten untereinander"
+            const waAllCopyBtn = document.getElementById('sha-plates-wa-all-copy');
+            const waAllOutput  = document.getElementById('sha-plates-wa-all-output');
+            if (waAllCopyBtn && waAllOutput) {
+                waAllCopyBtn.addEventListener('click', async () => {
+                    if (!waAllOutput.value) {
+                        if (window.showModal) window.showModal('Noch keine Spieler eingetragen — nichts zum Kopieren.');
+                        return;
+                    }
+                    try {
+                        await navigator.clipboard.writeText(waAllOutput.value);
+                        const orig = waAllCopyBtn.textContent;
+                        waAllCopyBtn.textContent = '✓ Kopiert';
+                        setTimeout(() => { waAllCopyBtn.textContent = orig; }, 1500);
+                    } catch (e) {
+                        waAllOutput.select();
+                        document.execCommand('copy');
+                    }
+                });
+            }
             
             // Klassen-Dropdown füllen
             if (modalClass) {

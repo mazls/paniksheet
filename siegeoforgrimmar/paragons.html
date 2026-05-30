@@ -24,6 +24,36 @@
         color: #a0aec0;
         margin-left: 8px;
     }
+    /* ─── Kill Order Paragons ─── */
+    .paragons-ko-row {
+        display: grid;
+        grid-template-columns: 22px 1fr;
+        align-items: center;
+        gap: 4px;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 3px;
+        padding: 1px 4px;
+    }
+    .paragons-ko-row .ko-num {
+        font-family: monospace;
+        font-weight: 700;
+        color: #e2e8f0;
+        text-align: center;
+        font-size: 0.75rem;
+    }
+    .paragons-ko-select {
+        background-color: #0f172a;
+        border: 1px solid #475569;
+        color: white;
+        padding: 2px 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 3px;
+        cursor: pointer;
+        width: 100%;
+        height: 24px;
+    }
 </style>
 <main>
     <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Die Getreuen der Klaxxi</h1>
@@ -101,33 +131,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
             <div class="space-y-6">
+                <!-- ════ MARKER / SONDER-EINTEILUNGEN ═════════════════════════ -->
                 <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-red-400">⚔️ Kill-Reihenfolge (Vorschlag)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Die genaue Reihenfolge bestimmt der Raidlead. Hier die Standard-Priorität.</p>
-                    <ul class="assignment-list">
-                        <li><span class="text-gray-300">Boss 1:</span><select data-assignment-id="paragons-kill-1" class="assignment-select" data-manual-options="true">
-                            <option value="Skeer">Skeer (Blutsucher)</option><option value="Rik'kal">Rik'kal (Zerschneider)</option><option value="Korven">Korven (Primus)</option><option value="Hisek">Hisek (Schwarmwächter)</option>
-                        </select></li>
-                        <li><span class="text-gray-300">Boss 2:</span><select data-assignment-id="paragons-kill-2" class="assignment-select" data-manual-options="true">
-                            <option value="Rik'kal">Rik'kal (Zerschneider)</option><option value="Korven">Korven (Primus)</option><option value="Hisek">Hisek (Schwarmwächter)</option>
-                        </select></li>
-                        <li><span class="text-gray-300">Boss 3:</span><select data-assignment-id="paragons-kill-3" class="assignment-select" data-manual-options="true">
-                            <option value="Korven">Korven (Primus)</option><option value="Hisek">Hisek (Schwarmwächter)</option>
-                        </select></li>
-                        <li class="text-xs text-gray-400 text-center py-2">Restliche Bosse nach Raidlead-Ansage (meistens Xaril, Kaz'tik, Iyyokuk, Karoz, Kil'ruk)</li>
-                    </ul>
-                </div>
-                
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-yellow-400">✨ Leichname looten (Spezialfähigkeiten)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Wer interagiert mit welchem toten Paragon?</p>
-                    <ul class="assignment-list">
-                        <li><span class="text-yellow-200">Skeer (Melee-DPS):</span><select data-assignment-id="paragons-loot-skeer" class="assignment-select"></select></li>
-                        <li><span class="text-yellow-300">Rik'kal (Melee/Tank):</span><select data-assignment-id="paragons-loot-rikkal" class="assignment-select"></select></li>
-                        <li><span class="text-yellow-400">Korven (Tank):</span><select data-assignment-id="paragons-loot-korven" class="assignment-select"></select></li>
-                        <li><span class="text-yellow-500">Hisek (Ranged-DPS):</span><select data-assignment-id="paragons-loot-hisek" class="assignment-select"></select></li>
-                        <li><span class="text-orange-400">Xaril (Heiler):</span><select data-assignment-id="paragons-loot-xaril" class="assignment-select"></select></li>
-                    </ul>
+                    <h4 class="text-lg font-bold text-emerald-400">📍 Positions- & Markereinteilung</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Einteilung für Mechaniken wie das Abfangen von "Zielen" (Hisek) etc.</p>
+                    <div id="paragons-lane-groups"></div>
                 </div>
             </div>
 
@@ -144,64 +152,29 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <img src="siegeoforgrimmar/paragons-p1.png" alt="Aufstellung Klaxxi" 
+                        <img src="siegeoforgrimmar/paragons.png" alt="Aufstellung Klaxxi" 
                             class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
                             data-phase="paragons-p1" 
                             onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;paragons-p1&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
                     </div>
                 </div>
 
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Ratgeber</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
-                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
+                <div class="assignment-block">
+                    <h4 class="text-lg font-bold text-red-400">⚔️ Kill-Reihenfolge</h4>
+                    <p class="text-sm text-gray-400 mb-3 px-3">Reihenfolge der 9 Paragone. Jeder Boss sollte nur einmal vorkommen.</p>
+                    <div id="paragons-killorder-grid" class="grid grid-cols-2 gap-1 mb-2 px-2"></div>
+                    <div class="flex items-center gap-2 mt-2 px-2">
+                        <button id="paragons-killorder-reset" class="text-xs bg-slate-700 hover:bg-slate-800 text-white py-1 px-2 rounded border border-slate-500">↺ Standard</button>
+                        <button id="paragons-killorder-copy" class="ml-auto text-xs bg-purple-700 hover:bg-purple-800 text-white py-1 px-2 rounded border border-purple-500">📋 WA Export</button>
                     </div>
+                    <code id="paragons-killorder-wa" class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all" style="white-space: pre-wrap;">—</code>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ════════════════════════════════════════════════════════════════════
-     PARAGONS OF THE KLAXXI AUTO-PLANNER
-     ════════════════════════════════════════════════════════════════════
-     
-     ENCOUNTER-STRUKTUR:
-     9-Boss Council-Encounter. Bosse aktivieren sich basierend auf
-     dem HP-Pool des aktiven Trios. Immer 3 aktive Bosse gleichzeitig
-     (außer am Anfang und Ende).
-     
-     TYPISCHE AKTIVIERUNGSREIHENFOLGE:
-     1. Skeer (Tank-Stack)
-     2. Rik'kal (Adds via Mutate)
-     3. Hisek (Spieler-Targeting Aim/Rapid Fire)
-     4. Ka'roz (Movement + Whirling)
-     5. Korven (Shield Bash + Amber Encase)
-     6. Iyyokuk (Insane Calculation)
-     7. Kaz'tik (Mesmerize/Mind Control)
-     8. Xaril (Poison Pools)
-     9. Kil'ruk (Final Boss - Reave + Death from Above)
-     
-     PARAGON-MECHANIKEN:
-     - Skeer: Bloodletting (Tank Stack)
-     - Rik'kal: Mutate (spawnt Adds), Injection (Tank-Debuff)
-     - Hisek: Aim (Sniper-Mechanik), Rapid Fire
-     - Ka'roz: Whirling (Tornado), Hurl Amber
-     - Korven: Shield Bash (Tank), Encase in Amber (CC)
-     - Iyyokuk: Insane Calculation: Fiery Edge (Raid-DR)
-     - Kaz'tik: Mesmerize (Mind Control)
-     - Xaril: Toxic Catalyst, Toxic Injection (Poison Pools)
-     - Kil'ruk: Gouge, Reave, Death from Above
-     
-     STRATEGIE:
-     Bosse werden in fester Reihenfolge "abgearbeitet". Spieler fokussieren
-     auf Interrupts und kontrollieren Adds. Final Phase mit Kil'ruk ist
-     typischerweise mit Bloodlust.
-     
-     Werte konsolidiert aus den LUA-Dateien.
-     ════════════════════════════════════════════════════════════════════ -->
-
-<!-- HTML-Block für paragons.html -->
+<!-- AUTO-PLANNER -->
 <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
         🤖 Auto-CD-Planer
@@ -213,242 +186,46 @@
             Aktivierungsreihenfolge und Mechaniken sind nur grobe Schätzungen — nach erstem Kill kalibrieren!
         </p>
         
-        <!-- Steuerung -->
         <div class="flex flex-wrap items-center gap-2 mb-4">
             <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
             <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
             <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
             <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
         </div>
         
-        <!-- Status -->
         <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
-        
-        <!-- Timeline mit Tabelle -->
         <div id="auto-planner-timeline" class="overflow-x-auto">
             <table class="w-full text-xs">
                 <thead id="auto-planner-thead"></thead>
                 <tbody id="auto-planner-tbody"></tbody>
             </table>
         </div>
-        
-        <!-- Kategorien-Editor (nur Manager) -->
-        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
-            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
-        </details>
     </div>
 </section>
 
 <script src="static/cd-auto-planner.js"></script>
 <script>
-// ══ Paragons of the Klaxxi Auto-Planner Config ══════════════════════
 CD_AUTO_PLANNER.init({
     id: 'paragons-of-the-klaxxi',
     name: 'Paragonen der Klaxxi',
-    prefix: 'paragons',  // Container-Prefix in der Boss-HTML (paragons-planner-container)
-    
+    prefix: 'paragons',
     events: [
-        // ═══════════════════════════════════════════════════════
-        // PHASE 1: Skeer + Rik'kal + Hisek (Start-Trio)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Skeer: Bloodletting #1",
-            spellId: 0,
-            firstCast: 15,        // ~15s nach Pull
-            cooldown: 30,         // ~30s zwischen Bloodlettings
-            maxCasts: 4,          // bis Skeer down
-            delay: -1,
-            eventDuration: 10,
-            requiredCDs: ["tank_external"],  // Tank-Externals
-            icon: "🩸"
-        },
-        {
-            name: "Rik'kal: Mutate Adds",
-            spellId: 0,
-            firstCast: 25,        // erste Mutate-Welle
-            cooldown: 45,         // ~45s CD
-            maxCasts: 3,
-            delay: -2,
-            eventDuration: 20,
-            requiredCDs: ["aoe_stun", "any_dr"],
-            icon: "🧪"
-        },
-        {
-            name: "Hisek: Aim/Rapid Fire",
-            spellId: 0,
-            firstCast: 30,        // ~30s
-            cooldown: 25,         // ~25s CD
-            maxCasts: 5,
-            delay: -1,
-            eventDuration: 8,
-            requiredCDs: ["tank_external", "any_dr"],
-            icon: "🏹"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // PHASE 2: Ka'roz aktiviert (~25-33% von Trio HP)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Ka'roz: Whirling #1",
-            spellId: 0,
-            firstCast: 90,        // ~90s nach Pull, je nach DPS
-            cooldown: 30,
-            maxCasts: 4,
-            delay: -2,
-            eventDuration: 10,
-            requiredCDs: ["movement", "any_dr"],  // Tornado kiten
-            icon: "🌪️"
-        },
-        {
-            name: "Ka'roz: Hurl Amber #1",
-            spellId: 0,
-            firstCast: 100,
-            cooldown: 25,
-            maxCasts: 4,
-            delay: 0,
-            eventDuration: 5,
-            requiredCDs: ["any_heal"],  // Damage-CDs für Hurl
-            icon: "🪨"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // PHASE 3: Korven aktiviert (Shield-Mechanik)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Korven: Shield Bash",
-            spellId: 0,
-            firstCast: 150,       // Korven kommt später dazu
-            cooldown: 25,         // ~25s CD
-            maxCasts: 4,
-            delay: -1,
-            eventDuration: 8,
-            requiredCDs: ["tank_external"],  // Tank-Buster
-            icon: "🛡️"
-        },
-        {
-            name: "Korven: Encase in Amber",
-            spellId: 0,
-            firstCast: 165,
-            cooldown: 30,         // ~30s CD
-            maxCasts: 4,
-            delay: 0,
-            eventDuration: 15,
-            requiredCDs: ["any_heal"],  // Eingeschlossene Spieler heilen
-            icon: "🟫"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // PHASE 4: Iyyokuk + Kaz'tik (Mid-Phase)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Iyyokuk: Insane Calculation #1",
-            spellId: 0,
-            firstCast: 220,       // ~220s
-            cooldown: 60,         // ~60s CD
-            maxCasts: 4,
-            delay: -3,            // Heavy Raid-DR
-            eventDuration: 10,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "🔢"
-        },
-        {
-            name: "Kaz'tik: Mesmerize (Mind Control)",
-            spellId: 0,
-            firstCast: 240,
-            cooldown: 45,         // ~45s CD
-            maxCasts: 4,
-            delay: -2,
-            eventDuration: 12,
-            requiredCDs: ["any_heal"],  // MC-Spieler heilen
-            icon: "🧠"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // PHASE 5: Xaril aktiviert (Poison Pools)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Xaril: Toxic Catalyst",
-            spellId: 0,
-            firstCast: 320,
-            cooldown: 35,
-            maxCasts: 3,
-            delay: -2,
-            eventDuration: 15,
-            requiredCDs: ["any_dr"],
-            icon: "☠️"
-        },
-        {
-            name: "Xaril: Toxic Injection",
-            spellId: 0,
-            firstCast: 335,
-            cooldown: 30,
-            maxCasts: 3,
-            delay: -1,
-            eventDuration: 10,
-            requiredCDs: ["any_heal"],
-            icon: "💉"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // FINAL PHASE: Kil'ruk (Bloodlust)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Kil'ruk Spawn (Final Boss)",
-            spellId: 0,
-            firstCast: 420,       // ~7 Min nach Pull
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 60,
-            requiredCDs: ["bloodlust", "any_dr", "any_heal"],
-            icon: "🦅"
-        },
-        {
-            name: "Kil'ruk: Death from Above",
-            spellId: 0,
-            firstCast: 435,
-            cooldown: 30,
-            maxCasts: 5,
-            delay: -2,
-            eventDuration: 8,
-            requiredCDs: ["any_dr", "movement"],
-            icon: "✈️"
-        },
-        {
-            name: "Kil'ruk: Reave (Tank Cleave)",
-            spellId: 0,
-            firstCast: 425,
-            cooldown: 20,
-            maxCasts: 8,
-            delay: -1,
-            eventDuration: 5,
-            requiredCDs: ["tank_external"],
-            icon: "🦅"
-        },
-        {
-            name: "Kil'ruk: Gouge",
-            spellId: 0,
-            firstCast: 440,
-            cooldown: 25,
-            maxCasts: 5,
-            delay: -1,
-            eventDuration: 8,
-            requiredCDs: ["tank_external"],
-            icon: "🗡️"
-        }
+        { name: "Skeer: Bloodletting #1", spellId: 0, firstCast: 15, cooldown: 30, maxCasts: 4, delay: -1, eventDuration: 10, requiredCDs: ["tank_external"], icon: "🩸" },
+        { name: "Rik'kal: Mutate Adds", spellId: 0, firstCast: 25, cooldown: 45, maxCasts: 3, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "🧪" },
+        { name: "Hisek: Aim/Rapid Fire", spellId: 0, firstCast: 30, cooldown: 25, maxCasts: 5, delay: -1, eventDuration: 8, requiredCDs: ["tank_external", "any_dr"], icon: "🏹" },
+        { name: "Ka'roz: Whirling #1", spellId: 0, firstCast: 90, cooldown: 30, maxCasts: 4, delay: -2, eventDuration: 10, requiredCDs: ["movement", "any_dr"], icon: "🌪️" },
+        { name: "Ka'roz: Hurl Amber #1", spellId: 0, firstCast: 100, cooldown: 25, maxCasts: 4, delay: 0, eventDuration: 5, requiredCDs: ["any_heal"], icon: "🪨" },
+        { name: "Korven: Shield Bash", spellId: 0, firstCast: 150, cooldown: 25, maxCasts: 4, delay: -1, eventDuration: 8, requiredCDs: ["tank_external"], icon: "🛡️" },
+        { name: "Korven: Encase in Amber", spellId: 0, firstCast: 165, cooldown: 30, maxCasts: 4, delay: 0, eventDuration: 15, requiredCDs: ["any_heal"], icon: "🟫" },
+        { name: "Iyyokuk: Insane Calculation #1", spellId: 0, firstCast: 220, cooldown: 60, maxCasts: 4, delay: -3, eventDuration: 10, requiredCDs: ["any_dr", "any_heal"], icon: "🔢" },
+        { name: "Kaz'tik: Mesmerize (Mind Control)", spellId: 0, firstCast: 240, cooldown: 45, maxCasts: 4, delay: -2, eventDuration: 12, requiredCDs: ["any_heal"], icon: "🧠" },
+        { name: "Xaril: Toxic Catalyst", spellId: 0, firstCast: 320, cooldown: 35, maxCasts: 3, delay: -2, eventDuration: 15, requiredCDs: ["any_dr"], icon: "☠️" },
+        { name: "Xaril: Toxic Injection", spellId: 0, firstCast: 335, cooldown: 30, maxCasts: 3, delay: -1, eventDuration: 10, requiredCDs: ["any_heal"], icon: "💉" },
+        { name: "Kil'ruk Spawn (Final Boss)", spellId: 0, firstCast: 420, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 60, requiredCDs: ["bloodlust", "any_dr", "any_heal"], icon: "🦅" },
+        { name: "Kil'ruk: Death from Above", spellId: 0, firstCast: 435, cooldown: 30, maxCasts: 5, delay: -2, eventDuration: 8, requiredCDs: ["any_dr", "movement"], icon: "✈️" },
+        { name: "Kil'ruk: Reave (Tank Cleave)", spellId: 0, firstCast: 425, cooldown: 20, maxCasts: 8, delay: -1, eventDuration: 5, requiredCDs: ["tank_external"], icon: "🦅" },
+        { name: "Kil'ruk: Gouge", spellId: 0, firstCast: 440, cooldown: 25, maxCasts: 5, delay: -1, eventDuration: 8, requiredCDs: ["tank_external"], icon: "🗡️" }
     ],
-    
-    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: PARAGONS_*)
-    // Jeder Paragon hat eigene Trigger für seine Mechaniken
-    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
     triggerMap: {
         "Skeer: Bloodletting #1":              "PARAGONS_BLOODLETTING",
         "Rik'kal: Mutate Adds":                 "PARAGONS_MUTATE",
@@ -469,66 +246,6 @@ CD_AUTO_PLANNER.init({
 });
 </script>
 
-<!-- ════════════════════════════════════════════════════════════════════
-     EVENT-MANAGER HINWEISE
-     ════════════════════════════════════════════════════════════════════
-     
-     WICHTIG: Dieser Encounter ist SEHR komplex (9 Bosse, dynamische
-     Aktivierungsreihenfolge). Die hier angegebenen Werte sind grobe
-     Schätzungen — nach erstem Kill MUSS kalibriert werden!
-     
-     AKTIVIERUNGSREIHENFOLGE:
-     Bosse aktivieren sich basierend auf HP-Schwellen des aktiven Trios.
-     Eure Reihenfolge kann von der Standard-Reihenfolge abweichen wenn
-     ihr Bosse unterschiedlich priorisiert (Skeer-Reset, Hisek-Skip, etc).
-     
-     TYPISCHE STRATEGIEN:
-     - "Skeer-Reset": Skeer wird nicht gekillt, Bloodletting-Stack reset
-     - "Hisek-Skip": Hisek wird ignoriert während andere gefocused werden
-     - "Mythic-Cleave": Spezielle Reihenfolge auf Mythic
-     
-     ANPASSUNGEN NACH ERSTEM KILL:
-     
-     1. Welche Reihenfolge habt ihr gewählt? → firstCast-Zeiten anpassen
-     2. Wann wurde Kil'ruk aktiv? → "Kil'ruk Spawn" firstCast (kritisch!)
-     3. Welcher Boss verursacht die meisten Wipes? → Mehr CDs darauf
-     4. Bloodlust-Zeitpunkt: Pull oder Kil'ruk? → firstCast anpassen
-     
-     PRO PARAGON KOMMENTAR:
-     
-     - Skeer: Bloodletting alle 30s. Tank-Externals ESSENTIELL.
-     - Rik'kal: Mutate spawnt Adds → AoE-Stuns + DPS-Burst
-     - Hisek: Aim/Rapid Fire = Sniper-Mechanik. Spieler bewegen!
-     - Ka'roz: Whirling = Tornado → kiten. Hurl Amber = Big Damage
-     - Korven: Shield Bash = Tank-Buster. Encase in Amber = CC.
-     - Iyyokuk: Insane Calculation = Heavy Raid-DR Mechanik!
-     - Kaz'tik: Mesmerize = Mind Control. CC-Break + Heal.
-     - Xaril: Toxic Pools auf dem Boden. Movement + Heal.
-     - Kil'ruk: Final Phase. Bloodlust hier!
-     
-     INTERRUPTS:
-     Viele Paragons haben unterbrechbare Casts. Eine Kick-Rotation ist
-     essentiell. Im CD-Planer als separate Liste pflegen.
-     
-     MYTHIC-ZUSATZ:
-     Auf Mythic gibt's zusätzliche Mechaniken pro Paragon. Diese müssen
-     als Custom-Events im Event-Manager hinzugefügt werden — die Liste
-     hier ist auf Heroic optimiert.
-     
-     KALIBRIERUNG-WORKFLOW:
-     
-     1. Erster Pull (lerne den Encounter)
-     2. WCL-Log analysieren:
-        - Wann starb welcher Paragon?
-        - Welche Mechaniken kamen wann?
-     3. firstCast-Werte aller Events nach WCL anpassen
-     4. maxCasts pro Boss anpassen (wieviele Casts vor Death)
-     5. Save Plan
-     6. Im nächsten Pull: Auto-Zuweisen → Plan kommt zurück
-     ════════════════════════════════════════════════════════════════════ -->
-
-
-
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
@@ -544,61 +261,20 @@ CD_AUTO_PLANNER.init({
     <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
         <span class="text-xl">📜</span> Planungsübersicht
     </h3>
-    
     <div id="paragons-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
         <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Warte auf Eingaben... <br>
-            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
+            Warte auf Eingaben...
         </p>
     </div>
 </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    <strong>% / #:</strong> Geben Sie hier die Nummer des Bosses (1, 2, 3...) ein, um CDs für bestimmte Übergänge zu planen.
+                    <strong>% / #:</strong> Geben Sie hier die Nummer des Bosses (1, 2, 3...) ein.
                 </div>
-
                 <div id="paragons-planner-container" class="space-y-2 planner-scroll-container"></div>
-                
-                <div class="mt-4 text-xs text-gray-500 italic">
-                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
-                </div>
             </div>
         </div>
-    </section>
-
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Weitere Gefahren</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-cyan-400">Iyyokuk (Wahnsinnig machen):</strong> Verbindet Spieler mit feurigen Linien. Diese Spieler müssen sich ausbreiten, damit die Linien keine unbeteiligten Mitspieler verbrennen.</li>
-                    <li><strong class="text-gray-400">Karoz (Schleudern):</strong> Wirft Spieler durch den Raum und hinterlässt flächendeckende Amber-Zonen. Viel Movement erforderlich.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Paragon-Fähigkeiten (Buffs)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-green-400">Mutant (Rik'kal):</strong> Der Lootende kann sich in einen Skorpion verwandeln und enormen Nahkampfschaden austeilen.</li>
-                    <li><strong class="text-yellow-400">Scharfschütze (Hisek):</strong> Der Spieler erhält einen mächtigen Schuss, der massiven Flächenschaden verursacht.</li>
-                    <li><strong class="text-orange-400">Blutrausch (Skeer):</strong> Angriffe heilen den Spieler extrem hoch – ideal für Tanks oder Nahkämpfer ohne starke Eigendefensive.</li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong class="text-purple-400">Alle Leichname aktiv:</strong> In der heroischen Version müssen <em>alle</em> verfügbaren Leichname zugewiesen werden. Die Buffs der Bosse sind entscheidend, um den eintreffenden Schaden zu überleben und die engen DPS-Timer zu schaffen.</li>
-                <li>Iyyokuks "Berechnen" wird auf heroisch viel komplexer. Die betroffenen Spieler erhalten Farben und Symbole und müssen ein perfektes geometrisches Muster bilden (Triangle/Square/usw.), andernfalls stirbt der Raid.</li>
-            </ul>
-        </div>
-    </div>
 </section>
 
 <script>
@@ -607,8 +283,6 @@ CD_AUTO_PLANNER.init({
         const TRIGGER_OPTIONS = [
             { val: "PARAGONS_ENC_START",          text: "Kampfbeginn" },
             { val: "PARAGONS_HEALTH",             text: "Gesundheit % (Wähle NPC)" },
-            
-            // Boss-Aktivierungs-Trigger
             { val: "PARAGONS_KILRUK",             text: "Kil'ruk Spawn (Final Boss)" },
             { val: "PARAGONS_XARIL",              text: "Xaril aktiviert" },
             { val: "PARAGONS_KAZTIK",             text: "Kaz'tik aktiviert" },
@@ -618,8 +292,6 @@ CD_AUTO_PLANNER.init({
             { val: "PARAGONS_SKEER",              text: "Skeer aktiviert" },
             { val: "PARAGONS_RIKKAL",             text: "Rik'kal aktiviert" },
             { val: "PARAGONS_HISEK",              text: "Hisek aktiviert" },
-            
-            // Mechanik-Trigger
             { val: "PARAGONS_GOUGE",              text: "Kil'ruk: Stechen" },
             { val: "PARAGONS_REAVE",              text: "Kil'ruk: Spalten (Tank Cleave)" },
             { val: "PARAGONS_DEATH_FROM_ABOVE",   text: "Kil'ruk: Tod von Oben" },
@@ -639,19 +311,12 @@ CD_AUTO_PLANNER.init({
         ];
         
         const NPC_OPTIONS = [
-            "Kil'ruk der Windschinder",
-            "Xaril der vergiftete Verstand",
-            "Kaz'tik der Manipulator",
-            "Korven der Erstgeborene",
-            "Iyyokuk der Helle",
-            "Ka'roz die Heuschrecke",
-            "Skeer der Blutsucher",
-            "Rik'kal der Sezierer",
-            "Hisek der Schwarmwächter"
+            "Kil'ruk der Windschinder", "Xaril der vergiftete Verstand", "Kaz'tik der Manipulator",
+            "Korven der Erstgeborene", "Iyyokuk der Helle", "Ka'roz die Heuschrecke",
+            "Skeer der Blutsucher", "Rik'kal der Sezierer", "Hisek der Schwarmwächter"
         ];
         
         const container = document.getElementById('paragons-planner-container');
-        
         const getCooldownOptions = () => {
             let html = '<option value="">-- Bereitschaft --</option>';
             if (allCooldowns) {
@@ -668,15 +333,10 @@ CD_AUTO_PLANNER.init({
         };
 
         if (container && container.innerHTML.trim() === "") {
-            
             const p = container.id.replace('-planner-container', '');
-
-            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
-            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
-            
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+            const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
+            const cdOpts = getCooldownOptions();
 
             const headerHtml = `
             <div class="planner-header">
@@ -687,17 +347,11 @@ CD_AUTO_PLANNER.init({
                 <div class="text-center">Zeit</div>
                 <div>Spieler</div>
                 <div>Fähigkeit</div>
-                
                 <div class="planner-col-extended text-xs text-gray-400">Hinweis</div>
                 <div class="planner-col-extended text-xs text-gray-400">Sprachausgabe</div>
                 <div class="planner-col-extended text-xs text-gray-400">Name</div>
                 <div class="planner-col-extended text-xs text-gray-400">Symbol</div>
-
-                <div class="text-center cursor-pointer hover:text-white" 
-                     onclick="document.getElementById('${p}-planner-wrapper').classList.toggle('show-extended')" 
-                     id="planner-expand-btn" title="Zusätzliche Spalten anzeigen">
-                    <i class="fas fa-angle-double-right"></i>
-                </div>
+                <div class="text-center cursor-pointer hover:text-white" onclick="document.getElementById('${p}-planner-wrapper').classList.toggle('show-extended')" id="planner-expand-btn" title="Zusätzliche Spalten anzeigen"><i class="fas fa-angle-double-right"></i></div>
                 <div></div> 
             </div>`;
 
@@ -706,34 +360,17 @@ CD_AUTO_PLANNER.init({
                 rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
-
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-trigger" data-manual-options="true">
-                        <option value="">-- Nicht aktiv --</option>
-                        ${triggerOpts}
-                    </select>
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
-                        ${npcOpts}
-                    </select>
-                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
-                           data-assignment-id="${p}-planner-row${i}-condition" placeholder="% / #" value="0">
-                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
-                           data-assignment-id="${p}-planner-row${i}-time" placeholder="Sek." value="0">
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-trigger" data-manual-options="true"><option value="">-- Nicht aktiv --</option>${triggerOpts}</select>
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">${npcOpts}</select>
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" data-assignment-id="${p}-planner-row${i}-condition" placeholder="% / #" value="0">
+                    <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" data-assignment-id="${p}-planner-row${i}-time" placeholder="Sek." value="0">
                     <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-player"></select>
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-cooldown">
-                         ${cdOpts}
-                    </select>
-                    
-                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
-                           data-assignment-id="${p}-planner-row${i}-note" placeholder="Zusätzlicher Text">
-                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
-                           data-assignment-id="${p}-planner-row${i}-tts" placeholder="Sprachausgabe ändern">
-                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
-                           data-assignment-id="${p}-planner-row${i}-varname" placeholder="Eigener Name">
-                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" 
-                           data-assignment-id="${p}-planner-row${i}-icon" placeholder="Symbolnummer">
-
+                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-cooldown">${cdOpts}</select>
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" data-assignment-id="${p}-planner-row${i}-note" placeholder="Zusätzlicher Text">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" data-assignment-id="${p}-planner-row${i}-tts" placeholder="Sprachausgabe ändern">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" data-assignment-id="${p}-planner-row${i}-varname" placeholder="Eigener Name">
+                    <input type="text" class="assignment-text-input planner-col-extended text-left pl-2 text-xs text-gray-400" data-assignment-id="${p}-planner-row${i}-icon" placeholder="Symbolnummer">
                     <div></div>
-
                     <div class="row-actions">
                         <button class="icon-btn copy-row-btn" title="Kopieren"><i class="far fa-copy"></i></button>
                         <button class="icon-btn paste-row-btn" title="Einfügen"><i class="far fa-clipboard"></i></button>
@@ -741,22 +378,149 @@ CD_AUTO_PLANNER.init({
                     </div>
                 </div>`;
             }
-
             container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
             
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
-            }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
+            if (window.initPlannerRowFeatures) setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+            if (window.makePlannerSortable) setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
         }
 
         if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
+            container.addEventListener('change', () => setTimeout(window.updatePlannerSummary, 100));
             setTimeout(window.updatePlannerSummary, 500);
+        }
+        
+        // ════════════════════════════════════════════════════════════════
+        // KILL ORDER (9 Slots)
+        // ════════════════════════════════════════════════════════════════
+        (function initKillOrder() {
+            const gridEl = document.getElementById('paragons-killorder-grid');
+            if (!gridEl) return;
+            
+            const ASSIGNMENT_ID = 'paragons-killorder';
+            const NUM_SLOTS = 9;
+            const OPTIONS = ["Skeer", "Rikkal", "Korven", "Hisek", "Xaril", "Iyyokuk", "Kaztik", "Karoz", "Kilruk"];
+            
+            let killOrder = [...OPTIONS];
+            let saveTimer = null;
+            
+            const resetBtn = document.getElementById('paragons-killorder-reset');
+            const copyBtn  = document.getElementById('paragons-killorder-copy');
+            const waOut    = document.getElementById('paragons-killorder-wa');
+            
+            function buildWa() {
+                return killOrder.join(',');
+            }
+            function updateWaDisplay() {
+                if (waOut) waOut.textContent = buildWa();
+            }
+            
+            function render() {
+                gridEl.innerHTML = '';
+                for (let i = 0; i < NUM_SLOTS; i++) {
+                    const v = killOrder[i] || OPTIONS[0];
+                    const row = document.createElement('div');
+                    row.className = 'paragons-ko-row';
+                    row.innerHTML = `
+                        <span class="ko-num">${i + 1}</span>
+                        <select class="paragons-ko-select" data-slot="${i}">
+                            ${OPTIONS.map(o => `<option value="${o}" ${o === v ? 'selected' : ''}>${o}</option>`).join('')}
+                        </select>
+                    `;
+                    gridEl.appendChild(row);
+                }
+                updateWaDisplay();
+            }
+            
+            gridEl.addEventListener('change', (e) => {
+                const sel = e.target.closest('.paragons-ko-select');
+                if (!sel) return;
+                const slot = parseInt(sel.dataset.slot);
+                if (isNaN(slot)) return;
+                killOrder[slot] = sel.value;
+                updateWaDisplay();
+                scheduleSave();
+            });
+            
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    if (!window.isManager) return;
+                    killOrder = [...OPTIONS];
+                    render();
+                    scheduleSave();
+                });
+            }
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const text = buildWa();
+                    navigator.clipboard.writeText(text).then(() => {
+                        const old = copyBtn.textContent;
+                        copyBtn.textContent = '✓ Kopiert';
+                        setTimeout(() => copyBtn.textContent = old, 1200);
+                    });
+                });
+            }
+            
+            function scheduleSave() {
+                if (saveTimer) clearTimeout(saveTimer);
+                saveTimer = setTimeout(saveData, 600);
+            }
+            async function saveData() {
+                if (!window.isManager || !firebaseTools || !firebaseTools.db) return;
+                const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                try {
+                    const hash = location.hash.substring(1);
+                    const bossId = hash.split('/')[1] || 'paragons';
+                    const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                    await firebaseTools.setDoc(docRef, {
+                        [ASSIGNMENT_ID]: {
+                            killOrder: killOrder,
+                            editor: editorName,
+                            timestamp: new Date().toISOString()
+                        }
+                    }, { merge: true });
+                } catch (e) {}
+            }
+            
+            if (assignments && assignments[ASSIGNMENT_ID] && Array.isArray(assignments[ASSIGNMENT_ID].killOrder)) {
+                const saved = assignments[ASSIGNMENT_ID].killOrder;
+                killOrder = saved.slice(0, NUM_SLOTS).concat(Array(NUM_SLOTS).fill(OPTIONS[0])).slice(0, NUM_SLOTS);
+            }
+            
+            function applyKoProtection() {
+                const isM = !!window.isManager;
+                gridEl.querySelectorAll('select, button').forEach(el => el.disabled = !isM);
+                if (resetBtn) resetBtn.disabled = !isM;
+            }
+            
+            render();
+            applyKoProtection();
+            setInterval(applyKoProtection, 1500);
+        })();
+
+        // ════════════════════════════════════════════════════════════════
+        // LANE GROUPS FÜR SONDERAUFGABEN (inkl. Marker)
+        // ════════════════════════════════════════════════════════════════
+        if (window.LaneGroups) {
+            try {
+                window.LaneGroups.init({
+                    containerId: 'paragons-lane-groups',
+                    bossId: 'paragons',
+                    assignmentId: 'paragons-lanes',
+                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                    defaultBlocks: [
+                        {
+                            title: 'Spezialaufgaben',
+                            type: 'marked-list',
+                            autoFill: false,
+                            slots: ['', '', '', '', '']
+                        }
+                    ]
+                });
+            } catch (e) {
+                console.error('[Paragons] LaneGroups.init Fehler:', e);
+            }
         }
     };
 </script>

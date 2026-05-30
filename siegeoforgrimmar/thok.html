@@ -101,23 +101,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
             <div class="space-y-6">
+
                 <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Thok Tank (Start):</span><select class="assignment-select" data-assignment-id="thok-tank-1"></select></li>
-                        <li><span>Add Tank (Kerkermeister):</span><select class="assignment-select" data-assignment-id="thok-tank-2"></select></li>
-                    </ul>
-                </div>
-                
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-orange-400">🗝️ Gefängnis-Schlüssel (Reihenfolge)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Wer sammelt den Schlüssel auf und welche Tür wird in welcher Phase geöffnet?</p>
-                    <ul class="assignment-list">
-                        <li><span class="text-green-300">1. Tür (Gift):</span><select data-assignment-id="thok-door-1" class="assignment-select"></select></li>
-                        <li><span class="text-blue-300">2. Tür (Frost):</span><select data-assignment-id="thok-door-2" class="assignment-select"></select></li>
-                        <li><span class="text-red-300">3. Tür (Feuer):</span><select data-assignment-id="thok-door-3" class="assignment-select"></select></li>
-                        <li><span class="text-gray-400">Ersatz-Schlüsselmeister:</span><select data-assignment-id="thok-door-backup" class="assignment-select"></select></li>
-                    </ul>
+                    <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
+                    <div id="thok-lane-groups"></div>
                 </div>
             </div>
 
@@ -127,7 +115,7 @@
                 <div class="space-y-6">
                     <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
                         <button data-phase="thok-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1 (Stack)</button>
-                        <button data-phase="thok-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 2 (Kiting)</button>
+                        
                     </div>
                     <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
                         <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
@@ -136,22 +124,10 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <img src="siegeoforgrimmar/thok-p1.png" alt="Aufstellung Phase 1" 
+                        <img src="siegeoforgrimmar/thok.png" alt="Aufstellung Phase 1" 
                             class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
                             data-phase="thok-p1" 
                             onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;thok-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
-                            
-                        <img src="siegeoforgrimmar/thok-p2.png" alt="Aufstellung Phase 2" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
-                            data-phase="thok-p2" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;thok-p2&quot;>Bild für Phase 2 noch nicht verfügbar.</div>'">
-                    </div>
-                </div>
-
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Ratgeber</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
-                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
                     </div>
                 </div>
             </div>
@@ -772,6 +748,35 @@ CD_AUTO_PLANNER.init({
                 setTimeout(window.updatePlannerSummary, 100);
             });
             setTimeout(window.updatePlannerSummary, 500);
+        }
+                        if (window.LaneGroups) {
+            try {
+                window.LaneGroups.init({
+                    containerId: 'thok-lane-groups',
+                    bossId: 'thok',
+                    assignmentId: 'thok-lane-assignments',
+                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                    defaultBlocks: [
+                        {
+                            title: 'P1',
+                            type: 'multi-lane',
+                            autoFill: true,
+                            lanes: [
+                                { marker: 'star',   slots: ['', '', ''] },
+                                { marker: 'circle', slots: ['', '', ''] },
+                                { marker: 'square', slots: ['', '', ''] },
+                                { marker: 'diamond',slots: ['', '', ''] },
+                            ]
+                        },
+                    ]
+                });
+            } catch (e) {
+                console.error('[thok] LaneGroups.init Fehler:', e);
+            }
+        } else {
+            console.warn('[thok] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
         }
     };
 </script>

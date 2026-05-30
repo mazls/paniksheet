@@ -107,50 +107,23 @@
                         <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="juggernaut-tank-2"></select></li>
                     </ul>
                 </div>
-                
+
+                <!-- ═══════════ EINTEILUNGS-BLÖCKE (LaneGroups, konfigurierbar) ═══════════ -->
                 <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-orange-400">💥 Minen-Soaker</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Diese Spieler übernehmen das Stampfen der Krabblerminen. Eine starke Eigendefensive ist zwingend erforderlich.</p>
-                    <ul class="assignment-list">
-                        <li><span class="text-orange-300">Soaker 1:</span><select data-assignment-id="juggernaut-mine-1" class="assignment-select"></select></li>
-                        <li><span class="text-orange-300">Soaker 2:</span><select data-assignment-id="juggernaut-mine-2" class="assignment-select"></select></li>
-                        <li><span class="text-orange-300">Soaker 3:</span><select data-assignment-id="juggernaut-mine-3" class="assignment-select"></select></li>
-                        <li><span class="text-red-400">Ersatz-Soaker:</span><select data-assignment-id="juggernaut-mine-backup" class="assignment-select"></select></li>
-                    </ul>
+                    <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
+                    <div id="iron-jug-lane-groups"></div>
                 </div>
             </div>
 
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="juggernaut-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1 (Sturmmodus)</button>
-                        <button data-phase="juggernaut-p2" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 2 (Belagerungsmodus)</button>
-                    </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="juggernaut-p1">Weiträumige Verteilung im Halbkreis um den Boss. Minen-Soaker achten auf Spawns.</p>
-                            <p class="positioning-text hidden" data-phase="juggernaut-p2">Raid sammelt sich leicht verteilt und sucht sich Positionen, um den Knockback durch Wände abzufangen.</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/juggernaut-p1.png" alt="Aufstellung Phase 1" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="juggernaut-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;juggernaut-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
-                            
-                        <img src="siegeoforgrimmar/juggernaut-p2.png" alt="Aufstellung Phase 2" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600 hidden" 
-                            data-phase="juggernaut-p2" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800 hidden&quot; data-phase=&quot;juggernaut-p2&quot;>Bild für Phase 2 noch nicht verfügbar.</div>'">
-                    </div>
-                </div>
 
-                <div class="mt-6">
-                    <h4 class="text-xl font-bold text-gold mb-2">Video-Ratgeber</h4>
-                    <div class="video-container my-4 rounded-lg shadow-lg bg-slate-900 flex items-center justify-center min-h-[315px] border border-slate-700">
-                        <p class="text-gray-500 italic">Hier kann der entsprechende Videolink hinterlegt werden.</p>
+                <div class="space-y-6">
+                    <div class="mt-2">
+                        <img src="siegeoforgrimmar/iron-juggernaut.png" alt="Aufstellung Iron Juggernaut"
+                            class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild noch nicht verfügbar.</div>'">
                     </div>
                 </div>
             </div>
@@ -230,6 +203,7 @@
     </div>
 </section>
 
+<script src="static/lane-groups.js"></script>
 <script src="static/cd-auto-planner.js"></script>
 <script>
 // ══ Iron Juggernaut Auto-Planner Config ════════════════════════════
@@ -683,6 +657,46 @@ CD_AUTO_PLANNER.init({
                 setTimeout(window.updatePlannerSummary, 100);
             });
             setTimeout(window.updatePlannerSummary, 500);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // EINTEILUNGS-BLÖCKE (LaneGroups, konfigurierbar)
+        // Default-Layout: 3 Lanes Ranged Positioning (Star/Circle/Square)
+        //                 + 1 Single-List Mine Soakers
+        // ═══════════════════════════════════════════════════════════════
+        if (window.LaneGroups) {
+            try {
+                window.LaneGroups.init({
+                    containerId: 'iron-jug-lane-groups',
+                    bossId: 'iron-juggernaut',
+                    assignmentId: 'iron-jug-lanes',
+                    roster: window.effectiveRoster || roster,
+                    firebaseTools: firebaseTools || window.firebaseTools,
+                    assignments: assignments,
+                    defaultBlocks: [
+                        {
+                            title: 'Ranged Positioning',
+                            type: 'multi-lane',
+                            autoFill: true,
+                            lanes: [
+                                { marker: 'star',   slots: ['', '', '', '', ''] },
+                                { marker: 'circle', slots: ['', '', '', '', ''] },
+                                { marker: 'square', slots: ['', '', '', '', ''] }
+                            ]
+                        },
+                        {
+                            title: 'Mine Soakers',
+                            type: 'single-list',
+                            autoFill: false,
+                            slots: ['', '', '']
+                        }
+                    ]
+                });
+            } catch (e) {
+                console.error('[Iron Juggernaut] LaneGroups.init Fehler:', e);
+            }
+        } else {
+            console.warn('[Iron Juggernaut] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
         }
     };
 </script>
