@@ -257,18 +257,116 @@ window.LaneGroups = (function () {
         return `<img src="raidicons/${m.file}" alt="${m.label}" title="${m.label}" class="lg-marker-icon" onerror="this.outerHTML='<span class=&quot;lg-marker-emoji&quot;>${m.emoji}</span>'">`;
     }
 
+    // ════════════════════════════════════════════════════════════
+    // VALUE RESOLUTION (für Spec-Slots und Anzeige-Logik)
+    // ════════════════════════════════════════════════════════════
+    // Werte in slots können sein:
+    //   • Spieler-Name direkt   (z.B. "Marcel")
+    //   • Spec-Slot-Key         (z.B. "BLOODDK1", aufgelöst via SlotSystem)
+    //   • Klassen-Platzhalter   (z.B. "PALADIN", Wildcard)
+    //   • Group-Key             (z.B. "ALL" oder "MELEEDPS")
+
+    function _isClassPlaceholder(val) {
+        return !!val && Object.prototype.hasOwnProperty.call(CLASS_DISPLAY, val);
+    }
+    function _isSlotKey(val) {
+        const ss = window.SlotSystem;
+        return !!(ss && ss.isSlotKey && ss.isSlotKey(val));
+    }
+    function _isGroupKey(val) {
+        const ss = window.SlotSystem;
+        return !!(ss && ss.isGroupKey && ss.isGroupKey(val));
+    }
+
+    // Liefert das, was angezeigt + Farbe + Status-Indikatoren.
+    // {displayName, color, isBench, missing, kind}
+    //   kind: 'empty' | 'player' | 'slot' | 'class' | 'group' | 'unknown'
+    function resolveValueDisplay(inst, val) {
+        const cc = window.classColors || {};
+        if (!val) return { displayName: '', color: '#fff', isBench: false, missing: false, kind: 'empty' };
+
+        // 1) Spec-Slot
+        if (_isSlotKey(val)) {
+            const ss = window.SlotSystem;
+            const resolved = ss.resolvePlayerName(val, true);
+            if (!resolved) {
+                // Slot ist definiert aber nicht gemappt
+                return { displayName: val, color: '#ef4444', isBench: false, missing: true, kind: 'slot' };
+            }
+            const player = (inst.roster || []).find(p => (p.name || p) === resolved);
+            if (!player) {
+                // Slot ist gemappt aber Spieler nicht (mehr) im Roster
+                return { displayName: resolved, color: '#ef4444', isBench: false, missing: true, kind: 'slot' };
+            }
+            const cls = (player.class || '').toUpperCase();
+            return {
+                displayName: resolved,
+                color: cc[cls] || '#FFFFFF',
+                isBench: isPlayerOnBench(resolved),
+                missing: false,
+                kind: 'slot'
+            };
+        }
+
+        // 2) Klassen-Platzhalter
+        if (_isClassPlaceholder(val)) {
+            return { displayName: CLASS_DISPLAY[val], color: cc[val] || '#FFFFFF', isBench: false, missing: false, kind: 'class' };
+        }
+
+        // 3) Group-Key
+        if (_isGroupKey(val)) {
+            return { displayName: val, color: '#fcd34d', isBench: false, missing: false, kind: 'group' };
+        }
+
+        // 4) Direkter Spieler-Name
+        const player = (inst.roster || []).find(p => (p.name || p) === val);
+        if (!player) {
+            return { displayName: val, color: '#ef4444', isBench: false, missing: true, kind: 'unknown' };
+        }
+        const cls = (player.class || '').toUpperCase();
+        return {
+            displayName: val,
+            color: cc[cls] || '#FFFFFF',
+            isBench: isPlayerOnBench(val),
+            missing: false,
+            kind: 'player'
+        };
+    }
+
+    // Liefert den "kanonischen Namen" eines Slot-Wertes (für Duplikat-Vergleich).
+    // Spec-Slots werden aufgelöst, Klassen/Group-Platzhalter bekommen einen
+    // eigenen Namespace damit sie nur untereinander als Duplikat zählen.
+    function getCanonicalName(inst, val) {
+        if (!val) return '';
+        if (_isSlotKey(val)) {
+            const ss = window.SlotSystem;
+            const resolved = ss.resolvePlayerName(val, true);
+            return resolved || ('@UNRESOLVED_SLOT:' + val);
+        }
+        if (_isClassPlaceholder(val)) return '@CLASS:' + val;
+        if (_isGroupKey(val))         return '@GROUP:' + val;
+        return val;
+    }
+
     function findOtherSlotsWithPlayer(inst, name, exceptBlockIdx, exceptLaneIdx, exceptSlotIdx) {
         const hits = [];
         const sourceBlock = inst.blocks[exceptBlockIdx];
-        
+        const targetCanonical = getCanonicalName(inst, name);
+        // Wildcard-Marker (@CLASS:..., @GROUP:..., @UNRESOLVED_SLOT:...) bekommen
+        // hier nur dann Duplikat-Treffer, wenn sie EXAKT identisch sind.
+        if (!targetCanonical) return [];
+
         inst.blocks.forEach((b, bi) => {
             if (bi !== exceptBlockIdx && (sourceBlock.isolatedBlock || b.isolatedBlock)) return;
-            
+
             b.lanes.forEach((l, li) => {
                 if (bi === exceptBlockIdx && li !== exceptLaneIdx && !b.sharedLanes) return;
-                
+
                 l.slots.forEach((v, si) => {
-                    if (v === name && !(bi === exceptBlockIdx && li === exceptLaneIdx && si === exceptSlotIdx)) {
+                    if (bi === exceptBlockIdx && li === exceptLaneIdx && si === exceptSlotIdx) return;
+                    if (!v) return;
+                    const otherCanonical = getCanonicalName(inst, v);
+                    if (otherCanonical === targetCanonical) {
                         hits.push({ blockTitle: b.title, laneIdx: li, slotIdx: si });
                     }
                 });
@@ -294,20 +392,73 @@ window.LaneGroups = (function () {
         const lane = inst.blocks[blockIdx]?.lanes[laneIdx];
         const filterActive = !!(lane && lane.allowedCats !== null && Array.isArray(lane.allowedCats));
         const cc = window.classColors || {};
-        
-        html += '<optgroup label="Kader">';
+        const ss = window.SlotSystem;
+
+        // Helper: prüft ob ein Spielername durch den Lane-Filter darf
+        // (selected Wert bleibt immer drin, damit nichts verschwindet)
+        function allowedByFilter(name) {
+            if (!filterActive) return true;
+            if (name === selectedName) return true;
+            return isPlayerAllowedOnLane(inst, name, blockIdx, laneIdx);
+        }
+
+        // 1) Phantom-Option: gespeicherter Wert nicht (mehr) auffindbar
+        if (selectedName) {
+            const isInRoster = (inst.roster || []).some(p => (p.name || p) === selectedName);
+            const isSlot    = _isSlotKey(selectedName);
+            const isClass   = _isClassPlaceholder(selectedName);
+            const isGroup   = _isGroupKey(selectedName);
+            if (!isInRoster && !isSlot && !isClass && !isGroup) {
+                html += `<option value="${escapeHtml(selectedName)}" selected style="color:#ef4444; font-style:italic;">❌ ${escapeHtml(selectedName)} (nicht im Kader)</option>`;
+            }
+        }
+
+        // 2) Kader (mit Bench-Markierung)
+        html += '<optgroup label="── Kader ──">';
         (inst.roster || []).forEach(p => {
-            const name  = p.name || p;
+            const name = p.name || p;
+            if (!allowedByFilter(name)) return;
             const color = (p.class && cc[p.class.toUpperCase()]) || '#FFFFFF';
             const isSelected = name === selectedName;
-            if (filterActive && !isSelected && !isPlayerAllowedOnLane(inst, name, blockIdx, laneIdx)) return;
             const sel = isSelected ? ' selected' : '';
-            const isBench = isPlayerOnBench(name) ? ' (Ersatz)' : '';
-            html += `<option value="${escapeHtml(name)}" style="color:${color};" data-color="${color}"${sel}>${escapeHtml(name)}${isBench}</option>`;
+            const bench = isPlayerOnBench(name);
+            const prefix = bench ? '⚠ ' : '';
+            const suffix = bench ? ' (Ersatz)' : '';
+            html += `<option value="${escapeHtml(name)}" style="color:${color};" data-color="${color}"${sel}>${prefix}${escapeHtml(name)}${suffix}</option>`;
         });
         html += '</optgroup>';
 
-        html += '<optgroup label="Platzhalter (Klassen)">';
+        // 3) Spec-Slots (über SlotSystem) — nur welche, deren Spieler im aktuellen Roster sind
+        if (ss && typeof ss.getMapping === 'function') {
+            const mapping = ss.getMapping();
+            const rosterNames = new Set((inst.roster || []).map(p => p.name || p));
+            const activeSlots = Object.keys(mapping)
+                .filter(k => ss.isSlotKey(k))
+                .filter(k => {
+                    const playerName = mapping[k];
+                    return playerName && rosterNames.has(playerName);
+                })
+                .sort();
+
+            if (activeSlots.length > 0) {
+                html += '<optgroup label="── Spec-Slots ──">';
+                activeSlots.forEach(slotKey => {
+                    const playerName = mapping[slotKey];
+                    if (!allowedByFilter(playerName)) return;
+                    const player = (inst.roster || []).find(p => (p.name || p) === playerName);
+                    const color = (player && player.class && cc[player.class.toUpperCase()]) || '#FFFFFF';
+                    const isSelected = slotKey === selectedName;
+                    const sel = isSelected ? ' selected' : '';
+                    const bench = isPlayerOnBench(playerName);
+                    const prefix = bench ? '⚠ ' : '';
+                    html += `<option value="${escapeHtml(slotKey)}" style="color:${color};" data-color="${color}" data-resolves-to="${escapeHtml(playerName)}"${sel}>${prefix}${escapeHtml(slotKey)} → ${escapeHtml(playerName)}</option>`;
+                });
+                html += '</optgroup>';
+            }
+        }
+
+        // 4) Klassen-Platzhalter
+        html += '<optgroup label="── Platzhalter (Klassen) ──">';
         Object.keys(CLASS_DISPLAY).forEach(clsKey => {
             const color = cc[clsKey] || '#FFFFFF';
             const isSelected = clsKey === selectedName;
@@ -399,15 +550,36 @@ window.LaneGroups = (function () {
         for (let s = 0; s < lane.slots.length; s++) {
             const val = lane.slots[s] || '';
             const dups = val ? findOtherSlotsWithPlayer(inst, val, blockIdx, laneIdx, s) : [];
+            const display = resolveValueDisplay(inst, val);
+
+            // Indikator-Zeichen aufbauen: Duplikat / Bench / Missing / Slot-Hinweis
+            const indicators = [];
+            if (dups.length > 0)              indicators.push('🟡');
+            if (display.isBench)              indicators.push('⚠');
+            if (display.missing)              indicators.push('❌');
+            if (display.kind === 'slot' && !display.missing) indicators.push('🔗'); // resolved Spec-Slot
+            const indicatorStr = indicators.length ? indicators.join(' ') + ' ' : '';
+
             const dupClass = dups.length > 0 ? ' is-duplicate' : '';
-            // Title kombinieren: voller Spielername (für lange Namen, die durch ellipsis abgeschnitten werden)
-            // + Duplikat-Warnung wenn Spieler woanders auch eingeteilt ist
-            let titleParts = [];
-            if (val) titleParts.push(val);
-            if (dups.length > 0) titleParts.push(`⚠ Auch in ${dups.length} weiteren Feldern`);
+            const missingClass = display.missing ? ' is-missing' : '';
+            const benchClass = display.isBench ? ' is-bench' : '';
+
+            // Title-Tooltip
+            const titleParts = [];
+            if (val) {
+                if (display.kind === 'slot' && !display.missing) {
+                    titleParts.push(`${val} → ${display.displayName}`);
+                } else {
+                    titleParts.push(display.displayName || val);
+                }
+            }
+            if (display.isBench)   titleParts.push('Bench-Spieler');
+            if (display.missing)   titleParts.push('Nicht im Kader');
+            if (dups.length > 0)   titleParts.push(`⚠ Auch in ${dups.length} weiteren Feldern`);
             const titleAttr = titleParts.length > 0 ? ` title="${escapeHtml(titleParts.join(' — '))}"` : '';
+
             html += `<tr>`;
-            
+
             if (block.type === 'marked-list') {
                 html += `<td class="lg-slot-num" style="width:36px; padding:0;">`;
                 if (edit) {
@@ -426,7 +598,19 @@ window.LaneGroups = (function () {
                 html += `<td class="lg-slot-num">${s + 1}</td>`;
             }
 
-            html += `<td><select class="lg-slot-select${dupClass}" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}"${titleAttr}>${getPlayerOptionsHtml(inst, val, blockIdx, laneIdx)}</select></td>`;
+            // Slot-Wrapper: Select + Overlay-Anzeige.
+            // Im "closed state" wird das Overlay sichtbar (zeigt resolved-Namen + Indikatoren);
+            // beim Aufklappen des Selects bleibt das Overlay zwar im DOM, aber das Dropdown
+            // öffnet sich darüber.
+            const hasOverlay = !!val;
+            html += `<td>`;
+            html += `<div class="lg-slot-wrap${hasOverlay ? ' has-overlay' : ''}${dupClass}${missingClass}${benchClass}">`;
+            html += `<select class="lg-slot-select${dupClass}${missingClass}${benchClass}" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}"${titleAttr}>${getPlayerOptionsHtml(inst, val, blockIdx, laneIdx)}</select>`;
+            if (hasOverlay) {
+                html += `<span class="lg-slot-display" style="color:${display.color};">${indicatorStr}${escapeHtml(display.displayName || val)}</span>`;
+            }
+            html += `</div>`;
+            html += `</td>`;
             html += `<td class="lg-slot-del">`;
             if (val) html += `<button type="button" class="lg-btn lg-slot-clear" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}" title="Entfernen">✕</button>`;
             html += `</td>`;
@@ -517,10 +701,10 @@ window.LaneGroups = (function () {
             html += `</div>`;
             inst.container.innerHTML = html;
 
-            inst.container.querySelectorAll('.lg-slot-select').forEach(sel => {
-                const opt = sel.options[sel.selectedIndex];
-                if (opt && opt.value) sel.style.color = opt.dataset.color || '#fff';
-            });
+            // Slot-Overlay + Farbe + Indikatoren initial setzen
+            // (auch wenn renderLane das schon im HTML einbaut, ist das hier
+            //  doppelt sicher und hält die Logik an einer Stelle)
+            refreshSlotState(inst);
             applyManagerProtection(inst);
         } catch (e) { console.error('[LaneGroups] Render-Fehler:', e); }
     }
@@ -727,26 +911,65 @@ window.LaneGroups = (function () {
         render(inst); scheduleSave(inst);
     }
 
-    function refreshDuplicateMarkers(inst) {
-        inst.container.querySelectorAll('.lg-slot-select').forEach(sel => {
+    // Aktualisiert für jedes Slot-Select: Klassen (is-duplicate/is-missing/is-bench),
+    // den Title-Tooltip, das Overlay-Display (resolved Name + Indikatoren) und die
+    // Klassenfarbe. Wird nach Slot-Änderungen aufgerufen ohne kompletten Re-Render.
+    function refreshSlotState(inst) {
+        inst.container.querySelectorAll('.lg-slot-wrap').forEach(wrap => {
+            const sel = wrap.querySelector('.lg-slot-select');
+            if (!sel) return;
             const bi = +sel.dataset.blockIdx, li = +sel.dataset.laneIdx, si = +sel.dataset.slotIdx;
             const val = inst.blocks[bi]?.lanes[li]?.slots[si] || '';
             const dups = val ? findOtherSlotsWithPlayer(inst, val, bi, li, si) : [];
+            const display = resolveValueDisplay(inst, val);
+
+            // Klassen auf Wrapper + Select
+            sel.classList.toggle('is-duplicate', dups.length > 0);
+            sel.classList.toggle('is-missing',   display.missing);
+            sel.classList.toggle('is-bench',     display.isBench);
+            wrap.classList.toggle('is-duplicate', dups.length > 0);
+            wrap.classList.toggle('is-missing',   display.missing);
+            wrap.classList.toggle('is-bench',     display.isBench);
+
+            // Title-Tooltip
             const parts = [];
-            if (val) parts.push(val);
-            if (dups.length > 0) parts.push('⚠ Auch in ' + dups.length + ' weiteren Feldern');
+            if (val) {
+                if (display.kind === 'slot' && !display.missing) parts.push(`${val} → ${display.displayName}`);
+                else                                              parts.push(display.displayName || val);
+            }
+            if (display.isBench)   parts.push('Bench-Spieler');
+            if (display.missing)   parts.push('Nicht im Kader');
+            if (dups.length > 0)   parts.push('⚠ Auch in ' + dups.length + ' weiteren Feldern');
             if (parts.length > 0) sel.title = parts.join(' — ');
             else                  sel.removeAttribute('title');
-            if (dups.length > 0)  sel.classList.add('is-duplicate');
-            else                  sel.classList.remove('is-duplicate');
+
+            // Overlay: existiert es?  Wenn val leer → entfernen; sonst Inhalt + Farbe aktualisieren
+            let overlay = wrap.querySelector('.lg-slot-display');
+            if (!val) {
+                wrap.classList.remove('has-overlay');
+                if (overlay) overlay.remove();
+                return;
+            }
+            if (!overlay) {
+                overlay = document.createElement('span');
+                overlay.className = 'lg-slot-display';
+                wrap.appendChild(overlay);
+            }
+            wrap.classList.add('has-overlay');
+            const indicators = [];
+            if (dups.length > 0)              indicators.push('🟡');
+            if (display.isBench)              indicators.push('⚠');
+            if (display.missing)              indicators.push('❌');
+            if (display.kind === 'slot' && !display.missing) indicators.push('🔗');
+            const indicatorStr = indicators.length ? indicators.join(' ') + ' ' : '';
+            overlay.textContent = indicatorStr + (display.displayName || val);
+            overlay.style.color = display.color;
         });
     }
-    function applySlotColors(inst) {
-        inst.container.querySelectorAll('.lg-slot-select').forEach(sel => {
-            const opt = sel.options[sel.selectedIndex];
-            sel.style.color = (opt && opt.value) ? (opt.dataset.color || '#fff') : '';
-        });
-    }
+
+    // Kompatibilitäts-Aliase: einige Stellen rufen die alten Namen auf.
+    function refreshDuplicateMarkers(inst) { refreshSlotState(inst); }
+    function applySlotColors(inst)         { refreshSlotState(inst); }
 
     function buildSortedRoster(inst) {
         const sorted = [];
@@ -771,6 +994,8 @@ window.LaneGroups = (function () {
         if (!block || !block.autoFill) return;
         if (!Array.isArray(inst.roster) || inst.roster.length === 0) return;
 
+        // Already-assigned wird canonical erfasst (Spec-Slots werden zu Spieler-Name aufgelöst),
+        // damit Marcel nicht zweimal eingeteilt wird (einmal als "Marcel", einmal als "BLOODDK1").
         const alreadyAssignedGlobal = new Set();
         const alreadyAssignedPerLane = block.lanes.map(() => new Set());
         const usedByLane = block.lanes.map(() => ({}));
@@ -778,9 +1003,12 @@ window.LaneGroups = (function () {
         block.lanes.forEach((lane, li) => {
             lane.slots.forEach((name, si) => {
                 if (!name) return;
-                alreadyAssignedGlobal.add(name);
-                alreadyAssignedPerLane[li].add(name);
-                const ply = findRosterPlayer(inst.roster, name);
+                const canonical = getCanonicalName(inst, name);
+                alreadyAssignedGlobal.add(canonical);
+                alreadyAssignedPerLane[li].add(canonical);
+                // Für Limits: tatsächlichen Spieler im Roster suchen (resolved)
+                const display = resolveValueDisplay(inst, name);
+                const ply = display.displayName ? findRosterPlayer(inst.roster, display.displayName) : null;
                 const cat = ply ? getPlayerCategory(ply, inst.prioCategories) : null;
                 if (cat) {
                     if (!usedByLane[li][cat.id]) usedByLane[li][cat.id] = [];
@@ -802,7 +1030,7 @@ window.LaneGroups = (function () {
                 for (let j = 0; j < fullPool.length; j++) {
                     const cand = fullPool[j];
                     const cat = cand.category;
-
+                    // cand.name ist immer ein echter Spieler-Name aus dem Roster
                     if (block.sharedLanes && alreadyAssignedGlobal.has(cand.name)) continue;
                     if (!block.sharedLanes && alreadyAssignedPerLane[li].has(cand.name)) continue;
 
@@ -975,7 +1203,34 @@ window.LaneGroups = (function () {
                 overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
             }
             .lg-slot-select.is-duplicate { border-color:#facc15; box-shadow:0 0 0 1px rgba(250,204,21,0.4) inset; }
+            .lg-slot-select.is-missing   { border-color:#ef4444; }
+            .lg-slot-select.is-bench     { border-color:#fb923c; }
             .lg-slot-clear { color:#f87171; }
+
+            /* ── Slot-Wrapper mit Overlay-Anzeige ──
+               Im "closed state" zeigt das Overlay den aufgelösten Namen + Indikatoren
+               (🟡 Duplikat, ⚠ Bench, ❌ nicht im Roster, 🔗 Spec-Slot).
+               Der native Select-Text wird transparent gemacht, sodass nur das
+               Overlay sichtbar ist. Beim Aufklappen funktioniert das Dropdown normal. */
+            .lg-slot-wrap { position: relative; width: 100%; }
+            .lg-slot-wrap.has-overlay .lg-slot-select {
+                color: transparent !important;
+                text-shadow: none;
+            }
+            .lg-slot-wrap.has-overlay .lg-slot-select::-ms-value { color: transparent; }
+            .lg-slot-display {
+                position: absolute;
+                left: 6px;
+                right: 22px; /* Platz für Dropdown-Pfeil */
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+                font-size: 0.7rem;
+                line-height: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
             .lg-tags { display:flex; flex-wrap:wrap; gap:3px; margin-top:6px; padding-top:6px; }
             .lg-tag { display:inline-block; padding:1px 6px; font-size:0.65rem; border-radius:9999px; cursor:pointer; user-select:none; border:1px solid; line-height:1.4; transition:filter 0.15s; }
             .lg-tag.tag-on  { background:#065f46; color:#d1fae5; border-color:#10b981; }
