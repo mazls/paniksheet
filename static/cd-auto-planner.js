@@ -2367,13 +2367,16 @@ window.CD_AUTO_PLANNER = (function() {
             }
             savePlan();
         });
-        document.getElementById('btn-save-categories').addEventListener('click', function() {
-            if (!window.isManager) {
-                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                return;
-            }
-            saveCategories();
-        });
+        var btnSaveCategories = document.getElementById('btn-save-categories');
+        if (btnSaveCategories) {
+            btnSaveCategories.addEventListener('click', function() {
+                if (!window.isManager) {
+                    if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                    return;
+                }
+                saveCategories();
+            });
+        }
         document.getElementById('btn-clear-auto').addEventListener('click', function() {
             if (!window.isManager) {
                 if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");

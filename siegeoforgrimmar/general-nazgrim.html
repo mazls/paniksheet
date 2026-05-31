@@ -99,26 +99,7 @@
     <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Boss Tank (Start):</span><select class="assignment-select" data-assignment-id="nazgrim-tank-1"></select></li>
-                        <li><span>Add Tank:</span><select class="assignment-select" data-assignment-id="nazgrim-tank-2"></select></li>
-                    </ul>
-                </div>
-                
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-purple-400">⚡ Interrupts & Purge (Adds)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Zuweisungen für das Kontrollieren der Kriegsschamanen und Arkanweber.</p>
-                    <ul class="assignment-list">
-                        <li><span class="text-purple-300">Magie entfernen (Erdschild):</span><select data-assignment-id="nazgrim-purge-1" class="assignment-select"></select></li>
-                        <li><span class="text-purple-300">Interrupt Schamane:</span><select data-assignment-id="nazgrim-kick-shaman" class="assignment-select"></select></li>
-                        <li><span class="text-purple-300">Interrupt Arkanweber 1:</span><select data-assignment-id="nazgrim-kick-arcweaver1" class="assignment-select"></select></li>
-                        <li><span class="text-purple-300">Interrupt Arkanweber 2:</span><select data-assignment-id="nazgrim-kick-arcweaver2" class="assignment-select"></select></li>
-                    </ul>
-                </div>
-                            <!-- LINKE SPALTE: Einteilungen -->
+            <!-- LINKE SPALTE: LaneGroups-Einteilung -->
             <div class="space-y-6">
                 <div class="assignment-block">
                     <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
@@ -126,25 +107,69 @@
                     <div id="nazgrim-lane-groups"></div>
                 </div>
             </div>
-            </div>
 
+            <!-- RECHTE SPALTE: Visuelle Hilfen -->
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="nazgrim-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Aufstellung & Positioning</button>
+
+                <div class="space-y-4">
+                    <!-- Aufstellungsbild -->
+                    <div>
+                        <img src="siegeoforgrimmar/nazgrim.png" alt="Aufstellung Nazgrim"
+                            class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
                     </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="nazgrim-p1">Boss in der Raummitte tanken. Melees hinter dem Boss, Ranged und Heiler fächern sich auf, um Schockwellen besser auszuweichen.</p>
+
+                    <!-- KILL PRIORITY -->
+                    <div class="rounded-lg overflow-hidden border border-slate-700">
+                        <div class="bg-red-900/40 border-b border-red-600/40 px-3 py-2 flex items-center gap-2">
+                            <span class="text-base">🎯</span>
+                            <h4 class="text-base font-bold text-red-300">Kill-Priorität</h4>
                         </div>
-                    </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/nazgrim.png" alt="Aufstellung Nazgrim" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="nazgrim-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;nazgrim-p1&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
+                        <div class="grid grid-cols-7 bg-slate-800 text-center">
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">1</span>
+                                <img src="raidicons/banner.png" alt="Banner" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🚩</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Banner</span>
+                            </div>
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">2</span>
+                                <img src="raidicons/totem.png" alt="Totem" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🪵</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Totem</span>
+                            </div>
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">3</span>
+                                <img src="raidicons/arcweaver.png" alt="Arkanweber" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>✨</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Arkanweber</span>
+                            </div>
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">4</span>
+                                <img src="raidicons/shaman.png" alt="Schamane" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>⚡</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Schamane</span>
+                            </div>
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">5</span>
+                                <img src="raidicons/assassin.png" alt="Assassine" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🗡️</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Assassine</span>
+                            </div>
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">6</span>
+                                <img src="raidicons/sniper.png" alt="Schütze" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🏹</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Schütze</span>
+                            </div>
+                            <div class="flex flex-col items-center p-2">
+                                <span class="text-[10px] text-gray-500 font-bold">7</span>
+                                <img src="raidicons/ironblade.png" alt="Eisenklinge" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>⚔️</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Eisenklinge</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -680,11 +705,21 @@ CD_AUTO_PLANNER.init({
                     assignments: (typeof assignments !== 'undefined' ? assignments : null),
                     defaultBlocks: [
                         {
-                            title: 'Kicker',
-                            type: 'single-list',
+                            title: 'Schamanen-Interrupts',
+                            type: 'multi-lane',
                             autoFill: true,
-                            slots: ['', '', '', '', '', '']
+                            lanes: [
+                                { marker: 'skull', slots: ['', '', ''] }
+                            ]
                         },
+                        {
+                            title: 'Arkanweber-Interrupts',
+                            type: 'multi-lane',
+                            autoFill: true,
+                            lanes: [
+                                { marker: 'diamond', slots: ['', '', ''] }
+                            ]
+                        }
                     ]
                 });
             } catch (e) {

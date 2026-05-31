@@ -110,22 +110,213 @@
 
             <div>
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="spoils-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Raum-Aufteilung</button>
+
+                <div class="space-y-4">
+                    <!-- Aufstellungsbild -->
+                    <div>
+                        <img src="siegeoforgrimmar/spoils-of-pandaria.png" alt="Aufstellung Schätze von Pandaria"
+                            class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild für die Raum-Aufteilung noch nicht verfügbar.</div>'">
                     </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="spoils-p1">Raid teilt sich strikt in 50/50. Tanks steuern das Öffnen der Kisten entlang der Wände, die Gruppe sammelt sich in der Mitte des Quadranten.</p>
+
+                    <!-- Kistenübersicht: Mantis & Mogu nebeneinander -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+
+                        <!-- MANTIS-SEITE -->
+                        <div class="rounded-lg overflow-hidden border border-slate-700">
+                            <div class="bg-amber-900/40 border-b border-amber-600/40 px-3 py-2 flex items-center gap-2">
+                                <span class="text-base">🦗</span>
+                                <h4 class="text-base font-bold text-amber-300">Mantis-Seite</h4>
+                            </div>
+                            <table class="w-full text-xs text-gray-200">
+                                <tbody class="divide-y divide-slate-700">
+                                    <!-- L -->
+                                    <tr class="bg-slate-800/80">
+                                        <td colspan="2" class="px-3 py-1.5">
+                                            <span class="text-amber-300 font-bold text-lg mr-2">L</span>
+                                            <span class="text-amber-300 font-semibold">(Große Kisten)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">💣</span>
+                                        </td>
+                                        <td class="px-3 py-2">Bomben <span class="text-amber-300 font-semibold">weg vom Raid</span> ablegen.</td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">☁️</span>
+                                        </td>
+                                        <td class="px-3 py-2">CDs nutzen, um <span class="text-amber-300 font-semibold">Pheromonwolke</span> zu überleben.</td>
+                                    </tr>
+
+                                    <!-- M -->
+                                    <tr class="bg-slate-800/80">
+                                        <td colspan="2" class="px-3 py-1.5">
+                                            <span class="text-amber-300 font-bold text-lg mr-2">M</span>
+                                            <span class="text-amber-300 font-semibold">(Mittlere Kisten)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">🔥</span>
+                                        </td>
+                                        <td class="px-3 py-2">Vom Gegner <span class="text-amber-300 font-semibold">Residuum</span> und <span class="text-amber-300 font-semibold">Wut der Kaiserin</span> entfernen (Purge/Dispel).</td>
+                                    </tr>
+
+                                    <!-- S -->
+                                    <tr class="bg-slate-800/80">
+                                        <td colspan="2" class="px-3 py-1.5">
+                                            <span class="text-amber-300 font-bold text-lg mr-2">S</span>
+                                            <span class="text-amber-300 font-semibold">(Kleine Kisten)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">💢</span>
+                                        </td>
+                                        <td class="px-3 py-2">Leicht verteilen, um Schaden von <span class="text-amber-300 font-semibold">Bomben/Sprengstoff</span> zu vermeiden.</td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">🟠</span>
+                                        </td>
+                                        <td class="px-3 py-2">Nicht in der <span class="text-amber-300 font-semibold">Pheromonspur</span> stehen.</td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">🌀</span>
+                                        </td>
+                                        <td class="px-3 py-2">Buff <span class="text-amber-300 font-semibold">Raserei</span> entfernen (Purge/Dispel).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- MOGU-SEITE -->
+                        <div class="rounded-lg overflow-hidden border border-slate-700">
+                            <div class="bg-blue-900/40 border-b border-blue-600/40 px-3 py-2 flex items-center gap-2">
+                                <span class="text-base">👹</span>
+                                <h4 class="text-base font-bold text-blue-300">Mogu-Seite</h4>
+                            </div>
+                            <table class="w-full text-xs text-gray-200">
+                                <tbody class="divide-y divide-slate-700">
+                                    <!-- L -->
+                                    <tr class="bg-slate-800/80">
+                                        <td colspan="2" class="px-3 py-1.5">
+                                            <span class="text-blue-300 font-bold text-lg mr-2">L</span>
+                                            <span class="text-blue-300 font-semibold">(Große Kisten)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">🛡️</span>
+                                        </td>
+                                        <td class="px-3 py-2">Tank-/Raid-CDs gegen den eingehenden Schaden, mit DPS-CDs <span class="text-blue-300 font-semibold">schnellstmöglich</span> töten.</td>
+                                    </tr>
+
+                                    <!-- M -->
+                                    <tr class="bg-slate-800/80">
+                                        <td colspan="2" class="px-3 py-1.5">
+                                            <span class="text-blue-300 font-bold text-lg mr-2">M</span>
+                                            <span class="text-blue-300 font-semibold">(Mittlere Kisten)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">🌀</span>
+                                        </td>
+                                        <td class="px-3 py-2"><span class="text-blue-300 font-semibold">Materiezerschmetterung</span> soaken — mindestens 1 Spieler pro Stelle.</td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">💜</span>
+                                        </td>
+                                        <td class="px-3 py-2"><span class="text-blue-300 font-semibold">Pein</span> dispellen.</td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">🚫</span>
+                                        </td>
+                                        <td class="px-3 py-2"><span class="text-blue-300 font-semibold">Verbotene Magie</span> unterbrechen.</td>
+                                    </tr>
+
+                                    <!-- S -->
+                                    <tr class="bg-slate-800/80">
+                                        <td colspan="2" class="px-3 py-1.5">
+                                            <span class="text-blue-300 font-bold text-lg mr-2">S</span>
+                                            <span class="text-blue-300 font-semibold">(Kleine Kisten)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">🚫</span>
+                                        </td>
+                                        <td class="px-3 py-2"><span class="text-blue-300 font-semibold">Gehärtetes Fleisch</span> und <span class="text-blue-300 font-semibold">Erdsplitter</span> unterbrechen.</td>
+                                    </tr>
+                                    <tr class="bg-slate-800">
+                                        <td class="px-3 py-2 align-top">
+                                            <span class="text-xl">🩸</span>
+                                        </td>
+                                        <td class="px-3 py-2">Durch <span class="text-blue-300 font-semibold">Fleischfressender Biss</span> heilen. BoP entfernen, wenn zu viele Stacks auf einem Spieler liegen.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/spoils-of-pandaria.png" alt="Aufstellung Schätze von Pandaria" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="spoils-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;spoils-p1&quot;>Bild für die Raum-Aufteilung noch nicht verfügbar.</div>'">
+
+                    <!-- KILL PRIORITY -->
+                     <div class="rounded-lg overflow-hidden border border-slate-700">
+                        <div class="bg-red-900/40 border-b border-red-600/40 px-3 py-2 flex items-center gap-2">
+                            <span class="text-base">🎯</span>
+                            <h4 class="text-base font-bold text-red-300">Kill-Priorität</h4>
+                        </div>
+                        <div class="grid grid-cols-6 bg-slate-800 text-center">
+                            <!-- 1: Sparks (Funken) -->
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">1</span>
+                                <img src="raidicons/sparks.png" alt="Funken" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>✨</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Funken</span>
+                            </div>
+                            <!-- 2: Golem / Kunchong -->
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">2</span>
+                                <img src="raidicons/golem.png" alt="Golem / Kunchong" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🤖</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Golem / Kunchong</span>
+                            </div>
+                            <!-- 3: Monks (Mönche) -->
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">3</span>
+                                <img src="raidicons/monk.png" alt="Mönche" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🥋</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Mönche</span>
+                            </div>
+                            <!-- 4: Large Boxes (Große Kisten) -->
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">4</span>
+                                <img src="raidicons/large-box.png" alt="Große Kisten" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>📦</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Große Kisten</span>
+                            </div>
+                            <!-- 5: Medium Boxes (Mittlere Kisten) -->
+                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                <span class="text-[10px] text-gray-500 font-bold">5</span>
+                                <img src="raidicons/medium-box.png" alt="Mittlere Kisten" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>📦</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Mittlere Kisten</span>
+                            </div>
+                            <!-- 6: Small Boxes (Kleine Kisten) -->
+                            <div class="flex flex-col items-center p-2">
+                                <span class="text-[10px] text-gray-500 font-bold">6</span>
+                                <img src="raidicons/small-box.png" alt="Kleine Kisten" class="w-8 h-8 my-1 object-contain"
+                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>📦</span>'">
+                                <span class="text-[11px] text-gray-200 font-semibold">Kleine Kisten</span>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>

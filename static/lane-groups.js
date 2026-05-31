@@ -400,7 +400,12 @@ window.LaneGroups = (function () {
             const val = lane.slots[s] || '';
             const dups = val ? findOtherSlotsWithPlayer(inst, val, blockIdx, laneIdx, s) : [];
             const dupClass = dups.length > 0 ? ' is-duplicate' : '';
-            const dupTitle = dups.length > 0 ? ` title="⚠ Auch in ${dups.length} weiteren Feldern"` : '';
+            // Title kombinieren: voller Spielername (für lange Namen, die durch ellipsis abgeschnitten werden)
+            // + Duplikat-Warnung wenn Spieler woanders auch eingeteilt ist
+            let titleParts = [];
+            if (val) titleParts.push(val);
+            if (dups.length > 0) titleParts.push(`⚠ Auch in ${dups.length} weiteren Feldern`);
+            const titleAttr = titleParts.length > 0 ? ` title="${escapeHtml(titleParts.join(' — '))}"` : '';
             html += `<tr>`;
             
             if (block.type === 'marked-list') {
@@ -421,7 +426,7 @@ window.LaneGroups = (function () {
                 html += `<td class="lg-slot-num">${s + 1}</td>`;
             }
 
-            html += `<td><select class="lg-slot-select${dupClass}" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}"${dupTitle}>${getPlayerOptionsHtml(inst, val, blockIdx, laneIdx)}</select></td>`;
+            html += `<td><select class="lg-slot-select${dupClass}" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}"${titleAttr}>${getPlayerOptionsHtml(inst, val, blockIdx, laneIdx)}</select></td>`;
             html += `<td class="lg-slot-del">`;
             if (val) html += `<button type="button" class="lg-btn lg-slot-clear" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}" title="Entfernen">✕</button>`;
             html += `</td>`;
@@ -468,8 +473,13 @@ window.LaneGroups = (function () {
         html += `</div>`;
 
         if (block.type === 'multi-lane') {
-            const cols = Math.min(Math.max(block.lanes.length, 1), 4);
-            html += `<div class="lg-lanes-grid" style="grid-template-columns: repeat(${cols}, minmax(0,1fr));">`;
+            // Lane-Anzahl bestimmt die maximale Spaltenzahl pro Zeile.
+            // 1–3 Lanes  → max 3 Spalten (alle in einer Zeile)
+            // 4+ Lanes   → max 3 Spalten (umbruch nach 3), responsive
+            const laneCount = Math.max(block.lanes.length, 1);
+            const maxCols = Math.min(laneCount, 3);
+            // Inline-Var für die maximale Spalten-Obergrenze, der Rest läuft per Media-Query in CSS.
+            html += `<div class="lg-lanes-grid" style="--lg-max-cols:${maxCols};">`;
             block.lanes.forEach((_, li) => { html += renderLane(inst, blockIdx, li); });
             html += `</div>`;
         } else {
@@ -722,8 +732,13 @@ window.LaneGroups = (function () {
             const bi = +sel.dataset.blockIdx, li = +sel.dataset.laneIdx, si = +sel.dataset.slotIdx;
             const val = inst.blocks[bi]?.lanes[li]?.slots[si] || '';
             const dups = val ? findOtherSlotsWithPlayer(inst, val, bi, li, si) : [];
-            if (dups.length > 0) { sel.classList.add('is-duplicate'); sel.title = '⚠ Auch in ' + dups.length + ' weiteren Feldern'; } 
-            else { sel.classList.remove('is-duplicate'); sel.removeAttribute('title'); }
+            const parts = [];
+            if (val) parts.push(val);
+            if (dups.length > 0) parts.push('⚠ Auch in ' + dups.length + ' weiteren Feldern');
+            if (parts.length > 0) sel.title = parts.join(' — ');
+            else                  sel.removeAttribute('title');
+            if (dups.length > 0)  sel.classList.add('is-duplicate');
+            else                  sel.classList.remove('is-duplicate');
         });
     }
     function applySlotColors(inst) {
@@ -915,7 +930,22 @@ window.LaneGroups = (function () {
             .lg-block-type { background:#0f172a; border:1px solid #475569; color:#e2e8f0; border-radius:3px; padding:4px 6px; font-size:0.75rem; }
             .lg-autofill-toggle { color:#94a3b8; font-size:0.75rem; display:flex; align-items:center; gap:4px; cursor:pointer; }
             .lg-block-btns { display:flex; gap:4px; margin-left:auto; }
-            .lg-lanes-grid { display:grid; gap:8px; }
+            .lg-lanes-grid {
+                display: grid;
+                gap: 8px;
+                /* Default (große Screens):
+                   - max --lg-max-cols Spalten (per Inline-Style; bis zu 3)
+                   - min 140px pro Spalte für lesbare Spielernamen */
+                grid-template-columns: repeat(var(--lg-max-cols, 3), minmax(140px, 1fr));
+            }
+            /* Mittlere Screens (≤1100px Viewport): max 2 Spalten — Lanes umbrechen */
+            @media (max-width: 1100px) {
+                .lg-lanes-grid { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
+            }
+            /* Kleine Screens (≤640px): 1 Spalte */
+            @media (max-width: 640px) {
+                .lg-lanes-grid { grid-template-columns: 1fr; }
+            }
             .lg-single-list { display:block; }
             .lg-lane { background:rgba(15,23,42,0.6); border:1px solid #475569; border-radius:6px; padding:8px; }
             .lg-lane-header { display:flex; align-items:center; gap:6px; margin-bottom:6px; padding-bottom:4px; border-bottom:1px solid #334155; flex-wrap:wrap; }
@@ -926,12 +956,24 @@ window.LaneGroups = (function () {
             .lg-slot-count { font-size:0.65rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em; margin-left:auto; }
             .lg-lane-btns { display:flex; gap:3px; }
             .lg-lane-btns .lg-btn, .lg-lane-clear { padding:2px 6px; font-size:0.7rem; }
-            .lg-marker-select { background:#0f172a; border:1px solid #475569; color:#e2e8f0; border-radius:3px; padding:2px 4px; font-size:0.7rem; max-width:130px; }
+            .lg-marker-select {
+                background:#0f172a; border:1px solid #475569; color:#e2e8f0;
+                border-radius:3px; padding:2px 4px; font-size:0.7rem;
+                /* In schmalen Lanes nicht aus dem Container brechen */
+                min-width:0; max-width:100%; flex:1 1 auto;
+            }
             .lg-slot-table { width:100%; font-size:0.7rem; }
             .lg-slot-table td { padding:1px 3px; }
             .lg-slot-num { color:#64748b; font-family:monospace; text-align:center; width:20px; }
             .lg-slot-del { text-align:center; width:20px; }
-            .lg-slot-select { background:#0f172a; border:1px solid #475569; color:#fff; border-radius:3px; padding:2px 4px; font-size:0.7rem; width:100%; min-width:100px; height:22px; }
+            .lg-slot-select {
+                background:#0f172a; border:1px solid #475569; color:#fff;
+                border-radius:3px; padding:2px 4px; font-size:0.7rem;
+                width:100%; min-width:0; max-width:100%; height:22px;
+                box-sizing:border-box;
+                /* Lange Namen abschneiden statt Lane sprengen */
+                overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            }
             .lg-slot-select.is-duplicate { border-color:#facc15; box-shadow:0 0 0 1px rgba(250,204,21,0.4) inset; }
             .lg-slot-clear { color:#f87171; }
             .lg-tags { display:flex; flex-wrap:wrap; gap:3px; margin-top:6px; padding-top:6px; }
