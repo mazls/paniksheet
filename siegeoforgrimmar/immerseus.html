@@ -46,42 +46,41 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Der Kampf gegen Immerseus wechselt stetig zwischen zwei Phasen. In Phase 1 wird der Hauptgegner bekämpft, bis seine Gesundheit auf null fällt. In Phase 2 teilt er sich in zahlreiche kleine Schleime auf, die den Rand der Plattform erreichen wollen.
+            <strong>Die goldene Regel:</strong> Großzügig verteilen, Adds clearen und dem Wirbel zwingend ausweichen.<br><br>
+            HT zum Pull
+            Der Kampf gegen Immerseus wechselt stetig zwischen zwei Phasen. Phase 1 wird mit jedem Zyklus kürzer, da die Verderbnis des Bosses in Phase 2 schrittweise reduziert wird. Schwarze Pfützen müssen durch die DPS zerstört und blaue Pfützen von den Heilern vollgeheilt werden, bevor sie die Mitte der Plattform erreichen. Dieser Vorgang wird wiederholt, bis die Verderbnis von Immerseus auf null fällt.
         </p>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
                 <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li>Immerseus ist stationär und wendet sich automatisch dem Bedrohungsziel zu.</li>
-                    <li><strong class="text-red-400">Ätzender Schlag:</strong> Trifft kegelförmig nach vorne und hinterlässt einen Schwächungszauber. Zwingender Wechsel nach jedem Schlag!</li>
-                    <li>Niemals in die Mitte der Gruppe zielen lassen.</li>
+                    <li>Positioniert Immerseus stets seitlich, damit <strong>Ätzender Schlag</strong> den Raid nicht cleavt.</li>
+                    <li>Zwingender Tank-Wechsel nach jedem Ätzenden Schlag, da dieser einen starken Rüstungs-Debuff hinterlässt.</li>
+                    <li>Der Off-Tank sammelt die Adds ein.</li>
+                    <li>In Phase 2 tötet ihr die Adds in eurem Bereich. Ein Tank verbleibt direkt am Boss, um das Sha-Becken zu verkleinern.</li>
                 </ul>
             </div>
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong>Phase 1:</strong> Dem <strong class="text-purple-400">Wirbel</strong> (Wasserstrahl) unbedingt ausweichen! Er dreht sich im oder gegen den Uhrzeigersinn.</li>
-                    <li><strong>Phase 2 (DPS):</strong> Schwarze <strong class="text-gray-400">Sha-Pfützen</strong> zerstören, bevor sie die Mitte erreichen.</li>
-                    <li><strong>Phase 2 (Heiler):</strong> Blaue <strong class="text-blue-400">Kontaminierte Pfützen</strong> auf 100% Gesundheit heilen.</li>
+                    <li><strong>Alle:</strong> Stets 5 Meter Range zueinander halten. Niemals in den dunklen Void-Flächen stehen. Dem <strong>Wirbel</strong> durch Mitlaufen entgehen.</li>
+                    <li><strong>DPS:</strong> Adds haben höchste Priorität. In Phase 2 zwingend jede einzelne schwarze Pfütze im zugeteilten Sektor killen. Das gewährt einen Stacking-Damage-Buff.</li>
+                    <li><strong>Heiler:</strong> In Phase 2 ausschließlich blaue Pfützen auf 100 % heilen. Keine Casts auf schwarze Flächen wasten. Bleibt in der Nähe geheilter Pfützen für den Mana-Buff.</li>
                 </ul>
             </div>
         </div>
 
         <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Heroischer Schwierigkeitsgrad</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                 <div>
-                    <strong class="text-emerald-200">Klassen mit Verlangsamung:</strong><br>
-                    Magier, Jäger, Schurken und Hexenmeister sind in Phase 2 enorm wichtig, um die schwarzen Pfützen zu verlangsamen.
+                    <strong class="text-emerald-200">Schwellendes Verderbnis:</strong><br>
+                    Bei jedem Single-Target-Angriff auf Immerseus spawnen zusätzliche Adds (Geronnenes Sha). Die DPS müssen ihren Schaden gut timen, um den Raid nicht mit zu vielen Adds gleichzeitig zu wipen.
                 </div>
                 <div>
-                    <strong class="text-emerald-200">Heiler:</strong><br>
-                    Flächenheilung am Ende von Phase 2 ist entscheidend, da jede Pfütze, die die Mitte erreicht, flächendeckenden Schaden am gesamten Schlachtzug verursacht.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Alle Spieler:</strong><br>
-                    Achtet auf eure Position! Das Wasser in der Mitte der Plattform und die schwarzen Flächen auf dem Boden verursachen hohen Schaden.
+                    <strong class="text-emerald-200">Wachsendes Sha-Becken:</strong><br>
+                    Ein stetig wachsendes Becken in der Mitte der Plattform. Speziell eingeteilte Spieler (zumeist Tanks) müssen sich gezielt hineinstellen, um das Wachstum zu stoppen.
                 </div>
             </div>
         </div>
@@ -158,7 +157,7 @@ CD_AUTO_PLANNER.init({
     prefix: 'IMMERSEUS',
 
     events: [
-        { name: "Wirbel (Swirl)", firstCast: 20, cooldown: 48.5, maxCasts: 2, delay: -5, eventDuration: 13, requiredCDs: ["movement"], icon: "🌊" },
+        { name: "Wirbel", firstCast: 20, cooldown: 48.5, maxCasts: 2, delay: -5, eventDuration: 13, requiredCDs: ["movement"], icon: "🌊" },
         { name: "Schwellendes Verderbnis", firstCast: 10, cooldown: 75, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: ["any_dr", "any_heal"], icon: "💀" },
         { name: "Split (Phase 2)", firstCast: 75, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 35, requiredCDs: ["any_heal"], icon: "💧" },
         { name: "Reform (Zyklus 2)", firstCast: 110, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: [], icon: "🔄" },
@@ -168,28 +167,28 @@ CD_AUTO_PLANNER.init({
         { name: "Reform (Zyklus 3)", firstCast: 220, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: [], icon: "🔄" },
         { name: "Schwellendes Verderbnis Z3", firstCast: 234, cooldown: 75, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: ["any_dr", "any_heal"], icon: "💀" },
         { name: "Wirbel Z3", firstCast: 244, cooldown: 48.5, maxCasts: 1, delay: -5, eventDuration: 13, requiredCDs: ["movement"], icon: "🌊" },
-        { name: "Bloodlust", firstCast: 0, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 40, requiredCDs: ["bloodlust"], icon: "⚡" }
+        { name: "Kampfrausch / Heldentum", firstCast: 0, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 40, requiredCDs: ["bloodlust"], icon: "⚡" }
     ],
 
     triggerMap: {
-        "Wirbel (Swirl)":               "IMMERSEUS_SWIRL",
-        "Schwellendes Verderbnis":       "IMMERSEUS_SWELLING_CORRUPTION",
+        "Wirbel":                       "IMMERSEUS_SWIRL",
+        "Schwellendes Verderbnis":      "IMMERSEUS_SWELLING_CORRUPTION",
         "Split (Phase 2)":              "IMMERSEUS_SPLIT",
         "Reform (Zyklus 2)":            "IMMERSEUS_REFORM",
         "Schwellendes Verderbnis Z2":   "IMMERSEUS_SWELLING_CORRUPTION",
         "Wirbel Z2":                    "IMMERSEUS_SWIRL",
-        "Split #2 (Phase 2)":          "IMMERSEUS_SPLIT",
-        "Reform (Zyklus 3)":           "IMMERSEUS_REFORM",
-        "Schwellendes Verderbnis Z3":  "IMMERSEUS_SWELLING_CORRUPTION",
-        "Wirbel Z3":                   "IMMERSEUS_SWIRL",
-        "Bloodlust":                    "IMMERSEUS_ENC_START"
+        "Split #2 (Phase 2)":           "IMMERSEUS_SPLIT",
+        "Reform (Zyklus 3)":            "IMMERSEUS_REFORM",
+        "Schwellendes Verderbnis Z3":   "IMMERSEUS_SWELLING_CORRUPTION",
+        "Wirbel Z3":                    "IMMERSEUS_SWIRL",
+        "Kampfrausch / Heldentum":      "IMMERSEUS_ENC_START"
     }
 });
 </script>
 
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
-        Global WA Export
+        Globale WA Exportieren
     </button>
     <div class="mt-4 text-xs text-gray-500 italic">
         <strong>Leere Spalten:</strong> Seite neuladen, falls eine Spalte leer ist
@@ -218,9 +217,9 @@ CD_AUTO_PLANNER.init({
         
         const TRIGGER_OPTIONS = [
             { val: "IMMERSEUS_ENC_START",             text: "Kampfbeginn" },
-            { val: "IMMERSEUS_HEALTH",                text: "Gesundheit % (Wähle NPC)" },
-            { val: "IMMERSEUS_SPLIT",                 text: "Phase 2 (Teilung)" },
-            { val: "IMMERSEUS_REFORM",                text: "Phase 1 (Zusammensetzen)" },
+            { val: "IMMERSEUS_HEALTH",                text: "HP % (Wähle Ziel)" },
+            { val: "IMMERSEUS_SPLIT",                 text: "Phase 2 (Split)" },
+            { val: "IMMERSEUS_REFORM",                text: "Phase 1 (Reform)" },
             { val: "IMMERSEUS_SWIRL",                 text: "Wirbel" },
             { val: "IMMERSEUS_BLAST",                 text: "Ätzender Schlag" },
             { val: "IMMERSEUS_SWELLING_CORRUPTION",   text: "Schwellendes Verderbnis (HC)" },

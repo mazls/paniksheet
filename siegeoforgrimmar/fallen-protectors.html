@@ -26,7 +26,7 @@
     }
 </style>
 <main>
-    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Die Beschützer des Tals</h1>
+    <h1 class="text-3xl font-bold text-center text-blue-450 mb-2">Taktik: Die gefallenen Beschützer</h1>
     <nav class="quick-nav-bar mb-6">
         <a href="#overview">Übersicht</a>
         <a href="#assignments">Einteilungen</a>
@@ -46,46 +46,47 @@
     </h2>
     <div class="collapsible-content">
         <p class="mb-4">
-            Dieser Kampf findet gegen drei Gegner gleichzeitig statt. Jeder Gegner ruft bei 66% und 33% seiner maximalen Gesundheit eine Spezialphase ("Verzweifelte Maßnahmen") aus. Alle drei Gegner müssen zeitnah besiegt werden, andernfalls heilen sie sich wieder hoch. Es ist zwingend erforderlich, die Spezialphasen nacheinander auszulösen, niemals zeitgleich.
+            <strong>Die goldene Regel:</strong> Alle drei Bosse müssen innerhalb eines 20-Sekunden-Fensters auf 1 HP droppen! Wenn ein Boss 1 HP erreicht, während ein anderer noch lebt, startet er einen Heal-Channel – sterben die anderen nicht rechtzeitig, heilt er sich um 30% hoch und es droht ein Wipe.<br><br>
+            Jeder Boss pusht bei 66% und 33% seiner Max-HP in eine Spezialphase ("Desperate Measures" / DM). Ihr müsst diese DM-Phasen zwingend nacheinander auslösen, niemals zeitgleich! Die ideale Push-Reihenfolge ist: Sun → Rook → He.
         </p>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tank</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Rook Steinzeh:</strong> Nutzt frontale Angriffe. Niemals in die Gruppe drehen. Bei seiner Spezialphase müssen die erscheinenden Begleiter schnell an sich gebunden werden.</li>
-                    <li><strong class="text-purple-400">He der Leisetreter:</strong> Fixiert regelmäßige Ziele und hinterlässt Gifte. Der aufbauende Schaden erfordert einen zügigen Wechsel zwischen den Tanks.</li>
-                    <li>Sun zartes Herz benötigt keinen direkten Tank, muss aber unterbrochen werden.</li>
+                    <li><strong class="text-red-400">Rook Steinzeh:</strong> Macht harte frontale Cleaves. Niemals in den Raid drehen! Bei seiner DM-Phase müssen die spawnenden Adds sofort von euch eingesammelt werden.</li>
+                    <li><strong class="text-purple-400">He der Leisetreter:</strong> Hinterlässt stetig Gift-Voidzones. Der aufbauende Schaden und sein permanenter Bleed erfordern ständiges Kiten.</li>
+                    <li><strong class="text-yellow-400">Sun zartes Herz:</strong> Braucht keinen direkten Tank, aber ihr "Sha-Sengen" muss konsequent gekickt werden.</li>
                 </ul>
             </div>
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-blue-400">Unterbrechungen:</strong> Das "Sha-Sengen" von Sun zartes Herz muss konsequent verhindert werden.</li>
-                    <li><strong class="text-red-400">Unheil:</strong> Eine gewaltige Fähigkeit von Sun, die einen Großteil der Gesundheit des gesamten Schlachtzugs abzieht. Heiler müssen sofort reagieren.</li>
-                    <li>Bewegung: Den giftigen Flächen und einschlagenden Fässern stetig ausweichen.</li>
+                    <li><strong class="text-blue-400">Kicks:</strong> Das "Sha-Sengen" von Sun muss von eingeteilten Spielern zwingend bei ca. der Hälfte der Castzeit gekickt werden.</li>
+                    <li><strong class="text-red-400">Unheil (Calamity):</strong> Massiver Raid-AoE von Sun, der 30% Max-HP abzieht. Heiler müssen hier eine feste Raid-CD-Rotation spielen!</li>
+                    <li><strong class="text-emerald-400">Movement:</strong> Den Gift-Voidzones und einschlagenden Fässern sofort ausweichen. Bei Rooks "Wirbelnder Kranichtritt" sofort rauslaufen.</li>
                 </ul>
             </div>
         </div>
 
         <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Klassen-Tipps & Tricks</h4>
+            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktik-Tipps & Kampfrausch</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                 <div>
-                    <strong class="text-emerald-200">DPS (Nahkampf):</strong><br>
-                    Kümmert euch vorrangig um die Unterbrechungs-Reihenfolge bei Sun zartes Herz. Eure kurzen Reaktionszeiten sind hier gefragt.
+                    <strong class="text-emerald-200">⚡ HT / Bloodlust:</strong><br>
+                    Zieht Kampfrausch/Heldentum direkt beim Pull! So maximiert ihr euren Burst-Damage im längsten ungestörten Zeitfenster, bevor Sun bei 66% in ihre erste DM-Phase gepusht wird.
                 </div>
                 <div>
-                    <strong class="text-emerald-200">DPS (Fernkampf):</strong><br>
-                    Verteilt euch weiträumig, um den Schaden durch das "Verderbte Gebräu" auf einzelne Personen zu begrenzen.
+                    <strong class="text-emerald-200">DPS (Fokus):</strong><br>
+                    Haltet euch strikt an die Push-Reihenfolge (Sun → Rook → He). Sobald eine DM-Phase triggert, absoluter DPS-Stopp auf die Bosse! Cleart erst komplett die Adds.
                 </div>
                 <div>
                     <strong class="text-emerald-200">Heiler:</strong><br>
-                    Spart eure stärksten Fähigkeiten für Suns Spezialphase ("Meditation") sowie das "Unheil" auf. Der eintreffende Schaden ist extrem hoch.
+                    Spart eure stärksten Output-CDs für Suns DM-Phase ("Dunkle Meditation") und für die späten "Unheil"-Casts. Der eintreffende Raid-Schaden ist extrem hoch.
                 </div>
                 <div>
-                    <strong class="text-emerald-200">Vorsicht:</strong><br>
-                    Gegner mit flächendeckendem Schaden sind hervorragend geeignet, um die Gesundheit der drei Kontrahenten gleichmäßig zu senken. Achtet jedoch strikt auf die Prozente (66% / 33%).
+                    <strong class="text-emerald-200">Cleave & Multi-DoT:</strong><br>
+                    Klassen mit starkem Cleave sind perfekt, um alle drei Bosse gleichmäßig runterzuspielen. Achtet aber genau auf die 66%- und 33%-Schwellen!
                 </div>
             </div>
         </div>
@@ -106,7 +107,7 @@
                     <ul class="assignment-list">
                         <li><span>Rook Steinzeh:</span><select class="assignment-select" data-assignment-id="protectors-tank-rook"></select></li>
                         <li><span>He der Leisetreter:</span><select class="assignment-select" data-assignment-id="protectors-tank-he"></select></li>
-                        <li><span>Spezialphase (Zusätzliche Feinde):</span><select class="assignment-select" data-assignment-id="protectors-tank-adds"></select></li>
+                        <li><span>DM-Adds (Spezialphase):</span><select class="assignment-select" data-assignment-id="protectors-tank-adds"></select></li>
                     </ul>
                 </div>
                 
@@ -129,42 +130,7 @@
         </div>
     </div>
 </section>
-<!-- ══════════════════════════════════════════════════════════════
-     DIE GEFALLENEN BESCHÜTZER — CD AUTO-PLANER
-     ════════════════════════════════════════════════════════════
-     Füge diesen Block VOR die <section id="planner"> ein.
-     
-     KAMPF-STRUKTUR (aus DBM):
-       3 Bosse gleichzeitig:
-         - Rook Steinzeh (71475)
-         - He der Leisetreter (71479)
-         - Sun zartes Herz (71480)
-       
-       Jeder Boss hat 2 "Desperate Measures" Phasen:
-         - 66% HP: Erste Measure
-         - 33% HP: Zweite Measure
-       
-       Reihenfolge der Bosse beim Töten ist TAKTISCH!
-       Meistens: Rook → He → Sun
-       → Dadurch ergeben sich die HP-Schwellen zu verschiedenen Zeiten
-     
-     TIMER (DBM OnCombatStart):
-       Vengeful Strikes:  21s CD,  Start 7s
-       Garrote (He):      29s CD,  Start 15s
-       Bane (Sun):        17s CD,  Start 15s
-       Corrupted Brew:    10.1s CD, Start 18s
-       Gouge (He):        26.7s CD, Start 23s
-       Calamity (Sun):    37.5s CD, Start 31s
-       Clash:             46s CD,  Start 45s
-       Berserk:           600s (Mythic) / 900s (andere)
-     
-     WICHTIG: Desperate Measures unterbrechen die normalen Timer!
-     Nach Ende der Measure starten sie wieder mit Offsets.
-     Daher sind die Zeiten hier Schätzungen für einen Kill ohne
-     spezielle Measures-Überlappungen.
-     ══════════════════════════════════════════════════════════ -->
 
-<!-- HTML-Sektion (Copy & Paste, nicht verändern) -->
 <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
         🤖 Auto-CD-Planer
@@ -202,63 +168,23 @@
 <script src="static/lane-groups.js"></script>
 <script src="static/cd-auto-planner.js"></script>
 <script>
-// ══════════════════════════════════════════════════════════════
-// GEFALLENE BESCHÜTZER — BOSS-KONFIGURATION
-// ══════════════════════════════════════════════════════════════
-//
-// DBM-Quellen (FallenProtectors.lua):
-//   timerCalamityCD:     NewCDTimer(37.5, 143491)  → Raid-Schaden (5s Cast)
-//   timerClashCD:        NewCDTimer(46, 143027)    → Ausweichen
-//   timerGarroteCD:      NewCDTimer(29, 143198)    → Heal-Druck (Tank-DoT)
-//   timerBaneCD:         NewCDTimer(17, 143446)    → Dispel (Healer-fokussiert)
-//   timerCorruptedBrewCD:NewCDTimer(10.1, 143019)  → Mini-AoE
-//   timerGougeCD:        NewCDTimer(26.7, 143330)  → Tank-Stun
-//   timerVengefulStrikesCD: NewCDTimer(21, 144396) → Tank-CD
-//
-// HP-SCHWELLEN (Desperate Measures):
-//   Rook 66%: Misery/Sorrow/Gloom → Inferno Strike + Defiled Ground
-//   Rook 33%: Wiederholung
-//   He 66%:   Mark of Anguish → Markierte Spieler
-//   He 33%:   Wiederholung
-//   Sun 66%:  Dark Meditation → DoT-Schaden auf Raid
-//   Sun 33%:  Wiederholung
-//
-// TIPP: Viele Gilden killen die Bosse in fester Reihenfolge
-// (z.B. Rook → He → Sun). Dann fallen die Measures zeitlich
-// auseinander. Passt die HP-Trigger-Zeiten an EUREN Kill an.
-//
-// WICHTIG: Während einer Measure-Phase sind die normalen Timer
-// GEPAUST. Der Auto-Planner weiß das nicht, also exportiert er
-// CDs zu Zeiten wo sie eigentlich nicht nötig sind.
-// → Nutze manuelles Overriding für komplexe Zyklen!
-
 CD_AUTO_PLANNER.init({
     id: 'fallen-protectors',
     name: "Die gefallenen Beschützer",
     prefix: 'PROTECTORS',
 
     events: [
-        // ──────────────────────────────────────────────
-        // CALAMITY (Sun) — HAUPTGRUND für Raid-CDs
-        // DBM: CDTimer 37.5s, firstCast 31s, 5s Cast
-        // Raid-weiter Schaden, skaliert mit Prozent (+10% pro Cast auf Mythic)
-        // ──────────────────────────────────────────────
         {
             name: "Unheil (Calamity)",
             spellId: 143491,
-            firstCast: 31,          // DBM OnCombatStart
-            cooldown: 37.5,         // DBM CDTimer
+            firstCast: 31,
+            cooldown: 37.5,
             maxCasts: 8,
-            delay: -3,              // 3s vor dem Einschlag (Cast = 5s)
-            eventDuration: 5,       // 5s Cast
+            delay: -3,
+            eventDuration: 5,
             requiredCDs: ["any_dr", "any_heal"],
             icon: "☀️"
         },
-
-        // ──────────────────────────────────────────────
-        // CLASH — Raid-weite Mechanik (Ausweichen + AoE)
-        // DBM: CDTimer 46s, firstCast 45s
-        // ──────────────────────────────────────────────
         {
             name: "Zusammenstoß (Clash)",
             spellId: 143027,
@@ -270,49 +196,10 @@ CD_AUTO_PLANNER.init({
             requiredCDs: ["movement"],
             icon: "💥"
         },
-
-        // ──────────────────────────────────────────────
-        // DESPERATE MEASURES — HP-basiert
-        // Reihenfolge: Rook (meistens zuerst) → He → Sun
-        // Zeitpunkte = Schätzungen für typischen Kill
-        // ──────────────────────────────────────────────
         {
             name: "Rook 66% (Misery/Sorrow/Gloom)",
             spellId: 143955,
-            firstCast: 90,          // ~1:30 für Rook 66%
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 30,      // Adds müssen gekillt werden
-            requiredCDs: ["any_dr", "additional_surv"],
-            icon: "🔥"
-        },
-        {
-            name: "Hee 66% (Mark of Anguish)",
-            spellId: 143812,
-            firstCast: 120,         // ~2:00
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 20,
-            requiredCDs: ["any_heal", "tank_external"],  // Markiertes Ziel braucht Heals + Externals
-            icon: "🗡️"
-        },
-        {
-            name: "Sun 66% (Dark Meditation)",
-            spellId: 143546,
-            firstCast: 150,         // ~2:30
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 20,
-            requiredCDs: ["any_dr", "mana"],  // Heilung fällt aus → DR + Mana-Refill
-            icon: "🌙"
-        },
-        {
-            name: "Rook 33% (Misery/Sorrow/Gloom)",
-            spellId: 143955,
-            firstCast: 210,         // ~3:30
+            firstCast: 90,
             cooldown: 0,
             maxCasts: 1,
             delay: 0,
@@ -321,9 +208,42 @@ CD_AUTO_PLANNER.init({
             icon: "🔥"
         },
         {
-            name: "Hee 33% (Mark of Anguish)",
+            name: "He 66% (Mark of Anguish)",
             spellId: 143812,
-            firstCast: 260,         // ~4:20
+            firstCast: 120,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 20,
+            requiredCDs: ["any_heal", "tank_external"],
+            icon: "🗡️"
+        },
+        {
+            name: "Sun 66% (Dark Meditation)",
+            spellId: 143546,
+            firstCast: 150,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 20,
+            requiredCDs: ["any_dr", "mana"],
+            icon: "🌙"
+        },
+        {
+            name: "Rook 33% (Misery/Sorrow/Gloom)",
+            spellId: 143955,
+            firstCast: 210,
+            cooldown: 0,
+            maxCasts: 1,
+            delay: 0,
+            eventDuration: 30,
+            requiredCDs: ["any_dr", "additional_surv"],
+            icon: "🔥"
+        },
+        {
+            name: "He 33% (Mark of Anguish)",
+            spellId: 143812,
+            firstCast: 260,
             cooldown: 0,
             maxCasts: 1,
             delay: 0,
@@ -334,22 +254,18 @@ CD_AUTO_PLANNER.init({
         {
             name: "Sun 33% (Dark Meditation)",
             spellId: 143546,
-            firstCast: 310,         // ~5:10
+            firstCast: 310,
             cooldown: 0,
             maxCasts: 1,
             delay: 0,
             eventDuration: 20,
-            requiredCDs: ["any_dr", "any_heal", "mana"],  // Härteste Phase: alle Tools raus
+            requiredCDs: ["any_dr", "any_heal", "mana"],
             icon: "🌙"
         },
-
-        // ──────────────────────────────────────────────
-        // BLOODLUST
-        // ──────────────────────────────────────────────
         {
-            name: "Bloodlust",
+            name: "Bloodlust / HT",
             spellId: 0,
-            firstCast: 0,           // Auf Pull oder beim ersten Sun-Measure
+            firstCast: 0,
             cooldown: 0,
             maxCasts: 1,
             delay: 0,
@@ -359,62 +275,57 @@ CD_AUTO_PLANNER.init({
         }
     ],
 
-    // Mapping auf TRIGGER_OPTIONS (SoO-Keys: FALLEN_*)
-    // - Desperate Measures haben eigene explizite Trigger (kein HEALTH)
-    // - Wiederholte Spells: eigene FALLEN_* Trigger
-    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH-Trigger
     triggerMap: {
         "Unheil (Calamity)":                "FALLEN_CALAMITY",
-        "Zusammenstoß (Clash)":              "FALLEN_CLASH",
-        // Desperate Measures haben eigene explizite Trigger
+        "Zusammenstoß (Clash)":             "FALLEN_CLASH",
         "Rook 66% (Misery/Sorrow/Gloom)":   "FALLEN_DESPERATE_MEASURES_ROOK",
         "Rook 33% (Misery/Sorrow/Gloom)":   "FALLEN_DESPERATE_MEASURES_ROOK",
-        "Hee 66% (Mark of Anguish)":        "FALLEN_DESPERATE_MEASURES_HE",
-        "Hee 33% (Mark of Anguish)":        "FALLEN_DESPERATE_MEASURES_HE",
+        "He 66% (Mark of Anguish)":         "FALLEN_DESPERATE_MEASURES_HE",
+        "He 33% (Mark of Anguish)":         "FALLEN_DESPERATE_MEASURES_HE",
         "Sun 66% (Dark Meditation)":        "FALLEN_DESPERATE_MEASURES_SUN",
         "Sun 33% (Dark Meditation)":        "FALLEN_DESPERATE_MEASURES_SUN",
-        "Bloodlust":                         "FALLEN_ENC_START"
+        "Bloodlust / HT":                   "FALLEN_ENC_START"
     }
 });
 </script>
 
 <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
-            Globalen Export erzeugen
+            Globale WA Exportieren
         </button>
         <div class="mt-4 text-xs text-gray-500 italic">
-            <strong>Hinweis:</strong> Sollte eine Spalte fehlerhaft laden, laden Sie das Dokument kurz neu.
+            <strong>Hinweis:</strong> Sollte eine Spalte fehlerhaft laden, ladet das Dokument kurz neu.
         </div>
         <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-            Zeitplaner für Fähigkeiten
+            Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
 <div class="mb-6">
     <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> Planungsübersicht
+        <span class="text-xl">📜</span> CD-Einteilung Übersicht
     </h3>
     
     <div id="protectors-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
         <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
             Warte auf Eingaben... <br>
-            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
+            <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
         </p>
     </div>
 </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende Reihenfolge (1, 2, 3...).
+                    <strong>% / #:</strong> Gebt entweder die HP in Prozent an oder die fortlaufende Cast-Reihenfolge (1, 2, 3...).
                 </div>
 
                 <div id="protectors-planner-container" class="space-y-2 planner-scroll-container"></div>
                 
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                    * <strong>Zielvorgabe:</strong> Wählt hier das entsprechende Target, wenn ihr prozentuale HP nutzt.
                 </div>
             </div>
         </div>
-    </section>
+</section>
 
 <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
@@ -424,28 +335,28 @@ CD_AUTO_PLANNER.init({
     <div class="collapsible-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Die Kontrahenten</h4>
+                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Die Bosse</h4>
                 <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-red-400">Vergeltende Stöße (Rook):</strong> Richtet in einem Bereich vor dem Ausführenden schweren Schaden an. Nur der fixierte Tank darf hier stehen.</li>
-                    <li><strong class="text-purple-400">Erdrosseln (He):</strong> Ein stetig tickender Schaden, der erst bei einer Spezialphase wieder entfernt wird. Erschwert den Kampf massiv, je länger er andauert.</li>
-                    <li><strong class="text-cyan-400">Unheil (Sun):</strong> Zieht jedem Mitglied des Schlachtzugs exakt 30% der momentanen Gesundheit ab.</li>
+                    <li><strong class="text-red-400">Vergeltende Stöße (Rook):</strong> Frontaler Cleave, der schweren Schaden anrichtet. Niemals davor stehen. Der fixierte Tank muss hier Def-CDs ziehen.</li>
+                    <li><strong class="text-purple-400">Erdrosseln (He):</strong> Ein stetig tickender Bleed-Debuff, der erst in seiner DM-Phase resettet wird. Erzeugt massiven Heal-Druck im Raid!</li>
+                    <li><strong class="text-cyan-400">Unheil (Sun):</strong> Zieht dem kompletten Raid exakt 30% der momentanen Max-HP ab.</li>
                 </ul>
             </div>
             <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Verzweifelte Maßnahmen (66% / 33%)</h4>
+                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Desperate Measures (66% / 33%)</h4>
                 <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-gray-400">Rook:</strong> Ruft Manifestationen des Kummers, der Düsternis und der Pein. Diese müssen von Tanks rasch gebunden werden.</li>
-                    <li><strong class="text-green-400">He:</strong> Beschwört das Zeichen der Qual. Der Träger dieses Zeichens erleidet massiven Schaden und muss es rechtzeitig an andere weitergeben.</li>
-                    <li><strong class="text-yellow-400">Sun:</strong> Aktiviert die Dunkle Meditation. Der Schlachtzug nimmt fortlaufenden Schaden, kann diesen jedoch in der schützenden Kuppel reduzieren. Feinde außerhalb der Kuppel müssen zeitgleich eliminiert werden.</li>
+                    <li><strong class="text-gray-400">Rook:</strong> Spawnt drei Adds (Kummer, Düsternis, Pein). Diese müssen von den Tanks sofort gepullt und vom Raid im Cleave getötet werden.</li>
+                    <li><strong class="text-green-400">He:</strong> Spawnt das "Zeichen der Qual". Der Träger kassiert massiven Schaden und muss den Debuff rechtzeitig per Klick an den nächsten Spieler passen, bevor er stirbt.</li>
+                    <li><strong class="text-yellow-400">Sun:</strong> "Dunkle Meditation". Der Raid kassiert extremen AoE-Schaden und muss zwingend in der Bubble stacken! Ranged-DPS nuken die großen Adds draußen, Melees cleaven die kleinen Adds drinnen.</li>
                 </ul>
             </div>
         </div>
         
         <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
+            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen (HC)</h3>
             <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li>Alle Fähigkeiten verursachen drastisch höheren Schaden, was Fehler kaum verzeiht.</li>
-                <li>Die Überschneidungen von "Unheil" mit anderen schadhaften Fähigkeiten erfordern den exakten Einsatz schützender Maßnahmen durch die Heiler.</li>
+                <li>Alle Fähigkeiten skalieren härter und verzeihen keine Fehler. Das "Unheil" (Calamity) stackt pro Cast um 10% mehr Schaden, bis Sun in die DM-Phase geht.</li>
+                <li>Die Überschneidungen von "Unheil" mit anderen Fähigkeiten erfordern perfektes Timing eurer Raid-CDs.</li>
             </ul>
         </div>
     </div>
@@ -456,25 +367,25 @@ CD_AUTO_PLANNER.init({
         
         const TRIGGER_OPTIONS = [
             { val: "FALLEN_ENC_START",                text: "Kampfbeginn" },
-            { val: "FALLEN_HEALTH",                   text: "Gesundheit % (Wähle NPC)" },
-            { val: "FALLEN_VENGEFUL_STRIKES",         text: "Rachsüchtige Schläge" },
+            { val: "FALLEN_HEALTH",                   text: "HP % (Wähle NPC)" },
+            { val: "FALLEN_VENGEFUL_STRIKES",         text: "Rachsüchtige Schläge (Cleave)" },
             { val: "FALLEN_CORRUPTED_BREW",           text: "Korrumpiertes Gebräu" },
             { val: "FALLEN_CLASH",                    text: "Zusammenstoß" },
-            { val: "FALLEN_DEFILED_GROUND",           text: "Geschändeter Boden" },
+            { val: "FALLEN_DEFILED_GROUND",           text: "Geschändeter Boden (Voidzone)" },
             { val: "FALLEN_INFERNO_STRIKE",           text: "Infernoschlag" },
-            { val: "FALLEN_GOUGE",                    text: "Stechen" },
-            { val: "FALLEN_GARROTE",                  text: "Erdrosseln" },
-            { val: "FALLEN_BANE",                     text: "Schattenwort: Qual" },
-            { val: "FALLEN_CALAMITY",                 text: "Unheil (Sun)" },
-            { val: "FALLEN_DESPERATE_MEASURES_ROOK",  text: "Verzweifelte Maßnahme: Rook" },
-            { val: "FALLEN_DESPERATE_MEASURES_HE",    text: "Verzweifelte Maßnahme: Hee" },
-            { val: "FALLEN_DESPERATE_MEASURES_SUN",   text: "Verzweifelte Maßnahme: Sun" },
+            { val: "FALLEN_GOUGE",                    text: "Stechen (Tank-Stun)" },
+            { val: "FALLEN_GARROTE",                  text: "Erdrosseln (Bleed)" },
+            { val: "FALLEN_BANE",                     text: "Schattenwort: Qual (Dispel)" },
+            { val: "FALLEN_CALAMITY",                 text: "Unheil (Sun Raid-AoE)" },
+            { val: "FALLEN_DESPERATE_MEASURES_ROOK",  text: "DM-Phase: Rook (Adds)" },
+            { val: "FALLEN_DESPERATE_MEASURES_HE",    text: "DM-Phase: He (Qual)" },
+            { val: "FALLEN_DESPERATE_MEASURES_SUN",   text: "DM-Phase: Sun (Bubble)" },
             { val: "FALLEN_MARK",                     text: "Mal der Qual" }
         ];
 
         const NPC_OPTIONS = [
             "Rook Steinzeh",
-            "Hee Samtfuß",
+            "He Samtfuß",
             "Sun Zartherz",
             "Verkörperung der Qual"
         ];
@@ -588,9 +499,6 @@ CD_AUTO_PLANNER.init({
             setTimeout(window.updatePlannerSummary, 500);
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // EINTEILUNGS-BLÖCKE (LaneGroups)
-        // ═══════════════════════════════════════════════════════════════
         if (window.LaneGroups) {
             try {
                 window.LaneGroups.init({
@@ -602,29 +510,26 @@ CD_AUTO_PLANNER.init({
                     assignments: (typeof assignments !== 'undefined' ? assignments : null),
                     defaultBlocks: [
                         {
-                            title: 'Interrupts',
+                            title: 'Interrupts (Kicks)',
                             type: 'multi-lane',
                             autoFill: true,
                             lanes: [
-                                // Sun zartes Herz (blau)
                                 { marker: 'square',  slots: ['', '', '', ''] },
-                                // Gloom (magenta)
                                 { marker: 'diamond', slots: ['', '', '', ''] }
                             ]
                         },
                         {
-                            title: 'Anguish Soak Rotation',
+                            title: 'Anguish Soak Rotation (Qual)',
                             type: 'multi-lane',
                             autoFill: true,
                             lanes: [
-                                // Drei Pulses pro Rotation; Slots = Rotation 1 / Rotation 2 / BU
-                                { marker: 'star',   slots: ['', '', ''] },  // First
-                                { marker: 'circle', slots: ['', '', ''] },  // Second
-                                { marker: 'cross',  slots: ['', '', ''] }   // Third
+                                { marker: 'star',   slots: ['', '', ''] },
+                                { marker: 'circle', slots: ['', '', ''] },
+                                { marker: 'cross',  slots: ['', '', ''] }
                             ]
                         },
                         {
-                            title: 'Gloom Grips',
+                            title: 'Gloom Grips (Düsternis)',
                             type: 'multi-lane',
                             autoFill: true,
                             lanes: [
@@ -632,7 +537,7 @@ CD_AUTO_PLANNER.init({
                             ]
                         },
                         {
-                            title: 'Bane Dispels',
+                            title: 'Bane Dispels (Qual Dispel)',
                             type: 'single-list',
                             autoFill: true,
                             slots: ['', '', '', '', '']
