@@ -1276,6 +1276,78 @@ window.LaneGroups = (function () {
         return inst;
     }
 
-    return { init, _instances };
+    // ════════════════════════════════════════════════════════════
+    // PUBLIC HELPERS für Integrationen (Master-View, WeakAura-Export)
+    // ════════════════════════════════════════════════════════════
+
+    // Liefert die Instanz für einen Container — wer das Modul von außen
+    // ansteuern will, bekommt damit Zugriff auf den State.
+    function getInstance(containerId) {
+        return _instances.get(containerId) || null;
+    }
+
+    // Lädt eine bestehende Instanz aus einem neuen `assignments`-Objekt neu.
+    // Wird vom Master-View benutzt, wenn die Boss-Daten frisch aus Firestore kommen.
+    function reloadAssignments(containerId, assignments) {
+        const inst = _instances.get(containerId);
+        if (!inst) return false;
+        loadState(inst, assignments);
+        render(inst);
+        return true;
+    }
+
+    // Liefert eine lesbare Text-Summary einer Instanz (für WeakAura-Export):
+    //   Boss Name — Block-Title
+    //     ⭐ Star: Marcel, Sarah
+    //     🟠 Circle: ...
+    // - Spec-Slots werden zu echten Spielernamen aufgelöst
+    // - Klassen-Platzhalter und Group-Keys bleiben als Token erhalten
+    // - Leere Slots/Lanes/Blöcke werden weggelassen
+    function getSummary(containerId, opts) {
+        opts = opts || {};
+        const heading = opts.heading || '';
+        const inst = _instances.get(containerId);
+        if (!inst) return '';
+
+        const lines = [];
+        inst.blocks.forEach(block => {
+            const blockLines = [];
+            (block.lanes || []).forEach((lane, li) => {
+                const players = (lane.slots || [])
+                    .map(v => {
+                        if (!v) return '';
+                        const disp = resolveValueDisplay(inst, v);
+                        return disp.displayName || v;
+                    })
+                    .filter(Boolean);
+                if (players.length === 0) return;
+                let label;
+                if (block.type === 'multi-lane') {
+                    const m = getMarker(lane.marker);
+                    if (lane.title) label = `${m.emoji} ${lane.title}`;
+                    else if (m.id)  label = `${m.emoji} ${m.label}`;
+                    else            label = `Spalte ${li + 1}`;
+                } else if (block.type === 'marked-list') {
+                    label = 'Liste';
+                } else {
+                    label = 'Liste';
+                }
+                blockLines.push(`  ${label}: ${players.join(', ')}`);
+            });
+            if (blockLines.length === 0) return;
+            lines.push(`${heading ? heading + ' — ' : ''}${block.title}`);
+            blockLines.forEach(l => lines.push(l));
+        });
+        return lines.join('\n');
+    }
+
+    return {
+        init,
+        _instances,
+        // Public API für Integrationen
+        getInstance,
+        reloadAssignments,
+        getSummary
+    };
 
 })();

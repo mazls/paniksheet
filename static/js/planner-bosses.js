@@ -85,6 +85,179 @@ function updateAssignmentPools() {
 window.updateAssignmentPools = updateAssignmentPools;
 
 // =============================================================================
+// MODUL-EBENE HILFSFUNKTIONEN für Sha / Norushen / LaneGroups-Exports
+// — werden sowohl von generateGlobalWaString als auch von buildDiscordEmbeds
+//   genutzt. Daher hier außerhalb der Funktionen.
+// =============================================================================
+
+// Marker-Lookup für LaneGroups-Anzeige (keine Modul-Abhängigkeit)
+const LG_MARKER_BY_ID = {
+    '':        { id: '',         label: 'Kein Marker', emoji: '·'  },
+    'star':    { id: 'star',     label: 'Star',         emoji: '⭐' },
+    'circle':  { id: 'circle',   label: 'Circle',       emoji: '🟠' },
+    'diamond': { id: 'diamond',  label: 'Diamond',      emoji: '💜' },
+    'triangle':{ id: 'triangle', label: 'Triangle',     emoji: '🔺' },
+    'moon':    { id: 'moon',     label: 'Moon',         emoji: '🌙' },
+    'square':  { id: 'square',   label: 'Square',       emoji: '🟦' },
+    'cross':   { id: 'cross',    label: 'Cross',        emoji: '❌' },
+    'skull':   { id: 'skull',    label: 'Skull',        emoji: '💀' }
+};
+
+// Spec-Slot oder direkten Spielernamen zu echtem Roster-Namen auflösen.
+// Spec-Slot-Keys (über window.SlotSystem) → resolved. Klassen-Wildcards /
+// Group-Keys bleiben als Token erhalten.
+function resolveSlotOrPlayer(val) {
+    if (!val || typeof val !== 'string') return '';
+    const ss = window.SlotSystem;
+    if (ss && ss.isSlotKey && ss.isSlotKey(val)) {
+        const resolved = ss.resolvePlayerName(val, true);
+        if (!resolved) return '';
+        if (Array.isArray(window.rosterData)) {
+            const inRoster = window.rosterData.some(p => p && p.name === resolved);
+            if (!inRoster) return '';
+        }
+        return resolved;
+    }
+    return val;
+}
+
+// Sha-of-Pride 4-Platten Export.
+// Liest boss-sha-of-pride.sha-plates.platesData[].{rt, slots}.
+// Format pro Platte: "{rtX}-Spieler1,Spieler2" — mehrere Platten durch \n.
+function buildShaPlatesExport(data) {
+    if (!data) return "";
+    const block = data['sha-plates'];
+    if (!block || !Array.isArray(block.platesData)) return "";
+    const lines = [];
+    block.platesData.forEach(plate => {
+        if (!plate || !Array.isArray(plate.slots)) return;
+        const players = plate.slots
+            .map(s => resolveSlotOrPlayer(s))
+            .filter(Boolean);
+        if (players.length === 0) return;
+        const prefix = plate.rt ? `{${plate.rt}}-` : '';
+        lines.push(prefix + players.join(','));
+    });
+    return lines.join('\n');
+}
+
+// Norushen Orb-Reihenfolge Export.
+// Liest boss-norushen.norushen-orb-order.orderData[].{player, delay}.
+// Format: "Spieler1-Delay1,Spieler2-Delay2,..."
+function buildNorushenOrbExport(data) {
+    if (!data) return "";
+    const block = data['norushen-orb-order'];
+    if (!block || !Array.isArray(block.orderData)) return "";
+    return block.orderData
+        .filter(r => r && r.player && r.delay !== '' && r.delay !== null && r.delay !== undefined)
+        .map(r => `${resolveSlotOrPlayer(r.player) || r.player}-${r.delay}`)
+        .join(',');
+}
+
+// Generischer LaneGroups-Export: durchsucht das Firestore-Doc nach allen
+// Feldern mit einem `blocks`-Array (LaneGroups-Persistenz-Format) und baut
+// einen lesbaren Text-Dump. Spec-Slots werden aufgelöst.
+function buildLaneGroupsExport(data) {
+    if (!data) return "";
+    const sections = [];
+    Object.keys(data).forEach(key => {
+        const v = data[key];
+        if (!v || typeof v !== 'object' || !Array.isArray(v.blocks)) return;
+        v.blocks.forEach(block => {
+            const blockLines = [];
+            (block.lanes || []).forEach((lane, li) => {
+                const players = (lane.slots || [])
+                    .map(s => resolveSlotOrPlayer(s))
+                    .filter(Boolean);
+                if (players.length === 0) return;
+                let label;
+                if (block.type === 'multi-lane') {
+                    const m = LG_MARKER_BY_ID[lane.marker || ''] || LG_MARKER_BY_ID[''];
+                    if (lane.title) label = `${m.emoji} ${lane.title}`;
+                    else if (m.id)  label = `${m.emoji} ${m.label}`;
+                    else            label = `Spalte ${li + 1}`;
+                } else {
+                    label = 'Liste';
+                }
+                blockLines.push(`  ${label}: ${players.join(', ')}`);
+            });
+            if (blockLines.length === 0) return;
+            sections.push(`${block.title || '(Unbenannt)'}`);
+            blockLines.forEach(l => sections.push(l));
+            sections.push('');
+        });
+    });
+    return sections.join('\n').trim();
+}
+
+// Siegecrafter Black-Iron-Killorder Export.
+// Liest boss-siegecrafter.blackfuse-killorder.killOrder = ['Missile','Mine',...]
+// Format: 'Missile,Mine,Laser,...' — Tokens, keine Spielernamen → keine Resolution.
+function buildSiegecrafterKillorderExport(data) {
+    if (!data) return "";
+    const block = data['blackfuse-killorder'];
+    if (!block) return "";
+    let arr = block.killOrder;
+    if (!Array.isArray(arr)) {
+        if (arr && typeof arr === 'object') arr = Object.values(arr);
+        else return "";
+    }
+    const filtered = arr.filter(s => s && typeof s === 'string' && s.trim());
+    return filtered.length > 0 ? filtered.join(',') : "";
+}
+
+// Siegecrafter Lines Export (Conveyor-Belt-Teams).
+// Liest boss-siegecrafter.blackfuse-lines:
+//   teamsData = [{slots:[p1,p2,...]}, {slots:[...]}]  (2 Teams mit Spielern;
+//               Legacy-Format: direkte Arrays statt {slots} — beides supported)
+//   lineTeams = ['0','1','—',...]                     (welches Team auf welcher Line)
+// Format: 'LINE1-Marcel,Sarah,LINE2-Steffi,Niyrana'
+function buildSiegecrafterLinesExport(data) {
+    if (!data) return "";
+    const block = data['blackfuse-lines'];
+    if (!block || !Array.isArray(block.teamsData) || !Array.isArray(block.lineTeams)) return "";
+
+    const parts = [];
+    block.lineTeams.forEach((teamIdx, l) => {
+        if (teamIdx !== '0' && teamIdx !== '1' && teamIdx !== 0 && teamIdx !== 1) return;
+        const idx = parseInt(teamIdx);
+        const teamRaw = block.teamsData[idx];
+        // teamsData[i] kann sein:
+        //   {slots: [p1, p2, ...]}        (aktuelles Save-Format)
+        //   [p1, p2, ...]                 (Legacy / Fallback)
+        //   {0: p1, 1: p2, ...}           (Object-Form aus alten Saves)
+        let team = [];
+        if (Array.isArray(teamRaw)) {
+            team = teamRaw;
+        } else if (teamRaw && Array.isArray(teamRaw.slots)) {
+            team = teamRaw.slots;
+        } else if (teamRaw && typeof teamRaw === 'object') {
+            team = Object.values(teamRaw);
+        }
+        const players = team.map(s => resolveSlotOrPlayer(s)).filter(Boolean);
+        if (players.length > 0) parts.push(`LINE${l + 1}-${players.join(',')}`);
+    });
+    return parts.join(',');
+}
+
+// Paragons Killorder Export.
+// Liest boss-paragons.paragons-killorder.killOrder = ['Iyyokuk','Skeer',...]
+// Format: 'Iyyokuk,Skeer,...' — Boss-Namen, keine Spieler → keine Resolution.
+function buildParagonsKillorderExport(data) {
+    if (!data) return "";
+    const block = data['paragons-killorder'];
+    if (!block) return "";
+    // killOrder kann als Array oder Object {0:..., 1:..., ...} kommen
+    let arr = block.killOrder;
+    if (!Array.isArray(arr)) {
+        if (arr && typeof arr === 'object') arr = Object.values(arr);
+        else return "";
+    }
+    const filtered = arr.filter(s => s && typeof s === 'string' && s.trim());
+    return filtered.length > 0 ? filtered.join(',') : "";
+}
+
+// =============================================================================
 // GLOBAL WEAKAURA EXPORT (generateGlobalWaString)
 // — incl. buildCdExportForBoss, buildJiKunWaveExport, buildDurumuSpectrumExport,
 //   updateCdExport (alles innerhalb der einen großen async-Funktion)
@@ -305,50 +478,99 @@ window.generateGlobalWaString = async function() {
             </label>`;
     }).join('');
 
-    // Extras (nur für Thron des Donners)
+    // Extras (raidspezifisch — pro Boss mit WeakAura-Export ein eigener Block)
     let extrasHtml = '';
-    if (selectedRaidId === 'throneofthunder') {
-        const jikunData = bossDataMap['ji-kun'];
-        const durumuData = bossDataMap['durumu'];
-        const jikunWaveStr = buildJiKunWaveExport(jikunData);
-        const durumuSpecStr = buildDurumuSpectrumExport(durumuData);
+    {
+        const specials = [];
 
-        extrasHtml = `
+        // --- Throne of Thunder Specials ---
+        if (selectedRaidId === 'throneofthunder') {
+            const jikunWaveStr = buildJiKunWaveExport(bossDataMap['ji-kun']);
+            const durumuSpecStr = buildDurumuSpectrumExport(bossDataMap['durumu']);
+            if (jikunWaveStr) specials.push({
+                key: 'jikun-waves', label: 'Ji-Kun Wellen', icon: 'fa-feather-alt',
+                color: 'emerald', value: jikunWaveStr, countLabel: 'Einträge'
+            });
+            if (durumuSpecStr) specials.push({
+                key: 'durumu-spectrum', label: 'Durumu Lichtspektrum', icon: 'fa-eye',
+                color: 'purple', value: durumuSpecStr, countLabel: 'Gruppen'
+            });
+        }
+
+        // --- Siege of Orgrimmar Specials ---
+        if (selectedRaidId === 'siegeoforgrimmar') {
+            const shaPlatesStr = buildShaPlatesExport(bossDataMap['sha-of-pride']);
+            if (shaPlatesStr) specials.push({
+                key: 'sha-plates', label: 'Sha-of-Pride Platten', icon: 'fa-shield-alt',
+                color: 'pink', value: shaPlatesStr, countLabel: 'Platten', isMultiline: true
+            });
+            const norushenStr = buildNorushenOrbExport(bossDataMap['norushen']);
+            if (norushenStr) specials.push({
+                key: 'norushen-orbs', label: 'Norushen Orb-Reihenfolge', icon: 'fa-circle',
+                color: 'cyan', value: norushenStr, countLabel: 'Einträge'
+            });
+            const blackfuseKillStr = buildSiegecrafterKillorderExport(bossDataMap['siegecrafter']);
+            if (blackfuseKillStr) specials.push({
+                key: 'blackfuse-killorder', label: 'Siegecrafter Kill-Reihenfolge', icon: 'fa-crosshairs',
+                color: 'orange', value: blackfuseKillStr, countLabel: 'Adds'
+            });
+            const blackfuseLinesStr = buildSiegecrafterLinesExport(bossDataMap['siegecrafter']);
+            if (blackfuseLinesStr) specials.push({
+                key: 'blackfuse-lines', label: 'Siegecrafter Conveyor-Lines', icon: 'fa-grip-lines',
+                color: 'yellow', value: blackfuseLinesStr, countLabel: 'Lines'
+            });
+            const paragonsKillStr = buildParagonsKillorderExport(bossDataMap['paragons']);
+            if (paragonsKillStr) specials.push({
+                key: 'paragons-killorder', label: 'Paragons Kill-Reihenfolge', icon: 'fa-crosshairs',
+                color: 'red', value: paragonsKillStr, countLabel: 'Adds'
+            });
+        }
+
+        // Hinweis: Weitere Bosse mit eigenen WeakAura-Exports werden hier ergänzt,
+        // z.B. durch Hilfsfunktionen analog zu buildShaPlatesExport. Format:
+        //   specials.push({
+        //       key: '...', label: '...', icon: 'fa-...',
+        //       color: '...', value: <Helper-Aufruf>, countLabel: '...',
+        //       isMultiline: <bool>
+        //   });
+
+        if (specials.length > 0) {
+            extrasHtml = `
             <div class="border-t border-slate-600 pt-4 mt-4">
                 <h4 class="text-gold font-bold text-sm uppercase tracking-wider mb-3">
                     <i class="fas fa-puzzle-piece mr-1"></i> Spezial-Exports
                 </h4>
-                
+
                 <div class="space-y-3">
-                    <div class="bg-slate-900/60 p-3 rounded border border-slate-700">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-bold text-emerald-400">
-                                <i class="fas fa-feather-alt mr-1"></i> Ji-Kun Wellen
-                            </span>
-                            <button class="export-copy-btn bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors"
-                                    data-target="export-jikun-waves">Kopieren</button>
+                    ${specials.map(s => {
+                        const countText = s.value
+                            ? (s.isMultiline
+                                ? s.value.split('\n').filter(l => l.trim() && !l.startsWith(' ')).length + ' ' + s.countLabel
+                                : s.value.split(',').length + ' ' + s.countLabel)
+                            : '';
+                        return `
+                        <div class="bg-slate-900/60 p-3 rounded border border-slate-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-bold text-${s.color}-400">
+                                    <i class="fas ${s.icon} mr-1"></i> ${s.label}
+                                </span>
+                                <button class="export-copy-btn bg-${s.color}-700 hover:bg-${s.color}-600 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors"
+                                        data-target="export-${s.key}">Kopieren</button>
+                            </div>
+                            ${s.isMultiline
+                                ? `<textarea id="export-${s.key}" readonly rows="${Math.min(Math.max(s.value.split('\n').length, 2), 12)}"
+                                            class="w-full bg-black text-green-400 font-mono text-[10px] p-2 rounded border border-slate-700 resize-y cursor-text">${s.value}</textarea>`
+                                : `<input type="text" id="export-${s.key}" readonly
+                                            class="w-full bg-black text-green-400 font-mono text-[10px] p-2 rounded border border-slate-700 cursor-text"
+                                            value="${s.value.replace(/"/g, '&quot;')}">`
+                            }
+                            <span class="text-[9px] text-gray-500">${countText}</span>
                         </div>
-                        <input type="text" id="export-jikun-waves" readonly
-                               class="w-full bg-black text-green-400 font-mono text-[10px] p-2 rounded border border-slate-700 cursor-text"
-                               value="${jikunWaveStr || '(keine Daten)'}">
-                        <span class="text-[9px] text-gray-500">${jikunWaveStr ? jikunWaveStr.split(',').length + ' Einträge' : ''}</span>
-                    </div>
-                    
-                    <div class="bg-slate-900/60 p-3 rounded border border-slate-700">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-bold text-purple-400">
-                                <i class="fas fa-eye mr-1"></i> Durumu Lichtspektrum
-                            </span>
-                            <button class="export-copy-btn bg-purple-700 hover:bg-purple-600 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors"
-                                    data-target="export-durumu-spectrum">Kopieren</button>
-                        </div>
-                        <input type="text" id="export-durumu-spectrum" readonly
-                               class="w-full bg-black text-green-400 font-mono text-[10px] p-2 rounded border border-slate-700 cursor-text"
-                               value="${durumuSpecStr || '(keine Daten)'}">
-                        <span class="text-[9px] text-gray-500">${durumuSpecStr ? durumuSpecStr.split(',').length + ' Gruppen' : ''}</span>
-                    </div>
+                        `;
+                    }).join('')}
                 </div>
             </div>`;
+        }
     }
 
     modal.innerHTML = `
@@ -1501,15 +1723,15 @@ async function openDiscordPostModal() {
         } catch(e) { return ''; }
     }));
 
-    // 3. Intelligente Scan-Logik (Mit Ausnahmen)
-    const bossStructures = raidInfo.bosses.map((boss, idx) => {
+    // 3. Intelligente Scan-Logik (Mit Ausnahmen + LaneGroups-Erweiterung)
+    const bossStructures = await Promise.all(raidInfo.bosses.map(async (boss, idx) => {
         const html = bossHtmls[idx];
         let blocks = [];
-        
+
         // --- AUSNAHMEN FÜR SPEZIELLE BOSSE ---
         if (boss.id === 'ji-kun') {
             blocks = ["Rotation (NHC)", "Rotation (HC)", "Teams (1-5)"];
-        } 
+        }
         else if (boss.id === 'dark-animus') {
             blocks = ["Links (A)", "Rechts (B)", "Boss (C)", "Spezialaufgaben"];
         }
@@ -1521,6 +1743,19 @@ async function openDiscordPostModal() {
         }
         else if (boss.id === 'iron-qon') {
             blocks = ["Tanks & BoP", "Positionen (Ranged & Healer)", "Positionen (Melee)", "Soak Teams"];
+        }
+        // --- NEUE BOSS-SPEZIFISCHE BLÖCKE ---
+        else if (boss.id === 'sha-of-pride') {
+            blocks = ["🌈 Sha-Platten (WA-String)"];
+        }
+        else if (boss.id === 'norushen') {
+            blocks = ["🔮 Orb-Reihenfolge (WA-String)"];
+        }
+        else if (boss.id === 'siegecrafter') {
+            blocks = ["⚙️ Kill-Reihenfolge (WA-String)", "📏 Conveyor-Lines (WA-String)"];
+        }
+        else if (boss.id === 'paragons') {
+            blocks = ["🎯 Paragons Kill-Reihenfolge (WA-String)"];
         }
         // --- STANDARD-ERKENNUNG ---
         else if (html) {
@@ -1536,8 +1771,35 @@ async function openDiscordPostModal() {
                 });
             }
         }
+
+        // --- LANEGROUPS-BLÖCKE AUS FIRESTORE NACHLADEN ---
+        // Wenn der Boss LaneGroups verwendet, sind die Block-Titel nicht im
+        // HTML sondern in Firestore (`{assignmentId}.blocks[].title`).
+        try {
+            const fb = window.firebaseTools;
+            if (fb && fb.db && fb.doc && fb.getDoc) {
+                const snap = await fb.getDoc(fb.doc(fb.db, 'raid-tool-data', 'boss-' + boss.id));
+                if (snap.exists()) {
+                    const data = snap.data();
+                    Object.keys(data).forEach(key => {
+                        const v = data[key];
+                        if (v && typeof v === 'object' && Array.isArray(v.blocks)) {
+                            v.blocks.forEach(blk => {
+                                if (blk && blk.title) {
+                                    const label = `📋 ${blk.title}`;
+                                    if (!blocks.includes(label)) blocks.push(label);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn('[Discord-Modal] LaneGroups-Blocks für', boss.id, 'konnten nicht geladen werden:', e);
+        }
+
         return { ...boss, blocks };
-    });
+    }));
 
     // 4. Anzeige-Oberfläche aufbauen
     const contentDiv = modal.querySelector('#discord-modal-content');
@@ -2047,7 +2309,53 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                     if (lines.length > 0) description += `\n**🔥 P1 Soak Teams**\n${lines.join('\n')}\n`;
                 }
             }
-            
+
+            // --- CUSTOM PARSER: SHA-OF-PRIDE PLATTEN ---
+            else if (boss.id === 'sha-of-pride') {
+                if (allowedBlocks.some(b => b.includes("Sha-Platten"))) {
+                    const shaStr = buildShaPlatesExport(data);
+                    if (shaStr) {
+                        description += `\n**🌈 Sha-Platten (WeakAura)**\n\`\`\`\n${shaStr}\n\`\`\`\n`;
+                    }
+                }
+            }
+
+            // --- CUSTOM PARSER: NORUSHEN ORB-REIHENFOLGE ---
+            else if (boss.id === 'norushen') {
+                if (allowedBlocks.some(b => b.includes("Orb-Reihenfolge"))) {
+                    const orbStr = buildNorushenOrbExport(data);
+                    if (orbStr) {
+                        description += `\n**🔮 Orb-Reihenfolge (WeakAura)**\n\`\`\`\n${orbStr}\n\`\`\`\n`;
+                    }
+                }
+            }
+
+            // --- CUSTOM PARSER: SIEGECRAFTER (Killorder + Lines) ---
+            else if (boss.id === 'siegecrafter') {
+                if (allowedBlocks.some(b => b.includes("Kill-Reihenfolge"))) {
+                    const koStr = buildSiegecrafterKillorderExport(data);
+                    if (koStr) {
+                        description += `\n**⚙️ Kill-Reihenfolge (WeakAura)**\n\`\`\`\n${koStr}\n\`\`\`\n`;
+                    }
+                }
+                if (allowedBlocks.some(b => b.includes("Conveyor-Lines"))) {
+                    const linesStr = buildSiegecrafterLinesExport(data);
+                    if (linesStr) {
+                        description += `\n**📏 Conveyor-Lines (WeakAura)**\n\`\`\`\n${linesStr}\n\`\`\`\n`;
+                    }
+                }
+            }
+
+            // --- CUSTOM PARSER: PARAGONS KILL-REIHENFOLGE ---
+            else if (boss.id === 'paragons') {
+                if (allowedBlocks.some(b => b.includes("Paragons Kill-Reihenfolge"))) {
+                    const koStr = buildParagonsKillorderExport(data);
+                    if (koStr) {
+                        description += `\n**🎯 Kill-Reihenfolge (WeakAura)**\n\`\`\`\n${koStr}\n\`\`\`\n`;
+                    }
+                }
+            }
+
             // --- GENERIC PARSER: Für alle anderen Bosse ---
             else {
                 const parser = new DOMParser();
@@ -2102,6 +2410,38 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                     });
                 }
             }
+
+            // --- LANEGROUPS BLÖCKE (boss-übergreifend, aus Firestore) ---
+            // Wird zusätzlich zu den Custom-Parsern oben ausgeführt, da
+            // LaneGroups-Blöcke unabhängig vom HTML im Firestore-Doc liegen.
+            Object.keys(data).forEach(key => {
+                const v = data[key];
+                if (!v || typeof v !== 'object' || !Array.isArray(v.blocks)) return;
+                v.blocks.forEach(block => {
+                    const label = `📋 ${block.title || '(Unbenannt)'}`;
+                    if (!allowedBlocks.includes(label)) return;
+                    const lines = [];
+                    (block.lanes || []).forEach((lane, li) => {
+                        const players = (lane.slots || [])
+                            .map(s => resolveSlotOrPlayer(s))
+                            .filter(Boolean);
+                        if (players.length === 0) return;
+                        let prefix;
+                        if (block.type === 'multi-lane') {
+                            const m = LG_MARKER_BY_ID[lane.marker || ''] || LG_MARKER_BY_ID[''];
+                            if (lane.title) prefix = `> **${m.emoji} ${lane.title}:**`;
+                            else if (m.id)  prefix = `> **${m.emoji} ${m.label}:**`;
+                            else            prefix = `> **Spalte ${li + 1}:**`;
+                        } else {
+                            prefix = `>`;
+                        }
+                        lines.push(`${prefix} ${players.join(', ')}`);
+                    });
+                    if (lines.length > 0) {
+                        description += `\n**${block.title || '(Unbenannt)'}**\n${lines.join('\n')}\n`;
+                    }
+                });
+            });
         }
 
         // --- CD-Planer ---
@@ -2341,9 +2681,14 @@ function renderMasterViewFromHtml(pageHtml, boss) {
     // - Script-Tags
     assignmentsSection.querySelectorAll('script, #positioning-toggle, .positioning-image, .positioning-text, video, .video-wrapper').forEach(el => el.remove());
 
-    // Entferne assignment-blocks die keine selects enthalten (reine Info-Blöcke)
+    // Entferne assignment-blocks die keine selects enthalten (reine Info-Blöcke).
+    // AUSNAHME: Blöcke mit einem LaneGroups-Container (id endet auf "-lane-groups")
+    // dürfen NICHT entfernt werden — der Container ist leer, weil LaneGroups erst
+    // zur Laufzeit die UI rendert. Master-View-Integration füllt ihn dann.
     assignmentsSection.querySelectorAll('.assignment-block').forEach(block => {
-        if (!block.querySelector('.assignment-select') && !block.querySelector('.assignment-text-input')) {
+        const hasSelects = !!(block.querySelector('.assignment-select') || block.querySelector('.assignment-text-input'));
+        const hasLaneGroupsContainer = !!block.querySelector('[id$="-lane-groups"]');
+        if (!hasSelects && !hasLaneGroupsContainer) {
             block.remove();
         }
     });
