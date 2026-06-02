@@ -51,18 +51,18 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Verteidiger</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Phase 1:</strong> Zusätzliche Gegner schnell an sich binden. Der <a href="https://www.wowhead.com/mists-of-pandaria/de/npc=72240" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Knochenbrecher der Kor'kron</a> muss zwingend mit dem Rücken zur Gruppe platziert werden (frontaler Flächenangriff). Ein Verteidiger geht mit dem Turm-Team.</li>
-                    <li><strong class="text-purple-400">Phase 2 (Galakras):</strong> Bei 3 bis 4 Stapeln von <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=147029" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Flammen von Galakrond</a> die Aufmerksamkeit des Gegners übernehmen.</li>
+                    <li><strong class="text-red-400">Phase 1:</strong> Zusätzliche Gegner schnell an sich binden. Der <a href="https://www.wowhead.com/mop-classic/de/npc=72240" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Knochenbrecher der Kor'kron</a> muss zwingend mit dem Rücken zur Gruppe platziert werden (frontaler Flächenangriff). Ein Tank geht mit dem Turm-Team.</li>
+                    <li><strong class="text-purple-400">Phase 2 (Galakras):</strong> Bei 3 bis 4 Stapeln von <a href="https://www.wowhead.com/mop-classic/de/spell=147029" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Flammen von Galakrond</a> die Aufmerksamkeit des Gegners übernehmen.</li>
                 </ul>
             </div>
             <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ Schadensverursacher & 💚 Heiler</h4>
+                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
                 <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
                     <li><strong class="text-blue-400">Unterbrechungen (Phase 1):</strong> Die Fähigkeiten der Schamanen (Heiltotems, Kettenblitz) zwingend unterbrechen.</li>
                     <li><strong class="text-orange-400">Mechanik (Phase 2):</strong> Der Gegner visiert einen Spieler mit einem Feuerball an. Die Gruppe muss in einer Linie zwischen Galakras und dem Ziel stehen, um den Schaden aufzuteilen.</li>
-                    <li><strong class="text-green-400">Heiler:</strong> Der flächendeckende Schaden durch <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=147042" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Pulsierende Flammen</a> in Phase 2 steigt stetig an. Gruppenweite Schutzfähigkeiten für die späten Prozente aufheben.</li>
+                    <li><strong class="text-green-400">Heiler:</strong> Der flächendeckende Schaden durch <a href="https://www.wowhead.com/mop-classic/de/spell=147042" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Pulsierende Flammen</a> in Phase 2 steigt stetig an. Gruppenweite Schutzfähigkeiten für die späten Prozente aufheben.</li>
                 </ul>
             </div>
         </div>
@@ -76,7 +76,7 @@
                 </div>
                 <div>
                     <strong class="text-emerald-200">Turm-Team (Phase 1):</strong><br>
-                    Das Team (1 Verteidiger, 1 Heiler, starker Flächenschaden) muss den Turm schnell säubern und die Kanone besetzen. Sobald beide Türme besetzt sind, Galakras durch gleichzeitigen Beschuss abschießen.
+                    Das Team (1 Tank, 1 Heiler, starker Flächenschaden) muss den Turm schnell säubern und die Kanone besetzen. Sobald beide Türme besetzt sind, Galakras durch gleichzeitigen Beschuss abschießen.
                 </div>
                 <div>
                     <strong class="text-emerald-200">Turm-Türen aufbrechen:</strong><br>
@@ -101,7 +101,7 @@
 
             <div class="space-y-6">
                 <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Zuteilung der Verteidiger</h4>
+                    <h4 class="text-lg font-bold">🛡️ Zuteilung der Tanks</h4>
                     <ul class="assignment-list">
                         <li><span>Hauptgruppe (Boden):</span><select class="assignment-select" data-assignment-id="galakras-tank-main"></select></li>
                         <li><span>Turm-Team:</span><select class="assignment-select" data-assignment-id="galakras-tank-tower"></select></li>
@@ -206,7 +206,7 @@ CD_AUTO_PLANNER.init({
         { name: "Sprengwagen Erscheinen", spellId: 116040, firstCast: 130, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 10, requiredCDs: ["any_dr"], icon: "💣" },
         { name: "Turmwächter Erscheinen", spellId: 0, firstCast: 75, cooldown: 60, maxCasts: 5, delay: 0, eventDuration: 10, requiredCDs: [], icon: "👤" },
         { name: "Ruf des Zermalmers (Heranziehen)", spellId: 146769, firstCast: 25, cooldown: 30, maxCasts: 4, delay: 0, eventDuration: 5, requiredCDs: ["movement"], icon: "🪝" },
-        { name: "Zermalmender Schwung (Verteidiger)", spellId: 146849, firstCast: 15, cooldown: 7, maxCasts: 8, delay: 0, eventDuration: 3, requiredCDs: ["tank_external"], icon: "🛡️" },
+        { name: "Zermalmender Schwung (Tanks)", spellId: 146849, firstCast: 15, cooldown: 7, maxCasts: 8, delay: 0, eventDuration: 3, requiredCDs: ["tank_external"], icon: "🛡️" },
         { name: "Phase 2 Start (Galakras landet)", spellId: 50630, firstCast: 280, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 30, requiredCDs: ["bloodlust", "any_dr", "any_heal"], icon: "⚡" },
         { name: "Pulsierende Flammen #1", spellId: 147042, firstCast: 306, cooldown: 25, maxCasts: 5, delay: -2, eventDuration: 7, requiredCDs: ["any_heal"], icon: "🔥" },
         { name: "Flammen Galakronds (Zielerfassung)", spellId: 147068, firstCast: 292, cooldown: 6, maxCasts: 10, delay: 0, eventDuration: 5, requiredCDs: [], icon: "🎯" }
@@ -220,7 +220,7 @@ CD_AUTO_PLANNER.init({
         "Sprengwagen Erscheinen":               "GALAKRAS_DEMOLISHER",
         "Turmwächter Erscheinen":               "GALAKRAS_TOWER_GRUNT",
         "Ruf des Zermalmers (Heranziehen)":     "GALAKRAS_CRUSHERS_CALL",
-        "Zermalmender Schwung (Verteidiger)":   "GALAKRAS_SHATTERING_CLEAVE",
+        "Zermalmender Schwung (Tanks)":   "GALAKRAS_SHATTERING_CLEAVE",
         "Phase 2 Start (Galakras landet)":      "GALAKRAS_P2",
         "Pulsierende Flammen #1":               "GALAKRAS_PULSING",
         "Flammen Galakronds (Zielerfassung)":   "GALAKRAS_FLAMES"

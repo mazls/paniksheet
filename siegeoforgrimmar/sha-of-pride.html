@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,15 +17,18 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
         margin-left: 8px;
     }
+
     /* ─── Sha of Pride Platten ─── */
     .sha-plate-card {
         background: rgba(15, 23, 42, 0.6);
@@ -31,6 +36,7 @@
         border-radius: 6px;
         padding: 10px;
     }
+
     .sha-plate-header {
         display: flex;
         align-items: center;
@@ -39,12 +45,14 @@
         padding-bottom: 6px;
         border-bottom: 1px solid #334155;
     }
+
     .sha-plate-title {
         font-weight: 600;
         color: #fcd34d;
         font-size: 0.9rem;
         flex-shrink: 0;
     }
+
     .sha-plate-rt-select {
         background-color: #0f172a;
         border: 1px solid #475569;
@@ -54,6 +62,7 @@
         font-size: 0.75rem;
         height: 28px;
     }
+
     .sha-plate-rt-icon {
         width: 22px;
         height: 22px;
@@ -64,23 +73,28 @@
         display: inline-block;
         vertical-align: middle;
     }
+
     .sha-plate-slots-table {
         width: 100%;
         font-size: 0.7rem;
     }
+
     .sha-plate-slots-table td {
         padding: 1px 3px;
     }
+
     .sha-plate-slots-table .slot-num {
         color: #64748b;
         font-family: monospace;
         text-align: center;
         width: 20px;
     }
+
     .sha-plate-slots-table .slot-del {
         text-align: center;
         width: 20px;
     }
+
     .sha-plate-slot-select {
         background-color: #0f172a;
         border: 1px solid #475569;
@@ -91,6 +105,7 @@
         width: 100%;
         height: 22px;
     }
+
     .sha-plate-wa-row {
         display: flex;
         align-items: center;
@@ -101,6 +116,7 @@
         border: 1px solid #334155;
         border-radius: 4px;
     }
+
     .sha-plate-wa-output {
         flex: 1;
         font-family: monospace;
@@ -110,6 +126,7 @@
         user-select: all;
         line-height: 1.3;
     }
+
     .sha-plate-wa-copy {
         flex-shrink: 0;
         background: #6b21a8;
@@ -120,16 +137,20 @@
         font-size: 0.7rem;
         cursor: pointer;
     }
+
     .sha-plate-wa-copy:hover {
         background: #7e22ce;
     }
+
     /* Drop-Indikatoren für Drag&Drop in der Prio-Liste */
     #sha-plates-prio-list li.drop-above {
         box-shadow: 0 -2px 0 0 #fbbf24;
     }
+
     #sha-plates-prio-list li.drop-below {
         box-shadow: 0 2px 0 0 #fbbf24;
     }
+
     /* ─── Kategorie-Tags pro Platte ─── */
     .sha-plate-tags {
         display: flex;
@@ -139,6 +160,7 @@
         padding-top: 6px;
         border-top: 1px dashed #334155;
     }
+
     .sha-plate-tag {
         display: inline-block;
         padding: 1px 6px;
@@ -150,11 +172,13 @@
         transition: all 0.15s;
         line-height: 1.4;
     }
+
     .sha-plate-tag.tag-on {
         background-color: #065f46;
         color: #d1fae5;
         border-color: #10b981;
     }
+
     .sha-plate-tag.tag-off {
         background-color: #1e293b;
         color: #64748b;
@@ -162,9 +186,11 @@
         text-decoration: line-through;
         text-decoration-color: #475569;
     }
+
     .sha-plate-tag:hover {
         filter: brightness(1.2);
     }
+
     .sha-plate-tags-label {
         font-size: 0.6rem;
         color: #64748b;
@@ -173,6 +199,7 @@
         margin-right: 2px;
         align-self: center;
     }
+
     /* ─── Duplikat-Warnung im Slot-Select ─── */
     .sha-plate-slot-select.is-duplicate {
         border-color: #ef4444 !important;
@@ -187,392 +214,477 @@
         <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            <strong>Die goldene Regel:</strong> Erreicht niemals 100 Stolz – ihr werdet sonst dauerhaft übernommen (Mind Control)!Heiler dispellen das Mal der Arroganz nur, solange Gabe der Titanen aktiv ist.Schließt die Risse auf Heroisch, bevor sie den Raum fluten.[cite: 4]<br><br>
-            Das zentrale Element dieses Kampfes ist das Stolz-Management. Ihr startet mit null Stolz.Erreicht euer Stolz bestimmte Schwellenwerte (25, 50, 75, 100), treten bei der Boss-Fähigkeit <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=144400" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Schwellender Stolz</a> negative Effekte für euch auf.[cite: 4]
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><a href="https://www.wowhead.com/mists-of-pandaria/de/spell=144358" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Verletzter Stolz</a>: Ein Debuff, bei dem jeder Hit vom Boss euren Stolz erhöht. Bei Erhalt sofort abspotten (Tank-Swap)![cite: 4]</li>
-                    <li>Der Boss muss an seiner Position gehalten werden. Beide Tanks besetzen bei den Gefängnissen immer ihre zugewiesenen Platten.[cite: 4]</li>
-                </ul>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-blue-400">Gefängnisse:</strong> Spieler, die im <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=144574" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Verderbten Gefängnis</a> landen, fressen massiv Damage und Stolz. Lauft sofort auf die orangenen Platten, um sie rauszuholen![cite: 4]</li>
-                    <li><strong class="text-yellow-400">Dispels (Heiler):</strong> Dispellt <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=144351" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:underline">Mal der Arroganz</a> **nur**, wenn ihr den Buff <em>Gabe der Titanen</em> habt (jeder Dispel gibt euch sonst 5 Stolz).[cite: 4]</li>
-                    <li><strong class="text-red-400">Adds (DPS):</strong> Die dicke <em>Manifestation des Stolzes</em> muss schnell genuked werden. Kicks ansagen![cite: 4]</li>
-                </ul>
-            </div>
-        </div>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                <strong>Die goldene Regel:</strong> Erreicht niemals 100 Stolz – ihr werdet sonst dauerhaft übernommen
+                (Mind Control)!Heiler dispellen das Mal der Arroganz nur, solange <a href="https://www.wowhead.com/mop-classic/de/spell=144364" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">Gabe der Titanen</a> aktiv ist.Schließt
+                die Risse auf Heroisch, bevor sie den Raum fluten.<br><br>
+                Das zentrale Element dieses Kampfes ist das Stolz-Management. Ihr startet mit null Stolz.Erreicht euer
+                Stolz bestimmte Schwellenwerte (25, 50, 75, 100), treten bei der Boss-Fähigkeit <a
+                    href="https://www.wowhead.com/mop-classic/de/spell=144400" target="_blank"
+                    rel="noopener noreferrer" class="text-purple-400 hover:underline">Schwellender Stolz</a> negative
+                Effekte für euch auf.
+            </p>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktik-Tipps & HT</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200">⚡ HT / Kampfrausch:</strong><br>
-                    Zieht HT exakt bei 30% Boss-HP!Norushen stirbt, euer Stolz wird auf 0 resettet und der Boss entfesselt extremen Raid-AoE. Ab hier heißt es Full-Burn![cite: 4]
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Verbannung (Pac-Man Phase):</strong><br>
-                    Wer von <a href="https://www.wowhead.com/mists-of-pandaria/de/spell=145215" target="_blank" rel="noopener noreferrer" class="text-emerald-300 hover:underline">Verbannung</a> in die Schattenwelt gebanisht wird, muss den Mobs ausweichen und Kugeln sammeln.Die DPS draußen wechseln sofort auf das Fragment![cite: 4]
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Gabe der Titanen (Buff):</strong><br>
-                    Spieler mit diesem Buff sind immun gegen Stolz-Zuwachs. Stackt innerhalb von 8 Metern, um den fetten <em>Macht der Titanen</em>-Buff für den Raid zu triggern.[cite: 4]
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Heiler CDs:</strong><br>
-                    Hebt dicke Raid-CDs für <em>Schwellender Stolz</em> auf, besonders in den späten Phasen, wenn viele Spieler hohe Stolz-Werte haben und die Adds drücken.[cite: 4]
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Tank 1 (Start):</span><select class="assignment-select" data-assignment-id="sha-tank-1"></select></li>
-                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="sha-tank-2"></select></li>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><a href="https://www.wowhead.com/mop-classic/de/spell=144358" target="_blank"
+                                rel="noopener noreferrer" class="text-red-400 hover:underline">Verletzter Stolz</a>: Ein
+                            Debuff, bei dem jeder Hit vom Boss euren Stolz erhöht. Bei Erhalt sofort abspotten
+                            (Tank-Swap)!</li>
+                        <li>Der Boss muss an seiner Position gehalten werden. Beide Tanks besetzen bei den Gefängnissen
+                            immer ihre zugewiesenen Platten.</li>
                     </ul>
                 </div>
-                
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-cyan-400">✨ Gefängnis-Öffner — 4 Platten</h4>
-                    <p class="text-sm text-gray-400 mb-3 px-3">Pro Platte ein RT-Marker und 10 Spieler-Slots. Auto-Füllen funktioniert wie bei Norushen, separater WeakAura-String pro Platte.</p>
-                    
-                    <div id="sha-plates-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3"></div>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-blue-400">Gefängnisse:</strong> Spieler, die im <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=144574" target="_blank"
+                                rel="noopener noreferrer" class="text-cyan-400 hover:underline">Verderbten Gefängnis</a>
+                            landen, fressen massiv Damage und Stolz. Lauft sofort auf die orangenen Platten, um sie
+                            rauszuholen!</li>
+                        <li><strong class="text-yellow-400">Dispels (Heiler):</strong> Dispellt <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=144351" target="_blank"
+                                rel="noopener noreferrer" class="text-yellow-400 hover:underline">Mal der Arroganz</a>
+                            nur, wenn ihr den Buff <em><a href="https://www.wowhead.com/mop-classic/de/spell=144364" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">Gabe der Titanen</a></em> habt (jeder Dispel gibt euch sonst 5
+                            Stolz).</li>
+                        <li><strong class="text-red-400">Adds (DPS):</strong> Die dicke <em><a href="https://www.wowhead.com/mop-classic/de/spell=144379" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Manifestation des Stolzes</a></em> muss schnell genuked werden. Kicks ansagen!</li>
+                    </ul>
+                </div>
+            </div>
 
-                    <div class="bg-slate-900/60 border border-slate-700 rounded p-3 mb-3">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider">📋 WeakAura Export (alle Platten)</span>
-                            <button id="sha-plates-wa-all-copy"
-                                    class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">
-                                Kopieren
-                            </button>
-                        </div>
-                        <textarea id="sha-plates-wa-all-output" readonly rows="4"
-                                  class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-[11px] text-green-300 font-mono resize-y"
-                                  placeholder="Wird automatisch aktualisiert, sobald Spieler in den Platten stehen..."></textarea>
-                        <p class="text-[10px] text-gray-500 italic mt-1">Leere Platten werden weggelassen. Eine Platte pro Zeile.</p>
+            <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+                <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktik-Tipps
+                    & HT</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                    <div>
+                        <strong class="text-emerald-200">⚡ HT / Kampfrausch:</strong><br>
+                        Zieht HT exakt bei 30% Boss-HP!Norushen stirbt, euer Stolz wird auf 0 resettet und der Boss
+                        entfesselt extremen Raid-AoE. Ab hier heißt es Full-Burn!
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Verbannung (Pac-Man Phase):</strong><br>
+                        Wer von <a href="https://www.wowhead.com/mop-classic/de/spell=145215" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-300 hover:underline">Verbannung</a> in die
+                        Schattenwelt gebanisht wird, muss den Mobs ausweichen und Kugeln sammeln.Die DPS draußen
+                        wechseln sofort auf das Fragment!
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Gabe der Titanen (Buff):</strong><br>
+                        Spieler mit diesem Buff sind immun gegen Stolz-Zuwachs. Stackt innerhalb von 8 Metern, um den
+                        fetten <em><a href="https://www.wowhead.com/mop-classic/de/spell=144365" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:underline">Macht der Titanen</a></em>-Buff für den Raid zu triggern.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Heiler CDs:</strong><br>
+                        Hebt dicke Raid-CDs für <em>Schwellender Stolz</em> auf, besonders in den späten Phasen, wenn
+                        viele Spieler hohe Stolz-Werte haben und die Adds drücken.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div class="space-y-6">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
+                        <ul class="assignment-list">
+                            <li><span>Tank 1 (Start):</span><select class="assignment-select"
+                                    data-assignment-id="sha-tank-1"></select></li>
+                            <li><span>Tank 2:</span><select class="assignment-select"
+                                    data-assignment-id="sha-tank-2"></select></li>
+                        </ul>
                     </div>
 
-                    <details id="sha-plates-auto-section" class="mb-3 bg-slate-900/60 border border-slate-700 rounded">
-                        <summary class="cursor-pointer p-2 text-xs font-bold text-yellow-300 hover:bg-slate-800 rounded">
-                            ⚡ Auto-Füllen nach Spec-Priorität (alle 4 Platten)
-                        </summary>
-                        <div class="p-3 space-y-3">
-                            <p class="text-[11px] text-gray-400">
-                                Kategorien definieren Reihenfolge + Limits. "Auto-Füllen" verteilt Spieler aus dem Kader gleichmäßig auf alle 4 Platten, respektiert dabei Limits (z.B. "max 1 Tank pro Platte"). Limits gelten <strong>pro Platte</strong>.
-                            </p>
-                            
-                            <div>
-                                <div class="flex items-center justify-between mb-1">
-                                    <span class="text-[10px] text-gray-500 uppercase tracking-wide">Prioritäts-Reihenfolge:</span>
-                                    <span class="text-[10px] text-gray-500">⋮⋮ ziehen | ✎ bearbeiten | ✕ löschen</span>
-                                </div>
-                                <ul id="sha-plates-prio-list" class="space-y-1"></ul>
-                                
-                                <div class="flex flex-wrap gap-2 mt-2">
-                                    <button id="sha-plates-prio-add" class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">
-                                        + Eigene Kategorie
-                                    </button>
-                                    <button id="sha-plates-prio-detect" class="bg-blue-700 hover:bg-blue-800 text-white text-[11px] py-1 px-2 rounded border border-blue-500" title="Liest Specs aus dem Kader und legt automatisch Kategorien an">
-                                        🪄 Aus Kader ableiten
-                                    </button>
-                                    <button id="sha-plates-prio-reset" class="bg-slate-700 hover:bg-slate-800 text-white text-[11px] py-1 px-2 rounded border border-slate-500">
-                                        ↺ Defaults
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="border-t border-slate-700 pt-3 flex flex-wrap gap-2 items-center">
-                                <button id="sha-plates-auto-fill" class="bg-yellow-700 hover:bg-yellow-800 text-white text-xs py-1.5 px-3 rounded border border-yellow-500">
-                                    ⚡ Auto-Füllen (alle Platten)
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-cyan-400">✨ Gefängnis-Öffner — 4 Platten</h4>
+                        <p class="text-sm text-gray-400 mb-3 px-3">Pro Platte ein RT-Marker und 10 Spieler-Slots.
+                            Auto-Füllen funktioniert wie bei Norushen, separater WeakAura-String pro Platte.</p>
+
+                        <div id="sha-plates-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3"></div>
+
+                        <div class="bg-slate-900/60 border border-slate-700 rounded p-3 mb-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider">📋 WeakAura
+                                    Export (alle Platten)</span>
+                                <button id="sha-plates-wa-all-copy"
+                                    class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">
+                                    Kopieren
                                 </button>
-                                <button id="sha-plates-clear-all" class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded border border-slate-500">
-                                    🗑 Alle Platten leeren
-                                </button>
-                                <span class="text-[10px] text-gray-500 ml-auto">Limits gelten pro Platte</span>
                             </div>
+                            <textarea id="sha-plates-wa-all-output" readonly rows="4"
+                                class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-[11px] text-green-300 font-mono resize-y"
+                                placeholder="Wird automatisch aktualisiert, sobald Spieler in den Platten stehen..."></textarea>
+                            <p class="text-[10px] text-gray-500 italic mt-1">Leere Platten werden weggelassen. Eine
+                                Platte pro Zeile.</p>
                         </div>
-                    </details>
-                    
-                    <div id="sha-plates-prio-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-                        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 max-w-md w-full" style="font-size: 13px;">
-                            <h4 class="text-base font-bold text-yellow-300 mb-3" id="sha-plates-prio-modal-title">Kategorie bearbeiten</h4>
-                            <div class="space-y-3">
+
+                        <details id="sha-plates-auto-section"
+                            class="mb-3 bg-slate-900/60 border border-slate-700 rounded">
+                            <summary
+                                class="cursor-pointer p-2 text-xs font-bold text-yellow-300 hover:bg-slate-800 rounded">
+                                ⚡ Auto-Füllen nach Spec-Priorität (alle 4 Platten)
+                            </summary>
+                            <div class="p-3 space-y-3">
+                                <p class="text-[11px] text-gray-400">
+                                    Kategorien definieren Reihenfolge + Limits. "Auto-Füllen" verteilt Spieler aus dem
+                                    Kader gleichmäßig auf alle 4 Platten, respektiert dabei Limits (z.B. "max 1 Tank pro
+                                    Platte"). Limits gelten <strong>pro Platte</strong>.
+                                </p>
+
                                 <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Anzeigename</label>
-                                    <input id="sha-plates-prio-modal-label" type="text" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="z.B. Shadow Priester">
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Klasse</label>
-                                    <select id="sha-plates-prio-modal-class" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                        <option value="">— alle Klassen —</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Spec</label>
-                                    <select id="sha-plates-prio-modal-spec" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                        <option value="">— alle Specs —</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Rolle</label>
-                                    <select id="sha-plates-prio-modal-role" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                        <option value="">— beliebig —</option>
-                                        <option value="tank">Tank</option>
-                                        <option value="healer">Healer</option>
-                                        <option value="dps">DPS</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Archetyp <span class="text-[10px] text-gray-500">(für DPS-Gruppen)</span></label>
-                                    <select id="sha-plates-prio-modal-archetype" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                        <option value="">— beliebig —</option>
-                                        <option value="melee">Melee</option>
-                                        <option value="ranged_physical">Ranged Physical (Hunter)</option>
-                                        <option value="caster">Caster</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="border-t border-slate-700 pt-3">
-                                    <div class="text-xs font-bold text-yellow-300 mb-2">Limits pro Platte (optional)</div>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <label class="block text-[10px] text-gray-400 mb-1">Max in ersten N Slots</label>
-                                            <div class="flex gap-1">
-                                                <input id="sha-plates-prio-modal-limit-rows" type="number" min="1" class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="3">
-                                                <span class="text-gray-500 text-xs flex items-center">Slots:</span>
-                                                <input id="sha-plates-prio-modal-limit-count" type="number" min="0" class="flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="1">
-                                            </div>
-                                            <div class="text-[10px] text-gray-500 mt-1">z.B. "in den ersten 3 Slots max 1 Tank"</div>
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] text-gray-400 mb-1">Max gesamt pro Platte</label>
-                                            <input id="sha-plates-prio-modal-max-total" type="number" min="0" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="leer = unbegrenzt">
-                                            <div class="text-[10px] text-gray-500 mt-1">Maximalanzahl pro einzelner Platte</div>
-                                        </div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span
+                                            class="text-[10px] text-gray-500 uppercase tracking-wide">Prioritäts-Reihenfolge:</span>
+                                        <span class="text-[10px] text-gray-500">⋮⋮ ziehen | ✎ bearbeiten | ✕
+                                            löschen</span>
+                                    </div>
+                                    <ul id="sha-plates-prio-list" class="space-y-1"></ul>
+
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        <button id="sha-plates-prio-add"
+                                            class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">
+                                            + Eigene Kategorie
+                                        </button>
+                                        <button id="sha-plates-prio-detect"
+                                            class="bg-blue-700 hover:bg-blue-800 text-white text-[11px] py-1 px-2 rounded border border-blue-500"
+                                            title="Liest Specs aus dem Kader und legt automatisch Kategorien an">
+                                            🪄 Aus Kader ableiten
+                                        </button>
+                                        <button id="sha-plates-prio-reset"
+                                            class="bg-slate-700 hover:bg-slate-800 text-white text-[11px] py-1 px-2 rounded border border-slate-500">
+                                            ↺ Defaults
+                                        </button>
                                     </div>
                                 </div>
-                                
-                                <div class="text-[10px] text-gray-500 italic">
-                                    Tipp: Filter sind UND-verknüpft. Leer lassen = nicht filtern.
+
+                                <div class="border-t border-slate-700 pt-3 flex flex-wrap gap-2 items-center">
+                                    <button id="sha-plates-auto-fill"
+                                        class="bg-yellow-700 hover:bg-yellow-800 text-white text-xs py-1.5 px-3 rounded border border-yellow-500">
+                                        ⚡ Auto-Füllen (alle Platten)
+                                    </button>
+                                    <button id="sha-plates-clear-all"
+                                        class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded border border-slate-500">
+                                        🗑 Alle Platten leeren
+                                    </button>
+                                    <span class="text-[10px] text-gray-500 ml-auto">Limits gelten pro Platte</span>
                                 </div>
                             </div>
-                            <div class="flex gap-2 mt-4">
-                                <button id="sha-plates-prio-modal-save" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded">Speichern</button>
-                                <button id="sha-plates-prio-modal-cancel" class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded">Abbrechen</button>
+                        </details>
+
+                        <div id="sha-plates-prio-modal"
+                            class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+                            <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 max-w-md w-full"
+                                style="font-size: 13px;">
+                                <h4 class="text-base font-bold text-yellow-300 mb-3" id="sha-plates-prio-modal-title">
+                                    Kategorie bearbeiten</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Anzeigename</label>
+                                        <input id="sha-plates-prio-modal-label" type="text"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white"
+                                            placeholder="z.B. Shadow Priester">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Klasse</label>
+                                        <select id="sha-plates-prio-modal-class"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                            <option value="">— alle Klassen —</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Spec</label>
+                                        <select id="sha-plates-prio-modal-spec"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                            <option value="">— alle Specs —</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Rolle</label>
+                                        <select id="sha-plates-prio-modal-role"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                            <option value="">— beliebig —</option>
+                                            <option value="tank">Tank</option>
+                                            <option value="healer">Healer</option>
+                                            <option value="dps">DPS</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Archetyp <span
+                                                class="text-[10px] text-gray-500">(für DPS-Gruppen)</span></label>
+                                        <select id="sha-plates-prio-modal-archetype"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                            <option value="">— beliebig —</option>
+                                            <option value="melee">Melee</option>
+                                            <option value="ranged_physical">Ranged Physical (Hunter)</option>
+                                            <option value="caster">Caster</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="border-t border-slate-700 pt-3">
+                                        <div class="text-xs font-bold text-yellow-300 mb-2">Limits pro Platte (optional)
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label class="block text-[10px] text-gray-400 mb-1">Max in ersten N
+                                                    Slots</label>
+                                                <div class="flex gap-1">
+                                                    <input id="sha-plates-prio-modal-limit-rows" type="number" min="1"
+                                                        class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white"
+                                                        placeholder="3">
+                                                    <span class="text-gray-500 text-xs flex items-center">Slots:</span>
+                                                    <input id="sha-plates-prio-modal-limit-count" type="number" min="0"
+                                                        class="flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white"
+                                                        placeholder="1">
+                                                </div>
+                                                <div class="text-[10px] text-gray-500 mt-1">z.B. "in den ersten 3 Slots
+                                                    max 1 Tank"</div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] text-gray-400 mb-1">Max gesamt pro
+                                                    Platte</label>
+                                                <input id="sha-plates-prio-modal-max-total" type="number" min="0"
+                                                    class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white"
+                                                    placeholder="leer = unbegrenzt">
+                                                <div class="text-[10px] text-gray-500 mt-1">Maximalanzahl pro einzelner
+                                                    Platte</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-[10px] text-gray-500 italic">
+                                        Tipp: Filter sind UND-verknüpft. Leer lassen = nicht filtern.
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 mt-4">
+                                    <button id="sha-plates-prio-modal-save"
+                                        class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded">Speichern</button>
+                                    <button id="sha-plates-prio-modal-cancel"
+                                        class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded">Abbrechen</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="sha-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Reguläre Aufstellung</button>
-                        
-                    </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="sha-p1">Raid sammelt sich als Gruppe hinter dem Boss. Bei "Gabe der Titanen" laufen markierte Spieler zusammen, Adds werden gecleavt.</p>
-                            <p class="positioning-text hidden" data-phase="sha-p2">Lauft den vorgegebenen Pfad ab, sammelt die Kugeln und weicht den dunklen Elementen aus.</p>
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+
+                    <div class="space-y-6">
+                        <div id="positioning-toggle"
+                            class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                            <button data-phase="sha-p1"
+                                class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Reguläre Aufstellung</button>
+
                         </div>
-                    </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/sha-of-pride.png" alt="Aufstellung Hauptplattform" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="sha-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;sha-p1&quot;>Bild für die Hauptaufstellung noch nicht verfügbar.</div>'">
-                            
+                        <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                            <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                                <p class="positioning-text" data-phase="sha-p1">Raid sammelt sich als Gruppe hinter dem
+                                    Boss. Bei "Gabe der Titanen" laufen markierte Spieler zusammen, Adds werden
+                                    gecleavt.</p>
+                                <p class="positioning-text hidden" data-phase="sha-p2">Lauft den vorgegebenen Pfad ab,
+                                    sammelt die Kugeln und weicht den dunklen Elementen aus.</p>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <img src="siegeoforgrimmar/sha-of-pride.png" alt="Aufstellung Hauptplattform"
+                                class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                                data-phase="sha-p1"
+                                onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;sha-p1&quot;>Bild für die Hauptaufstellung noch nicht verfügbar.</div>'">
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="text-sm text-gray-400 mb-4 italic">
-            Plant automatisch Cooldown-Zuteilungen. Hauptfokus: Schwellender Stolz (Raid-AOE) + Tank-Externals für Verletzter Stolz.
-            Phase 2 startet bei 30% HP — HT/Bloodlust dort einplanen!
-        </p>
-        
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Auto-CD-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="text-sm text-gray-400 mb-4 italic">
+                Plant automatisch Cooldown-Zuteilungen. Hauptfokus: Schwellender Stolz (Raid-AOE) + Tank-Externals für
+                Verletzter Stolz.
+                Phase 2 startet bei 30% HP — HT/Bloodlust dort einplanen!
+            </p>
+
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Auto-Zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In CD-Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+                <button id="btn-save-categories"
+                    class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500"
+                    style="display:none;">📂 Kategorien speichern</button>
+            </div>
+
+            <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
+
+            <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700"
+                style="display:none;">
+                <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️
+                    CD-Kategorien bearbeiten (Manager)</summary>
+                <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+            </details>
         </div>
-        
-        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
-        
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="w-full text-xs">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
-        </div>
-        
-        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
-            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
-        </details>
-    </div>
-</section>
+    </section>
 
-<script src="static/cd-auto-planner.js"></script>
-<script>
-CD_AUTO_PLANNER.init({
-    id: 'sha-of-pride',
-    name: 'Sha des Stolzes',
-    prefix: 'shapride',  
-    
-    events: [
-        {
-            name: "Schwellender Stolz (Raid-AoE)",
-            spellId: 144400,
-            firstCast: 77,        
-            cooldown: 75,         
-            maxCasts: 4,          
-            delay: -3,            
-            eventDuration: 6,     
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "💥"
-        },
-        {
-            name: "Verletzter Stolz (Tank)",
-            spellId: 144358,
-            firstCast: 11,        
-            cooldown: 30,         
-            maxCasts: 8,          
-            delay: -2,
-            eventDuration: 8,
-            requiredCDs: ["tank_external"],  
-            icon: "🛡️"
-        },
-        {
-            name: "Manifestation des Stolzes (Big Add)",
-            spellId: 144379,      
-            firstCast: 60,        
-            cooldown: 75,         
-            maxCasts: 4,          
-            delay: 0,
-            eventDuration: 30,    
-            requiredCDs: ["aoe_stun", "any_dr"],  
-            icon: "👹"
-        },
-        {
-            name: "Einsperren (Gefängnis)",
-            spellId: 144563,
-            firstCast: 52,        
-            cooldown: 53,         
-            maxCasts: 5,          
-            delay: -2,
-            eventDuration: 12,
-            requiredCDs: ["any_heal"],  
-            icon: "🔒"
-        },
-        {
-            name: "Selbstreflexion (Kleine Adds)",
-            spellId: 144800,
-            firstCast: 25,
-            cooldown: 25,         
-            maxCasts: 10,         
-            delay: 0,
-            eventDuration: 10,
-            requiredCDs: [],       
-            icon: "🐭"
-        },
-        
-        {
-            name: "Phase 2 Start (30% HP) / HT",
-            spellId: 144832,
-            firstCast: 240,       
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 30,
-            requiredCDs: ["bloodlust", "any_dr", "any_heal", "additional_surv"],
-            icon: "⚡"
-        },
-        
-        {
-            name: "Schwellender Stolz P2",
-            spellId: 144400,
-            firstCast: 314,       
-            cooldown: 74,         
-            maxCasts: 3,          
-            delay: -3,
-            eventDuration: 6,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "💥"
-        },
-        {
-            name: "Einsperren P2",
-            spellId: 144563,
-            firstCast: 283,       
-            cooldown: 43,         
-            maxCasts: 4,
-            delay: -2,
-            eventDuration: 12,
-            requiredCDs: ["any_heal"],
-            icon: "🔒"
-        }
-    ],
-    
-    triggerMap: {
-        "Schwellender Stolz (Raid-AoE)":              "SHAPRIDE_SWELLING_PRIDE",
-        "Schwellender Stolz P2":                      "SHAPRIDE_SWELLING_PRIDE",
-        "Verletzter Stolz (Tank)":                    "SHAPRIDE_WOUNDED_PRIDE",
-        "Manifestation des Stolzes (Big Add)":        "SHAPRIDE_MANIFESTATION",
-        "Einsperren (Gefängnis)":                     "SHAPRIDE_CORRUPTED_PRISON",
-        "Einsperren P2":                              "SHAPRIDE_CORRUPTED_PRISON",
-        "Selbstreflexion (Kleine Adds)":              "SHAPRIDE_SELF_REFLECTION",
-        "Phase 2 Start (30% HP) / HT":                "SHAPRIDE_P2"
-    }
-});
-</script>
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        CD_AUTO_PLANNER.init({
+            id: 'sha-of-pride',
+            name: 'Sha des Stolzes',
+            prefix: 'shapride',
 
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            events: [
+                {
+                    name: "Schwellender Stolz (Raid-AoE)",
+                    spellId: 144400,
+                    firstCast: 77,
+                    cooldown: 75,
+                    maxCasts: 4,
+                    delay: -3,
+                    eventDuration: 6,
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "💥"
+                },
+                {
+                    name: "Verletzter Stolz (Tank)",
+                    spellId: 144358,
+                    firstCast: 11,
+                    cooldown: 30,
+                    maxCasts: 8,
+                    delay: -2,
+                    eventDuration: 8,
+                    requiredCDs: ["tank_external"],
+                    icon: "🛡️"
+                },
+                {
+                    name: "Manifestation des Stolzes (Big Add)",
+                    spellId: 144379,
+                    firstCast: 60,
+                    cooldown: 75,
+                    maxCasts: 4,
+                    delay: 0,
+                    eventDuration: 30,
+                    requiredCDs: ["aoe_stun", "any_dr"],
+                    icon: "👹"
+                },
+                {
+                    name: "Einsperren (Gefängnis)",
+                    spellId: 144563,
+                    firstCast: 52,
+                    cooldown: 53,
+                    maxCasts: 5,
+                    delay: -2,
+                    eventDuration: 12,
+                    requiredCDs: ["any_heal"],
+                    icon: "🔒"
+                },
+                {
+                    name: "Selbstreflexion (Kleine Adds)",
+                    spellId: 144800,
+                    firstCast: 25,
+                    cooldown: 25,
+                    maxCasts: 10,
+                    delay: 0,
+                    eventDuration: 10,
+                    requiredCDs: [],
+                    icon: "🐭"
+                },
+
+                {
+                    name: "Phase 2 Start (30% HP) / HT",
+                    spellId: 144832,
+                    firstCast: 240,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 30,
+                    requiredCDs: ["bloodlust", "any_dr", "any_heal", "additional_surv"],
+                    icon: "⚡"
+                },
+
+                {
+                    name: "Schwellender Stolz P2",
+                    spellId: 144400,
+                    firstCast: 314,
+                    cooldown: 74,
+                    maxCasts: 3,
+                    delay: -3,
+                    eventDuration: 6,
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "💥"
+                },
+                {
+                    name: "Einsperren P2",
+                    spellId: 144563,
+                    firstCast: 283,
+                    cooldown: 43,
+                    maxCasts: 4,
+                    delay: -2,
+                    eventDuration: 12,
+                    requiredCDs: ["any_heal"],
+                    icon: "🔒"
+                }
+            ],
+
+            triggerMap: {
+                "Schwellender Stolz (Raid-AoE)": "SHAPRIDE_SWELLING_PRIDE",
+                "Schwellender Stolz P2": "SHAPRIDE_SWELLING_PRIDE",
+                "Verletzter Stolz (Tank)": "SHAPRIDE_WOUNDED_PRIDE",
+                "Manifestation des Stolzes (Big Add)": "SHAPRIDE_MANIFESTATION",
+                "Einsperren (Gefängnis)": "SHAPRIDE_CORRUPTED_PRISON",
+                "Einsperren P2": "SHAPRIDE_CORRUPTED_PRISON",
+                "Selbstreflexion (Kleine Adds)": "SHAPRIDE_SELF_REFLECTION",
+                "Phase 2 Start (30% HP) / HT": "SHAPRIDE_P2"
+            }
+        });
+    </script>
+
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
         </button>
         <div class="mt-4 text-xs text-gray-500 italic">
@@ -582,387 +694,401 @@ CD_AUTO_PLANNER.init({
             CD Planer
             <span class="toggle-icon">▼</span>
         </h2>
-<div class="mb-6">
-    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> Planungsübersicht
-    </h3>
-    
-    <div id="sha-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Wartet auf Eingaben... <br>
-            <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-        </p>
-    </div>
-</div>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> Planungsübersicht
+            </h3>
+
+            <div id="sha-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+                    Wartet auf Eingaben... <br>
+                    <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
+                </p>
+            </div>
+        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    <strong>% / #:</strong> Gebt entweder die prozentuale HP an oder die fortlaufende Cast-Reihenfolge (1, 2, 3...).
+                    <strong>% / #:</strong> Gebt entweder die prozentuale HP an oder die fortlaufende Cast-Reihenfolge
+                    (1, 2, 3...).
                 </div>
 
                 <div id="sha-planner-container" class="space-y-2 planner-scroll-container"></div>
-                
+
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    * <strong>Zielvorgabe:</strong> Wählt hier das entsprechende Ziel aus, wenn ihr prozentuale HP nutzt.
+                    * <strong>Zielvorgabe:</strong> Wählt hier das entsprechende Ziel aus, wenn ihr prozentuale HP
+                    nutzt.
                 </div>
             </div>
         </div>
     </section>
 
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Schwellender Stolz Effekte</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-gray-300">25 Stolz:</strong> Bursting Pride. Legt eine Voidzone unter euch ab – sofort rauslaufen![cite: 4]</li>
-                    <li><strong class="text-gray-400">50 Stolz:</strong> Projektion. Lauft innerhalb von 6 Sekunden in eure Projektion, sonst kassiert der Raid fetten AoE-Damage.[cite: 4]</li>
-                    <li><strong class="text-gray-500">75 Stolz:</strong> Aura des Stolzes. Ihr pumpt heftigen AoE-Schaden in eure Mitspieler. Geht aus dem Camp![cite: 4]</li>
-                    <li><strong class="text-red-500">100 Stolz:</strong> Dauerhafte Übernahme (Mind Control) beim nächsten Schwellenden Stolz = Wipe.[cite: 4]</li>
-                </ul>
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Schwellender Stolz
+                        Effekte</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-gray-300">25 Stolz:</strong> <a href="https://www.wowhead.com/mop-classic/de/spell=144911" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Bursting Pride</a>. Legt eine Voidzone unter
+                            euch ab – sofort rauslaufen!</li>
+                        <li><strong class="text-gray-400">50 Stolz:</strong> <a href="https://www.wowhead.com/mop-classic/de/spell=146822" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:underline">Projektion</a>. Lauft innerhalb von 6 Sekunden
+                            in eure Projektion, sonst kassiert der Raid fetten AoE-Damage.</li>
+                        <li><strong class="text-gray-500">75 Stolz:</strong> <a href="https://www.wowhead.com/mop-classic/de/spell=146817" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:underline">Aura des Stolzes</a>. Ihr pumpt heftigen
+                            AoE-Schaden in eure Mitspieler. Geht aus dem Camp!</li>
+                        <li><strong class="text-red-500">100 Stolz:</strong> <a href="https://www.wowhead.com/mop-classic/de/spell=144843" target="_blank" rel="noopener noreferrer" class="text-red-500 hover:underline">Dauerhafte Übernahme</a> (Mind Control) beim
+                            nächsten Schwellenden Stolz = Wipe.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Adds</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-purple-400"><a href="https://www.wowhead.com/mop-classic/de/spell=144379" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Manifestation des Stolzes</a>:</strong> Wirkt fortlaufend
+                            AoE-Schaden. Muss zwingend von einem Melee gekickt und schnell genuked werden.</li>
+                        <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/spell=144800" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Spiegelbild des Stolzes</a>:</strong> Kleine Adds, die an
+                            Positionen von Spielern spawnen.Wegcleaven, bevor sie den Raid überrennen.</li>
+                    </ul>
+                </div>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Adds</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-purple-400">Manifestation des Stolzes:</strong> Wirkt fortlaufend AoE-Schaden. Muss zwingend von einem Melee gekickt und schnell genuked werden.[cite: 4]</li>
-                    <li><strong class="text-cyan-400">Spiegelbild des Stolzes:</strong> Kleine Adds, die an Positionen von Spielern spawnen.Wegcleaven, bevor sie den Raid überrennen.[cite: 4]</li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Mechaniken (HC)</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong class="text-purple-400">Verbannung (Banishment):</strong> Ein Non-Tank wird ins Pac-Man-Labyrinth geschickt.Sammelt dort die Kugeln und weicht den Mobs aus.Alle DPS draußen wechseln sofort auf das <em>Verderbte Fragment</em>, um den Spieler rauszuholen![cite: 4]</li>
-                <li><strong class="text-cyan-400">Risse der Verderbnis (Rifts):</strong> Spawnen alle 8 Sekunden.Jeder Spieler hat einen festen Bereich und soakt dort seinen Riss durch Drüberlaufen (gibt 1 Minute Debuff).[cite: 4]</li>
-            </ul>
-        </div>
-    </div>
-</section>
 
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "SHAPRIDE_ENC_START",          text: "Kampfbeginn" },
-            { val: "SHAPRIDE_HEALTH",             text: "HP % (Wähle NPC)" },
-            { val: "SHAPRIDE_MARK_OF_ARROGANCE",  text: "Mal der Arroganz" },
-            { val: "SHAPRIDE_SELF_REFLECTION",    text: "Selbstreflexion (kleine Adds)" },
-            { val: "SHAPRIDE_WOUNDED_PRIDE",      text: "Verletzter Stolz (Tank)" },
-            { val: "SHAPRIDE_BANISHMENT",         text: "Verbannung (Mythic)" },
-            { val: "SHAPRIDE_CORRUPTED_PRISON",   text: "Korrumpiertes Gefängnis" },
-            { val: "SHAPRIDE_SWELLING_PRIDE",     text: "Schwellender Stolz (Raid AoE)" },
-            { val: "SHAPRIDE_UNLEASHED",          text: "Entfesselt (30% HP)" },
-            { val: "SHAPRIDE_MANIFESTATION",      text: "Manifestation des Stolzes (Big Add)" },
-            { val: "SHAPRIDE_P2",                 text: "Phase 2 Start" }
-        ];
-        
-        const NPC_OPTIONS = [
-            "Sha des Stolzes",
-            "Manifestation des Stolzes",
-            "Verkörperung des Stolzes"
-        ];
-        
-        const container = document.getElementById('sha-planner-container');
-        
-        // ══════════════════════════════════════════════════════════
-        // SHA OF PRIDE — 4 PLATTEN MIT RT-MARKERN + AUTO-FÜLLEN
-        // ══════════════════════════════════════════════════════════
-        (function initShaPlates() {
-            const gridEl = document.getElementById('sha-plates-grid');
-            if (!gridEl) return;
-            
-            const ASSIGNMENT_ID = 'sha-plates';
-            const NUM_PLATES = 4;
-            const SLOTS_PER_PLATE = 10;
-            
-            const RT_MARKERS = [
-                { val: '',     label: 'Kein Marker', file: '' },
-                { val: 'rt1',  label: '★ Stern',      file: 'star.png'     },
-                { val: 'rt2',  label: '● Kreis',      file: 'circle.png'   },
-                { val: 'rt3',  label: '◆ Diamant',    file: 'diamond.png'  },
-                { val: 'rt4',  label: '△ Dreieck',    file: 'triangle.png' },
-                { val: 'rt5',  label: '☾ Mond',       file: 'moon.png'     },
-                { val: 'rt6',  label: '◻ Quadrat',    file: 'square.png'   },
-                { val: 'rt7',  label: '✚ Kreuz',      file: 'cross.png'    },
-                { val: 'rt8',  label: '☠ Totenkopf',  file: 'skull.png'    }
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Mechaniken (HC)</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong class="text-purple-400">Verbannung (Banishment):</strong> Ein Non-Tank wird ins
+                        Pac-Man-Labyrinth geschickt.Sammelt dort die Kugeln und weicht den Mobs aus.Alle DPS draußen
+                        wechseln sofort auf das <em><a href="https://www.wowhead.com/mop-classic/de/npc=73336" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Verderbte Fragment</a></em>, um den Spieler rauszuholen!</li>
+                    <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/spell=146816" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Risse der Verderbnis</a> (Rifts):</strong> Spawnen alle 8
+                        Sekunden.Jeder Spieler hat einen festen Bereich und soakt dort seinen Riss durch Drüberlaufen
+                        (gibt 1 Minute Debuff).</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
+
+            const TRIGGER_OPTIONS = [
+                { val: "SHAPRIDE_ENC_START", text: "Kampfbeginn" },
+                { val: "SHAPRIDE_HEALTH", text: "HP % (Wähle NPC)" },
+                { val: "SHAPRIDE_MARK_OF_ARROGANCE", text: "Mal der Arroganz" },
+                { val: "SHAPRIDE_SELF_REFLECTION", text: "Selbstreflexion (kleine Adds)" },
+                { val: "SHAPRIDE_WOUNDED_PRIDE", text: "Verletzter Stolz (Tank)" },
+                { val: "SHAPRIDE_BANISHMENT", text: "Verbannung (Mythic)" },
+                { val: "SHAPRIDE_CORRUPTED_PRISON", text: "Korrumpiertes Gefängnis" },
+                { val: "SHAPRIDE_SWELLING_PRIDE", text: "Schwellender Stolz (Raid AoE)" },
+                { val: "SHAPRIDE_UNLEASHED", text: "Entfesselt (30% HP)" },
+                { val: "SHAPRIDE_MANIFESTATION", text: "Manifestation des Stolzes (Big Add)" },
+                { val: "SHAPRIDE_P2", text: "Phase 2 Start" }
             ];
-            
-            let platesData = Array.from({ length: NUM_PLATES }, () => ({
-                rt: '', slots: Array(SLOTS_PER_PLATE).fill(''), allowedCats: null
-            }));
-            let saveTimer = null;
-            
-            const SPEC_DEFINITIONS = {
-                DEATHKNIGHT: [
-                    { value: 'Blood',        label: 'Blood (Tank)',        role: 'tank' },
-                    { value: 'Frost1',       label: 'Frost',               role: 'dps',    archetype: 'melee' },
-                    { value: 'Unholy',       label: 'Unholy',              role: 'dps',    archetype: 'melee' }
-                ],
-                DRUID: [
-                    { value: 'Balance',      label: 'Balance',             role: 'dps',    archetype: 'caster' },
-                    { value: 'Feral',        label: 'Feral',               role: 'dps',    archetype: 'melee' },
-                    { value: 'Guardian',     label: 'Guardian (Tank)',     role: 'tank' },
-                    { value: 'Restoration',  label: 'Restoration (Heal)',  role: 'healer' }
-                ],
-                HUNTER: [
-                    { value: 'Beastmastery', label: 'Beastmastery',        role: 'dps',    archetype: 'ranged_physical' },
-                    { value: 'Marksmanship', label: 'Marksmanship',        role: 'dps',    archetype: 'ranged_physical' },
-                    { value: 'Survival',     label: 'Survival',            role: 'dps',    archetype: 'ranged_physical' }
-                ],
-                MAGE: [
-                    { value: 'Arcane',       label: 'Arcane',              role: 'dps',    archetype: 'caster' },
-                    { value: 'Fire',         label: 'Fire',                role: 'dps',    archetype: 'caster' },
-                    { value: 'Frost',        label: 'Frost',               role: 'dps',    archetype: 'caster' }
-                ],
-                MONK: [
-                    { value: 'Brewmaster',   label: 'Brewmaster (Tank)',   role: 'tank' },
-                    { value: 'Mistweaver',   label: 'Mistweaver (Heal)',   role: 'healer' },
-                    { value: 'Windwalker',   label: 'Windwalker',          role: 'dps',    archetype: 'melee' }
-                ],
-                PALADIN: [
-                    { value: 'Holy1',        label: 'Holy (Heal)',         role: 'healer' },
-                    { value: 'Protection1',  label: 'Protection (Tank)',   role: 'tank' },
-                    { value: 'Retribution',  label: 'Retribution',         role: 'dps',    archetype: 'melee' }
-                ],
-                PRIEST: [
-                    { value: 'Discipline',   label: 'Discipline (Heal)',   role: 'healer' },
-                    { value: 'Holy',         label: 'Holy (Heal)',         role: 'healer' },
-                    { value: 'Shadow',       label: 'Shadow',              role: 'dps',    archetype: 'caster' }
-                ],
-                ROGUE: [
-                    { value: 'Assassination', label: 'Assassination',      role: 'dps',    archetype: 'melee' },
-                    { value: 'Combat',       label: 'Combat',              role: 'dps',    archetype: 'melee' },
-                    { value: 'Subtlety',     label: 'Subtlety',            role: 'dps',    archetype: 'melee' }
-                ],
-                SHAMAN: [
-                    { value: 'Elemental',    label: 'Elemental',           role: 'dps',    archetype: 'caster' },
-                    { value: 'Enhancement',  label: 'Enhancement',         role: 'dps',    archetype: 'melee' },
-                    { value: 'Restoration1', label: 'Restoration (Heal)',  role: 'healer' }
-                ],
-                WARLOCK: [
-                    { value: 'Affliction',   label: 'Affliction',          role: 'dps',    archetype: 'caster' },
-                    { value: 'Demonology',   label: 'Demonology',          role: 'dps',    archetype: 'caster' },
-                    { value: 'Destruction',  label: 'Destruction',         role: 'dps',    archetype: 'caster' }
-                ],
-                WARRIOR: [
-                    { value: 'Arms',         label: 'Arms',                role: 'dps',    archetype: 'melee' },
-                    { value: 'Fury',         label: 'Fury',                role: 'dps',    archetype: 'melee' },
-                    { value: 'Protection',   label: 'Protection (Tank)',   role: 'tank' }
-                ]
-            };
-            
-            const SPEC_ARCHETYPE_LOOKUP = (() => {
-                const m = {};
-                Object.keys(SPEC_DEFINITIONS).forEach(cls => {
-                    SPEC_DEFINITIONS[cls].forEach(s => {
-                        if (s.archetype) m[cls + '|' + s.value] = s.archetype;
+
+            const NPC_OPTIONS = [
+                "Sha des Stolzes",
+                "Manifestation des Stolzes",
+                "Verkörperung des Stolzes"
+            ];
+
+            const container = document.getElementById('sha-planner-container');
+
+            // ══════════════════════════════════════════════════════════
+            // SHA OF PRIDE — 4 PLATTEN MIT RT-MARKERN + AUTO-FÜLLEN
+            // ══════════════════════════════════════════════════════════
+            (function initShaPlates() {
+                const gridEl = document.getElementById('sha-plates-grid');
+                if (!gridEl) return;
+
+                const ASSIGNMENT_ID = 'sha-plates';
+                const NUM_PLATES = 4;
+                const SLOTS_PER_PLATE = 10;
+
+                const RT_MARKERS = [
+                    { val: '', label: 'Kein Marker', file: '' },
+                    { val: 'rt1', label: '★ Stern', file: 'star.png' },
+                    { val: 'rt2', label: '● Kreis', file: 'circle.png' },
+                    { val: 'rt3', label: '◆ Diamant', file: 'diamond.png' },
+                    { val: 'rt4', label: '△ Dreieck', file: 'triangle.png' },
+                    { val: 'rt5', label: '☾ Mond', file: 'moon.png' },
+                    { val: 'rt6', label: '◻ Quadrat', file: 'square.png' },
+                    { val: 'rt7', label: '✚ Kreuz', file: 'cross.png' },
+                    { val: 'rt8', label: '☠ Totenkopf', file: 'skull.png' }
+                ];
+
+                let platesData = Array.from({ length: NUM_PLATES }, () => ({
+                    rt: '', slots: Array(SLOTS_PER_PLATE).fill(''), allowedCats: null
+                }));
+                let saveTimer = null;
+
+                const SPEC_DEFINITIONS = {
+                    DEATHKNIGHT: [
+                        { value: 'Blood', label: 'Blood (Tank)', role: 'tank' },
+                        { value: 'Frost1', label: 'Frost', role: 'dps', archetype: 'melee' },
+                        { value: 'Unholy', label: 'Unholy', role: 'dps', archetype: 'melee' }
+                    ],
+                    DRUID: [
+                        { value: 'Balance', label: 'Balance', role: 'dps', archetype: 'caster' },
+                        { value: 'Feral', label: 'Feral', role: 'dps', archetype: 'melee' },
+                        { value: 'Guardian', label: 'Guardian (Tank)', role: 'tank' },
+                        { value: 'Restoration', label: 'Restoration (Heal)', role: 'healer' }
+                    ],
+                    HUNTER: [
+                        { value: 'Beastmastery', label: 'Beastmastery', role: 'dps', archetype: 'ranged_physical' },
+                        { value: 'Marksmanship', label: 'Marksmanship', role: 'dps', archetype: 'ranged_physical' },
+                        { value: 'Survival', label: 'Survival', role: 'dps', archetype: 'ranged_physical' }
+                    ],
+                    MAGE: [
+                        { value: 'Arcane', label: 'Arcane', role: 'dps', archetype: 'caster' },
+                        { value: 'Fire', label: 'Fire', role: 'dps', archetype: 'caster' },
+                        { value: 'Frost', label: 'Frost', role: 'dps', archetype: 'caster' }
+                    ],
+                    MONK: [
+                        { value: 'Brewmaster', label: 'Brewmaster (Tank)', role: 'tank' },
+                        { value: 'Mistweaver', label: 'Mistweaver (Heal)', role: 'healer' },
+                        { value: 'Windwalker', label: 'Windwalker', role: 'dps', archetype: 'melee' }
+                    ],
+                    PALADIN: [
+                        { value: 'Holy1', label: 'Holy (Heal)', role: 'healer' },
+                        { value: 'Protection1', label: 'Protection (Tank)', role: 'tank' },
+                        { value: 'Retribution', label: 'Retribution', role: 'dps', archetype: 'melee' }
+                    ],
+                    PRIEST: [
+                        { value: 'Discipline', label: 'Discipline (Heal)', role: 'healer' },
+                        { value: 'Holy', label: 'Holy (Heal)', role: 'healer' },
+                        { value: 'Shadow', label: 'Shadow', role: 'dps', archetype: 'caster' }
+                    ],
+                    ROGUE: [
+                        { value: 'Assassination', label: 'Assassination', role: 'dps', archetype: 'melee' },
+                        { value: 'Combat', label: 'Combat', role: 'dps', archetype: 'melee' },
+                        { value: 'Subtlety', label: 'Subtlety', role: 'dps', archetype: 'melee' }
+                    ],
+                    SHAMAN: [
+                        { value: 'Elemental', label: 'Elemental', role: 'dps', archetype: 'caster' },
+                        { value: 'Enhancement', label: 'Enhancement', role: 'dps', archetype: 'melee' },
+                        { value: 'Restoration1', label: 'Restoration (Heal)', role: 'healer' }
+                    ],
+                    WARLOCK: [
+                        { value: 'Affliction', label: 'Affliction', role: 'dps', archetype: 'caster' },
+                        { value: 'Demonology', label: 'Demonology', role: 'dps', archetype: 'caster' },
+                        { value: 'Destruction', label: 'Destruction', role: 'dps', archetype: 'caster' }
+                    ],
+                    WARRIOR: [
+                        { value: 'Arms', label: 'Arms', role: 'dps', archetype: 'melee' },
+                        { value: 'Fury', label: 'Fury', role: 'dps', archetype: 'melee' },
+                        { value: 'Protection', label: 'Protection (Tank)', role: 'tank' }
+                    ]
+                };
+
+                const SPEC_ARCHETYPE_LOOKUP = (() => {
+                    const m = {};
+                    Object.keys(SPEC_DEFINITIONS).forEach(cls => {
+                        SPEC_DEFINITIONS[cls].forEach(s => {
+                            if (s.archetype) m[cls + '|' + s.value] = s.archetype;
+                        });
                     });
-                });
-                return m;
-            })();
-            const ARCHETYPE_LABELS = {
-                melee: 'Melee',
-                ranged_physical: 'Ranged Physical',
-                caster: 'Caster'
-            };
-            const CLASS_ALIASES = {
-                'death knight': 'DEATHKNIGHT', 'deathknight': 'DEATHKNIGHT', 'dk': 'DEATHKNIGHT', 'todesritter': 'DEATHKNIGHT',
-                'druid': 'DRUID', 'druide': 'DRUID',
-                'hunter': 'HUNTER', 'jäger': 'HUNTER', 'jaeger': 'HUNTER',
-                'mage': 'MAGE', 'magier': 'MAGE',
-                'monk': 'MONK', 'mönch': 'MONK', 'moench': 'MONK',
-                'paladin': 'PALADIN',
-                'priest': 'PRIEST', 'priester': 'PRIEST',
-                'rogue': 'ROGUE', 'schurke': 'ROGUE',
-                'shaman': 'SHAMAN', 'schamane': 'SHAMAN',
-                'warlock': 'WARLOCK', 'hexenmeister': 'WARLOCK',
-                'warrior': 'WARRIOR', 'krieger': 'WARRIOR'
-            };
-            const CLASS_DISPLAY = {
-                'DEATHKNIGHT': 'Todesritter', 'DRUID': 'Druide', 'HUNTER': 'Jäger',
-                'MAGE': 'Magier', 'MONK': 'Mönch', 'PALADIN': 'Paladin',
-                'PRIEST': 'Priester', 'ROGUE': 'Schurke', 'SHAMAN': 'Schamane',
-                'WARLOCK': 'Hexenmeister', 'WARRIOR': 'Krieger'
-            };
-            function normalizeClass(cls) {
-                if (!cls) return '';
-                return CLASS_ALIASES[String(cls).toLowerCase().trim()] || '';
-            }
-            
-            const DEFAULT_PRIO_CATEGORIES = [
-                { id: 'healer', label: 'Healer', class: '', spec: '', role: 'healer', archetype: '' },
-                { id: 'tank',   label: 'Tank',   class: '', spec: '', role: 'tank',   archetype: '', maxTotal: 1 },
-                { id: 'caster', label: 'Caster DPS', class: '', spec: '', role: 'dps', archetype: 'caster' },
-                { id: 'ranged', label: 'Ranged Physical DPS', class: '', spec: '', role: 'dps', archetype: 'ranged_physical' },
-                { id: 'melee',  label: 'Melee DPS',  class: '', spec: '', role: 'dps', archetype: 'melee' }
-            ];
-            const PRIO_STORAGE_KEY = 'sha-plates-prio-categories-v2';
-            let prioCategories = [];
-            
-            function loadPrio() {
-                try {
-                    const saved = localStorage.getItem(PRIO_STORAGE_KEY);
-                    if (saved) {
-                        const parsed = JSON.parse(saved);
-                        if (Array.isArray(parsed) && parsed.every(c => c && c.id && c.label)) {
-                            prioCategories = parsed;
+                    return m;
+                })();
+                const ARCHETYPE_LABELS = {
+                    melee: 'Melee',
+                    ranged_physical: 'Ranged Physical',
+                    caster: 'Caster'
+                };
+                const CLASS_ALIASES = {
+                    'death knight': 'DEATHKNIGHT', 'deathknight': 'DEATHKNIGHT', 'dk': 'DEATHKNIGHT', 'todesritter': 'DEATHKNIGHT',
+                    'druid': 'DRUID', 'druide': 'DRUID',
+                    'hunter': 'HUNTER', 'jäger': 'HUNTER', 'jaeger': 'HUNTER',
+                    'mage': 'MAGE', 'magier': 'MAGE',
+                    'monk': 'MONK', 'mönch': 'MONK', 'moench': 'MONK',
+                    'paladin': 'PALADIN',
+                    'priest': 'PRIEST', 'priester': 'PRIEST',
+                    'rogue': 'ROGUE', 'schurke': 'ROGUE',
+                    'shaman': 'SHAMAN', 'schamane': 'SHAMAN',
+                    'warlock': 'WARLOCK', 'hexenmeister': 'WARLOCK',
+                    'warrior': 'WARRIOR', 'krieger': 'WARRIOR'
+                };
+                const CLASS_DISPLAY = {
+                    'DEATHKNIGHT': 'Todesritter', 'DRUID': 'Druide', 'HUNTER': 'Jäger',
+                    'MAGE': 'Magier', 'MONK': 'Mönch', 'PALADIN': 'Paladin',
+                    'PRIEST': 'Priester', 'ROGUE': 'Schurke', 'SHAMAN': 'Schamane',
+                    'WARLOCK': 'Hexenmeister', 'WARRIOR': 'Krieger'
+                };
+                function normalizeClass(cls) {
+                    if (!cls) return '';
+                    return CLASS_ALIASES[String(cls).toLowerCase().trim()] || '';
+                }
+
+                const DEFAULT_PRIO_CATEGORIES = [
+                    { id: 'healer', label: 'Healer', class: '', spec: '', role: 'healer', archetype: '' },
+                    { id: 'tank', label: 'Tank', class: '', spec: '', role: 'tank', archetype: '', maxTotal: 1 },
+                    { id: 'caster', label: 'Caster DPS', class: '', spec: '', role: 'dps', archetype: 'caster' },
+                    { id: 'ranged', label: 'Ranged Physical DPS', class: '', spec: '', role: 'dps', archetype: 'ranged_physical' },
+                    { id: 'melee', label: 'Melee DPS', class: '', spec: '', role: 'dps', archetype: 'melee' }
+                ];
+                const PRIO_STORAGE_KEY = 'sha-plates-prio-categories-v2';
+                let prioCategories = [];
+
+                function loadPrio() {
+                    try {
+                        const saved = localStorage.getItem(PRIO_STORAGE_KEY);
+                        if (saved) {
+                            const parsed = JSON.parse(saved);
+                            if (Array.isArray(parsed) && parsed.every(c => c && c.id && c.label)) {
+                                prioCategories = parsed;
+                                return;
+                            }
+                        }
+                    } catch (e) { }
+                    prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+                }
+                function savePrio() {
+                    const validIds = new Set(prioCategories.map(c => c.id));
+                    let platesChanged = false;
+                    platesData.forEach(plate => {
+                        if (Array.isArray(plate.allowedCats)) {
+                            const filtered = plate.allowedCats.filter(id => validIds.has(id));
+                            if (filtered.length !== plate.allowedCats.length) {
+                                plate.allowedCats = filtered;
+                                platesChanged = true;
+                            }
+                        }
+                    });
+                    try { localStorage.setItem(PRIO_STORAGE_KEY, JSON.stringify(prioCategories)); } catch (e) { }
+                    if (platesChanged) scheduleSave();
+                }
+                loadPrio();
+
+                function getPlayerRoleNormalized(p) {
+                    if (Array.isArray(p.roles) && p.roles.length > 0) return String(p.roles[0]).toLowerCase();
+                    if (p.role) return String(p.role).toLowerCase();
+                    return '';
+                }
+                function getPlayerSpec(p) { return (p.spec || p.specName || p.specialization || '').toString(); }
+                function getPlayerClass(p) { return (p.class || p.className || '').toString(); }
+
+                function getPlayerArchetype(p) {
+                    const cls = normalizeClass(getPlayerClass(p));
+                    const spec = getPlayerSpec(p);
+                    if (!cls || !spec) return '';
+                    return SPEC_ARCHETYPE_LOOKUP[cls + '|' + spec] || '';
+                }
+
+                function playerMatchesCategory(p, cat) {
+                    const playerClass = normalizeClass(getPlayerClass(p));
+                    const playerSpec = getPlayerSpec(p);
+                    const playerRole = getPlayerRoleNormalized(p);
+                    if (cat.class && playerClass !== cat.class) return false;
+                    if (cat.spec && playerSpec !== cat.spec) return false;
+                    if (cat.role && playerRole !== cat.role.toLowerCase()) return false;
+                    if (cat.archetype && cat.archetype.trim()) {
+                        if (getPlayerArchetype(p) !== cat.archetype) return false;
+                    }
+                    return true;
+                }
+
+                function getPlayerCategory(p) {
+                    if (!p) return null;
+                    for (const cat of prioCategories) {
+                        if (playerMatchesCategory(p, cat)) return cat;
+                    }
+                    return null;
+                }
+                function findRosterPlayer(name) {
+                    if (!Array.isArray(roster) || !name) return null;
+                    return roster.find(rp => (rp.name || rp) === name) || null;
+                }
+
+                function isPlayerAllowedOnPlate(name, pIdx) {
+                    const plate = platesData[pIdx];
+                    if (!plate || plate.allowedCats === null) return true;
+                    if (plate.allowedCats.length === 0) return false;
+                    const ply = findRosterPlayer(name);
+                    const cat = getPlayerCategory(ply);
+                    if (!cat) return false;
+                    return plate.allowedCats.includes(cat.id);
+                }
+
+                function findOtherPlatesWithPlayer(name, exceptIdx) {
+                    const result = [];
+                    if (!name) return result;
+                    for (let p = 0; p < NUM_PLATES; p++) {
+                        if (p === exceptIdx) continue;
+                        if (platesData[p].slots.includes(name)) result.push(p + 1);
+                    }
+                    return result;
+                }
+
+                function getPlayerOptions(selectedName, pIdx) {
+                    let html = '<option value="">—</option>';
+                    if (!Array.isArray(roster)) return html;
+
+                    const plate = (typeof pIdx === 'number') ? platesData[pIdx] : null;
+                    const filterActive = !!(plate && plate.allowedCats !== null);
+
+                    roster.forEach(p => {
+                        const name = p.name || p;
+                        const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
+                        const isSelected = name === selectedName;
+
+                        if (filterActive && !isSelected && !isPlayerAllowedOnPlate(name, pIdx)) {
                             return;
                         }
-                    }
-                } catch (e) {}
-                prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
-            }
-            function savePrio() {
-                const validIds = new Set(prioCategories.map(c => c.id));
-                let platesChanged = false;
-                platesData.forEach(plate => {
-                    if (Array.isArray(plate.allowedCats)) {
-                        const filtered = plate.allowedCats.filter(id => validIds.has(id));
-                        if (filtered.length !== plate.allowedCats.length) {
-                            plate.allowedCats = filtered;
-                            platesChanged = true;
-                        }
-                    }
-                });
-                try { localStorage.setItem(PRIO_STORAGE_KEY, JSON.stringify(prioCategories)); } catch (e) {}
-                if (platesChanged) scheduleSave();
-            }
-            loadPrio();
-            
-            function getPlayerRoleNormalized(p) {
-                if (Array.isArray(p.roles) && p.roles.length > 0) return String(p.roles[0]).toLowerCase();
-                if (p.role) return String(p.role).toLowerCase();
-                return '';
-            }
-            function getPlayerSpec(p)  { return (p.spec || p.specName || p.specialization || '').toString(); }
-            function getPlayerClass(p) { return (p.class || p.className || '').toString(); }
-            
-            function getPlayerArchetype(p) {
-                const cls = normalizeClass(getPlayerClass(p));
-                const spec = getPlayerSpec(p);
-                if (!cls || !spec) return '';
-                return SPEC_ARCHETYPE_LOOKUP[cls + '|' + spec] || '';
-            }
-            
-            function playerMatchesCategory(p, cat) {
-                const playerClass = normalizeClass(getPlayerClass(p));
-                const playerSpec  = getPlayerSpec(p);
-                const playerRole  = getPlayerRoleNormalized(p);
-                if (cat.class && playerClass !== cat.class) return false;
-                if (cat.spec  && playerSpec  !== cat.spec)  return false;
-                if (cat.role  && playerRole  !== cat.role.toLowerCase()) return false;
-                if (cat.archetype && cat.archetype.trim()) {
-                    if (getPlayerArchetype(p) !== cat.archetype) return false;
+
+                        const sel = isSelected ? ' selected' : '';
+                        html += `<option value="${name}" style="color:${color};" data-color="${color}"${sel}>${name}</option>`;
+                    });
+                    return html;
                 }
-                return true;
-            }
-            
-            function getPlayerCategory(p) {
-                if (!p) return null;
-                for (const cat of prioCategories) {
-                    if (playerMatchesCategory(p, cat)) return cat;
+
+                function getRtOptions(selectedRt) {
+                    return RT_MARKERS.map(m => {
+                        const sel = m.val === selectedRt ? ' selected' : '';
+                        return `<option value="${m.val}"${sel}>${m.label}</option>`;
+                    }).join('');
                 }
-                return null;
-            }
-            function findRosterPlayer(name) {
-                if (!Array.isArray(roster) || !name) return null;
-                return roster.find(rp => (rp.name || rp) === name) || null;
-            }
-            
-            function isPlayerAllowedOnPlate(name, pIdx) {
-                const plate = platesData[pIdx];
-                if (!plate || plate.allowedCats === null) return true;  
-                if (plate.allowedCats.length === 0) return false;       
-                const ply = findRosterPlayer(name);
-                const cat = getPlayerCategory(ply);
-                if (!cat) return false;  
-                return plate.allowedCats.includes(cat.id);
-            }
-            
-            function findOtherPlatesWithPlayer(name, exceptIdx) {
-                const result = [];
-                if (!name) return result;
-                for (let p = 0; p < NUM_PLATES; p++) {
-                    if (p === exceptIdx) continue;
-                    if (platesData[p].slots.includes(name)) result.push(p + 1);
+
+                function rtIconHtml(rtVal) {
+                    const m = RT_MARKERS.find(x => x.val === rtVal);
+                    if (!m || !m.file) return '<span class="sha-plate-rt-icon" title="Kein Marker"></span>';
+                    return `<img src="raidicons/${m.file}" alt="${m.label}" class="sha-plate-rt-icon" title="${m.label}" onerror="this.style.display='none'">`;
                 }
-                return result;
-            }
-            
-            function getPlayerOptions(selectedName, pIdx) {
-                let html = '<option value="">—</option>';
-                if (!Array.isArray(roster)) return html;
-                
-                const plate = (typeof pIdx === 'number') ? platesData[pIdx] : null;
-                const filterActive = !!(plate && plate.allowedCats !== null);
-                
-                roster.forEach(p => {
-                    const name = p.name || p;
-                    const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
-                    const isSelected = name === selectedName;
-                    
-                    if (filterActive && !isSelected && !isPlayerAllowedOnPlate(name, pIdx)) {
-                        return;
-                    }
-                    
-                    const sel = isSelected ? ' selected' : '';
-                    html += `<option value="${name}" style="color:${color};" data-color="${color}"${sel}>${name}</option>`;
-                });
-                return html;
-            }
-            
-            function getRtOptions(selectedRt) {
-                return RT_MARKERS.map(m => {
-                    const sel = m.val === selectedRt ? ' selected' : '';
-                    return `<option value="${m.val}"${sel}>${m.label}</option>`;
-                }).join('');
-            }
-            
-            function rtIconHtml(rtVal) {
-                const m = RT_MARKERS.find(x => x.val === rtVal);
-                if (!m || !m.file) return '<span class="sha-plate-rt-icon" title="Kein Marker"></span>';
-                return `<img src="raidicons/${m.file}" alt="${m.label}" class="sha-plate-rt-icon" title="${m.label}" onerror="this.style.display='none'">`;
-            }
-            
-            function renderTagsHtml(pIdx) {
-                const plate = platesData[pIdx];
-                if (prioCategories.length === 0) {
-                    return `<div class="sha-plate-tags"><span class="sha-plate-tags-label">Keine Kategorien definiert</span></div>`;
-                }
-                const allowed = plate.allowedCats;
-                let html = `<div class="sha-plate-tags" data-plate-idx="${pIdx}"><span class="sha-plate-tags-label">Erlaubt:</span>`;
-                
-                const allOn = (allowed === null);
-                html += `<span class="sha-plate-tag ${allOn ? 'tag-on' : 'tag-off'}" data-plate-idx="${pIdx}" data-cat-id="__ALL__" title="Klick: alle erlauben (Filter aus)">${allOn ? '✓' : '○'} Alle</span>`;
-                
-                prioCategories.forEach(cat => {
-                    const on = (allowed === null) || (Array.isArray(allowed) && allowed.includes(cat.id));
-                    html += `<span class="sha-plate-tag ${on ? 'tag-on' : 'tag-off'}" data-plate-idx="${pIdx}" data-cat-id="${cat.id}" title="Klick: erlauben/sperren">${cat.label}</span>`;
-                });
-                html += '</div>';
-                return html;
-            }
-            
-            function renderAllPlates() {
-                gridEl.innerHTML = '';
-                for (let pIdx = 0; pIdx < NUM_PLATES; pIdx++) {
+
+                function renderTagsHtml(pIdx) {
                     const plate = platesData[pIdx];
-                    const card = document.createElement('div');
-                    card.className = 'sha-plate-card';
-                    card.dataset.plateIdx = pIdx;
-                    
-                    let slotsHtml = '<table class="sha-plate-slots-table"><tbody>';
-                    for (let s = 0; s < SLOTS_PER_PLATE; s++) {
-                        const val = plate.slots[s] || '';
-                        const dupOn = val ? findOtherPlatesWithPlayer(val, pIdx) : [];
-                        const dupClass = dupOn.length > 0 ? ' is-duplicate' : '';
-                        const dupTitle = dupOn.length > 0 ? ` title="⚠ Auch auf Platte ${dupOn.join(', ')}"` : '';
-                        slotsHtml += `
+                    if (prioCategories.length === 0) {
+                        return `<div class="sha-plate-tags"><span class="sha-plate-tags-label">Keine Kategorien definiert</span></div>`;
+                    }
+                    const allowed = plate.allowedCats;
+                    let html = `<div class="sha-plate-tags" data-plate-idx="${pIdx}"><span class="sha-plate-tags-label">Erlaubt:</span>`;
+
+                    const allOn = (allowed === null);
+                    html += `<span class="sha-plate-tag ${allOn ? 'tag-on' : 'tag-off'}" data-plate-idx="${pIdx}" data-cat-id="__ALL__" title="Klick: alle erlauben (Filter aus)">${allOn ? '✓' : '○'} Alle</span>`;
+
+                    prioCategories.forEach(cat => {
+                        const on = (allowed === null) || (Array.isArray(allowed) && allowed.includes(cat.id));
+                        html += `<span class="sha-plate-tag ${on ? 'tag-on' : 'tag-off'}" data-plate-idx="${pIdx}" data-cat-id="${cat.id}" title="Klick: erlauben/sperren">${cat.label}</span>`;
+                    });
+                    html += '</div>';
+                    return html;
+                }
+
+                function renderAllPlates() {
+                    gridEl.innerHTML = '';
+                    for (let pIdx = 0; pIdx < NUM_PLATES; pIdx++) {
+                        const plate = platesData[pIdx];
+                        const card = document.createElement('div');
+                        card.className = 'sha-plate-card';
+                        card.dataset.plateIdx = pIdx;
+
+                        let slotsHtml = '<table class="sha-plate-slots-table"><tbody>';
+                        for (let s = 0; s < SLOTS_PER_PLATE; s++) {
+                            const val = plate.slots[s] || '';
+                            const dupOn = val ? findOtherPlatesWithPlayer(val, pIdx) : [];
+                            const dupClass = dupOn.length > 0 ? ' is-duplicate' : '';
+                            const dupTitle = dupOn.length > 0 ? ` title="⚠ Auch auf Platte ${dupOn.join(', ')}"` : '';
+                            slotsHtml += `
                             <tr>
                                 <td class="slot-num">${s + 1}</td>
                                 <td>
@@ -973,10 +1099,10 @@ CD_AUTO_PLANNER.init({
                                 <td class="slot-del">${val ? `<button class="text-red-400 hover:text-red-300 text-xs sha-plate-slot-clear" data-plate-idx="${pIdx}" data-slot-idx="${s}" title="Leeren">✕</button>` : ''}</td>
                             </tr>
                         `;
-                    }
-                    slotsHtml += '</tbody></table>';
-                    
-                    card.innerHTML = `
+                        }
+                        slotsHtml += '</tbody></table>';
+
+                        card.innerHTML = `
                         <div class="sha-plate-header">
                             <span class="sha-plate-title">Platte ${pIdx + 1}</span>
                             <span class="sha-plate-rt-display" data-plate-idx="${pIdx}">${rtIconHtml(plate.rt)}</span>
@@ -992,299 +1118,299 @@ CD_AUTO_PLANNER.init({
                             <button class="sha-plate-wa-copy" data-plate-idx="${pIdx}" title="WeakAura-String kopieren">📋</button>
                         </div>
                     `;
-                    gridEl.appendChild(card);
-                    
-                    card.querySelectorAll('.sha-plate-slot-select').forEach(sel => {
-                        const opt = sel.options[sel.selectedIndex];
-                        if (opt && opt.value) sel.style.color = opt.dataset.color || '#fff';
-                    });
-                }
-                updateAllWaStrings();
-            }
-            
-            function buildWaString(pIdx) {
-                const plate = platesData[pIdx];
-                if (!plate) return '';
-                const players = plate.slots.filter(s => s && s.trim()).join(',');
-                const prefix = plate.rt ? `{${plate.rt}}-` : '';
-                if (!players) return '';
-                return prefix + players;
-            }
-            function updateAllWaStrings() {
-                const allLines = [];
-                for (let p = 0; p < NUM_PLATES; p++) {
-                    const s = buildWaString(p);
-                    const out = gridEl.querySelector(`.sha-plate-wa-output[data-plate-idx="${p}"]`);
-                    if (out) {
-                        out.textContent = s || '—';
-                    }
-                    if (s) allLines.push(s);
-                }
-                const allOut = document.getElementById('sha-plates-wa-all-output');
-                if (allOut) {
-                    allOut.value = allLines.join('\n');
-                }
-            }
-            
-            function scheduleSave() {
-                if (saveTimer) clearTimeout(saveTimer);
-                saveTimer = setTimeout(saveData, 600);
-            }
-            async function saveData() {
-                if (!window.isManager) return;
-                if (!firebaseTools || !firebaseTools.db) return;
-                const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-                try {
-                    const hash = location.hash.substring(1);
-                    const bossId = hash.split('/')[1] || 'sha-of-pride';
-                    const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
-                    await firebaseTools.setDoc(docRef, {
-                        [ASSIGNMENT_ID]: {
-                            platesData: platesData,
-                            editor: currentManager,
-                            timestamp: new Date().toISOString()
-                        }
-                    }, { merge: true });
-                    if (window.logHistory) {
-                        window.logHistory(bossId, `Sha-Platten aktualisiert`, 'aktualisiert', currentManager);
-                    }
-                } catch (e) {
-                    console.error('[Sha Plates] Save fehlgeschlagen:', e);
-                }
-            }
-            function loadFromAssignments() {
-                if (!assignments) return;
-                const saved = assignments[ASSIGNMENT_ID];
-                if (saved && Array.isArray(saved.platesData) && saved.platesData.length === NUM_PLATES) {
-                    platesData = saved.platesData.map(p => ({
-                        rt: p.rt || '',
-                        slots: Array.isArray(p.slots)
-                            ? p.slots.slice(0, SLOTS_PER_PLATE).concat(Array(SLOTS_PER_PLATE).fill('')).slice(0, SLOTS_PER_PLATE)
-                            : Array(SLOTS_PER_PLATE).fill(''),
-                        allowedCats: Array.isArray(p.allowedCats) ? p.allowedCats.slice() : null
-                    }));
-                    renderAllPlates();
-                }
-            }
-            
-            function refreshDuplicateMarkers() {
-                gridEl.querySelectorAll('.sha-plate-slot-select').forEach(sel => {
-                    const pIdx = parseInt(sel.dataset.plateIdx);
-                    const sIdx = parseInt(sel.dataset.slotIdx);
-                    const val = platesData[pIdx]?.slots[sIdx] || '';
-                    const dupOn = val ? findOtherPlatesWithPlayer(val, pIdx) : [];
-                    if (dupOn.length > 0) {
-                        sel.classList.add('is-duplicate');
-                        sel.title = `⚠ Auch auf Platte ${dupOn.join(', ')}`;
-                    } else {
-                        sel.classList.remove('is-duplicate');
-                        sel.title = '';
-                    }
-                });
-            }
-            
-            gridEl.addEventListener('change', (e) => {
-                const t = e.target;
-                const pIdx = parseInt(t.dataset.plateIdx);
-                if (isNaN(pIdx)) return;
-                
-                if (t.classList.contains('sha-plate-rt-select')) {
-                    platesData[pIdx].rt = t.value;
-                    const iconHost = gridEl.querySelector(`.sha-plate-rt-display[data-plate-idx="${pIdx}"]`);
-                    if (iconHost) iconHost.innerHTML = rtIconHtml(t.value);
-                    updateAllWaStrings();
-                    scheduleSave();
-                } else if (t.classList.contains('sha-plate-slot-select')) {
-                    const sIdx = parseInt(t.dataset.slotIdx);
-                    if (isNaN(sIdx)) return;
-                    const wasFilled = !!platesData[pIdx].slots[sIdx];
-                    const nowVal = t.value;
-                    platesData[pIdx].slots[sIdx] = nowVal;
-                    
-                    const opt = t.options[t.selectedIndex];
-                    t.style.color = opt ? (opt.dataset.color || '#fff') : '#fff';
-                    
-                    const delCell = t.closest('tr')?.querySelector('.slot-del');
-                    if (delCell) {
-                        if (nowVal && !wasFilled) {
-                            delCell.innerHTML = `<button class="text-red-400 hover:text-red-300 text-xs sha-plate-slot-clear" data-plate-idx="${pIdx}" data-slot-idx="${sIdx}" title="Leeren">✕</button>`;
-                        } else if (!nowVal && wasFilled) {
-                            delCell.innerHTML = '';
-                        }
-                    }
-                    refreshDuplicateMarkers();
-                    updateAllWaStrings();
-                    scheduleSave();
-                }
-            });
-            
-            gridEl.addEventListener('click', (e) => {
-                const tag = e.target.closest('.sha-plate-tag');
-                if (tag) {
-                    if (!window.isManager) return;
-                    const pIdx = parseInt(tag.dataset.plateIdx);
-                    const catId = tag.dataset.catId;
-                    if (isNaN(pIdx) || !catId) return;
-                    const plate = platesData[pIdx];
-                    
-                    if (catId === '__ALL__') {
-                        plate.allowedCats = (plate.allowedCats === null) ? [] : null;
-                    } else {
-                        if (plate.allowedCats === null) {
-                            plate.allowedCats = prioCategories.map(c => c.id).filter(id => id !== catId);
-                        } else if (plate.allowedCats.includes(catId)) {
-                            plate.allowedCats = plate.allowedCats.filter(id => id !== catId);
-                        } else {
-                            plate.allowedCats = [...plate.allowedCats, catId];
-                        }
-                        if (plate.allowedCats.length === prioCategories.length &&
-                            prioCategories.every(c => plate.allowedCats.includes(c.id))) {
-                            plate.allowedCats = null;
-                        }
-                    }
-                    renderAllPlates();  
-                    scheduleSave();
-                    return;
-                }
-                
-                const clearBtn = e.target.closest('.sha-plate-slot-clear');
-                const plateClearBtn = e.target.closest('.sha-plate-clear');
-                const copyBtn = e.target.closest('.sha-plate-wa-copy');
-                
-                if (clearBtn) {
-                    const pIdx = parseInt(clearBtn.dataset.plateIdx);
-                    const sIdx = parseInt(clearBtn.dataset.slotIdx);
-                    if (!isNaN(pIdx) && !isNaN(sIdx)) {
-                        platesData[pIdx].slots[sIdx] = '';
-                        renderAllPlates();
-                        scheduleSave();
-                    }
-                } else if (plateClearBtn) {
-                    const pIdx = parseInt(plateClearBtn.dataset.plateIdx);
-                    if (!isNaN(pIdx) && confirm(`Platte ${pIdx + 1} komplett leeren (RT bleibt)?`)) {
-                        platesData[pIdx].slots = Array(SLOTS_PER_PLATE).fill('');
-                        renderAllPlates();
-                        scheduleSave();
-                    }
-                } else if (copyBtn) {
-                    const pIdx = parseInt(copyBtn.dataset.plateIdx);
-                    const text = buildWaString(pIdx);
-                    if (!text) {
-                        if (window.showModal) window.showModal(`Platte ${pIdx + 1}: nichts zum Kopieren.`);
-                        return;
-                    }
-                    navigator.clipboard.writeText(text).then(() => {
-                        const old = copyBtn.textContent;
-                        copyBtn.textContent = '✓';
-                        setTimeout(() => copyBtn.textContent = old, 1200);
-                    }).catch(() => {
-                        if (window.showModal) window.showModal('Kopieren fehlgeschlagen — String manuell markieren.');
-                    });
-                }
-            });
-            
-            const prioListEl   = document.getElementById('sha-plates-prio-list');
-            const autoFillBtn  = document.getElementById('sha-plates-auto-fill');
-            const clearAllBtn  = document.getElementById('sha-plates-clear-all');
-            const prioResetBtn = document.getElementById('sha-plates-prio-reset');
-            const prioAddBtn   = document.getElementById('sha-plates-prio-add');
-            const prioDetectBtn= document.getElementById('sha-plates-prio-detect');
-            const modalEl      = document.getElementById('sha-plates-prio-modal');
-            const modalTitle   = document.getElementById('sha-plates-prio-modal-title');
-            const modalLabel   = document.getElementById('sha-plates-prio-modal-label');
-            const modalClass   = document.getElementById('sha-plates-prio-modal-class');
-            const modalSpec    = document.getElementById('sha-plates-prio-modal-spec');
-            const modalRole    = document.getElementById('sha-plates-prio-modal-role');
-            const modalArchetype = document.getElementById('sha-plates-prio-modal-archetype');
-            const modalLimitRows  = document.getElementById('sha-plates-prio-modal-limit-rows');
-            const modalLimitCount = document.getElementById('sha-plates-prio-modal-limit-count');
-            const modalMaxTotal   = document.getElementById('sha-plates-prio-modal-max-total');
-            const modalSave    = document.getElementById('sha-plates-prio-modal-save');
-            const modalCancel  = document.getElementById('sha-plates-prio-modal-cancel');
+                        gridEl.appendChild(card);
 
-            const waAllCopyBtn = document.getElementById('sha-plates-wa-all-copy');
-            const waAllOutput  = document.getElementById('sha-plates-wa-all-output');
-            if (waAllCopyBtn && waAllOutput) {
-                waAllCopyBtn.addEventListener('click', async () => {
-                    if (!waAllOutput.value) {
-                        if (window.showModal) window.showModal('Noch keine Spieler eingetragen — nichts zum Kopieren.');
-                        return;
+                        card.querySelectorAll('.sha-plate-slot-select').forEach(sel => {
+                            const opt = sel.options[sel.selectedIndex];
+                            if (opt && opt.value) sel.style.color = opt.dataset.color || '#fff';
+                        });
                     }
+                    updateAllWaStrings();
+                }
+
+                function buildWaString(pIdx) {
+                    const plate = platesData[pIdx];
+                    if (!plate) return '';
+                    const players = plate.slots.filter(s => s && s.trim()).join(',');
+                    const prefix = plate.rt ? `{${plate.rt}}-` : '';
+                    if (!players) return '';
+                    return prefix + players;
+                }
+                function updateAllWaStrings() {
+                    const allLines = [];
+                    for (let p = 0; p < NUM_PLATES; p++) {
+                        const s = buildWaString(p);
+                        const out = gridEl.querySelector(`.sha-plate-wa-output[data-plate-idx="${p}"]`);
+                        if (out) {
+                            out.textContent = s || '—';
+                        }
+                        if (s) allLines.push(s);
+                    }
+                    const allOut = document.getElementById('sha-plates-wa-all-output');
+                    if (allOut) {
+                        allOut.value = allLines.join('\n');
+                    }
+                }
+
+                function scheduleSave() {
+                    if (saveTimer) clearTimeout(saveTimer);
+                    saveTimer = setTimeout(saveData, 600);
+                }
+                async function saveData() {
+                    if (!window.isManager) return;
+                    if (!firebaseTools || !firebaseTools.db) return;
+                    const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
                     try {
-                        await navigator.clipboard.writeText(waAllOutput.value);
-                        const orig = waAllCopyBtn.textContent;
-                        waAllCopyBtn.textContent = '✓ Kopiert';
-                        setTimeout(() => { waAllCopyBtn.textContent = orig; }, 1500);
+                        const hash = location.hash.substring(1);
+                        const bossId = hash.split('/')[1] || 'sha-of-pride';
+                        const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                        await firebaseTools.setDoc(docRef, {
+                            [ASSIGNMENT_ID]: {
+                                platesData: platesData,
+                                editor: currentManager,
+                                timestamp: new Date().toISOString()
+                            }
+                        }, { merge: true });
+                        if (window.logHistory) {
+                            window.logHistory(bossId, `Sha-Platten aktualisiert`, 'aktualisiert', currentManager);
+                        }
                     } catch (e) {
-                        waAllOutput.select();
-                        document.execCommand('copy');
+                        console.error('[Sha Plates] Save fehlgeschlagen:', e);
                     }
-                });
-            }
-            
-            if (modalClass) {
-                Object.keys(SPEC_DEFINITIONS).forEach(clsKey => {
-                    const opt = new Option(CLASS_DISPLAY[clsKey] || clsKey, clsKey);
-                    modalClass.appendChild(opt);
-                });
-            }
-            function updateSpecDropdown(selectedClass, selectedSpec) {
-                if (!modalSpec) return;
-                modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
-                if (selectedClass && SPEC_DEFINITIONS[selectedClass]) {
-                    SPEC_DEFINITIONS[selectedClass].forEach(s => {
-                        const opt = new Option(s.label, s.value);
-                        modalSpec.appendChild(opt);
+                }
+                function loadFromAssignments() {
+                    if (!assignments) return;
+                    const saved = assignments[ASSIGNMENT_ID];
+                    if (saved && Array.isArray(saved.platesData) && saved.platesData.length === NUM_PLATES) {
+                        platesData = saved.platesData.map(p => ({
+                            rt: p.rt || '',
+                            slots: Array.isArray(p.slots)
+                                ? p.slots.slice(0, SLOTS_PER_PLATE).concat(Array(SLOTS_PER_PLATE).fill('')).slice(0, SLOTS_PER_PLATE)
+                                : Array(SLOTS_PER_PLATE).fill(''),
+                            allowedCats: Array.isArray(p.allowedCats) ? p.allowedCats.slice() : null
+                        }));
+                        renderAllPlates();
+                    }
+                }
+
+                function refreshDuplicateMarkers() {
+                    gridEl.querySelectorAll('.sha-plate-slot-select').forEach(sel => {
+                        const pIdx = parseInt(sel.dataset.plateIdx);
+                        const sIdx = parseInt(sel.dataset.slotIdx);
+                        const val = platesData[pIdx]?.slots[sIdx] || '';
+                        const dupOn = val ? findOtherPlatesWithPlayer(val, pIdx) : [];
+                        if (dupOn.length > 0) {
+                            sel.classList.add('is-duplicate');
+                            sel.title = `⚠ Auch auf Platte ${dupOn.join(', ')}`;
+                        } else {
+                            sel.classList.remove('is-duplicate');
+                            sel.title = '';
+                        }
                     });
                 }
-                modalSpec.value = selectedSpec || '';
-                if (modalSpec.value !== (selectedSpec || '')) modalSpec.value = '';
-            }
-            if (modalClass) modalClass.addEventListener('change', () => updateSpecDropdown(modalClass.value, ''));
-            if (modalSpec) {
-                modalSpec.addEventListener('change', () => {
-                    const cls = modalClass.value;
-                    const spec = modalSpec.value;
-                    if (cls && spec && SPEC_DEFINITIONS[cls]) {
-                        const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
-                        if (def) {
-                            if (!modalRole.value) modalRole.value = def.role;
-                            if (!modalArchetype.value && def.archetype) modalArchetype.value = def.archetype;
+
+                gridEl.addEventListener('change', (e) => {
+                    const t = e.target;
+                    const pIdx = parseInt(t.dataset.plateIdx);
+                    if (isNaN(pIdx)) return;
+
+                    if (t.classList.contains('sha-plate-rt-select')) {
+                        platesData[pIdx].rt = t.value;
+                        const iconHost = gridEl.querySelector(`.sha-plate-rt-display[data-plate-idx="${pIdx}"]`);
+                        if (iconHost) iconHost.innerHTML = rtIconHtml(t.value);
+                        updateAllWaStrings();
+                        scheduleSave();
+                    } else if (t.classList.contains('sha-plate-slot-select')) {
+                        const sIdx = parseInt(t.dataset.slotIdx);
+                        if (isNaN(sIdx)) return;
+                        const wasFilled = !!platesData[pIdx].slots[sIdx];
+                        const nowVal = t.value;
+                        platesData[pIdx].slots[sIdx] = nowVal;
+
+                        const opt = t.options[t.selectedIndex];
+                        t.style.color = opt ? (opt.dataset.color || '#fff') : '#fff';
+
+                        const delCell = t.closest('tr')?.querySelector('.slot-del');
+                        if (delCell) {
+                            if (nowVal && !wasFilled) {
+                                delCell.innerHTML = `<button class="text-red-400 hover:text-red-300 text-xs sha-plate-slot-clear" data-plate-idx="${pIdx}" data-slot-idx="${sIdx}" title="Leeren">✕</button>`;
+                            } else if (!nowVal && wasFilled) {
+                                delCell.innerHTML = '';
+                            }
                         }
+                        refreshDuplicateMarkers();
+                        updateAllWaStrings();
+                        scheduleSave();
                     }
                 });
-            }
-            
-            function renderPrioList() {
-                if (!prioListEl) return;
-                prioListEl.innerHTML = '';
-                if (prioCategories.length === 0) {
-                    prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien — auf "+" klicken oder "Aus Kader ableiten".</li>';
-                    return;
+
+                gridEl.addEventListener('click', (e) => {
+                    const tag = e.target.closest('.sha-plate-tag');
+                    if (tag) {
+                        if (!window.isManager) return;
+                        const pIdx = parseInt(tag.dataset.plateIdx);
+                        const catId = tag.dataset.catId;
+                        if (isNaN(pIdx) || !catId) return;
+                        const plate = platesData[pIdx];
+
+                        if (catId === '__ALL__') {
+                            plate.allowedCats = (plate.allowedCats === null) ? [] : null;
+                        } else {
+                            if (plate.allowedCats === null) {
+                                plate.allowedCats = prioCategories.map(c => c.id).filter(id => id !== catId);
+                            } else if (plate.allowedCats.includes(catId)) {
+                                plate.allowedCats = plate.allowedCats.filter(id => id !== catId);
+                            } else {
+                                plate.allowedCats = [...plate.allowedCats, catId];
+                            }
+                            if (plate.allowedCats.length === prioCategories.length &&
+                                prioCategories.every(c => plate.allowedCats.includes(c.id))) {
+                                plate.allowedCats = null;
+                            }
+                        }
+                        renderAllPlates();
+                        scheduleSave();
+                        return;
+                    }
+
+                    const clearBtn = e.target.closest('.sha-plate-slot-clear');
+                    const plateClearBtn = e.target.closest('.sha-plate-clear');
+                    const copyBtn = e.target.closest('.sha-plate-wa-copy');
+
+                    if (clearBtn) {
+                        const pIdx = parseInt(clearBtn.dataset.plateIdx);
+                        const sIdx = parseInt(clearBtn.dataset.slotIdx);
+                        if (!isNaN(pIdx) && !isNaN(sIdx)) {
+                            platesData[pIdx].slots[sIdx] = '';
+                            renderAllPlates();
+                            scheduleSave();
+                        }
+                    } else if (plateClearBtn) {
+                        const pIdx = parseInt(plateClearBtn.dataset.plateIdx);
+                        if (!isNaN(pIdx) && confirm(`Platte ${pIdx + 1} komplett leeren (RT bleibt)?`)) {
+                            platesData[pIdx].slots = Array(SLOTS_PER_PLATE).fill('');
+                            renderAllPlates();
+                            scheduleSave();
+                        }
+                    } else if (copyBtn) {
+                        const pIdx = parseInt(copyBtn.dataset.plateIdx);
+                        const text = buildWaString(pIdx);
+                        if (!text) {
+                            if (window.showModal) window.showModal(`Platte ${pIdx + 1}: nichts zum Kopieren.`);
+                            return;
+                        }
+                        navigator.clipboard.writeText(text).then(() => {
+                            const old = copyBtn.textContent;
+                            copyBtn.textContent = '✓';
+                            setTimeout(() => copyBtn.textContent = old, 1200);
+                        }).catch(() => {
+                            if (window.showModal) window.showModal('Kopieren fehlgeschlagen — String manuell markieren.');
+                        });
+                    }
+                });
+
+                const prioListEl = document.getElementById('sha-plates-prio-list');
+                const autoFillBtn = document.getElementById('sha-plates-auto-fill');
+                const clearAllBtn = document.getElementById('sha-plates-clear-all');
+                const prioResetBtn = document.getElementById('sha-plates-prio-reset');
+                const prioAddBtn = document.getElementById('sha-plates-prio-add');
+                const prioDetectBtn = document.getElementById('sha-plates-prio-detect');
+                const modalEl = document.getElementById('sha-plates-prio-modal');
+                const modalTitle = document.getElementById('sha-plates-prio-modal-title');
+                const modalLabel = document.getElementById('sha-plates-prio-modal-label');
+                const modalClass = document.getElementById('sha-plates-prio-modal-class');
+                const modalSpec = document.getElementById('sha-plates-prio-modal-spec');
+                const modalRole = document.getElementById('sha-plates-prio-modal-role');
+                const modalArchetype = document.getElementById('sha-plates-prio-modal-archetype');
+                const modalLimitRows = document.getElementById('sha-plates-prio-modal-limit-rows');
+                const modalLimitCount = document.getElementById('sha-plates-prio-modal-limit-count');
+                const modalMaxTotal = document.getElementById('sha-plates-prio-modal-max-total');
+                const modalSave = document.getElementById('sha-plates-prio-modal-save');
+                const modalCancel = document.getElementById('sha-plates-prio-modal-cancel');
+
+                const waAllCopyBtn = document.getElementById('sha-plates-wa-all-copy');
+                const waAllOutput = document.getElementById('sha-plates-wa-all-output');
+                if (waAllCopyBtn && waAllOutput) {
+                    waAllCopyBtn.addEventListener('click', async () => {
+                        if (!waAllOutput.value) {
+                            if (window.showModal) window.showModal('Noch keine Spieler eingetragen — nichts zum Kopieren.');
+                            return;
+                        }
+                        try {
+                            await navigator.clipboard.writeText(waAllOutput.value);
+                            const orig = waAllCopyBtn.textContent;
+                            waAllCopyBtn.textContent = '✓ Kopiert';
+                            setTimeout(() => { waAllCopyBtn.textContent = orig; }, 1500);
+                        } catch (e) {
+                            waAllOutput.select();
+                            document.execCommand('copy');
+                        }
+                    });
                 }
-                prioCategories.forEach((cat, idx) => {
-                    const li = document.createElement('li');
-                    li.draggable = !!window.isManager;
-                    li.dataset.catId = cat.id;
-                    li.className = 'flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs';
-                    
-                    const filters = [];
-                    if (cat.class)     filters.push(CLASS_DISPLAY[cat.class] || cat.class);
-                    if (cat.spec)      filters.push(cat.spec);
-                    if (cat.role)      filters.push(cat.role);
-                    if (cat.archetype) filters.push(ARCHETYPE_LABELS[cat.archetype] || cat.archetype);
-                    const filterStr = filters.length > 0 ? filters.join(' · ') : '<span class="text-yellow-500">⚠ kein Filter</span>';
-                    
-                    const limits = [];
-                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '') {
-                        limits.push(`max ${cat.limitCount} in ersten ${cat.limitRows}`);
+
+                if (modalClass) {
+                    Object.keys(SPEC_DEFINITIONS).forEach(clsKey => {
+                        const opt = new Option(CLASS_DISPLAY[clsKey] || clsKey, clsKey);
+                        modalClass.appendChild(opt);
+                    });
+                }
+                function updateSpecDropdown(selectedClass, selectedSpec) {
+                    if (!modalSpec) return;
+                    modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
+                    if (selectedClass && SPEC_DEFINITIONS[selectedClass]) {
+                        SPEC_DEFINITIONS[selectedClass].forEach(s => {
+                            const opt = new Option(s.label, s.value);
+                            modalSpec.appendChild(opt);
+                        });
                     }
-                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
-                        limits.push(`max ${cat.maxTotal}/Platte`);
+                    modalSpec.value = selectedSpec || '';
+                    if (modalSpec.value !== (selectedSpec || '')) modalSpec.value = '';
+                }
+                if (modalClass) modalClass.addEventListener('change', () => updateSpecDropdown(modalClass.value, ''));
+                if (modalSpec) {
+                    modalSpec.addEventListener('change', () => {
+                        const cls = modalClass.value;
+                        const spec = modalSpec.value;
+                        if (cls && spec && SPEC_DEFINITIONS[cls]) {
+                            const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
+                            if (def) {
+                                if (!modalRole.value) modalRole.value = def.role;
+                                if (!modalArchetype.value && def.archetype) modalArchetype.value = def.archetype;
+                            }
+                        }
+                    });
+                }
+
+                function renderPrioList() {
+                    if (!prioListEl) return;
+                    prioListEl.innerHTML = '';
+                    if (prioCategories.length === 0) {
+                        prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien — auf "+" klicken oder "Aus Kader ableiten".</li>';
+                        return;
                     }
-                    const limitStr = limits.length > 0 ? `<span class="text-amber-400 ml-1">[${limits.join(', ')}]</span>` : '';
-                    
-                    li.innerHTML = `
+                    prioCategories.forEach((cat, idx) => {
+                        const li = document.createElement('li');
+                        li.draggable = !!window.isManager;
+                        li.dataset.catId = cat.id;
+                        li.className = 'flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs';
+
+                        const filters = [];
+                        if (cat.class) filters.push(CLASS_DISPLAY[cat.class] || cat.class);
+                        if (cat.spec) filters.push(cat.spec);
+                        if (cat.role) filters.push(cat.role);
+                        if (cat.archetype) filters.push(ARCHETYPE_LABELS[cat.archetype] || cat.archetype);
+                        const filterStr = filters.length > 0 ? filters.join(' · ') : '<span class="text-yellow-500">⚠ kein Filter</span>';
+
+                        const limits = [];
+                        if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '') {
+                            limits.push(`max ${cat.limitCount} in ersten ${cat.limitRows}`);
+                        }
+                        if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                            limits.push(`max ${cat.maxTotal}/Platte`);
+                        }
+                        const limitStr = limits.length > 0 ? `<span class="text-amber-400 ml-1">[${limits.join(', ')}]</span>` : '';
+
+                        li.innerHTML = `
                         <span class="text-gray-500 font-mono w-6 text-center">${idx + 1}</span>
                         <span class="text-gray-400 select-none cursor-move drag-handle">⋮⋮</span>
                         <span class="flex-1 text-white truncate" title="${cat.label}">${cat.label}${limitStr}</span>
@@ -1292,408 +1418,408 @@ CD_AUTO_PLANNER.init({
                         <button class="prio-edit text-blue-400 hover:text-blue-300 text-xs px-1" data-cat-id="${cat.id}" title="Bearbeiten">✎</button>
                         <button class="prio-del text-red-400 hover:text-red-300 text-xs px-1" data-cat-id="${cat.id}" title="Löschen">✕</button>
                     `;
-                    prioListEl.appendChild(li);
-                });
-            }
-            
-            let dragSourceId = null;
-            if (prioListEl) {
-                prioListEl.addEventListener('dragstart', (e) => {
-                    if (!window.isManager) { e.preventDefault(); return; }
-                    const li = e.target.closest('[data-cat-id]');
-                    if (!li) { e.preventDefault(); return; }
-                    dragSourceId = li.dataset.catId;
-                    li.classList.add('opacity-50');
-                    e.dataTransfer.effectAllowed = 'move';
-                    try { e.dataTransfer.setData('text/plain', dragSourceId); } catch (err) {}
-                });
-                prioListEl.addEventListener('dragover', (e) => {
-                    if (!dragSourceId) return;
-                    e.preventDefault();
-                    e.dataTransfer.dropEffect = 'move';
-                    const target = e.target.closest('[data-cat-id]');
-                    prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
-                    if (!target || target.dataset.catId === dragSourceId) return;
-                    const rect = target.getBoundingClientRect();
-                    const after = (e.clientY - rect.top) > rect.height / 2;
-                    target.classList.add(after ? 'drop-below' : 'drop-above');
-                });
-                prioListEl.addEventListener('dragleave', (e) => {
-                    if (!prioListEl.contains(e.relatedTarget)) {
+                        prioListEl.appendChild(li);
+                    });
+                }
+
+                let dragSourceId = null;
+                if (prioListEl) {
+                    prioListEl.addEventListener('dragstart', (e) => {
+                        if (!window.isManager) { e.preventDefault(); return; }
+                        const li = e.target.closest('[data-cat-id]');
+                        if (!li) { e.preventDefault(); return; }
+                        dragSourceId = li.dataset.catId;
+                        li.classList.add('opacity-50');
+                        e.dataTransfer.effectAllowed = 'move';
+                        try { e.dataTransfer.setData('text/plain', dragSourceId); } catch (err) { }
+                    });
+                    prioListEl.addEventListener('dragover', (e) => {
+                        if (!dragSourceId) return;
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        const target = e.target.closest('[data-cat-id]');
                         prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
-                    }
-                });
-                prioListEl.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    if (!dragSourceId) return;
-                    const target = e.target.closest('[data-cat-id]');
-                    if (!target || target.dataset.catId === dragSourceId) return;
-                    const rect = target.getBoundingClientRect();
-                    const dropAfter = (e.clientY - rect.top) > rect.height / 2;
-                    const fromIdx = prioCategories.findIndex(c => c.id === dragSourceId);
-                    const toIdxRaw = prioCategories.findIndex(c => c.id === target.dataset.catId);
-                    if (fromIdx < 0 || toIdxRaw < 0) return;
-                    const [moved] = prioCategories.splice(fromIdx, 1);
-                    let toIdx = prioCategories.findIndex(c => c.id === target.dataset.catId);
-                    if (dropAfter) toIdx += 1;
-                    if (toIdx < 0) toIdx = 0;
-                    if (toIdx > prioCategories.length) toIdx = prioCategories.length;
-                    prioCategories.splice(toIdx, 0, moved);
-                    savePrio();
-                });
-                prioListEl.addEventListener('dragend', () => {
-                    prioListEl.querySelectorAll('.opacity-50, .drop-above, .drop-below').forEach(el => el.classList.remove('opacity-50', 'drop-above', 'drop-below'));
-                    dragSourceId = null;
-                    renderPrioList();
-                });
-                prioListEl.addEventListener('click', (e) => {
-                    if (!window.isManager) return;
-                    const editBtn = e.target.closest('.prio-edit');
-                    const delBtn  = e.target.closest('.prio-del');
-                    if (editBtn) {
-                        openPrioModal(editBtn.dataset.catId);
-                    } else if (delBtn) {
-                        const id = delBtn.dataset.catId;
-                        const cat = prioCategories.find(c => c.id === id);
-                        if (cat && confirm(`Kategorie "${cat.label}" wirklich löschen?`)) {
-                            prioCategories = prioCategories.filter(c => c.id !== id);
-                            savePrio();
-                            renderPrioList();
+                        if (!target || target.dataset.catId === dragSourceId) return;
+                        const rect = target.getBoundingClientRect();
+                        const after = (e.clientY - rect.top) > rect.height / 2;
+                        target.classList.add(after ? 'drop-below' : 'drop-above');
+                    });
+                    prioListEl.addEventListener('dragleave', (e) => {
+                        if (!prioListEl.contains(e.relatedTarget)) {
+                            prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
                         }
-                    }
-                });
-            }
-            
-            let editingCatId = null;
-            function openPrioModal(catId) {
-                if (!window.isManager) return;
-                editingCatId = catId || null;
-                if (catId) {
-                    const cat = prioCategories.find(c => c.id === catId);
-                    if (!cat) return;
-                    modalTitle.textContent = 'Kategorie bearbeiten';
-                    modalLabel.value      = cat.label || '';
-                    modalClass.value      = cat.class || '';
-                    updateSpecDropdown(cat.class || '', cat.spec || '');
-                    modalRole.value       = cat.role || '';
-                    modalArchetype.value  = cat.archetype || '';
-                    modalLimitRows.value  = cat.limitRows ?? '';
-                    modalLimitCount.value = cat.limitCount ?? '';
-                    modalMaxTotal.value   = cat.maxTotal ?? '';
-                } else {
-                    modalTitle.textContent = 'Neue Kategorie';
-                    modalLabel.value = '';
-                    modalClass.value = '';
-                    updateSpecDropdown('', '');
-                    modalRole.value = '';
-                    modalArchetype.value = '';
-                    modalLimitRows.value = '';
-                    modalLimitCount.value = '';
-                    modalMaxTotal.value = '';
+                    });
+                    prioListEl.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        if (!dragSourceId) return;
+                        const target = e.target.closest('[data-cat-id]');
+                        if (!target || target.dataset.catId === dragSourceId) return;
+                        const rect = target.getBoundingClientRect();
+                        const dropAfter = (e.clientY - rect.top) > rect.height / 2;
+                        const fromIdx = prioCategories.findIndex(c => c.id === dragSourceId);
+                        const toIdxRaw = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                        if (fromIdx < 0 || toIdxRaw < 0) return;
+                        const [moved] = prioCategories.splice(fromIdx, 1);
+                        let toIdx = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                        if (dropAfter) toIdx += 1;
+                        if (toIdx < 0) toIdx = 0;
+                        if (toIdx > prioCategories.length) toIdx = prioCategories.length;
+                        prioCategories.splice(toIdx, 0, moved);
+                        savePrio();
+                    });
+                    prioListEl.addEventListener('dragend', () => {
+                        prioListEl.querySelectorAll('.opacity-50, .drop-above, .drop-below').forEach(el => el.classList.remove('opacity-50', 'drop-above', 'drop-below'));
+                        dragSourceId = null;
+                        renderPrioList();
+                    });
+                    prioListEl.addEventListener('click', (e) => {
+                        if (!window.isManager) return;
+                        const editBtn = e.target.closest('.prio-edit');
+                        const delBtn = e.target.closest('.prio-del');
+                        if (editBtn) {
+                            openPrioModal(editBtn.dataset.catId);
+                        } else if (delBtn) {
+                            const id = delBtn.dataset.catId;
+                            const cat = prioCategories.find(c => c.id === id);
+                            if (cat && confirm(`Kategorie "${cat.label}" wirklich löschen?`)) {
+                                prioCategories = prioCategories.filter(c => c.id !== id);
+                                savePrio();
+                                renderPrioList();
+                            }
+                        }
+                    });
                 }
-                modalEl.classList.remove('hidden');
-                setTimeout(() => modalLabel.focus(), 50);
-            }
-            function closePrioModal() {
-                modalEl.classList.add('hidden');
-                editingCatId = null;
-            }
-            if (prioAddBtn)   prioAddBtn.addEventListener('click', () => openPrioModal(null));
-            if (modalCancel)  modalCancel.addEventListener('click', closePrioModal);
-            if (modalEl)      modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closePrioModal(); });
-            if (modalSave) {
-                modalSave.addEventListener('click', () => {
-                    const label = modalLabel.value.trim();
-                    if (!label) {
-                        modalLabel.focus();
-                        modalLabel.style.borderColor = '#ef4444';
-                        return;
-                    }
-                    modalLabel.style.borderColor = '';
-                    const data = {
-                        label: label,
-                        class: modalClass.value.trim(),
-                        spec:  modalSpec.value.trim(),
-                        role:  modalRole.value.trim(),
-                        archetype: modalArchetype.value.trim()
-                    };
-                    const lr = parseInt(modalLimitRows.value, 10);
-                    const lc = parseInt(modalLimitCount.value, 10);
-                    if (!isNaN(lr) && lr > 0 && !isNaN(lc) && lc >= 0) {
-                        data.limitRows = lr;
-                        data.limitCount = lc;
-                    }
-                    const mt = parseInt(modalMaxTotal.value, 10);
-                    if (!isNaN(mt) && mt >= 0) data.maxTotal = mt;
-                    
-                    if (editingCatId) {
-                        const cat = prioCategories.find(c => c.id === editingCatId);
-                        if (cat) {
-                            delete cat.limitRows;
-                            delete cat.limitCount;
-                            delete cat.maxTotal;
-                            Object.assign(cat, data);
-                        }
+
+                let editingCatId = null;
+                function openPrioModal(catId) {
+                    if (!window.isManager) return;
+                    editingCatId = catId || null;
+                    if (catId) {
+                        const cat = prioCategories.find(c => c.id === catId);
+                        if (!cat) return;
+                        modalTitle.textContent = 'Kategorie bearbeiten';
+                        modalLabel.value = cat.label || '';
+                        modalClass.value = cat.class || '';
+                        updateSpecDropdown(cat.class || '', cat.spec || '');
+                        modalRole.value = cat.role || '';
+                        modalArchetype.value = cat.archetype || '';
+                        modalLimitRows.value = cat.limitRows ?? '';
+                        modalLimitCount.value = cat.limitCount ?? '';
+                        modalMaxTotal.value = cat.maxTotal ?? '';
                     } else {
-                        const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20) + '_' + Date.now().toString(36);
-                        prioCategories.push({ id, ...data });
+                        modalTitle.textContent = 'Neue Kategorie';
+                        modalLabel.value = '';
+                        modalClass.value = '';
+                        updateSpecDropdown('', '');
+                        modalRole.value = '';
+                        modalArchetype.value = '';
+                        modalLimitRows.value = '';
+                        modalLimitCount.value = '';
+                        modalMaxTotal.value = '';
                     }
-                    savePrio();
-                    renderPrioList();
-                    closePrioModal();
-                });
-            }
-            
-            if (prioResetBtn) {
-                prioResetBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    if (!confirm('Alle Kategorien auf Defaults zurücksetzen?')) return;
-                    prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
-                    savePrio();
-                    renderPrioList();
-                });
-            }
-            if (prioDetectBtn) {
-                prioDetectBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    const detected = detectCategoriesFromRoster();
-                    if (detected.length === 0) {
-                        if (window.showModal) window.showModal('Konnte aus dem Kader keine Kategorien ableiten.');
-                        return;
+                    modalEl.classList.remove('hidden');
+                    setTimeout(() => modalLabel.focus(), 50);
+                }
+                function closePrioModal() {
+                    modalEl.classList.add('hidden');
+                    editingCatId = null;
+                }
+                if (prioAddBtn) prioAddBtn.addEventListener('click', () => openPrioModal(null));
+                if (modalCancel) modalCancel.addEventListener('click', closePrioModal);
+                if (modalEl) modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closePrioModal(); });
+                if (modalSave) {
+                    modalSave.addEventListener('click', () => {
+                        const label = modalLabel.value.trim();
+                        if (!label) {
+                            modalLabel.focus();
+                            modalLabel.style.borderColor = '#ef4444';
+                            return;
+                        }
+                        modalLabel.style.borderColor = '';
+                        const data = {
+                            label: label,
+                            class: modalClass.value.trim(),
+                            spec: modalSpec.value.trim(),
+                            role: modalRole.value.trim(),
+                            archetype: modalArchetype.value.trim()
+                        };
+                        const lr = parseInt(modalLimitRows.value, 10);
+                        const lc = parseInt(modalLimitCount.value, 10);
+                        if (!isNaN(lr) && lr > 0 && !isNaN(lc) && lc >= 0) {
+                            data.limitRows = lr;
+                            data.limitCount = lc;
+                        }
+                        const mt = parseInt(modalMaxTotal.value, 10);
+                        if (!isNaN(mt) && mt >= 0) data.maxTotal = mt;
+
+                        if (editingCatId) {
+                            const cat = prioCategories.find(c => c.id === editingCatId);
+                            if (cat) {
+                                delete cat.limitRows;
+                                delete cat.limitCount;
+                                delete cat.maxTotal;
+                                Object.assign(cat, data);
+                            }
+                        } else {
+                            const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20) + '_' + Date.now().toString(36);
+                            prioCategories.push({ id, ...data });
+                        }
+                        savePrio();
+                        renderPrioList();
+                        closePrioModal();
+                    });
+                }
+
+                if (prioResetBtn) {
+                    prioResetBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        if (!confirm('Alle Kategorien auf Defaults zurücksetzen?')) return;
+                        prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+                        savePrio();
+                        renderPrioList();
+                    });
+                }
+                if (prioDetectBtn) {
+                    prioDetectBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        const detected = detectCategoriesFromRoster();
+                        if (detected.length === 0) {
+                            if (window.showModal) window.showModal('Konnte aus dem Kader keine Kategorien ableiten.');
+                            return;
+                        }
+                        const msg = `${detected.length} Kategorien aus dem Kader erkannt:\n${detected.map(c => '• ' + c.label).join('\n')}\n\nVorhandene Kategorien überschreiben?`;
+                        if (!confirm(msg)) return;
+                        prioCategories = detected;
+                        savePrio();
+                        renderPrioList();
+                    });
+                }
+
+                function detectCategoriesFromRoster() {
+                    if (!Array.isArray(roster) || roster.length === 0) return [];
+                    const cats = [];
+                    function findExisting(filter) {
+                        return prioCategories.find(c =>
+                            (c.class || '') === (filter.class || '') &&
+                            (c.spec || '') === (filter.spec || '') &&
+                            (c.role || '') === (filter.role || '') &&
+                            (c.archetype || '') === (filter.archetype || '')
+                        );
                     }
-                    const msg = `${detected.length} Kategorien aus dem Kader erkannt:\n${detected.map(c => '• ' + c.label).join('\n')}\n\nVorhandene Kategorien überschreiben?`;
-                    if (!confirm(msg)) return;
-                    prioCategories = detected;
-                    savePrio();
-                    renderPrioList();
-                });
-            }
-            
-            function detectCategoriesFromRoster() {
-                if (!Array.isArray(roster) || roster.length === 0) return [];
-                const cats = [];
-                function findExisting(filter) {
-                    return prioCategories.find(c =>
-                        (c.class || '')     === (filter.class || '') &&
-                        (c.spec  || '')     === (filter.spec  || '') &&
-                        (c.role  || '')     === (filter.role  || '') &&
-                        (c.archetype || '') === (filter.archetype || '')
-                    );
-                }
-                function withLimits(base) {
-                    const ex = findExisting(base);
-                    if (ex) {
-                        if (ex.limitRows  !== undefined) base.limitRows  = ex.limitRows;
-                        if (ex.limitCount !== undefined) base.limitCount = ex.limitCount;
-                        if (ex.maxTotal   !== undefined) base.maxTotal   = ex.maxTotal;
+                    function withLimits(base) {
+                        const ex = findExisting(base);
+                        if (ex) {
+                            if (ex.limitRows !== undefined) base.limitRows = ex.limitRows;
+                            if (ex.limitCount !== undefined) base.limitCount = ex.limitCount;
+                            if (ex.maxTotal !== undefined) base.maxTotal = ex.maxTotal;
+                        }
+                        return base;
                     }
-                    return base;
-                }
-                
-                const healers = roster.filter(p => getPlayerRoleNormalized(p) === 'healer');
-                const tanks   = roster.filter(p => getPlayerRoleNormalized(p) === 'tank');
-                if (healers.length > 0) {
-                    cats.push(withLimits({ id: 'auto_healer', label: `Healer (${healers.length})`, class: '', spec: '', role: 'healer', archetype: '' }));
-                }
-                if (tanks.length > 0) {
-                    const t = withLimits({ id: 'auto_tank', label: `Tank (${tanks.length})`, class: '', spec: '', role: 'tank', archetype: '' });
-                    if (t.maxTotal === undefined) t.maxTotal = 1;
-                    cats.push(t);
-                }
-                
-                ['caster', 'ranged_physical', 'melee'].forEach(arch => {
-                    const count = roster.filter(p =>
-                        getPlayerRoleNormalized(p) === 'dps' && getPlayerArchetype(p) === arch
-                    ).length;
-                    if (count > 0) {
-                        cats.push(withLimits({
-                            id: 'auto_' + arch,
-                            label: `${ARCHETYPE_LABELS[arch]} DPS (${count})`,
-                            class: '', spec: '', role: 'dps', archetype: arch
-                        }));
+
+                    const healers = roster.filter(p => getPlayerRoleNormalized(p) === 'healer');
+                    const tanks = roster.filter(p => getPlayerRoleNormalized(p) === 'tank');
+                    if (healers.length > 0) {
+                        cats.push(withLimits({ id: 'auto_healer', label: `Healer (${healers.length})`, class: '', spec: '', role: 'healer', archetype: '' }));
                     }
-                });
-                
-                return cats;
-            }
-            
-            function buildSortedRoster() {
-                if (!Array.isArray(roster)) return [];
-                const used = new Set();
-                const out = [];
-                prioCategories.forEach(cat => {
+                    if (tanks.length > 0) {
+                        const t = withLimits({ id: 'auto_tank', label: `Tank (${tanks.length})`, class: '', spec: '', role: 'tank', archetype: '' });
+                        if (t.maxTotal === undefined) t.maxTotal = 1;
+                        cats.push(t);
+                    }
+
+                    ['caster', 'ranged_physical', 'melee'].forEach(arch => {
+                        const count = roster.filter(p =>
+                            getPlayerRoleNormalized(p) === 'dps' && getPlayerArchetype(p) === arch
+                        ).length;
+                        if (count > 0) {
+                            cats.push(withLimits({
+                                id: 'auto_' + arch,
+                                label: `${ARCHETYPE_LABELS[arch]} DPS (${count})`,
+                                class: '', spec: '', role: 'dps', archetype: arch
+                            }));
+                        }
+                    });
+
+                    return cats;
+                }
+
+                function buildSortedRoster() {
+                    if (!Array.isArray(roster)) return [];
+                    const used = new Set();
+                    const out = [];
+                    prioCategories.forEach(cat => {
+                        roster.forEach(p => {
+                            const name = p.name || p;
+                            if (used.has(name)) return;
+                            if (playerMatchesCategory(p, cat)) {
+                                out.push({ player: p, name: name, category: cat });
+                                used.add(name);
+                            }
+                        });
+                    });
                     roster.forEach(p => {
                         const name = p.name || p;
-                        if (used.has(name)) return;
-                        if (playerMatchesCategory(p, cat)) {
-                            out.push({ player: p, name: name, category: cat });
+                        if (!used.has(name)) {
+                            out.push({ player: p, name: name, category: null });
                             used.add(name);
                         }
                     });
-                });
-                roster.forEach(p => {
-                    const name = p.name || p;
-                    if (!used.has(name)) {
-                        out.push({ player: p, name: name, category: null });
-                        used.add(name);
-                    }
-                });
-                return out;
-            }
-            
-            if (autoFillBtn) {
-                autoFillBtn.addEventListener('click', () => {
-                    if (!window.isManager) {
-                        if (window.showModal) window.showModal('Nur Gildenräte können diese Aktion ausführen.');
-                        return;
-                    }
-                    if (!Array.isArray(roster) || roster.length === 0) {
-                        if (window.showModal) window.showModal('Kader leer.');
-                        return;
-                    }
-                    
-                    const alreadyAssigned = new Set();
-                    const usedInRowsByPlate = Array.from({ length: NUM_PLATES }, () => ({}));
-                    
-                    for (let p = 0; p < NUM_PLATES; p++) {
-                        platesData[p].slots.forEach((name, sIdx) => {
-                            if (!name) return;
-                            alreadyAssigned.add(name);
-                            const ply = findRosterPlayer(name);
-                            if (ply) {
-                                const cat = getPlayerCategory(ply);
-                                if (cat) {
-                                    if (!usedInRowsByPlate[p][cat.id]) usedInRowsByPlate[p][cat.id] = [];
-                                    usedInRowsByPlate[p][cat.id].push(sIdx);
-                                }
-                            }
-                        });
-                    }
-                    
-                    const pool = buildSortedRoster().filter(s => !alreadyAssigned.has(s.name));
-                    
-                    let fillCount = 0;
-                    let skippedDueLimit = 0;
-                    
-                    for (let sIdx = 0; sIdx < SLOTS_PER_PLATE; sIdx++) {
-                        for (let p = 0; p < NUM_PLATES; p++) {
-                            if (platesData[p].slots[sIdx]) continue;
-                            
-                            let foundIdx = -1;
-                            for (let j = 0; j < pool.length; j++) {
-                                const cand = pool[j];
-                                const cat  = cand.category;
-                                
-                                const plate = platesData[p];
-                                if (plate.allowedCats !== null) {
-                                    if (plate.allowedCats.length === 0) continue;  
-                                    if (!cat || !plate.allowedCats.includes(cat.id)) continue;
-                                }
-                                
-                                if (cat) {
-                                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && sIdx < cat.limitRows) {
-                                        const usedInFirstN = (usedInRowsByPlate[p][cat.id] || []).filter(idx => idx < cat.limitRows).length;
-                                        if (usedInFirstN >= cat.limitCount) continue;
-                                    }
-                                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
-                                        const usedTotal = (usedInRowsByPlate[p][cat.id] || []).length;
-                                        if (usedTotal >= cat.maxTotal) continue;
-                                    }
-                                }
-                                foundIdx = j;
-                                break;
-                            }
-                            
-                            if (foundIdx < 0) {
-                                skippedDueLimit++;
-                                continue;
-                            }
-                            
-                            const cand = pool[foundIdx];
-                            pool.splice(foundIdx, 1);
-                            platesData[p].slots[sIdx] = cand.name;
-                            if (cand.category) {
-                                if (!usedInRowsByPlate[p][cand.category.id]) usedInRowsByPlate[p][cand.category.id] = [];
-                                usedInRowsByPlate[p][cand.category.id].push(sIdx);
-                            }
-                            fillCount++;
+                    return out;
+                }
+
+                if (autoFillBtn) {
+                    autoFillBtn.addEventListener('click', () => {
+                        if (!window.isManager) {
+                            if (window.showModal) window.showModal('Nur Gildenräte können diese Aktion ausführen.');
+                            return;
                         }
-                    }
-                    
-                    renderAllPlates();
-                    scheduleSave();
-                    
-                    let msg = `Auto-Füllen: ${fillCount} Spieler eingetragen.`;
-                    if (skippedDueLimit > 0) msg += `\n(${skippedDueLimit} Slots übersprungen wegen Limits/Kategorien.)`;
-                    if (window.showModal) window.showModal(msg);
-                });
-            }
-            
-            if (clearAllBtn) {
-                clearAllBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    if (!confirm('Alle 4 Platten komplett leeren (Spieler + RTs)?')) return;
-                    platesData = Array.from({ length: NUM_PLATES }, () => ({
-                        rt: '', slots: Array(SLOTS_PER_PLATE).fill('')
-                    }));
-                    renderAllPlates();
-                    scheduleSave();
-                });
-            }
-            
-            function applyProtection() {
-                const isM = !!window.isManager;
-                [autoFillBtn, clearAllBtn, prioResetBtn, prioAddBtn, prioDetectBtn].forEach(b => {
-                    if (b) b.disabled = !isM;
-                });
-                gridEl.querySelectorAll('select, button').forEach(el => {
-                    el.disabled = !isM;
-                });
-                if (prioListEl) {
-                    prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
-                        el.draggable = isM;
-                        const handle = el.querySelector('.drag-handle');
-                        if (handle) handle.style.cursor = isM ? 'move' : 'not-allowed';
-                        el.style.opacity = isM ? '' : '0.6';
-                        el.querySelectorAll('button').forEach(b => b.disabled = !isM);
+                        if (!Array.isArray(roster) || roster.length === 0) {
+                            if (window.showModal) window.showModal('Kader leer.');
+                            return;
+                        }
+
+                        const alreadyAssigned = new Set();
+                        const usedInRowsByPlate = Array.from({ length: NUM_PLATES }, () => ({}));
+
+                        for (let p = 0; p < NUM_PLATES; p++) {
+                            platesData[p].slots.forEach((name, sIdx) => {
+                                if (!name) return;
+                                alreadyAssigned.add(name);
+                                const ply = findRosterPlayer(name);
+                                if (ply) {
+                                    const cat = getPlayerCategory(ply);
+                                    if (cat) {
+                                        if (!usedInRowsByPlate[p][cat.id]) usedInRowsByPlate[p][cat.id] = [];
+                                        usedInRowsByPlate[p][cat.id].push(sIdx);
+                                    }
+                                }
+                            });
+                        }
+
+                        const pool = buildSortedRoster().filter(s => !alreadyAssigned.has(s.name));
+
+                        let fillCount = 0;
+                        let skippedDueLimit = 0;
+
+                        for (let sIdx = 0; sIdx < SLOTS_PER_PLATE; sIdx++) {
+                            for (let p = 0; p < NUM_PLATES; p++) {
+                                if (platesData[p].slots[sIdx]) continue;
+
+                                let foundIdx = -1;
+                                for (let j = 0; j < pool.length; j++) {
+                                    const cand = pool[j];
+                                    const cat = cand.category;
+
+                                    const plate = platesData[p];
+                                    if (plate.allowedCats !== null) {
+                                        if (plate.allowedCats.length === 0) continue;
+                                        if (!cat || !plate.allowedCats.includes(cat.id)) continue;
+                                    }
+
+                                    if (cat) {
+                                        if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && sIdx < cat.limitRows) {
+                                            const usedInFirstN = (usedInRowsByPlate[p][cat.id] || []).filter(idx => idx < cat.limitRows).length;
+                                            if (usedInFirstN >= cat.limitCount) continue;
+                                        }
+                                        if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                                            const usedTotal = (usedInRowsByPlate[p][cat.id] || []).length;
+                                            if (usedTotal >= cat.maxTotal) continue;
+                                        }
+                                    }
+                                    foundIdx = j;
+                                    break;
+                                }
+
+                                if (foundIdx < 0) {
+                                    skippedDueLimit++;
+                                    continue;
+                                }
+
+                                const cand = pool[foundIdx];
+                                pool.splice(foundIdx, 1);
+                                platesData[p].slots[sIdx] = cand.name;
+                                if (cand.category) {
+                                    if (!usedInRowsByPlate[p][cand.category.id]) usedInRowsByPlate[p][cand.category.id] = [];
+                                    usedInRowsByPlate[p][cand.category.id].push(sIdx);
+                                }
+                                fillCount++;
+                            }
+                        }
+
+                        renderAllPlates();
+                        scheduleSave();
+
+                        let msg = `Auto-Füllen: ${fillCount} Spieler eingetragen.`;
+                        if (skippedDueLimit > 0) msg += `\n(${skippedDueLimit} Slots übersprungen wegen Limits/Kategorien.)`;
+                        if (window.showModal) window.showModal(msg);
                     });
                 }
-            }
-            
-            renderPrioList();
-            renderAllPlates();
-            applyProtection();
-            setInterval(applyProtection, 1500);
-            loadFromAssignments();
-        })();
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="">-- Bereitschaft --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
-            }
-            return html;
-        };
 
-        if (container && container.innerHTML.trim() === "") {
-            
-            const p = container.id.replace('-planner-container', '');
+                if (clearAllBtn) {
+                    clearAllBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        if (!confirm('Alle 4 Platten komplett leeren (Spieler + RTs)?')) return;
+                        platesData = Array.from({ length: NUM_PLATES }, () => ({
+                            rt: '', slots: Array(SLOTS_PER_PLATE).fill('')
+                        }));
+                        renderAllPlates();
+                        scheduleSave();
+                    });
+                }
 
-            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
-            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
-            
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+                function applyProtection() {
+                    const isM = !!window.isManager;
+                    [autoFillBtn, clearAllBtn, prioResetBtn, prioAddBtn, prioDetectBtn].forEach(b => {
+                        if (b) b.disabled = !isM;
+                    });
+                    gridEl.querySelectorAll('select, button').forEach(el => {
+                        el.disabled = !isM;
+                    });
+                    if (prioListEl) {
+                        prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
+                            el.draggable = isM;
+                            const handle = el.querySelector('.drag-handle');
+                            if (handle) handle.style.cursor = isM ? 'move' : 'not-allowed';
+                            el.style.opacity = isM ? '' : '0.6';
+                            el.querySelectorAll('button').forEach(b => b.disabled = !isM);
+                        });
+                    }
+                }
 
-            const headerHtml = `
+                renderPrioList();
+                renderAllPlates();
+                applyProtection();
+                setInterval(applyProtection, 1500);
+                loadFromAssignments();
+            })();
+
+            const getCooldownOptions = () => {
+                let html = '<option value="">-- Bereitschaft --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+
+                const p = container.id.replace('-planner-container', '');
+
+                const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+                const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+
+                const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -1716,9 +1842,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 100; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 100; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
 
@@ -1755,24 +1881,24 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
+                });
+                setTimeout(window.updatePlannerSummary, 500);
             }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
-
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
-    };
-</script>
+        };
+    </script>
 </main>
