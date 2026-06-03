@@ -262,6 +262,9 @@ mainNav.innerHTML = mainNavHTML;
 
             await window.fetchAllCooldowns(); 
             await window.fetchRoster();
+            if (window.SlotSystem) {
+                await window.SlotSystem.init();
+            }
 
             // ──────────────────────────────────────────────────────────────────
             // GLOBALER ROSTER-LISTENER (persistent über alle Seiten)

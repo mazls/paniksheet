@@ -296,6 +296,25 @@ window.CD_AUTO_PLANNER = (function() {
         },
 
         // ══════════════════════════════════════════════════════════
+        // STORMLASH & BANNER
+        // ══════════════════════════════════════════════════════════
+        stormlash: {
+            name: "Stormlash", shortName: "Stormlash", color: "#3b82f6",
+            spells: [
+                { spellId: "120668", cooldownSec: 300, durationSec: 10, requiredSpec: ["Enhancement"] },
+                { spellId: "120668", cooldownSec: 300, durationSec: 10, requiredSpec: ["Elemental"] },
+                { spellId: "120668", cooldownSec: 300, durationSec: 10, requiredSpec: ["Restoration1"] }
+            ]
+        },
+        skull_banner: {
+            name: "Skull Banner", shortName: "Banner", color: "#fcd34d",
+            spells: [
+                { spellId: "114207", cooldownSec: 180, durationSec: 10, requiredSpec: ["Arms", "Fury"] },
+                { spellId: "114207", cooldownSec: 180, durationSec: 10, requiredSpec: ["Protection"] }
+            ]
+        },
+
+        // ══════════════════════════════════════════════════════════
         // MANA (NEU — für Hymn of Hope / Mana Tide)
         // ══════════════════════════════════════════════════════════
         mana: {
@@ -446,7 +465,34 @@ window.CD_AUTO_PLANNER = (function() {
         return s;
     }
 
-    function getPlayersOfClass(cls, requiredRole, requiredSpec) {
+    function getPlayersOfClass(cls, requiredRole, requiredSpec, useSpecSlots) {
+        if (useSpecSlots && window.SlotSystem) {
+            var slots = [];
+            var mapping = window.SlotSystem.getMapping();
+            var byClass = window.SlotSystem.getSlotsByClass();
+            var classSlots = byClass[(cls || '').toUpperCase()] || [];
+            classSlots.forEach(function(def) {
+                var defSpecNorm = normalizeSpec(def.spec);
+                var specMatch = true;
+                if (requiredSpec && requiredSpec.length > 0) {
+                    var specList = Array.isArray(requiredSpec) ? requiredSpec : [requiredSpec];
+                    specMatch = specList.some(function(s) { 
+                        var reqNorm = normalizeSpec(s);
+                        return defSpecNorm.indexOf(reqNorm) !== -1 || reqNorm.indexOf(defSpecNorm) !== -1;
+                    });
+                }
+                if (specMatch) {
+                    for (var i = 1; i <= def.maxSlots; i++) {
+                        var key = def.prefix + i;
+                        if (mapping[key] && mapping[key].trim() !== '') {
+                            slots.push(key);
+                        }
+                    }
+                }
+            });
+            return slots;
+        }
+
         // Immer dynamisch das aktuellste Roster laden
         var currentRoster = window.effectiveRoster || window.rosterData || [];
         return currentRoster.filter(function(p) {
@@ -555,6 +601,75 @@ window.CD_AUTO_PLANNER = (function() {
                 spellId:       evt.spellId || 0
             });
         });
+
+        // --- STORMLASH & BANNER AUTO-INJECT ---
+        var hasEarlyBloodlust = false;
+        var hasLateBloodlust = false;
+        var bloodlustEventExists = false;
+        var bloodlustEvts = [];
+
+        result.forEach(function(evt) {
+            if (evt.requiredCDs && evt.requiredCDs.indexOf('bloodlust') !== -1) {
+                bloodlustEventExists = true;
+                bloodlustEvts.push(evt);
+
+                if (evt.requiredCDs.indexOf('stormlash') === -1) evt.requiredCDs.push('stormlash');
+                if (evt.requiredCDs.indexOf('skull_banner') === -1) evt.requiredCDs.push('skull_banner');
+
+                if (evt.firstCast <= 15) hasEarlyBloodlust = true;
+                else hasLateBloodlust = true;
+            }
+        });
+
+        // 2. Casts für die Bloodlust-Zeitpunkte (10 Sekunden danach)
+        bloodlustEvts.forEach(function(blEvt) {
+            result.push({
+                _key: 'auto_sl_banner_followup_' + blEvt.firstCast,
+                _isCustom: true,
+                name: 'SL/Banner (Folgecast)',
+                firstCast: blEvt.firstCast + 10,
+                cooldown: 0,
+                maxCasts: 1,
+                delay: blEvt.delay || 0,
+                eventDuration: 0,
+                requiredCDs: ['stormlash', 'skull_banner'],
+                icon: '⚔️',
+                spellId: 0
+            });
+        });
+
+        if (bloodlustEventExists && hasLateBloodlust && !hasEarlyBloodlust) {
+            var startEvt = result.find(function(e) { return e.name === 'Kampfbeginn (SL/Banner)'; });
+            if (!startEvt) {
+                result.push({
+                    _key: 'auto_start_sl_banner_1',
+                    _isCustom: true,
+                    name: 'Kampfbeginn (SL/Banner)',
+                    firstCast: 0,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 0,
+                    requiredCDs: ['stormlash', 'skull_banner'],
+                    icon: '⚔️',
+                    spellId: 0
+                });
+                result.push({
+                    _key: 'auto_start_sl_banner_2',
+                    _isCustom: true,
+                    name: 'Kampfbeginn (SL/Banner) Folge',
+                    firstCast: 10,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 0,
+                    requiredCDs: ['stormlash', 'skull_banner'],
+                    icon: '⚔️',
+                    spellId: 0
+                });
+            }
+        }
+
         return result;
     }
 
@@ -783,7 +898,7 @@ window.CD_AUTO_PLANNER = (function() {
                 var assigned = false;
                 for (var si = 0; si < spells.length && !assigned; si++) {
                     var spell = spells[si];
-                    var players = getPlayersOfClass(spell.dbClass, spell.requiredRole, spell.requiredSpec);
+                    var players = getPlayersOfClass(spell.dbClass, spell.requiredRole, spell.requiredSpec, catKey === 'stormlash' || catKey === 'skull_banner');
                     var picked = pickPlayer(players, spell, row.absTime);
                     if (picked) {
                         row.slots[catKey] = {
@@ -967,77 +1082,84 @@ window.CD_AUTO_PLANNER = (function() {
 
     // ── Dropdown: Empfohlen + Alle CDs ──
     function buildDropdownOptions(catKey) {
-        var recommended = resolveCategory(catKey);
         var html = '';
 
-        if (recommended.length > 0) {
-            html += '<option disabled style="font-weight:bold; color:#fbbf24; background:#1a202c;">═══ EMPFOHLEN ═══</option>';
-            var byClassR = {};
-            recommended.forEach(function(s) {
-                if (!byClassR[s.dbClass]) byClassR[s.dbClass] = [];
-                if (!byClassR[s.dbClass].some(function(x) { return x.dbName === s.dbName; })) byClassR[s.dbClass].push(s);
-            });
-            Object.entries(byClassR).forEach(function(entry) {
-                var cls = entry[0], spells = entry[1];
-                var color = getClassColor(cls);
-                var anyRendered = false;
-                spells.forEach(function(s) {
-                    var players = getPlayersOfClass(cls, s.requiredRole, s.requiredSpec);
-                    if (!players.length) return;
-                    if (!anyRendered) {
-                        html += '<option disabled style="font-weight:bold; color:' + color + '; background:#1a202c;">── ' + cls + ' ──</option>';
-                        anyRendered = true;
-                    }
-                    var dur = s.durationSec ? ' [' + s.durationSec + 's]' : '';
-                    var specMark = '';
-                    if (s.requiredSpec) {
-                        var specs = Array.isArray(s.requiredSpec) ? s.requiredSpec : [s.requiredSpec];
-                        // Lesbare Labels statt Raidhelper-Namen
-                        var labels = specs.map(function(v) {
-                            var lbl = getSpecLabel(v);
-                            // Klammer-Suffix "(Tank)", "(Heal)" entfernen für kompakte Anzeige
-                            return lbl.replace(/\s*\([^)]+\)/, '');
+        function renderSection(isSpec) {
+            var sectionHtml = '';
+            var recommended = resolveCategory(catKey);
+
+            if (recommended.length > 0) {
+                var recHtml = '';
+                var byClassR = {};
+                recommended.forEach(function(s) {
+                    if (!byClassR[s.dbClass]) byClassR[s.dbClass] = [];
+                    if (!byClassR[s.dbClass].some(function(x) { return x.dbName === s.dbName; })) byClassR[s.dbClass].push(s);
+                });
+                Object.entries(byClassR).forEach(function(entry) {
+                    var cls = entry[0], spells = entry[1];
+                    var color = getClassColor(cls);
+                    var anyRendered = false;
+                    spells.forEach(function(s) {
+                        var players = getPlayersOfClass(cls, s.requiredRole, s.requiredSpec, isSpec);
+                        if (!players.length) return;
+                        if (!anyRendered) {
+                            recHtml += '<option disabled style="font-weight:bold; color:' + color + '; background:#1a202c;">── ' + cls + ' ──</option>';
+                            anyRendered = true;
+                        }
+                        var dur = s.durationSec ? ' [' + s.durationSec + 's]' : '';
+                        var specMark = '';
+                        if (s.requiredSpec) {
+                            var specs = Array.isArray(s.requiredSpec) ? s.requiredSpec : [s.requiredSpec];
+                            var labels = specs.map(function(v) { return getSpecLabel(v).replace(/\s*\([^)]+\)/, ''); });
+                            specMark = ' [' + labels.join('/') + ']';
+                        } else if (s.requiredRole) {
+                            specMark = ' (' + s.requiredRole + ')';
+                        }
+                        players.forEach(function(p) {
+                            recHtml += '<option value="' + p + '::' + s.dbName + '" style="color:' + color + ';">★ ' + p + ' → ' + s.dbName + dur + specMark + '</option>';
                         });
-                        specMark = ' [' + labels.join('/') + ']';
-                    } else if (s.requiredRole) {
-                        specMark = ' (' + s.requiredRole + ')';
-                    }
+                    });
+                });
+                if (recHtml) {
+                    sectionHtml += '<option disabled style="font-weight:bold; color:' + (isSpec ? '#a855f7' : '#fbbf24') + '; background:#1a202c;">═══ ' + (isSpec ? 'SPEC SLOTS (EMPFOHLEN)' : 'EMPFOHLEN') + ' ═══</option>' + recHtml;
+                }
+            }
+
+            var allCDs = cooldownsDB.filter(function(cd) {
+                return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 && cd.type !== 'Personal';
+            });
+            var byClassA = {};
+            allCDs.forEach(function(cd) {
+                var cls = (cd.class || 'UNKNOWN').toUpperCase();
+                if (!byClassA[cls]) byClassA[cls] = [];
+                if (!byClassA[cls].some(function(x) { return x.name === cd.name; })) byClassA[cls].push(cd);
+            });
+
+            if (Object.keys(byClassA).length > 0) {
+                var allHtml = '';
+                Object.entries(byClassA).forEach(function(entry) {
+                    var cls = entry[0], cds = entry[1];
+                    var players = getPlayersOfClass(cls, null, null, isSpec);
+                    if (!players.length) return;
+                    var color = getClassColor(cls);
+                    allHtml += '<option disabled style="font-weight:bold; color:' + color + '; background:#1a202c; opacity:0.7;">── ' + cls + ' ──</option>';
                     players.forEach(function(p) {
-                        html += '<option value="' + p + '::' + s.dbName + '" style="color:' + color + ';">★ ' + p + ' → ' + s.dbName + dur + specMark + '</option>';
+                        cds.forEach(function(cd) {
+                            allHtml += '<option value="' + p + '::' + cd.name + '" style="color:' + color + '; opacity:0.8;">' + p + ' → ' + cd.name + '</option>';
+                        });
                     });
                 });
-            });
+                if (allHtml) {
+                    sectionHtml += '<option disabled style="font-weight:bold; color:#64748b; background:#1a202c;">═══ ' + (isSpec ? 'SPEC SLOTS (ALLE CDs)' : 'ALLE CDs') + ' ═══</option>' + allHtml;
+                }
+            }
+
+            return sectionHtml;
         }
 
-        // "Alle CDs" zeigt ALLE wählbaren Cooldowns — auch die oben empfohlenen.
-        // (Früher wurden empfohlene spellIds hier ausgeschlossen, wodurch z.B. die
-        //  Aura der Hingabe komplett fehlte, sobald sie für irgendeine Spec empfohlen
-        //  war. Das hat den Prot-Pala-Eintrag unauffindbar gemacht.)
-        var allCDs = cooldownsDB.filter(function(cd) {
-            return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 && cd.type !== 'Personal';
-        });
-        var byClassA = {};
-        allCDs.forEach(function(cd) {
-            var cls = (cd.class || 'UNKNOWN').toUpperCase();
-            if (!byClassA[cls]) byClassA[cls] = [];
-            if (!byClassA[cls].some(function(x) { return x.name === cd.name; })) byClassA[cls].push(cd);
-        });
+        html += renderSection(false); // First render real players
+        html += renderSection(true);  // Then append Spec Slots
 
-        if (Object.keys(byClassA).length > 0) {
-            html += '<option disabled style="font-weight:bold; color:#64748b; background:#1a202c;">═══ ALLE CDs ═══</option>';
-            Object.entries(byClassA).forEach(function(entry) {
-                var cls = entry[0], cds = entry[1];
-                var players = getPlayersOfClass(cls);
-                if (!players.length) return;
-                var color = getClassColor(cls);
-                html += '<option disabled style="font-weight:bold; color:' + color + '; background:#1a202c; opacity:0.7;">── ' + cls + ' ──</option>';
-                players.forEach(function(p) {
-                    cds.forEach(function(cd) {
-                        html += '<option value="' + p + '::' + cd.name + '" style="color:' + color + '; opacity:0.8;">' + p + ' → ' + cd.name + '</option>';
-                    });
-                });
-            });
-        }
         return html;
     }
 
@@ -1765,7 +1887,20 @@ window.CD_AUTO_PLANNER = (function() {
         if (!firebaseRef) return;
         try {
             var snap = await firebaseRef.getDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", "_cd-categories"));
-            if (snap.exists() && snap.data().categories) { categories = snap.data().categories; return; }
+            if (snap.exists() && snap.data().categories) {
+                var dbCats = snap.data().categories;
+                // Alte 'stormlash_banner' Kategorie aus der DB bereinigen, da sie jetzt in 2 geteilt wurde
+                if (dbCats['stormlash_banner']) {
+                    delete dbCats['stormlash_banner'];
+                }
+                
+                // Merge missing categories from DEFAULT_CATEGORIES
+                Object.keys(DEFAULT_CATEGORIES).forEach(function(k) {
+                    if (!dbCats[k]) dbCats[k] = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES[k]));
+                });
+                categories = dbCats;
+                return;
+            }
         } catch (e) { console.error("[Auto-Planner]", e); }
         categories = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
     }
@@ -2253,6 +2388,19 @@ window.CD_AUTO_PLANNER = (function() {
         });
 
         if (window.isManager) {
+            // Category-Admin automatisch injizieren, falls nicht im Boss-HTML vorhanden
+            if (!document.getElementById('cd-categories-admin')) {
+                var plannerContainer = document.getElementById('auto-planner-timeline');
+                if (plannerContainer) {
+                    var catWrapper = document.createElement('details');
+                    catWrapper.id = 'cd-categories-admin';
+                    catWrapper.className = 'mt-6 bg-slate-900 rounded-lg border border-slate-700';
+                    catWrapper.innerHTML = '<summary class="p-3 text-sm font-bold text-gray-300 cursor-pointer hover:bg-slate-800 rounded-lg">⚙️ CD-Kategorien bearbeiten</summary>'
+                        + '<div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>';
+                    plannerContainer.parentNode.appendChild(catWrapper);
+                }
+            }
+
             var admin = document.getElementById('cd-categories-admin');
             if (admin) admin.style.display = '';
             renderCategoriesAdmin();
