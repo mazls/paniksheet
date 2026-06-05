@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,10 +17,12 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
@@ -33,229 +37,242 @@
         <a href="#planner">Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            <strong>Die goldene Regel:</strong> Großzügig verteilen, Adds clearen und dem Wirbel zwingend ausweichen.<br><br>
-            HT zum Pull <br>
-            Der Kampf gegen Immerseus wechselt stetig zwischen zwei Phasen. Phase 1 wird mit jedem Zyklus kürzer, da die Verderbnis des Bosses in Phase 2 schrittweise reduziert wird. Schwarze Pfützen müssen durch die DPS zerstört und blaue Pfützen von den Heilern vollgeheilt werden, bevor sie die Mitte der Plattform erreichen. Dieser Vorgang wird wiederholt, bis die Verderbnis von Immerseus auf null fällt.
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li>Positioniert Immerseus stets seitlich, damit <strong><a href="https://www.wowhead.com/mop-classic/de/spell=143436" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Ätzender Schlag</a></strong> den Raid nicht cleavt.</li>
-                    <li>Zwingender Tank-Wechsel nach jedem <a href="https://www.wowhead.com/mop-classic/de/spell=143436" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Ätzenden Schlag</a>, da dieser einen starken Rüstungs-Debuff hinterlässt.</li>
-                    <li>Der Off-Tank sammelt die Adds ein.</li>
-                    <li>In Phase 2 tötet ihr die Adds in eurem Bereich. Ein Tank verbleibt direkt am Boss, um das Sha-Becken zu verkleinern.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong>Alle:</strong> Stets 5 Meter Range zueinander halten. Niemals in den dunklen Void-Flächen stehen. Dem <strong><a href="https://www.wowhead.com/mop-classic/de/spell=143309" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Wirbel</a></strong> durch Mitlaufen entgehen.</li>
-                    <li><strong>DPS:</strong> Adds haben höchste Priorität. In Phase 2 zwingend jede einzelne schwarze Pfütze im zugeteilten Sektor killen. Das gewährt einen Stacking-Damage-Buff.</li>
-                    <li><strong>Heiler:</strong> In Phase 2 ausschließlich blaue Pfützen auf 100 % heilen. Keine Casts auf schwarze Flächen wasten. Bleibt in der Nähe geheilter Pfützen für den Mana-Buff.</li>
-                </ul>
-            </div>
-        </div>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                <strong>Die goldene Regel:</strong> Großzügig verteilen, Adds clearen und dem Wirbel zwingend
+                ausweichen.<br><br>
+                Der Kampf gegen Immerseus wechselt stetig zwischen zwei Phasen. Phase 1 wird mit jedem Zyklus kürzer. In
+                Phase 2 (Split-Phase) reduzieren getötete (schwarze) und vollgeheilte (blaue) Pfützen dauerhaft die
+                Boss-Verderbnis, bis diese 0% erreicht.
+            </p>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Heroischer Schwierigkeitsgrad</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200"><a href="https://www.wowhead.com/mop-classic/de/spell=143574" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Schwellendes Verderbnis</a>:</strong><br>
-                    Bei jedem Single-Target-Angriff auf Immerseus spawnen zusätzliche Adds (<a href="https://www.wowhead.com/mop-classic/de/npc=71604" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Geronnenes Sha</a>). Die DPS müssen ihren Schaden gut timen, um den Raid nicht mit zu vielen Adds gleichzeitig zu wipen.
-                </div>
-                <div>
-                    <strong class="text-emerald-200"><a href="https://www.wowhead.com/mop-classic/de/spell=143297" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Wachsendes Sha-Becken</a>:</strong><br>
-                    Ein stetig wachsendes Becken in der Mitte der Plattform. Speziell eingeteilte Spieler (zumeist Tanks) müssen sich gezielt hineinstellen, um das Wachstum zu stoppen.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <!-- Tank-Einteilung -->
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Tank 1 (Start):</span><select class="assignment-select" data-assignment-id="immerseus-tank1"></select></li>
-                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="immerseus-tank2"></select></li>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li>Positioniert Immerseus stets seitlich für den <strong><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143436" target="_blank"
+                                    rel="noopener noreferrer" class="text-gray-300 hover:underline">Ätzenden
+                                    Schlag</a></strong>.</li>
+                        <li>Zwingender Tank-Wechsel nach jedem Ätzenden Schlag.</li>
+                        <li>Sprecht den Tankwechsel in <strong>HC</strong> gut ab, um die Adds von <em>Schwellendes
+                                Verderbnis</em> aufzuteilen. Spart euch DPS-Cooldowns eher für die Split-Phase auf.</li>
                     </ul>
                 </div>
-
-                <!-- ═══════════ LANE GROUPS ═══════════ -->
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-purple-400">🌈 Positions-Einteilung</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Einteilung der 8 Sektoren für die Pfützen-Phase.</p>
-                    <div id="immerseus-lane-groups"></div>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong>Positionierung:</strong> Stets 5 Meter Range zueinander. Niemals im <strong><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143309" target="_blank"
+                                    rel="noopener noreferrer" class="text-gray-300 hover:underline">Wirbel</a></strong>
+                            stehen.</li>
+                        <li><strong>Klassen-Tipps:</strong> Nutzt Fähigkeiten wie <em>Todesgriff</em> oder <em>Ring des
+                                Friedens</em> (Knockbacks/Roots), um schwarze Pfützen in Phase 2 aufzuhalten. Priester
+                            können <em>Glaubenssprung</em> nutzen, um vollgeheilte blaue Pfützen für den Buff
+                            zusammenzuziehen.</li>
+                        <li>HT / Bloodlust am besten für die erste Split-Phase aufheben, da hier am meisten Pfützen
+                            aktiv sind.</li>
+                    </ul>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="space-y-6">
-                <!-- Bild -->
-                <h3 class="text-xl font-semibold text-blue-450 mb-2">Visuelle Hilfen</h3>
-                <div class="mt-2">
-                    <img src="siegeoforgrimmar/immerseus.png" alt="Positionierung Immerseus"
-                        class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
-                        onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild noch nicht verfügbar.</div>'">
+
+
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div class="space-y-6">
+                    <!-- Tank-Einteilung -->
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold">🛡️ Tank-Einteilung</h4>
+                        <ul class="assignment-list">
+                            <li><span>Tank 1 (Start):</span><select class="assignment-select"
+                                    data-assignment-id="immerseus-tank1"></select></li>
+                            <li><span>Tank 2:</span><select class="assignment-select"
+                                    data-assignment-id="immerseus-tank2"></select></li>
+                        </ul>
+                    </div>
+
+                    <!-- ═══════════ LANE GROUPS ═══════════ -->
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-purple-400">🌈 Positions-Einteilung</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Einteilung der 8 Sektoren für die Pfützen-Phase.</p>
+                        <div id="immerseus-lane-groups"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Bild -->
+                    <h3 class="text-xl font-semibold text-blue-450 mb-2">Visuelle Hilfen</h3>
+                    <div class="mt-2">
+                        <img src="siegeoforgrimmar/immerseus.png" alt="Positionierung Immerseus"
+                            class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild noch nicht verfügbar.</div>'">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- AUTO-PLANNER -->
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
+    <!-- AUTO-PLANNER -->
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Auto-CD-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Auto-Zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In CD-Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+            </div>
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="min-w-full text-xs border-collapse">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
         </div>
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="min-w-full text-xs border-collapse">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
-        </div>
-    </div>
-</section>
+    </section>
 
-<script src="static/cd-auto-planner.js"></script>
-<script>
-CD_AUTO_PLANNER.init({
-    id: 'immerseus',
-    name: "Immerseus",
-    prefix: 'IMMERSEUS',
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        CD_AUTO_PLANNER.init({
+            id: 'immerseus',
+            name: "Immerseus",
+            prefix: 'IMMERSEUS',
 
-    events: [
-        { name: "Wirbel", firstCast: 20, cooldown: 48.5, maxCasts: 2, delay: -5, eventDuration: 13, requiredCDs: ["movement"], icon: "🌊" },
-        { name: "Schwellendes Verderbnis", firstCast: 10, cooldown: 75, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: ["any_dr", "any_heal"], icon: "💀" },
-        { name: "Split (Phase 2)", firstCast: 75, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 35, requiredCDs: ["any_heal"], icon: "💧" },
-        { name: "Reform (Zyklus 2)", firstCast: 110, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: [], icon: "🔄" },
-        { name: "Schwellendes Verderbnis Z2", firstCast: 124, cooldown: 75, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: ["any_dr", "any_heal"], icon: "💀" },
-        { name: "Wirbel Z2", firstCast: 134, cooldown: 48.5, maxCasts: 1, delay: -5, eventDuration: 13, requiredCDs: ["movement"], icon: "🌊" },
-        { name: "Split #2 (Phase 2)", firstCast: 185, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 35, requiredCDs: ["any_heal"], icon: "💧" },
-        { name: "Reform (Zyklus 3)", firstCast: 220, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: [], icon: "🔄" },
-        { name: "Schwellendes Verderbnis Z3", firstCast: 234, cooldown: 75, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: ["any_dr", "any_heal"], icon: "💀" },
-        { name: "Wirbel Z3", firstCast: 244, cooldown: 48.5, maxCasts: 1, delay: -5, eventDuration: 13, requiredCDs: ["movement"], icon: "🌊" },
-        { name: "Kampfrausch / Heldentum", firstCast: 0, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 40, requiredCDs: ["bloodlust"], icon: "⚡" }
-    ],
+            events: [
+                { name: "Wirbel", firstCast: 20, cooldown: 48.5, maxCasts: 2, delay: -5, eventDuration: 13, requiredCDs: ["movement"], icon: "🌊" },
+                { name: "Schwellendes Verderbnis", firstCast: 10, cooldown: 75, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: ["any_dr", "any_heal"], icon: "💀" },
+                { name: "Split (Phase 2)", firstCast: 75, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 35, requiredCDs: ["any_heal"], icon: "💧" },
+                { name: "Reform (Zyklus 2)", firstCast: 110, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: [], icon: "🔄" },
+                { name: "Schwellendes Verderbnis Z2", firstCast: 124, cooldown: 75, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: ["any_dr", "any_heal"], icon: "💀" },
+                { name: "Wirbel Z2", firstCast: 134, cooldown: 48.5, maxCasts: 1, delay: -5, eventDuration: 13, requiredCDs: ["movement"], icon: "🌊" },
+                { name: "Split #2 (Phase 2)", firstCast: 185, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 35, requiredCDs: ["any_heal"], icon: "💧" },
+                { name: "Reform (Zyklus 3)", firstCast: 220, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: [], icon: "🔄" },
+                { name: "Schwellendes Verderbnis Z3", firstCast: 234, cooldown: 75, maxCasts: 1, delay: 0, eventDuration: 0, requiredCDs: ["any_dr", "any_heal"], icon: "💀" },
+                { name: "Wirbel Z3", firstCast: 244, cooldown: 48.5, maxCasts: 1, delay: -5, eventDuration: 13, requiredCDs: ["movement"], icon: "🌊" },
+                { name: "Kampfrausch / Heldentum", firstCast: 0, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 40, requiredCDs: ["bloodlust"], icon: "⚡" }
+            ],
 
-    triggerMap: {
-        "Wirbel":                       "IMMERSEUS_SWIRL",
-        "Schwellendes Verderbnis":      "IMMERSEUS_SWELLING_CORRUPTION",
-        "Split (Phase 2)":              "IMMERSEUS_SPLIT",
-        "Reform (Zyklus 2)":            "IMMERSEUS_REFORM",
-        "Schwellendes Verderbnis Z2":   "IMMERSEUS_SWELLING_CORRUPTION",
-        "Wirbel Z2":                    "IMMERSEUS_SWIRL",
-        "Split #2 (Phase 2)":           "IMMERSEUS_SPLIT",
-        "Reform (Zyklus 3)":            "IMMERSEUS_REFORM",
-        "Schwellendes Verderbnis Z3":   "IMMERSEUS_SWELLING_CORRUPTION",
-        "Wirbel Z3":                    "IMMERSEUS_SWIRL",
-        "Kampfrausch / Heldentum":      "IMMERSEUS_ENC_START"
-    }
-});
-</script>
-
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
-        Globale WA Exportieren
-    </button>
-    <div class="mt-4 text-xs text-gray-500 italic">
-        <strong>Leere Spalten:</strong> Seite neuladen, falls eine Spalte leer ist
-    </div>
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Advanced CD Planner (WA)
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="mb-6">
-        <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-            <span class="text-xl">📜</span> CD-Einteilung Übersicht
-        </h3>
-        <div id="immerseus-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-            <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">Warte auf Eingabe...</p>
-        </div>
-    </div>
-    <div class="collapsible-content">
-        <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
-            <div id="immerseus-planner-container" class="space-y-2 planner-scroll-container"></div>
-        </div>
-    </div>
-</section>
-
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "IMMERSEUS_ENC_START",             text: "Kampfbeginn" },
-            { val: "IMMERSEUS_HEALTH",                text: "HP % (Wähle Ziel)" },
-            { val: "IMMERSEUS_SPLIT",                 text: "Phase 2 (Split)" },
-            { val: "IMMERSEUS_REFORM",                text: "Phase 1 (Reform)" },
-            { val: "IMMERSEUS_SWIRL",                 text: "Wirbel" },
-            { val: "IMMERSEUS_BLAST",                 text: "Ätzender Schlag" },
-            { val: "IMMERSEUS_SWELLING_CORRUPTION",   text: "Schwellendes Verderbnis (HC)" },
-            { val: "IMMERSEUS_SHA_BOLT",              text: "Sha-Blitz" }
-        ];
-
-        const NPC_OPTIONS = [
-            "Immerseus",
-            "Sha-Pfütze",
-            "Kontaminierte Pfütze"
-        ];
-        
-        const container = document.getElementById('immerseus-planner-container');
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="">-- Bereitschaft --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
+            triggerMap: {
+                "Wirbel": "IMMERSEUS_SWIRL",
+                "Schwellendes Verderbnis": "IMMERSEUS_SWELLING_CORRUPTION",
+                "Split (Phase 2)": "IMMERSEUS_SPLIT",
+                "Reform (Zyklus 2)": "IMMERSEUS_REFORM",
+                "Schwellendes Verderbnis Z2": "IMMERSEUS_SWELLING_CORRUPTION",
+                "Wirbel Z2": "IMMERSEUS_SWIRL",
+                "Split #2 (Phase 2)": "IMMERSEUS_SPLIT",
+                "Reform (Zyklus 3)": "IMMERSEUS_REFORM",
+                "Schwellendes Verderbnis Z3": "IMMERSEUS_SWELLING_CORRUPTION",
+                "Wirbel Z3": "IMMERSEUS_SWIRL",
+                "Kampfrausch / Heldentum": "IMMERSEUS_ENC_START"
             }
-            return html;
-        };
+        });
+    </script>
 
-        if (container && container.innerHTML.trim() === "") {
-            const p = container.id.replace('-planner-container', '');
-            const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = getCooldownOptions();
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            Globale WA Exportieren
+        </button>
+        <div class="mt-4 text-xs text-gray-500 italic">
+            <strong>Leere Spalten:</strong> Seite neuladen, falls eine Spalte leer ist
+        </div>
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Advanced CD Planner (WA)
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> CD-Einteilung Übersicht
+            </h3>
+            <div id="immerseus-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">Warte auf Eingabe...</p>
+            </div>
+        </div>
+        <div class="collapsible-content">
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                <div id="immerseus-planner-container" class="space-y-2 planner-scroll-container"></div>
+            </div>
+        </div>
+    </section>
 
-            const headerHtml = `
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
+
+            const TRIGGER_OPTIONS = [
+                { val: "IMMERSEUS_ENC_START", text: "Kampfbeginn" },
+                { val: "IMMERSEUS_HEALTH", text: "HP % (Wähle Ziel)" },
+                { val: "IMMERSEUS_SPLIT", text: "Phase 2 (Split)" },
+                { val: "IMMERSEUS_REFORM", text: "Phase 1 (Reform)" },
+                { val: "IMMERSEUS_SWIRL", text: "Wirbel" },
+                { val: "IMMERSEUS_BLAST", text: "Ätzender Schlag" },
+                { val: "IMMERSEUS_SWELLING_CORRUPTION", text: "Schwellendes Verderbnis (HC)" },
+                { val: "IMMERSEUS_SHA_BOLT", text: "Sha-Blitz" }
+            ];
+
+            const NPC_OPTIONS = [
+                "Immerseus",
+                "Sha-Pfütze",
+                "Kontaminierte Pfütze"
+            ];
+
+            const container = document.getElementById('immerseus-planner-container');
+
+            const getCooldownOptions = () => {
+                let html = '<option value="">-- Bereitschaft --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+                const p = container.id.replace('-planner-container', '');
+                const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = getCooldownOptions();
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -272,9 +289,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 100; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 100; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
                     <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-trigger" data-manual-options="true"><option value="">-- Nicht aktiv --</option>${triggerOpts}</select>
@@ -294,64 +311,143 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
-            }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
-
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // LANE GROUPS
-        // ═══════════════════════════════════════════════════════════════
-        if (window.LaneGroups) {
-            try {
-                window.LaneGroups.init({
-                    containerId: 'immerseus-lane-groups',
-                    bossId: 'immerseus',
-                    assignmentId: 'immerseus-lanes',
-                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
-                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
-                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
-                    defaultBlocks: [
-                        {
-                            title: 'Gruppen-Einteilung',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            waExport: true,
-                            isolatedBlock: true,
-                            sharedLanes: true,
-                            lanes: [
-                                { title: 'Gruppe 1', marker: 'skull', slots: ['', '', '', ''] },
-                                { title: 'Gruppe 2', marker: 'cross', slots: ['', '', '', ''] },
-                                { title: 'Gruppe 3', marker: 'square', slots: ['', '', '', ''] },
-                                { title: 'Gruppe 4', marker: 'triangle', slots: ['', '', '', ''] },
-                                { title: 'Gruppe 5', marker: 'diamond', slots: ['', '', '', ''] },
-                                { title: 'Gruppe 6', marker: 'circle', slots: ['', '', '', ''] },
-                                { title: 'Gruppe 7', marker: 'star', slots: ['', '', '', ''] },
-                                { title: 'Gruppe 8', marker: 'moon', slots: ['', '', '', ''] }
-                            ]
-                        }
-                    ]
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
                 });
-            } catch (e) {
-                console.error('[Immerseus] LaneGroups.init Fehler:', e);
+                setTimeout(window.updatePlannerSummary, 500);
             }
-        } else {
-            console.warn('[Immerseus] LaneGroups-Modul nicht geladen.');
-        }
-    };
-</script>
+
+            // ═══════════════════════════════════════════════════════════════
+            // LANE GROUPS
+            // ═══════════════════════════════════════════════════════════════
+            if (window.LaneGroups) {
+                try {
+                    window.LaneGroups.init({
+                        containerId: 'immerseus-lane-groups',
+                        bossId: 'immerseus',
+                        assignmentId: 'immerseus-lanes',
+                        roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                        firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                        assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                        defaultBlocks: [
+                            {
+                                title: 'Gruppen-Einteilung',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                waExport: true,
+                                isolatedBlock: true,
+                                sharedLanes: true,
+                                lanes: [
+                                    { title: 'Gruppe 1', marker: 'skull', slots: ['', '', '', ''] },
+                                    { title: 'Gruppe 2', marker: 'cross', slots: ['', '', '', ''] },
+                                    { title: 'Gruppe 3', marker: 'square', slots: ['', '', '', ''] },
+                                    { title: 'Gruppe 4', marker: 'triangle', slots: ['', '', '', ''] },
+                                    { title: 'Gruppe 5', marker: 'diamond', slots: ['', '', '', ''] },
+                                    { title: 'Gruppe 6', marker: 'circle', slots: ['', '', '', ''] },
+                                    { title: 'Gruppe 7', marker: 'star', slots: ['', '', '', ''] },
+                                    { title: 'Gruppe 8', marker: 'moon', slots: ['', '', '', ''] }
+                                ]
+                            }
+                        ]
+                    });
+                } catch (e) {
+                    console.error('[Immerseus] LaneGroups.init Fehler:', e);
+                }
+            } else {
+                console.warn('[Immerseus] LaneGroups-Modul nicht geladen.');
+            }
+        };
+    </script>
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 1: Immerseus
+                        (Körper-Phase)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143436"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-red-400 hover:underline">Ätzender Schlag</a>:</strong> Frontaler
+                            Kegelangriff, der den Rüstungswert verringert. Erfordert einen Tank-Wechsel (ca. alle 35
+                            Sekunden).</li>
+                        <li><strong class="text-purple-400"><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143290" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-purple-400 hover:underline">Sha-Blitz</a>:</strong> Trifft zufällige
+                            Spieler alle 10 Sekunden. Hinterlässt kleine Pfützen auf dem Boden.</li>
+                        <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143309"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-cyan-400 hover:underline">Wirbel</a> & <a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143293" target="_blank"
+                                    rel="noopener noreferrer" class="text-cyan-400 hover:underline">Sickerndes
+                                    Sha</a>:</strong> Spawnt alle 20 Sekunden bewegliche Voidzones (Wirbel) sowie einen
+                            großen frontal fokussierten Strahl. Erzeugt massiven Schaden, Knockbacks und Knockups.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Phase 2: Split-Phase
+                        (0% HP)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-gray-400"><a href="https://www.wowhead.com/mop-classic/de/npc=71603"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-gray-400 hover:underline">Sha-Pfütze</a> (Schwarz):</strong> Versuchen
+                            die Mitte zu erreichen. DPS töten diese (verringert Boss-HP). Roots, Knockbacks und Grips
+                            nutzen. Beim Tod gibt es den Buff <em><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143459" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-gray-400 hover:underline">Sha-Rückstand</a></em>.</li>
+                        <li><strong class="text-green-400"><a href="https://www.wowhead.com/mop-classic/de/npc=71604"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-green-400 hover:underline">Kontaminierte Pfütze</a> (Blau):</strong>
+                            Heiler müssen diese vollheilen. Sie werden langsamer, je mehr HP sie haben. Wenn
+                            vollgeheilt, gibt es den Buff <em><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143524" target="_blank"
+                                    rel="noopener noreferrer" class="text-green-400 hover:underline">Gereinigter
+                                    Rückstand</a></em>.</li>
+                        <li><strong class="text-yellow-400"><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143301" target="_blank"
+                                    rel="noopener noreferrer" class="text-yellow-400 hover:underline">Ausbrechendes
+                                    Sha</a>:</strong> Jede Pfütze, die die Mitte erreicht, verursacht signifikanten
+                            raidweiten AoE-Schaden. Raid-CDs der Heiler bereithalten!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen (HC)</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143574"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-red-400 hover:underline">Schwellendes Verderbnis</a>:</strong> Bei jedem
+                        Treffer auf den Boss spawnen <a href="https://www.wowhead.com/mop-classic/de/npc=71604"
+                            target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Geronnenes
+                            Sha</a>-Adds. Tanks müssen sich beim Tankwechsel gut absprechen, wer die Adds einsammelt.
+                        DPS müssen Schaden timen.</li>
+                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143297"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-red-400 hover:underline">Wachsendes Sha-Becken</a>:</strong> In Phase 2
+                        wächst eine große Fläche in der Mitte. Wenn Spieler (z.B. eingeteilte Heiler oder Tanks) darin
+                        stehen, schrumpft sie wieder, es baut sich jedoch ein debuff auf. Alterniert die Spieler im
+                        Becken, um es klein zu halten.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
 </main>
