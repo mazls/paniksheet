@@ -689,6 +689,9 @@ CD_AUTO_PLANNER.init({
 
             function renderRows() {
                 tbody.innerHTML = '';
+                const isM = !!window.isManager;
+                const disCls = isM ? '' : 'opacity-50 cursor-not-allowed';
+                const disAttr = isM ? '' : 'disabled';
                 const targetRows = Math.max(DEFAULT_ROWS, orderData.length + 1);
                 for (let i = 0; i < targetRows; i++) {
                     const row = orderData[i] || { player: '', delay: '' };
@@ -697,16 +700,16 @@ CD_AUTO_PLANNER.init({
                     tr.innerHTML = `
                         <td class="p-1 text-center text-gray-500 font-mono">${i + 1}</td>
                         <td class="p-1">
-                            <select class="orb-select text-xs w-full h-7 bg-slate-900 border border-slate-600 rounded text-white" data-orb-idx="${i}" data-orb-field="player">
+                            <select class="orb-select text-xs w-full h-7 bg-slate-900 border border-slate-600 rounded text-white ${disCls}" data-orb-idx="${i}" data-orb-field="player" ${disAttr}>
                                 ${getPlayerOptions(row.player)}
                             </select>
                         </td>
                         <td class="p-1">
-                            <input type="number" min="0" step="1" class="orb-input bg-slate-900 border border-slate-600 rounded text-xs text-center w-full h-7 text-white" 
-                                   data-orb-idx="${i}" data-orb-field="delay" value="${row.delay}" placeholder="Sek.">
+                            <input type="number" min="0" step="1" class="orb-input bg-slate-900 border border-slate-600 rounded text-xs text-center w-full h-7 text-white ${disCls}" 
+                                   data-orb-idx="${i}" data-orb-field="delay" value="${row.delay}" placeholder="Sek." ${disAttr}>
                         </td>
                         <td class="p-1 text-center">
-                            ${row.player || row.delay ? '<button class="orb-row-del text-red-400 hover:text-red-300 text-xs" data-orb-idx="' + i + '" title="Leeren">✕</button>' : ''}
+                            ${row.player || row.delay ? '<button class="orb-row-del text-red-400 hover:text-red-300 text-xs ' + disCls + '" data-orb-idx="' + i + '" title="Leeren" ' + disAttr + '>✕</button>' : ''}
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -1514,8 +1517,12 @@ CD_AUTO_PLANNER.init({
             
             function applyPrioProtection() {
                 const isManager = !!window.isManager;
-                [autoFillBtn, prioResetBtn, prioAddBtn, prioDetectBtn].forEach(btn => {
-                    if (btn) btn.disabled = !isManager;
+                [autoFillBtn, prioResetBtn, prioAddBtn, prioDetectBtn, addBtn, clearBtn].forEach(btn => {
+                    if (btn) {
+                        btn.disabled = !isManager;
+                        if (!isManager) btn.classList.add('opacity-50', 'cursor-not-allowed');
+                        else btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
                 });
                 if (prioListEl) {
                     prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
@@ -1524,6 +1531,13 @@ CD_AUTO_PLANNER.init({
                         if (handle) handle.style.cursor = isManager ? 'move' : 'not-allowed';
                         el.style.opacity = isManager ? '' : '0.6';
                         el.querySelectorAll('button').forEach(b => b.disabled = !isManager);
+                    });
+                }
+                if (tbody) {
+                    tbody.querySelectorAll('select, input, button').forEach(el => {
+                        el.disabled = !isManager;
+                        if (!isManager) el.classList.add('opacity-50', 'cursor-not-allowed');
+                        else el.classList.remove('opacity-50', 'cursor-not-allowed');
                     });
                 }
             }
