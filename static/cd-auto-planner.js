@@ -426,7 +426,9 @@ window.CD_AUTO_PLANNER = (function() {
     var assignStrategy = {
         spread: false,                // A: Lookahead — bei Knappheit gleichmäßig über Zeit verteilen
         prioritizeCategories: false,  // B: Hochpriore Kategorie zuerst, niedrige weglassen bei Knappheit
-        roundRobin: false             // C: Spieler reihum nutzen statt immer den ersten in Prio-Liste
+        roundRobin: false,            // C: Spieler reihum nutzen statt immer den ersten in Prio-Liste
+        preferHeal: false,            // D: Reine Heiler vor Utility-Heals bevorzugen
+        strictClassBalance: false     // E: Strikte Klassen-Rotation (nicht gleiche Klasse hintereinander)
     };
 
     // Round-Robin Counter (wird pro Run zurückgesetzt)
@@ -716,6 +718,7 @@ window.CD_AUTO_PLANNER = (function() {
 
     function autoAssign(timeline) {
         var usedUntil = {};
+        var lastClassUsed = {}; // catKey -> dbClass
 
         function isAvailable(player, dbName, atTime) {
             var key = player + '::' + dbName;
@@ -895,6 +898,26 @@ window.CD_AUTO_PLANNER = (function() {
                 }
 
                 var spells = resolveCategory(catKey);
+
+                if (assignStrategy.preferHeal) {
+                    spells.sort(function(a, b) {
+                        var aHeal = (a.requiredRole === 'healer') ? 1 : 0;
+                        var bHeal = (b.requiredRole === 'healer') ? 1 : 0;
+                        return bHeal - aHeal;
+                    });
+                }
+
+                if (assignStrategy.strictClassBalance && lastClassUsed[catKey]) {
+                    var lastClass = lastClassUsed[catKey];
+                    var diffClass = [];
+                    var sameClass = [];
+                    spells.forEach(function(s) {
+                        if (s.dbClass === lastClass) sameClass.push(s);
+                        else diffClass.push(s);
+                    });
+                    spells = diffClass.concat(sameClass);
+                }
+
                 var assigned = false;
                 for (var si = 0; si < spells.length && !assigned; si++) {
                     var spell = spells[si];
@@ -909,6 +932,7 @@ window.CD_AUTO_PLANNER = (function() {
                             auto: true
                         };
                         markUsed(picked, spell.dbName, spell.cooldownSec, row.absTime);
+                        lastClassUsed[catKey] = spell.dbClass;
                         assigned = true;
                     }
                 }
@@ -2597,6 +2621,20 @@ window.CD_AUTO_PLANNER = (function() {
                         '<div class="text-[10px] text-gray-400">Spieler reihum nutzen statt immer den ersten. Bringt Fairness, hilft bei Lücken nur wenn Spieler-CD &lt; Event-Abstand ist.</div>' +
                     '</div>' +
                 '</label>' +
+                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+                    '<input type="checkbox" id="strat-prefer-heal" class="mt-1 accent-cyan-500" ' + (s.preferHeal ? 'checked' : '') + '>' +
+                    '<div>' +
+                        '<div class="font-semibold text-gray-200">D — Bevorzuge Heiler</div>' +
+                        '<div class="text-[10px] text-gray-400">Zieht reine Heiler-Klassen für defensiven CDs heran, bevor Utility-Heals (z.B. Vampirumarmung) der DDs genutzt werden.</div>' +
+                    '</div>' +
+                '</label>' +
+                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+                    '<input type="checkbox" id="strat-strict-class" class="mt-1 accent-cyan-500" ' + (s.strictClassBalance ? 'checked' : '') + '>' +
+                    '<div>' +
+                        '<div class="font-semibold text-gray-200">E — Strikte Klassen-Rotation</div>' +
+                        '<div class="text-[10px] text-gray-400">Verhindert, dass eine Klasse mehrfach hintereinander ihre Cooldowns ziehen muss, selbst wenn sie verfügbar wäre.</div>' +
+                    '</div>' +
+                '</label>' +
                 '<div class="text-[10px] text-gray-500 italic pt-1 border-t border-slate-700">Änderungen werden mit dem nächsten "Auto-Assign" wirksam und beim Speichern persistiert.</div>' +
             '</div>';
 
@@ -2613,6 +2651,8 @@ window.CD_AUTO_PLANNER = (function() {
         bind('strat-spread', 'spread');
         bind('strat-prio', 'prioritizeCategories');
         bind('strat-rr', 'roundRobin');
+        bind('strat-prefer-heal', 'preferHeal');
+        bind('strat-strict-class', 'strictClassBalance');
     }
 
     // ── Dynamischer Clear-Button für Advanced CD-Plan ──

@@ -146,6 +146,12 @@
                     <p class="text-sm text-gray-400 mb-2 px-3">Einteilung für Mechaniken wie das Abfangen von "Zielen" (Hisek) etc.</p>
                     <div id="paragons-lane-groups"></div>
                 </div>
+                
+                <div class="assignment-block mt-6">
+                    <h4 class="text-lg font-bold text-purple-400">✨ Power Assignments</h4>
+                    <p class="text-sm text-gray-400 mb-2 px-3">Zuteilung der 9 Fähigkeiten, die nach dem Tod eines Paragons aufgenommen werden können.</p>
+                    <div id="paragons-power-groups"></div>
+                </div>
             </div>
 
             <div>
@@ -524,6 +530,45 @@ CD_AUTO_PLANNER.init({
                             type: 'marked-list',
                             autoFill: false,
                             slots: ['', '', '', '', '']
+                        }
+                    ]
+                });
+                window.LaneGroups.init({
+                    containerId: 'paragons-power-groups',
+                    bossId: 'paragons',
+                    assignmentId: 'paragons-power-lanes',
+                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                    defaultBlocks: [
+                        {
+                            title: 'Paragon Fähigkeiten',
+                            type: 'key-value-list',
+                            autoFill: false,
+                            waExport: true,
+                            slots: ['', '', '', '', '', '', '', '', ''],
+                            slotTitles: [
+                                'Skeer - Blutrünstig',
+                                'Xaril - Apotheker',
+                                'Rik\'kal - Skorpion',
+                                'Kil\'ruk - Tod von Oben',
+                                'Hisek - Meisterschütze',
+                                'Kaz\'tik - Marionettenm.',
+                                'Korven - Meister d. Bernsteins',
+                                'Iyyokuk - Genialität',
+                                'Ka\'roz - Starkbeine'
+                            ],
+                            slotMarkers: [
+                                'melee',
+                                'healer',
+                                'tank',
+                                'target',
+                                'ranged',
+                                'group',
+                                'book',
+                                'diamond',
+                                'star'
+                            ]
                         }
                     ]
                 });

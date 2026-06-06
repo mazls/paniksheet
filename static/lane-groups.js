@@ -13,7 +13,14 @@ window.LaneGroups = (function () {
         { id: 'moon',     label: 'Moon',         file: 'moon.png',     color: '#93c5fd', emoji: '🌙' },
         { id: 'square',   label: 'Square',       file: 'square.png',   color: '#60a5fa', emoji: '🟦' },
         { id: 'cross',    label: 'Cross',        file: 'cross.png',    color: '#f87171', emoji: '❌' },
-        { id: 'skull',    label: 'Skull',        file: 'skull.png',    color: '#e5e7eb', emoji: '💀' }
+        { id: 'skull',    label: 'Skull',        file: 'skull.png',    color: '#e5e7eb', emoji: '💀' },
+        { id: 'tank',     label: 'Tank',         file: '',             color: '#fbbf24', emoji: '🛡️' },
+        { id: 'healer',   label: 'Healer',       file: '',             color: '#4ade80', emoji: '➕' },
+        { id: 'melee',    label: 'Melee',        file: '',             color: '#ef4444', emoji: '⚔️' },
+        { id: 'ranged',   label: 'Ranged',       file: '',             color: '#60a5fa', emoji: '🏹' },
+        { id: 'group',    label: 'Gruppe',       file: '',             color: '#d946ef', emoji: '👥' },
+        { id: 'target',   label: 'Ziel',         file: '',             color: '#f43f5e', emoji: '🎯' },
+        { id: 'book',     label: 'Buch',         file: '',             color: '#14b8a6', emoji: '📖' }
     ];
     function getMarker(id) {
         return MARKERS.find(m => m.id === (id || '')) || MARKERS[0];
@@ -138,7 +145,7 @@ window.LaneGroups = (function () {
     function generateLaneId()   { return 'lane-'  + Math.random().toString(36).slice(2, 8); }
 
     function normalizeBlock(b) {
-        const type = ['multi-lane', 'single-list', 'marked-list'].includes(b.type) ? b.type : 'multi-lane';
+        const type = ['multi-lane', 'single-list', 'marked-list', 'key-value-list'].includes(b.type) ? b.type : 'multi-lane';
         const out = {
             id: b.id || generateBlockId(),
             title: b.title || 'Neuer Block',
@@ -159,15 +166,17 @@ window.LaneGroups = (function () {
                     marker: typeof l.marker === 'string' ? l.marker : '',
                     slots: slots,
                     slotMarkers: Array.isArray(l.slotMarkers) ? l.slotMarkers.slice() : Array(slots.length).fill(''),
+                    slotTitles: Array.isArray(l.slotTitles) ? l.slotTitles.slice() : Array(slots.length).fill(''),
                     allowedCats: Array.isArray(l.allowedCats) ? l.allowedCats.slice() : null
                 };
             });
             if (out.lanes.length === 0) {
-                out.lanes.push({ id: generateLaneId(), title: '', marker: '', slots: Array(3).fill(''), slotMarkers: Array(3).fill(''), allowedCats: null });
+                out.lanes.push({ id: generateLaneId(), title: '', marker: '', slots: Array(3).fill(''), slotMarkers: Array(3).fill(''), slotTitles: Array(3).fill(''), allowedCats: null });
             }
         } else {
             let slots = Array(3).fill('');
             let slotMarkers = Array(3).fill('');
+            let slotTitles = Array(3).fill('');
             
             if (Array.isArray(b.slots)) {
                 slots = b.slots.slice();
@@ -179,9 +188,17 @@ window.LaneGroups = (function () {
             } else if (lanes.length > 0 && Array.isArray(lanes[0].slotMarkers)) {
                 slotMarkers = lanes[0].slotMarkers.slice();
             }
+            if (Array.isArray(b.slotTitles)) {
+                slotTitles = b.slotTitles.slice();
+            } else if (lanes.length > 0 && Array.isArray(lanes[0].slotTitles)) {
+                slotTitles = lanes[0].slotTitles.slice();
+            }
             
             while(slotMarkers.length < slots.length) slotMarkers.push('');
             slotMarkers.length = slots.length;
+
+            while(slotTitles.length < slots.length) slotTitles.push('');
+            slotTitles.length = slots.length;
 
             out.lanes = [{
                 id: b._laneId || generateLaneId(),
@@ -189,6 +206,7 @@ window.LaneGroups = (function () {
                 marker: '',
                 slots: slots,
                 slotMarkers: slotMarkers,
+                slotTitles: slotTitles,
                 allowedCats: Array.isArray(b.allowedCats) ? b.allowedCats.slice() : null
             }];
         }
@@ -594,6 +612,27 @@ window.LaneGroups = (function () {
                     html += `<div style="display:flex; justify-content:center; align-items:center; height:22px;">${markerIconHtml(mId)}</div>`;
                 }
                 html += `</td>`;
+            } else if (block.type === 'key-value-list') {
+                html += `<td style="width:35%; padding-right:8px;">`;
+                if (edit) {
+                    html += `<input type="text" class="lg-slot-title-input" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}" value="${escapeHtml(lane.slotTitles && lane.slotTitles[s] || '')}" placeholder="Bezeichnung..." style="width:100%; background:#0f172a; border:1px solid #475569; color:#fff; border-radius:3px; padding:2px 4px; font-size:12px;">`;
+                } else {
+                    html += `<div style="font-size:13px; font-weight:bold; color:#e2e8f0; text-align:right;">${escapeHtml(lane.slotTitles && lane.slotTitles[s] || '')}</div>`;
+                }
+                html += `</td>`;
+                html += `<td class="lg-slot-num" style="width:36px; padding:0;">`;
+                if (edit) {
+                    html += `<select class="lg-slot-marker-select" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}" style="background:#0f172a; border:1px solid #475569; color:#fff; border-radius:3px; padding:2px; font-size:14px; width:36px; height:22px; text-align:center;">`;
+                    MARKERS.forEach(m => {
+                        const sel = (lane.slotMarkers && lane.slotMarkers[s] === m.id) ? ' selected' : '';
+                        html += `<option value="${m.id}"${sel}>${m.emoji}</option>`;
+                    });
+                    html += `</select>`;
+                } else {
+                    const mId = (lane.slotMarkers && lane.slotMarkers[s]) || '';
+                    html += `<div style="display:flex; justify-content:center; align-items:center; height:22px;">${markerIconHtml(mId)}</div>`;
+                }
+                html += `</td>`;
             } else {
                 html += `<td class="lg-slot-num">${s + 1}</td>`;
             }
@@ -635,6 +674,7 @@ window.LaneGroups = (function () {
             html += `<option value="multi-lane"${block.type === 'multi-lane' ? ' selected' : ''}>Mehrere Spalten (mit Markern)</option>`;
             html += `<option value="single-list"${block.type === 'single-list' ? ' selected' : ''}>Eine Liste (ohne Marker)</option>`;
             html += `<option value="marked-list"${block.type === 'marked-list' ? ' selected' : ''}>Eine Liste (Marker pro Zeile)</option>`;
+            html += `<option value="key-value-list"${block.type === 'key-value-list' ? ' selected' : ''}>Key-Value Liste (Titel + Marker)</option>`;
             html += `</select>`;
             html += `<label class="lg-autofill-toggle" title="Automatisches Füllen erlauben"><input type="checkbox" class="lg-block-autofill" data-block-idx="${blockIdx}"${block.autoFill ? ' checked' : ''}> Auto-Fill</label>`;
             html += `<label class="lg-autofill-toggle" title="Kopieren-Schaltfläche anzeigen"><input type="checkbox" class="lg-block-waexport" data-block-idx="${blockIdx}"${block.waExport ? ' checked' : ''}> WA Export</label>`;
@@ -744,7 +784,7 @@ window.LaneGroups = (function () {
             } else if (t.classList.contains('lg-block-type')) {
                 const bi = +t.dataset.blockIdx;
                 inst.blocks[bi].type = t.value;
-                if ((t.value === 'single-list' || t.value === 'marked-list') && inst.blocks[bi].lanes.length > 1) {
+                if ((t.value === 'single-list' || t.value === 'marked-list' || t.value === 'key-value-list') && inst.blocks[bi].lanes.length > 1) {
                     inst.blocks[bi].lanes = [inst.blocks[bi].lanes[0]];
                 }
                 render(inst); scheduleSave(inst);
@@ -775,6 +815,9 @@ window.LaneGroups = (function () {
             } else if (t.classList.contains('lg-lane-title-input')) {
                 const bi = +t.dataset.blockIdx, li = +t.dataset.laneIdx;
                 inst.blocks[bi].lanes[li].title = t.value; scheduleSave(inst);
+            } else if (t.classList.contains('lg-slot-title-input')) {
+                const bi = +t.dataset.blockIdx, li = +t.dataset.laneIdx, si = +t.dataset.slotIdx;
+                inst.blocks[bi].lanes[li].slotTitles[si] = t.value; scheduleSave(inst);
             }
         });
 
@@ -836,6 +879,7 @@ window.LaneGroups = (function () {
                     b.lanes.forEach(l => { 
                         l.slots = Array(l.slots.length).fill(''); 
                         if (l.slotMarkers) l.slotMarkers = Array(l.slotMarkers.length).fill(''); 
+                        if (l.slotTitles) l.slotTitles = Array(l.slotTitles.length).fill(''); 
                     });
                     render(inst); scheduleSave(inst);
                 } return;
@@ -858,6 +902,7 @@ window.LaneGroups = (function () {
                     const lane = inst.blocks[+laneClear.dataset.blockIdx].lanes[+laneClear.dataset.laneIdx];
                     lane.slots = Array(lane.slots.length).fill(''); 
                     if (lane.slotMarkers) lane.slotMarkers = Array(lane.slotMarkers.length).fill('');
+                    if (lane.slotTitles) lane.slotTitles = Array(lane.slotTitles.length).fill('');
                     render(inst); scheduleSave(inst);
                 } return;
             }
@@ -867,6 +912,8 @@ window.LaneGroups = (function () {
                     lane.slots.push(''); 
                     if (!lane.slotMarkers) lane.slotMarkers = [];
                     lane.slotMarkers.push(''); 
+                    if (!lane.slotTitles) lane.slotTitles = [];
+                    lane.slotTitles.push(''); 
                     render(inst); scheduleSave(inst); 
                 }
                 return;
@@ -876,6 +923,7 @@ window.LaneGroups = (function () {
                 if (lane.slots.length > 1) { 
                     lane.slots.pop(); 
                     if (lane.slotMarkers) lane.slotMarkers.pop(); 
+                    if (lane.slotTitles) lane.slotTitles.pop(); 
                     render(inst); scheduleSave(inst); 
                 }
                 return;
