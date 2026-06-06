@@ -321,6 +321,7 @@ window.CD_AUTO_PLANNER = (function() {
             name: "Mana-Regeneration", shortName: "Mana", color: "#3b82f6",
             spells: [
                 { spellId: "16190",  cooldownSec: 180, durationSec: 16, requiredSpec: ["Restoration1"] },      // Mana Tide Totem (Resto Shaman)
+                { spellId: "16190",  cooldownSec: 180, durationSec: 16, requiredSpec: ["Restoration1"] },      // Mana Tide Totem (2. für weitere Schamanen)
                 { spellId: "64901",  cooldownSec: 360, durationSec: 8,  requiredSpec: ["Holy"] },              // Hymn of Hope (Holy)
                 { spellId: "64901",  cooldownSec: 360, durationSec: 8,  requiredSpec: ["Discipline"] },        // Hymn of Hope (Disc)
                 { spellId: "64901",  cooldownSec: 360, durationSec: 8,  requiredSpec: ["Shadow"] },            // Hymn of Hope (Shadow)
@@ -2352,10 +2353,8 @@ window.CD_AUTO_PLANNER = (function() {
             return;
         }
         
-        // Lokalen State auf "wie frisch geladen, ohne gespeicherten Plan" setzen
+        // Lokalen State auf "wie frisch geladen" setzen, aber Events behalten
         manualOverrides = {};
-        eventOverrides = {};
-        customEvents = [];
         assignments = [];
         
         // Tabelle visuell leeren
@@ -2364,34 +2363,17 @@ window.CD_AUTO_PLANNER = (function() {
         var thead = document.getElementById('auto-planner-thead');
         if (thead) thead.innerHTML = '';
         
-        // Event-Manager re-rendern (Häkchen entfernt)
-        renderEventManager();
         if (typeof window._autoPlannerApplyProtection === 'function') {
             window._autoPlannerApplyProtection();
         }
         
-        // Auto-Plan-Doc aus Firestore löschen — Defaults aus config.events bleiben damit erhalten
-        if (firebaseRef) {
-            var deleteDocFn = firebaseRef.deleteDoc;
-            if (!deleteDocFn) {
-                try {
-                    var fbModule = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    deleteDocFn = fbModule.deleteDoc;
-                } catch (e) {
-                    console.error("[Auto-Planner] Konnte deleteDoc nicht laden:", e);
-                    updateStatus("Plan lokal geleert (DB-Fehler beim Nachladen).");
-                    return;
-                }
-            }
-            try {
-                await deleteDocFn(firebaseRef.doc(firebaseRef.db, "auto-planner", config.id));
-                updateStatus("Auto-Plan geleert (lokal + DB).");
-            } catch (e) {
-                console.error("[Auto-Planner] clearPlan DB-Delete error:", e);
-                updateStatus("Plan lokal geleert (DB-Fehler: " + e.message + ")");
-            }
-        } else {
-            updateStatus("Plan geleert.");
+        // Änderungen (geleerte Zuweisungen) in DB speichern
+        try {
+            await savePlan();
+            updateStatus("Auto-Plan geleert (Zuweisungen entfernt, Events beibehalten).");
+        } catch (e) {
+            console.error("[Auto-Planner] clearPlan error:", e);
+            updateStatus("Plan lokal geleert (Fehler beim Speichern: " + e.message + ")");
         }
     }
 
@@ -2457,6 +2439,7 @@ window.CD_AUTO_PLANNER = (function() {
                 'btn-save-auto-plan',
                 'btn-save-categories',
                 'btn-clear-auto',
+                'btn-reset-events',
                 'btn-clear-planner'
             ];
             managerOnlyButtons.forEach(function(btnId) {
@@ -2554,13 +2537,16 @@ window.CD_AUTO_PLANNER = (function() {
                 if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
                 return;
             }
-            var msg = "Auto-Plan leeren?\n\nLöscht den gespeicherten Auto-Plan dieses Bosses (Tabelle + auto-planner DB-Eintrag).\nDie CD-Planer-Einträge im Raidplan bleiben unangetastet.";
+            var msg = "Auto-Plan Zuweisungen leeren?\n\nLöscht alle Zuweisungen im Auto-Plan, behält aber die Event-Anpassungen (Häkchen) bei.\nDie CD-Planer-Einträge im Raidplan bleiben unangetastet.";
             if (typeof window.showModal === 'function') {
                 var r = window.showModal(msg, true);
                 if (r && typeof r.then === 'function') { r.then(function(ok) { if (ok) clearPlan(); }); }
                 else clearPlan();
             } else { if (confirm(msg)) clearPlan(); }
         });
+
+        // ── Events-Reset-Button dynamisch einfügen (nur für Manager) ──
+        injectResetEventsButton();
 
         // ── Clear-Planner-Button dynamisch einfügen (nur für Manager) ──
         injectClearPlannerButton();
@@ -2653,6 +2639,54 @@ window.CD_AUTO_PLANNER = (function() {
         bind('strat-rr', 'roundRobin');
         bind('strat-prefer-heal', 'preferHeal');
         bind('strat-strict-class', 'strictClassBalance');
+    }
+
+    // ── Dynamischer Events-Reset-Button ──
+    function injectResetEventsButton() {
+        if (!window.isManager) return;
+        if (document.getElementById('btn-reset-events')) return;
+
+        var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
+        if (!btnContainer) return;
+
+        var resetBtn = document.createElement('button');
+        resetBtn.id = 'btn-reset-events';
+        resetBtn.className = 'bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500 mr-2';
+        resetBtn.innerHTML = '🔄 Events Reset';
+        resetBtn.title = 'Setzt alle Event-Anpassungen (Häkchen und eigene Events) auf Standard zurück';
+        
+        btnContainer.insertBefore(resetBtn, document.getElementById('btn-clear-auto'));
+
+        resetBtn.addEventListener('click', function() {
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
+            var msg = "Events zurücksetzen?\n\nSetzt alle Häkchen und manuell hinzugefügten Events auf die Standardwerte des Bosses zurück.\nBereits zugewiesene CDs bleiben in der Tabelle stehen (Auto-Assign erforderlich, um sie neu zu verteilen).";
+            if (typeof window.showModal === 'function') {
+                var r = window.showModal(msg, true);
+                if (r && typeof r.then === 'function') {
+                    r.then(function(ok) { if (ok) resetEventsOnly(); });
+                } else {
+                    resetEventsOnly();
+                }
+            } else {
+                if (confirm(msg)) resetEventsOnly();
+            }
+        });
+    }
+
+    async function resetEventsOnly() {
+        eventOverrides = {};
+        customEvents = [];
+        renderEventManager();
+        
+        try {
+            await savePlan();
+            updateStatus("Events zurückgesetzt.");
+        } catch (e) {
+            console.error("[Auto-Planner] resetEvents error:", e);
+        }
     }
 
     // ── Dynamischer Clear-Button für Advanced CD-Plan ──
