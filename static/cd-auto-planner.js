@@ -637,13 +637,19 @@ window.CD_AUTO_PLANNER = (function() {
                 eventDuration: 0,
                 requiredCDs: ['stormlash', 'skull_banner'],
                 icon: '⚔️',
-                spellId: 0
+                spellId: 0,
+                _sourceTriggerMap: config.triggerMap ? config.triggerMap[blEvt.name] : null
             });
         });
 
         if (bloodlustEventExists && hasLateBloodlust && !hasEarlyBloodlust) {
             var startEvt = result.find(function(e) { return e.name === 'Kampfbeginn (SL/Banner)'; });
             if (!startEvt) {
+                var encStartObj = null;
+                if (typeof window.TRIGGER_OPTIONS !== 'undefined') {
+                    var foundEnc = window.TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('ENC_START') !== -1; });
+                    if (foundEnc) encStartObj = foundEnc.val;
+                }
                 result.push({
                     _key: 'auto_start_sl_banner_1',
                     _isCustom: true,
@@ -655,7 +661,8 @@ window.CD_AUTO_PLANNER = (function() {
                     eventDuration: 0,
                     requiredCDs: ['stormlash', 'skull_banner'],
                     icon: '⚔️',
-                    spellId: 0
+                    spellId: 0,
+                    _sourceTriggerMap: encStartObj
                 });
                 result.push({
                     _key: 'auto_start_sl_banner_2',
@@ -668,7 +675,8 @@ window.CD_AUTO_PLANNER = (function() {
                     eventDuration: 0,
                     requiredCDs: ['stormlash', 'skull_banner'],
                     icon: '⚔️',
-                    spellId: 0
+                    spellId: 0,
+                    _sourceTriggerMap: encStartObj
                 });
             }
         }
@@ -694,7 +702,8 @@ window.CD_AUTO_PLANNER = (function() {
                     eventDuration: event.eventDuration || 0,
                     icon:          event.icon || '',
                     requiredCDs:   event.requiredCDs,
-                    slots:         {}
+                    slots:         {},
+                    _sourceTriggerMap: event._sourceTriggerMap
                 });
             }
         });
@@ -1706,7 +1715,7 @@ window.CD_AUTO_PLANNER = (function() {
                     if (rowNum > 100) return;
 
                     // triggerMap kann String (nur Trigger) oder Object ({ trigger, npc, percent }) sein
-                    var mapEntry = config.triggerMap && config.triggerMap[row.eventName];
+                    var mapEntry = row._sourceTriggerMap || (config.triggerMap && config.triggerMap[row.eventName]);
                     var triggerVal = '';
                     var npcVal = '';
                     var percentVal = null;
