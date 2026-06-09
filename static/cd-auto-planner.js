@@ -1801,7 +1801,7 @@ window.CD_AUTO_PLANNER = (function() {
 
             // EIN einziger Firestore-Write für alle Felder
             if (firebaseRef && firebaseRef.setDoc && Object.keys(batchPayload).length > 0) {
-                var bossDocId = "boss-" + prefix.toLowerCase();
+                var bossDocId = "boss-" + (config.id || prefix.toLowerCase());
                 await firebaseRef.setDoc(
                     firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
                     batchPayload,
@@ -2779,7 +2779,7 @@ window.CD_AUTO_PLANNER = (function() {
 
             // Firestore-Write
             if (firebaseRef && firebaseRef.setDoc) {
-                var bossDocId = "boss-" + prefix.toLowerCase();
+                var bossDocId = "boss-" + (config.id || prefix.toLowerCase());
                 try {
                     await firebaseRef.setDoc(
                         firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
@@ -2877,7 +2877,7 @@ window.CD_AUTO_PLANNER = (function() {
         }
 
         var prefix = config.prefix.toLowerCase();
-        var bossDocId1 = "boss-" + prefix;             // Standard-Pattern aus index.html
+        var bossDocId1 = "boss-" + (config.id || prefix);             // Standard-Pattern aus index.html
         var bossDocId2 = config.id;                     // Fallback (manche Bosse nutzen direkt id)
         var autoPlannerDocId = config.id;               // Auto-Planner doc
 
