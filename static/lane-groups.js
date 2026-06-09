@@ -153,7 +153,9 @@ window.LaneGroups = (function () {
             autoFill: b.autoFill !== false,
             waExport: !!b.waExport,
             isolatedBlock: b.isolatedBlock !== false, 
-            sharedLanes: b.sharedLanes !== false      
+            sharedLanes: b.sharedLanes !== false,
+            onlyKicks: !!b.onlyKicks,
+            customPrio: b.customPrio ? JSON.parse(JSON.stringify(b.customPrio)) : null
         };
         
         let lanes = Array.isArray(b.lanes) ? b.lanes : [];
@@ -549,8 +551,10 @@ window.LaneGroups = (function () {
     }
 
     function renderTagsHtml(inst, blockIdx, laneIdx) {
-        const lane = inst.blocks[blockIdx].lanes[laneIdx];
-        if (inst.prioCategories.length === 0) return '';
+        const block = inst.blocks[blockIdx];
+        const lane = block.lanes[laneIdx];
+        const prioCats = (block.onlyKicks && Array.isArray(block.customPrio) && block.customPrio.length > 0) ? block.customPrio : inst.prioCategories;
+        if (prioCats.length === 0) return '';
         const allowed = lane.allowedCats;
         const allOn = (allowed === null || allowed === undefined);
         
@@ -568,7 +572,7 @@ window.LaneGroups = (function () {
         if (isOpen) {
             html += `<div class="lg-tags" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" style="display:flex; flex-wrap:wrap; gap:3px; margin-top:6px;">`;
             html += `<span class="lg-tag ${allOn ? 'tag-on' : 'tag-off'}" data-cat-id="__ALL__" title="Alle erlauben">${allOn ? '✓' : '○'} Alle</span>`;
-            inst.prioCategories.forEach(cat => {
+            prioCats.forEach(cat => {
                 const on = allOn || (Array.isArray(allowed) && allowed.includes(cat.id));
                 html += `<span class="lg-tag ${on ? 'tag-on' : 'tag-off'}" data-cat-id="${cat.id}">${escapeHtml(cat.label)}</span>`;
             });
@@ -735,6 +739,7 @@ window.LaneGroups = (function () {
             html += `<label class="lg-autofill-toggle" title="Automatisches Füllen erlauben"><input type="checkbox" class="lg-block-autofill" data-block-idx="${blockIdx}"${block.autoFill ? ' checked' : ''}> Auto-Fill</label>`;
             html += `<label class="lg-autofill-toggle" title="Kopieren-Schaltfläche anzeigen"><input type="checkbox" class="lg-block-waexport" data-block-idx="${blockIdx}"${block.waExport ? ' checked' : ''}> WA Export</label>`;
             html += `<label class="lg-autofill-toggle" title="Eigenen Pool verwenden"><input type="checkbox" class="lg-block-isolated" data-block-idx="${blockIdx}"${block.isolatedBlock ? ' checked' : ''}> Eigener Pool</label>`;
+            html += `<label class="lg-autofill-toggle" title="Nur Klassen/Specs mit Interrupts zulassen"><input type="checkbox" class="lg-block-onlykicks" data-block-idx="${blockIdx}"${block.onlyKicks ? ' checked' : ''}> Nur Kicks</label>`;
             if (block.type === 'multi-lane') {
                 html += `<label class="lg-autofill-toggle" title="Spalten teilen sich die Spieler"><input type="checkbox" class="lg-block-sharedlanes" data-block-idx="${blockIdx}"${block.sharedLanes ? ' checked' : ''}> Spalten teilen Pool</label>`;
             }
@@ -772,6 +777,9 @@ window.LaneGroups = (function () {
             html += `<div class="lg-block-autofill-row">`;
             html += `<button type="button" class="lg-btn lg-block-fill"    data-block-idx="${blockIdx}">⚡ Auto-Füllen</button>`;
             html += `<button type="button" class="lg-btn lg-block-clear"   data-block-idx="${blockIdx}">🗑 Block leeren</button>`;
+            if (block.onlyKicks) {
+                html += `<button type="button" class="lg-btn lg-open-custom-prio" data-block-idx="${blockIdx}">⚙ Kick-Priorität</button>`;
+            }
             html += `</div>`;
         }
 
@@ -848,6 +856,11 @@ window.LaneGroups = (function () {
                 const bi = +t.dataset.blockIdx;
                 inst.blocks[bi].autoFill = !!t.checked;
                 render(inst); scheduleSave(inst);
+            } else if (t.classList.contains('lg-block-onlykicks')) {
+                const bi = +t.dataset.blockIdx;
+                inst.blocks[bi].onlyKicks = !!t.checked;
+                inst.blocks[bi].lanes.forEach(l => l.allowedCats = null);
+                render(inst); scheduleSave(inst);
             } else if (t.classList.contains('lg-block-waexport')) {
                 const bi = +t.dataset.blockIdx;
                 inst.blocks[bi].waExport = !!t.checked;
@@ -881,7 +894,9 @@ window.LaneGroups = (function () {
             const t = e.target;
             if (t.closest('.lg-toggle-edit'))    { inst.editMode = !inst.editMode; render(inst); return; }
             if (t.closest('.lg-block-add'))      { addBlock(inst); return; }
+            const customPrioOpen = t.closest('.lg-open-custom-prio');
             if (t.closest('.lg-open-prio-modal')){ openPrioModal(inst); return; }
+            if (customPrioOpen) { openPrioModal(inst, +customPrioOpen.dataset.blockIdx); return; }
 
             const exportBtn = t.closest('.lg-block-export');
             if (exportBtn) {
@@ -1003,13 +1018,15 @@ window.LaneGroups = (function () {
         render(inst); scheduleSave(inst);
     }
     function toggleLaneCat(inst, bi, li, catId) {
-        const lane = inst.blocks[bi].lanes[li];
+        const block = inst.blocks[bi];
+        const lane = block.lanes[li];
+        const prioCats = (block.onlyKicks && Array.isArray(block.customPrio) && block.customPrio.length > 0) ? block.customPrio : inst.prioCategories;
         if (catId === '__ALL__') { lane.allowedCats = (lane.allowedCats === null) ? [] : null; } else {
-            if (lane.allowedCats === null) lane.allowedCats = inst.prioCategories.filter(c => c.id !== catId).map(c => c.id);
+            if (lane.allowedCats === null) lane.allowedCats = prioCats.filter(c => c.id !== catId).map(c => c.id);
             else {
                 const idx = lane.allowedCats.indexOf(catId);
                 if (idx >= 0) lane.allowedCats.splice(idx, 1); else lane.allowedCats.push(catId);
-                if (lane.allowedCats.length === inst.prioCategories.length) lane.allowedCats = null;
+                if (lane.allowedCats.length === prioCats.length) lane.allowedCats = null;
             }
         }
         render(inst); scheduleSave(inst);
@@ -1083,20 +1100,42 @@ window.LaneGroups = (function () {
     function refreshDuplicateMarkers(inst) { refreshSlotState(inst); }
     function applySlotColors(inst)         { refreshSlotState(inst); }
 
-    function buildSortedRoster(inst) {
+    function hasInterrupt(classId, specId) {
+        if (!classId) return true; // generic check
+        if (classId === 'PRIEST' && (!specId || specId === 'Holy' || specId === 'Discipline')) return false;
+        if (classId === 'DRUID' && specId === 'Restoration') return false;
+        return true;
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function buildSortedRoster(inst, prioCats) {
+        if (!prioCats) prioCats = inst.prioCategories;
         const sorted = [];
-        inst.prioCategories.forEach(cat => {
+        prioCats.forEach(cat => {
+            const group = [];
             (inst.roster || []).forEach(p => {
                 const name = p.name || p;
                 if (isPlayerOnBench(name)) return;
-                if (playerMatchesCategory(p, cat)) sorted.push({ name, category: cat, player: p });
+                if (playerMatchesCategory(p, cat)) group.push({ name, category: cat, player: p });
             });
+            shuffleArray(group);
+            sorted.push(...group);
         });
+        const remainder = [];
         (inst.roster || []).forEach(p => {
             const name = p.name || p;
             if (isPlayerOnBench(name)) return;
-            if (!sorted.some(s => s.name === name)) sorted.push({ name, category: null, player: p });
+            if (!sorted.some(s => s.name === name)) remainder.push({ name, category: null, player: p });
         });
+        shuffleArray(remainder);
+        sorted.push(...remainder);
         return sorted;
     }
 
@@ -1121,7 +1160,8 @@ window.LaneGroups = (function () {
                 // Für Limits: tatsächlichen Spieler im Roster suchen (resolved)
                 const display = resolveValueDisplay(inst, name);
                 const ply = display.displayName ? findRosterPlayer(inst.roster, display.displayName) : null;
-                const cat = ply ? getPlayerCategory(ply, inst.prioCategories) : null;
+                const prioCats = (block.onlyKicks && Array.isArray(block.customPrio) && block.customPrio.length > 0) ? block.customPrio : inst.prioCategories;
+                const cat = ply ? getPlayerCategory(ply, prioCats) : null;
                 if (cat) {
                     if (!usedByLane[li][cat.id]) usedByLane[li][cat.id] = [];
                     usedByLane[li][cat.id].push(si);
@@ -1129,39 +1169,80 @@ window.LaneGroups = (function () {
             });
         });
 
-        const fullPool = buildSortedRoster(inst);
+        const prioCats = (block.onlyKicks && Array.isArray(block.customPrio) && block.customPrio.length > 0) ? block.customPrio : inst.prioCategories;
+        const fullPool = buildSortedRoster(inst, prioCats);
 
         let filled = 0;
         const maxSlots = Math.max(...block.lanes.map(l => l.slots.length));
+        console.log("autoFillBlock: starting auto-fill", { blockIdx: blockIdx, onlyKicks: block.onlyKicks, maxSlots: maxSlots, fullPool: fullPool.length });
         for (let sIdx = 0; sIdx < maxSlots; sIdx++) {
             for (let li = 0; li < block.lanes.length; li++) {
                 const lane = block.lanes[li];
-                if (sIdx >= lane.slots.length || lane.slots[sIdx]) continue;
+                if (sIdx >= lane.slots.length || lane.slots[sIdx]) {
+                    console.log(`Slot ${sIdx} in lane ${li} skipped (already full or out of bounds)`);
+                    continue;
+                }
 
                 let foundCand = null;
                 for (let j = 0; j < fullPool.length; j++) {
                     const cand = fullPool[j];
                     const cat = cand.category;
+                    const ply = cand.player || {};
+                    const pCls = normalizeClass(getPlayerClass(ply));
+                    const pSpec = getPlayerSpec(ply);
+
+                    if (block.onlyKicks) {
+                        if (!hasInterrupt(pCls, pSpec)) {
+                            console.log(`Rejected ${cand.name}: no interrupt (${pCls} ${pSpec})`);
+                            continue;
+                        }
+                    }
+
                     // cand.name ist immer ein echter Spieler-Name aus dem Roster
-                    if (block.sharedLanes && alreadyAssignedGlobal.has(cand.name)) continue;
-                    if (!block.sharedLanes && alreadyAssignedPerLane[li].has(cand.name)) continue;
+                    if (block.sharedLanes && alreadyAssignedGlobal.has(cand.name)) {
+                        console.log(`Rejected ${cand.name}: already assigned global`);
+                        continue;
+                    }
+                    if (!block.sharedLanes && alreadyAssignedPerLane[li].has(cand.name)) {
+                        console.log(`Rejected ${cand.name}: already assigned per lane`);
+                        continue;
+                    }
 
                     if (lane.allowedCats !== null && Array.isArray(lane.allowedCats)) {
-                        if (lane.allowedCats.length === 0 || !cat || !lane.allowedCats.includes(cat.id)) continue;
+                        // Prüfen, ob die erlaubten Kategorien überhaupt in den aktuellen prioCats existieren
+                        const validFilters = lane.allowedCats.filter(id => prioCats.some(pc => pc.id === id));
+                        // Nur filtern, wenn es noch gültige Filter gibt (oder der Filter absichtlich auf 0 gesetzt wurde, was wir über "__ALL__" aber eigentlich auflösen)
+                        // Wenn der User den Block-Typ wechselt, können Altlasten im Array bleiben, die wir ignorieren müssen.
+                        if (lane.allowedCats.length > 0 && validFilters.length === 0) {
+                            // Ignoriere die veralteten Filter
+                        } else if (lane.allowedCats.length === 0 || !cat || !lane.allowedCats.includes(cat.id)) {
+                            console.log(`Rejected ${cand.name}: blocked by lane.allowedCats (allowed: ${lane.allowedCats}, candCat: ${cat?.id})`);
+                            continue;
+                        }
                     }
                     if (cat) {
                         if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && sIdx < cat.limitRows) {
-                            const usedInFirstN = (usedByLane[li][cat.id] || []).filter(idx => idx < cat.limitRows).length;
-                            if (usedInFirstN >= cat.limitCount) continue;
+                            const c = (usedByLane[li][cat.id] || []).filter(idx => idx < cat.limitRows).length;
+                            if (c >= cat.limitCount) {
+                                console.log(`Rejected ${cand.name}: limitCount exceeded for cat ${cat.id}`);
+                                continue;
+                            }
                         }
-                        if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
-                            const usedTotal = (usedByLane[li][cat.id] || []).length;
-                            if (usedTotal >= cat.maxTotal) continue;
+                        if (cat.maxTotal !== undefined && cat.maxTotal !== null && cat.maxTotal !== '') {
+                            const totalC = (usedByLane[li][cat.id] || []).length;
+                            if (totalC >= cat.maxTotal) {
+                                console.log(`Rejected ${cand.name}: maxTotal exceeded for cat ${cat.id}`);
+                                continue;
+                            }
                         }
                     }
-                    foundCand = cand; break;
+
+                    foundCand = cand;
+                    break;
                 }
+
                 if (foundCand) {
+                    // console.log(`Assigned ${foundCand.name} to lane ${li} slot ${sIdx}`);
                     lane.slots[sIdx] = foundCand.name;
                     alreadyAssignedGlobal.add(foundCand.name);
                     alreadyAssignedPerLane[li].add(foundCand.name);
@@ -1173,16 +1254,38 @@ window.LaneGroups = (function () {
                 }
             }
         }
-        render(inst); scheduleSave(inst);
+        if (filled > 0) {
+            render(inst); scheduleSave(inst);
+        } else {
+            console.warn('Auto-Fill: Kein passender Spieler gefunden.');
+        }
     }
 
-    function openPrioModal(inst) {
+    const DEFAULT_KICK_PRIO = [
+        { id: 'cat-k-melee', label: 'Alle Melees', class: '', spec: '', role: 'dps', archetype: 'melee' },
+        { id: 'cat-k-ele', label: 'Schamane (Ele)', class: 'SHAMAN', spec: 'elemental', role: 'dps', archetype: 'caster' },
+        { id: 'cat-k-mage', label: 'Magier', class: 'MAGE', spec: '', role: 'dps', archetype: 'caster' },
+        { id: 'cat-k-hunter', label: 'Jäger', class: 'HUNTER', spec: '', role: 'dps', archetype: 'ranged_physical' },
+        { id: 'cat-k-lock', label: 'Hexenmeister', class: 'WARLOCK', spec: '', role: 'dps', archetype: 'caster' },
+        { id: 'cat-k-tank', label: 'Tanks', class: '', spec: '', role: 'tank', archetype: '' },
+        { id: 'cat-k-heal', label: 'Heiler (mit Kick)', class: '', spec: '', role: 'healer', archetype: '' }
+    ];
+
+    function openPrioModal(inst, blockIdx = null) {
+        if (blockIdx !== null) {
+            const block = inst.blocks[blockIdx];
+            if (!block.customPrio) {
+                block.customPrio = DEFAULT_KICK_PRIO.map(c => ({ ...c }));
+                scheduleSave(inst);
+            }
+        }
+
         let overlay = document.getElementById('lg-prio-overlay');
         if (overlay) overlay.remove();
         overlay = document.createElement('div');
         overlay.id = 'lg-prio-overlay';
         overlay.className = 'lg-modal-overlay';
-        overlay.innerHTML = renderPrioModalHtml(inst);
+        overlay.innerHTML = renderPrioModalHtml(inst, blockIdx);
         document.body.appendChild(overlay);
 
         overlay.querySelector('.lg-modal-close').addEventListener('click', () => overlay.remove());
@@ -1193,27 +1296,45 @@ window.LaneGroups = (function () {
             const delBtn = e.target.closest('.lg-prio-del'), editBtn = e.target.closest('.lg-prio-edit');
             const addBtn = e.target.closest('.lg-prio-add'), resetBtn = e.target.closest('.lg-prio-reset');
 
-            if (upBtn) { const i = +upBtn.dataset.idx; if (i > 0) { [inst.prioCategories[i-1], inst.prioCategories[i]] = [inst.prioCategories[i], inst.prioCategories[i-1]]; overlay.innerHTML = renderPrioModalHtml(inst); savePrio(inst); render(inst); } return; }
-            if (dnBtn) { const i = +dnBtn.dataset.idx; if (i < inst.prioCategories.length - 1) { [inst.prioCategories[i], inst.prioCategories[i+1]] = [inst.prioCategories[i+1], inst.prioCategories[i]]; overlay.innerHTML = renderPrioModalHtml(inst); savePrio(inst); render(inst); } return; }
-            if (delBtn) { const i = +delBtn.dataset.idx; if (confirm('Löschen?')) { inst.prioCategories.splice(i, 1); overlay.innerHTML = renderPrioModalHtml(inst); savePrio(inst); render(inst); } return; }
-            if (editBtn) { editCategory(inst, +editBtn.dataset.idx, overlay); return; }
-            if (addBtn)  { editCategory(inst, -1, overlay); return; }
-            if (resetBtn) { if (confirm('Auf Defaults zurücksetzen?')) { inst.prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c })); overlay.innerHTML = renderPrioModalHtml(inst); savePrio(inst); render(inst); } return; }
+            const targetArray = blockIdx !== null ? inst.blocks[blockIdx].customPrio : inst.prioCategories;
+
+            if (upBtn) { const i = +upBtn.dataset.idx; if (i > 0) { [targetArray[i-1], targetArray[i]] = [targetArray[i], targetArray[i-1]]; overlay.innerHTML = renderPrioModalHtml(inst, blockIdx); scheduleSave(inst); if(blockIdx === null) savePrio(inst); render(inst); } return; }
+            if (dnBtn) { const i = +dnBtn.dataset.idx; if (i < targetArray.length - 1) { [targetArray[i], targetArray[i+1]] = [targetArray[i+1], targetArray[i]]; overlay.innerHTML = renderPrioModalHtml(inst, blockIdx); scheduleSave(inst); if(blockIdx === null) savePrio(inst); render(inst); } return; }
+            if (delBtn) { const i = +delBtn.dataset.idx; if (confirm('Löschen?')) { targetArray.splice(i, 1); overlay.innerHTML = renderPrioModalHtml(inst, blockIdx); scheduleSave(inst); if(blockIdx === null) savePrio(inst); render(inst); } return; }
+            if (editBtn) { editCategory(inst, +editBtn.dataset.idx, overlay, blockIdx); return; }
+            if (addBtn)  { editCategory(inst, -1, overlay, blockIdx); return; }
+            if (resetBtn) { 
+                if (confirm('Auf Defaults zurücksetzen?')) { 
+                    if (blockIdx !== null) {
+                        inst.blocks[blockIdx].customPrio = DEFAULT_KICK_PRIO.map(c => ({ ...c }));
+                    } else {
+                        inst.prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c })); 
+                    }
+                    overlay.innerHTML = renderPrioModalHtml(inst, blockIdx); 
+                    scheduleSave(inst); 
+                    if(blockIdx === null) savePrio(inst); 
+                    render(inst); 
+                } 
+                return; 
+            }
         });
     }
 
-    function renderPrioModalHtml(inst) {
-        let html = `<div class="lg-modal"><div class="lg-modal-header"><h3>Auto-Fill-Kategorien</h3><button class="lg-modal-close">✕</button></div><div class="lg-modal-body"><ul class="lg-prio-list">`;
-        inst.prioCategories.forEach((c, i) => {
+    function renderPrioModalHtml(inst, blockIdx) {
+        const targetArray = blockIdx !== null ? inst.blocks[blockIdx].customPrio : inst.prioCategories;
+        const title = blockIdx !== null ? `Kick-Priorität (Block: ${inst.blocks[blockIdx].title})` : 'Auto-Fill-Kategorien';
+        let html = `<div class="lg-modal"><div class="lg-modal-header"><h3>${escapeHtml(title)}</h3><button class="lg-modal-close">✕</button></div><div class="lg-modal-body"><ul class="lg-prio-list">`;
+        targetArray.forEach((c, i) => {
             html += `<li class="lg-prio-item"><span class="lg-prio-idx">${i + 1}.</span><span class="lg-prio-label"><strong>${escapeHtml(c.label)}</strong></span><div class="lg-prio-btns"><button class="lg-btn lg-prio-up" data-idx="${i}">↑</button><button class="lg-btn lg-prio-down" data-idx="${i}">↓</button><button class="lg-btn lg-prio-edit" data-idx="${i}">✎</button><button class="lg-btn lg-prio-del" data-idx="${i}">🗑</button></div></li>`;
         });
         html += `</ul><div class="lg-modal-actions"><button class="lg-btn lg-prio-add">+ Kategorie</button><button class="lg-btn lg-prio-reset">↺ Defaults</button></div></div></div>`;
         return html;
     }
 
-    function editCategory(inst, idx, overlay) {
+    function editCategory(inst, idx, overlay, blockIdx) {
+        const targetArray = blockIdx !== null ? inst.blocks[blockIdx].customPrio : inst.prioCategories;
         const isNew = (idx < 0);
-        const cat = isNew ? { id: '', label: '', class: '', spec: '', role: '', archetype: '' } : { ...inst.prioCategories[idx] };
+        const cat = isNew ? { id: '', label: '', class: '', spec: '', role: '', archetype: '' } : { ...targetArray[idx] };
         const editBox = document.createElement('div');
         editBox.className = 'lg-modal-edit';
         editBox.innerHTML = `<h4>${isNew ? 'Neue Kategorie' : 'Bearbeiten'}</h4>
@@ -1245,8 +1366,8 @@ window.LaneGroups = (function () {
             const lr = editBox.querySelector('#lg-cat-limit-rows').value, lc = editBox.querySelector('#lg-cat-limit-count').value, mt = editBox.querySelector('#lg-cat-max-total').value;
             if (lr && lc !== '') { next.limitRows = +lr; next.limitCount = +lc; }
             if (mt !== '') { next.maxTotal = +mt; }
-            if (isNew) inst.prioCategories.push(next); else inst.prioCategories[idx] = next;
-            editBox.remove(); overlay.innerHTML = renderPrioModalHtml(inst); savePrio(inst); render(inst);
+            if (isNew) targetArray.push(next); else targetArray[idx] = next;
+            editBox.remove(); overlay.innerHTML = renderPrioModalHtml(inst, blockIdx); scheduleSave(inst); if(blockIdx === null) savePrio(inst); render(inst);
         });
     }
 

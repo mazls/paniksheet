@@ -2777,12 +2777,9 @@ window.CD_AUTO_PLANNER = (function() {
                     }
                     // Auch wenn DOM-Element nicht da ist (z.B. text/tts/name/icon nicht in allen Bossen):
                     // Wenn Feld existiert hatte, in Firestore leeren — dafür ein leerer Eintrag.
-                    // Wir setzen nur das gängige Schema; ungenutzte Felder werden einfach überschrieben.
-                    if (f === 'trigger' || f === 'npc' || f === 'player' || f === 'cooldown') {
-                        batchPayload[fieldId] = { player: '', editor: currentManager, timestamp: serverTs };
-                    } else {
-                        batchPayload[fieldId] = { text: '', editor: currentManager, timestamp: serverTs };
-                    }
+                    var update = { editor: currentManager, timestamp: serverTs };
+                    update[f] = '';
+                    batchPayload[fieldId] = update;
                 });
             }
 

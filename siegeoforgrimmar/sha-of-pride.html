@@ -393,54 +393,39 @@
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-400 mb-1">Rolle</label>
-                                        <select id="sha-plates-prio-modal-role"
+                                        <select id="sha-plates-prio-modal-role-arch"
                                             class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
                                             <option value="">— beliebig —</option>
                                             <option value="tank">Tank</option>
                                             <option value="healer">Healer</option>
-                                            <option value="dps">DPS</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs text-gray-400 mb-1">Archetyp <span
-                                                class="text-[10px] text-gray-500">(für DPS-Gruppen)</span></label>
-                                        <select id="sha-plates-prio-modal-archetype"
-                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                            <option value="">— beliebig —</option>
-                                            <option value="melee">Melee</option>
-                                            <option value="ranged_physical">Ranged Physical (Hunter)</option>
-                                            <option value="caster">Caster</option>
+                                            <option value="dps">Alle DPS</option>
+                                            <option value="melee">Melee DPS</option>
+                                            <option value="ranged_physical">Physical Range DPS</option>
+                                            <option value="caster">Caster DPS</option>
                                         </select>
                                     </div>
 
                                     <div class="border-t border-slate-700 pt-3">
-                                        <div class="text-xs font-bold text-yellow-300 mb-2">Limits pro Platte (optional)
+                                        <div class="text-xs font-bold text-yellow-300 mb-2">Begrenzungen (optional)</div>
+                                        <div class="bg-slate-900/60 border border-slate-700 p-2 rounded mb-2">
+                                            <div class="text-[11px] text-gray-300 mb-1 font-semibold">1. Limitierung am Anfang</div>
+                                            <div class="text-[10px] text-gray-500 mb-2 italic">Beispiel: "Maximal 1 Heiler in den ersten 4 Slots."</div>
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-[10px] text-gray-400">Maximal</span>
+                                                <input id="sha-plates-prio-modal-limit-count" type="number" min="0"
+                                                    class="w-12 bg-slate-900 border border-slate-600 rounded px-1 py-1 text-sm text-white text-center">
+                                                <span class="text-[10px] text-gray-400">Spieler in den ersten</span>
+                                                <input id="sha-plates-prio-modal-limit-rows" type="number" min="1"
+                                                    class="w-12 bg-slate-900 border border-slate-600 rounded px-1 py-1 text-sm text-white text-center">
+                                                <span class="text-[10px] text-gray-400">Slots.</span>
+                                            </div>
                                         </div>
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <div>
-                                                <label class="block text-[10px] text-gray-400 mb-1">Max in ersten N
-                                                    Slots</label>
-                                                <div class="flex gap-1">
-                                                    <input id="sha-plates-prio-modal-limit-rows" type="number" min="1"
-                                                        class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white"
-                                                        placeholder="3">
-                                                    <span class="text-gray-500 text-xs flex items-center">Slots:</span>
-                                                    <input id="sha-plates-prio-modal-limit-count" type="number" min="0"
-                                                        class="flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white"
-                                                        placeholder="1">
-                                                </div>
-                                                <div class="text-[10px] text-gray-500 mt-1">z.B. "in den ersten 3 Slots
-                                                    max 1 Tank"</div>
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] text-gray-400 mb-1">Max gesamt pro
-                                                    Platte</label>
-                                                <input id="sha-plates-prio-modal-max-total" type="number" min="0"
-                                                    class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white"
-                                                    placeholder="leer = unbegrenzt">
-                                                <div class="text-[10px] text-gray-500 mt-1">Maximalanzahl pro einzelner
-                                                    Platte</div>
-                                            </div>
+                                        <div class="bg-slate-900/60 border border-slate-700 p-2 rounded">
+                                            <div class="text-[11px] text-gray-300 mb-1 font-semibold">2. Absolute Obergrenze</div>
+                                            <div class="text-[10px] text-gray-500 mb-2 italic">Wie viele Spieler dieser Kategorie dürfen insgesamt auf dieser Platte eingetragen werden? (Leer = unbegrenzt)</div>
+                                            <input id="sha-plates-prio-modal-max-total" type="number" min="0"
+                                                class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white"
+                                                placeholder="leer = unbegrenzt">
                                         </div>
                                     </div>
 
@@ -979,6 +964,13 @@
                     return result;
                 }
 
+                function isPlayerOnBench(name) {
+                    if (!Array.isArray(roster)) return false;
+                    const p = roster.find(x => (x.name || x) === name);
+                    if (!p) return false;
+                    return (p.status === 'bench' || p.status === 'tentative' || p.status === 'absent');
+                }
+
                 function getPlayerOptions(selectedName, pIdx) {
                     let html = '<option value="">—</option>';
                     if (!Array.isArray(roster)) return html;
@@ -986,18 +978,77 @@
                     const plate = (typeof pIdx === 'number') ? platesData[pIdx] : null;
                     const filterActive = !!(plate && plate.allowedCats !== null);
 
-                    roster.forEach(p => {
-                        const name = p.name || p;
-                        const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
-                        const isSelected = name === selectedName;
+                    const allNames = new Set(roster.map(x => x.name || x));
+                    if (selectedName && !allNames.has(selectedName) && !CLASS_ALIASES[selectedName.toLowerCase()]) {
+                        allNames.add(selectedName);
+                    }
+                    
+                    let rosterFail = [];
 
-                        if (filterActive && !isSelected && !isPlayerAllowedOnPlate(name, pIdx)) {
+                    if (selectedName) {
+                        html += '<optgroup label="── Aktuell ausgewählt ──">';
+                        const color = (window.classColors && window.classColors[CLASS_ALIASES[selectedName.toLowerCase()] || '']) || 
+                                      (findRosterPlayer(selectedName)?.class && window.classColors?.[findRosterPlayer(selectedName).class.toUpperCase()]) || 
+                                      '#FFFFFF';
+                        let bench = isPlayerOnBench(selectedName);
+                        let dup = findOtherPlatesWithPlayer(selectedName, pIdx);
+                        let prefix = bench ? '⚠ ' : '';
+                        prefix += (dup.length > 0) ? '⚠ ' : '';
+                        const suffix = bench ? ' (Ersatz)' : '';
+                        html += `<option value="${selectedName}" style="color:${color};" data-color="${color}" selected>${prefix}${selectedName}${suffix}</option>`;
+                        html += '</optgroup>';
+                    }
+
+                    let countOk = 0;
+                    let htmlOk = '<optgroup label="── Verfügbare Spieler ──">';
+                    
+                    allNames.forEach(name => {
+                        if (name === selectedName) return;
+                        
+                        if (filterActive && !isPlayerAllowedOnPlate(name, pIdx)) {
+                            rosterFail.push(name);
                             return;
                         }
 
-                        const sel = isSelected ? ' selected' : '';
-                        html += `<option value="${name}" style="color:${color};" data-color="${color}"${sel}>${name}</option>`;
+                        countOk++;
+                        const p = findRosterPlayer(name);
+                        const color = (p && p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
+                        let bench = isPlayerOnBench(name);
+                        let dup = findOtherPlatesWithPlayer(name, pIdx);
+                        let prefix = bench ? '⚠ ' : '';
+                        prefix += (dup.length > 0) ? '⚠ ' : '';
+                        const suffix = bench ? ' (Ersatz)' : '';
+                        htmlOk += `<option value="${name}" style="color:${color};" data-color="${color}">${prefix}${name}${suffix}</option>`;
                     });
+                    htmlOk += '</optgroup>';
+                    
+                    if (!filterActive || countOk > 0) {
+                        html += htmlOk;
+                    }
+
+                    if (filterActive && rosterFail.length > 0) {
+                        html += '<optgroup label="── Weitere Spieler ──">';
+                        rosterFail.forEach(name => {
+                            const p = findRosterPlayer(name);
+                            const color = (p && p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
+                            let bench = isPlayerOnBench(name);
+                            let dup = findOtherPlatesWithPlayer(name, pIdx);
+                            let prefix = bench ? '⚠ ' : '';
+                            prefix += (dup.length > 0) ? '⚠ ' : '';
+                            const suffix = bench ? ' (Ersatz)' : '';
+                            html += `<option value="${name}" style="color:${color};" data-color="${color}">${prefix}${name}${suffix}</option>`;
+                        });
+                        html += '</optgroup>';
+                    }
+
+                    html += '<optgroup label="── Platzhalter (Klassen) ──">';
+                    Object.keys(CLASS_DISPLAY).forEach(clsKey => {
+                        if (clsKey === selectedName) return;
+                        const color = window.classColors?.[clsKey] || '#FFFFFF';
+                        html += `<option value="${clsKey}" style="color:${color};" data-color="${color}">${CLASS_DISPLAY[clsKey]}</option>`;
+                    });
+                    html += '</optgroup>';
+
                     return html;
                 }
 
@@ -1279,8 +1330,7 @@
                 const modalLabel = document.getElementById('sha-plates-prio-modal-label');
                 const modalClass = document.getElementById('sha-plates-prio-modal-class');
                 const modalSpec = document.getElementById('sha-plates-prio-modal-spec');
-                const modalRole = document.getElementById('sha-plates-prio-modal-role');
-                const modalArchetype = document.getElementById('sha-plates-prio-modal-archetype');
+                const modalRoleArch = document.getElementById('sha-plates-prio-modal-role-arch');
                 const modalLimitRows = document.getElementById('sha-plates-prio-modal-limit-rows');
                 const modalLimitCount = document.getElementById('sha-plates-prio-modal-limit-count');
                 const modalMaxTotal = document.getElementById('sha-plates-prio-modal-max-total');
@@ -1333,8 +1383,11 @@
                         if (cls && spec && SPEC_DEFINITIONS[cls]) {
                             const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
                             if (def) {
-                                if (!modalRole.value) modalRole.value = def.role;
-                                if (!modalArchetype.value && def.archetype) modalArchetype.value = def.archetype;
+                                if (def.role === 'dps' && def.archetype) {
+                                    modalRoleArch.value = def.archetype;
+                                } else {
+                                    modalRoleArch.value = def.role || '';
+                                }
                             }
                         }
                     });
@@ -1460,8 +1513,13 @@
                         modalLabel.value = cat.label || '';
                         modalClass.value = cat.class || '';
                         updateSpecDropdown(cat.class || '', cat.spec || '');
-                        modalRole.value = cat.role || '';
-                        modalArchetype.value = cat.archetype || '';
+                        if (cat.role === 'dps' && cat.archetype) {
+                            modalRoleArch.value = cat.archetype;
+                        } else if (cat.role === 'dps' && !cat.archetype) {
+                            modalRoleArch.value = 'dps';
+                        } else {
+                            modalRoleArch.value = cat.role || '';
+                        }
                         modalLimitRows.value = cat.limitRows ?? '';
                         modalLimitCount.value = cat.limitCount ?? '';
                         modalMaxTotal.value = cat.maxTotal ?? '';
@@ -1470,8 +1528,7 @@
                         modalLabel.value = '';
                         modalClass.value = '';
                         updateSpecDropdown('', '');
-                        modalRole.value = '';
-                        modalArchetype.value = '';
+                        modalRoleArch.value = '';
                         modalLimitRows.value = '';
                         modalLimitCount.value = '';
                         modalMaxTotal.value = '';
@@ -1499,8 +1556,8 @@
                             label: label,
                             class: modalClass.value.trim(),
                             spec: modalSpec.value.trim(),
-                            role: modalRole.value.trim(),
-                            archetype: modalArchetype.value.trim()
+                            role: ['melee', 'ranged_physical', 'caster'].includes(modalRoleArch.value) ? 'dps' : modalRoleArch.value,
+                            archetype: ['melee', 'ranged_physical', 'caster'].includes(modalRoleArch.value) ? modalRoleArch.value : ''
                         };
                         const lr = parseInt(modalLimitRows.value, 10);
                         const lc = parseInt(modalLimitCount.value, 10);

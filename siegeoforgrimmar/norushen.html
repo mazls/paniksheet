@@ -206,26 +206,39 @@
                                         <option value="">— beliebig —</option>
                                         <option value="tank">Tank</option>
                                         <option value="healer">Healer</option>
-                                        <option value="dps">DPS</option>
+                                        <option value="dps">Alle DPS</option>
+                                        <option value="melee">Melee DPS</option>
+                                        <option value="ranged_physical">Physical Range DPS</option>
+                                        <option value="caster">Caster DPS</option>
                                     </select>
                                 </div>
                                 
                                 <div class="border-t border-slate-700 pt-3">
-                                    <div class="text-xs font-bold text-yellow-300 mb-2">Limits (optional)</div>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <label class="block text-[10px] text-gray-400 mb-1">Max in ersten N Zeilen</label>
-                                            <div class="flex gap-1">
-                                                <input id="norushen-orb-prio-modal-limit-rows" type="number" min="1" class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="4">
-                                                <span class="text-gray-500 text-xs flex items-center">Zeilen:</span>
-                                                <input id="norushen-orb-prio-modal-limit-count" type="number" min="0" class="flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="1">
+                                    <div class="text-xs font-bold text-yellow-300 mb-2">Begrenzungen (optional)</div>
+                                    <div class="space-y-3">
+                                        <div class="bg-slate-900/50 p-2 rounded border border-slate-600">
+                                            <label class="block text-xs text-gray-300 mb-1 font-semibold">1. Limitierung am Anfang</label>
+                                            <div class="text-[10px] text-gray-500 mb-2">
+                                                Erlaubt z.B. maximal 1 Heiler in den ersten 4 Zeilen.
                                             </div>
-                                            <div class="text-[10px] text-gray-500 mt-1">z.B. "in den ersten 4 Zeilen max 1 Tank"</div>
+                                            <div class="flex items-center gap-2 text-sm text-gray-300">
+                                                <span>Maximal</span>
+                                                <input id="norushen-orb-prio-modal-limit-count" type="number" min="0" class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white text-center" placeholder="Anz">
+                                                <span>Spieler in den ersten</span>
+                                                <input id="norushen-orb-prio-modal-limit-rows" type="number" min="1" class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white text-center" placeholder="Zln">
+                                                <span>Zeilen.</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label class="block text-[10px] text-gray-400 mb-1">Max gesamt</label>
-                                            <input id="norushen-orb-prio-modal-max-total" type="number" min="0" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="leer = unbegrenzt">
-                                            <div class="text-[10px] text-gray-500 mt-1">Maximalanzahl in der gesamten Tabelle</div>
+                                        <div class="bg-slate-900/50 p-2 rounded border border-slate-600">
+                                            <label class="block text-xs text-gray-300 mb-1 font-semibold">2. Absolute Obergrenze</label>
+                                            <div class="text-[10px] text-gray-500 mb-2">
+                                                Wie viele Spieler dieser Kategorie dürfen insgesamt in der gesamten Tabelle eingetragen werden? (Leer lassen für unbegrenzt)
+                                            </div>
+                                            <div class="flex items-center gap-2 text-sm text-gray-300">
+                                                <span>Maximal</span>
+                                                <input id="norushen-orb-prio-modal-max-total" type="number" min="0" class="w-20 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white text-center" placeholder="z.B. 3">
+                                                <span>Spieler insgesamt.</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -827,8 +840,8 @@ CD_AUTO_PLANNER.init({
             });
 
             clearBtn.addEventListener('click', () => {
-                if (!confirm('Alle Reihenfolge-Einträge leeren?')) return;
-                orderData = [];
+                if (!confirm('Alle Spieler-Zuweisungen leeren? (Slots und Verzögerung bleiben erhalten)')) return;
+                orderData.forEach(row => { row.player = ''; });
                 renderRows();
                 scheduleSave();
             });
@@ -855,58 +868,58 @@ CD_AUTO_PLANNER.init({
             const SPEC_DEFINITIONS = {
                 DEATHKNIGHT: [
                     { value: 'Blood',        label: 'Blood (Tank)',        role: 'tank' },
-                    { value: 'Frost1',       label: 'Frost',               role: 'dps' },
-                    { value: 'Unholy',       label: 'Unholy',              role: 'dps' }
+                    { value: 'Frost1',       label: 'Frost',               role: 'dps', archetype: 'melee' },
+                    { value: 'Unholy',       label: 'Unholy',              role: 'dps', archetype: 'melee' }
                 ],
                 DRUID: [
-                    { value: 'Balance',      label: 'Balance',             role: 'dps' },
-                    { value: 'Feral',        label: 'Feral',               role: 'dps' },
+                    { value: 'Balance',      label: 'Balance',             role: 'dps', archetype: 'caster' },
+                    { value: 'Feral',        label: 'Feral',               role: 'dps', archetype: 'melee' },
                     { value: 'Guardian',     label: 'Guardian (Tank)',     role: 'tank' },
                     { value: 'Restoration',  label: 'Restoration (Heal)',  role: 'healer' }
                 ],
                 HUNTER: [
-                    { value: 'Beastmastery', label: 'Beastmastery',        role: 'dps' },
-                    { value: 'Marksmanship', label: 'Marksmanship',        role: 'dps' },
-                    { value: 'Survival',     label: 'Survival',            role: 'dps' }
+                    { value: 'Beastmastery', label: 'Beastmastery',        role: 'dps', archetype: 'ranged_physical' },
+                    { value: 'Marksmanship', label: 'Marksmanship',        role: 'dps', archetype: 'ranged_physical' },
+                    { value: 'Survival',     label: 'Survival',            role: 'dps', archetype: 'ranged_physical' }
                 ],
                 MAGE: [
-                    { value: 'Arcane',       label: 'Arcane',              role: 'dps' },
-                    { value: 'Fire',         label: 'Fire',                role: 'dps' },
-                    { value: 'Frost',        label: 'Frost',               role: 'dps' }
+                    { value: 'Arcane',       label: 'Arcane',              role: 'dps', archetype: 'caster' },
+                    { value: 'Fire',         label: 'Fire',                role: 'dps', archetype: 'caster' },
+                    { value: 'Frost',        label: 'Frost',               role: 'dps', archetype: 'caster' }
                 ],
                 MONK: [
                     { value: 'Brewmaster',   label: 'Brewmaster (Tank)',   role: 'tank' },
                     { value: 'Mistweaver',   label: 'Mistweaver (Heal)',   role: 'healer' },
-                    { value: 'Windwalker',   label: 'Windwalker',          role: 'dps' }
+                    { value: 'Windwalker',   label: 'Windwalker',          role: 'dps', archetype: 'melee' }
                 ],
                 PALADIN: [
                     { value: 'Holy1',        label: 'Holy (Heal)',         role: 'healer' },
                     { value: 'Protection1',  label: 'Protection (Tank)',   role: 'tank' },
-                    { value: 'Retribution',  label: 'Retribution',         role: 'dps' }
+                    { value: 'Retribution',  label: 'Retribution',         role: 'dps', archetype: 'melee' }
                 ],
                 PRIEST: [
                     { value: 'Discipline',   label: 'Discipline (Heal)',   role: 'healer' },
                     { value: 'Holy',         label: 'Holy (Heal)',         role: 'healer' },
-                    { value: 'Shadow',       label: 'Shadow',              role: 'dps' }
+                    { value: 'Shadow',       label: 'Shadow',              role: 'dps', archetype: 'caster' }
                 ],
                 ROGUE: [
-                    { value: 'Assassination', label: 'Assassination',      role: 'dps' },
-                    { value: 'Combat',       label: 'Combat',              role: 'dps' },
-                    { value: 'Subtlety',     label: 'Subtlety',            role: 'dps' }
+                    { value: 'Assassination', label: 'Assassination',      role: 'dps', archetype: 'melee' },
+                    { value: 'Combat',       label: 'Combat',              role: 'dps', archetype: 'melee' },
+                    { value: 'Subtlety',     label: 'Subtlety',            role: 'dps', archetype: 'melee' }
                 ],
                 SHAMAN: [
-                    { value: 'Elemental',    label: 'Elemental',           role: 'dps' },
-                    { value: 'Enhancement',  label: 'Enhancement',         role: 'dps' },
+                    { value: 'Elemental',    label: 'Elemental',           role: 'dps', archetype: 'caster' },
+                    { value: 'Enhancement',  label: 'Enhancement',         role: 'dps', archetype: 'melee' },
                     { value: 'Restoration1', label: 'Restoration (Heal)',  role: 'healer' }
                 ],
                 WARLOCK: [
-                    { value: 'Affliction',   label: 'Affliction',          role: 'dps' },
-                    { value: 'Demonology',   label: 'Demonology',          role: 'dps' },
-                    { value: 'Destruction',  label: 'Destruction',         role: 'dps' }
+                    { value: 'Affliction',   label: 'Affliction',          role: 'dps', archetype: 'caster' },
+                    { value: 'Demonology',   label: 'Demonology',          role: 'dps', archetype: 'caster' },
+                    { value: 'Destruction',  label: 'Destruction',         role: 'dps', archetype: 'caster' }
                 ],
                 WARRIOR: [
-                    { value: 'Arms',         label: 'Arms',                role: 'dps' },
-                    { value: 'Fury',         label: 'Fury',                role: 'dps' },
+                    { value: 'Arms',         label: 'Arms',                role: 'dps', archetype: 'melee' },
+                    { value: 'Fury',         label: 'Fury',                role: 'dps', archetype: 'melee' },
                     { value: 'Protection',   label: 'Protection (Tank)',   role: 'tank' }
                 ]
             };
@@ -1035,10 +1048,26 @@ CD_AUTO_PLANNER.init({
                 return (p.class || p.className || '').toString();
             }
             
+            const SPEC_ARCHETYPE_LOOKUP = (() => {
+                const m = {};
+                Object.keys(SPEC_DEFINITIONS).forEach(cls => {
+                    SPEC_DEFINITIONS[cls].forEach(s => { if (s.archetype) m[cls + '|' + s.value] = s.archetype; });
+                });
+                return m;
+            })();
+
+            function getPlayerArchetype(p) {
+                const cls  = normalizeClass(getPlayerClass(p));
+                const spec = getPlayerSpec(p);
+                if (!cls || !spec) return '';
+                return SPEC_ARCHETYPE_LOOKUP[cls + '|' + spec] || '';
+            }
+
             function playerMatchesCategory(p, cat) {
                 const playerClass = normalizeClass(getPlayerClass(p));
                 const playerSpec  = getPlayerSpec(p);
                 const playerRole  = getPlayerRoleNormalized(p);
+                const playerArch  = getPlayerArchetype(p);
                 
                 if (cat.class && cat.class.trim()) {
                     if (playerClass !== cat.class) return false;
@@ -1048,6 +1077,9 @@ CD_AUTO_PLANNER.init({
                 }
                 if (cat.role && cat.role.trim()) {
                     if (playerRole !== cat.role.toLowerCase()) return false;
+                }
+                if (cat.archetype && cat.archetype.trim()) {
+                    if (playerArch !== cat.archetype) return false;
                 }
                 
                 return true;
@@ -1264,7 +1296,11 @@ CD_AUTO_PLANNER.init({
                     modalLabel.value      = cat.label || '';
                     modalClass.value      = cat.class || '';
                     updateSpecDropdown(cat.class || '', cat.spec || '');
-                    modalRole.value       = cat.role || '';
+                    if (cat.archetype) {
+                        modalRole.value = cat.archetype;
+                    } else {
+                        modalRole.value = cat.role || '';
+                    }
                     modalLimitRows.value  = cat.limitRows ?? '';
                     modalLimitCount.value = cat.limitCount ?? '';
                     modalMaxTotal.value   = cat.maxTotal ?? '';
@@ -1301,11 +1337,21 @@ CD_AUTO_PLANNER.init({
                     }
                     modalLabel.style.borderColor = '';
                     
+                    const roleArchVal = modalRole.value.trim();
+                    let r = '', a = '';
+                    if (['tank', 'healer', 'dps'].includes(roleArchVal)) {
+                        r = roleArchVal;
+                    } else if (['melee', 'ranged_physical', 'caster'].includes(roleArchVal)) {
+                        r = 'dps';
+                        a = roleArchVal;
+                    }
+                    
                     const data = {
                         label: label,
                         class: modalClass.value.trim(),
                         spec:  modalSpec.value.trim(),
-                        role:  modalRole.value.trim()
+                        role:  r,
+                        archetype: a
                     };
                     
                     const lr = parseInt(modalLimitRows.value, 10);
