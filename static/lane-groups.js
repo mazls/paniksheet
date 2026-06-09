@@ -405,7 +405,7 @@ window.LaneGroups = (function () {
         return lane.allowedCats.includes(cat.id);
     }
 
-    function getPlayerOptionsHtml(inst, selectedName, blockIdx, laneIdx) {
+    function getPlayerOptionsHtml(inst, selectedName, blockIdx, laneIdx, slotIdx) {
         let html = '<option value="">—</option>';
         const lane = inst.blocks[blockIdx]?.lanes[laneIdx];
         const filterActive = !!(lane && lane.allowedCats !== null && Array.isArray(lane.allowedCats));
@@ -420,6 +420,12 @@ window.LaneGroups = (function () {
             return isPlayerAllowedOnLane(inst, name, blockIdx, laneIdx);
         }
 
+        function getDupPrefix(name) {
+            if (!name) return '';
+            const dups = findOtherSlotsWithPlayer(inst, name, blockIdx, laneIdx, slotIdx);
+            return dups.length > 0 ? '🟡 ' : '';
+        }
+
         // 1) Phantom-Option: gespeicherter Wert nicht (mehr) auffindbar
         if (selectedName) {
             const isInRoster = (inst.roster || []).some(p => (p.name || p) === selectedName);
@@ -431,16 +437,25 @@ window.LaneGroups = (function () {
             }
         }
 
-        // 2) Kader (mit Bench-Markierung)
-        html += '<optgroup label="── Kader ──">';
+        // Arrays für Filter-Aufteilung
+        const rosterPass = [];
+        const rosterFail = [];
+        
         (inst.roster || []).forEach(p => {
             const name = p.name || p;
-            if (!allowedByFilter(name)) return;
+            if (allowedByFilter(name)) rosterPass.push(p);
+            else rosterFail.push(p);
+        });
+
+        // 2) Kader (mit Bench-Markierung)
+        html += `<optgroup label="── Kader ${filterActive ? '(Gefiltert)' : ''} ──">`;
+        rosterPass.forEach(p => {
+            const name = p.name || p;
             const color = (p.class && cc[p.class.toUpperCase()]) || '#FFFFFF';
             const isSelected = name === selectedName;
             const sel = isSelected ? ' selected' : '';
             const bench = isPlayerOnBench(name);
-            const prefix = bench ? '⚠ ' : '';
+            const prefix = (bench ? '⚠ ' : '') + getDupPrefix(name);
             const suffix = bench ? ' (Ersatz)' : '';
             html += `<option value="${escapeHtml(name)}" style="color:${color};" data-color="${color}"${sel}>${prefix}${escapeHtml(name)}${suffix}</option>`;
         });
@@ -459,20 +474,60 @@ window.LaneGroups = (function () {
                 .sort();
 
             if (activeSlots.length > 0) {
-                html += '<optgroup label="── Spec-Slots ──">';
+                const slotsPass = [];
+                const slotsFail = [];
                 activeSlots.forEach(slotKey => {
                     const playerName = mapping[slotKey];
-                    if (!allowedByFilter(playerName)) return;
-                    const player = (inst.roster || []).find(p => (p.name || p) === playerName);
-                    const color = (player && player.class && cc[player.class.toUpperCase()]) || '#FFFFFF';
-                    const isSelected = slotKey === selectedName;
-                    const sel = isSelected ? ' selected' : '';
-                    const bench = isPlayerOnBench(playerName);
-                    const prefix = bench ? '⚠ ' : '';
-                    html += `<option value="${escapeHtml(slotKey)}" style="color:${color};" data-color="${color}" data-resolves-to="${escapeHtml(playerName)}"${sel}>${prefix}${escapeHtml(slotKey)} → ${escapeHtml(playerName)}</option>`;
+                    if (allowedByFilter(playerName)) slotsPass.push(slotKey);
+                    else slotsFail.push(slotKey);
                 });
-                html += '</optgroup>';
+
+                if (slotsPass.length > 0) {
+                    html += `<optgroup label="── Spec-Slots ${filterActive ? '(Gefiltert)' : ''} ──">`;
+                    slotsPass.forEach(slotKey => {
+                        const playerName = mapping[slotKey];
+                        const player = (inst.roster || []).find(p => (p.name || p) === playerName);
+                        const color = (player && player.class && cc[player.class.toUpperCase()]) || '#FFFFFF';
+                        const isSelected = slotKey === selectedName;
+                        const sel = isSelected ? ' selected' : '';
+                        const bench = isPlayerOnBench(playerName);
+                        const prefix = (bench ? '⚠ ' : '') + getDupPrefix(slotKey);
+                        html += `<option value="${escapeHtml(slotKey)}" style="color:${color};" data-color="${color}" data-resolves-to="${escapeHtml(playerName)}"${sel}>${prefix}${escapeHtml(slotKey)} → ${escapeHtml(playerName)}</option>`;
+                    });
+                    html += '</optgroup>';
+                }
+                
+                if (filterActive && slotsFail.length > 0) {
+                    html += `<optgroup label="── Weitere Spec-Slots ──">`;
+                    slotsFail.forEach(slotKey => {
+                        const playerName = mapping[slotKey];
+                        const player = (inst.roster || []).find(p => (p.name || p) === playerName);
+                        const color = (player && player.class && cc[player.class.toUpperCase()]) || '#FFFFFF';
+                        const isSelected = slotKey === selectedName;
+                        const sel = isSelected ? ' selected' : '';
+                        const bench = isPlayerOnBench(playerName);
+                        const prefix = (bench ? '⚠ ' : '') + getDupPrefix(slotKey);
+                        html += `<option value="${escapeHtml(slotKey)}" style="color:${color};" data-color="${color}" data-resolves-to="${escapeHtml(playerName)}"${sel}>${prefix}${escapeHtml(slotKey)} → ${escapeHtml(playerName)}</option>`;
+                    });
+                    html += '</optgroup>';
+                }
             }
+        }
+
+        // Restliche Spieler
+        if (filterActive && rosterFail.length > 0) {
+            html += '<optgroup label="── Weitere Spieler ──">';
+            rosterFail.forEach(p => {
+                const name = p.name || p;
+                const color = (p.class && cc[p.class.toUpperCase()]) || '#FFFFFF';
+                const isSelected = name === selectedName;
+                const sel = isSelected ? ' selected' : '';
+                const bench = isPlayerOnBench(name);
+                const prefix = (bench ? '⚠ ' : '') + getDupPrefix(name);
+                const suffix = bench ? ' (Ersatz)' : '';
+                html += `<option value="${escapeHtml(name)}" style="color:${color};" data-color="${color}"${sel}>${prefix}${escapeHtml(name)}${suffix}</option>`;
+            });
+            html += '</optgroup>';
         }
 
         // 4) Klassen-Platzhalter
@@ -481,7 +536,8 @@ window.LaneGroups = (function () {
             const color = cc[clsKey] || '#FFFFFF';
             const isSelected = clsKey === selectedName;
             const sel = isSelected ? ' selected' : '';
-            html += `<option value="${escapeHtml(clsKey)}" style="color:${color};" data-color="${color}"${sel}>${escapeHtml(CLASS_DISPLAY[clsKey])}</option>`;
+            const prefix = getDupPrefix(clsKey);
+            html += `<option value="${escapeHtml(clsKey)}" style="color:${color};" data-color="${color}"${sel}>${prefix}${escapeHtml(CLASS_DISPLAY[clsKey])}</option>`;
         });
         html += '</optgroup>';
 
@@ -644,7 +700,7 @@ window.LaneGroups = (function () {
             const hasOverlay = !!val;
             html += `<td>`;
             html += `<div class="lg-slot-wrap${hasOverlay ? ' has-overlay' : ''}${dupClass}${missingClass}${benchClass}">`;
-            html += `<select class="lg-slot-select${dupClass}${missingClass}${benchClass}" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}"${titleAttr}>${getPlayerOptionsHtml(inst, val, blockIdx, laneIdx)}</select>`;
+            html += `<select class="lg-slot-select${dupClass}${missingClass}${benchClass}" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}"${titleAttr}>${getPlayerOptionsHtml(inst, val, blockIdx, laneIdx, s)}</select>`;
             if (hasOverlay) {
                 html += `<span class="lg-slot-display" style="color:${display.color};">${indicatorStr}${escapeHtml(display.displayName || val)}</span>`;
             }
@@ -990,6 +1046,14 @@ window.LaneGroups = (function () {
             if (dups.length > 0)   parts.push('⚠ Auch in ' + dups.length + ' weiteren Feldern');
             if (parts.length > 0) sel.title = parts.join(' — ');
             else                  sel.removeAttribute('title');
+
+            // Dropdown HTML aktualisieren, falls nicht im Fokus
+            if (document.activeElement !== sel) {
+                const newOptions = getPlayerOptionsHtml(inst, val, bi, li, si);
+                if (sel.innerHTML !== newOptions) {
+                    sel.innerHTML = newOptions;
+                }
+            }
 
             // Overlay: existiert es?  Wenn val leer → entfernen; sonst Inhalt + Farbe aktualisieren
             let overlay = wrap.querySelector('.lg-slot-display');
