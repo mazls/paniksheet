@@ -626,6 +626,16 @@ window.CD_AUTO_PLANNER = (function() {
 
         // 2. Casts für die Bloodlust-Zeitpunkte (10 Sekunden danach)
         bloodlustEvts.forEach(function(blEvt) {
+            var blMapEntry = config.triggerMap ? config.triggerMap[blEvt.name] : null;
+            var isBlEncStart = false;
+            if (typeof blMapEntry === 'string' && blMapEntry.indexOf('ENC_START') !== -1) isBlEncStart = true;
+            else if (blMapEntry && typeof blMapEntry === 'object' && blMapEntry.trigger && blMapEntry.trigger.indexOf('ENC_START') !== -1) isBlEncStart = true;
+
+            var followupDelay = blEvt.delay || 0;
+            if (!isBlEncStart) {
+                followupDelay += 10;
+            }
+
             result.push({
                 _key: 'auto_sl_banner_followup_' + blEvt.firstCast,
                 _isCustom: true,
@@ -633,12 +643,12 @@ window.CD_AUTO_PLANNER = (function() {
                 firstCast: blEvt.firstCast + 10,
                 cooldown: 0,
                 maxCasts: 1,
-                delay: blEvt.delay || 0,
+                delay: followupDelay,
                 eventDuration: 0,
                 requiredCDs: ['stormlash', 'skull_banner'],
                 icon: '⚔️',
                 spellId: 0,
-                _sourceTriggerMap: config.triggerMap ? config.triggerMap[blEvt.name] : null
+                _sourceTriggerMap: blMapEntry
             });
         });
 
