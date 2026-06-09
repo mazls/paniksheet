@@ -898,7 +898,7 @@ if (typeof Sortable !== 'undefined') {
                 // WICHTIG: Imports für Firestore holen
                 const { doc, setDoc, getFirestore } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
                 const db = window.db || getFirestore();
-                const bossDocRef = doc(db, "raid-tool-data", "boss-" + prefix);
+                const bossDocRef = window.assignmentsDocRef || doc(db, "raid-tool-data", "boss-" + prefix);
 
                 // WICHTIG: Aufteilen in Pakete + Date.now() nutzen
                 const batch1 = {}; // 0-40
@@ -1008,7 +1008,7 @@ if (typeof Sortable !== 'undefined') {
                     }
                 }
             });
-            const bossDocRef = doc(db, "raid-tool-data", "boss-" + prefix);
+            const bossDocRef = window.assignmentsDocRef || doc(db, "raid-tool-data", "boss-" + prefix);
             await setDoc(bossDocRef, updates, { merge: true });
             
             const originalIcon = btn.innerHTML;
@@ -1071,7 +1071,7 @@ if (typeof Sortable !== 'undefined') {
                 });
 
                 // Speichern
-                const bossDocRef = doc(db, "raid-tool-data", "boss-" + prefix);
+                const bossDocRef = window.assignmentsDocRef || doc(db, "raid-tool-data", "boss-" + prefix);
                 await setDoc(bossDocRef, updates, { merge: true });
             };
 
