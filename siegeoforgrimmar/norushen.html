@@ -687,17 +687,47 @@ CD_AUTO_PLANNER.init({
             let orderData = []; 
             let saveTimer = null;
 
-            function getPlayerOptions(selectedName) {
+            function getPlayerOptions(selectedName, currentIndex) {
                 let html = '<option value="">-- Spieler --</option>';
                 if (Array.isArray(roster)) {
                     roster.forEach(p => {
                         const name = p.name || p;
                         const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
                         const sel = name === selectedName ? ' selected' : '';
-                        html += `<option value="${name}" style="color:${color};"${sel}>${name}</option>`;
+                        
+                        let isDup = false;
+                        if (currentIndex !== undefined) {
+                            for (let j = 0; j < orderData.length; j++) {
+                                if (j !== currentIndex && orderData[j] && orderData[j].player === name) {
+                                    isDup = true;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        let isBench = false;
+                        if (typeof window.isPlayerOnBench === 'function') {
+                            isBench = window.isPlayerOnBench(name);
+                        }
+                        
+                        const prefix = (isBench ? '⚠ ' : '') + (isDup ? '🟡 ' : '');
+                        const suffix = isBench ? ' (Ersatz)' : '';
+                        
+                        html += `<option value="${name}" style="color:${color};"${sel}>${prefix}${name}${suffix}</option>`;
                     });
                 }
                 return html;
+            }
+
+            function updateAllSelects() {
+                const selects = tbody.querySelectorAll('select[data-orb-field="player"]');
+                selects.forEach(select => {
+                    const idx = parseInt(select.dataset.orbIdx);
+                    const currentValue = select.value;
+                    select.innerHTML = getPlayerOptions(currentValue, idx);
+                    const selectedOpt = select.options[select.selectedIndex];
+                    if (selectedOpt) select.style.color = selectedOpt.style.color || '#FFFFFF';
+                });
             }
 
             function renderRows() {
@@ -714,7 +744,7 @@ CD_AUTO_PLANNER.init({
                         <td class="p-1 text-center text-gray-500 font-mono">${i + 1}</td>
                         <td class="p-1">
                             <select class="orb-select text-xs w-full h-7 bg-slate-900 border border-slate-600 rounded text-white ${disCls}" data-orb-idx="${i}" data-orb-field="player" ${disAttr}>
-                                ${getPlayerOptions(row.player)}
+                                ${getPlayerOptions(row.player, i)}
                             </select>
                         </td>
                         <td class="p-1">
@@ -819,6 +849,10 @@ CD_AUTO_PLANNER.init({
                     if (cell && !cell.querySelector('button.orb-row-del')) {
                         cell.innerHTML = '<button class="orb-row-del text-red-400 hover:text-red-300 text-xs" data-orb-idx="' + idx + '" title="Leeren">✕</button>';
                     }
+                }
+                
+                if (field === 'player') {
+                    updateAllSelects();
                 }
             });
             
