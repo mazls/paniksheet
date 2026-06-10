@@ -307,20 +307,20 @@ CD_AUTO_PLANNER.init({
             { val: "PARAGONS_SKEER",              text: "Skeer aktiviert" },
             { val: "PARAGONS_RIKKAL",             text: "Rik'kal aktiviert" },
             { val: "PARAGONS_HISEK",              text: "Hisek aktiviert" },
-            { val: "PARAGONS_GOUGE",              text: "Kil'ruk: Stechen" },
+            { val: "PARAGONS_GOUGE",              text: "Kil'ruk: Ausweiden" },
             { val: "PARAGONS_REAVE",              text: "Kil'ruk: Spalten (Tank Cleave)" },
             { val: "PARAGONS_DEATH_FROM_ABOVE",   text: "Kil'ruk: Tod von Oben" },
             { val: "PARAGONS_CATALYST",           text: "Xaril: Giftiger Katalysator" },
             { val: "PARAGONS_TOXIC_INJECTION",    text: "Xaril: Giftinjektion" },
             { val: "PARAGONS_MESMERIZE",          text: "Kaz'tik: Hypnose (Mind Control)" },
             { val: "PARAGONS_SHIELD_BASH",        text: "Korven: Schildschlag" },
-            { val: "PARAGONS_ENCASE_IN_AMBER",    text: "Korven: In Bernstein einschließen" },
+            { val: "PARAGONS_ENCASE_IN_AMBER",    text: "Korven: In Bernstein hüllen" },
             { val: "PARAGONS_INSANE_CALCULATION", text: "Iyyokuk: Wahnsinnige Berechnung" },
             { val: "PARAGONS_FLASH",              text: "Ka'roz: Wirbeln" },
             { val: "PARAGONS_HURL_AMBER",         text: "Ka'roz: Bernstein schleudern" },
             { val: "PARAGONS_BLOODLETTING",       text: "Skeer: Aderlass (Tank)" },
             { val: "PARAGONS_MUTATE",             text: "Rik'kal: Mutieren (Adds)" },
-            { val: "PARAGONS_INJECTION",          text: "Rik'kal: Injektion (Tank)" },
+            { val: "PARAGONS_INJECTION",          text: "Rik'kal: Injezieren (Tank)" },
             { val: "PARAGONS_AIM",                text: "Hisek: Zielen" },
             { val: "PARAGONS_RAPID_FIRE",         text: "Hisek: Schnellfeuer" }
         ];
@@ -349,7 +349,7 @@ CD_AUTO_PLANNER.init({
 
         if (container && container.innerHTML.trim() === "") {
             const p = container.id.replace('-planner-container', '');
-            const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
             const cdOpts = getCooldownOptions();
 
@@ -376,7 +376,7 @@ CD_AUTO_PLANNER.init({
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
                     <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-trigger" data-manual-options="true"><option value="">-- Nicht aktiv --</option>${triggerOpts}</select>
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">${npcOpts}</select>
+                    <input type="text" list="${p}-npc-list" class="assignment-text-input text-center bg-slate-900 border border-slate-600 text-xs w-full" data-assignment-id="${p}-planner-row${i}-npc" placeholder="NPC Name (oder Leer)">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" data-assignment-id="${p}-planner-row${i}-condition" placeholder="% / #" value="0">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" data-assignment-id="${p}-planner-row${i}-time" placeholder="Sek." value="0">
                     <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-player"></select>
@@ -393,7 +393,7 @@ CD_AUTO_PLANNER.init({
                     </div>
                 </div>`;
             }
-            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
             
             if (window.initPlannerRowFeatures) setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
             if (window.makePlannerSortable) setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);

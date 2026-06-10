@@ -368,19 +368,19 @@ CD_AUTO_PLANNER.init({
         const TRIGGER_OPTIONS = [
             { val: "FALLEN_ENC_START",                text: "Kampfbeginn" },
             { val: "FALLEN_HEALTH",                   text: "HP % (Wähle NPC)" },
-            { val: "FALLEN_VENGEFUL_STRIKES",         text: "Rachsüchtige Schläge (Cleave)" },
+            { val: "FALLEN_VENGEFUL_STRIKES",         text: "Vergeltende Stöße (Cleave)" },
             { val: "FALLEN_CORRUPTED_BREW",           text: "Korrumpiertes Gebräu" },
             { val: "FALLEN_CLASH",                    text: "Zusammenstoß" },
             { val: "FALLEN_DEFILED_GROUND",           text: "Geschändeter Boden (Voidzone)" },
             { val: "FALLEN_INFERNO_STRIKE",           text: "Infernoschlag" },
             { val: "FALLEN_GOUGE",                    text: "Stechen (Tank-Stun)" },
             { val: "FALLEN_GARROTE",                  text: "Erdrosseln (Bleed)" },
-            { val: "FALLEN_BANE",                     text: "Schattenwort: Qual (Dispel)" },
+            { val: "FALLEN_BANE",                     text: "Schattenwort: Fluch (Dispel)" },
             { val: "FALLEN_CALAMITY",                 text: "Unheil (Sun Raid-AoE)" },
             { val: "FALLEN_DESPERATE_MEASURES_ROOK",  text: "DM-Phase: Rook (Adds)" },
             { val: "FALLEN_DESPERATE_MEASURES_HE",    text: "DM-Phase: He (Qual)" },
             { val: "FALLEN_DESPERATE_MEASURES_SUN",   text: "DM-Phase: Sun (Bubble)" },
-            { val: "FALLEN_MARK",                     text: "Mal der Qual" }
+            { val: "FALLEN_MARK",                     text: "Zeichen der Qual" }
         ];
 
         const NPC_OPTIONS = [
@@ -414,7 +414,7 @@ CD_AUTO_PLANNER.init({
             const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
             const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
             
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
             const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
 
@@ -451,9 +451,7 @@ CD_AUTO_PLANNER.init({
                         <option value="">-- Nicht aktiv --</option>
                         ${triggerOpts}
                     </select>
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
-                        ${npcOpts}
-                    </select>
+                    <input type="text" list="${p}-npc-list" class="assignment-text-input text-center bg-slate-900 border border-slate-600 text-xs w-full" data-assignment-id="${p}-planner-row${i}-npc" placeholder="NPC Name (oder Leer)">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="${p}-planner-row${i}-condition" placeholder="%" value="0">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
@@ -482,7 +480,7 @@ CD_AUTO_PLANNER.init({
                 </div>`;
             }
 
-            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
             
             if (window.initPlannerRowFeatures) {
                 setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);

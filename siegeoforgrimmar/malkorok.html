@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,10 +17,12 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
@@ -33,111 +37,146 @@
         <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            Der Kampf wird durch das <a href="https://www.wowhead.com/mop-classic/de/spell=142861" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Uralte Miasma</a> definiert. Jegliche Heilung auf Spieler wird absorbiert und in einen Schild umgewandelt (bis zu 100% der maximalen Gesundheit). Der Kampf wechselt zwischen Phase 1 (Verteilen und Soaken) und Phase 2 (Stacken).
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Tank-Swap:</strong> Malkorok wirkt <a href="https://www.wowhead.com/mop-classic/de/spell=142879" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Fataler Stoß</a>. Dieser Debuff erhöht den erlittenen Schaden drastisch. Ein Wechsel bei ca. 15 Stacks (oder wenn der aktive Tank in Gefahr ist) ist erforderlich.</li>
-                    <li><strong class="text-purple-400">Phase 2:</strong> Der Boss steht still und wirkt <a href="https://www.wowhead.com/mop-classic/de/spell=142878" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Blutrausch</a>. Tanks müssen zusammen mit dem Raid stacken, um den Schaden aufzuteilen.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-blue-400">Soaking (Phase 1):</strong> Violette Zonen (<a href="https://www.wowhead.com/mop-classic/de/spell=142986" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">Implodierende Energie</a>) erscheinen auf dem Boden. Genau ein Spieler muss sich in jede Zone stellen, um den Schaden zu soaken. Bleibt eine Zone leer, stirbt der Raid.</li>
-                    <li><strong class="text-orange-400">Ausweichen:</strong> Dem <a href="https://www.wowhead.com/mop-classic/de/spell=142851" target="_blank" rel="noopener noreferrer" class="text-orange-300 hover:underline">Seismischen Schmettern</a> (Frontalangriff auf einen zufälligen Spieler) muss sofort ausgewichen werden.</li>
-                    <li><strong class="text-green-400">Heiler:</strong> Haltet die Schilde der Spieler durch konstante Überheilung stets im grünen Bereich, besonders vor den Implosionen.</li>
-                </ul>
-            </div>
-        </div>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                Der Kampf wird durch das <a href="https://www.wowhead.com/mop-classic/de/spell=142861" target="_blank"
+                    rel="noopener noreferrer" class="text-purple-400 hover:underline">Uralte Miasma</a> definiert.
+                Jegliche Heilung auf Spieler wird absorbiert und in einen Schild umgewandelt (bis zu 100% der maximalen
+                Gesundheit). Der Kampf wechselt zwischen Phase 1 (Verteilen und Soaken) und Phase 2 (Stacken).
+            </p>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische Tipps & Phase 2</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200">Dispels (Phase 2):</strong><br>
-                    Spieler erhalten <a href="https://www.wowhead.com/mop-classic/de/spell=142913" target="_blank" rel="noopener noreferrer" class="text-emerald-300 hover:underline">Verschobene Energie</a>. Beim Dispellen werden alle Spieler im Umkreis von 8 Metern zurückgestoßen und erleiden Schaden. Der betroffene Spieler muss kurz aus dem Stack laufen, <em>bevor</em> er dispellt wird.
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-red-400">Tank-Swap:</strong> Malkorok wirkt <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=142879" target="_blank"
+                                rel="noopener noreferrer" class="text-red-400 hover:underline">Fataler Stoß</a>. Dieser
+                            Debuff erhöht den erlittenen Schaden drastisch. Ein Wechsel bei ca. 15 Stacks (oder wenn der
+                            aktive Tank in Gefahr ist) ist erforderlich.</li>
+                        <li><strong class="text-purple-400">Phase 2:</strong> Der Boss steht still und wirkt <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=142878" target="_blank"
+                                rel="noopener noreferrer" class="text-purple-400 hover:underline">Blutrausch</a>. Tanks
+                            müssen zusammen mit dem Raid stacken, um den Schaden aufzuteilen.</li>
+                    </ul>
                 </div>
-                <div>
-                    <strong class="text-emerald-200">Schild-Indikatoren:</strong><br>
-                    Rote Aura = Schwacher Schild. Gelbe Aura = Mittlerer Schild. Grüne Aura = Maximaler Schild. Geht nur mit ausreichendem Schild zum Soaken!
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Positionierung (Phase 1):</strong><br>
-                    Verteilt euch gleichmäßig um den Boss, um die Laufwege zu den violetten Zonen so kurz wie möglich zu halten.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Raid-CDs:</strong><br>
-                    Nutzt schadensreduzierende Raid-CDs in Phase 2, wenn der Boss in den Blutrausch übergeht und der Schild nicht mehr durch das Miasma aufrechterhalten wird.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">🛡️ Braumeister-Mönch:</strong><br>
-                    Braumeister können den Schaden von <a href="https://www.wowhead.com/mop-classic/de/spell=142878" target="_blank" rel="noopener noreferrer" class="text-emerald-300 hover:underline">Blutrausch</a> in Phase 2 alleine abfangen. Dadurch kann der Raid weiter verteilt bleiben.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
-                    <div id="malkorok-lane-groups"></div>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-blue-400">Soaking (Phase 1):</strong> Violette Zonen (<a
+                                href="https://www.wowhead.com/mop-classic/de/spell=142986" target="_blank"
+                                rel="noopener noreferrer" class="text-blue-300 hover:underline">Implodierende
+                                Energie</a>) erscheinen auf dem Boden. Genau ein Spieler muss sich in jede Zone stellen,
+                            um den Schaden zu soaken. Bleibt eine Zone leer, stirbt der Raid.</li>
+                        <li><strong class="text-orange-400">Ausweichen:</strong> Dem <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=142851" target="_blank"
+                                rel="noopener noreferrer" class="text-orange-300 hover:underline">Seismischen
+                                Schmettern</a> (Frontalangriff auf einen zufälligen Spieler) muss sofort ausgewichen
+                            werden.</li>
+                        <li><strong class="text-green-400">Heiler:</strong> Haltet die Schilde der Spieler durch
+                            konstante Überheilung stets im grünen Bereich, besonders vor den Implosionen.</li>
+                    </ul>
                 </div>
             </div>
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="malkorok-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1 (Verteilt)</button>
-                        
+
+            <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+                <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische
+                    Tipps & Phase 2</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                    <div>
+                        <strong class="text-emerald-200">Dispels (Phase 2):</strong><br>
+                        Spieler erhalten <a href="https://www.wowhead.com/mop-classic/de/spell=142913" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-300 hover:underline">Verschobene Energie</a>.
+                        Beim Dispellen werden alle Spieler im Umkreis von 8 Metern zurückgestoßen und erleiden Schaden.
+                        Der betroffene Spieler muss kurz aus dem Stack laufen, <em>bevor</em> er dispellt wird.
                     </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="malkorok-p1">Der Raid verteilt sich kreisförmig. Abstände einhalten, um gemeinsam aus dem Seismischen Schmettern zu laufen.</p>
-                            <p class="positioning-text hidden" data-phase="malkorok-p2">Alle stacken direkt vor dem Boss. Bei "Verschobene Energie" läuft das Ziel nach hinten aus dem Camp.</p>
+                    <div>
+                        <strong class="text-emerald-200">Schild-Indikatoren:</strong><br>
+                        Rote Aura = Schwacher Schild. Gelbe Aura = Mittlerer Schild. Grüne Aura = Maximaler Schild. Geht
+                        nur mit ausreichendem Schild zum Soaken!
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Positionierung (Phase 1):</strong><br>
+                        Verteilt euch gleichmäßig um den Boss, um die Laufwege zu den violetten Zonen so kurz wie
+                        möglich zu halten.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Raid-CDs:</strong><br>
+                        Nutzt schadensreduzierende Raid-CDs in Phase 2, wenn der Boss in den Blutrausch übergeht und der
+                        Schild nicht mehr durch das Miasma aufrechterhalten wird.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">🛡️ Braumeister-Mönch:</strong><br>
+                        Braumeister können den Schaden von <a href="https://www.wowhead.com/mop-classic/de/spell=142878"
+                            target="_blank" rel="noopener noreferrer"
+                            class="text-emerald-300 hover:underline">Blutrausch</a> in Phase 2 alleine abfangen. Dadurch
+                        kann der Raid weiter verteilt bleiben.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div class="space-y-6">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout
+                            bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
+                        <div id="malkorok-lane-groups"></div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+
+                    <div class="space-y-6">
+                        <div id="positioning-toggle"
+                            class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                            <button data-phase="malkorok-p1"
+                                class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1 (Verteilt)</button>
+
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                            <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                                <p class="positioning-text" data-phase="malkorok-p1">Der Raid verteilt sich kreisförmig.
+                                    Abstände einhalten, um gemeinsam aus dem Seismischen Schmettern zu laufen.</p>
+                                <p class="positioning-text hidden" data-phase="malkorok-p2">Alle stacken direkt vor dem
+                                    Boss. Bei "Verschobene Energie" läuft das Ziel nach hinten aus dem Camp.</p>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <img src="siegeoforgrimmar/malkorok.png" alt="Aufstellung Phase 1"
+                                class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                                data-phase="malkorok-p1"
+                                onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;malkorok-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
+
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/malkorok.png" alt="Aufstellung Phase 1" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="malkorok-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;malkorok-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
-                        
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ════════════════════════════════════════════════════════════════════
+    <!-- ════════════════════════════════════════════════════════════════════
      MALKOROK AUTO-PLANNER
      ════════════════════════════════════════════════════════════════════
      
@@ -168,259 +207,272 @@
      - BigWigs Malkorok.lua (Phase-Übergänge, Shield-Mechanik)
      ════════════════════════════════════════════════════════════════════ -->
 
-<!-- HTML-Block für malkorok.html -->
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="text-sm text-gray-400 mb-4 italic">
-            Plant automatisch Cooldown-Zuteilungen. Boss alterniert zwischen Non-Rage Phase (~70s) und Blood Rage (22.5s, Shield-Mechanik).
-            Hauptfokus: Heal-CDs während Blood Rage, Raid-DR für Breath of Y'Shaarj.
-        </p>
-        
-        <!-- Steuerung -->
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
-        </div>
-        
-        <!-- Status -->
-        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
-        
-        <!-- Timeline mit Tabelle -->
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="w-full text-xs">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
-        </div>
-        
-        <!-- Kategorien-Editor (nur Manager) -->
-        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
-            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
-        </details>
-    </div>
-</section>
+    <!-- HTML-Block für malkorok.html -->
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Auto-CD-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="text-sm text-gray-400 mb-4 italic">
+                Plant automatisch Cooldown-Zuteilungen. Boss alterniert zwischen Non-Rage Phase (~70s) und Blood Rage
+                (22.5s, Shield-Mechanik).
+                Hauptfokus: Heal-CDs während Blood Rage, Raid-DR für Breath of Y'Shaarj.
+            </p>
 
-<script src="static/cd-auto-planner.js"></script>
-<script>
-// ══ Malkorok Auto-Planner Config ════════════════════════════════════
-CD_AUTO_PLANNER.init({
-    id: 'malkorok',
-    name: 'Malkorok',
-    prefix: 'malkorok',  // Container-Prefix in der Boss-HTML (malkorok-planner-container)
-    
-    events: [
-        // ═══════════════════════════════════════════════════════
-        // NON-RAGE PHASE #1 (0-70s)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Arcing Smash #1.1 (Tank)",
-            spellId: 142826,
-            firstCast: 11,        // 11s nach Pull
-            cooldown: 19,         // 19s zwischen den 3 Smashes
-            maxCasts: 3,          // 3 Smashes pro Phase
-            delay: -1,
-            eventDuration: 8,
-            requiredCDs: ["tank_external"],  // Tank-Externals
-            icon: "💥"
-        },
-        {
-            name: "Imploding Energy #1 (Raid AOE)",
-            spellId: 142986,
-            firstCast: 17,        // ~6s nach Arcing Smash #1
-            cooldown: 19,         // folgt jedem Arcing Smash
-            maxCasts: 3,
-            delay: -2,
-            eventDuration: 4,
-            requiredCDs: ["any_dr"],  // Raid-DR vor Implosion
-            icon: "💢"
-        },
-        {
-            name: "Seismic Slam #1 (3x)",
-            spellId: 142851,
-            firstCast: 5,         // 5s nach Pull
-            cooldown: 19.5,       // 19.5s zwischen den 3 Slams
-            maxCasts: 3,
-            delay: 0,
-            eventDuration: 8,
-            requiredCDs: ["aoe_stun"],  // Mythic: Adds zum stunnen
-            icon: "🌊"
-        },
-        {
-            name: "Breath of Y'Shaarj #1 (Raid AOE)",
-            spellId: 142842,
-            firstCast: 67,        // 67.3s erster Cast
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -3,            // CDs vor Cast zünden
-            eventDuration: 8,
-            requiredCDs: ["any_dr", "any_heal"],  // Heavy Raid-Damage
-            icon: "🐉"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // BLOOD RAGE PHASE #1 (~70-92s) - SHIELD-MECHANIK
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Blood Rage #1 (Shield-Phase)",
-            spellId: 142879,
-            firstCast: 70,        // direkt nach Breath
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 22,    // 22.5s Dauer
-            requiredCDs: ["any_heal"],  // Healer müssen Shield aufrechthalten
-            icon: "🩸"
-        },
-        {
-            name: "Displaced Energy #1 (Spam)",
-            spellId: 142913,
-            firstCast: 73,        // ~3s nach Blood Rage Start
-            cooldown: 11,         // alle 11s während Rage
-            maxCasts: 2,          // ~2 Casts in 22s Phase
-            delay: -1,
-            eventDuration: 5,
-            requiredCDs: ["any_heal", "additional_surv"],  // Heavy Heal + Survival
-            icon: "⚡"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // NON-RAGE PHASE #2 (~92-162s)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Arcing Smash #2.1 (Tank)",
-            spellId: 142826,
-            firstCast: 109,       // 17s nach Expel Miasma
-            cooldown: 19,
-            maxCasts: 3,
-            delay: -1,
-            eventDuration: 8,
-            requiredCDs: ["tank_external"],
-            icon: "💥"
-        },
-        {
-            name: "Seismic Slam #2 (3x)",
-            spellId: 142851,
-            firstCast: 101,       // 9s nach Expel Miasma
-            cooldown: 19.5,
-            maxCasts: 3,
-            delay: 0,
-            eventDuration: 8,
-            requiredCDs: ["aoe_stun"],
-            icon: "🌊"
-        },
-        {
-            name: "Breath of Y'Shaarj #2",
-            spellId: 142842,
-            firstCast: 164,       // 72.2s nach Expel
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -3,
-            eventDuration: 8,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "🐉"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // BLOOD RAGE PHASE #2 (~167-189s)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Blood Rage #2 (Shield-Phase)",
-            spellId: 142879,
-            firstCast: 167,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 22,
-            requiredCDs: ["any_heal", "any_dr"],
-            icon: "🩸"
-        },
-        {
-            name: "Displaced Energy #2 (Spam)",
-            spellId: 142913,
-            firstCast: 170,
-            cooldown: 11,
-            maxCasts: 2,
-            delay: -1,
-            eventDuration: 5,
-            requiredCDs: ["any_heal", "additional_surv"],
-            icon: "⚡"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // NON-RAGE PHASE #3 + EXECUTE (Bloodlust hier optimal)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Arcing Smash #3.1 (Tank)",
-            spellId: 142826,
-            firstCast: 206,       // 17s nach Expel Miasma #2
-            cooldown: 19,
-            maxCasts: 3,
-            delay: -1,
-            eventDuration: 8,
-            requiredCDs: ["tank_external"],
-            icon: "💥"
-        },
-        {
-            name: "Bloodlust (Execute Push)",
-            spellId: 0,
-            firstCast: 200,       // mittlere Phase 3, vor Berserk
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 40,
-            requiredCDs: ["bloodlust"],
-            icon: "⚡"
-        },
-        {
-            name: "Breath of Y'Shaarj #3",
-            spellId: 142842,
-            firstCast: 261,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -3,
-            eventDuration: 8,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "🐉"
-        }
-    ],
-    
-    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: MALKOROK_*)
-    // - Spell-spezifische Trigger
-    // - Bloodlust-Event hat keinen passenden Trigger → ENC_START als Fallback
-    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
-    triggerMap: {
-        "Arcing Smash #1.1 (Tank)":            "MALKOROK_ARCING_SMASH",
-        "Arcing Smash #2.1 (Tank)":            "MALKOROK_ARCING_SMASH",
-        "Arcing Smash #3.1 (Tank)":            "MALKOROK_ARCING_SMASH",
-        "Imploding Energy #1 (Raid AOE)":      "MALKOROK_IMPLODING_ENERGY",
-        "Seismic Slam #1 (3x)":                "MALKOROK_SEISMIC_SLAM",
-        "Seismic Slam #2 (3x)":                "MALKOROK_SEISMIC_SLAM",
-        "Breath of Y'Shaarj #1 (Raid AOE)":    "MALKOROK_BREATH",
-        "Breath of Y'Shaarj #2":                "MALKOROK_BREATH",
-        "Breath of Y'Shaarj #3":                "MALKOROK_BREATH",
-        "Blood Rage #1 (Shield-Phase)":        "MALKOROK_BLOOD_RAGE",
-        "Blood Rage #2 (Shield-Phase)":        "MALKOROK_BLOOD_RAGE",
-        "Displaced Energy #1 (Spam)":          "MALKOROK_DISPLACED_ENERGY",
-        "Displaced Energy #2 (Spam)":          "MALKOROK_DISPLACED_ENERGY",
-        "Bloodlust (Execute Push)":             "MALKOROK_ENC_START"  // kein eigener Trigger, optional anpassbar
-    }
-});
-</script>
+            <!-- Steuerung -->
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Auto-Zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In CD-Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+                <button id="btn-save-categories"
+                    class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500"
+                    style="display:none;">📂 Kategorien speichern</button>
+            </div>
 
-<!-- ════════════════════════════════════════════════════════════════════
+            <!-- Status -->
+            <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+
+            <!-- Timeline mit Tabelle -->
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- Kategorien-Editor (nur Manager) -->
+            <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700"
+                style="display:none;">
+                <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️
+                    CD-Kategorien bearbeiten (Manager)</summary>
+                <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+            </details>
+        </div>
+    </section>
+
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        // ══ Malkorok Auto-Planner Config ════════════════════════════════════
+        CD_AUTO_PLANNER.init({
+            id: 'malkorok',
+            name: 'Malkorok',
+            prefix: 'malkorok',  // Container-Prefix in der Boss-HTML (malkorok-planner-container)
+
+            events: [
+                // ═══════════════════════════════════════════════════════
+                // NON-RAGE PHASE #1 (0-70s)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Arcing Smash #1.1 (Tank)",
+                    spellId: 142826,
+                    firstCast: 11,        // 11s nach Pull
+                    cooldown: 19,         // 19s zwischen den 3 Smashes
+                    maxCasts: 3,          // 3 Smashes pro Phase
+                    delay: -1,
+                    eventDuration: 8,
+                    requiredCDs: ["tank_external"],  // Tank-Externals
+                    icon: "💥"
+                },
+                {
+                    name: "Imploding Energy #1 (Raid AOE)",
+                    spellId: 142986,
+                    firstCast: 17,        // ~6s nach Arcing Smash #1
+                    cooldown: 19,         // folgt jedem Arcing Smash
+                    maxCasts: 3,
+                    delay: -2,
+                    eventDuration: 4,
+                    requiredCDs: ["any_dr"],  // Raid-DR vor Implosion
+                    icon: "💢"
+                },
+                {
+                    name: "Seismic Slam #1 (3x)",
+                    spellId: 142851,
+                    firstCast: 5,         // 5s nach Pull
+                    cooldown: 19.5,       // 19.5s zwischen den 3 Slams
+                    maxCasts: 3,
+                    delay: 0,
+                    eventDuration: 8,
+                    requiredCDs: ["aoe_stun"],  // Mythic: Adds zum stunnen
+                    icon: "🌊"
+                },
+                {
+                    name: "Breath of Y'Shaarj #1 (Raid AOE)",
+                    spellId: 142842,
+                    firstCast: 67,        // 67.3s erster Cast
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -3,            // CDs vor Cast zünden
+                    eventDuration: 8,
+                    requiredCDs: ["any_dr", "any_heal"],  // Heavy Raid-Damage
+                    icon: "🐉"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // BLOOD RAGE PHASE #1 (~70-92s) - SHIELD-MECHANIK
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Blood Rage #1 (Shield-Phase)",
+                    spellId: 142879,
+                    firstCast: 70,        // direkt nach Breath
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 22,    // 22.5s Dauer
+                    requiredCDs: ["any_heal"],  // Healer müssen Shield aufrechthalten
+                    icon: "🩸"
+                },
+                {
+                    name: "Displaced Energy #1 (Spam)",
+                    spellId: 142913,
+                    firstCast: 73,        // ~3s nach Blood Rage Start
+                    cooldown: 11,         // alle 11s während Rage
+                    maxCasts: 2,          // ~2 Casts in 22s Phase
+                    delay: -1,
+                    eventDuration: 5,
+                    requiredCDs: ["any_heal", "additional_surv"],  // Heavy Heal + Survival
+                    icon: "⚡"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // NON-RAGE PHASE #2 (~92-162s)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Arcing Smash #2.1 (Tank)",
+                    spellId: 142826,
+                    firstCast: 109,       // 17s nach Expel Miasma
+                    cooldown: 19,
+                    maxCasts: 3,
+                    delay: -1,
+                    eventDuration: 8,
+                    requiredCDs: ["tank_external"],
+                    icon: "💥"
+                },
+                {
+                    name: "Seismic Slam #2 (3x)",
+                    spellId: 142851,
+                    firstCast: 101,       // 9s nach Expel Miasma
+                    cooldown: 19.5,
+                    maxCasts: 3,
+                    delay: 0,
+                    eventDuration: 8,
+                    requiredCDs: ["aoe_stun"],
+                    icon: "🌊"
+                },
+                {
+                    name: "Breath of Y'Shaarj #2",
+                    spellId: 142842,
+                    firstCast: 164,       // 72.2s nach Expel
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -3,
+                    eventDuration: 8,
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "🐉"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // BLOOD RAGE PHASE #2 (~167-189s)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Blood Rage #2 (Shield-Phase)",
+                    spellId: 142879,
+                    firstCast: 167,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 22,
+                    requiredCDs: ["any_heal", "any_dr"],
+                    icon: "🩸"
+                },
+                {
+                    name: "Displaced Energy #2 (Spam)",
+                    spellId: 142913,
+                    firstCast: 170,
+                    cooldown: 11,
+                    maxCasts: 2,
+                    delay: -1,
+                    eventDuration: 5,
+                    requiredCDs: ["any_heal", "additional_surv"],
+                    icon: "⚡"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // NON-RAGE PHASE #3 + EXECUTE (Bloodlust hier optimal)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Arcing Smash #3.1 (Tank)",
+                    spellId: 142826,
+                    firstCast: 206,       // 17s nach Expel Miasma #2
+                    cooldown: 19,
+                    maxCasts: 3,
+                    delay: -1,
+                    eventDuration: 8,
+                    requiredCDs: ["tank_external"],
+                    icon: "💥"
+                },
+                {
+                    name: "Bloodlust (Execute Push)",
+                    spellId: 0,
+                    firstCast: 200,       // mittlere Phase 3, vor Berserk
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 40,
+                    requiredCDs: ["bloodlust"],
+                    icon: "⚡"
+                },
+                {
+                    name: "Breath of Y'Shaarj #3",
+                    spellId: 142842,
+                    firstCast: 261,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -3,
+                    eventDuration: 8,
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "🐉"
+                }
+            ],
+
+            // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: MALKOROK_*)
+            // - Spell-spezifische Trigger
+            // - Bloodlust-Event hat keinen passenden Trigger → ENC_START als Fallback
+            // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+            triggerMap: {
+                "Arcing Smash #1.1 (Tank)": "MALKOROK_ARCING_SMASH",
+                "Arcing Smash #2.1 (Tank)": "MALKOROK_ARCING_SMASH",
+                "Arcing Smash #3.1 (Tank)": "MALKOROK_ARCING_SMASH",
+                "Imploding Energy #1 (Raid AOE)": "MALKOROK_IMPLODING_ENERGY",
+                "Seismic Slam #1 (3x)": "MALKOROK_SEISMIC_SLAM",
+                "Seismic Slam #2 (3x)": "MALKOROK_SEISMIC_SLAM",
+                "Breath of Y'Shaarj #1 (Raid AOE)": "MALKOROK_BREATH",
+                "Breath of Y'Shaarj #2": "MALKOROK_BREATH",
+                "Breath of Y'Shaarj #3": "MALKOROK_BREATH",
+                "Blood Rage #1 (Shield-Phase)": "MALKOROK_BLOOD_RAGE",
+                "Blood Rage #2 (Shield-Phase)": "MALKOROK_BLOOD_RAGE",
+                "Displaced Energy #1 (Spam)": "MALKOROK_DISPLACED_ENERGY",
+                "Displaced Energy #2 (Spam)": "MALKOROK_DISPLACED_ENERGY",
+                "Bloodlust (Execute Push)": "MALKOROK_ENC_START"  // kein eigener Trigger, optional anpassbar
+            }
+        });
+    </script>
+
+    <!-- ════════════════════════════════════════════════════════════════════
      EVENT-MANAGER HINWEISE
      ════════════════════════════════════════════════════════════════════
      
@@ -471,8 +523,9 @@ CD_AUTO_PLANNER.init({
      ════════════════════════════════════════════════════════════════════ -->
 
 
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
         </button>
         <div class="mt-4 text-xs text-gray-500 italic">
@@ -482,115 +535,140 @@ CD_AUTO_PLANNER.init({
             CD Planer
             <span class="toggle-icon">▼</span>
         </h2>
-<div class="mb-6">
-    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> Planungsübersicht
-    </h3>
-    
-    <div id="malkorok-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Warte auf Eingaben... <br>
-            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-        </p>
-    </div>
-</div>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> Planungsübersicht
+            </h3>
+
+            <div id="malkorok-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+                    Warte auf Eingaben... <br>
+                    <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu
+                        aktualisieren)</span>
+                </p>
+            </div>
+        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende Reihenfolge (1, 2, 3...).
+                    <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende
+                    Reihenfolge (1, 2, 3...).
                 </div>
 
                 <div id="malkorok-planner-container" class="space-y-2 planner-scroll-container"></div>
-                
+
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale
+                    Gesundheit nutzen.
                 </div>
             </div>
         </div>
     </section>
 
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 1 (Wutaufbau)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/spell=142842" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Atem von Y'Shaarj</a>:</strong> Der Boss lässt alle Bereiche explodieren, die zuvor durch <em><a href="https://www.wowhead.com/mop-classic/de/spell=142851" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Seismisches Schmettern</a></em> getroffen wurden. Spieler, die in diesen Arealen stehen, sterben sofort. Merkt euch die Positionen der vorherigen Schläge!</li>
-                    <li>Malkorok generiert fortlaufend Wut. Erreicht er 100 Wut, beginnt Phase 2.</li>
-                </ul>
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 1 (Wutaufbau)
+                    </h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/spell=142842"
+                                    target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Atem
+                                    von Y'Shaarj</a>:</strong> Der Boss lässt alle Bereiche explodieren, die zuvor durch
+                            <em><a href="https://www.wowhead.com/mop-classic/de/spell=142851" target="_blank"
+                                    rel="noopener noreferrer" class="text-gray-300 hover:underline">Seismisches
+                                    Schmettern</a></em> getroffen wurden. Spieler, die in diesen Arealen stehen, sterben
+                            sofort. Merkt euch die Positionen der vorherigen Schläge!</li>
+                        <li>Malkorok generiert fortlaufend Wut. Erreicht er 100 Wut, beginnt Phase 2.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Phase 2 (Blutrausch)
+                    </h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li>Das <em><a href="https://www.wowhead.com/mop-classic/de/spell=142861" target="_blank"
+                                    rel="noopener noreferrer" class="text-gray-300 hover:underline">Uralte
+                                    Miasma</a></em> ist deaktiviert. Spieler können normal geheilt werden.</li>
+                        <li>Der Boss schlägt mit massivem physischen Cleave-Schaden zu. Der Schaden verteilt sich auf
+                            alle Spieler in Front des Bosses. Dies erfordert starkes Stacken und CD-Management.</li>
+                        <li>Sobald seine Wut aufgebraucht ist, kehrt er in Phase 1 zurück und der Schildaufbau beginnt
+                            von vorn.</li>
+                    </ul>
+                </div>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Phase 2 (Blutrausch)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li>Das <em><a href="https://www.wowhead.com/mop-classic/de/spell=142861" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Uralte Miasma</a></em> ist deaktiviert. Spieler können normal geheilt werden.</li>
-                    <li>Der Boss schlägt mit massivem physischen Cleave-Schaden zu. Der Schaden verteilt sich auf alle Spieler in Front des Bosses. Dies erfordert starkes Stacken und CD-Management.</li>
-                    <li>Sobald seine Wut aufgebraucht ist, kehrt er in Phase 1 zurück und der Schildaufbau beginnt von vorn.</li>
+
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong class="text-purple-400"><a href="https://www.wowhead.com/mop-classic/de/npc=71456"
+                                target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Essenz
+                                von Y'Shaarj</a>:</strong> Jede <em><a
+                                href="https://www.wowhead.com/mop-classic/de/spell=142986" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-300 hover:underline">Implodierende
+                                Energie</a></em> (die gesoakt wird), hinterlässt nun ein Add (<a
+                            href="https://www.wowhead.com/mop-classic/de/npc=71456" target="_blank"
+                            rel="noopener noreferrer" class="text-gray-300 hover:underline">Essenz von Y'Shaarj</a>).
+                        Diese Adds müssen vom Tank eingesammelt und mit Cleave-Schaden zerstört werden.</li>
+                    <li>Wird eine Zone nicht gesoakt, verursacht sie nicht nur einen Wipe, sondern heilt den Boss
+                        zusätzlich massiv hoch. Das fehlerfreie Einteilen und Soaken ist die absolute Kernmechanik.</li>
                 </ul>
             </div>
         </div>
-        
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong class="text-purple-400"><a href="https://www.wowhead.com/mop-classic/de/npc=71456" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Essenz von Y'Shaarj</a>:</strong> Jede <em><a href="https://www.wowhead.com/mop-classic/de/spell=142986" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Implodierende Energie</a></em> (die gesoakt wird), hinterlässt nun ein Add (<a href="https://www.wowhead.com/mop-classic/de/npc=71456" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Essenz von Y'Shaarj</a>). Diese Adds müssen vom Tank eingesammelt und mit Cleave-Schaden zerstört werden.</li>
-                <li>Wird eine Zone nicht gesoakt, verursacht sie nicht nur einen Wipe, sondern heilt den Boss zusätzlich massiv hoch. Das fehlerfreie Einteilen und Soaken ist die absolute Kernmechanik.</li>
-            </ul>
-        </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "MALKOROK_ENC_START",         text: "Kampfbeginn" },
-            { val: "MALKOROK_HEALTH",            text: "Gesundheit % (Wähle NPC)" },
-            { val: "MALKOROK_BLOOD_RAGE",        text: "Blutige Wut (Shield-Phase)" },
-            { val: "MALKOROK_DISPLACED_ENERGY",  text: "Verschobene Energie (Dispel)" },
-            { val: "MALKOROK_ARCING_SMASH",      text: "Bogenschlag (Tank)" },
-            { val: "MALKOROK_IMPLODING_ENERGY",  text: "Implodierende Energie (AOE)" },
-            { val: "MALKOROK_SEISMIC_SLAM",      text: "Seismischer Schlag (Adds)" },
-            { val: "MALKOROK_BREATH",            text: "Hauch von Y'Shaarj (Raid AOE)" },
-            { val: "MALKOROK_EXPEL_MIASMA",      text: "Miasma vertreiben (Phase-Ende)" }
-        ];
-        
-        const NPC_OPTIONS = [
-            "Malkorok"
-        ];
-        
-        const container = document.getElementById('malkorok-planner-container');
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="">-- Bereitschaft --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
-            }
-            return html;
-        };
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
 
-        if (container && container.innerHTML.trim() === "") {
-            
-            const p = container.id.replace('-planner-container', '');
+            const TRIGGER_OPTIONS = [
+                { val: "MALKOROK_ENC_START", text: "Kampfbeginn" },
+                { val: "MALKOROK_HEALTH", text: "Gesundheit % (Wähle NPC)" },
+                { val: "MALKOROK_BLOOD_RAGE", text: "Blutrausch (Shield-Phase)" },
+                { val: "MALKOROK_DISPLACED_ENERGY", text: "Verschobene Energie (Dispel)" },
+                { val: "MALKOROK_ARCING_SMASH", text: "Bogenschlag (Tank)" },
+                { val: "MALKOROK_IMPLODING_ENERGY", text: "Implodierende Energie (AOE)" },
+                { val: "MALKOROK_SEISMIC_SLAM", text: "Seismisches Schmettern (Adds)" },
+                { val: "MALKOROK_BREATH", text: "Atem von Y'Shaarj (Raid AOE)" },
+                { val: "MALKOROK_EXPEL_MIASMA", text: "Miasma vertreiben (Phase-Ende)" }
+            ];
 
-            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
-            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
-            
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+            const NPC_OPTIONS = [
+                "Malkorok"
+            ];
 
-            const headerHtml = `
+            const container = document.getElementById('malkorok-planner-container');
+
+            const getCooldownOptions = () => {
+                let html = '<option value="">-- Bereitschaft --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+
+                const p = container.id.replace('-planner-container', '');
+
+                const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+                const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+
+                const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -613,9 +691,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 100; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 100; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
 
@@ -623,9 +701,7 @@ CD_AUTO_PLANNER.init({
                         <option value="">-- Nicht aktiv --</option>
                         ${triggerOpts}
                     </select>
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
-                        ${npcOpts}
-                    </select>
+                    <input type="text" list="${p}-npc-list" class="assignment-text-input text-center bg-slate-900 border border-slate-600 text-xs w-full" data-assignment-id="${p}-planner-row${i}-npc" placeholder="NPC Name (oder Leer)">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="${p}-planner-row${i}-condition" placeholder="% / #" value="0">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
@@ -652,56 +728,56 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
-            }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
-
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
-                if (window.LaneGroups) {
-            try {
-                window.LaneGroups.init({
-                    containerId: 'malkorok-lane-groups',
-                    bossId: 'malkorok',
-                    assignmentId: 'malkorok-lane-assignments',
-                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
-                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
-                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
-                    defaultBlocks: [
-                        {
-                            title: 'P1',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            lanes: [
-                                { marker: 'star',   slots: ['', '', ''] },
-                                { marker: 'circle', slots: ['', '', ''] },
-                                { marker: 'square', slots: ['', '', ''] },
-                                { marker: 'square', slots: ['', '', ''] },
-                                { marker: 'square', slots: ['', '', ''] },
-                                { marker: 'square', slots: ['', '', ''] },
-                                { marker: 'square', slots: ['', '', ''] }
-                            ]
-                        },
-                    ]
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
                 });
-            } catch (e) {
-                console.error('[malkorok] LaneGroups.init Fehler:', e);
+                setTimeout(window.updatePlannerSummary, 500);
             }
-        } else {
-            console.warn('[malkorok] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
-        }
-    };
-</script>
+            if (window.LaneGroups) {
+                try {
+                    window.LaneGroups.init({
+                        containerId: 'malkorok-lane-groups',
+                        bossId: 'malkorok',
+                        assignmentId: 'malkorok-lane-assignments',
+                        roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                        firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                        assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                        defaultBlocks: [
+                            {
+                                title: 'P1',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                lanes: [
+                                    { marker: 'star', slots: ['', '', ''] },
+                                    { marker: 'circle', slots: ['', '', ''] },
+                                    { marker: 'square', slots: ['', '', ''] },
+                                    { marker: 'square', slots: ['', '', ''] },
+                                    { marker: 'square', slots: ['', '', ''] },
+                                    { marker: 'square', slots: ['', '', ''] },
+                                    { marker: 'square', slots: ['', '', ''] }
+                                ]
+                            },
+                        ]
+                    });
+                } catch (e) {
+                    console.error('[malkorok] LaneGroups.init Fehler:', e);
+                }
+            } else {
+                console.warn('[malkorok] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
+            }
+        };
+    </script>
 </main>

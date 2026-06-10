@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,15 +17,18 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
         margin-left: 8px;
     }
+
     /* ─── Kill Order ─── */
     .blackfuse-ko-row {
         display: grid;
@@ -35,6 +40,7 @@
         border-radius: 3px;
         padding: 1px 4px;
     }
+
     .blackfuse-ko-row .ko-num {
         font-family: monospace;
         font-weight: 700;
@@ -42,6 +48,7 @@
         text-align: center;
         font-size: 0.75rem;
     }
+
     .blackfuse-ko-select {
         background-color: transparent;
         border: 1px solid transparent;
@@ -55,10 +62,22 @@
         width: 100%;
         height: 22px;
     }
-    .blackfuse-ko-select.opt-Missile { background-color: #059669; border-color: #10b981; }
-    .blackfuse-ko-select.opt-Mine    { background-color: #d97706; border-color: #f59e0b; }
-    .blackfuse-ko-select.opt-Laser   { background-color: #dc2626; border-color: #ef4444; }
-    
+
+    .blackfuse-ko-select.opt-Missile {
+        background-color: #059669;
+        border-color: #10b981;
+    }
+
+    .blackfuse-ko-select.opt-Mine {
+        background-color: #d97706;
+        border-color: #f59e0b;
+    }
+
+    .blackfuse-ko-select.opt-Laser {
+        background-color: #dc2626;
+        border-color: #ef4444;
+    }
+
     /* ─── Line Assignments ─── */
     .blackfuse-line-card {
         display: grid;
@@ -70,16 +89,23 @@
         padding: 4px 6px;
         align-items: center;
     }
+
     .blackfuse-line-label {
         font-weight: 700;
         color: #e2e8f0;
         font-size: 0.75rem;
         text-align: center;
     }
+
     /* Drop-Indikatoren */
-    #blackfuse-lines-prio-list li.drop-above { box-shadow: 0 -2px 0 0 #fbbf24; }
-    #blackfuse-lines-prio-list li.drop-below { box-shadow: 0 2px 0 0 #fbbf24; }
-    
+    #blackfuse-lines-prio-list li.drop-above {
+        box-shadow: 0 -2px 0 0 #fbbf24;
+    }
+
+    #blackfuse-lines-prio-list li.drop-below {
+        box-shadow: 0 2px 0 0 #fbbf24;
+    }
+
     /* ─── Team Assignments ─── */
     .blackfuse-team-slot {
         background-color: #0f172a;
@@ -91,6 +117,7 @@
         width: 100%;
         height: 22px;
     }
+
     .blackfuse-team-slot.is-duplicate {
         border-color: #ef4444 !important;
         box-shadow: 0 0 0 1px #ef4444;
@@ -104,482 +131,588 @@
         <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            Der Kampf findet auf der Hauptplattform und einem seitlichen Fließband statt. In regelmäßigen Abständen fahren drei nicht fertiggestellte Waffen über das Fließband. Ein eingeteiltes Fließband-Team muss über Röhren auf das Band springen und zwingend <strong>eine</strong> dieser Waffen zerstören, bevor sie fertiggestellt wird. Die restlichen zwei Waffen greifen die Hauptplattform an.
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Boss-Tank:</strong> Baut Stacks von <a href="https://www.wowhead.com/mop-classic/de/spell=143385" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Elektrostatische Ladung</a> auf. Swap bei ca. 7 Stacks (dies passt zeitlich perfekt zum Spawn des nächsten Schredders).</li>
-                    <li><strong class="text-purple-400">Add-Tank (<a href="https://www.wowhead.com/mop-classic/de/npc=71591" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Schredder</a>):</strong> Der Automatisierte Schredder wirkt <a href="https://www.wowhead.com/mop-classic/de/spell=144208" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Tod von oben</a>. Positioniert das Add so, dass es bei dieser Attacke auf den auf dem Boden liegenden <a href="https://www.wowhead.com/mop-classic/de/spell=143265" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:underline">Sägeblättern</a> landet, um diese zu zerstören und den Schredder zu betäuben.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-blue-400">Fließband-Teams:</strong> Nach Rückkehr vom Fließband erhaltet ihr den Debuff <a href="https://www.wowhead.com/mop-classic/de/spell=143639" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">Mustererkennung</a>, der ein sofortiges erneutes Betreten tödlich macht. Ihr müsst zwischen Gruppen rotieren!</li>
-                    <li><strong class="text-orange-400">Adds (<a href="https://www.wowhead.com/mop-classic/de/npc=71606" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Krabblerminen</a>):</strong> Wenn Minen das Band passieren, fixieren sie Spieler. Sie müssen per CC verlangsamt und sofort getötet werden (Kiting).</li>
-                    <li><strong class="text-green-400">Ausweichen:</strong> Den roten Ringen des Raketenturms und dem <a href="https://www.wowhead.com/mop-classic/de/spell=143867" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Schneidelaser</a> unter allen Umständen ausweichen.</li>
-                </ul>
-            </div>
-        </div>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                Der Kampf findet auf der Hauptplattform und einem seitlichen Fließband statt. In regelmäßigen Abständen
+                fahren drei nicht fertiggestellte Waffen über das Fließband. Ein eingeteiltes Fließband-Team muss über
+                Röhren auf das Band springen und zwingend <strong>eine</strong> dieser Waffen zerstören, bevor sie
+                fertiggestellt wird. Die restlichen zwei Waffen greifen die Hauptplattform an.
+            </p>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische Tipps & Waffen-Prio</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200">Die 4 Waffen:</strong><br>
-                    1. Krabblerminen, 2. Raketenturm, 3. Laser, 4. Elektromagnet. Die Priorität, was auf dem Band zerstört werden muss, legt der Raidlead fest. Meistens werden die <strong>Minen</strong> oder der <strong>Magnet</strong> zerstört.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Elektromagnet:</strong><br>
-                    Zieht alle Spieler und Sägeblätter quer über die Plattform. Lauft gegen den Sog an und weicht den fliegenden Sägeblättern aus!
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Überladung (Schredder):</strong><br>
-                    Das Add pulsiert massiven AoE-Schaden. Tötet den Schredder immer schnellstmöglich, während er durch <em>Tod von oben</em> betäubt ist.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Feuerlinien:</strong><br>
-                    Der Laser fixiert einen Spieler und zieht eine Feuerspur. Kited den Laser klug an den Rand, um der Hauptgruppe nicht den Platz zu nehmen.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">🛡️ Priester (Spektralerscheinung):</strong><br>
-                    Priester können <a href="https://www.wowhead.com/mop-classic/de/spell=112833" target="_blank" rel="noopener noreferrer" class="text-emerald-300 hover:underline">Spektralerscheinung</a> nutzen, wenn sie von einem Sägeblatt anvisiert werden, um dessen Spawn komplett zu verhindern!
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Krabblerminen CC:</strong><br>
-                    Minen haben anfangs eine Einlaufzeit, in der sie anfällig für Stuns, Roots und Snares sind. Nutzt diesen CC intensiv, bevor sie "Startklar" und damit immun werden.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Boss Tank (Start):</span><select class="assignment-select" data-assignment-id="blackfuse-tank-1"></select></li>
-                        <li><span>Schredder Tank:</span><select class="assignment-select" data-assignment-id="blackfuse-tank-2"></select></li>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-red-400">Boss-Tank:</strong> Baut Stacks von <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143385" target="_blank"
+                                rel="noopener noreferrer" class="text-red-400 hover:underline">Elektrostatische
+                                Ladung</a> auf. Swap bei ca. 7 Stacks (dies passt zeitlich perfekt zum Spawn des
+                            nächsten Schredders).</li>
+                        <li><strong class="text-purple-400">Add-Tank (<a
+                                    href="https://www.wowhead.com/mop-classic/de/npc=71591" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-purple-400 hover:underline">Schredder</a>):</strong> Der Automatisierte
+                            Schredder wirkt <a href="https://www.wowhead.com/mop-classic/de/spell=144208"
+                                target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Tod
+                                von oben</a>. Positioniert das Add so, dass es bei dieser Attacke auf den auf dem Boden
+                            liegenden <a href="https://www.wowhead.com/mop-classic/de/spell=143265" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-400 hover:underline">Sägeblättern</a> landet,
+                            um diese zu zerstören und den Schredder zu betäuben.</li>
                     </ul>
                 </div>
-                
-                <!-- ════ TEAM & LINE ASSIGNMENTS ════════════════════════════════════ -->
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-emerald-300">📋 Team- & Fließband-Zuteilung</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Zwei Teams (à 5 Spieler) aufstellen und den jeweiligen Fließband-Wellen (Line 1-9) zuweisen.</p>
-                    
-                    <!-- Team 1 & 2 Grid -->
-                    <div id="blackfuse-teams-grid" class="space-y-2 mb-4 px-2"></div>
-                    
-                    <!-- Linien 1-9 Zuordnung -->
-                    <h5 class="text-[13px] font-bold text-emerald-400 mb-2 px-3">Wellen-Zuweisung (Line 1-9)</h5>
-                    <div id="blackfuse-belt-grid" class="grid grid-cols-3 gap-2 mb-3 px-2"></div>
-                    
-                    <!-- Einstellungen für das Füllen -->
-                    <details class="mb-2 bg-slate-900/60 border border-slate-700 rounded">
-                        <summary class="cursor-pointer p-2 text-xs font-bold text-yellow-300 hover:bg-slate-800 rounded">
-                            ⚡ Auto-Füllen Konfiguration (für Teams)
-                        </summary>
-                        <div class="p-2 border-t border-slate-700">
-                            <ul id="blackfuse-lines-prio-list" class="space-y-1 mb-2"></ul>
-                            <div class="flex gap-2 mb-2">
-                                <button id="blackfuse-lines-prio-add" class="text-xs bg-slate-700 hover:bg-slate-600 text-white py-1 px-2 rounded border border-slate-500">+ Kategorie</button>
-                                <button id="blackfuse-lines-prio-detect" class="text-xs bg-slate-700 hover:bg-slate-600 text-white py-1 px-2 rounded border border-slate-500">Aus Kader ableiten</button>
-                                <button id="blackfuse-lines-prio-reset" class="text-xs bg-red-900 hover:bg-red-800 text-white py-1 px-2 rounded border border-red-700 ml-auto">Zurücksetzen</button>
-                            </div>
-                        </div>
-                    </details>
-
-                    <!-- Export und Steuerungs-Schalter -->
-                    <div class="flex flex-wrap items-center gap-2 mt-3 px-2">
-                        <button id="blackfuse-lines-autofill" class="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded border border-blue-500">⚡ Teams füllen</button>
-                        <button id="blackfuse-lines-clear" class="text-xs bg-slate-700 hover:bg-slate-800 text-white py-1 px-3 rounded border border-slate-500">🗑 Leeren</button>
-                        <button id="blackfuse-lines-copy" class="ml-auto text-xs bg-purple-700 hover:bg-purple-800 text-white py-1 px-3 rounded border border-purple-500">📋 Exportieren</button>
-                    </div>
-                    <code id="blackfuse-lines-wa" class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">—</code>
-
-                    <!-- Verstecktes Fenster für die Einstellungen -->
-                    <div id="blackfuse-lines-prio-modal" class="hidden fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4">
-                        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 w-full max-w-sm">
-                            <h4 id="blackfuse-lines-prio-modal-title" class="text-gold font-bold mb-3 border-b border-slate-600 pb-1">Kategorie</h4>
-                            <div class="space-y-2 text-xs">
-                                <div><label class="block text-gray-400">Name</label><input type="text" id="blackfuse-lines-prio-modal-label" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white"></div>
-                                <div><label class="block text-gray-400">Klasse</label><select id="blackfuse-lines-prio-modal-class" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white"><option value="">- alle -</option></select></div>
-                                <div><label class="block text-gray-400">Spezialisierung</label><select id="blackfuse-lines-prio-modal-spec" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white"><option value="">- alle -</option></select></div>
-                                <div>
-                                    <label class="block text-gray-400">Rolle</label>
-                                    <select id="blackfuse-lines-prio-modal-role" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
-                                        <option value="">- beliebig -</option>
-                                        <option value="tank">Tank</option>
-                                        <option value="healer">Heiler</option>
-                                        <option value="dps">Schaden</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-gray-400">Typ</label>
-                                    <select id="blackfuse-lines-prio-modal-archetype" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
-                                        <option value="">- beliebig -</option>
-                                        <option value="melee">Nahkampf</option>
-                                        <option value="ranged_physical">Fernkampf Physisch</option>
-                                        <option value="caster">Zauberer</option>
-                                    </select>
-                                </div>
-                                <div class="flex gap-2">
-                                    <div class="flex-1"><label class="block text-gray-400">Maximal in ersten X Plätzen</label><input type="number" id="blackfuse-lines-prio-modal-limit-rows" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white" placeholder="z.B. 2"></div>
-                                    <div class="flex-1"><label class="block text-gray-400">Maximale Anzahl dort</label><input type="number" id="blackfuse-lines-prio-modal-limit-count" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white" placeholder="z.B. 1"></div>
-                                </div>
-                                <div><label class="block text-gray-400">Maximal pro Team insgesamt</label><input type="number" id="blackfuse-lines-prio-modal-max-total" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white" placeholder="leer = unbegrenzt"></div>
-                            </div>
-                            <div class="flex gap-2 mt-4 pt-3 border-t border-slate-600">
-                                <button id="blackfuse-lines-prio-modal-save" class="bg-blue-600 hover:bg-blue-500 text-white py-1 px-3 rounded text-xs">Speichern</button>
-                                <button id="blackfuse-lines-prio-modal-cancel" class="bg-slate-600 hover:bg-slate-500 text-white py-1 px-3 rounded text-xs ml-auto">Abbrechen</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-blue-400">Fließband-Teams:</strong> Nach Rückkehr vom Fließband erhaltet
+                            ihr den Debuff <a href="https://www.wowhead.com/mop-classic/de/spell=143639" target="_blank"
+                                rel="noopener noreferrer" class="text-blue-300 hover:underline">Mustererkennung</a>, der
+                            ein sofortiges erneutes Betreten tödlich macht. Ihr müsst zwischen Gruppen rotieren!</li>
+                        <li><strong class="text-orange-400">Adds (<a
+                                    href="https://www.wowhead.com/mop-classic/de/npc=71606" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-orange-400 hover:underline">Krabblerminen</a>):</strong> Wenn Minen das
+                            Band passieren, fixieren sie Spieler. Sie müssen per CC verlangsamt und sofort getötet
+                            werden (Kiting).</li>
+                        <li><strong class="text-green-400">Ausweichen:</strong> Den roten Ringen des Raketenturms und
+                            dem <a href="https://www.wowhead.com/mop-classic/de/spell=143867" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-300 hover:underline">Schneidelaser</a> unter
+                            allen Umständen ausweichen.</li>
+                    </ul>
                 </div>
             </div>
 
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="blackfuse-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Hauptplattform</button>
-                        
+            <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+                <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische
+                    Tipps & Waffen-Prio</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                    <div>
+                        <strong class="text-emerald-200">Die 4 Waffen:</strong><br>
+                        1. Krabblerminen, 2. Raketenturm, 3. Laser, 4. Elektromagnet. Die Priorität, was auf dem Band
+                        zerstört werden muss, legt der Raidlead fest. Meistens werden die <strong>Minen</strong> oder
+                        der <strong>Magnet</strong> zerstört.
                     </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="blackfuse-p1">Sägeblätter werden in der Mitte abgelegt. Der Schredder-Tank nutzt "Tod von oben", um diese zu säubern. Fließband-Teams springen in die Röhren.</p>
-                            <p class="positioning-text hidden" data-phase="blackfuse-p2">Raid sammelt sich gegenüber dem Magneten und läuft gegen den Sog an. Vorsicht vor unberechenbaren Sägeblättern!</p>
-                        </div>
+                    <div>
+                        <strong class="text-emerald-200">Elektromagnet:</strong><br>
+                        Zieht alle Spieler und Sägeblätter quer über die Plattform. Lauft gegen den Sog an und weicht
+                        den fliegenden Sägeblättern aus!
                     </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/siegecrafter.png" alt="Aufstellung Hauptplattform" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="blackfuse-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;blackfuse-p1&quot;>Bild für die Hauptplattform noch nicht verfügbar.</div>'">
-                            
-                    
+                    <div>
+                        <strong class="text-emerald-200">Überladung (Schredder):</strong><br>
+                        Das Add pulsiert massiven AoE-Schaden. Tötet den Schredder immer schnellstmöglich, während er
+                        durch <em>Tod von oben</em> betäubt ist.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Feuerlinien:</strong><br>
+                        Der Laser fixiert einen Spieler und zieht eine Feuerspur. Kited den Laser klug an den Rand, um
+                        der Hauptgruppe nicht den Platz zu nehmen.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">🛡️ Priester (Spektralerscheinung):</strong><br>
+                        Priester können <a href="https://www.wowhead.com/mop-classic/de/spell=112833" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-300 hover:underline">Spektralerscheinung</a>
+                        nutzen, wenn sie von einem Sägeblatt anvisiert werden, um dessen Spawn komplett zu verhindern!
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Krabblerminen CC:</strong><br>
+                        Minen haben anfangs eine Einlaufzeit, in der sie anfällig für Stuns, Roots und Snares sind.
+                        Nutzt diesen CC intensiv, bevor sie "Startklar" und damit immun werden.
                     </div>
                 </div>
-
-                <!-- ════ KILL ORDER ════════════════════════════════════════════ -->
-                <div class="assignment-block mt-6">
-                    <h4 class="text-lg font-bold text-orange-300">🎯 Kill Order (Belt Items)</h4>
-                    <p class="text-sm text-gray-400 mb-3 px-3">Reihenfolge der zu zerstörenden Belt-Items. Default: alle Missile.</p>
-                    <div id="blackfuse-killorder-grid" class="grid grid-cols-3 gap-1 mb-2 px-2"></div>
-                    <div class="flex items-center gap-2 mt-2 px-2">
-                        <button id="blackfuse-killorder-reset" class="text-xs bg-slate-700 hover:bg-slate-800 text-white py-1 px-2 rounded border border-slate-500">↺ Alle auf Missile</button>
-                        <button id="blackfuse-killorder-copy" class="ml-auto text-xs bg-purple-700 hover:bg-purple-800 text-white py-1 px-2 rounded border border-purple-500">📋 WA Export</button>
-                    </div>
-                    <code id="blackfuse-killorder-wa" class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">—</code>
-                </div>
-
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ════════════════════════════════════════════════════════════════════
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div class="space-y-6">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
+                        <ul class="assignment-list">
+                            <li><span>Boss Tank (Start):</span><select class="assignment-select"
+                                    data-assignment-id="blackfuse-tank-1"></select></li>
+                            <li><span>Schredder Tank:</span><select class="assignment-select"
+                                    data-assignment-id="blackfuse-tank-2"></select></li>
+                        </ul>
+                    </div>
+
+                    <!-- ════ TEAM & LINE ASSIGNMENTS ════════════════════════════════════ -->
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-emerald-300">📋 Team- & Fließband-Zuteilung</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Zwei Teams (à 5 Spieler) aufstellen und den
+                            jeweiligen Fließband-Wellen (Line 1-9) zuweisen.</p>
+
+                        <!-- Team 1 & 2 Grid -->
+                        <div id="blackfuse-teams-grid" class="space-y-2 mb-4 px-2"></div>
+
+                        <!-- Linien 1-9 Zuordnung -->
+                        <h5 class="text-[13px] font-bold text-emerald-400 mb-2 px-3">Wellen-Zuweisung (Line 1-9)</h5>
+                        <div id="blackfuse-belt-grid" class="grid grid-cols-3 gap-2 mb-3 px-2"></div>
+
+                        <!-- Einstellungen für das Füllen -->
+                        <details class="mb-2 bg-slate-900/60 border border-slate-700 rounded">
+                            <summary
+                                class="cursor-pointer p-2 text-xs font-bold text-yellow-300 hover:bg-slate-800 rounded">
+                                ⚡ Auto-Füllen Konfiguration (für Teams)
+                            </summary>
+                            <div class="p-2 border-t border-slate-700">
+                                <ul id="blackfuse-lines-prio-list" class="space-y-1 mb-2"></ul>
+                                <div class="flex gap-2 mb-2">
+                                    <button id="blackfuse-lines-prio-add"
+                                        class="text-xs bg-slate-700 hover:bg-slate-600 text-white py-1 px-2 rounded border border-slate-500">+
+                                        Kategorie</button>
+                                    <button id="blackfuse-lines-prio-detect"
+                                        class="text-xs bg-slate-700 hover:bg-slate-600 text-white py-1 px-2 rounded border border-slate-500">Aus
+                                        Kader ableiten</button>
+                                    <button id="blackfuse-lines-prio-reset"
+                                        class="text-xs bg-red-900 hover:bg-red-800 text-white py-1 px-2 rounded border border-red-700 ml-auto">Zurücksetzen</button>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Export und Steuerungs-Schalter -->
+                        <div class="flex flex-wrap items-center gap-2 mt-3 px-2">
+                            <button id="blackfuse-lines-autofill"
+                                class="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded border border-blue-500">⚡
+                                Teams füllen</button>
+                            <button id="blackfuse-lines-clear"
+                                class="text-xs bg-slate-700 hover:bg-slate-800 text-white py-1 px-3 rounded border border-slate-500">🗑
+                                Leeren</button>
+                            <button id="blackfuse-lines-copy"
+                                class="ml-auto text-xs bg-purple-700 hover:bg-purple-800 text-white py-1 px-3 rounded border border-purple-500">📋
+                                Exportieren</button>
+                        </div>
+                        <code id="blackfuse-lines-wa"
+                            class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">—</code>
+
+                        <!-- Verstecktes Fenster für die Einstellungen -->
+                        <div id="blackfuse-lines-prio-modal"
+                            class="hidden fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4">
+                            <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 w-full max-w-sm">
+                                <h4 id="blackfuse-lines-prio-modal-title"
+                                    class="text-gold font-bold mb-3 border-b border-slate-600 pb-1">Kategorie</h4>
+                                <div class="space-y-2 text-xs">
+                                    <div><label class="block text-gray-400">Name</label><input type="text"
+                                            id="blackfuse-lines-prio-modal-label"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
+                                    </div>
+                                    <div><label class="block text-gray-400">Klasse</label><select
+                                            id="blackfuse-lines-prio-modal-class"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
+                                            <option value="">- alle -</option>
+                                        </select></div>
+                                    <div><label class="block text-gray-400">Spezialisierung</label><select
+                                            id="blackfuse-lines-prio-modal-spec"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
+                                            <option value="">- alle -</option>
+                                        </select></div>
+                                    <div>
+                                        <label class="block text-gray-400">Rolle</label>
+                                        <select id="blackfuse-lines-prio-modal-role"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
+                                            <option value="">- beliebig -</option>
+                                            <option value="tank">Tank</option>
+                                            <option value="healer">Heiler</option>
+                                            <option value="dps">Schaden</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-400">Typ</label>
+                                        <select id="blackfuse-lines-prio-modal-archetype"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
+                                            <option value="">- beliebig -</option>
+                                            <option value="melee">Nahkampf</option>
+                                            <option value="ranged_physical">Fernkampf Physisch</option>
+                                            <option value="caster">Zauberer</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <div class="flex-1"><label class="block text-gray-400">Maximal in ersten X
+                                                Plätzen</label><input type="number"
+                                                id="blackfuse-lines-prio-modal-limit-rows"
+                                                class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white"
+                                                placeholder="z.B. 2"></div>
+                                        <div class="flex-1"><label class="block text-gray-400">Maximale Anzahl
+                                                dort</label><input type="number"
+                                                id="blackfuse-lines-prio-modal-limit-count"
+                                                class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white"
+                                                placeholder="z.B. 1"></div>
+                                    </div>
+                                    <div><label class="block text-gray-400">Maximal pro Team insgesamt</label><input
+                                            type="number" id="blackfuse-lines-prio-modal-max-total"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white"
+                                            placeholder="leer = unbegrenzt"></div>
+                                </div>
+                                <div class="flex gap-2 mt-4 pt-3 border-t border-slate-600">
+                                    <button id="blackfuse-lines-prio-modal-save"
+                                        class="bg-blue-600 hover:bg-blue-500 text-white py-1 px-3 rounded text-xs">Speichern</button>
+                                    <button id="blackfuse-lines-prio-modal-cancel"
+                                        class="bg-slate-600 hover:bg-slate-500 text-white py-1 px-3 rounded text-xs ml-auto">Abbrechen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+
+                    <div class="space-y-6">
+                        <div id="positioning-toggle"
+                            class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                            <button data-phase="blackfuse-p1"
+                                class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Hauptplattform</button>
+
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                            <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                                <p class="positioning-text" data-phase="blackfuse-p1">Sägeblätter werden in der Mitte
+                                    abgelegt. Der Schredder-Tank nutzt "Tod von oben", um diese zu säubern.
+                                    Fließband-Teams springen in die Röhren.</p>
+                                <p class="positioning-text hidden" data-phase="blackfuse-p2">Raid sammelt sich gegenüber
+                                    dem Magneten und läuft gegen den Sog an. Vorsicht vor unberechenbaren Sägeblättern!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <img src="siegeoforgrimmar/siegecrafter.png" alt="Aufstellung Hauptplattform"
+                                class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                                data-phase="blackfuse-p1"
+                                onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;blackfuse-p1&quot;>Bild für die Hauptplattform noch nicht verfügbar.</div>'">
+
+
+                        </div>
+                    </div>
+
+                    <!-- ════ KILL ORDER ════════════════════════════════════════════ -->
+                    <div class="assignment-block mt-6">
+                        <h4 class="text-lg font-bold text-orange-300">🎯 Kill Order (Belt Items)</h4>
+                        <p class="text-sm text-gray-400 mb-3 px-3">Reihenfolge der zu zerstörenden Belt-Items. Default:
+                            alle Missile.</p>
+                        <div id="blackfuse-killorder-grid" class="grid grid-cols-3 gap-1 mb-2 px-2"></div>
+                        <div class="flex items-center gap-2 mt-2 px-2">
+                            <button id="blackfuse-killorder-reset"
+                                class="text-xs bg-slate-700 hover:bg-slate-800 text-white py-1 px-2 rounded border border-slate-500">↺
+                                Alle auf Missile</button>
+                            <button id="blackfuse-killorder-copy"
+                                class="ml-auto text-xs bg-purple-700 hover:bg-purple-800 text-white py-1 px-2 rounded border border-purple-500">📋
+                                WA Export</button>
+                        </div>
+                        <code id="blackfuse-killorder-wa"
+                            class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">—</code>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════
      SIEGECRAFTER BLACKFUSE AUTO-PLANNER
      ════════════════════════════════════════════════════════════════════
 -->
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="text-sm text-gray-400 mb-4 italic">
-            Plant automatisch Cooldown-Zuteilungen. Boss + Belt-Mechaniken parallel.
-            Hauptfokus: Magnetic Crush (Heavy AoE), Shockwave Missile, Shredder-Tank-Damage.
-        </p>
-        
-        <!-- Steuerung -->
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
-        </div>
-        
-        <!-- Status -->
-        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
-        
-        <!-- Timeline mit Tabelle -->
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="w-full text-xs">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
-        </div>
-        
-        <!-- Kategorien-Editor (nur Manager) -->
-        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
-            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
-        </details>
-    </div>
-</section>
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Auto-CD-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="text-sm text-gray-400 mb-4 italic">
+                Plant automatisch Cooldown-Zuteilungen. Boss + Belt-Mechaniken parallel.
+                Hauptfokus: Magnetic Crush (Heavy AoE), Shockwave Missile, Shredder-Tank-Damage.
+            </p>
 
-<script src="static/cd-auto-planner.js"></script>
-<script>
-CD_AUTO_PLANNER.init({
-    id: 'siegecrafter-blackfuse',
-    name: 'Belagerungsbauer Schwarzfaust',
-    prefix: 'blackfuse', 
-    
-    events: [
-        {
-            name: "Electrostatic Charge (Tank Stack)",
-            spellId: 143385,
-            firstCast: 8,
-            cooldown: 17,
-            maxCasts: 25,
-            delay: -1,
-            eventDuration: 60,
-            requiredCDs: ["tank_external"],
-            icon: "⚡"
-        },
-        {
-            name: "Launch Sawblade #1",
-            spellId: 143265,
-            firstCast: 9,
-            cooldown: 12,
-            maxCasts: 20,
-            delay: 0,
-            eventDuration: 8,
-            requiredCDs: ["movement"],
-            icon: "🪚"
-        },
-        {
-            name: "Shredder #1 Spawn",
-            spellId: 144208,
-            firstCast: 35,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 30,
-            requiredCDs: ["aoe_stun"],
-            icon: "🤖"
-        },
-        {
-            name: "Death From Above #1 (Tank)",
-            spellId: 144208,
-            firstCast: 51,
-            cooldown: 41,
-            maxCasts: 3,
-            delay: -1,
-            eventDuration: 8,
-            requiredCDs: ["tank_external", "any_dr"],
-            icon: "💥"
-        },
-        {
-            name: "Overload Stacks 5-10",
-            spellId: 145444,
-            firstCast: 60,
-            cooldown: 11,
-            maxCasts: 6,
-            delay: 0,
-            eventDuration: 11,
-            requiredCDs: ["any_heal"],
-            icon: "📈"
-        },
-        {
-            name: "Assembly Line #1 (Item Spawn)",
-            spellId: 0,
-            firstCast: 40,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 13,
-            requiredCDs: [],
-            icon: "📦"
-        },
-        {
-            name: "Crawler Mines #1 (Soak)",
-            spellId: 145269,
-            firstCast: 53,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 30,
-            requiredCDs: ["any_dr"],
-            icon: "💣"
-        },
-        {
-            name: "Magnetic Crush #1 (Raid AOE)",
-            spellId: 144466,
-            firstCast: 130,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -3,
-            eventDuration: 30,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "🧲"
-        },
-        {
-            name: "Shockwave Missile #1 (Big AOE)",
-            spellId: 143641,
-            firstCast: 90,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -3,
-            eventDuration: 10,
-            requiredCDs: ["any_dr"],
-            icon: "🚀"
-        },
-        {
-            name: "Shredder #2 Spawn",
-            spellId: 144208,
-            firstCast: 95,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 30,
-            requiredCDs: ["aoe_stun"],
-            icon: "🤖"
-        },
-        {
-            name: "Death From Above #2 (Tank)",
-            spellId: 144208,
-            firstCast: 111,
-            cooldown: 41,
-            maxCasts: 3,
-            delay: -1,
-            eventDuration: 8,
-            requiredCDs: ["tank_external", "any_dr"],
-            icon: "💥"
-        },
-        {
-            name: "Protective Frenzy #1 (Heavy Damage)",
-            spellId: 145365,
-            firstCast: 180,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 10,
-            requiredCDs: ["any_heal", "any_dr"],
-            icon: "🔥"
-        },
-        {
-            name: "Magnetic Crush #2 (Raid AOE)",
-            spellId: 144466,
-            firstCast: 250,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -3,
-            eventDuration: 30,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "🧲"
-        },
-        {
-            name: "Shockwave Missile #2",
-            spellId: 143641,
-            firstCast: 290,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -3,
-            eventDuration: 10,
-            requiredCDs: ["any_dr"],
-            icon: "🚀"
-        },
-        {
-            name: "Bloodlust (Execute)",
-            spellId: 0,
-            firstCast: 350,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 40,
-            requiredCDs: ["bloodlust"],
-            icon: "⚡"
-        },
-        {
-            name: "Magnetic Crush #3 (Execute)",
-            spellId: 144466,
-            firstCast: 370,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -3,
-            eventDuration: 30,
-            requiredCDs: ["any_dr", "any_heal", "additional_surv"],
-            icon: "🧲"
-        },
-        {
-            name: "Overcharge Mine (Mythic)",
-            spellId: 145774,
-            firstCast: 200,
-            cooldown: 90,
-            maxCasts: 4,
-            delay: 0,
-            eventDuration: 15,
-            requiredCDs: ["aoe_stun"],
-            icon: "💣"
-        },
-        {
-            name: "Overcharge Missile (Mythic)",
-            spellId: 145774,
-            firstCast: 290,
-            cooldown: 90,
-            maxCasts: 3,
-            delay: 0,
-            eventDuration: 15,
-            requiredCDs: ["any_dr"],
-            icon: "🚀"
-        }
-    ],
-    
-    triggerMap: {
-        "Electrostatic Charge (Tank Stack)":     "BLACKFUSE_ELECTRO_STATIC",
-        "Launch Sawblade #1":                     "BLACKFUSE_SAWBLADE",
-        "Shredder #1 Spawn":                      "BLACKFUSE_SHREDDER",
-        "Shredder #2 Spawn":                      "BLACKFUSE_SHREDDER",
-        "Death From Above #1 (Tank)":             "BLACKFUSE_DEATH_FROM_ABOVE",
-        "Death From Above #2 (Tank)":             "BLACKFUSE_DEATH_FROM_ABOVE",
-        "Overload Stacks 5-10":                   "BLACKFUSE_OVERLOAD_5",
-        "Assembly Line #1 (Item Spawn)":          "BLACKFUSE_ASSEMBLY",
-        "Crawler Mines #1 (Soak)":                "BLACKFUSE_MINES",
-        "Magnetic Crush #1 (Raid AOE)":           "BLACKFUSE_MAGNETIC_CRUSH",
-        "Magnetic Crush #2 (Raid AOE)":           "BLACKFUSE_MAGNETIC_CRUSH",
-        "Magnetic Crush #3 (Execute)":            "BLACKFUSE_MAGNETIC_CRUSH",
-        "Shockwave Missile #1 (Big AOE)":         "BLACKFUSE_MISSILE",
-        "Shockwave Missile #2":                    "BLACKFUSE_MISSILE",
-        "Protective Frenzy #1 (Heavy Damage)":    "BLACKFUSE_PROTECTIVE_FRENZY",
-        "Bloodlust (Execute)":                     "BLACKFUSE_ENC_START",
-        "Overcharge Mine (Mythic)":               "BLACKFUSE_OVERCHARGE_MINE",
-        "Overcharge Missile (Mythic)":            "BLACKFUSE_OVERCHARGE_MISSILE"
-    }
-});
-</script>
+            <!-- Steuerung -->
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Auto-Zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In CD-Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+                <button id="btn-save-categories"
+                    class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500"
+                    style="display:none;">📂 Kategorien speichern</button>
+            </div>
 
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            <!-- Status -->
+            <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+
+            <!-- Timeline mit Tabelle -->
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- Kategorien-Editor (nur Manager) -->
+            <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700"
+                style="display:none;">
+                <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️
+                    CD-Kategorien bearbeiten (Manager)</summary>
+                <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+            </details>
+        </div>
+    </section>
+
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        CD_AUTO_PLANNER.init({
+            id: 'siegecrafter-blackfuse',
+            name: 'Belagerungsbauer Schwarzfaust',
+            prefix: 'blackfuse',
+
+            events: [
+                {
+                    name: "Electrostatic Charge (Tank Stack)",
+                    spellId: 143385,
+                    firstCast: 8,
+                    cooldown: 17,
+                    maxCasts: 25,
+                    delay: -1,
+                    eventDuration: 60,
+                    requiredCDs: ["tank_external"],
+                    icon: "⚡"
+                },
+                {
+                    name: "Launch Sawblade #1",
+                    spellId: 143265,
+                    firstCast: 9,
+                    cooldown: 12,
+                    maxCasts: 20,
+                    delay: 0,
+                    eventDuration: 8,
+                    requiredCDs: ["movement"],
+                    icon: "🪚"
+                },
+                {
+                    name: "Shredder #1 Spawn",
+                    spellId: 144208,
+                    firstCast: 35,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 30,
+                    requiredCDs: ["aoe_stun"],
+                    icon: "🤖"
+                },
+                {
+                    name: "Death From Above #1 (Tank)",
+                    spellId: 144208,
+                    firstCast: 51,
+                    cooldown: 41,
+                    maxCasts: 3,
+                    delay: -1,
+                    eventDuration: 8,
+                    requiredCDs: ["tank_external", "any_dr"],
+                    icon: "💥"
+                },
+                {
+                    name: "Overload Stacks 5-10",
+                    spellId: 145444,
+                    firstCast: 60,
+                    cooldown: 11,
+                    maxCasts: 6,
+                    delay: 0,
+                    eventDuration: 11,
+                    requiredCDs: ["any_heal"],
+                    icon: "📈"
+                },
+                {
+                    name: "Assembly Line #1 (Item Spawn)",
+                    spellId: 0,
+                    firstCast: 40,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 13,
+                    requiredCDs: [],
+                    icon: "📦"
+                },
+                {
+                    name: "Crawler Mines #1 (Soak)",
+                    spellId: 145269,
+                    firstCast: 53,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 30,
+                    requiredCDs: ["any_dr"],
+                    icon: "💣"
+                },
+                {
+                    name: "Magnetic Crush #1 (Raid AOE)",
+                    spellId: 144466,
+                    firstCast: 130,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -3,
+                    eventDuration: 30,
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "🧲"
+                },
+                {
+                    name: "Shockwave Missile #1 (Big AOE)",
+                    spellId: 143641,
+                    firstCast: 90,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -3,
+                    eventDuration: 10,
+                    requiredCDs: ["any_dr"],
+                    icon: "🚀"
+                },
+                {
+                    name: "Shredder #2 Spawn",
+                    spellId: 144208,
+                    firstCast: 95,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 30,
+                    requiredCDs: ["aoe_stun"],
+                    icon: "🤖"
+                },
+                {
+                    name: "Death From Above #2 (Tank)",
+                    spellId: 144208,
+                    firstCast: 111,
+                    cooldown: 41,
+                    maxCasts: 3,
+                    delay: -1,
+                    eventDuration: 8,
+                    requiredCDs: ["tank_external", "any_dr"],
+                    icon: "💥"
+                },
+                {
+                    name: "Protective Frenzy #1 (Heavy Damage)",
+                    spellId: 145365,
+                    firstCast: 180,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 10,
+                    requiredCDs: ["any_heal", "any_dr"],
+                    icon: "🔥"
+                },
+                {
+                    name: "Magnetic Crush #2 (Raid AOE)",
+                    spellId: 144466,
+                    firstCast: 250,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -3,
+                    eventDuration: 30,
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "🧲"
+                },
+                {
+                    name: "Shockwave Missile #2",
+                    spellId: 143641,
+                    firstCast: 290,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -3,
+                    eventDuration: 10,
+                    requiredCDs: ["any_dr"],
+                    icon: "🚀"
+                },
+                {
+                    name: "Bloodlust (Execute)",
+                    spellId: 0,
+                    firstCast: 350,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 40,
+                    requiredCDs: ["bloodlust"],
+                    icon: "⚡"
+                },
+                {
+                    name: "Magnetic Crush #3 (Execute)",
+                    spellId: 144466,
+                    firstCast: 370,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -3,
+                    eventDuration: 30,
+                    requiredCDs: ["any_dr", "any_heal", "additional_surv"],
+                    icon: "🧲"
+                },
+                {
+                    name: "Overcharge Mine (Mythic)",
+                    spellId: 145774,
+                    firstCast: 200,
+                    cooldown: 90,
+                    maxCasts: 4,
+                    delay: 0,
+                    eventDuration: 15,
+                    requiredCDs: ["aoe_stun"],
+                    icon: "💣"
+                },
+                {
+                    name: "Overcharge Missile (Mythic)",
+                    spellId: 145774,
+                    firstCast: 290,
+                    cooldown: 90,
+                    maxCasts: 3,
+                    delay: 0,
+                    eventDuration: 15,
+                    requiredCDs: ["any_dr"],
+                    icon: "🚀"
+                }
+            ],
+
+            triggerMap: {
+                "Electrostatic Charge (Tank Stack)": "BLACKFUSE_ELECTRO_STATIC",
+                "Launch Sawblade #1": "BLACKFUSE_SAWBLADE",
+                "Shredder #1 Spawn": "BLACKFUSE_SHREDDER",
+                "Shredder #2 Spawn": "BLACKFUSE_SHREDDER",
+                "Death From Above #1 (Tank)": "BLACKFUSE_DEATH_FROM_ABOVE",
+                "Death From Above #2 (Tank)": "BLACKFUSE_DEATH_FROM_ABOVE",
+                "Overload Stacks 5-10": "BLACKFUSE_OVERLOAD_5",
+                "Assembly Line #1 (Item Spawn)": "BLACKFUSE_ASSEMBLY",
+                "Crawler Mines #1 (Soak)": "BLACKFUSE_MINES",
+                "Magnetic Crush #1 (Raid AOE)": "BLACKFUSE_MAGNETIC_CRUSH",
+                "Magnetic Crush #2 (Raid AOE)": "BLACKFUSE_MAGNETIC_CRUSH",
+                "Magnetic Crush #3 (Execute)": "BLACKFUSE_MAGNETIC_CRUSH",
+                "Shockwave Missile #1 (Big AOE)": "BLACKFUSE_MISSILE",
+                "Shockwave Missile #2": "BLACKFUSE_MISSILE",
+                "Protective Frenzy #1 (Heavy Damage)": "BLACKFUSE_PROTECTIVE_FRENZY",
+                "Bloodlust (Execute)": "BLACKFUSE_ENC_START",
+                "Overcharge Mine (Mythic)": "BLACKFUSE_OVERCHARGE_MINE",
+                "Overcharge Missile (Mythic)": "BLACKFUSE_OVERCHARGE_MISSILE"
+            }
+        });
+    </script>
+
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
         </button>
         <div class="mt-4 text-xs text-gray-500 italic">
@@ -589,140 +722,156 @@ CD_AUTO_PLANNER.init({
             CD Planer
             <span class="toggle-icon">▼</span>
         </h2>
-<div class="mb-6">
-    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> Planungsübersicht
-    </h3>
-    
-    <div id="blackfuse-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Warte auf Eingaben... <br>
-            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-        </p>
-    </div>
-</div>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> Planungsübersicht
+            </h3>
+
+            <div id="blackfuse-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+                    Warte auf Eingaben... <br>
+                    <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu
+                        aktualisieren)</span>
+                </p>
+            </div>
+        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    <strong>% / #:</strong> Geben Sie die Waffennummer (Welle #1, #2) ein, um CDs für bestimmte Fähigkeiten zu planen.
+                    <strong>% / #:</strong> Geben Sie die Waffennummer (Welle #1, #2) ein, um CDs für bestimmte
+                    Fähigkeiten zu planen.
                 </div>
 
                 <div id="blackfuse-planner-container" class="space-y-2 planner-scroll-container"></div>
-                
+
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale
+                    Gesundheit nutzen.
                 </div>
             </div>
         </div>
     </section>
 
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Fließband (Conveyor Belt)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li>Das Band bewegt sich stetig. DPS müssen laufen und gleichzeitig Schaden auf die festgelegte Waffe machen.</li>
-                    <li>Das Band wird durch <strong class="text-red-400">Feuerwände</strong> und <strong class="text-purple-400">Schrottzerkleinerer</strong> verteidigt. Lasst euch nicht überrollen!</li>
-                    <li>Ist die Waffe zerstört, kehren die Spieler automatisch über eine Röhre auf die Hauptplattform zurück.</li>
-                </ul>
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Fließband (Conveyor
+                        Belt)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li>Das Band bewegt sich stetig. DPS müssen laufen und gleichzeitig Schaden auf die festgelegte
+                            Waffe machen.</li>
+                        <li>Das Band wird durch <strong class="text-red-400">Feuerwände</strong> und <strong
+                                class="text-purple-400">Schrottzerkleinerer</strong> verteidigt. Lasst euch nicht
+                            überrollen!</li>
+                        <li>Ist die Waffe zerstört, kehren die Spieler automatisch über eine Röhre auf die
+                            Hauptplattform zurück.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Waffen-Fähigkeiten
+                        (Wenn nicht zerstört)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-gray-400">Raketenturm:</strong> Schießt dauerhaft kleine Kreis-AoEs auf
+                            den Boden. Einfaches Movement.</li>
+                        <li><strong class="text-yellow-400">Krabblerminen:</strong> Spawnen und laufen sofort auf einen
+                            Spieler zu. Immun gegen Stuns, aber anfällig für Roots und Verlangsamungen (Snares).</li>
+                        <li><strong class="text-cyan-400">Überladener Laser:</strong> Ein Spieler wird fixiert und
+                            hinterlässt eine tödliche Flammenspur, die den Rest des Kampfes bestehen bleibt.</li>
+                    </ul>
+                </div>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Waffen-Fähigkeiten (Wenn nicht zerstört)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-gray-400">Raketenturm:</strong> Schießt dauerhaft kleine Kreis-AoEs auf den Boden. Einfaches Movement.</li>
-                    <li><strong class="text-yellow-400">Krabblerminen:</strong> Spawnen und laufen sofort auf einen Spieler zu. Immun gegen Stuns, aber anfällig für Roots und Verlangsamungen (Snares).</li>
-                    <li><strong class="text-cyan-400">Überladener Laser:</strong> Ein Spieler wird fixiert und hinterlässt eine tödliche Flammenspur, die den Rest des Kampfes bestehen bleibt.</li>
+
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong class="text-purple-400">Verstärkte Waffen:</strong> Die auf dem Band zerstörte Waffe
+                        gewährt den Waffen, die auf die Plattform gelangen, nun heroische Eigenschaften. Der Magnet
+                        zieht noch stärker an, der Laser zieht mehrere Linien etc.</li>
+                    <li>Der Schredder hat deutlich mehr HP und seine "Überladung" löscht den Raid, wenn er nicht
+                        punktgenau von den Tanks und Melees vernichtet wird.</li>
                 </ul>
             </div>
         </div>
-        
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong class="text-purple-400">Verstärkte Waffen:</strong> Die auf dem Band zerstörte Waffe gewährt den Waffen, die auf die Plattform gelangen, nun heroische Eigenschaften. Der Magnet zieht noch stärker an, der Laser zieht mehrere Linien etc.</li>
-                <li>Der Schredder hat deutlich mehr HP und seine "Überladung" löscht den Raid, wenn er nicht punktgenau von den Tanks und Melees vernichtet wird.</li>
-            </ul>
-        </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "BLACKFUSE_ENC_START",            text: "Kampfbeginn" },
-            { val: "BLACKFUSE_HEALTH",               text: "Gesundheit % (Wähle NPC)" },
-            { val: "BLACKFUSE_PROTECTIVE_FRENZY",    text: "Schützender Wahn (Heavy Damage)" },
-            { val: "BLACKFUSE_ELECTRO_STATIC",       text: "Elektrostatische Aufladung (Tank)" },
-            { val: "BLACKFUSE_SAWBLADE",             text: "Sägeblatt schleudern" },
-            { val: "BLACKFUSE_SHREDDER",             text: "Schredder Spawn" },
-            { val: "BLACKFUSE_MINES",                text: "Krabbel-Minen (Soak)" },
-            { val: "BLACKFUSE_DEATH_FROM_ABOVE",     text: "Tod von Oben (Tank)" },
-            { val: "BLACKFUSE_ASSEMBLY",             text: "Fließband Item-Welle" },
-            { val: "BLACKFUSE_MAGNETIC_CRUSH",       text: "Magnetisches Zerquetschen (Raid AOE)" },
-            { val: "BLACKFUSE_MISSILE",              text: "Schockwellen-Rakete" },
-            { val: "BLACKFUSE_OVERCHARGE_MINE",      text: "Überladen: Mine (Mythic)" },
-            { val: "BLACKFUSE_OVERCHARGE_MISSILE",   text: "Überladen: Rakete (Mythic)" },
-            { val: "BLACKFUSE_OVERCHARGE_TURRET",    text: "Überladen: Geschütz (Mythic)" },
-            { val: "BLACKFUSE_OVERCHARGE_ELECTRO",   text: "Überladen: Magnet (Mythic)" },
-            { val: "BLACKFUSE_OVERCHARGE_LASER",     text: "Überladen: Laser (Mythic)" },
-            { val: "BLACKFUSE_OVERLOAD_1",           text: "Überlastung Stack 1" },
-            { val: "BLACKFUSE_OVERLOAD_2",           text: "Überlastung Stack 2" },
-            { val: "BLACKFUSE_OVERLOAD_3",           text: "Überlastung Stack 3" },
-            { val: "BLACKFUSE_OVERLOAD_4",           text: "Überlastung Stack 4" },
-            { val: "BLACKFUSE_OVERLOAD_5",           text: "Überlastung Stack 5 (Gefahr!)" },
-            { val: "BLACKFUSE_OVERLOAD_6",           text: "Überlastung Stack 6" },
-            { val: "BLACKFUSE_OVERLOAD_7",           text: "Überlastung Stack 7" },
-            { val: "BLACKFUSE_OVERLOAD_8",           text: "Überlastung Stack 8" },
-            { val: "BLACKFUSE_OVERLOAD_9",           text: "Überlastung Stack 9" },
-            { val: "BLACKFUSE_OVERLOAD_10",          text: "Überlastung Stack 10 (Wipe!)" }
-        ];
-        
-        const NPC_OPTIONS = [
-            "Belagerungsbauer Schwarzfaust",
-            "Automatischer Schredder",
-            "Aktivierter Raketenwerfer",
-            "Aktivierte Krabbelmine",
-            "Aktiviertes Lasergeschütz",
-            "Aktivierter Elektromagnet",
-            "Aktiviertes Todbringergeschütz",
-            "Goro'dan"
-        ];
-        
-        const container = document.getElementById('blackfuse-planner-container');
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="">-- Bereitschaft --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
-            }
-            return html;
-        };
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
 
-        if (container && container.innerHTML.trim() === "") {
-            
-            const p = container.id.replace('-planner-container', '');
+            const TRIGGER_OPTIONS = [
+                { val: "BLACKFUSE_ENC_START", text: "Kampfbeginn" },
+                { val: "BLACKFUSE_HEALTH", text: "Gesundheit % (Wähle NPC)" },
+                { val: "BLACKFUSE_PROTECTIVE_FRENZY", text: "Schützender Wahn (Heavy Damage)" },
+                { val: "BLACKFUSE_ELECTRO_STATIC", text: "Elektrostatische Ladung (Tank)" },
+                { val: "BLACKFUSE_SAWBLADE", text: "Sägeblatt schleudern" },
+                { val: "BLACKFUSE_SHREDDER", text: "Schredder Spawn" },
+                { val: "BLACKFUSE_MINES", text: "Krabbel-Minen (Soak)" },
+                { val: "BLACKFUSE_DEATH_FROM_ABOVE", text: "Tod von Oben (Tank)" },
+                { val: "BLACKFUSE_ASSEMBLY", text: "Fließband Item-Welle" },
+                { val: "BLACKFUSE_MAGNETIC_CRUSH", text: "Magnetisches Zerquetschen (Raid AOE)" },
+                { val: "BLACKFUSE_MISSILE", text: "Schockwellen-Rakete" },
+                { val: "BLACKFUSE_OVERCHARGE_MINE", text: "Überladen: Mine (Mythic)" },
+                { val: "BLACKFUSE_OVERCHARGE_MISSILE", text: "Überladen: Rakete (Mythic)" },
+                { val: "BLACKFUSE_OVERCHARGE_TURRET", text: "Überladen: Geschütz (Mythic)" },
+                { val: "BLACKFUSE_OVERCHARGE_ELECTRO", text: "Überladen: Magnet (Mythic)" },
+                { val: "BLACKFUSE_OVERCHARGE_LASER", text: "Überladen: Laser (Mythic)" },
+                { val: "BLACKFUSE_OVERLOAD_1", text: "Überlastung Stack 1" },
+                { val: "BLACKFUSE_OVERLOAD_2", text: "Überlastung Stack 2" },
+                { val: "BLACKFUSE_OVERLOAD_3", text: "Überlastung Stack 3" },
+                { val: "BLACKFUSE_OVERLOAD_4", text: "Überlastung Stack 4" },
+                { val: "BLACKFUSE_OVERLOAD_5", text: "Überlastung Stack 5 (Gefahr!)" },
+                { val: "BLACKFUSE_OVERLOAD_6", text: "Überlastung Stack 6" },
+                { val: "BLACKFUSE_OVERLOAD_7", text: "Überlastung Stack 7" },
+                { val: "BLACKFUSE_OVERLOAD_8", text: "Überlastung Stack 8" },
+                { val: "BLACKFUSE_OVERLOAD_9", text: "Überlastung Stack 9" },
+                { val: "BLACKFUSE_OVERLOAD_10", text: "Überlastung Stack 10 (Wipe!)" }
+            ];
 
-            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
-            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
-            
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+            const NPC_OPTIONS = [
+                "Belagerungsbauer Schwarzfaust",
+                "Automatischer Schredder",
+                "Aktivierter Raketenwerfer",
+                "Aktivierte Krabbelmine",
+                "Aktiviertes Lasergeschütz",
+                "Aktivierter Elektromagnet",
+                "Aktiviertes Todbringergeschütz",
+                "Goro'dan"
+            ];
 
-            const headerHtml = `
+            const container = document.getElementById('blackfuse-planner-container');
+
+            const getCooldownOptions = () => {
+                let html = '<option value="">-- Bereitschaft --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+
+                const p = container.id.replace('-planner-container', '');
+
+                const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+                const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+
+                const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -745,9 +894,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 100; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 100; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
 
@@ -755,9 +904,7 @@ CD_AUTO_PLANNER.init({
                         <option value="">-- Nicht aktiv --</option>
                         ${triggerOpts}
                     </select>
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
-                        ${npcOpts}
-                    </select>
+                    <input type="text" list="${p}-npc-list" class="assignment-text-input text-center bg-slate-900 border border-slate-600 text-xs w-full" data-assignment-id="${p}-planner-row${i}-npc" placeholder="NPC Name (oder Leer)">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="${p}-planner-row${i}-condition" placeholder="% / #" value="0">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
@@ -784,649 +931,649 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
+                });
+                setTimeout(window.updatePlannerSummary, 500);
             }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
 
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
-        
-        // ════════════════════════════════════════════════════════════════
-        // KILL ORDER (15 Slots: Missile/Mine/Laser)
-        // ════════════════════════════════════════════════════════════════
-        (function initKillOrder() {
-            const gridEl = document.getElementById('blackfuse-killorder-grid');
-            if (!gridEl) return;
-            
-            const ASSIGNMENT_ID = 'blackfuse-killorder';
-            const NUM_SLOTS = 15;
-            const OPTIONS = ['Missile', 'Mine', 'Laser'];
-            const DEFAULT_VALUE = 'Missile';
-            
-            let killOrder = Array(NUM_SLOTS).fill(DEFAULT_VALUE);
-            let saveTimer = null;
-            
-            const resetBtn = document.getElementById('blackfuse-killorder-reset');
-            const copyBtn  = document.getElementById('blackfuse-killorder-copy');
-            const waOut    = document.getElementById('blackfuse-killorder-wa');
-            
-            function buildWa() {
-                return killOrder.join(',');
-            }
-            function updateWaDisplay() {
-                if (waOut) waOut.textContent = buildWa();
-            }
-            
-            function render() {
-                gridEl.innerHTML = '';
-                for (let i = 0; i < NUM_SLOTS; i++) {
-                    const v = killOrder[i] || DEFAULT_VALUE;
-                    const row = document.createElement('div');
-                    row.className = 'blackfuse-ko-row';
-                    row.innerHTML = `
+            // ════════════════════════════════════════════════════════════════
+            // KILL ORDER (15 Slots: Missile/Mine/Laser)
+            // ════════════════════════════════════════════════════════════════
+            (function initKillOrder() {
+                const gridEl = document.getElementById('blackfuse-killorder-grid');
+                if (!gridEl) return;
+
+                const ASSIGNMENT_ID = 'blackfuse-killorder';
+                const NUM_SLOTS = 15;
+                const OPTIONS = ['Missile', 'Mine', 'Laser'];
+                const DEFAULT_VALUE = 'Missile';
+
+                let killOrder = Array(NUM_SLOTS).fill(DEFAULT_VALUE);
+                let saveTimer = null;
+
+                const resetBtn = document.getElementById('blackfuse-killorder-reset');
+                const copyBtn = document.getElementById('blackfuse-killorder-copy');
+                const waOut = document.getElementById('blackfuse-killorder-wa');
+
+                function buildWa() {
+                    return killOrder.join(',');
+                }
+                function updateWaDisplay() {
+                    if (waOut) waOut.textContent = buildWa();
+                }
+
+                function render() {
+                    gridEl.innerHTML = '';
+                    for (let i = 0; i < NUM_SLOTS; i++) {
+                        const v = killOrder[i] || DEFAULT_VALUE;
+                        const row = document.createElement('div');
+                        row.className = 'blackfuse-ko-row';
+                        row.innerHTML = `
                         <span class="ko-num">${i + 1}</span>
                         <select class="blackfuse-ko-select opt-${v}" data-slot="${i}">
                             ${OPTIONS.map(o => `<option value="${o}" ${o === v ? 'selected' : ''}>${o}</option>`).join('')}
                         </select>
                     `;
-                    gridEl.appendChild(row);
+                        gridEl.appendChild(row);
+                    }
+                    updateWaDisplay();
                 }
-                updateWaDisplay();
-            }
-            
-            gridEl.addEventListener('change', (e) => {
-                const sel = e.target.closest('.blackfuse-ko-select');
-                if (!sel) return;
-                const slot = parseInt(sel.dataset.slot);
-                if (isNaN(slot)) return;
-                killOrder[slot] = sel.value;
-                sel.classList.remove('opt-Missile', 'opt-Mine', 'opt-Laser');
-                sel.classList.add('opt-' + sel.value);
-                updateWaDisplay();
-                scheduleSave();
-            });
-            
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    killOrder = Array(NUM_SLOTS).fill(DEFAULT_VALUE);
-                    render();
+
+                gridEl.addEventListener('change', (e) => {
+                    const sel = e.target.closest('.blackfuse-ko-select');
+                    if (!sel) return;
+                    const slot = parseInt(sel.dataset.slot);
+                    if (isNaN(slot)) return;
+                    killOrder[slot] = sel.value;
+                    sel.classList.remove('opt-Missile', 'opt-Mine', 'opt-Laser');
+                    sel.classList.add('opt-' + sel.value);
+                    updateWaDisplay();
                     scheduleSave();
                 });
-            }
-            if (copyBtn) {
-                copyBtn.addEventListener('click', () => {
-                    const text = buildWa();
-                    navigator.clipboard.writeText(text).then(() => {
-                        const old = copyBtn.textContent;
-                        copyBtn.textContent = '✓ Kopiert';
-                        setTimeout(() => copyBtn.textContent = old, 1200);
-                    }).catch(() => {});
-                });
-            }
-            
-            function scheduleSave() {
-                if (saveTimer) clearTimeout(saveTimer);
-                saveTimer = setTimeout(saveData, 600);
-            }
-            async function saveData() {
-                if (!window.isManager || !firebaseTools || !firebaseTools.db) return;
-                const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
-                try {
-                    const hash = location.hash.substring(1);
-                    const bossId = hash.split('/')[1] || 'siegecrafter';
-                    const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
-                    await firebaseTools.setDoc(docRef, {
-                        [ASSIGNMENT_ID]: {
-                            killOrder: killOrder,
-                            editor: editorName,
-                            timestamp: new Date().toISOString()
-                        }
-                    }, { merge: true });
-                } catch (e) {
-                    console.error('[KillOrder] Save fehlgeschlagen:', e);
-                }
-            }
-            
-            if (assignments && assignments[ASSIGNMENT_ID] && Array.isArray(assignments[ASSIGNMENT_ID].killOrder)) {
-                const saved = assignments[ASSIGNMENT_ID].killOrder;
-                killOrder = saved.slice(0, NUM_SLOTS).concat(Array(NUM_SLOTS).fill(DEFAULT_VALUE)).slice(0, NUM_SLOTS);
-                killOrder = killOrder.map(v => OPTIONS.includes(v) ? v : DEFAULT_VALUE);
-            }
-            
-            function applyKoProtection() {
-                const isM = !!window.isManager;
-                gridEl.querySelectorAll('select, button').forEach(el => el.disabled = !isM);
-                if (resetBtn) resetBtn.disabled = !isM;
-            }
-            
-            render();
-            applyKoProtection();
-            setInterval(applyKoProtection, 1500);
-        })();
 
-        // ════════════════════════════════════════════════════════════════
-        // TEAM & LINE ASSIGNMENTS (2 Teams, Zuweisung auf 9 Lines)
-        // ════════════════════════════════════════════════════════════════
-        (function initLineAssignments() {
-            const teamsGrid = document.getElementById('blackfuse-teams-grid');
-            const beltGrid  = document.getElementById('blackfuse-belt-grid');
-            if (!teamsGrid || !beltGrid) return;
-            
-            const ASSIGNMENT_ID = 'blackfuse-lines';
-            const NUM_TEAMS = 2;
-            const SLOTS_PER_TEAM = 5;
-            const NUM_LINES = 9;
-            
-            let teamsData = Array.from({ length: NUM_TEAMS }, () => Array(SLOTS_PER_TEAM).fill(''));
-            let lineTeams = Array(NUM_LINES).fill('');
-            let saveTimer = null;
-            
-            const SPEC_DEFINITIONS = {
-                DEATHKNIGHT: [
-                    { value: 'Blood',        label: 'Blood (Tank)',        role: 'tank' },
-                    { value: 'Frost1',       label: 'Frost',               role: 'dps',    archetype: 'melee' },
-                    { value: 'Unholy',       label: 'Unholy',              role: 'dps',    archetype: 'melee' }
-                ],
-                DRUID: [
-                    { value: 'Balance',      label: 'Balance',             role: 'dps',    archetype: 'caster' },
-                    { value: 'Feral',        label: 'Feral',               role: 'dps',    archetype: 'melee' },
-                    { value: 'Guardian',     label: 'Guardian (Tank)',     role: 'tank' },
-                    { value: 'Restoration',  label: 'Restoration (Heal)',  role: 'healer' }
-                ],
-                HUNTER: [
-                    { value: 'Beastmastery', label: 'Beastmastery',        role: 'dps',    archetype: 'ranged_physical' },
-                    { value: 'Marksmanship', label: 'Marksmanship',        role: 'dps',    archetype: 'ranged_physical' },
-                    { value: 'Survival',     label: 'Survival',            role: 'dps',    archetype: 'ranged_physical' }
-                ],
-                MAGE: [
-                    { value: 'Arcane',       label: 'Arcane',              role: 'dps',    archetype: 'caster' },
-                    { value: 'Fire',         label: 'Fire',                role: 'dps',    archetype: 'caster' },
-                    { value: 'Frost',        label: 'Frost',               role: 'dps',    archetype: 'caster' }
-                ],
-                MONK: [
-                    { value: 'Brewmaster',   label: 'Brewmaster (Tank)',   role: 'tank' },
-                    { value: 'Mistweaver',   label: 'Mistweaver (Heal)',   role: 'healer' },
-                    { value: 'Windwalker',   label: 'Windwalker',          role: 'dps',    archetype: 'melee' }
-                ],
-                PALADIN: [
-                    { value: 'Holy1',        label: 'Holy (Heal)',         role: 'healer' },
-                    { value: 'Protection1',  label: 'Protection (Tank)',   role: 'tank' },
-                    { value: 'Retribution',  label: 'Retribution',         role: 'dps',    archetype: 'melee' }
-                ],
-                PRIEST: [
-                    { value: 'Discipline',   label: 'Discipline (Heal)',   role: 'healer' },
-                    { value: 'Holy',         label: 'Holy (Heal)',         role: 'healer' },
-                    { value: 'Shadow',       label: 'Shadow',              role: 'dps',    archetype: 'caster' }
-                ],
-                ROGUE: [
-                    { value: 'Assassination', label: 'Assassination',      role: 'dps',    archetype: 'melee' },
-                    { value: 'Combat',       label: 'Combat',              role: 'dps',    archetype: 'melee' },
-                    { value: 'Subtlety',     label: 'Subtlety',            role: 'dps',    archetype: 'melee' }
-                ],
-                SHAMAN: [
-                    { value: 'Elemental',    label: 'Elemental',           role: 'dps',    archetype: 'caster' },
-                    { value: 'Enhancement',  label: 'Enhancement',         role: 'dps',    archetype: 'melee' },
-                    { value: 'Restoration1', label: 'Restoration (Heal)',  role: 'healer' }
-                ],
-                WARLOCK: [
-                    { value: 'Affliction',   label: 'Affliction',          role: 'dps',    archetype: 'caster' },
-                    { value: 'Demonology',   label: 'Demonology',          role: 'dps',    archetype: 'caster' },
-                    { value: 'Destruction',  label: 'Destruction',         role: 'dps',    archetype: 'caster' }
-                ],
-                WARRIOR: [
-                    { value: 'Arms',         label: 'Arms',                role: 'dps',    archetype: 'melee' },
-                    { value: 'Fury',         label: 'Fury',                role: 'dps',    archetype: 'melee' },
-                    { value: 'Protection',   label: 'Protection (Tank)',   role: 'tank' }
-                ]
-            };
-            const SPEC_ARCHETYPE_LOOKUP = (() => {
-                const m = {};
-                Object.keys(SPEC_DEFINITIONS).forEach(cls => {
-                    SPEC_DEFINITIONS[cls].forEach(s => { if (s.archetype) m[cls + '|' + s.value] = s.archetype; });
-                });
-                return m;
-            })();
-            const ARCHETYPE_LABELS = { melee: 'Melee', ranged_physical: 'Ranged Physical', caster: 'Caster' };
-            const CLASS_ALIASES = {
-                'death knight':'DEATHKNIGHT','deathknight':'DEATHKNIGHT','dk':'DEATHKNIGHT','todesritter':'DEATHKNIGHT',
-                'druid':'DRUID','druide':'DRUID','hunter':'HUNTER','jäger':'HUNTER','jaeger':'HUNTER',
-                'mage':'MAGE','magier':'MAGE','monk':'MONK','mönch':'MONK','moench':'MONK',
-                'paladin':'PALADIN','priest':'PRIEST','priester':'PRIEST','rogue':'ROGUE','schurke':'ROGUE',
-                'shaman':'SHAMAN','schamane':'SHAMAN','warlock':'WARLOCK','hexenmeister':'WARLOCK',
-                'warrior':'WARRIOR','krieger':'WARRIOR'
-            };
-            const CLASS_DISPLAY = {
-                DEATHKNIGHT:'Todesritter',DRUID:'Druide',HUNTER:'Jäger',MAGE:'Magier',MONK:'Mönch',
-                PALADIN:'Paladin',PRIEST:'Priester',ROGUE:'Schurke',SHAMAN:'Schamane',
-                WARLOCK:'Hexenmeister',WARRIOR:'Krieger'
-            };
-            function normalizeClass(cls) {
-                if (!cls) return '';
-                return CLASS_ALIASES[String(cls).toLowerCase().trim()] || '';
-            }
-            
-            const DEFAULT_PRIO_CATEGORIES = [
-                { id: 'healer', label: 'Healer', class: '', spec: '', role: 'healer', archetype: '' },
-                { id: 'tank',   label: 'Tank',   class: '', spec: '', role: 'tank',   archetype: '', maxTotal: 1 },
-                { id: 'caster', label: 'Caster DPS', class: '', spec: '', role: 'dps', archetype: 'caster' },
-                { id: 'ranged', label: 'Ranged Physical DPS', class: '', spec: '', role: 'dps', archetype: 'ranged_physical' },
-                { id: 'melee',  label: 'Melee DPS', class: '', spec: '', role: 'dps', archetype: 'melee' }
-            ];
-            const PRIO_STORAGE_KEY = 'blackfuse-lines-prio-categories-v1';
-            let prioCategories = [];
-            
-            function loadPrio() {
-                try {
-                    const saved = localStorage.getItem(PRIO_STORAGE_KEY);
-                    if (saved) {
-                        const parsed = JSON.parse(saved);
-                        if (Array.isArray(parsed) && parsed.every(c => c && c.id && c.label)) {
-                            prioCategories = parsed;
-                            return;
-                        }
-                    }
-                } catch (e) {}
-                prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
-            }
-            function savePrio() {
-                try { localStorage.setItem(PRIO_STORAGE_KEY, JSON.stringify(prioCategories)); } catch (e) {}
-            }
-            loadPrio();
-            
-            function getPlayerRoleNormalized(p) {
-                if (Array.isArray(p.roles) && p.roles.length > 0) return String(p.roles[0]).toLowerCase();
-                if (p.role) return String(p.role).toLowerCase();
-                return '';
-            }
-            function getPlayerSpec(p)  { return (p.spec || p.specName || p.specialization || '').toString(); }
-            function getPlayerClass(p) { return (p.class || p.className || '').toString(); }
-            function getPlayerArchetype(p) {
-                const cls = normalizeClass(getPlayerClass(p));
-                const spec = getPlayerSpec(p);
-                if (!cls || !spec) return '';
-                return SPEC_ARCHETYPE_LOOKUP[cls + '|' + spec] || '';
-            }
-            function playerMatchesCategory(p, cat) {
-                const playerClass = normalizeClass(getPlayerClass(p));
-                const playerSpec  = getPlayerSpec(p);
-                const playerRole  = getPlayerRoleNormalized(p);
-                if (cat.class && playerClass !== cat.class) return false;
-                if (cat.spec  && playerSpec  !== cat.spec)  return false;
-                if (cat.role  && playerRole  !== cat.role.toLowerCase()) return false;
-                if (cat.archetype && cat.archetype.trim()) {
-                    if (getPlayerArchetype(p) !== cat.archetype) return false;
-                }
-                return true;
-            }
-            function getPlayerCategory(p) {
-                if (!p) return null;
-                for (const cat of prioCategories) {
-                    if (playerMatchesCategory(p, cat)) return cat;
-                }
-                return null;
-            }
-            
-            function getPlayerOptions(selectedName) {
-                let html = '<option value="">—</option>';
-                if (Array.isArray(roster)) {
-                    roster.forEach(p => {
-                        const name = p.name || p;
-                        const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
-                        const sel = name === selectedName ? ' selected' : '';
-                        html += `<option value="${name}" style="color:${color};" data-color="${color}"${sel}>${name}</option>`;
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        killOrder = Array(NUM_SLOTS).fill(DEFAULT_VALUE);
+                        render();
+                        scheduleSave();
                     });
                 }
-                return html;
-            }
-            
-            function findOtherTeamsWithPlayer(name, exceptTeam) {
-                const result = [];
-                if (!name) return result;
-                for (let t = 0; t < NUM_TEAMS; t++) {
-                    if (t === exceptTeam) continue;
-                    if (teamsData[t].includes(name)) result.push(t + 1);
+                if (copyBtn) {
+                    copyBtn.addEventListener('click', () => {
+                        const text = buildWa();
+                        navigator.clipboard.writeText(text).then(() => {
+                            const old = copyBtn.textContent;
+                            copyBtn.textContent = '✓ Kopiert';
+                            setTimeout(() => copyBtn.textContent = old, 1200);
+                        }).catch(() => { });
+                    });
                 }
-                return result;
-            }
-            
-            function refreshDuplicateMarkers() {
-                teamsGrid.querySelectorAll('.blackfuse-team-slot').forEach(sel => {
-                    const t = parseInt(sel.dataset.team);
-                    const s = parseInt(sel.dataset.slot);
-                    const val = teamsData[t]?.[s] || '';
-                    const dupOn = val ? findOtherTeamsWithPlayer(val, t) : [];
-                    if (dupOn.length > 0) {
-                        sel.classList.add('is-duplicate');
-                        sel.title = `⚠ Auch in Team ${dupOn.join(', Team ')}`;
-                    } else {
-                        sel.classList.remove('is-duplicate');
-                        sel.title = '';
+
+                function scheduleSave() {
+                    if (saveTimer) clearTimeout(saveTimer);
+                    saveTimer = setTimeout(saveData, 600);
+                }
+                async function saveData() {
+                    if (!window.isManager || !firebaseTools || !firebaseTools.db) return;
+                    const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                    try {
+                        const hash = location.hash.substring(1);
+                        const bossId = hash.split('/')[1] || 'siegecrafter';
+                        const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                        await firebaseTools.setDoc(docRef, {
+                            [ASSIGNMENT_ID]: {
+                                killOrder: killOrder,
+                                editor: editorName,
+                                timestamp: new Date().toISOString()
+                            }
+                        }, { merge: true });
+                    } catch (e) {
+                        console.error('[KillOrder] Save fehlgeschlagen:', e);
                     }
-                });
-            }
-            
-            function render() {
-                if (teamsGrid) {
-                    teamsGrid.innerHTML = '';
-                    for (let t = 0; t < NUM_TEAMS; t++) {
-                        const card = document.createElement('div');
-                        card.className = 'blackfuse-line-card';
-                        card.innerHTML = `<span class="blackfuse-line-label">Team ${t + 1}</span>` +
-                            Array.from({ length: SLOTS_PER_TEAM }, (_, s) => {
-                                const v = teamsData[t][s] || '';
-                                return `<select class="blackfuse-team-slot" data-team="${t}" data-slot="${s}">${getPlayerOptions(v)}</select>`;
-                            }).join('');
-                        teamsGrid.appendChild(card);
-                        
-                        card.querySelectorAll('.blackfuse-team-slot').forEach(sel => {
-                            const opt = sel.options[sel.selectedIndex];
-                            if (opt && opt.value) sel.style.color = opt.dataset.color || '#fff';
+                }
+
+                if (assignments && assignments[ASSIGNMENT_ID] && Array.isArray(assignments[ASSIGNMENT_ID].killOrder)) {
+                    const saved = assignments[ASSIGNMENT_ID].killOrder;
+                    killOrder = saved.slice(0, NUM_SLOTS).concat(Array(NUM_SLOTS).fill(DEFAULT_VALUE)).slice(0, NUM_SLOTS);
+                    killOrder = killOrder.map(v => OPTIONS.includes(v) ? v : DEFAULT_VALUE);
+                }
+
+                function applyKoProtection() {
+                    const isM = !!window.isManager;
+                    gridEl.querySelectorAll('select, button').forEach(el => el.disabled = !isM);
+                    if (resetBtn) resetBtn.disabled = !isM;
+                }
+
+                render();
+                applyKoProtection();
+                setInterval(applyKoProtection, 1500);
+            })();
+
+            // ════════════════════════════════════════════════════════════════
+            // TEAM & LINE ASSIGNMENTS (2 Teams, Zuweisung auf 9 Lines)
+            // ════════════════════════════════════════════════════════════════
+            (function initLineAssignments() {
+                const teamsGrid = document.getElementById('blackfuse-teams-grid');
+                const beltGrid = document.getElementById('blackfuse-belt-grid');
+                if (!teamsGrid || !beltGrid) return;
+
+                const ASSIGNMENT_ID = 'blackfuse-lines';
+                const NUM_TEAMS = 2;
+                const SLOTS_PER_TEAM = 5;
+                const NUM_LINES = 9;
+
+                let teamsData = Array.from({ length: NUM_TEAMS }, () => Array(SLOTS_PER_TEAM).fill(''));
+                let lineTeams = Array(NUM_LINES).fill('');
+                let saveTimer = null;
+
+                const SPEC_DEFINITIONS = {
+                    DEATHKNIGHT: [
+                        { value: 'Blood', label: 'Blood (Tank)', role: 'tank' },
+                        { value: 'Frost1', label: 'Frost', role: 'dps', archetype: 'melee' },
+                        { value: 'Unholy', label: 'Unholy', role: 'dps', archetype: 'melee' }
+                    ],
+                    DRUID: [
+                        { value: 'Balance', label: 'Balance', role: 'dps', archetype: 'caster' },
+                        { value: 'Feral', label: 'Feral', role: 'dps', archetype: 'melee' },
+                        { value: 'Guardian', label: 'Guardian (Tank)', role: 'tank' },
+                        { value: 'Restoration', label: 'Restoration (Heal)', role: 'healer' }
+                    ],
+                    HUNTER: [
+                        { value: 'Beastmastery', label: 'Beastmastery', role: 'dps', archetype: 'ranged_physical' },
+                        { value: 'Marksmanship', label: 'Marksmanship', role: 'dps', archetype: 'ranged_physical' },
+                        { value: 'Survival', label: 'Survival', role: 'dps', archetype: 'ranged_physical' }
+                    ],
+                    MAGE: [
+                        { value: 'Arcane', label: 'Arcane', role: 'dps', archetype: 'caster' },
+                        { value: 'Fire', label: 'Fire', role: 'dps', archetype: 'caster' },
+                        { value: 'Frost', label: 'Frost', role: 'dps', archetype: 'caster' }
+                    ],
+                    MONK: [
+                        { value: 'Brewmaster', label: 'Brewmaster (Tank)', role: 'tank' },
+                        { value: 'Mistweaver', label: 'Mistweaver (Heal)', role: 'healer' },
+                        { value: 'Windwalker', label: 'Windwalker', role: 'dps', archetype: 'melee' }
+                    ],
+                    PALADIN: [
+                        { value: 'Holy1', label: 'Holy (Heal)', role: 'healer' },
+                        { value: 'Protection1', label: 'Protection (Tank)', role: 'tank' },
+                        { value: 'Retribution', label: 'Retribution', role: 'dps', archetype: 'melee' }
+                    ],
+                    PRIEST: [
+                        { value: 'Discipline', label: 'Discipline (Heal)', role: 'healer' },
+                        { value: 'Holy', label: 'Holy (Heal)', role: 'healer' },
+                        { value: 'Shadow', label: 'Shadow', role: 'dps', archetype: 'caster' }
+                    ],
+                    ROGUE: [
+                        { value: 'Assassination', label: 'Assassination', role: 'dps', archetype: 'melee' },
+                        { value: 'Combat', label: 'Combat', role: 'dps', archetype: 'melee' },
+                        { value: 'Subtlety', label: 'Subtlety', role: 'dps', archetype: 'melee' }
+                    ],
+                    SHAMAN: [
+                        { value: 'Elemental', label: 'Elemental', role: 'dps', archetype: 'caster' },
+                        { value: 'Enhancement', label: 'Enhancement', role: 'dps', archetype: 'melee' },
+                        { value: 'Restoration1', label: 'Restoration (Heal)', role: 'healer' }
+                    ],
+                    WARLOCK: [
+                        { value: 'Affliction', label: 'Affliction', role: 'dps', archetype: 'caster' },
+                        { value: 'Demonology', label: 'Demonology', role: 'dps', archetype: 'caster' },
+                        { value: 'Destruction', label: 'Destruction', role: 'dps', archetype: 'caster' }
+                    ],
+                    WARRIOR: [
+                        { value: 'Arms', label: 'Arms', role: 'dps', archetype: 'melee' },
+                        { value: 'Fury', label: 'Fury', role: 'dps', archetype: 'melee' },
+                        { value: 'Protection', label: 'Protection (Tank)', role: 'tank' }
+                    ]
+                };
+                const SPEC_ARCHETYPE_LOOKUP = (() => {
+                    const m = {};
+                    Object.keys(SPEC_DEFINITIONS).forEach(cls => {
+                        SPEC_DEFINITIONS[cls].forEach(s => { if (s.archetype) m[cls + '|' + s.value] = s.archetype; });
+                    });
+                    return m;
+                })();
+                const ARCHETYPE_LABELS = { melee: 'Melee', ranged_physical: 'Ranged Physical', caster: 'Caster' };
+                const CLASS_ALIASES = {
+                    'death knight': 'DEATHKNIGHT', 'deathknight': 'DEATHKNIGHT', 'dk': 'DEATHKNIGHT', 'todesritter': 'DEATHKNIGHT',
+                    'druid': 'DRUID', 'druide': 'DRUID', 'hunter': 'HUNTER', 'jäger': 'HUNTER', 'jaeger': 'HUNTER',
+                    'mage': 'MAGE', 'magier': 'MAGE', 'monk': 'MONK', 'mönch': 'MONK', 'moench': 'MONK',
+                    'paladin': 'PALADIN', 'priest': 'PRIEST', 'priester': 'PRIEST', 'rogue': 'ROGUE', 'schurke': 'ROGUE',
+                    'shaman': 'SHAMAN', 'schamane': 'SHAMAN', 'warlock': 'WARLOCK', 'hexenmeister': 'WARLOCK',
+                    'warrior': 'WARRIOR', 'krieger': 'WARRIOR'
+                };
+                const CLASS_DISPLAY = {
+                    DEATHKNIGHT: 'Todesritter', DRUID: 'Druide', HUNTER: 'Jäger', MAGE: 'Magier', MONK: 'Mönch',
+                    PALADIN: 'Paladin', PRIEST: 'Priester', ROGUE: 'Schurke', SHAMAN: 'Schamane',
+                    WARLOCK: 'Hexenmeister', WARRIOR: 'Krieger'
+                };
+                function normalizeClass(cls) {
+                    if (!cls) return '';
+                    return CLASS_ALIASES[String(cls).toLowerCase().trim()] || '';
+                }
+
+                const DEFAULT_PRIO_CATEGORIES = [
+                    { id: 'healer', label: 'Healer', class: '', spec: '', role: 'healer', archetype: '' },
+                    { id: 'tank', label: 'Tank', class: '', spec: '', role: 'tank', archetype: '', maxTotal: 1 },
+                    { id: 'caster', label: 'Caster DPS', class: '', spec: '', role: 'dps', archetype: 'caster' },
+                    { id: 'ranged', label: 'Ranged Physical DPS', class: '', spec: '', role: 'dps', archetype: 'ranged_physical' },
+                    { id: 'melee', label: 'Melee DPS', class: '', spec: '', role: 'dps', archetype: 'melee' }
+                ];
+                const PRIO_STORAGE_KEY = 'blackfuse-lines-prio-categories-v1';
+                let prioCategories = [];
+
+                function loadPrio() {
+                    try {
+                        const saved = localStorage.getItem(PRIO_STORAGE_KEY);
+                        if (saved) {
+                            const parsed = JSON.parse(saved);
+                            if (Array.isArray(parsed) && parsed.every(c => c && c.id && c.label)) {
+                                prioCategories = parsed;
+                                return;
+                            }
+                        }
+                    } catch (e) { }
+                    prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+                }
+                function savePrio() {
+                    try { localStorage.setItem(PRIO_STORAGE_KEY, JSON.stringify(prioCategories)); } catch (e) { }
+                }
+                loadPrio();
+
+                function getPlayerRoleNormalized(p) {
+                    if (Array.isArray(p.roles) && p.roles.length > 0) return String(p.roles[0]).toLowerCase();
+                    if (p.role) return String(p.role).toLowerCase();
+                    return '';
+                }
+                function getPlayerSpec(p) { return (p.spec || p.specName || p.specialization || '').toString(); }
+                function getPlayerClass(p) { return (p.class || p.className || '').toString(); }
+                function getPlayerArchetype(p) {
+                    const cls = normalizeClass(getPlayerClass(p));
+                    const spec = getPlayerSpec(p);
+                    if (!cls || !spec) return '';
+                    return SPEC_ARCHETYPE_LOOKUP[cls + '|' + spec] || '';
+                }
+                function playerMatchesCategory(p, cat) {
+                    const playerClass = normalizeClass(getPlayerClass(p));
+                    const playerSpec = getPlayerSpec(p);
+                    const playerRole = getPlayerRoleNormalized(p);
+                    if (cat.class && playerClass !== cat.class) return false;
+                    if (cat.spec && playerSpec !== cat.spec) return false;
+                    if (cat.role && playerRole !== cat.role.toLowerCase()) return false;
+                    if (cat.archetype && cat.archetype.trim()) {
+                        if (getPlayerArchetype(p) !== cat.archetype) return false;
+                    }
+                    return true;
+                }
+                function getPlayerCategory(p) {
+                    if (!p) return null;
+                    for (const cat of prioCategories) {
+                        if (playerMatchesCategory(p, cat)) return cat;
+                    }
+                    return null;
+                }
+
+                function getPlayerOptions(selectedName) {
+                    let html = '<option value="">—</option>';
+                    if (Array.isArray(roster)) {
+                        roster.forEach(p => {
+                            const name = p.name || p;
+                            const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
+                            const sel = name === selectedName ? ' selected' : '';
+                            html += `<option value="${name}" style="color:${color};" data-color="${color}"${sel}>${name}</option>`;
                         });
                     }
+                    return html;
                 }
-                
-                if (beltGrid) {
-                    beltGrid.innerHTML = '';
-                    for (let l = 0; l < NUM_LINES; l++) {
-                        const val = lineTeams[l];
-                        const card = document.createElement('div');
-                        card.className = 'flex items-center gap-2 bg-slate-900/50 p-1 border border-slate-700 rounded';
-                        card.innerHTML = `
-                            <span class="text-[11px] font-bold text-gray-300 w-10 text-center">L${l+1}</span>
+
+                function findOtherTeamsWithPlayer(name, exceptTeam) {
+                    const result = [];
+                    if (!name) return result;
+                    for (let t = 0; t < NUM_TEAMS; t++) {
+                        if (t === exceptTeam) continue;
+                        if (teamsData[t].includes(name)) result.push(t + 1);
+                    }
+                    return result;
+                }
+
+                function refreshDuplicateMarkers() {
+                    teamsGrid.querySelectorAll('.blackfuse-team-slot').forEach(sel => {
+                        const t = parseInt(sel.dataset.team);
+                        const s = parseInt(sel.dataset.slot);
+                        const val = teamsData[t]?.[s] || '';
+                        const dupOn = val ? findOtherTeamsWithPlayer(val, t) : [];
+                        if (dupOn.length > 0) {
+                            sel.classList.add('is-duplicate');
+                            sel.title = `⚠ Auch in Team ${dupOn.join(', Team ')}`;
+                        } else {
+                            sel.classList.remove('is-duplicate');
+                            sel.title = '';
+                        }
+                    });
+                }
+
+                function render() {
+                    if (teamsGrid) {
+                        teamsGrid.innerHTML = '';
+                        for (let t = 0; t < NUM_TEAMS; t++) {
+                            const card = document.createElement('div');
+                            card.className = 'blackfuse-line-card';
+                            card.innerHTML = `<span class="blackfuse-line-label">Team ${t + 1}</span>` +
+                                Array.from({ length: SLOTS_PER_TEAM }, (_, s) => {
+                                    const v = teamsData[t][s] || '';
+                                    return `<select class="blackfuse-team-slot" data-team="${t}" data-slot="${s}">${getPlayerOptions(v)}</select>`;
+                                }).join('');
+                            teamsGrid.appendChild(card);
+
+                            card.querySelectorAll('.blackfuse-team-slot').forEach(sel => {
+                                const opt = sel.options[sel.selectedIndex];
+                                if (opt && opt.value) sel.style.color = opt.dataset.color || '#fff';
+                            });
+                        }
+                    }
+
+                    if (beltGrid) {
+                        beltGrid.innerHTML = '';
+                        for (let l = 0; l < NUM_LINES; l++) {
+                            const val = lineTeams[l];
+                            const card = document.createElement('div');
+                            card.className = 'flex items-center gap-2 bg-slate-900/50 p-1 border border-slate-700 rounded';
+                            card.innerHTML = `
+                            <span class="text-[11px] font-bold text-gray-300 w-10 text-center">L${l + 1}</span>
                             <select class="blackfuse-belt-select w-full bg-slate-800 border-slate-600 text-[11px] text-white rounded px-1 py-0.5" data-line="${l}">
                                 <option value="">—</option>
                                 <option value="0" ${val === '0' ? 'selected' : ''}>Team 1</option>
                                 <option value="1" ${val === '1' ? 'selected' : ''}>Team 2</option>
                             </select>
                         `;
-                        beltGrid.appendChild(card);
-                    }
-                }
-                
-                refreshDuplicateMarkers();
-                updateWaDisplay();
-            }
-            
-            function buildWa() {
-                const parts = [];
-                for (let l = 0; l < NUM_LINES; l++) {
-                    const teamIdx = lineTeams[l];
-                    if (teamIdx === '0' || teamIdx === '1') {
-                        const players = teamsData[parseInt(teamIdx)].filter(s => s && s.trim()).join(',');
-                        if (players) parts.push(`LINE${l + 1}-${players}`);
-                    }
-                }
-                return parts.join(',');
-            }
-            const waOut = document.getElementById('blackfuse-lines-wa');
-            function updateWaDisplay() {
-                if (waOut) waOut.textContent = buildWa() || '—';
-            }
-            
-            teamsGrid.addEventListener('change', (e) => {
-                const sel = e.target.closest('.blackfuse-team-slot');
-                if (!sel) return;
-                const t = parseInt(sel.dataset.team);
-                const s = parseInt(sel.dataset.slot);
-                if (isNaN(t) || isNaN(s)) return;
-                teamsData[t][s] = sel.value;
-                const opt = sel.options[sel.selectedIndex];
-                sel.style.color = opt ? (opt.dataset.color || '#fff') : '#fff';
-                refreshDuplicateMarkers();
-                updateWaDisplay();
-                scheduleSave();
-            });
-
-            beltGrid.addEventListener('change', (e) => {
-                const sel = e.target.closest('.blackfuse-belt-select');
-                if (!sel) return;
-                const l = parseInt(sel.dataset.line);
-                if (isNaN(l)) return;
-                lineTeams[l] = sel.value;
-                updateWaDisplay();
-                scheduleSave();
-            });
-            
-            function scheduleSave() {
-                if (saveTimer) clearTimeout(saveTimer);
-                saveTimer = setTimeout(saveData, 600);
-            }
-            async function saveData() {
-                if (!window.isManager || !firebaseTools || !firebaseTools.db) return;
-                const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
-                try {
-                    const safeTeamsData = teamsData.map(teamSlots => {
-                        return { slots: teamSlots };
-                    });
-
-                    const hash = location.hash.substring(1);
-                    const bossId = hash.split('/')[1] || 'siegecrafter';
-                    const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
-                    await firebaseTools.setDoc(docRef, {
-                        [ASSIGNMENT_ID]: {
-                            teamsData: safeTeamsData,
-                            lineTeams: lineTeams,
-                            editor: editorName,
-                            timestamp: new Date().toISOString()
+                            beltGrid.appendChild(card);
                         }
-                    }, { merge: true });
-                } catch (e) {
-                    console.error('[Lines] Save fehlgeschlagen:', e);
-                }
-            }
-            
-            if (assignments && assignments[ASSIGNMENT_ID]) {
-                const savedTeams = assignments[ASSIGNMENT_ID].teamsData;
-                const savedLines = assignments[ASSIGNMENT_ID].lineTeams;
-                
-                if (savedTeams) {
-                    for (let t = 0; t < NUM_TEAMS; t++) {
-                        let slotsToLoad = [];
-                        if (savedTeams[t] && Array.isArray(savedTeams[t].slots)) {
-                            slotsToLoad = savedTeams[t].slots;
-                        } else if (Array.isArray(savedTeams[t])) {
-                            slotsToLoad = savedTeams[t];
-                        } else if (typeof savedTeams[t] === 'object') {
-                            slotsToLoad = Object.values(savedTeams[t]);
-                        }
-                        teamsData[t] = slotsToLoad.slice(0, SLOTS_PER_TEAM).concat(Array(SLOTS_PER_TEAM).fill('')).slice(0, SLOTS_PER_TEAM);
                     }
+
+                    refreshDuplicateMarkers();
+                    updateWaDisplay();
                 }
-                if (Array.isArray(savedLines) && savedLines.length === NUM_LINES) {
-                    lineTeams = savedLines.map(v => (v === '0' || v === '1') ? String(v) : '');
+
+                function buildWa() {
+                    const parts = [];
+                    for (let l = 0; l < NUM_LINES; l++) {
+                        const teamIdx = lineTeams[l];
+                        if (teamIdx === '0' || teamIdx === '1') {
+                            const players = teamsData[parseInt(teamIdx)].filter(s => s && s.trim()).join(',');
+                            if (players) parts.push(`LINE${l + 1}-${players}`);
+                        }
+                    }
+                    return parts.join(',');
                 }
-            }
-            
-            const copyBtn = document.getElementById('blackfuse-lines-copy');
-            const clearBtn = document.getElementById('blackfuse-lines-clear');
-            const autoFillBtn = document.getElementById('blackfuse-lines-autofill');
-            
-            if (copyBtn) {
-                copyBtn.addEventListener('click', () => {
-                    const text = buildWa();
-                    if (!text) return;
-                    navigator.clipboard.writeText(text).then(() => {
-                        const old = copyBtn.textContent;
-                        copyBtn.textContent = '✓ Kopiert';
-                        setTimeout(() => copyBtn.textContent = old, 1200);
-                    }).catch(() => {});
-                });
-            }
-            if (clearBtn) {
-                clearBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    teamsData = Array.from({ length: NUM_TEAMS }, () => Array(SLOTS_PER_TEAM).fill(''));
-                    lineTeams = Array(NUM_LINES).fill('');
-                    render();
+                const waOut = document.getElementById('blackfuse-lines-wa');
+                function updateWaDisplay() {
+                    if (waOut) waOut.textContent = buildWa() || '—';
+                }
+
+                teamsGrid.addEventListener('change', (e) => {
+                    const sel = e.target.closest('.blackfuse-team-slot');
+                    if (!sel) return;
+                    const t = parseInt(sel.dataset.team);
+                    const s = parseInt(sel.dataset.slot);
+                    if (isNaN(t) || isNaN(s)) return;
+                    teamsData[t][s] = sel.value;
+                    const opt = sel.options[sel.selectedIndex];
+                    sel.style.color = opt ? (opt.dataset.color || '#fff') : '#fff';
+                    refreshDuplicateMarkers();
+                    updateWaDisplay();
                     scheduleSave();
                 });
-            }
-            
-            if (autoFillBtn) {
-                autoFillBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    if (!Array.isArray(roster) || roster.length === 0) return;
-                    
-                    const alreadyAssigned = new Set();
-                    const usedInRowsByTeam = Array.from({ length: NUM_TEAMS }, () => ({}));
-                    
-                    for (let t = 0; t < NUM_TEAMS; t++) {
-                        teamsData[t].forEach((name, sIdx) => {
-                            if (!name) return;
-                            alreadyAssigned.add(name);
-                            const ply = roster.find(rp => (rp.name || rp) === name);
-                            const cat = ply ? getPlayerCategory(ply) : null;
-                            if (cat) {
-                                if (!usedInRowsByTeam[t][cat.id]) usedInRowsByTeam[t][cat.id] = [];
-                                usedInRowsByTeam[t][cat.id].push(sIdx);
-                            }
+
+                beltGrid.addEventListener('change', (e) => {
+                    const sel = e.target.closest('.blackfuse-belt-select');
+                    if (!sel) return;
+                    const l = parseInt(sel.dataset.line);
+                    if (isNaN(l)) return;
+                    lineTeams[l] = sel.value;
+                    updateWaDisplay();
+                    scheduleSave();
+                });
+
+                function scheduleSave() {
+                    if (saveTimer) clearTimeout(saveTimer);
+                    saveTimer = setTimeout(saveData, 600);
+                }
+                async function saveData() {
+                    if (!window.isManager || !firebaseTools || !firebaseTools.db) return;
+                    const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                    try {
+                        const safeTeamsData = teamsData.map(teamSlots => {
+                            return { slots: teamSlots };
                         });
+
+                        const hash = location.hash.substring(1);
+                        const bossId = hash.split('/')[1] || 'siegecrafter';
+                        const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                        await firebaseTools.setDoc(docRef, {
+                            [ASSIGNMENT_ID]: {
+                                teamsData: safeTeamsData,
+                                lineTeams: lineTeams,
+                                editor: editorName,
+                                timestamp: new Date().toISOString()
+                            }
+                        }, { merge: true });
+                    } catch (e) {
+                        console.error('[Lines] Save fehlgeschlagen:', e);
                     }
-                    
-                    const pool = [];
-                    const used = new Set();
-                    prioCategories.forEach(cat => {
+                }
+
+                if (assignments && assignments[ASSIGNMENT_ID]) {
+                    const savedTeams = assignments[ASSIGNMENT_ID].teamsData;
+                    const savedLines = assignments[ASSIGNMENT_ID].lineTeams;
+
+                    if (savedTeams) {
+                        for (let t = 0; t < NUM_TEAMS; t++) {
+                            let slotsToLoad = [];
+                            if (savedTeams[t] && Array.isArray(savedTeams[t].slots)) {
+                                slotsToLoad = savedTeams[t].slots;
+                            } else if (Array.isArray(savedTeams[t])) {
+                                slotsToLoad = savedTeams[t];
+                            } else if (typeof savedTeams[t] === 'object') {
+                                slotsToLoad = Object.values(savedTeams[t]);
+                            }
+                            teamsData[t] = slotsToLoad.slice(0, SLOTS_PER_TEAM).concat(Array(SLOTS_PER_TEAM).fill('')).slice(0, SLOTS_PER_TEAM);
+                        }
+                    }
+                    if (Array.isArray(savedLines) && savedLines.length === NUM_LINES) {
+                        lineTeams = savedLines.map(v => (v === '0' || v === '1') ? String(v) : '');
+                    }
+                }
+
+                const copyBtn = document.getElementById('blackfuse-lines-copy');
+                const clearBtn = document.getElementById('blackfuse-lines-clear');
+                const autoFillBtn = document.getElementById('blackfuse-lines-autofill');
+
+                if (copyBtn) {
+                    copyBtn.addEventListener('click', () => {
+                        const text = buildWa();
+                        if (!text) return;
+                        navigator.clipboard.writeText(text).then(() => {
+                            const old = copyBtn.textContent;
+                            copyBtn.textContent = '✓ Kopiert';
+                            setTimeout(() => copyBtn.textContent = old, 1200);
+                        }).catch(() => { });
+                    });
+                }
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        teamsData = Array.from({ length: NUM_TEAMS }, () => Array(SLOTS_PER_TEAM).fill(''));
+                        lineTeams = Array(NUM_LINES).fill('');
+                        render();
+                        scheduleSave();
+                    });
+                }
+
+                if (autoFillBtn) {
+                    autoFillBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        if (!Array.isArray(roster) || roster.length === 0) return;
+
+                        const alreadyAssigned = new Set();
+                        const usedInRowsByTeam = Array.from({ length: NUM_TEAMS }, () => ({}));
+
+                        for (let t = 0; t < NUM_TEAMS; t++) {
+                            teamsData[t].forEach((name, sIdx) => {
+                                if (!name) return;
+                                alreadyAssigned.add(name);
+                                const ply = roster.find(rp => (rp.name || rp) === name);
+                                const cat = ply ? getPlayerCategory(ply) : null;
+                                if (cat) {
+                                    if (!usedInRowsByTeam[t][cat.id]) usedInRowsByTeam[t][cat.id] = [];
+                                    usedInRowsByTeam[t][cat.id].push(sIdx);
+                                }
+                            });
+                        }
+
+                        const pool = [];
+                        const used = new Set();
+                        prioCategories.forEach(cat => {
+                            roster.forEach(p => {
+                                const name = p.name || p;
+                                if (used.has(name) || alreadyAssigned.has(name)) return;
+                                if (playerMatchesCategory(p, cat)) {
+                                    pool.push({ name: name, category: cat });
+                                    used.add(name);
+                                }
+                            });
+                        });
                         roster.forEach(p => {
                             const name = p.name || p;
-                            if (used.has(name) || alreadyAssigned.has(name)) return;
-                            if (playerMatchesCategory(p, cat)) {
-                                pool.push({ name: name, category: cat });
-                                used.add(name);
+                            if (!used.has(name) && !alreadyAssigned.has(name)) {
+                                pool.push({ name: name, category: null });
                             }
                         });
-                    });
-                    roster.forEach(p => {
-                        const name = p.name || p;
-                        if (!used.has(name) && !alreadyAssigned.has(name)) {
-                            pool.push({ name: name, category: null });
-                        }
-                    });
-                    
-                    for (let sIdx = 0; sIdx < SLOTS_PER_TEAM; sIdx++) {
-                        for (let t = 0; t < NUM_TEAMS; t++) {
-                            if (teamsData[t][sIdx]) continue;
-                            let foundIdx = -1;
-                            for (let j = 0; j < pool.length; j++) {
-                                const cand = pool[j];
-                                const cat = cand.category;
-                                if (cat) {
-                                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && sIdx < cat.limitRows) {
-                                        const usedInFirstN = (usedInRowsByTeam[t][cat.id] || []).filter(idx => idx < cat.limitRows).length;
-                                        if (usedInFirstN >= cat.limitCount) continue;
+
+                        for (let sIdx = 0; sIdx < SLOTS_PER_TEAM; sIdx++) {
+                            for (let t = 0; t < NUM_TEAMS; t++) {
+                                if (teamsData[t][sIdx]) continue;
+                                let foundIdx = -1;
+                                for (let j = 0; j < pool.length; j++) {
+                                    const cand = pool[j];
+                                    const cat = cand.category;
+                                    if (cat) {
+                                        if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && sIdx < cat.limitRows) {
+                                            const usedInFirstN = (usedInRowsByTeam[t][cat.id] || []).filter(idx => idx < cat.limitRows).length;
+                                            if (usedInFirstN >= cat.limitCount) continue;
+                                        }
+                                        if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                                            const usedTotal = (usedInRowsByTeam[t][cat.id] || []).length;
+                                            if (usedTotal >= cat.maxTotal) continue;
+                                        }
                                     }
-                                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
-                                        const usedTotal = (usedInRowsByTeam[t][cat.id] || []).length;
-                                        if (usedTotal >= cat.maxTotal) continue;
-                                    }
+                                    foundIdx = j;
+                                    break;
                                 }
-                                foundIdx = j;
-                                break;
-                            }
-                            if (foundIdx < 0) continue;
-                            const cand = pool[foundIdx];
-                            pool.splice(foundIdx, 1);
-                            teamsData[t][sIdx] = cand.name;
-                            if (cand.category) {
-                                if (!usedInRowsByTeam[t][cand.category.id]) usedInRowsByTeam[t][cand.category.id] = [];
-                                usedInRowsByTeam[t][cand.category.id].push(sIdx);
+                                if (foundIdx < 0) continue;
+                                const cand = pool[foundIdx];
+                                pool.splice(foundIdx, 1);
+                                teamsData[t][sIdx] = cand.name;
+                                if (cand.category) {
+                                    if (!usedInRowsByTeam[t][cand.category.id]) usedInRowsByTeam[t][cand.category.id] = [];
+                                    usedInRowsByTeam[t][cand.category.id].push(sIdx);
+                                }
                             }
                         }
-                    }
-                    render();
-                    scheduleSave();
-                });
-            }
-            
-            const prioListEl   = document.getElementById('blackfuse-lines-prio-list');
-            const prioAddBtn   = document.getElementById('blackfuse-lines-prio-add');
-            const prioDetectBtn= document.getElementById('blackfuse-lines-prio-detect');
-            const prioResetBtn = document.getElementById('blackfuse-lines-prio-reset');
-            const modalEl      = document.getElementById('blackfuse-lines-prio-modal');
-            const modalTitle   = document.getElementById('blackfuse-lines-prio-modal-title');
-            const modalLabel   = document.getElementById('blackfuse-lines-prio-modal-label');
-            const modalClass   = document.getElementById('blackfuse-lines-prio-modal-class');
-            const modalSpec    = document.getElementById('blackfuse-lines-prio-modal-spec');
-            const modalRole    = document.getElementById('blackfuse-lines-prio-modal-role');
-            const modalArchetype = document.getElementById('blackfuse-lines-prio-modal-archetype');
-            const modalLimitRows = document.getElementById('blackfuse-lines-prio-modal-limit-rows');
-            const modalLimitCount = document.getElementById('blackfuse-lines-prio-modal-limit-count');
-            const modalMaxTotal = document.getElementById('blackfuse-lines-prio-modal-max-total');
-            const modalSave    = document.getElementById('blackfuse-lines-prio-modal-save');
-            const modalCancel  = document.getElementById('blackfuse-lines-prio-modal-cancel');
-            
-            if (modalClass) {
-                Object.keys(SPEC_DEFINITIONS).forEach(c => {
-                    modalClass.appendChild(new Option(CLASS_DISPLAY[c] || c, c));
-                });
-            }
-            function updateSpecDropdown(selCls, selSpec) {
-                if (!modalSpec) return;
-                modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
-                if (selCls && SPEC_DEFINITIONS[selCls]) {
-                    SPEC_DEFINITIONS[selCls].forEach(s => {
-                        const opt = new Option(s.label, s.value);
-                        modalSpec.appendChild(opt);
+                        render();
+                        scheduleSave();
                     });
                 }
-                modalSpec.value = selSpec || '';
-                if (modalSpec.value !== (selSpec || '')) modalSpec.value = '';
-            }
-            if (modalClass) modalClass.addEventListener('change', () => updateSpecDropdown(modalClass.value, ''));
-            if (modalSpec) modalSpec.addEventListener('change', () => {
-                const cls = modalClass.value;
-                const spec = modalSpec.value;
-                if (cls && spec && SPEC_DEFINITIONS[cls]) {
-                    const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
-                    if (def) {
-                        if (!modalRole.value) modalRole.value = def.role;
-                        if (!modalArchetype.value && def.archetype) modalArchetype.value = def.archetype;
-                    }
+
+                const prioListEl = document.getElementById('blackfuse-lines-prio-list');
+                const prioAddBtn = document.getElementById('blackfuse-lines-prio-add');
+                const prioDetectBtn = document.getElementById('blackfuse-lines-prio-detect');
+                const prioResetBtn = document.getElementById('blackfuse-lines-prio-reset');
+                const modalEl = document.getElementById('blackfuse-lines-prio-modal');
+                const modalTitle = document.getElementById('blackfuse-lines-prio-modal-title');
+                const modalLabel = document.getElementById('blackfuse-lines-prio-modal-label');
+                const modalClass = document.getElementById('blackfuse-lines-prio-modal-class');
+                const modalSpec = document.getElementById('blackfuse-lines-prio-modal-spec');
+                const modalRole = document.getElementById('blackfuse-lines-prio-modal-role');
+                const modalArchetype = document.getElementById('blackfuse-lines-prio-modal-archetype');
+                const modalLimitRows = document.getElementById('blackfuse-lines-prio-modal-limit-rows');
+                const modalLimitCount = document.getElementById('blackfuse-lines-prio-modal-limit-count');
+                const modalMaxTotal = document.getElementById('blackfuse-lines-prio-modal-max-total');
+                const modalSave = document.getElementById('blackfuse-lines-prio-modal-save');
+                const modalCancel = document.getElementById('blackfuse-lines-prio-modal-cancel');
+
+                if (modalClass) {
+                    Object.keys(SPEC_DEFINITIONS).forEach(c => {
+                        modalClass.appendChild(new Option(CLASS_DISPLAY[c] || c, c));
+                    });
                 }
-            });
-            
-            function renderPrioList() {
-                if (!prioListEl) return;
-                prioListEl.innerHTML = '';
-                if (prioCategories.length === 0) {
-                    prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien.</li>';
-                    return;
+                function updateSpecDropdown(selCls, selSpec) {
+                    if (!modalSpec) return;
+                    modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
+                    if (selCls && SPEC_DEFINITIONS[selCls]) {
+                        SPEC_DEFINITIONS[selCls].forEach(s => {
+                            const opt = new Option(s.label, s.value);
+                            modalSpec.appendChild(opt);
+                        });
+                    }
+                    modalSpec.value = selSpec || '';
+                    if (modalSpec.value !== (selSpec || '')) modalSpec.value = '';
                 }
-                prioCategories.forEach((cat, idx) => {
-                    const li = document.createElement('li');
-                    li.draggable = !!window.isManager;
-                    li.dataset.catId = cat.id;
-                    li.className = 'flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs';
-                    
-                    const filters = [];
-                    if (cat.class) filters.push(CLASS_DISPLAY[cat.class] || cat.class);
-                    if (cat.spec)  filters.push(cat.spec);
-                    if (cat.role)  filters.push(cat.role);
-                    if (cat.archetype) filters.push(ARCHETYPE_LABELS[cat.archetype] || cat.archetype);
-                    const filterStr = filters.length > 0 ? filters.join(' · ') : '<span class="text-yellow-500">⚠ kein Filter</span>';
-                    
-                    const limits = [];
-                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '') {
-                        limits.push(`max ${cat.limitCount}/${cat.limitRows}`);
+                if (modalClass) modalClass.addEventListener('change', () => updateSpecDropdown(modalClass.value, ''));
+                if (modalSpec) modalSpec.addEventListener('change', () => {
+                    const cls = modalClass.value;
+                    const spec = modalSpec.value;
+                    if (cls && spec && SPEC_DEFINITIONS[cls]) {
+                        const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
+                        if (def) {
+                            if (!modalRole.value) modalRole.value = def.role;
+                            if (!modalArchetype.value && def.archetype) modalArchetype.value = def.archetype;
+                        }
                     }
-                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
-                        limits.push(`max ${cat.maxTotal}/Line`);
+                });
+
+                function renderPrioList() {
+                    if (!prioListEl) return;
+                    prioListEl.innerHTML = '';
+                    if (prioCategories.length === 0) {
+                        prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien.</li>';
+                        return;
                     }
-                    const limitStr = limits.length > 0 ? `<span class="text-amber-400 ml-1">[${limits.join(', ')}]</span>` : '';
-                    
-                    li.innerHTML = `
+                    prioCategories.forEach((cat, idx) => {
+                        const li = document.createElement('li');
+                        li.draggable = !!window.isManager;
+                        li.dataset.catId = cat.id;
+                        li.className = 'flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs';
+
+                        const filters = [];
+                        if (cat.class) filters.push(CLASS_DISPLAY[cat.class] || cat.class);
+                        if (cat.spec) filters.push(cat.spec);
+                        if (cat.role) filters.push(cat.role);
+                        if (cat.archetype) filters.push(ARCHETYPE_LABELS[cat.archetype] || cat.archetype);
+                        const filterStr = filters.length > 0 ? filters.join(' · ') : '<span class="text-yellow-500">⚠ kein Filter</span>';
+
+                        const limits = [];
+                        if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '') {
+                            limits.push(`max ${cat.limitCount}/${cat.limitRows}`);
+                        }
+                        if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                            limits.push(`max ${cat.maxTotal}/Line`);
+                        }
+                        const limitStr = limits.length > 0 ? `<span class="text-amber-400 ml-1">[${limits.join(', ')}]</span>` : '';
+
+                        li.innerHTML = `
                         <span class="text-gray-500 font-mono w-6 text-center">${idx + 1}</span>
                         <span class="text-gray-400 select-none cursor-move drag-handle">⋮⋮</span>
                         <span class="flex-1 text-white truncate">${cat.label}${limitStr}</span>
@@ -1434,235 +1581,235 @@ CD_AUTO_PLANNER.init({
                         <button class="prio-edit text-blue-400 hover:text-blue-300 text-xs px-1" data-cat-id="${cat.id}">✎</button>
                         <button class="prio-del text-red-400 hover:text-red-300 text-xs px-1" data-cat-id="${cat.id}">✕</button>
                     `;
-                    prioListEl.appendChild(li);
-                });
-            }
-            
-            let dragSourceId = null;
-            if (prioListEl) {
-                prioListEl.addEventListener('dragstart', (e) => {
-                    if (!window.isManager) { e.preventDefault(); return; }
-                    const li = e.target.closest('[data-cat-id]');
-                    if (!li) { e.preventDefault(); return; }
-                    dragSourceId = li.dataset.catId;
-                    li.classList.add('opacity-50');
-                    e.dataTransfer.effectAllowed = 'move';
-                    try { e.dataTransfer.setData('text/plain', dragSourceId); } catch(err) {}
-                });
-                prioListEl.addEventListener('dragover', (e) => {
-                    if (!dragSourceId) return;
-                    e.preventDefault();
-                    const target = e.target.closest('[data-cat-id]');
-                    prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
-                    if (!target || target.dataset.catId === dragSourceId) return;
-                    const rect = target.getBoundingClientRect();
-                    const after = (e.clientY - rect.top) > rect.height / 2;
-                    target.classList.add(after ? 'drop-below' : 'drop-above');
-                });
-                prioListEl.addEventListener('dragleave', (e) => {
-                    if (!prioListEl.contains(e.relatedTarget)) {
+                        prioListEl.appendChild(li);
+                    });
+                }
+
+                let dragSourceId = null;
+                if (prioListEl) {
+                    prioListEl.addEventListener('dragstart', (e) => {
+                        if (!window.isManager) { e.preventDefault(); return; }
+                        const li = e.target.closest('[data-cat-id]');
+                        if (!li) { e.preventDefault(); return; }
+                        dragSourceId = li.dataset.catId;
+                        li.classList.add('opacity-50');
+                        e.dataTransfer.effectAllowed = 'move';
+                        try { e.dataTransfer.setData('text/plain', dragSourceId); } catch (err) { }
+                    });
+                    prioListEl.addEventListener('dragover', (e) => {
+                        if (!dragSourceId) return;
+                        e.preventDefault();
+                        const target = e.target.closest('[data-cat-id]');
                         prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
-                    }
-                });
-                prioListEl.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    if (!dragSourceId) return;
-                    const target = e.target.closest('[data-cat-id]');
-                    if (!target || target.dataset.catId === dragSourceId) return;
-                    const rect = target.getBoundingClientRect();
-                    const dropAfter = (e.clientY - rect.top) > rect.height / 2;
-                    const fromIdx = prioCategories.findIndex(c => c.id === dragSourceId);
-                    if (fromIdx < 0) return;
-                    const [moved] = prioCategories.splice(fromIdx, 1);
-                    let toIdx = prioCategories.findIndex(c => c.id === target.dataset.catId);
-                    if (dropAfter) toIdx += 1;
-                    if (toIdx < 0) toIdx = 0;
-                    if (toIdx > prioCategories.length) toIdx = prioCategories.length;
-                    prioCategories.splice(toIdx, 0, moved);
-                    savePrio();
-                });
-                prioListEl.addEventListener('dragend', () => {
-                    prioListEl.querySelectorAll('.opacity-50, .drop-above, .drop-below').forEach(el => el.classList.remove('opacity-50', 'drop-above', 'drop-below'));
-                    dragSourceId = null;
-                    renderPrioList();
-                });
-                prioListEl.addEventListener('click', (e) => {
+                        if (!target || target.dataset.catId === dragSourceId) return;
+                        const rect = target.getBoundingClientRect();
+                        const after = (e.clientY - rect.top) > rect.height / 2;
+                        target.classList.add(after ? 'drop-below' : 'drop-above');
+                    });
+                    prioListEl.addEventListener('dragleave', (e) => {
+                        if (!prioListEl.contains(e.relatedTarget)) {
+                            prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => el.classList.remove('drop-above', 'drop-below'));
+                        }
+                    });
+                    prioListEl.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        if (!dragSourceId) return;
+                        const target = e.target.closest('[data-cat-id]');
+                        if (!target || target.dataset.catId === dragSourceId) return;
+                        const rect = target.getBoundingClientRect();
+                        const dropAfter = (e.clientY - rect.top) > rect.height / 2;
+                        const fromIdx = prioCategories.findIndex(c => c.id === dragSourceId);
+                        if (fromIdx < 0) return;
+                        const [moved] = prioCategories.splice(fromIdx, 1);
+                        let toIdx = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                        if (dropAfter) toIdx += 1;
+                        if (toIdx < 0) toIdx = 0;
+                        if (toIdx > prioCategories.length) toIdx = prioCategories.length;
+                        prioCategories.splice(toIdx, 0, moved);
+                        savePrio();
+                    });
+                    prioListEl.addEventListener('dragend', () => {
+                        prioListEl.querySelectorAll('.opacity-50, .drop-above, .drop-below').forEach(el => el.classList.remove('opacity-50', 'drop-above', 'drop-below'));
+                        dragSourceId = null;
+                        renderPrioList();
+                    });
+                    prioListEl.addEventListener('click', (e) => {
+                        if (!window.isManager) return;
+                        const editBtn = e.target.closest('.prio-edit');
+                        const delBtn = e.target.closest('.prio-del');
+                        if (editBtn) openPrioModal(editBtn.dataset.catId);
+                        else if (delBtn) {
+                            const id = delBtn.dataset.catId;
+                            const cat = prioCategories.find(c => c.id === id);
+                            if (cat && confirm(`"${cat.label}" löschen?`)) {
+                                prioCategories = prioCategories.filter(c => c.id !== id);
+                                savePrio();
+                                renderPrioList();
+                            }
+                        }
+                    });
+                }
+
+                let editingCatId = null;
+                function openPrioModal(catId) {
                     if (!window.isManager) return;
-                    const editBtn = e.target.closest('.prio-edit');
-                    const delBtn  = e.target.closest('.prio-del');
-                    if (editBtn) openPrioModal(editBtn.dataset.catId);
-                    else if (delBtn) {
-                        const id = delBtn.dataset.catId;
-                        const cat = prioCategories.find(c => c.id === id);
-                        if (cat && confirm(`"${cat.label}" löschen?`)) {
-                            prioCategories = prioCategories.filter(c => c.id !== id);
+                    editingCatId = catId || null;
+                    if (catId) {
+                        const cat = prioCategories.find(c => c.id === catId);
+                        if (!cat) return;
+                        modalTitle.textContent = 'Kategorie bearbeiten';
+                        modalLabel.value = cat.label || '';
+                        modalClass.value = cat.class || '';
+                        updateSpecDropdown(cat.class || '', cat.spec || '');
+                        modalRole.value = cat.role || '';
+                        modalArchetype.value = cat.archetype || '';
+                        modalLimitRows.value = cat.limitRows ?? '';
+                        modalLimitCount.value = cat.limitCount ?? '';
+                        modalMaxTotal.value = cat.maxTotal ?? '';
+                    } else {
+                        modalTitle.textContent = 'Neue Kategorie';
+                        modalLabel.value = '';
+                        modalClass.value = '';
+                        updateSpecDropdown('', '');
+                        modalRole.value = '';
+                        modalArchetype.value = '';
+                        modalLimitRows.value = '';
+                        modalLimitCount.value = '';
+                        modalMaxTotal.value = '';
+                    }
+                    modalEl.classList.remove('hidden');
+                    setTimeout(() => modalLabel.focus(), 50);
+                }
+                function closePrioModal() {
+                    modalEl.classList.add('hidden');
+                    editingCatId = null;
+                }
+                if (prioAddBtn) prioAddBtn.addEventListener('click', () => openPrioModal(null));
+                if (modalCancel) modalCancel.addEventListener('click', closePrioModal);
+                if (modalEl) modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closePrioModal(); });
+                if (modalSave) {
+                    modalSave.addEventListener('click', () => {
+                        const label = modalLabel.value.trim();
+                        if (!label) return;
+                        const data = {
+                            label: label,
+                            class: modalClass.value.trim(),
+                            spec: modalSpec.value.trim(),
+                            role: modalRole.value.trim(),
+                            archetype: modalArchetype.value.trim()
+                        };
+                        const lr = parseInt(modalLimitRows.value, 10);
+                        const lc = parseInt(modalLimitCount.value, 10);
+                        if (!isNaN(lr) && lr > 0 && !isNaN(lc) && lc >= 0) {
+                            data.limitRows = lr; data.limitCount = lc;
+                        }
+                        const mt = parseInt(modalMaxTotal.value, 10);
+                        if (!isNaN(mt) && mt >= 0) data.maxTotal = mt;
+
+                        if (editingCatId) {
+                            const cat = prioCategories.find(c => c.id === editingCatId);
+                            if (cat) {
+                                delete cat.limitRows; delete cat.limitCount; delete cat.maxTotal;
+                                Object.assign(cat, data);
+                            }
+                        } else {
+                            const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20) + '_' + Date.now().toString(36);
+                            prioCategories.push({ id, ...data });
+                        }
+                        savePrio();
+                        renderPrioList();
+                        closePrioModal();
+                    });
+                }
+
+                if (prioResetBtn) {
+                    prioResetBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+                        savePrio();
+                        renderPrioList();
+                    });
+                }
+
+                if (prioDetectBtn) {
+                    prioDetectBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        const detected = detectCategoriesFromRoster();
+                        if (detected.length > 0) {
+                            prioCategories = detected;
                             savePrio();
                             renderPrioList();
                         }
-                    }
-                });
-            }
-            
-            let editingCatId = null;
-            function openPrioModal(catId) {
-                if (!window.isManager) return;
-                editingCatId = catId || null;
-                if (catId) {
-                    const cat = prioCategories.find(c => c.id === catId);
-                    if (!cat) return;
-                    modalTitle.textContent = 'Kategorie bearbeiten';
-                    modalLabel.value = cat.label || '';
-                    modalClass.value = cat.class || '';
-                    updateSpecDropdown(cat.class || '', cat.spec || '');
-                    modalRole.value = cat.role || '';
-                    modalArchetype.value = cat.archetype || '';
-                    modalLimitRows.value = cat.limitRows ?? '';
-                    modalLimitCount.value = cat.limitCount ?? '';
-                    modalMaxTotal.value = cat.maxTotal ?? '';
-                } else {
-                    modalTitle.textContent = 'Neue Kategorie';
-                    modalLabel.value = '';
-                    modalClass.value = '';
-                    updateSpecDropdown('', '');
-                    modalRole.value = '';
-                    modalArchetype.value = '';
-                    modalLimitRows.value = '';
-                    modalLimitCount.value = '';
-                    modalMaxTotal.value = '';
-                }
-                modalEl.classList.remove('hidden');
-                setTimeout(() => modalLabel.focus(), 50);
-            }
-            function closePrioModal() {
-                modalEl.classList.add('hidden');
-                editingCatId = null;
-            }
-            if (prioAddBtn) prioAddBtn.addEventListener('click', () => openPrioModal(null));
-            if (modalCancel) modalCancel.addEventListener('click', closePrioModal);
-            if (modalEl) modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closePrioModal(); });
-            if (modalSave) {
-                modalSave.addEventListener('click', () => {
-                    const label = modalLabel.value.trim();
-                    if (!label) return;
-                    const data = {
-                        label: label,
-                        class: modalClass.value.trim(),
-                        spec:  modalSpec.value.trim(),
-                        role:  modalRole.value.trim(),
-                        archetype: modalArchetype.value.trim()
-                    };
-                    const lr = parseInt(modalLimitRows.value, 10);
-                    const lc = parseInt(modalLimitCount.value, 10);
-                    if (!isNaN(lr) && lr > 0 && !isNaN(lc) && lc >= 0) {
-                        data.limitRows = lr; data.limitCount = lc;
-                    }
-                    const mt = parseInt(modalMaxTotal.value, 10);
-                    if (!isNaN(mt) && mt >= 0) data.maxTotal = mt;
-                    
-                    if (editingCatId) {
-                        const cat = prioCategories.find(c => c.id === editingCatId);
-                        if (cat) {
-                            delete cat.limitRows; delete cat.limitCount; delete cat.maxTotal;
-                            Object.assign(cat, data);
-                        }
-                    } else {
-                        const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20) + '_' + Date.now().toString(36);
-                        prioCategories.push({ id, ...data });
-                    }
-                    savePrio();
-                    renderPrioList();
-                    closePrioModal();
-                });
-            }
-            
-            if (prioResetBtn) {
-                prioResetBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
-                    savePrio();
-                    renderPrioList();
-                });
-            }
-            
-            if (prioDetectBtn) {
-                prioDetectBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    const detected = detectCategoriesFromRoster();
-                    if (detected.length > 0) {
-                        prioCategories = detected;
-                        savePrio();
-                        renderPrioList();
-                    }
-                });
-            }
-            
-            function detectCategoriesFromRoster() {
-                if (!Array.isArray(roster) || roster.length === 0) return [];
-                const cats = [];
-                function findExisting(filter) {
-                    return prioCategories.find(c =>
-                        (c.class || '') === (filter.class || '') &&
-                        (c.spec  || '') === (filter.spec  || '') &&
-                        (c.role  || '') === (filter.role  || '') &&
-                        (c.archetype || '') === (filter.archetype || '')
-                    );
-                }
-                function withLimits(base) {
-                    const ex = findExisting(base);
-                    if (ex) {
-                        if (ex.limitRows  !== undefined) base.limitRows  = ex.limitRows;
-                        if (ex.limitCount !== undefined) base.limitCount = ex.limitCount;
-                        if (ex.maxTotal   !== undefined) base.maxTotal   = ex.maxTotal;
-                    }
-                    return base;
-                }
-                
-                const healers = roster.filter(p => getPlayerRoleNormalized(p) === 'healer');
-                const tanks   = roster.filter(p => getPlayerRoleNormalized(p) === 'tank');
-                if (healers.length > 0) {
-                    cats.push(withLimits({ id: 'auto_healer', label: `Healer (${healers.length})`, class: '', spec: '', role: 'healer', archetype: '' }));
-                }
-                if (tanks.length > 0) {
-                    const t = withLimits({ id: 'auto_tank', label: `Tank (${tanks.length})`, class: '', spec: '', role: 'tank', archetype: '' });
-                    if (t.maxTotal === undefined) t.maxTotal = 1;
-                    cats.push(t);
-                }
-                ['caster', 'ranged_physical', 'melee'].forEach(arch => {
-                    const count = roster.filter(p => getPlayerRoleNormalized(p) === 'dps' && getPlayerArchetype(p) === arch).length;
-                    if (count > 0) {
-                        cats.push(withLimits({
-                            id: 'auto_' + arch,
-                            label: `${ARCHETYPE_LABELS[arch]} DPS (${count})`,
-                            class: '', spec: '', role: 'dps', archetype: arch
-                        }));
-                    }
-                });
-                return cats;
-            }
-            
-            function applyLinesProtection() {
-                const isM = !!window.isManager;
-                [autoFillBtn, clearBtn, prioResetBtn, prioAddBtn, prioDetectBtn].forEach(b => {
-                    if (b) b.disabled = !isM;
-                });
-                if (teamsGrid) teamsGrid.querySelectorAll('select').forEach(el => el.disabled = !isM);
-                if (beltGrid) beltGrid.querySelectorAll('select').forEach(el => el.disabled = !isM);
-                if (prioListEl) {
-                    prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
-                        el.draggable = isM;
-                        const handle = el.querySelector('.drag-handle');
-                        if (handle) handle.style.cursor = isM ? 'move' : 'not-allowed';
-                        el.style.opacity = isM ? '' : '0.6';
-                        el.querySelectorAll('button').forEach(b => b.disabled = !isM);
                     });
                 }
-            }
-            
-            renderPrioList();
-            render();
-            applyLinesProtection();
-            setInterval(applyLinesProtection, 1500);
-        })();
-    };
-</script>
+
+                function detectCategoriesFromRoster() {
+                    if (!Array.isArray(roster) || roster.length === 0) return [];
+                    const cats = [];
+                    function findExisting(filter) {
+                        return prioCategories.find(c =>
+                            (c.class || '') === (filter.class || '') &&
+                            (c.spec || '') === (filter.spec || '') &&
+                            (c.role || '') === (filter.role || '') &&
+                            (c.archetype || '') === (filter.archetype || '')
+                        );
+                    }
+                    function withLimits(base) {
+                        const ex = findExisting(base);
+                        if (ex) {
+                            if (ex.limitRows !== undefined) base.limitRows = ex.limitRows;
+                            if (ex.limitCount !== undefined) base.limitCount = ex.limitCount;
+                            if (ex.maxTotal !== undefined) base.maxTotal = ex.maxTotal;
+                        }
+                        return base;
+                    }
+
+                    const healers = roster.filter(p => getPlayerRoleNormalized(p) === 'healer');
+                    const tanks = roster.filter(p => getPlayerRoleNormalized(p) === 'tank');
+                    if (healers.length > 0) {
+                        cats.push(withLimits({ id: 'auto_healer', label: `Healer (${healers.length})`, class: '', spec: '', role: 'healer', archetype: '' }));
+                    }
+                    if (tanks.length > 0) {
+                        const t = withLimits({ id: 'auto_tank', label: `Tank (${tanks.length})`, class: '', spec: '', role: 'tank', archetype: '' });
+                        if (t.maxTotal === undefined) t.maxTotal = 1;
+                        cats.push(t);
+                    }
+                    ['caster', 'ranged_physical', 'melee'].forEach(arch => {
+                        const count = roster.filter(p => getPlayerRoleNormalized(p) === 'dps' && getPlayerArchetype(p) === arch).length;
+                        if (count > 0) {
+                            cats.push(withLimits({
+                                id: 'auto_' + arch,
+                                label: `${ARCHETYPE_LABELS[arch]} DPS (${count})`,
+                                class: '', spec: '', role: 'dps', archetype: arch
+                            }));
+                        }
+                    });
+                    return cats;
+                }
+
+                function applyLinesProtection() {
+                    const isM = !!window.isManager;
+                    [autoFillBtn, clearBtn, prioResetBtn, prioAddBtn, prioDetectBtn].forEach(b => {
+                        if (b) b.disabled = !isM;
+                    });
+                    if (teamsGrid) teamsGrid.querySelectorAll('select').forEach(el => el.disabled = !isM);
+                    if (beltGrid) beltGrid.querySelectorAll('select').forEach(el => el.disabled = !isM);
+                    if (prioListEl) {
+                        prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
+                            el.draggable = isM;
+                            const handle = el.querySelector('.drag-handle');
+                            if (handle) handle.style.cursor = isM ? 'move' : 'not-allowed';
+                            el.style.opacity = isM ? '' : '0.6';
+                            el.querySelectorAll('button').forEach(b => b.disabled = !isM);
+                        });
+                    }
+                }
+
+                renderPrioList();
+                render();
+                applyLinesProtection();
+                setInterval(applyLinesProtection, 1500);
+            })();
+        };
+    </script>
 </main>

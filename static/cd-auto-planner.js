@@ -570,7 +570,9 @@ window.CD_AUTO_PLANNER = (function() {
         (config.events || []).forEach(function(evt, idx) {
             var key = 'cfg_' + idx;
             var ov = eventOverrides[key] || {};
-            if (ov.disabled) return;
+            var isMythic = evt.name && (evt.name.indexOf('(HC)') !== -1 || evt.name.indexOf('(Mythisch)') !== -1 || evt.name.indexOf('(Mythic)') !== -1 || evt.name.indexOf('(M)') !== -1);
+            var disabled = ov.disabled !== undefined ? ov.disabled : isMythic;
+            if (disabled) return;
             result.push({
                 _key:          key,
                 _origIdx:      idx,
@@ -1050,11 +1052,15 @@ window.CD_AUTO_PLANNER = (function() {
             }).join('');
 
             var durLabel = row.eventDuration ? ' <span class="text-gray-600 text-[9px]">(' + row.eventDuration + 's)</span>' : '';
+            var tooltipStr = "";
+            var mapEntry = config.triggerMap && config.triggerMap[row.eventName];
+            if (typeof mapEntry === 'string') tooltipStr = mapEntry;
+            else if (mapEntry && mapEntry.trigger) tooltipStr = mapEntry.trigger;
 
             return '<tr class="hover:bg-slate-800/30 transition-colors ' + (isNew ? 'border-t border-slate-600' : 'border-t border-slate-800/40') + '">'
                 + '<td class="py-1 px-1 text-center text-sm">' + row.icon + '</td>'
                 + '<td class="py-1 px-2 font-mono text-gray-300" title="Absolute Kampfzeit">' + fmt(row.absTime) + '</td>'
-                + '<td class="py-1 px-2 ' + (isNew ? 'text-gray-200 font-medium' : 'text-gray-500') + '">' + (isNew ? row.eventName : '↳') + durLabel + '</td>'
+                + '<td class="py-1 px-2 ' + (isNew ? 'text-gray-200 font-medium' : 'text-gray-500') + '" title="' + tooltipStr + '">' + (isNew ? row.eventName : '↳') + durLabel + '</td>'
                 + '<td class="py-1 px-1 text-center text-gray-500">' + row.castNum + '</td>'
                 + '<td class="py-1 px-1 text-center"><input type="number" class="auto-plan-delay w-14 bg-transparent text-[11px] text-center text-gray-400 border border-slate-700 rounded" data-row="' + rowIdx + '" value="' + (row.delay || 0) + '" title="Verzögerung (neg=vorher)"></td>'
                 + cells + '</tr>';
@@ -1278,9 +1284,11 @@ window.CD_AUTO_PLANNER = (function() {
         (config.events || []).forEach(function(evt, idx) {
             var key = 'cfg_' + idx;
             var ov = eventOverrides[key] || {};
+            var isMythic = evt.name && (evt.name.indexOf('(HC)') !== -1 || evt.name.indexOf('(Mythisch)') !== -1 || evt.name.indexOf('(Mythic)') !== -1 || evt.name.indexOf('(M)') !== -1);
+            var disabled = ov.disabled !== undefined ? ov.disabled : isMythic;
             allRows.push({
                 _key: key, _isCustom: false,
-                disabled:      !!ov.disabled,
+                disabled:      !!disabled,
                 name:          ov.name          !== undefined ? ov.name          : evt.name,
                 firstCast:     ov.firstCast     !== undefined ? ov.firstCast     : evt.firstCast,
                 cooldown:      ov.cooldown      !== undefined ? ov.cooldown      : (evt.cooldown || 0),
@@ -1497,8 +1505,13 @@ window.CD_AUTO_PLANNER = (function() {
         }
         if (!npcOptions.length) {
             var anyNpcSelect = document.querySelector('select[data-assignment-id$="-npc"]');
+            var anyNpcDatalist = document.querySelector('datalist[id$="-npc-list"]');
             if (anyNpcSelect) {
                 npcOptions = Array.from(anyNpcSelect.options)
+                    .filter(function(o) { return o.value; })
+                    .map(function(o) { return o.value; });
+            } else if (anyNpcDatalist) {
+                npcOptions = Array.from(anyNpcDatalist.options)
                     .filter(function(o) { return o.value; })
                     .map(function(o) { return o.value; });
             }
@@ -1519,7 +1532,7 @@ window.CD_AUTO_PLANNER = (function() {
             triggerDropdown = '<select id="trg-pick-trigger" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">'
                 + '<option value="">— Aus triggerMap (Default) —</option>'
                 + triggerOptions.map(function(t) {
-                    return '<option value="' + t.val + '"' + (currentTrigger === t.val ? ' selected' : '') + '>' + t.text + '</option>';
+                    return '<option value="' + t.val + '"' + (currentTrigger === t.val ? ' selected' : '') + ' title="' + t.val + '">' + t.text + '</option>';
                 }).join('')
                 + '</select>';
         }
@@ -1701,6 +1714,7 @@ window.CD_AUTO_PLANNER = (function() {
         var prefix = container.id.replace('-planner-container', '');
         var rowNum = 1, exported = 0, skipped = 0;
         var catKeys = getUniqueCategoryKeys();
+        var triggerCounts = {};
 
         // BATCH-MODE aktivieren: keine change-Events → keine setDoc-Calls aus handleAssignmentChange
         window._suspendAssignListeners = true;
@@ -1787,8 +1801,11 @@ window.CD_AUTO_PLANNER = (function() {
                         conditionVal = '1';
                     } else if (isHealthTrigger && percentVal !== null) {
                         conditionVal = String(percentVal);
-                    } else {
+                    } else if (triggerOv && triggerOv.mode === 'cast') {
                         conditionVal = String(row.castNum);
+                    } else {
+                        triggerCounts[triggerVal] = (triggerCounts[triggerVal] || 0) + 1;
+                        conditionVal = String(triggerCounts[triggerVal]);
                     }
                     setPlannerInput(rowPrefix + '-condition', conditionVal, true);
                     addToBatch(rowPrefix + '-condition', { text: conditionVal, editor: currentManager, timestamp: serverTs });

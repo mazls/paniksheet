@@ -461,7 +461,7 @@ CD_AUTO_PLANNER.init({
             const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
             const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
             
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
             const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
 
@@ -498,9 +498,7 @@ CD_AUTO_PLANNER.init({
                         <option value="">-- Nicht aktiv --</option>
                         ${triggerOpts}
                     </select>
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
-                        ${npcOpts}
-                    </select>
+                    <input type="text" list="${p}-npc-list" class="assignment-text-input text-center bg-slate-900 border border-slate-600 text-xs w-full" data-assignment-id="${p}-planner-row${i}-npc" placeholder="NPC Name (oder Leer)">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="${p}-planner-row${i}-condition" placeholder="% / #" value="0">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
@@ -529,7 +527,7 @@ CD_AUTO_PLANNER.init({
                 </div>`;
             }
 
-            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
             
             if (window.initPlannerRowFeatures) {
                 setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);

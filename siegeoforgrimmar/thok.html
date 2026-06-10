@@ -623,12 +623,12 @@ CD_AUTO_PLANNER.init({
         const TRIGGER_OPTIONS = [
             { val: "THOK_ENC_START",            text: "Kampfbeginn" },
             { val: "THOK_HEALTH",               text: "Gesundheit % (Wähle NPC)" },
-            { val: "THOK_DEAFENING_SCREECH_1",  text: "Ohrenbetäubender Schrei #1 (13.5s)" },
-            { val: "THOK_DEAFENING_SCREECH_2",  text: "Ohrenbetäubender Schrei #2 (11s)" },
-            { val: "THOK_DEAFENING_SCREECH_3",  text: "Ohrenbetäubender Schrei #3 (7.2s)" },
-            { val: "THOK_DEAFENING_SCREECH_4",  text: "Ohrenbetäubender Schrei #4 (5s)" },
-            { val: "THOK_BLOOD_FRENZY",         text: "Blutrausch (Stage 2)" },
-            { val: "THOK_FEARSOME_ROAR",        text: "Furchterregender Brüller (Tank)" },
+            { val: "THOK_DEAFENING_SCREECH_1",  text: "Ohrenbetäubendes Kreischen #1 (13.5s)" },
+            { val: "THOK_DEAFENING_SCREECH_2",  text: "Ohrenbetäubendes Kreischen #2 (11s)" },
+            { val: "THOK_DEAFENING_SCREECH_3",  text: "Ohrenbetäubendes Kreischen #3 (7.2s)" },
+            { val: "THOK_DEAFENING_SCREECH_4",  text: "Ohrenbetäubendes Kreischen #4 (5s)" },
+            { val: "THOK_BLOOD_FRENZY",         text: "Blutraserei (Stage 2)" },
+            { val: "THOK_FEARSOME_ROAR",        text: "Furchteinflößendes Brüllen (Tank)" },
             { val: "THOK_ACID_BREATH",          text: "Säure-Atem (Tank, Acid Infusion)" },
             { val: "THOK_FREEZING_BREATH",      text: "Eis-Atem (Tank, Frost Infusion)" },
             { val: "THOK_SCORCHING_BREATH",     text: "Glüh-Atem (Tank, Fire Infusion)" },
@@ -674,7 +674,7 @@ CD_AUTO_PLANNER.init({
             const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
             const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
             
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
             const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
 
@@ -711,9 +711,7 @@ CD_AUTO_PLANNER.init({
                         <option value="">-- Nicht aktiv --</option>
                         ${triggerOpts}
                     </select>
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
-                        ${npcOpts}
-                    </select>
+                    <input type="text" list="${p}-npc-list" class="assignment-text-input text-center bg-slate-900 border border-slate-600 text-xs w-full" data-assignment-id="${p}-planner-row${i}-npc" placeholder="NPC Name (oder Leer)">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="${p}-planner-row${i}-condition" placeholder="% / #" value="0">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
@@ -742,7 +740,7 @@ CD_AUTO_PLANNER.init({
                 </div>`;
             }
 
-            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
             
             if (window.initPlannerRowFeatures) {
                 setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);

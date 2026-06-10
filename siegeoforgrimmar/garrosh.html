@@ -308,7 +308,7 @@ CD_AUTO_PLANNER.init({
             { val: "GARROSH_P3",                 text: "Phase 3 Start" },
             { val: "GARROSH_P4",                 text: "Phase 4 Start (Execute)" },
             { val: "GARROSH_INTERMISSION",       text: "Intermission Start" },
-            { val: "GARROSH_DESPAIR_P2",         text: "Y'Shaarj Verzweiflung (Realm P2)" },
+            { val: "GARROSH_DESPAIR_P2",         text: "Packende Verzweiflung (Realm P2)" },
             { val: "GARROSH_DESPAIR_P3",         text: "Y'Shaarj Schutz (P3)" },
             
             // Phase 1
@@ -317,7 +317,7 @@ CD_AUTO_PLANNER.init({
             { val: "GARROSH_SHAMANS",            text: "Fernsicht-Wolfreiter" },
             { val: "GARROSH_ENGINEERS",          text: "Belagerungstechniker" },
             { val: "GARROSH_IRON_STAR",          text: "Eisenstern (Power)" },
-            { val: "GARROSH_DESECRATE_P1",       text: "Schänden P1" },
+            { val: "GARROSH_DESECRATE_P1",       text: "Entweihen P1" },
             { val: "GARROSH_MANIFEST_RAGE",      text: "Manifestierte Wut (Adds)" },
             
             // Annihilate
@@ -328,12 +328,12 @@ CD_AUTO_PLANNER.init({
             // Phase 2
             { val: "GARROSH_WHIRLING_P2",        text: "Wirbelnde Verderbnis P2" },
             { val: "GARROSH_TOUCH_P2",           text: "Berührung von Y'Shaarj P2" },
-            { val: "GARROSH_DESECRATE_P2",       text: "Schänden P2" },
+            { val: "GARROSH_DESECRATE_P2",       text: "Entweihen P2" },
             
             // Phase 3
             { val: "GARROSH_WHIRLING_P3",        text: "Wirbelnde Verderbnis P3" },
             { val: "GARROSH_TOUCH_P3",           text: "Berührung von Y'Shaarj P3" },
-            { val: "GARROSH_DESECRATE_P3",       text: "Schänden P3" },
+            { val: "GARROSH_DESECRATE_P3",       text: "Entweihen P3" },
             { val: "GARROSH_MALICE",             text: "Bösartigkeit" },
             { val: "GARROSH_BOMBARDMENT",        text: "Bombardement" },
             { val: "GARROSH_CLUMP_CHECK",        text: "Cluster-Prüfung" },
@@ -375,7 +375,7 @@ CD_AUTO_PLANNER.init({
             const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
             const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
             
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}">${o.text}</option>`).join('');
+            const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
             const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
             const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
 
@@ -412,9 +412,7 @@ CD_AUTO_PLANNER.init({
                         <option value="">-- Nicht aktiv --</option>
                         ${triggerOpts}
                     </select>
-                    <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-npc" data-manual-options="true">
-                        ${npcOpts}
-                    </select>
+                    <input type="text" list="${p}-npc-list" class="assignment-text-input text-center bg-slate-900 border border-slate-600 text-xs w-full" data-assignment-id="${p}-planner-row${i}-npc" placeholder="NPC Name (oder Leer)">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
                            data-assignment-id="${p}-planner-row${i}-condition" placeholder="% / #" value="0">
                     <input type="text" class="assignment-text-input text-center bg-slate-900 border-slate-600 text-xs" 
@@ -443,7 +441,7 @@ CD_AUTO_PLANNER.init({
                 </div>`;
             }
 
-            container.innerHTML = `<div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
             
             if (window.initPlannerRowFeatures) {
                 setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
