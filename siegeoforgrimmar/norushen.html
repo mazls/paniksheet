@@ -108,8 +108,8 @@
                 <div class="assignment-block">
                     <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
                     <ul class="assignment-list">
-                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="amalgam-tank-1"></select></li>
-                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="amalgam-tank-2"></select></li>
+                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="norushen-tank-1"></select></li>
+                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="norushen-tank-2"></select></li>
                     </ul>
                 </div>
                 
@@ -272,19 +272,19 @@
                 
                 <div class="space-y-6">
                     <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="amalgam-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Hauptplattform</button>
+                        <button data-phase="norushen-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Hauptplattform</button>
                     </div>
                     <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
                         <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="amalgam-p1">Sammeln hinter dem Boss. Adds werden sofort gepullt und in den Cleave gezogen.</p>
-                            <p class="positioning-text hidden" data-phase="amalgam-p2">In der Prüfung: Ausweichen, gegnerische Angriffe kicken und die zugewiesene Rolle erfüllen.</p>
+                            <p class="positioning-text" data-phase="norushen-p1">Sammeln hinter dem Boss. Adds werden sofort gepullt und in den Cleave gezogen.</p>
+                            <p class="positioning-text hidden" data-phase="norushen-p2">In der Prüfung: Ausweichen, gegnerische Angriffe kicken und die zugewiesene Rolle erfüllen.</p>
                         </div>
                     </div>
                     <div class="mt-2">
                         <img src="siegeoforgrimmar/norushen.png" alt="Aufstellung Hauptplattform" 
                             class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="amalgam-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;amalgam-p1&quot;>Bild für die Hauptplattform noch nicht verfügbar.</div>'">
+                            data-phase="norushen-p1" 
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;norushen-p1&quot;>Bild für die Hauptplattform noch nicht verfügbar.</div>'">
                             
                 
                     </div>
@@ -340,7 +340,7 @@
 CD_AUTO_PLANNER.init({
     id: 'norushen',
     name: 'Norushen',
-    prefix: 'amalgam',  // Container-Prefix in der Boss-HTML (amalgam-planner-container)
+    prefix: 'norushen',  // Container-Prefix in der Boss-HTML (norushen-planner-container)
     
     events: [
         // ── PHASE 1 (100% → 50% HP) ──
@@ -481,7 +481,7 @@ CD_AUTO_PLANNER.init({
         <span class="text-xl">📜</span> CD-Einteilung Übersicht
     </h3>
     
-    <div id="amalgam-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+    <div id="norushen-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
         <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
             Wartet auf Eingaben... <br>
             <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
@@ -494,7 +494,7 @@ CD_AUTO_PLANNER.init({
                     <strong>% / #:</strong> Gebt entweder die HP in Prozent an oder die fortlaufende Cast-Reihenfolge (1, 2, 3...).
                 </div>
 
-                <div id="amalgam-planner-container" class="space-y-2 planner-scroll-container"></div>
+                <div id="norushen-planner-container" class="space-y-2 planner-scroll-container"></div>
                 
                 <div class="mt-4 text-xs text-gray-500 italic">
                     * <strong>Zielvorgabe:</strong> Wählt hier das entsprechende Target, wenn ihr prozentuale HP nutzt.
@@ -562,7 +562,7 @@ CD_AUTO_PLANNER.init({
             "Manifestation der Verderbnis"
         ];
         
-        const container = document.getElementById('amalgam-planner-container');
+        const container = document.getElementById('norushen-planner-container');
         
         const getCooldownOptions = () => {
             let html = '<option value="">-- Bereitschaft --</option>';

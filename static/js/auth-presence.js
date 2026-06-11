@@ -237,30 +237,45 @@ window.showLoginModal = showLoginModal;
             document.getElementById('login-btn').addEventListener('click', showLoginModal);
         }
 
-        onAuthStateChanged(auth, user => {
-            const presenceIndicator = document.getElementById('presence-indicator');
-            if (window.heartbeatIntervalId) clearInterval(window.heartbeatIntervalId);
+        window.authPromise = new Promise((resolve) => {
+            let initialAuthResolved = false;
+            
+            onAuthStateChanged(auth, user => {
+                const presenceIndicator = document.getElementById('presence-indicator');
+                if (window.heartbeatIntervalId) clearInterval(window.heartbeatIntervalId);
 
-            if (!user) {
-                signInAnonymously(auth).catch(e => console.error("Anonymer Login-Fehler:", e));
-                presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-gray-500 rounded-full"></div><span>0</span> Online`;
-                return;
-            }
+                if (!user) {
+                    signInAnonymously(auth).then(() => {
+                        // signInAnonymously will trigger onAuthStateChanged again
+                    }).catch(e => console.error("Anonymer Login-Fehler:", e));
+                    presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-gray-500 rounded-full"></div><span>0</span> Online`;
+                    return;
+                }
 
-            const userStatusRef = doc(db, "presence", user.uid);
-            const updatePresenceTimestamp = () => {
-                setDoc(userStatusRef, { online: true, last_changed: serverTimestamp() }, { merge: true });
-            };
-            updatePresenceTimestamp();
-            window.heartbeatIntervalId = setInterval(updatePresenceTimestamp, 15 * 60 * 1000);
+                if (!initialAuthResolved) {
+                    initialAuthResolved = true;
+                    resolve(user);
+                    // Initialisiere globale Listener, da wir jetzt authentifiziert sind
+                    if (window.initGlobalListeners) {
+                        window.initGlobalListeners();
+                    }
+                }
 
-            onSnapshot(collection(db, "presence"), snap => {
-                const nowInSeconds = Date.now() / 1000;
-                const onlineUsersCount = snap.docs.filter(doc => {
-                    const data = doc.data();
-                    return data.online && data.last_changed && (nowInSeconds - data.last_changed.seconds < 1000);
-                }).length;
-                presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div><span>${onlineUsersCount}</span> Online`;
+                const userStatusRef = doc(db, "presence", user.uid);
+                const updatePresenceTimestamp = () => {
+                    setDoc(userStatusRef, { online: true, last_changed: serverTimestamp() }, { merge: true });
+                };
+                updatePresenceTimestamp();
+                window.heartbeatIntervalId = setInterval(updatePresenceTimestamp, 15 * 60 * 1000);
+
+                onSnapshot(collection(db, "presence"), snap => {
+                    const nowInSeconds = Date.now() / 1000;
+                    const onlineUsersCount = snap.docs.filter(doc => {
+                        const data = doc.data();
+                        return data.online && data.last_changed && (nowInSeconds - data.last_changed.seconds < 1000);
+                    }).length;
+                    presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div><span>${onlineUsersCount}</span> Online`;
+                });
             });
         });
 

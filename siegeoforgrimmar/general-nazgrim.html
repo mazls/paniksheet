@@ -250,7 +250,7 @@
 CD_AUTO_PLANNER.init({
     id: 'general-nazgrim',
     name: 'General Nazgrim',
-    prefix: 'nazgrim',  // Container-Prefix in der Boss-HTML (nazgrim-planner-container)
+    prefix: 'general-nazgrim',  // Container-Prefix in der Boss-HTML (general-nazgrim-planner-container)
     
     events: [
         // ═══════════════════════════════════════════════════════
@@ -500,7 +500,7 @@ CD_AUTO_PLANNER.init({
         <span class="text-xl">📜</span> Planungsübersicht
     </h3>
     
-    <div id="nazgrim-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+    <div id="general-nazgrim-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
         <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
             Warte auf Eingaben... <br>
             <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
@@ -513,7 +513,7 @@ CD_AUTO_PLANNER.init({
                     <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende Reihenfolge (1, 2, 3...).
                 </div>
 
-                <div id="nazgrim-planner-container" class="space-y-2 planner-scroll-container"></div>
+                <div id="general-nazgrim-planner-container" class="space-y-2 planner-scroll-container"></div>
                 
                 <div class="mt-4 text-xs text-gray-500 italic">
                     * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
@@ -588,7 +588,7 @@ CD_AUTO_PLANNER.init({
             "Orgrimmar Glaubenstreuer"
         ];
         
-        const container = document.getElementById('nazgrim-planner-container');
+        const container = document.getElementById('general-nazgrim-planner-container');
         
         const getCooldownOptions = () => {
             let html = '<option value="">-- Bereitschaft --</option>';

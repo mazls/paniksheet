@@ -113,20 +113,20 @@
                 <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
                 <div class="space-y-6">
                     <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="shaman-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Aufstellung (Split)</button>
+                        <button data-phase="korkron-dark-shamans-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Aufstellung (Split)</button>
                         
                     </div>
                     <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
                         <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="shaman-p1">Haromm geht komplett in den Norden. Kardris bleibt im Süden. Zieht die Bosse mehr als 100 Yards auseinander!</p>
-                            <p class="positioning-text hidden" data-phase="shaman-p2">Tanks müssen die Bosse langsam rückwärts ziehen, um den wachsenden Totem-Effekten und Tornados auszuweichen.</p>
+                            <p class="positioning-text" data-phase="korkron-dark-shamans-p1">Haromm geht komplett in den Norden. Kardris bleibt im Süden. Zieht die Bosse mehr als 100 Yards auseinander!</p>
+                            <p class="positioning-text hidden" data-phase="korkron-dark-shamans-p2">Tanks müssen die Bosse langsam rückwärts ziehen, um den wachsenden Totem-Effekten und Tornados auszuweichen.</p>
                         </div>
                     </div>
                     <div class="mt-2">
                         <img src="siegeoforgrimmar/korkron-dark-shamans.png" alt="Aufstellung Split"
                             class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
-                            data-phase="shaman-p1"
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;shaman-p1&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
+                            data-phase="korkron-dark-shamans-p1"
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;korkron-dark-shamans-p1&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
                         
                     </div>
                 </div>
@@ -176,7 +176,7 @@
 CD_AUTO_PLANNER.init({
     id: 'korkron-dark-shamans',
     name: "Dunkelschamanen der Kor'kron",
-    prefix: 'SHAMAN',
+    prefix: 'korkron-dark-shamans',
 
     events: [
         {
@@ -289,7 +289,7 @@ CD_AUTO_PLANNER.init({
         <span class="text-xl">📜</span> CD-Einteilung Übersicht
     </h3>
     
-    <div id="shaman-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+    <div id="korkron-dark-shamans-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
         <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
             Wartet auf Eingaben... <br>
             <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
@@ -302,7 +302,7 @@ CD_AUTO_PLANNER.init({
                     <strong>% / #:</strong> Gebt entweder die HP in Prozent an oder die fortlaufende Cast-Reihenfolge (1, 2, 3...).
                 </div>
 
-                <div id="shaman-planner-container" class="space-y-2 planner-scroll-container"></div>
+                <div id="korkron-dark-shamans-planner-container" class="space-y-2 planner-scroll-container"></div>
                 
                 <div class="mt-4 text-xs text-gray-500 italic">
                     * <strong>Zielvorgabe:</strong> Wählt hier das entsprechende Target, wenn ihr prozentuale HP nutzt.
@@ -371,7 +371,7 @@ CD_AUTO_PLANNER.init({
             "Ascheelementar"
         ];
         
-        const container = document.getElementById('shaman-planner-container');
+        const container = document.getElementById('korkron-dark-shamans-planner-container');
         
         const getCooldownOptions = () => {
             let html = '<option value="">-- Bereitschaft --</option>';

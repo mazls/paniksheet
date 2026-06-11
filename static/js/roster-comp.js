@@ -972,6 +972,7 @@ window.setupBossListener = function(bossId) {
             document.querySelectorAll('.assignment-select').forEach(select => {
                 const assignmentId = select.dataset.assignmentId;
                 if(!assignmentId) return;
+                if (window.pendingAssignmentUpdates && window.pendingAssignmentUpdates[assignmentId]) return;
 
                 const isCooldown = assignmentId.toLowerCase().includes('cooldown');
                 const isManual = select.getAttribute('data-manual-options') === "true";
@@ -1006,6 +1007,7 @@ window.setupBossListener = function(bossId) {
             document.querySelectorAll('.assignment-text-input').forEach(input => {
                 const assignmentId = input.dataset.assignmentId;
                 if(!assignmentId) return;
+                if (window.pendingAssignmentUpdates && window.pendingAssignmentUpdates[assignmentId]) return;
                 if (document.activeElement === input) return;
                 const val = assignments[assignmentId]?.text || assignments[assignmentId]?.player || '';
                 if (input.value !== val) {
@@ -2376,9 +2378,19 @@ async function handleSoulstoneAssignmentChange(event, roster) {
     const playerName = select.value;
     const assignmentId = select.dataset.assignmentId;
     
-    // 1. Zuweisung speichern
+    // 1. Zuweisung speichern (Debounced)
     const assignmentsDocRef = doc(db, DATA_COLLECTION, "comp-soulstone-assignments");
-    await setDoc(assignmentsDocRef, { [assignmentId]: playerName }, { merge: true });
+    if (!window.pendingSSUpdates) window.pendingSSUpdates = {};
+    window.pendingSSUpdates[assignmentId] = playerName;
+    
+    if (window.ssUpdateTimer) clearTimeout(window.ssUpdateTimer);
+    window.ssUpdateTimer = setTimeout(async () => {
+        const payload = window.pendingSSUpdates;
+        window.pendingSSUpdates = {};
+        if (Object.keys(payload).length > 0) {
+            await setDoc(assignmentsDocRef, payload, { merge: true });
+        }
+    }, 1500);
 
     // 2. Farbe des Select-Elements aktualisieren
     if (playerName) {
@@ -2418,12 +2430,21 @@ async function handleBuffAssignmentChange(buffName, field, value) {
     const assignmentsDocRef = doc(db, DATA_COLLECTION, "comp-buff-assignments");
     const key = `${buffName}_${field}`;
 
-    await setDoc(assignmentsDocRef, { [key]: value }, { merge: true });
+    if (!window.pendingBuffUpdates) window.pendingBuffUpdates = {};
+    window.pendingBuffUpdates[key] = value;
     
-    // Wenn die Klasse geändert wird, wird die Spielerauswahl zurückgesetzt
     if (field === 'class') {
-        await setDoc(assignmentsDocRef, { [`${buffName}_player`]: "" }, { merge: true });
+        window.pendingBuffUpdates[`${buffName}_player`] = "";
     }
+
+    if (window.buffUpdateTimer) clearTimeout(window.buffUpdateTimer);
+    window.buffUpdateTimer = setTimeout(async () => {
+        const payload = window.pendingBuffUpdates;
+        window.pendingBuffUpdates = {};
+        if (Object.keys(payload).length > 0) {
+            await setDoc(assignmentsDocRef, payload, { merge: true });
+        }
+    }, 1500);
 }
 
 // Hilfsfunktionen für die Event Listener

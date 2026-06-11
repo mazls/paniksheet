@@ -577,13 +577,14 @@ window.CD_AUTO_PLANNER = (function() {
                 _key:          key,
                 _origIdx:      idx,
                 _isCustom:     false,
+                _hasManualCDs: ov.requiredCDs !== undefined,
                 name:          ov.name          !== undefined ? ov.name          : evt.name,
                 firstCast:     ov.firstCast     !== undefined ? ov.firstCast     : evt.firstCast,
                 cooldown:      ov.cooldown      !== undefined ? ov.cooldown      : (evt.cooldown || 0),
                 maxCasts:      ov.maxCasts      !== undefined ? ov.maxCasts      : (evt.maxCasts || 1),
                 delay:         ov.delay         !== undefined ? ov.delay         : (evt.delay || 0),
                 eventDuration: ov.eventDuration !== undefined ? ov.eventDuration : (evt.eventDuration || 0),
-                requiredCDs:   ov.requiredCDs   !== undefined ? ov.requiredCDs   : (evt.requiredCDs || []),
+                requiredCDs:   ov.requiredCDs   !== undefined ? ov.requiredCDs.slice() : (evt.requiredCDs ? evt.requiredCDs.slice() : []),
                 icon:          ov.icon          !== undefined ? ov.icon          : (evt.icon || ''),
                 spellId:       evt.spellId
             });
@@ -595,13 +596,14 @@ window.CD_AUTO_PLANNER = (function() {
             result.push({
                 _key:          evt._key,
                 _isCustom:     true,
+                _hasManualCDs: true,
                 name:          evt.name,
                 firstCast:     evt.firstCast,
                 cooldown:      evt.cooldown || 0,
                 maxCasts:      evt.maxCasts || 1,
                 delay:         evt.delay || 0,
                 eventDuration: evt.eventDuration || 0,
-                requiredCDs:   evt.requiredCDs || [],
+                requiredCDs:   evt.requiredCDs ? evt.requiredCDs.slice() : [],
                 icon:          evt.icon || '',
                 spellId:       evt.spellId || 0
             });
@@ -616,10 +618,15 @@ window.CD_AUTO_PLANNER = (function() {
         result.forEach(function(evt) {
             if (evt.requiredCDs && evt.requiredCDs.indexOf('bloodlust') !== -1) {
                 bloodlustEventExists = true;
-                bloodlustEvts.push(evt);
 
-                if (evt.requiredCDs.indexOf('stormlash') === -1) evt.requiredCDs.push('stormlash');
-                if (evt.requiredCDs.indexOf('skull_banner') === -1) evt.requiredCDs.push('skull_banner');
+                if (!evt._hasManualCDs) {
+                    if (evt.requiredCDs.indexOf('stormlash') === -1) evt.requiredCDs.push('stormlash');
+                    if (evt.requiredCDs.indexOf('skull_banner') === -1) evt.requiredCDs.push('skull_banner');
+                }
+                
+                if (evt.requiredCDs.indexOf('stormlash') !== -1 || evt.requiredCDs.indexOf('skull_banner') !== -1) {
+                    bloodlustEvts.push(evt);
+                }
 
                 if (evt.firstCast <= 15) hasEarlyBloodlust = true;
                 else hasLateBloodlust = true;
@@ -628,7 +635,14 @@ window.CD_AUTO_PLANNER = (function() {
 
         // 2. Casts für die Bloodlust-Zeitpunkte (10 Sekunden danach)
         bloodlustEvts.forEach(function(blEvt) {
-            var blMapEntry = config.triggerMap ? config.triggerMap[blEvt.name] : null;
+            var ovEntry = eventOverrides[blEvt._key];
+            var triggerOv = ovEntry && ovEntry.triggerOverride;
+            var blMapEntry = null;
+            if (triggerOv && triggerOv.mode === 'trigger' && triggerOv.trigger) {
+                blMapEntry = triggerOv.trigger;
+            } else {
+                blMapEntry = config.triggerMap ? config.triggerMap[blEvt.name] : null;
+            }
             var isBlEncStart = false;
             if (typeof blMapEntry === 'string' && blMapEntry.indexOf('ENC_START') !== -1) isBlEncStart = true;
             else if (blMapEntry && typeof blMapEntry === 'object' && blMapEntry.trigger && blMapEntry.trigger.indexOf('ENC_START') !== -1) isBlEncStart = true;
@@ -641,6 +655,7 @@ window.CD_AUTO_PLANNER = (function() {
             result.push({
                 _key: 'auto_sl_banner_followup_' + blEvt.firstCast,
                 _isCustom: true,
+                _isFollowUp: true,
                 name: 'SL/Banner (Folgecast)',
                 firstCast: blEvt.firstCast + 10,
                 cooldown: 0,
@@ -658,9 +673,32 @@ window.CD_AUTO_PLANNER = (function() {
             var startEvt = result.find(function(e) { return e.name === 'Kampfbeginn (SL/Banner)'; });
             if (!startEvt) {
                 var encStartObj = null;
-                if (typeof window.TRIGGER_OPTIONS !== 'undefined') {
-                    var foundEnc = window.TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('ENC_START') !== -1; });
-                    if (foundEnc) encStartObj = foundEnc.val;
+                if (config.triggerMap) {
+                    for (var key in config.triggerMap) {
+                        var entry = config.triggerMap[key];
+                        if (typeof entry === 'string' && entry.indexOf('ENC_START') !== -1) {
+                            encStartObj = entry; break;
+                        } else if (entry && typeof entry === 'object' && entry.trigger && entry.trigger.indexOf('ENC_START') !== -1) {
+                            encStartObj = entry.trigger; break;
+                        }
+                    }
+                }
+                if (!encStartObj) {
+                    var trgSelects = document.querySelectorAll('select.assignment-select[data-assignment-id$="-trigger"]');
+                    if (trgSelects.length > 0) {
+                        var encOption = Array.from(trgSelects[0].options).find(function(o) { return o.value.indexOf('ENC_START') !== -1; });
+                        if (encOption) encStartObj = encOption.value;
+                    }
+                    if (!encStartObj && config.triggerMap) {
+                        for (var k in config.triggerMap) {
+                            var entry = config.triggerMap[k];
+                            var val = (typeof entry === 'string') ? entry : (entry && entry.trigger);
+                            if (val && typeof val === 'string') {
+                                encStartObj = val.split('_')[0] + '_ENC_START';
+                                break;
+                            }
+                        }
+                    }
                 }
                 result.push({
                     _key: 'auto_start_sl_banner_1',
@@ -1733,58 +1771,84 @@ window.CD_AUTO_PLANNER = (function() {
 
         try {
             assignments.forEach(function(row) {
+                var validSlots = [];
                 catKeys.forEach(function(catKey) {
                     var slot = row.slots[catKey];
                     if (!slot || slot.skipped || !slot.player || !slot.dbName || slot.player === '__SKIP__') return;
-                    if (rowNum > 100) return;
+                    validSlots.push(slot);
+                });
 
-                    // triggerMap kann String (nur Trigger) oder Object ({ trigger, npc, percent }) sein
-                    var mapEntry = row._sourceTriggerMap || (config.triggerMap && config.triggerMap[row.eventName]);
-                    var triggerVal = '';
-                    var npcVal = '';
-                    var percentVal = null;
-                    if (typeof mapEntry === 'string') {
-                        triggerVal = mapEntry;
-                    } else if (mapEntry && typeof mapEntry === 'object') {
-                        triggerVal = mapEntry.trigger || '';
-                        npcVal = mapEntry.npc || '';
-                        if (mapEntry.percent !== undefined && mapEntry.percent !== null) {
-                            percentVal = mapEntry.percent;
-                        }
+                if (validSlots.length === 0) return;
+
+                // triggerMap kann String (nur Trigger) oder Object ({ trigger, npc, percent }) sein
+                var mapEntry = row._sourceTriggerMap || (config.triggerMap && config.triggerMap[row.eventName]);
+                var triggerVal = '';
+                var npcVal = '';
+                var percentVal = null;
+                if (typeof mapEntry === 'string') {
+                    triggerVal = mapEntry;
+                } else if (mapEntry && typeof mapEntry === 'object') {
+                    triggerVal = mapEntry.trigger || '';
+                    npcVal = mapEntry.npc || '';
+                    if (mapEntry.percent !== undefined && mapEntry.percent !== null) {
+                        percentVal = mapEntry.percent;
                     }
+                }
 
-                    // triggerOverride aus Event-Manager überschreibt triggerMap
-                    var ovEntry = eventOverrides[row.eventKey];
-                    var triggerOv = ovEntry && ovEntry.triggerOverride;
-                    if (triggerOv) {
-                        if (triggerOv.mode === 'hp') {
-                            var healthTrigger = null;
-                            try {
-                                if (typeof TRIGGER_OPTIONS !== 'undefined') {
-                                    var found = TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
-                                    if (found) healthTrigger = found.val;
-                                }
-                            } catch (e) { /* ignore */ }
-                            if (!healthTrigger && window.TRIGGER_OPTIONS) {
-                                var found2 = window.TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
-                                if (found2) healthTrigger = found2.val;
+                // triggerOverride aus Event-Manager überschreibt triggerMap
+                var ovEntry = eventOverrides[row.eventKey];
+                var triggerOv = ovEntry && ovEntry.triggerOverride;
+                if (triggerOv) {
+                    if (triggerOv.mode === 'hp') {
+                        var healthTrigger = null;
+                        try {
+                            if (typeof TRIGGER_OPTIONS !== 'undefined') {
+                                var found = TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+                                if (found) healthTrigger = found.val;
                             }
-                            if (healthTrigger) triggerVal = healthTrigger;
-                            npcVal = triggerOv.npc || '';
-                            percentVal = (triggerOv.percent !== undefined) ? triggerOv.percent : null;
-                        } else if (triggerOv.mode === 'cast') {
-                            if (triggerOv.trigger) triggerVal = triggerOv.trigger;
-                            npcVal = '';
-                            percentVal = null;
+                        } catch (e) { /* ignore */ }
+                        if (!healthTrigger && window.TRIGGER_OPTIONS) {
+                            var found2 = window.TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+                            if (found2) healthTrigger = found2.val;
                         }
+                        if (healthTrigger) triggerVal = healthTrigger;
+                        npcVal = triggerOv.npc || '';
+                        percentVal = (triggerOv.percent !== undefined) ? triggerOv.percent : null;
+                    } else if (triggerOv.mode === 'cast') {
+                        if (triggerOv.trigger) triggerVal = triggerOv.trigger;
+                        npcVal = '';
+                        percentVal = null;
                     }
+                }
 
-                    var isHealthTrigger = triggerVal && triggerVal.indexOf('HEALTH') !== -1;
-                    // Encounter Start ist ein Sonderfall: Trigger feuert nur 1x beim Pull.
-                    // Mehrere Casts auf ENC_START würden im Planner zu #1, #2, #3... werden,
-                    // was inhaltlich falsch ist. Stattdessen: Condition immer "1",
-                    // und die Zeit ist die absolute Kampfzeit (absTime + delay) als ETA ab Pull.
-                    var isEncStartTrigger = triggerVal && triggerVal.indexOf('ENC_START') !== -1;
+                var isHealthTrigger = triggerVal && triggerVal.indexOf('HEALTH') !== -1;
+                var isEncStartTrigger = triggerVal && triggerVal.indexOf('ENC_START') !== -1;
+
+                var conditionVal;
+                if (isEncStartTrigger) {
+                    conditionVal = '1';
+                } else if (isHealthTrigger && percentVal !== null) {
+                    conditionVal = String(percentVal);
+                } else if (triggerOv && triggerOv.mode === 'cast') {
+                    conditionVal = String(row.castNum);
+                } else if (row._sourceEvent && typeof row._sourceEvent.forceTriggerCondition !== 'undefined') {
+                    conditionVal = String(row._sourceEvent.forceTriggerCondition);
+                } else if (row._sourceEvent && row._sourceEvent._isFollowUp) {
+                    conditionVal = String(triggerCounts[triggerVal] || 1);
+                } else {
+                    triggerCounts[triggerVal] = (triggerCounts[triggerVal] || 0) + 1;
+                    conditionVal = String(triggerCounts[triggerVal]);
+                }
+
+                var timeVal;
+                if (isEncStartTrigger) {
+                    timeVal = String(Math.round((row.absTime || 0) + (row.delay || 0)));
+                } else {
+                    timeVal = String(row.delay || 0);
+                }
+
+                validSlots.forEach(function(slot) {
+                    if (rowNum > 100) return;
                     var rowPrefix = prefix + '-planner-row' + rowNum;
 
                     // DOM aktualisieren (für sofortige Anzeige, aber OHNE change-Events)
@@ -1792,32 +1856,13 @@ window.CD_AUTO_PLANNER = (function() {
                     addToBatch(rowPrefix + '-trigger', { player: triggerVal, editor: currentManager, timestamp: serverTs });
 
                     if (isHealthTrigger && npcVal) {
-                        setPlannerSelect(rowPrefix + '-npc', npcVal, true);
+                        setPlannerInput(rowPrefix + '-npc', npcVal, true);
                         addToBatch(rowPrefix + '-npc', { player: npcVal, editor: currentManager, timestamp: serverTs });
                     }
 
-                    var conditionVal;
-                    if (isEncStartTrigger) {
-                        conditionVal = '1';
-                    } else if (isHealthTrigger && percentVal !== null) {
-                        conditionVal = String(percentVal);
-                    } else if (triggerOv && triggerOv.mode === 'cast') {
-                        conditionVal = String(row.castNum);
-                    } else {
-                        triggerCounts[triggerVal] = (triggerCounts[triggerVal] || 0) + 1;
-                        conditionVal = String(triggerCounts[triggerVal]);
-                    }
                     setPlannerInput(rowPrefix + '-condition', conditionVal, true);
                     addToBatch(rowPrefix + '-condition', { text: conditionVal, editor: currentManager, timestamp: serverTs });
 
-                    // Bei ENC_START: Zeit = absolute Kampfzeit + Delay (das echte ETA ab Pull)
-                    // Sonst: Zeit = Delay relativ zum jeweiligen Trigger-Cast
-                    var timeVal;
-                    if (isEncStartTrigger) {
-                        timeVal = String(Math.round((row.absTime || 0) + (row.delay || 0)));
-                    } else {
-                        timeVal = String(row.delay || 0);
-                    }
                     setPlannerInput(rowPrefix + '-time', timeVal, true);
                     addToBatch(rowPrefix + '-time', { text: timeVal, editor: currentManager, timestamp: serverTs });
 

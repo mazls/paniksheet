@@ -234,31 +234,44 @@ CD_AUTO_PLANNER.init({
     prefix: 'galakras',
     
     events: [
-        { name: "Gegner-Welle (Sturmtruppen)", spellId: 0, firstCast: 10, cooldown: 55, maxCasts: 5, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
-        { name: "Protodrachen (Schwere Gegner)", spellId: 0, firstCast: 175, cooldown: 220, maxCasts: 2, delay: -3, eventDuration: 30, requiredCDs: ["any_dr", "aoe_stun", "additional_surv"], icon: "🐉" },
+        
+                { name: "Gegner Welle 1", spellId: 0, firstCast: 10, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
+        { name: "Gegner Welle 2", spellId: 0, firstCast: 59, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
+        { name: "Gegner Welle 3", spellId: 0, firstCast: 114, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
+        { name: "Gegner Welle 4 (mit Protodrache)", spellId: 0, firstCast: 169, cooldown: 0, maxCasts: 1, delay: -3, eventDuration: 30, requiredCDs: ["any_dr", "aoe_stun", "additional_surv"], icon: "🐉" },
+        { name: "Gegner Welle 5", spellId: 0, firstCast: 224, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
+        { name: "Gegner Welle 6", spellId: 0, firstCast: 279, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
+        { name: "Gegner Welle 7", spellId: 0, firstCast: 334, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
+        { name: "Gegner Welle 8 (mit Protodrache)", spellId: 0, firstCast: 389, cooldown: 0, maxCasts: 1, delay: -3, eventDuration: 30, requiredCDs: ["any_dr", "aoe_stun", "additional_surv"], icon: "🐉" },
         { name: "Turm öffnet #1", spellId: 0, firstCast: 116, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 15, requiredCDs: ["any_dr"], icon: "🗼" },
         { name: "Turm öffnet #2", spellId: 0, firstCast: 240, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 15, requiredCDs: ["any_dr"], icon: "🗼" },
         { name: "Sprengwagen Erscheinen", spellId: 116040, firstCast: 130, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 10, requiredCDs: ["any_dr"], icon: "💣" },
         { name: "Turmwächter Erscheinen", spellId: 0, firstCast: 75, cooldown: 60, maxCasts: 5, delay: 0, eventDuration: 10, requiredCDs: [], icon: "👤" },
         { name: "Ruf des Zermalmers (Heranziehen)", spellId: 146769, firstCast: 25, cooldown: 30, maxCasts: 4, delay: 0, eventDuration: 5, requiredCDs: ["movement"], icon: "🪝" },
         { name: "Zermalmender Schwung (Tanks)", spellId: 146849, firstCast: 15, cooldown: 7, maxCasts: 8, delay: 0, eventDuration: 3, requiredCDs: ["tank_external"], icon: "🛡️" },
-        { name: "Phase 2 Start (Galakras landet)", spellId: 50630, firstCast: 280, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 30, requiredCDs: ["bloodlust", "any_dr", "any_heal"], icon: "⚡" },
-        { name: "Pulsierende Flammen #1", spellId: 147042, firstCast: 306, cooldown: 25, maxCasts: 5, delay: -2, eventDuration: 7, requiredCDs: ["any_heal"], icon: "🔥" },
-        { name: "Flammen Galakronds (Zielerfassung)", spellId: 147068, firstCast: 292, cooldown: 6, maxCasts: 10, delay: 0, eventDuration: 5, requiredCDs: [], icon: "🎯" }
+        { name: "Phase 2 Start (Galakras landet)", spellId: 50630, firstCast: 280, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 30, requiredCDs: ["bloodlust", "any_dr", "any_heal"], icon: "⚡", forceTriggerCondition: "1", timeOffsetBase: 280 },
+        { name: "Pulsierende Flammen #1", spellId: 147042, firstCast: 306, cooldown: 25, maxCasts: 5, delay: -2, eventDuration: 7, requiredCDs: ["any_heal"], icon: "🔥", forceTriggerCondition: "1", timeOffsetBase: 280 },
+        { name: "Flammen Galakronds (Zielerfassung)", spellId: 147068, firstCast: 292, cooldown: 6, maxCasts: 10, delay: 0, eventDuration: 5, requiredCDs: [], icon: "🎯", forceTriggerCondition: "1", timeOffsetBase: 280 }
     ],
     
     triggerMap: {
-        "Gegner-Welle (Sturmtruppen)":          "GALAKRAS_ADDS",
-        "Protodrachen (Schwere Gegner)":        "GALAKRAS_ADDS",
-        "Turm öffnet #1":                       "GALAKRAS_TOWER_GRUNT",
+                "Gegner Welle 1":                       "GALAKRAS_ADDS",
+        "Gegner Welle 2":                       "GALAKRAS_ADDS",
+        "Gegner Welle 3":                       "GALAKRAS_ADDS",
+        "Gegner Welle 4 (Protodrache)":     "GALAKRAS_ADDS",
+        "Gegner Welle 5":                       "GALAKRAS_ADDS",
+        "Gegner Welle 6":                       "GALAKRAS_ADDS",
+        "Gegner Welle 7":                       "GALAKRAS_ADDS",
+        "Gegner Welle 8 (Protodrache)":     "GALAKRAS_ADDS",
+                "Turm öffnet #1":                       "GALAKRAS_TOWER_GRUNT",
         "Turm öffnet #2":                       "GALAKRAS_TOWER_GRUNT",
         "Sprengwagen Erscheinen":               "GALAKRAS_DEMOLISHER",
         "Turmwächter Erscheinen":               "GALAKRAS_TOWER_GRUNT",
         "Ruf des Zermalmers (Heranziehen)":     "GALAKRAS_CRUSHERS_CALL",
         "Zermalmender Schwung (Tanks)":   "GALAKRAS_SHATTERING_CLEAVE",
         "Phase 2 Start (Galakras landet)":      "GALAKRAS_P2",
-        "Pulsierende Flammen #1":               "GALAKRAS_PULSING",
-        "Flammen Galakronds (Zielerfassung)":   "GALAKRAS_FLAMES"
+        "Pulsierende Flammen #1":               "GALAKRAS_P2",
+        "Flammen Galakronds (Zielerfassung)":   "GALAKRAS_P2"
     }
 });
 </script>
@@ -300,7 +313,7 @@ CD_AUTO_PLANNER.init({
             { val: "GALAKRAS_P2",                text: "Phase 2 Start (Drache landet)" },
             { val: "GALAKRAS_FLAMES",            text: "Flammen Galakronds" },
             { val: "GALAKRAS_PULSING",           text: "Pulsierende Flammen" },
-            { val: "GALAKRAS_ADDS",              text: "Gegner-Welle / Protodrachen" },
+            { val: "GALAKRAS_ADDS",              text: "Gegner Welle" },
             { val: "GALAKRAS_TOWER_GRUNT",       text: "Turmwächter / Turm öffnet" },
             { val: "GALAKRAS_DEMOLISHER",        text: "Sprengwagen Erscheinen" }
         ];

@@ -299,8 +299,26 @@ window.generateGlobalWaString = async function() {
         });
         const rosterNamesSet = new Set((window.rosterData || []).map(p => p.name));
 
+        const prefixMap = {
+            'immerseus': 'immerseus',
+            'fallen-protectors': 'protectors',
+            'norushen': 'norushen',
+            'sha-of-pride': 'sha-of-pride',
+            'galakras': 'galakras',
+            'iron-juggernaut': 'juggernaut',
+            'korkron-dark-shamans': 'korkron-dark-shamans',
+            'general-nazgrim': 'general-nazgrim',
+            'malkorok': 'malkorok',
+            'spoils-of-pandaria': 'spoils',
+            'thok': 'thok',
+            'siegecrafter': 'blackfuse',
+            'paragons': 'paragons',
+            'garrosh': 'garrosh'
+        };
+        const pfx = prefixMap[bossId] || bossId;
+
         const rows = Object.keys(data)
-            .filter(k => k.includes('planner-row') && k.endsWith('-trigger'))
+            .filter(k => k.startsWith(pfx + '-planner-row') && k.endsWith('-trigger'))
             .sort((a, b) => {
                 const getNum = s => parseInt(s.match(/row(\d+)/)?.[1] || 999);
                 return getNum(a) - getNum(b);
@@ -1243,13 +1261,27 @@ async function handleAssignmentChange(event) {
             dataToSave = { [assignmentId]: { text: value, editor: currentManager, timestamp: serverTimestamp() } };
         }
 
-        // Speichern
-        await setDoc(window.assignmentsDocRef, dataToSave, { merge: true });
-        
-        // Log
+        // DEBOUNCED SPEICHERN
+        if (!window.pendingAssignmentUpdates) window.pendingAssignmentUpdates = {};
+        Object.assign(window.pendingAssignmentUpdates, dataToSave);
+
+        // History Log direkt
         const playerForLog = value || "Niemand/Leer";
         const bossName = location.hash.split('/')[1] || "Boss";
         window.logHistory(bossName, `Einteilung: ${assignmentId}`, playerForLog, currentManager);
+
+        if (window.assignmentUpdateTimer) clearTimeout(window.assignmentUpdateTimer);
+        window.assignmentUpdateTimer = setTimeout(async () => {
+            const payload = window.pendingAssignmentUpdates;
+            window.pendingAssignmentUpdates = {};
+            if (Object.keys(payload).length > 0 && window.assignmentsDocRef) {
+                try {
+                    await setDoc(window.assignmentsDocRef, payload, { merge: true });
+                } catch (e) {
+                    console.error("Fehler beim debounced Speichern:", e);
+                }
+            }
+        }, 1500);
     }
 
 // Event Listener für Änderungen global registrieren (falls noch nicht geschehen)

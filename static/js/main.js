@@ -139,6 +139,7 @@ mainNav.innerHTML = mainNavHTML;
             bossNav.innerHTML = bossNavHTML;
         }
 		async function loadContent(pageId, sectionId = null) {
+            await window.authPromise;
 			// Unsubscribe von allen alten Listenern
 			if (window.currentRosterUnsubscribe) { window.currentRosterUnsubscribe(); window.currentRosterUnsubscribe = null; }
 			if (window.historyUnsubscribe) { window.historyUnsubscribe(); window.historyUnsubscribe = null; }
@@ -260,6 +261,7 @@ mainNav.innerHTML = mainNavHTML;
                 }
             }
 
+            await window.authPromise;
             await window.fetchAllCooldowns(); 
             await window.fetchRoster();
             if (window.SlotSystem) {
@@ -278,7 +280,9 @@ mainNav.innerHTML = mainNavHTML;
             // Auf Boss-Seiten: CD-Assignment-Dropdowns neu befüllen.
             // Auf allen Seiten: window.rosterData immer aktuell halten.
             // ──────────────────────────────────────────────────────────────────
-            window.globalRosterListener = onSnapshot(rosterDocRef, (docSnap) => {
+            window.initGlobalListeners = function() {
+                if (window.globalRosterListener) return;
+                window.globalRosterListener = onSnapshot(rosterDocRef, (docSnap) => {
                 const currentRosterData = docSnap.exists() ? docSnap.data().roster || [] : [];
                 window.rosterData = currentRosterData;
 
@@ -327,6 +331,8 @@ mainNav.innerHTML = mainNavHTML;
                     );
                 }
             });
+            };
+            if (auth.currentUser || window.isManager) window.initGlobalListeners();
 
             try {
                 const rosterSnap = await getDoc(rosterDocRef);
@@ -564,10 +570,12 @@ window.applyThemeForRaid = function(raidId) {
                 aliasSection.style.display = 'block'; // Sektion sichtbar machen
                 document.getElementById('alias-form')?.addEventListener('submit', window.handleAddOrUpdateAlias);
         
-                onSnapshot(aliasDocRef, (docSnap) => {
-                    window.globalAliasMap = docSnap.exists() ? docSnap.data().aliases || {} : {};
-                    window.loadAndDisplayAliasMap(window.globalAliasMap);
-                });
+                if (!window.globalAliasListener) {
+                    window.globalAliasListener = onSnapshot(aliasDocRef, (docSnap) => {
+                        window.globalAliasMap = docSnap.exists() ? docSnap.data().aliases || {} : {};
+                        window.loadAndDisplayAliasMap(window.globalAliasMap);
+                    });
+                }
             }
                 if (window.isManager) {
         const editorSection = document.getElementById('cooldown-editor-section');
