@@ -1026,7 +1026,6 @@ window.LaneGroups = (function () {
             else {
                 const idx = lane.allowedCats.indexOf(catId);
                 if (idx >= 0) lane.allowedCats.splice(idx, 1); else lane.allowedCats.push(catId);
-                if (lane.allowedCats.length === prioCats.length) lane.allowedCats = null;
             }
         }
         render(inst); scheduleSave(inst);
@@ -1150,6 +1149,19 @@ window.LaneGroups = (function () {
         const alreadyAssignedGlobal = new Set();
         const alreadyAssignedPerLane = block.lanes.map(() => new Set());
         const usedByLane = block.lanes.map(() => ({}));
+        
+        const alreadyAssignedOtherBlocks = new Set();
+        if (!block.isolatedBlock) {
+            inst.blocks.forEach((otherBlock, obi) => {
+                if (obi !== blockIdx && !otherBlock.isolatedBlock) {
+                    otherBlock.lanes.forEach(ol => {
+                        ol.slots.forEach(name => {
+                            if (name) alreadyAssignedOtherBlocks.add(getCanonicalName(inst, name));
+                        });
+                    });
+                }
+            });
+        }
 
         block.lanes.forEach((lane, li) => {
             lane.slots.forEach((name, si) => {
@@ -1196,6 +1208,11 @@ window.LaneGroups = (function () {
                             console.log(`Rejected ${cand.name}: no interrupt (${pCls} ${pSpec})`);
                             continue;
                         }
+                    }
+
+                    if (alreadyAssignedOtherBlocks.has(cand.name)) {
+                        console.log(`Rejected ${cand.name}: already assigned in another connected block`);
+                        continue;
                     }
 
                     // cand.name ist immer ein echter Spieler-Name aus dem Roster
