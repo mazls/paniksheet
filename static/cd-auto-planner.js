@@ -409,6 +409,30 @@ window.CD_AUTO_PLANNER = (function() {
                 { spellId: "122710", cooldownSec: 120, durationSec: 12 },                                       // Vigilance (jeder Warrior)
                 { spellId: "114039", cooldownSec: 30,  durationSec: 6 },                                        // Hand of Purity (jeder Paladin)
             ]
+        },
+
+        // ══════════════════════════════════════════════════════════
+        // VIRTUELLE KATEGORIEN (TTS-Warnungen ohne Spieler-CDs)
+        // ══════════════════════════════════════════════════════════
+        kampfpots: {
+            name: "Kampfpots (TTS)", shortName: "Pots", color: "#fca5a5",
+            isVirtual: true,
+            defaultPlayer: "Alle",
+            defaultNote: "Kampfpots ziehen!",
+            defaultTts: "pots",
+            defaultName: "Kampfpots",
+            defaultIcon: "18",
+            spells: []
+        },
+        tts_warning: {
+            name: "TTS Warnung", shortName: "Warn", color: "#fbbf24",
+            isVirtual: true,
+            defaultPlayer: "Alle",
+            defaultNote: "Achtung!",
+            defaultTts: "achtung",
+            defaultName: "Warnung",
+            defaultIcon: "1",
+            spells: []
         }
     };
 
@@ -633,7 +657,12 @@ window.CD_AUTO_PLANNER = (function() {
             }
         });
 
-        // 2. Casts für die Bloodlust-Zeitpunkte (10 Sekunden danach)
+        // 2. Anzahl möglicher Casts ermitteln (Max aus Schamanen / Kriegern)
+        var numShamans = getPlayersOfClass('SHAMAN').length;
+        var numWarriors = getPlayersOfClass('WARRIOR').length;
+        var maxCasts = Math.max(1, Math.max(numShamans, numWarriors));
+
+        // 3. Folgecasts und 3-Minuten-Casts für die Bloodlust-Zeitpunkte
         bloodlustEvts.forEach(function(blEvt) {
             var ovEntry = eventOverrides[blEvt._key];
             var triggerOv = ovEntry && ovEntry.triggerOverride;
@@ -647,26 +676,48 @@ window.CD_AUTO_PLANNER = (function() {
             if (typeof blMapEntry === 'string' && blMapEntry.indexOf('ENC_START') !== -1) isBlEncStart = true;
             else if (blMapEntry && typeof blMapEntry === 'object' && blMapEntry.trigger && blMapEntry.trigger.indexOf('ENC_START') !== -1) isBlEncStart = true;
 
-            var followupDelay = blEvt.delay || 0;
-            if (!isBlEncStart) {
-                followupDelay += 10;
+            // --- Folgecasts direkt nach BL ---
+            for (var i = 1; i < maxCasts; i++) {
+                var currentDelay = isBlEncStart ? 0 : ((blEvt.delay || 0) + i * 10);
+                result.push({
+                    _key: 'auto_sl_banner_followup_' + blEvt.firstCast + '_' + i,
+                    _isCustom: true,
+                    _isFollowUp: true,
+                    name: 'SL/Banner (Folge ' + i + ')',
+                    firstCast: blEvt.firstCast + (i * 10),
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: currentDelay,
+                    eventDuration: 0,
+                    requiredCDs: ['stormlash', 'skull_banner'],
+                    icon: '⚔️',
+                    spellId: 0,
+                    _sourceTriggerMap: blMapEntry
+                });
             }
 
-            result.push({
-                _key: 'auto_sl_banner_followup_' + blEvt.firstCast,
-                _isCustom: true,
-                _isFollowUp: true,
-                name: 'SL/Banner (Folgecast)',
-                firstCast: blEvt.firstCast + 10,
-                cooldown: 0,
-                maxCasts: 1,
-                delay: followupDelay,
-                eventDuration: 0,
-                requiredCDs: ['stormlash', 'skull_banner'],
-                icon: '⚔️',
-                spellId: 0,
-                _sourceTriggerMap: blMapEntry
-            });
+            // --- Zusätzlicher Cast + Folgecasts nach 3 Minuten (180s) ---
+            for (var i = 0; i < maxCasts; i++) {
+                var currentDelay = isBlEncStart ? 0 : ((blEvt.delay || 0) + i * 10);
+                var timeOffset = 180 + (i * 10);
+                var evtName = (i === 0) ? 'SL/Banner (Nach 3 Min)' : 'SL/Banner (Nach 3 Min, Folge ' + i + ')';
+                
+                result.push({
+                    _key: 'auto_sl_banner_3min_' + blEvt.firstCast + '_' + i,
+                    _isCustom: true,
+                    _isFollowUp: true,
+                    name: evtName,
+                    firstCast: blEvt.firstCast + timeOffset,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: currentDelay,
+                    eventDuration: 0,
+                    requiredCDs: ['stormlash', 'skull_banner'],
+                    icon: '⚔️',
+                    spellId: 0,
+                    _sourceTriggerMap: blMapEntry
+                });
+            }
         });
 
         if (bloodlustEventExists && hasLateBloodlust && !hasEarlyBloodlust) {
@@ -910,6 +961,17 @@ window.CD_AUTO_PLANNER = (function() {
         // ──────────────────────────────────────────────────────────────
         // HAUPT-SCHLEIFE
         // ──────────────────────────────────────────────────────────────
+        function normalizePlayerForPlanner(p) {
+            if (!p) return 'ALL';
+            var up = p.toUpperCase();
+            if (up === 'ALLE' || up === 'ALL') return 'ALL';
+            if (up === 'TANKS' || up === 'TANK') return 'TANKS';
+            if (up === 'HEALER' || up === 'HEALERS' || up === 'HEAL') return 'HEALERS';
+            if (up === 'MELEE' || up === 'MELEEDPS') return 'MELEEDPS';
+            if (up === 'RANGE' || up === 'RANGED' || up === 'RANGEDDPS') return 'RANGEDDPS';
+            return p; // Keep class names like Priest as is
+        }
+
         timeline.forEach(function(row) {
             // Alle Kategorien initial mit leeren Slots vorbelegen,
             // damit die UI-Spalten stimmen.
@@ -936,6 +998,26 @@ window.CD_AUTO_PLANNER = (function() {
                         row.slots[catKey] = { player: null, dbName: null, auto: false, skipped: true };
                         return;
                     }
+                    
+                    if (ov.isVirtualCategoryKey) {
+                        var vCat = categories[ov.isVirtualCategoryKey];
+                        if (vCat) {
+                            row.slots[catKey] = {
+                                isVirtual: true,
+                                player: normalizePlayerForPlanner(ov.player === 'Alle' || ov.player === 'ALL' ? vCat.defaultPlayer : ov.player),
+                                dbName: '',
+                                note: vCat.defaultNote || '',
+                                tts: vCat.defaultTts || '',
+                                varname: vCat.defaultName || '',
+                                icon: vCat.defaultIcon || '',
+                                auto: false,
+                                skipped: false,
+                                isVirtualCategoryKey: ov.isVirtualCategoryKey
+                            };
+                            return;
+                        }
+                    }
+
                     row.slots[catKey] = JSON.parse(JSON.stringify(ov));
                     row.slots[catKey].auto = false;
                     if (ov.player && ov.dbName) {
@@ -945,6 +1027,21 @@ window.CD_AUTO_PLANNER = (function() {
                 }
 
                 if (!isRequired) return;
+
+                var catConfig = categories[catKey];
+                if (catConfig && catConfig.isVirtual) {
+                    row.slots[catKey] = {
+                        isVirtual: true,
+                        player: normalizePlayerForPlanner(catConfig.defaultPlayer),
+                        dbName: '',
+                        note: catConfig.defaultNote || '',
+                        tts: catConfig.defaultTts || '',
+                        varname: catConfig.defaultName || '',
+                        icon: catConfig.defaultIcon || '',
+                        auto: true
+                    };
+                    return;
+                }
 
                 // Spread-Check: wenn diese (Event, Kategorie, Cast) durch
                 // die Spread-Maske blockiert ist → leerer "geplante Lücke"-Slot
@@ -1110,17 +1207,29 @@ window.CD_AUTO_PLANNER = (function() {
         timeline.forEach(function(row, rowIdx) {
             catKeys.forEach(function(catKey) {
                 var slot = row.slots[catKey];
-                if (!slot || !slot.player || !slot.dbName) return;
+                if (!slot || !slot.player || (!slot.dbName && !slot.isVirtual)) return;
                 var sel = tbody.querySelector('select[data-row="' + rowIdx + '"][data-cat="' + catKey + '"]');
                 if (!sel) return;
-                var val = slot.player + '::' + slot.dbName;
+                
+                var val;
+                if (slot.isVirtualCategoryKey) {
+                    var playerStr = slot.player === 'Alle' ? 'ALL' : slot.player;
+                    val = playerStr + '::__VIRTUAL__::' + slot.isVirtualCategoryKey;
+                } else if (slot.isVirtual && !slot.dbName) {
+                    var playerStr = slot.player === 'Alle' ? 'ALL' : slot.player;
+                    val = playerStr + '::__VIRTUAL__::' + catKey;
+                } else {
+                    val = slot.player + '::' + slot.dbName;
+                }
+
                 if (!Array.from(sel.options).some(function(o) { return o.value === val; })) {
-                    var opt = new Option(slot.player + ' → ' + slot.dbName, val);
-                    opt.style.color = getClassColor(slot.dbClass);
+                    var displayCatName = slot.isVirtual ? (categories[slot.isVirtualCategoryKey || catKey].name) : slot.dbName;
+                    var opt = new Option(slot.player + ' → ' + displayCatName, val);
+                    opt.style.color = getClassColor(slot.dbClass || 'General');
                     sel.appendChild(opt);
                 }
                 sel.value = val;
-                sel.style.color = getClassColor(slot.dbClass);
+                sel.style.color = getClassColor(slot.dbClass || 'General');
             });
         });
 
@@ -1140,15 +1249,24 @@ window.CD_AUTO_PLANNER = (function() {
                 } else {
                     var parts = e.target.value.split('::');
                     var player = parts[0], dbName = parts[1];
-                    var dbEntry = cooldownsDB.find(function(cd) { return cd.name === dbName; });
-                    var catSpell = resolveCategory(ck).find(function(s) { return s.dbName === dbName; });
-                    manualOverrides[oKey] = {
-                        player: player, dbName: dbName,
-                        dbClass: dbEntry ? dbEntry.class : 'UNKNOWN',
-                        spellId: dbEntry ? dbEntry.spellId : '',
-                        cooldownSec: (catSpell && catSpell.cooldownSec) || parseInt(dbEntry && dbEntry.cooldownSec) || 180,
-                        durationSec: (catSpell && catSpell.durationSec) || parseInt(dbEntry && dbEntry.durationSec) || 0
-                    };
+                    
+                    if (dbName === '__VIRTUAL__') {
+                        var virtKey = parts[2];
+                        manualOverrides[oKey] = {
+                            player: player, dbName: '__VIRTUAL__',
+                            isVirtualCategoryKey: virtKey
+                        };
+                    } else {
+                        var dbEntry = cooldownsDB.find(function(cd) { return cd.name === dbName; });
+                        var catSpell = resolveCategory(ck).find(function(s) { return s.dbName === dbName; });
+                        manualOverrides[oKey] = {
+                            player: player, dbName: dbName,
+                            dbClass: dbEntry ? dbEntry.class : 'UNKNOWN',
+                            spellId: dbEntry ? dbEntry.spellId : '',
+                            cooldownSec: (catSpell && catSpell.cooldownSec) || parseInt(dbEntry && dbEntry.cooldownSec) || 180,
+                            durationSec: (catSpell && catSpell.durationSec) || parseInt(dbEntry && dbEntry.durationSec) || 0
+                        };
+                    }
                 }
                 runAutoAssign();
             });
@@ -1168,7 +1286,7 @@ window.CD_AUTO_PLANNER = (function() {
         updateStatus(timeline.length + ' Events, ' + missing + ' ohne CD');
     }
 
-    // ── Dropdown: Empfohlen + Alle CDs ──
+    // ── Dropdown: Empfohlen + Alle CDs + Virtuell ──
     function buildDropdownOptions(catKey) {
         var html = '';
 
@@ -1214,7 +1332,7 @@ window.CD_AUTO_PLANNER = (function() {
             }
 
             var allCDs = cooldownsDB.filter(function(cd) {
-                return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 && cd.type !== 'Personal';
+                return cd.name && cd.spellId && cd.spellId !== "nil" && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 && cd.type !== 'Personal';
             });
             var byClassA = {};
             allCDs.forEach(function(cd) {
@@ -1239,6 +1357,29 @@ window.CD_AUTO_PLANNER = (function() {
                 });
                 if (allHtml) {
                     sectionHtml += '<option disabled style="font-weight:bold; color:#64748b; background:#1a202c;">═══ ' + (isSpec ? 'SPEC SLOTS (ALLE CDs)' : 'ALLE CDs') + ' ═══</option>' + allHtml;
+                }
+            }
+            
+            // Virtuelle Kategorien (Warnungen)
+            if (!isSpec) {
+                var virtHtml = '';
+                Object.keys(categories).forEach(function(vKey) {
+                    var cat = categories[vKey];
+                    if (cat && cat.isVirtual && cat.name) {
+                        var playerVal = cat.defaultPlayer || 'ALL';
+                        var playerDisplay = playerVal;
+                        if (playerVal === 'ALL') playerDisplay = 'Alle';
+                        if (playerVal === 'TANKS') playerDisplay = 'Tanks';
+                        if (playerVal === 'HEALERS') playerDisplay = 'Heiler';
+                        if (playerVal === 'MELEEDPS') playerDisplay = 'Melee';
+                        if (playerVal === 'RANGEDDPS') playerDisplay = 'Range';
+                        
+                        var ttsHint = cat.defaultTts ? ' (TTS: ' + cat.defaultTts + ')' : '';
+                        virtHtml += '<option value="' + playerVal + '::__VIRTUAL__::' + vKey + '" style="color:' + cat.color + ';">★ ' + playerDisplay + ' → ' + cat.name + ttsHint + '</option>';
+                    }
+                });
+                if (virtHtml) {
+                    sectionHtml += '<option disabled style="font-weight:bold; color:#f43f5e; background:#1a202c;">═══ VIRTUELL (WARNUNGEN) ═══</option>' + virtHtml;
                 }
             }
 
@@ -1774,7 +1915,9 @@ window.CD_AUTO_PLANNER = (function() {
                 var validSlots = [];
                 catKeys.forEach(function(catKey) {
                     var slot = row.slots[catKey];
-                    if (!slot || slot.skipped || !slot.player || !slot.dbName || slot.player === '__SKIP__') return;
+                    if (!slot || slot.skipped) return;
+                    if (!slot.isVirtual && (!slot.player || !slot.dbName || slot.player === '__SKIP__')) return;
+                    slot._catKey = catKey; // Store catKey for later use
                     validSlots.push(slot);
                 });
 
@@ -1866,15 +2009,53 @@ window.CD_AUTO_PLANNER = (function() {
                     setPlannerInput(rowPrefix + '-time', timeVal, true);
                     addToBatch(rowPrefix + '-time', { text: timeVal, editor: currentManager, timestamp: serverTs });
 
-                    setPlannerSelect(rowPrefix + '-player', slot.player, true);
-                    addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
+                    if (slot.isVirtual) {
+                        setPlannerSelect(rowPrefix + '-player', slot.player, true);
+                        addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
+                        
+                        var virtCat = categories[slot.isVirtualCategoryKey] || categories[slot._catKey];
+                        var catName = virtCat ? virtCat.name : 'Virtuell';
+                        
+                        // Stelle sicher, dass die Option im Select existiert, sonst wird es leer angezeigt
+                        var sel = document.querySelector('[data-assignment-id="' + rowPrefix + '-cooldown"]');
+                        if (sel) {
+                            var exists = Array.from(sel.options).some(function(o) { return o.value === catName; });
+                            if (!exists) {
+                                var opt = document.createElement('option');
+                                opt.value = catName;
+                                opt.textContent = catName;
+                                opt.dataset.color = virtCat ? virtCat.color : '#fff';
+                                sel.appendChild(opt);
+                            }
+                        }
 
-                    var ok = setPlannerSelect(rowPrefix + '-cooldown', slot.dbName, true);
-                    addToBatch(rowPrefix + '-cooldown', { cooldown: slot.dbName, editor: currentManager, timestamp: serverTs });
+                        setPlannerSelect(rowPrefix + '-cooldown', catName, true);
+                        addToBatch(rowPrefix + '-cooldown', { cooldown: catName, editor: currentManager, timestamp: serverTs });
 
-                    if (ok) exported++; else {
-                        skipped++;
-                        console.warn('[Auto-Planner] CD nicht gefunden: "' + slot.dbName + '" (' + slot.spellId + ')');
+                        setPlannerInput(rowPrefix + '-note', slot.note || "", true);
+                        addToBatch(rowPrefix + '-note', { text: slot.note || "", editor: currentManager, timestamp: serverTs });
+
+                        setPlannerInput(rowPrefix + '-tts', slot.tts || "", true);
+                        addToBatch(rowPrefix + '-tts', { text: slot.tts || "", editor: currentManager, timestamp: serverTs });
+
+                        setPlannerInput(rowPrefix + '-varname', slot.varname || "", true);
+                        addToBatch(rowPrefix + '-varname', { text: slot.varname || "", editor: currentManager, timestamp: serverTs });
+
+                        setPlannerInput(rowPrefix + '-icon', slot.icon || "", true);
+                        addToBatch(rowPrefix + '-icon', { text: slot.icon || "", editor: currentManager, timestamp: serverTs });
+                        
+                        exported++;
+                    } else {
+                        setPlannerSelect(rowPrefix + '-player', slot.player, true);
+                        addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
+
+                        var ok = setPlannerSelect(rowPrefix + '-cooldown', slot.dbName, true);
+                        addToBatch(rowPrefix + '-cooldown', { cooldown: slot.dbName, editor: currentManager, timestamp: serverTs });
+
+                        if (ok) exported++; else {
+                            skipped++;
+                            console.warn('[Auto-Planner] CD nicht gefunden: "' + slot.dbName + '" (' + slot.spellId + ')');
+                        }
                     }
                     rowNum++;
                 });
@@ -2034,6 +2215,49 @@ window.CD_AUTO_PLANNER = (function() {
 
         var catsHtml = Object.entries(categories).map(function(entry) {
             var key = entry[0], cat = entry[1];
+            
+            if (cat.isVirtual) {
+                    var playerVal = cat.defaultPlayer || 'ALL';
+                    var playerOptions = [
+                        {val: 'ALL', label: 'Alle'},
+                        {val: 'TANKS', label: 'Tanks'},
+                        {val: 'HEALERS', label: 'Heiler'},
+                        {val: 'MELEEDPS', label: 'Melee'},
+                        {val: 'RANGEDDPS', label: 'Range'},
+                        {val: 'PRIEST', label: 'Priest'},
+                        {val: 'PALADIN', label: 'Paladin'},
+                        {val: 'MAGE', label: 'Mage'},
+                        {val: 'WARLOCK', label: 'Warlock'},
+                        {val: 'ROGUE', label: 'Rogue'},
+                        {val: 'DRUID', label: 'Druid'},
+                        {val: 'HUNTER', label: 'Hunter'},
+                        {val: 'SHAMAN', label: 'Shaman'},
+                        {val: 'WARRIOR', label: 'Warrior'},
+                        {val: 'DEATHKNIGHT', label: 'Death Knight'},
+                        {val: 'MONK', label: 'Monk'}
+                    ].map(function(opt) {
+                        return '<option value="' + opt.val + '"' + (playerVal === opt.val || playerVal === opt.label ? ' selected' : '') + '>' + opt.label + '</option>';
+                    }).join('');
+
+                    return '<div class="bg-slate-750 p-3 rounded border border-slate-600 mb-2" data-cat-key="' + key + '">'
+                    + '<div class="flex items-center gap-2 mb-2">'
+                    +   '<input type="color" class="cat-color-input w-6 h-6 bg-transparent border-0 cursor-pointer" data-cat="' + key + '" value="' + cat.color + '" title="Farbe">'
+                    +   '<input type="text" class="cat-name-input text-sm font-bold bg-slate-900 text-white px-2 py-1 rounded border border-slate-600 flex-1" data-cat="' + key + '" value="' + cat.name + '" placeholder="Anzeigename">'
+                    +   '<input type="text" class="cat-short-input text-xs bg-slate-900 text-gray-300 px-2 py-1 rounded border border-slate-600 w-24" data-cat="' + key + '" value="' + (cat.shortName || '') + '" placeholder="Kurzname">'
+                    +   '<span class="bg-indigo-600/30 text-indigo-300 border border-indigo-500/50 text-[10px] px-1.5 py-0.5 rounded font-bold" title="TTS/Text-Warnung ohne RaidCD">VIRTUELL</span>'
+                    +   '<span class="text-[10px] text-gray-500 font-mono">' + key + '</span>'
+                    +   '<button class="delete-cat-btn text-red-400 hover:text-red-300 text-lg px-1" data-cat="' + key + '" title="Kategorie löschen">🗑</button>'
+                    + '</div>'
+                    + '<div class="flex flex-col gap-1 pl-8 bg-slate-800/50 p-2 rounded text-xs">'
+                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Zielgruppe:</label><select class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultPlayer" data-cat="' + key + '">' + playerOptions + '</select></div>'
+                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Sprachausgabe:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultTts" data-cat="' + key + '" value="' + (cat.defaultTts || '') + '"></div>'
+                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Zusatztext:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultNote" data-cat="' + key + '" value="' + (cat.defaultNote || '') + '"></div>'
+                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Spalten-Name:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultName" data-cat="' + key + '" value="' + (cat.defaultName || '') + '"></div>'
+                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Icon-ID:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 w-32" data-field="defaultIcon" data-cat="' + key + '" value="' + (cat.defaultIcon || '') + '"></div>'
+                    + '</div>'
+                    + '</div>';
+            }
+
             var resolved = resolveCategory(key);
             var rows = cat.spells.map(function(sp, idx) {
                 var r = resolved.find(function(x) { return String(x.spellId) === String(sp.spellId); });
@@ -2104,15 +2328,30 @@ window.CD_AUTO_PLANNER = (function() {
         var addBtn = document.getElementById('btn-add-category');
         if (addBtn) {
             addBtn.addEventListener('click', function() {
-                var key = prompt('Eindeutiger Key für neue Kategorie (z.B. "dispel_magic"):');
+                var isVirt = confirm('Soll dies eine Virtuelle TTS-Kategorie (ohne Spieler-Zuordnung) werden? OK = Ja, Abbrechen = Nein (Normale Kategorie)');
+                var key = prompt('Eindeutiger Key für neue Kategorie (z.B. "dispel_magic" oder "gesundheitssteine"):');
                 if (!key) return;
                 if (categories[key]) { alert('Key existiert bereits!'); return; }
                 var name = prompt('Anzeigename:', key);
                 if (!name) return;
-                categories[key] = {
-                    name: name, shortName: name.substring(0, 10), color: '#8b5cf6',
-                    spells: []
-                };
+                
+                if (isVirt) {
+                    categories[key] = {
+                        name: name, shortName: name.substring(0, 10), color: '#8b5cf6',
+                        isVirtual: true,
+                        defaultPlayer: "Alle",
+                        defaultNote: "Warnung!",
+                        defaultTts: "achtung",
+                        defaultName: "Warnung",
+                        defaultIcon: "1",
+                        spells: []
+                    };
+                } else {
+                    categories[key] = {
+                        name: name, shortName: name.substring(0, 10), color: '#8b5cf6',
+                        spells: []
+                    };
+                }
                 renderCategoriesAdmin();
             });
         }
@@ -2141,6 +2380,13 @@ window.CD_AUTO_PLANNER = (function() {
         document.querySelectorAll('.cat-color-input').forEach(function(inp) {
             inp.addEventListener('change', function(e) {
                 categories[e.target.dataset.cat].color = e.target.value;
+            });
+        });
+        
+        // Virtuelle Felder
+        document.querySelectorAll('.cat-virtual-input').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                categories[e.target.dataset.cat][e.target.dataset.field] = e.target.value;
             });
         });
 
@@ -2829,7 +3075,7 @@ window.CD_AUTO_PLANNER = (function() {
         }
 
         var batchPayload = {};
-        var fields = ['trigger', 'npc', 'condition', 'time', 'player', 'cooldown', 'text', 'tts', 'name', 'icon'];
+        var fields = ['trigger', 'npc', 'condition', 'time', 'player', 'cooldown', 'note', 'tts', 'varname', 'icon'];
 
         try {
             // DOM leeren + Batch füllen

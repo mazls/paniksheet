@@ -1529,9 +1529,38 @@ async function fetchAllCooldowns() {
         const cooldownsCollectionRef = collection(db, "cooldowns");
         const q = query(cooldownsCollectionRef, orderBy("order", "asc"), orderBy("name", "asc"));
         const snapshot = await getDocs(q);
-        allCooldowns = snapshot.docs.map(doc => doc.data());
+        let loadedCooldowns = snapshot.docs.map(doc => doc.data());
+        
+        // Virtuelle Kategorien aus dem Auto-Planner holen (z.B. Kampfpots, Warnungen)
+        try {
+            const autoCatDoc = await getDoc(doc(db, "auto-planner", "_cd-categories"));
+            if (autoCatDoc.exists() && autoCatDoc.data().categories) {
+                const cats = autoCatDoc.data().categories;
+                let hasVirtuals = false;
+                
+                Object.values(cats).forEach(c => {
+                    if (c.isVirtual) {
+                        if (!hasVirtuals) {
+                            loadedCooldowns.push({ name: "--- Warnungen (Virtuell) ---", class: "General", spellId: "nil", order: 998 });
+                            hasVirtuals = true;
+                        }
+                        loadedCooldowns.push({
+                            name: c.name,
+                            class: "General",
+                            spellId: "nil",
+                            cooldownSec: 0,
+                            durationSec: 0,
+                            tooltip: `Virtuell. Ziel: ${c.defaultPlayer || 'Alle'}<br>TTS: ${c.defaultTts || '-'}<br>Hinweis: ${c.defaultNote || '-'}`,
+                            order: 999
+                        });
+                    }
+                });
+            }
+        } catch(e) { console.warn("Virtuelle CDs konnten nicht geladen werden:", e); }
+
+        allCooldowns = loadedCooldowns;
         console.log("Cooldowns erfolgreich aus der Datenbank geladen:", allCooldowns);
-        window.allCooldowns = snapshot.docs.map(doc => doc.data());
+        window.allCooldowns = allCooldowns;
     } catch (error) {
         console.error("Fehler beim Laden der Cooldowns aus der Datenbank:", error);
     }
