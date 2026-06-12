@@ -527,7 +527,7 @@
             if (_mvObserverAttached || attempts > 600) {
                 clearInterval(interval);
                 if (!_mvObserverAttached) {
-                    console.warn('[LaneGroups-Integration] #mv-accordion nicht gefunden — MV-Integration inaktiv');
+                    // console.warn('[LaneGroups-Integration] #mv-accordion nicht gefunden — MV-Integration inaktiv');
                 }
             }
         }, 100);

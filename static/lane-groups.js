@@ -1205,23 +1205,23 @@ window.LaneGroups = (function () {
 
                     if (block.onlyKicks) {
                         if (!hasInterrupt(pCls, pSpec)) {
-                            console.log(`Rejected ${cand.name}: no interrupt (${pCls} ${pSpec})`);
+                            // console.log(`Rejected ${cand.name}: no interrupt (${pCls} ${pSpec})`);
                             continue;
                         }
                     }
 
                     if (alreadyAssignedOtherBlocks.has(cand.name)) {
-                        console.log(`Rejected ${cand.name}: already assigned in another connected block`);
+                        // console.log(`Rejected ${cand.name}: already assigned in another connected block`);
                         continue;
                     }
 
                     // cand.name ist immer ein echter Spieler-Name aus dem Roster
                     if (block.sharedLanes && alreadyAssignedGlobal.has(cand.name)) {
-                        console.log(`Rejected ${cand.name}: already assigned global`);
+                        // console.log(`Rejected ${cand.name}: already assigned global`);
                         continue;
                     }
                     if (!block.sharedLanes && alreadyAssignedPerLane[li].has(cand.name)) {
-                        console.log(`Rejected ${cand.name}: already assigned per lane`);
+                        // console.log(`Rejected ${cand.name}: already assigned per lane`);
                         continue;
                     }
 
@@ -1233,7 +1233,7 @@ window.LaneGroups = (function () {
                         if (lane.allowedCats.length > 0 && validFilters.length === 0) {
                             // Ignoriere die veralteten Filter
                         } else if (lane.allowedCats.length === 0 || !cat || !lane.allowedCats.includes(cat.id)) {
-                            console.log(`Rejected ${cand.name}: blocked by lane.allowedCats (allowed: ${lane.allowedCats}, candCat: ${cat?.id})`);
+                            // console.log(`Rejected ${cand.name}: blocked by lane.allowedCats (allowed: ${lane.allowedCats}, candCat: ${cat?.id})`);
                             continue;
                         }
                     }
@@ -1241,14 +1241,14 @@ window.LaneGroups = (function () {
                         if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && sIdx < cat.limitRows) {
                             const c = (usedByLane[li][cat.id] || []).filter(idx => idx < cat.limitRows).length;
                             if (c >= cat.limitCount) {
-                                console.log(`Rejected ${cand.name}: limitCount exceeded for cat ${cat.id}`);
+                                // console.log(`Rejected ${cand.name}: limitCount exceeded for cat ${cat.id}`);
                                 continue;
                             }
                         }
                         if (cat.maxTotal !== undefined && cat.maxTotal !== null && cat.maxTotal !== '') {
                             const totalC = (usedByLane[li][cat.id] || []).length;
                             if (totalC >= cat.maxTotal) {
-                                console.log(`Rejected ${cand.name}: maxTotal exceeded for cat ${cat.id}`);
+                                // console.log(`Rejected ${cand.name}: maxTotal exceeded for cat ${cat.id}`);
                                 continue;
                             }
                         }
