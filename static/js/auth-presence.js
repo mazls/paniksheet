@@ -268,7 +268,11 @@ window.showLoginModal = showLoginModal;
                 updatePresenceTimestamp();
                 window.heartbeatIntervalId = setInterval(updatePresenceTimestamp, 15 * 60 * 1000);
 
-                onSnapshot(collection(db, "presence"), snap => {
+                // Lade nur User, die in den letzten 20 Minuten aktiv waren (spart massiv Lesevorgänge!)
+                const twentyMinsAgo = new Date(Date.now() - 20 * 60 * 1000);
+                const presenceQuery = query(collection(db, "presence"), where("last_changed", ">=", twentyMinsAgo));
+
+                onSnapshot(presenceQuery, snap => {
                     const nowInSeconds = Date.now() / 1000;
                     const onlineUsersCount = snap.docs.filter(doc => {
                         const data = doc.data();
