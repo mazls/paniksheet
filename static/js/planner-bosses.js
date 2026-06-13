@@ -271,6 +271,8 @@ window.generateGlobalWaString = async function() {
     const raidInfo = window.raidData[selectedRaidId];
     if (!raidInfo || !raidInfo.bosses) return window.showModal("Keine Daten.");
 
+
+
     // --- 1. ALLE DATEN PARALLEL LADEN ---
     const bossDocIds = raidInfo.bosses.map(b => `boss-${b.id}`);
     const snaps = await Promise.all(bossDocIds.map(b => getDoc(doc(db, "raid-tool-data", b))));
@@ -481,6 +483,7 @@ window.generateGlobalWaString = async function() {
     // --- 5. MODAL BAUEN ---
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
+    modal.id = 'export-wa-modal';
     modal.style.zIndex = '5000';
 
     // Boss-Checkboxen
@@ -592,7 +595,7 @@ window.generateGlobalWaString = async function() {
     }
 
     modal.innerHTML = `
-        <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto; text-align: left;">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto; text-align: left;">
             <h1 class="text-center mb-1">
                 <i class="fas fa-file-export mr-2"></i>WA Export
             </h1>
@@ -733,6 +736,14 @@ window.generateGlobalWaString = async function() {
             const targetId = btn.dataset.target;
             const input = modal.querySelector(`#${targetId}`);
             if (!input || !input.value || input.value === '(keine Daten)') return;
+            
+            if (targetId === 'export-cd-output' && selectedRaidId === 'siegeoforgrimmar') {
+                if (window.showModal) {
+                    window.showModal("Exportiere bitte auch die Platten bei Sha-des-Stolzes und die Reihenfolge bei Norushen und die Line Teams bei Siegecrafter");
+                } else {
+                    alert("Exportiere bitte auch die Platten bei Sha-des-Stolzes und die Reihenfolge bei Norushen und die Line Teams bei Siegecrafter");
+                }
+            }
             
             navigator.clipboard.writeText(input.value).then(() => {
                 const orig = btn.textContent;
