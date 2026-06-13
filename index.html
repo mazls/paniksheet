@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,152 +15,158 @@
     <!-- Externe Scripts (klassisch, vor unseren Modulen) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="static/cd-auto-planner.js"></script>
+    <script src="static/cd-bloodrage-addon.js"></script>
     <script src="static/slot-system.js"></script>
     <script src="static/lane-groups.js"></script>
     <script src="static/lane-groups-integration.js"></script>
 </head>
+
 <body class="pt-4">
 
-<video autoplay muted loop playsinline id="background-video">
-    <source src="static/background.webm" type="video/webm">
-</video>
+    <video autoplay muted loop playsinline id="background-video">
+        <source src="static/background.webm" type="video/webm">
+    </video>
 
-<img id="xalatath-feet" src="static/xalatath.gif" alt="Xal'atath's" class="hidden-feet">
+    <img id="xalatath-feet" src="static/xalatath.gif" alt="Xal'atath's" class="hidden-feet">
 
-<button id="toggle-feet-btn" title="Xal'athats an/aus" class="fixed bottom-4 right-16 z-50">
-    🦶
-</button>
+    <button id="toggle-feet-btn" title="Xal'athats an/aus" class="fixed bottom-4 right-16 z-50">
+        🦶
+    </button>
 
-<div class="content-wrapper">
-    <div class="max-w-7xl mx-auto main-container p-6 rounded-lg shadow-2xl relative">
+    <div class="content-wrapper">
+        <div class="max-w-7xl mx-auto main-container p-6 rounded-lg shadow-2xl relative">
 
-        <div id="auth-section"></div>
+            <div id="auth-section"></div>
 
-        <header class="text-center pb-4 mb-6 border-b border-slate-650">
-            <h1 class="text-5xl font-bold text-gold">P Ä N I K Raidsheet</h1>
-            <div class="flex justify-center items-center gap-2 mt-2">
-                <p class="text-lg text-gray-400">Strategien und Einteilungen</p>
-                <div id="presence-indicator" class="flex items-center gap-2 text-sm text-gray-400"></div>
-            </div>
-            <nav id="main-nav" class="mt-6 pt-6 border-t border-slate-650"></nav>
-        </header>
+            <header class="text-center pb-4 mb-6 border-b border-slate-650">
+                <h1 class="text-5xl font-bold text-gold">P Ä N I K Raidsheet</h1>
+                <div class="flex justify-center items-center gap-2 mt-2">
+                    <p class="text-lg text-gray-400">Strategien und Einteilungen</p>
+                    <div id="presence-indicator" class="flex items-center gap-2 text-sm text-gray-400"></div>
+                </div>
+                <nav id="main-nav" class="mt-6 pt-6 border-t border-slate-650"></nav>
+            </header>
 
-        <h2 class="text-2xl font-semibold text-center text-blue-450 mb-4">Navigation</h2>
+            <h2 class="text-2xl font-semibold text-center text-blue-450 mb-4">Navigation</h2>
 
-        <div class="flex justify-center mb-4">
-            <label for="raid-selector" class="sr-only">Raid auswählen</label>
-            <select id="raid-selector"
+            <div class="flex justify-center mb-4">
+                <label for="raid-selector" class="sr-only">Raid auswählen</label>
+                <select id="raid-selector"
                     class="bg-slate-850 text-gray-200 p-2 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="mogushan">Mogu'shangewölbe</option>
-                <option value="heartoffear">Das Herz der Angst</option>
-                <option value="terraceofendlessspring">Terrasse des Endlosen Frühlings</option>
-                <option value="throneofthunder">Der Thron des Donners</option>
-                <option value="siegeoforgrimmar" selected>Schlacht um Orgrimmar</option>
-            </select>
+                    <option value="mogushan">Mogu'shangewölbe</option>
+                    <option value="heartoffear">Das Herz der Angst</option>
+                    <option value="terraceofendlessspring">Terrasse des Endlosen Frühlings</option>
+                    <option value="throneofthunder">Der Thron des Donners</option>
+                    <option value="siegeoforgrimmar" selected>Schlacht um Orgrimmar</option>
+                </select>
+            </div>
+
+            <nav id="boss-nav" class="flex flex-wrap justify-center gap-2 mb-8"></nav>
+
+            <main id="content-container"></main>
+
         </div>
 
-        <nav id="boss-nav" class="flex flex-wrap justify-center gap-2 mb-8"></nav>
+        <footer class="text-center text-sm text-gray-400 py-4 font-sans space-y-1">
+            <p>© 2025 PÄNIK Raidtools – erstellt von Marcel</p>
+            <p>Lizenziert unter AGPLv3 oder kommerzieller Lizenz.</p>
+            <a href="/impressum" class="hover:underline">Impressum & Datenschutz</a>
+        </footer>
 
-        <main id="content-container"></main>
-
-    </div>
-
-    <footer class="text-center text-sm text-gray-400 py-4 font-sans space-y-1">
-        <p>© 2025 PÄNIK Raidtools – erstellt von Marcel</p>
-        <p>Lizenziert unter AGPLv3 oder kommerzieller Lizenz.</p>
-        <a href="/impressum" class="hover:underline">Impressum & Datenschutz</a>
-    </footer>
-
-    <!-- Lightbox -->
-    <div id="image-lightbox" class="lightbox-overlay">
-        <span id="lightbox-close-btn" class="lightbox-close-btn">&times;</span>
-        <img id="lightbox-image" src="" alt="Vergrößerte Ansicht" class="lightbox-content">
-    </div>
-
-    <!-- Login-Modal -->
-    <div id="login-modal-overlay" class="login-modal-overlay hidden">
-        <div class="login-modal-content">
-            <h3>Gildenrat-Login</h3>
-            <form id="login-form" autocomplete="on">
-                <input type="text" id="login-username" placeholder="Benutzername" required autocomplete="username">
-                <input type="password" id="login-password" placeholder="Passwort" required autocomplete="current-password">
-                <div class="login-modal-buttons">
-                    <button type="button" id="login-modal-cancel-btn" class="cancel-btn">Abbrechen</button>
-                    <button type="submit" id="login-modal-submit-btn">Login</button>
-                </div>
-            </form>
+        <!-- Lightbox -->
+        <div id="image-lightbox" class="lightbox-overlay">
+            <span id="lightbox-close-btn" class="lightbox-close-btn">&times;</span>
+            <img id="lightbox-image" src="" alt="Vergrößerte Ansicht" class="lightbox-content">
         </div>
-    </div>
 
-    <!-- Player-Edit-Modal -->
-    <div id="player-edit-modal" class="modal-overlay hidden" style="z-index: 3000;">
-        <div class="modal-content" style="max-width: 400px;">
-            <h3 id="player-edit-modal-title" class="text-xl font-bold text-gold mb-4 border-b border-gold-border pb-2">
-                Spieler bearbeiten
-            </h3>
+        <!-- Login-Modal -->
+        <div id="login-modal-overlay" class="login-modal-overlay hidden">
+            <div class="login-modal-content">
+                <h3>Gildenrat-Login</h3>
+                <form id="login-form" autocomplete="on">
+                    <input type="text" id="login-username" placeholder="Benutzername" required autocomplete="username">
+                    <input type="password" id="login-password" placeholder="Passwort" required
+                        autocomplete="current-password">
+                    <div class="login-modal-buttons">
+                        <button type="button" id="login-modal-cancel-btn" class="cancel-btn">Abbrechen</button>
+                        <button type="submit" id="login-modal-submit-btn">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-            <div class="space-y-3 text-left">
-                <div>
-                    <label class="text-xs text-gray-400 uppercase font-bold">Name</label>
-                    <input type="text" id="edit-player-name-input"
-                           class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
-                </div>
+        <!-- Player-Edit-Modal -->
+        <div id="player-edit-modal" class="modal-overlay hidden" style="z-index: 3000;">
+            <div class="modal-content" style="max-width: 400px;">
+                <h3 id="player-edit-modal-title"
+                    class="text-xl font-bold text-gold mb-4 border-b border-gold-border pb-2">
+                    Spieler bearbeiten
+                </h3>
 
-                <div>
-                    <label class="text-xs text-gray-400 uppercase font-bold">Klasse</label>
-                    <select id="edit-player-class-select"
+                <div class="space-y-3 text-left">
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold">Name</label>
+                        <input type="text" id="edit-player-name-input"
                             class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
-                    </select>
-                </div>
+                    </div>
 
-                <div>
-                    <label class="text-xs text-gray-400 uppercase font-bold">Spezialisierung</label>
-                    <select id="edit-player-spec-select"
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold">Klasse</label>
+                        <select id="edit-player-class-select"
                             class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
-                    </select>
-                    <div class="text-[10px] text-gray-500 mt-1 italic">
-                        Rolle wird automatisch basierend auf Spec gesetzt
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold">Spezialisierung</label>
+                        <select id="edit-player-spec-select"
+                            class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
+                        </select>
+                        <div class="text-[10px] text-gray-500 mt-1 italic">
+                            Rolle wird automatisch basierend auf Spec gesetzt
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-gray-400 uppercase font-bold">Rolle</label>
+                        <select id="edit-player-role-select"
+                            class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
+                            <option value="DPS">DPS</option>
+                            <option value="TANK">Tank</option>
+                            <option value="HEALER">Heiler</option>
+                        </select>
                     </div>
                 </div>
 
-                <div>
-                    <label class="text-xs text-gray-400 uppercase font-bold">Rolle</label>
-                    <select id="edit-player-role-select"
-                            class="w-full bg-slate-900 border border-slate-600 rounded p-2 text-white focus:border-gold outline-none">
-                        <option value="DPS">DPS</option>
-                        <option value="TANK">Tank</option>
-                        <option value="HEALER">Heiler</option>
-                    </select>
+                <div class="modal-buttons mt-6">
+                    <button id="btn-cancel-player-edit" class="cancel-btn">Abbrechen</button>
+                    <button id="btn-save-player-edit"
+                        class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">
+                        Speichern
+                    </button>
                 </div>
             </div>
-
-            <div class="modal-buttons mt-6">
-                <button id="btn-cancel-player-edit" class="cancel-btn">Abbrechen</button>
-                <button id="btn-save-player-edit"
-                        class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">
-                    Speichern
-                </button>
-            </div>
         </div>
+
     </div>
 
-</div>
+    <!-- Globaler Tooltip & Video-Toggle (außerhalb content-wrapper) -->
+    <button id="toggle-video-btn" title="Hintergrundvideo an/aus" class="fixed bottom-4 right-4 z-50">
+        <i class="fas fa-video"></i>
+    </button>
 
-<!-- Globaler Tooltip & Video-Toggle (außerhalb content-wrapper) -->
-<button id="toggle-video-btn" title="Hintergrundvideo an/aus" class="fixed bottom-4 right-4 z-50">
-    <i class="fas fa-video"></i>
-</button>
+    <div id="global-custom-tooltip"
+        class="buff-tooltip fixed hidden pointer-events-none z-[9999] max-w-xs bg-slate-800 border border-slate-500 p-2 rounded shadow-xl text-xs text-white">
+    </div>
 
-<div id="global-custom-tooltip"
-     class="buff-tooltip fixed hidden pointer-events-none z-[9999] max-w-xs bg-slate-800 border border-slate-500 p-2 rounded shadow-xl text-xs text-white"></div>
-
-<!-- =========================================================================
+    <!-- =========================================================================
      APP ENTRY-POINT
      main.js importiert firebase-init.js, state.js, auth-presence.js,
      roster-comp.js und planner-bosses.js. Beim Browser-Modulladevorgang
      werden alle Side-Effects (window.*-Registrierung) ausgeführt.
      ========================================================================= -->
-<script type="module" src="static/js/main.js"></script>
+    <script type="module" src="static/js/main.js"></script>
 
 </body>
+
 </html>

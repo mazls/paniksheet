@@ -17,7 +17,7 @@
 //   Cooldown:  Exakter DB-Name (z.B. "Aura der Hingabe")
 // ══════════════════════════════════════════════════════════════════════════
 
-window.CD_AUTO_PLANNER = (function() {
+window.CD_AUTO_PLANNER = (function () {
     'use strict';
 
     // ══════════════════════════════════════════════════════════════
@@ -33,67 +33,67 @@ window.CD_AUTO_PLANNER = (function() {
 
     const SPEC_DEFINITIONS = {
         DEATHKNIGHT: [
-            { value: 'Blood',        label: 'Blood (Tank)' },
-            { value: 'Frost1',       label: 'Frost' },
-            { value: 'Unholy',       label: 'Unholy' }
+            { value: 'Blood', label: 'Blood (Tank)' },
+            { value: 'Frost1', label: 'Frost' },
+            { value: 'Unholy', label: 'Unholy' }
         ],
         DRUID: [
-            { value: 'Balance',      label: 'Balance' },
-            { value: 'Feral',        label: 'Feral' },
-            { value: 'Guardian',     label: 'Guardian (Tank)' },
-            { value: 'Restoration',  label: 'Restoration (Heal)' }
+            { value: 'Balance', label: 'Balance' },
+            { value: 'Feral', label: 'Feral' },
+            { value: 'Guardian', label: 'Guardian (Tank)' },
+            { value: 'Restoration', label: 'Restoration (Heal)' }
         ],
         HUNTER: [
             { value: 'Beastmastery', label: 'Beastmastery' },
             { value: 'Marksmanship', label: 'Marksmanship' },
-            { value: 'Survival',     label: 'Survival' }
+            { value: 'Survival', label: 'Survival' }
         ],
         MAGE: [
-            { value: 'Arcane',       label: 'Arcane' },
-            { value: 'Fire',         label: 'Fire' },
-            { value: 'Frost',        label: 'Frost' }
+            { value: 'Arcane', label: 'Arcane' },
+            { value: 'Fire', label: 'Fire' },
+            { value: 'Frost', label: 'Frost' }
         ],
         MONK: [
-            { value: 'Brewmaster',   label: 'Brewmaster (Tank)' },
-            { value: 'Mistweaver',   label: 'Mistweaver (Heal)' },
-            { value: 'Windwalker',   label: 'Windwalker' }
+            { value: 'Brewmaster', label: 'Brewmaster (Tank)' },
+            { value: 'Mistweaver', label: 'Mistweaver (Heal)' },
+            { value: 'Windwalker', label: 'Windwalker' }
         ],
         PALADIN: [
-            { value: 'Holy1',        label: 'Holy (Heal)' },
-            { value: 'Protection1',  label: 'Protection (Tank)' },
-            { value: 'Retribution',  label: 'Retribution' }
+            { value: 'Holy1', label: 'Holy (Heal)' },
+            { value: 'Protection1', label: 'Protection (Tank)' },
+            { value: 'Retribution', label: 'Retribution' }
         ],
         PRIEST: [
-            { value: 'Discipline',   label: 'Discipline (Heal)' },
-            { value: 'Holy',         label: 'Holy (Heal)' },
-            { value: 'Shadow',       label: 'Shadow' }
+            { value: 'Discipline', label: 'Discipline (Heal)' },
+            { value: 'Holy', label: 'Holy (Heal)' },
+            { value: 'Shadow', label: 'Shadow' }
         ],
         ROGUE: [
             { value: 'Assassination', label: 'Assassination' },
-            { value: 'Combat',       label: 'Combat' },
-            { value: 'Subtlety',     label: 'Subtlety' }
+            { value: 'Combat', label: 'Combat' },
+            { value: 'Subtlety', label: 'Subtlety' }
         ],
         SHAMAN: [
-            { value: 'Elemental',    label: 'Elemental' },
-            { value: 'Enhancement',  label: 'Enhancement' },
+            { value: 'Elemental', label: 'Elemental' },
+            { value: 'Enhancement', label: 'Enhancement' },
             { value: 'Restoration1', label: 'Restoration (Heal)' }
         ],
         WARLOCK: [
-            { value: 'Affliction',   label: 'Affliction' },
-            { value: 'Demonology',   label: 'Demonology' },
-            { value: 'Destruction',  label: 'Destruction' }
+            { value: 'Affliction', label: 'Affliction' },
+            { value: 'Demonology', label: 'Demonology' },
+            { value: 'Destruction', label: 'Destruction' }
         ],
         WARRIOR: [
-            { value: 'Arms',         label: 'Arms' },
-            { value: 'Fury',         label: 'Fury' },
-            { value: 'Protection',   label: 'Protection (Tank)' }
+            { value: 'Arms', label: 'Arms' },
+            { value: 'Fury', label: 'Fury' },
+            { value: 'Protection', label: 'Protection (Tank)' }
         ]
     };
 
     // Hilfsfunktion: Raidhelper-Name → Label
     function getSpecLabel(specValue) {
         for (var cls in SPEC_DEFINITIONS) {
-            var found = SPEC_DEFINITIONS[cls].find(function(s) { return s.value === specValue; });
+            var found = SPEC_DEFINITIONS[cls].find(function (s) { return s.value === specValue; });
             if (found) return found.label;
         }
         return specValue;  // Fallback wenn unbekannt
@@ -116,11 +116,11 @@ window.CD_AUTO_PLANNER = (function() {
         magical_dr: {
             name: "Magische Schadensred.", shortName: "Magic DR", color: "#8b5cf6",
             spells: [
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Retribution"] },       // Devo (Retri)
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Protection1"] },       // Devo (Prot)
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },        // PW:Barrier (Disc)
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Holy1"] },             // Devo (Holy)
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },      // SLT (Resto Shaman)
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Retribution"] },       // Devo (Retri)
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Protection1"] },       // Devo (Prot)
+                { spellId: "62618", cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },        // PW:Barrier (Disc)
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Holy1"] },             // Devo (Holy)
+                { spellId: "98008", cooldownSec: 180, durationSec: 6, requiredSpec: ["Restoration1"] },      // SLT (Resto Shaman)
             ]
         },
 
@@ -131,11 +131,11 @@ window.CD_AUTO_PLANNER = (function() {
         physical_dr: {
             name: "Physische Schadensred.", shortName: "Phys DR", color: "#d97706",
             spells: [
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Retribution"] },
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Protection1"] },
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Holy1"] },
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Retribution"] },
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Protection1"] },
+                { spellId: "62618", cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Holy1"] },
+                { spellId: "98008", cooldownSec: 180, durationSec: 6, requiredSpec: ["Restoration1"] },
             ]
         },
 
@@ -147,10 +147,10 @@ window.CD_AUTO_PLANNER = (function() {
             name: "Grosse Heilung", shortName: "Major Heal", color: "#10b981",
             spells: [
                 { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Restoration1"] },      // HTT
-                { spellId: "740",    cooldownSec: 180, durationSec: 8,  requiredSpec: ["Restoration"] },        // Tranquility (Resto: 3min)
-                { spellId: "64843",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Holy"] },              // Divine Hymn
-                { spellId: "115310", cooldownSec: 180, durationSec: 0,  requiredSpec: ["Mistweaver"] },        // Revival
-                { spellId: "15286",  cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },            // Vampiric Embrace
+                { spellId: "740", cooldownSec: 180, durationSec: 8, requiredSpec: ["Restoration"] },        // Tranquility (Resto: 3min)
+                { spellId: "64843", cooldownSec: 180, durationSec: 8, requiredSpec: ["Holy"] },              // Divine Hymn
+                { spellId: "115310", cooldownSec: 180, durationSec: 0, requiredSpec: ["Mistweaver"] },        // Revival
+                { spellId: "15286", cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },            // Vampiric Embrace
             ]
         },
 
@@ -165,9 +165,9 @@ window.CD_AUTO_PLANNER = (function() {
                 { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Enhancement"] },       // HTT (Enh)
                 { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Elemental"] },         // AG (Elem)
                 { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Enhancement"] },       // AG (Enh)
-                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Holy"] },              // Halo (Holy)
-                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Discipline"] },        // Halo (Disc)
-                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Shadow"] },            // Halo (Shadow)
+                { spellId: "120517", cooldownSec: 40, durationSec: 1, requiredSpec: ["Holy"] },              // Halo (Holy)
+                { spellId: "120517", cooldownSec: 40, durationSec: 1, requiredSpec: ["Discipline"] },        // Halo (Disc)
+                { spellId: "120517", cooldownSec: 40, durationSec: 1, requiredSpec: ["Shadow"] },            // Halo (Shadow)
             ]
         },
 
@@ -178,17 +178,17 @@ window.CD_AUTO_PLANNER = (function() {
             name: "Beliebige Heilung", shortName: "Any Heal", color: "#6ee7b7",
             spells: [
                 { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Restoration1"] },      // HTT (Resto)
-                { spellId: "740",    cooldownSec: 180, durationSec: 8,  requiredSpec: ["Restoration"] },        // Tranquility
-                { spellId: "64843",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Holy"] },              // Divine Hymn
-                { spellId: "115310", cooldownSec: 180, durationSec: 0,  requiredSpec: ["Mistweaver"] },        // Revival
-                { spellId: "15286",  cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },            // Vampiric Embrace
+                { spellId: "740", cooldownSec: 180, durationSec: 8, requiredSpec: ["Restoration"] },        // Tranquility
+                { spellId: "64843", cooldownSec: 180, durationSec: 8, requiredSpec: ["Holy"] },              // Divine Hymn
+                { spellId: "115310", cooldownSec: 180, durationSec: 0, requiredSpec: ["Mistweaver"] },        // Revival
+                { spellId: "15286", cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },            // Vampiric Embrace
                 { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Elemental"] },         // HTT (Elem)
                 { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Enhancement"] },       // HTT (Enh)
                 { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Elemental"] },         // AG (Elem)
                 { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Enhancement"] },       // AG (Enh)
-                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Holy"] },              // Halo
-                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Discipline"] },
-                { spellId: "120517", cooldownSec: 40,  durationSec: 1,  requiredSpec: ["Shadow"] },
+                { spellId: "120517", cooldownSec: 40, durationSec: 1, requiredSpec: ["Holy"] },              // Halo
+                { spellId: "120517", cooldownSec: 40, durationSec: 1, requiredSpec: ["Discipline"] },
+                { spellId: "120517", cooldownSec: 40, durationSec: 1, requiredSpec: ["Shadow"] },
             ]
         },
 
@@ -199,9 +199,9 @@ window.CD_AUTO_PLANNER = (function() {
         additional_surv: {
             name: "Zusaetzliches Ueberleben", shortName: "Add. Surv", color: "#f59e0b",
             spells: [
-                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },                                       // Rallying Cry (jede Warrior-Spec)
+                { spellId: "97462", cooldownSec: 180, durationSec: 10 },                                       // Rallying Cry (jede Warrior-Spec)
                 { spellId: "114203", cooldownSec: 180, durationSec: 15 },                                       // Demo Banner
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },      // SLT
+                { spellId: "98008", cooldownSec: 180, durationSec: 6, requiredSpec: ["Restoration1"] },      // SLT
             ]
         },
 
@@ -213,25 +213,25 @@ window.CD_AUTO_PLANNER = (function() {
             name: "Beliebige Schadensred.", shortName: "Any DR", color: "#a78bfa",
             spells: [
                 // Prio 1-4: Devotion Aura (alle Paladin-Specs) + PW:B + SLT
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Retribution"] },
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Protection1"] },
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Holy1"] },
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Retribution"] },
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Protection1"] },
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Holy1"] },
+                { spellId: "62618", cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },
+                { spellId: "98008", cooldownSec: 180, durationSec: 6, requiredSpec: ["Restoration1"] },
                 // Raid-Utility
-                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },                                       // Rallying Cry
-                { spellId: "76577",  cooldownSec: 180, durationSec: 5  },                                       // Smoke Bomb
+                { spellId: "97462", cooldownSec: 180, durationSec: 10 },                                       // Rallying Cry
+                { spellId: "76577", cooldownSec: 180, durationSec: 5 },                                       // Smoke Bomb
                 // Heals als Notfall
-                { spellId: "740",    cooldownSec: 180, durationSec: 8,  requiredSpec: ["Restoration"] },
-                { spellId: "64843",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Holy"] },
-                { spellId: "115310", cooldownSec: 180, durationSec: 0,  requiredSpec: ["Mistweaver"] },
-                { spellId: "15286",  cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },
+                { spellId: "740", cooldownSec: 180, durationSec: 8, requiredSpec: ["Restoration"] },
+                { spellId: "64843", cooldownSec: 180, durationSec: 8, requiredSpec: ["Holy"] },
+                { spellId: "115310", cooldownSec: 180, durationSec: 0, requiredSpec: ["Mistweaver"] },
+                { spellId: "15286", cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },
                 { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Restoration1"] },
                 { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Elemental"] },
                 { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Enhancement"] },
                 { spellId: "114203", cooldownSec: 180, durationSec: 15 },                                       // Demo Banner
-                { spellId: "51052",  cooldownSec: 120, durationSec: 10 },                                       // AMZ (alle DKs)
-                { spellId: "122278", cooldownSec: 90,  durationSec: 10 },                                       // Dampen Harm (alle Mönche)
+                { spellId: "51052", cooldownSec: 120, durationSec: 10 },                                       // AMZ (alle DKs)
+                { spellId: "122278", cooldownSec: 90, durationSec: 10 },                                       // Dampen Harm (alle Mönche)
             ]
         },
 
@@ -242,25 +242,25 @@ window.CD_AUTO_PLANNER = (function() {
             name: "Beliebiger Defensiv-CD", shortName: "Any Def", color: "#c084fc",
             spells: [
                 // Paladin Auras
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Retribution"] },
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Protection1"] },
-                { spellId: "31821",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Holy1"] },
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Retribution"] },
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Protection1"] },
+                { spellId: "31821", cooldownSec: 180, durationSec: 6, requiredSpec: ["Holy1"] },
                 // Major Raid-CDs
-                { spellId: "62618",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },
-                { spellId: "98008",  cooldownSec: 180, durationSec: 6,  requiredSpec: ["Restoration1"] },
-                { spellId: "97462",  cooldownSec: 180, durationSec: 10 },
-                { spellId: "76577",  cooldownSec: 180, durationSec: 5  },
+                { spellId: "62618", cooldownSec: 180, durationSec: 10, requiredSpec: ["Discipline"] },
+                { spellId: "98008", cooldownSec: 180, durationSec: 6, requiredSpec: ["Restoration1"] },
+                { spellId: "97462", cooldownSec: 180, durationSec: 10 },
+                { spellId: "76577", cooldownSec: 180, durationSec: 5 },
                 { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Restoration1"] },
-                { spellId: "740",    cooldownSec: 180, durationSec: 8,  requiredSpec: ["Restoration"] },
-                { spellId: "64843",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Holy"] },
-                { spellId: "115310", cooldownSec: 180, durationSec: 0,  requiredSpec: ["Mistweaver"] },
-                { spellId: "15286",  cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },
+                { spellId: "740", cooldownSec: 180, durationSec: 8, requiredSpec: ["Restoration"] },
+                { spellId: "64843", cooldownSec: 180, durationSec: 8, requiredSpec: ["Holy"] },
+                { spellId: "115310", cooldownSec: 180, durationSec: 0, requiredSpec: ["Mistweaver"] },
+                { spellId: "15286", cooldownSec: 180, durationSec: 15, requiredSpec: ["Shadow"] },
                 { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Elemental"] },
                 { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Elemental"] },
                 { spellId: "108281", cooldownSec: 120, durationSec: 10, requiredSpec: ["Enhancement"] },
                 { spellId: "108280", cooldownSec: 180, durationSec: 10, requiredSpec: ["Enhancement"] },
                 { spellId: "114203", cooldownSec: 180, durationSec: 15 },
-                { spellId: "51052",  cooldownSec: 120, durationSec: 10 },
+                { spellId: "51052", cooldownSec: 120, durationSec: 10 },
             ]
         },
 
@@ -271,10 +271,10 @@ window.CD_AUTO_PLANNER = (function() {
         movement: {
             name: "Bewegungsgeschw.", shortName: "Speed", color: "#22d3ee",
             spells: [
-                { spellId: "77764",  cooldownSec: 120, durationSec: 8, requiredSpec: ["Guardian"] },
-                { spellId: "77764",  cooldownSec: 120, durationSec: 8, requiredSpec: ["Feral"] },
-                { spellId: "77764",  cooldownSec: 120, durationSec: 8, requiredSpec: ["Balance"] },
-                { spellId: "77764",  cooldownSec: 120, durationSec: 8, requiredSpec: ["Restoration"] },
+                { spellId: "77764", cooldownSec: 120, durationSec: 8, requiredSpec: ["Guardian"] },
+                { spellId: "77764", cooldownSec: 120, durationSec: 8, requiredSpec: ["Feral"] },
+                { spellId: "77764", cooldownSec: 120, durationSec: 8, requiredSpec: ["Balance"] },
+                { spellId: "77764", cooldownSec: 120, durationSec: 8, requiredSpec: ["Restoration"] },
             ]
         },
 
@@ -285,13 +285,13 @@ window.CD_AUTO_PLANNER = (function() {
         bloodlust: {
             name: "Kampfrausch", shortName: "Lust", color: "#ef4444",
             spells: [
-                { spellId: "80353",  cooldownSec: 300, durationSec: 40, requiredSpec: ["Fire"] },              // Time-Warp (Fire)
-                { spellId: "80353",  cooldownSec: 300, durationSec: 40, requiredSpec: ["Frost"] },             // Time-Warp (Frost)
-                { spellId: "2825",   cooldownSec: 300, durationSec: 40, requiredSpec: ["Restoration1"] },      // Bloodlust (Resto)
-                { spellId: "2825",   cooldownSec: 300, durationSec: 40, requiredSpec: ["Enhancement"] },       // Bloodlust (Enh)
-                { spellId: "2825",   cooldownSec: 300, durationSec: 40, requiredSpec: ["Elemental"] },         // Bloodlust (Elem)
-                { spellId: "80353",  cooldownSec: 300, durationSec: 40, requiredSpec: ["Arcane"] },            // Time-Warp (Arcane)
-                { spellId: "90355",  cooldownSec: 300, durationSec: 40 },                                       // Ancient Hysteria (Hunter Pet)
+                { spellId: "80353", cooldownSec: 300, durationSec: 40, requiredSpec: ["Fire"] },              // Time-Warp (Fire)
+                { spellId: "80353", cooldownSec: 300, durationSec: 40, requiredSpec: ["Frost"] },             // Time-Warp (Frost)
+                { spellId: "2825", cooldownSec: 300, durationSec: 40, requiredSpec: ["Restoration1"] },      // Bloodlust (Resto)
+                { spellId: "2825", cooldownSec: 300, durationSec: 40, requiredSpec: ["Enhancement"] },       // Bloodlust (Enh)
+                { spellId: "2825", cooldownSec: 300, durationSec: 40, requiredSpec: ["Elemental"] },         // Bloodlust (Elem)
+                { spellId: "80353", cooldownSec: 300, durationSec: 40, requiredSpec: ["Arcane"] },            // Time-Warp (Arcane)
+                { spellId: "90355", cooldownSec: 300, durationSec: 40 },                                       // Ancient Hysteria (Hunter Pet)
             ]
         },
 
@@ -320,11 +320,11 @@ window.CD_AUTO_PLANNER = (function() {
         mana: {
             name: "Mana-Regeneration", shortName: "Mana", color: "#3b82f6",
             spells: [
-                { spellId: "16190",  cooldownSec: 180, durationSec: 16, requiredSpec: ["Restoration1"] },      // Mana Tide Totem (Resto Shaman)
-                { spellId: "16190",  cooldownSec: 180, durationSec: 16, requiredSpec: ["Restoration1"] },      // Mana Tide Totem (2. für weitere Schamanen)
-                { spellId: "64901",  cooldownSec: 360, durationSec: 8,  requiredSpec: ["Holy"] },              // Hymn of Hope (Holy)
-                { spellId: "64901",  cooldownSec: 360, durationSec: 8,  requiredSpec: ["Discipline"] },        // Hymn of Hope (Disc)
-                { spellId: "64901",  cooldownSec: 360, durationSec: 8,  requiredSpec: ["Shadow"] },            // Hymn of Hope (Shadow)
+                { spellId: "16190", cooldownSec: 180, durationSec: 16, requiredSpec: ["Restoration1"] },      // Mana Tide Totem (Resto Shaman)
+                { spellId: "16190", cooldownSec: 180, durationSec: 16, requiredSpec: ["Restoration1"] },      // Mana Tide Totem (2. für weitere Schamanen)
+                { spellId: "64901", cooldownSec: 360, durationSec: 8, requiredSpec: ["Holy"] },              // Hymn of Hope (Holy)
+                { spellId: "64901", cooldownSec: 360, durationSec: 8, requiredSpec: ["Discipline"] },        // Hymn of Hope (Disc)
+                { spellId: "64901", cooldownSec: 360, durationSec: 8, requiredSpec: ["Shadow"] },            // Hymn of Hope (Shadow)
             ]
         },
 
@@ -338,15 +338,15 @@ window.CD_AUTO_PLANNER = (function() {
                 { spellId: "119381", cooldownSec: 45, durationSec: 5, requiredSpec: ["Windwalker"] },          // Leg Sweep
                 { spellId: "119381", cooldownSec: 45, durationSec: 5, requiredSpec: ["Mistweaver"] },
                 { spellId: "119381", cooldownSec: 45, durationSec: 5, requiredSpec: ["Brewmaster"] },
-                { spellId: "30283",  cooldownSec: 30, durationSec: 3, requiredSpec: ["Destruction"] },         // Shadowfury
-                { spellId: "30283",  cooldownSec: 30, durationSec: 3, requiredSpec: ["Demonology"] },
-                { spellId: "30283",  cooldownSec: 30, durationSec: 3, requiredSpec: ["Affliction"] },
+                { spellId: "30283", cooldownSec: 30, durationSec: 3, requiredSpec: ["Destruction"] },         // Shadowfury
+                { spellId: "30283", cooldownSec: 30, durationSec: 3, requiredSpec: ["Demonology"] },
+                { spellId: "30283", cooldownSec: 30, durationSec: 3, requiredSpec: ["Affliction"] },
                 { spellId: "118905", cooldownSec: 45, durationSec: 5, requiredSpec: ["Enhancement"] },         // Capacitor Totem
                 { spellId: "118905", cooldownSec: 45, durationSec: 5, requiredSpec: ["Restoration1"] },
                 { spellId: "118905", cooldownSec: 45, durationSec: 5, requiredSpec: ["Elemental"] },
-                { spellId: "46968",  cooldownSec: 40, durationSec: 4, requiredSpec: ["Protection"] },          // Shockwave
-                { spellId: "46968",  cooldownSec: 40, durationSec: 4, requiredSpec: ["Fury"] },
-                { spellId: "46968",  cooldownSec: 40, durationSec: 4, requiredSpec: ["Arms"] },
+                { spellId: "46968", cooldownSec: 40, durationSec: 4, requiredSpec: ["Protection"] },          // Shockwave
+                { spellId: "46968", cooldownSec: 40, durationSec: 4, requiredSpec: ["Fury"] },
+                { spellId: "46968", cooldownSec: 40, durationSec: 4, requiredSpec: ["Arms"] },
             ]
         },
 
@@ -357,16 +357,16 @@ window.CD_AUTO_PLANNER = (function() {
         disarm: {
             name: "Disarm", shortName: "Disarm", color: "#94a3b8",
             spells: [
-                { spellId: "676",    cooldownSec: 60, durationSec: 10, requiredSpec: ["Fury"] },               // Disarm
-                { spellId: "676",    cooldownSec: 60, durationSec: 10, requiredSpec: ["Arms"] },
-                { spellId: "676",    cooldownSec: 60, durationSec: 10, requiredSpec: ["Protection"] },
-                { spellId: "51722",  cooldownSec: 60, durationSec: 8,  requiredSpec: ["Combat"] },             // Dismantle
-                { spellId: "51722",  cooldownSec: 60, durationSec: 8,  requiredSpec: ["Assassination"] },
-                { spellId: "51722",  cooldownSec: 60, durationSec: 8,  requiredSpec: ["Subtlety"] },
-                { spellId: "117368", cooldownSec: 60, durationSec: 6,  requiredSpec: ["Windwalker"] },         // Grapple Weapon
-                { spellId: "117368", cooldownSec: 60, durationSec: 6,  requiredSpec: ["Mistweaver"] },
-                { spellId: "117368", cooldownSec: 60, durationSec: 6,  requiredSpec: ["Brewmaster"] },
-                { spellId: "64044",  cooldownSec: 120, durationSec: 3, requiredSpec: ["Shadow"] },             // Psychic Horror
+                { spellId: "676", cooldownSec: 60, durationSec: 10, requiredSpec: ["Fury"] },               // Disarm
+                { spellId: "676", cooldownSec: 60, durationSec: 10, requiredSpec: ["Arms"] },
+                { spellId: "676", cooldownSec: 60, durationSec: 10, requiredSpec: ["Protection"] },
+                { spellId: "51722", cooldownSec: 60, durationSec: 8, requiredSpec: ["Combat"] },             // Dismantle
+                { spellId: "51722", cooldownSec: 60, durationSec: 8, requiredSpec: ["Assassination"] },
+                { spellId: "51722", cooldownSec: 60, durationSec: 8, requiredSpec: ["Subtlety"] },
+                { spellId: "117368", cooldownSec: 60, durationSec: 6, requiredSpec: ["Windwalker"] },         // Grapple Weapon
+                { spellId: "117368", cooldownSec: 60, durationSec: 6, requiredSpec: ["Mistweaver"] },
+                { spellId: "117368", cooldownSec: 60, durationSec: 6, requiredSpec: ["Brewmaster"] },
+                { spellId: "64044", cooldownSec: 120, durationSec: 3, requiredSpec: ["Shadow"] },             // Psychic Horror
             ]
         },
 
@@ -402,12 +402,39 @@ window.CD_AUTO_PLANNER = (function() {
         tank_external: {
             name: "Tank External", shortName: "Tank Ext", color: "#fbbf24",
             spells: [
-                { spellId: "33206",  cooldownSec: 180, durationSec: 8,  requiredSpec: ["Discipline"] },        // Pain Suppression
-                { spellId: "47788",  cooldownSec: 180, durationSec: 10, requiredSpec: ["Holy"] },              // Guardian Spirit
-                { spellId: "6940",   cooldownSec: 120, durationSec: 12 },                                       // HoSac (jeder Paladin)
-                { spellId: "102342", cooldownSec: 60,  durationSec: 12, requiredSpec: ["Restoration"] },       // Ironbark
+                { spellId: "33206", cooldownSec: 180, durationSec: 8, requiredSpec: ["Discipline"] },        // Pain Suppression
+                { spellId: "47788", cooldownSec: 180, durationSec: 10, requiredSpec: ["Holy"] },              // Guardian Spirit
+                { spellId: "6940", cooldownSec: 120, durationSec: 12 },                                       // HoSac (jeder Paladin)
+                { spellId: "102342", cooldownSec: 60, durationSec: 12, requiredSpec: ["Restoration"] },       // Ironbark
                 { spellId: "122710", cooldownSec: 120, durationSec: 12 },                                       // Vigilance (jeder Warrior)
-                { spellId: "114039", cooldownSec: 30,  durationSec: 6 },                                        // Hand of Purity (jeder Paladin)
+                { spellId: "114039", cooldownSec: 30, durationSec: 6 },                                        // Hand of Purity (jeder Paladin)
+            ]
+        },
+
+        // ══════════════════════════════════════════════════════════
+        // P2 TANK-SOAK (NUR PHYSISCH) — Malkorók Blutrausch
+        // Personals (nur soakender Tank) + Externals (von anderen).
+        // Die eigentliche gestaffelte Verteilung macht das Blood-Rage-
+        // Add-on; diese Liste sorgt für Spalte, Fallback & Dropdowns.
+        // ══════════════════════════════════════════════════════════
+        tank_soak_phys: {
+            name: "P2 Tank-Soak (phys)", shortName: "Soak", color: "#c8aa6e",
+            spells: [
+                // -- Personals --
+                { spellId: "86659", cooldownSec: 180, durationSec: 12, requiredSpec: ["Protection1"] }, // Wächter d. ualten Könige (50%)
+                { spellId: "48792", cooldownSec: 180, durationSec: 12, requiredSpec: ["Blood"] },       // Eisige Gegenwehr (50%, inkl. Sanguine F.)
+                { spellId: "61336", cooldownSec: 180, durationSec: 12, requiredSpec: ["Guardian"] },    // Überlebensinstinkte (50%, 2 Ladungen)
+                { spellId: "871", cooldownSec: 180, durationSec: 12, requiredSpec: ["Protection"] },  // Schildwall (40%)
+                { spellId: "115203", cooldownSec: 180, durationSec: 15, requiredSpec: ["Brewmaster"] },  // Stärkendes Gebräu (20%)
+                { spellId: "122278", cooldownSec: 90, durationSec: 5, requiredSpec: ["Brewmaster"] },  // Schaden dämpfen (50%, 3 Treffer)
+                { spellId: "31850", cooldownSec: 180, durationSec: 10, requiredSpec: ["Protection1"] }, // Unermüdl. Verteidiger (20%) *
+                { spellId: "22812", cooldownSec: 60, durationSec: 12, requiredSpec: ["Guardian"] },    // Baumrinde (20%)
+                // -- Externals --
+                { spellId: "33206", cooldownSec: 180, durationSec: 8, requiredSpec: ["Discipline"] },  // Schmerzunterdrücken (40%)
+                { spellId: "6940", cooldownSec: 120, durationSec: 12 },                                // Hand der Aufopferung (30%)
+                { spellId: "122710", cooldownSec: 120, durationSec: 12 },                                // Wachsamkeit (30%)
+                { spellId: "102342", cooldownSec: 60, durationSec: 12, requiredSpec: ["Restoration"] }, // Eisenborke (20%)
+                { spellId: "114039", cooldownSec: 30, durationSec: 6 },                                 // Hand der Reinheit (10%)
             ]
         },
 
@@ -498,12 +525,12 @@ window.CD_AUTO_PLANNER = (function() {
             var mapping = window.SlotSystem.getMapping();
             var byClass = window.SlotSystem.getSlotsByClass();
             var classSlots = byClass[(cls || '').toUpperCase()] || [];
-            classSlots.forEach(function(def) {
+            classSlots.forEach(function (def) {
                 var defSpecNorm = normalizeSpec(def.spec);
                 var specMatch = true;
                 if (requiredSpec && requiredSpec.length > 0) {
                     var specList = Array.isArray(requiredSpec) ? requiredSpec : [requiredSpec];
-                    specMatch = specList.some(function(s) { 
+                    specMatch = specList.some(function (s) {
                         var reqNorm = normalizeSpec(s);
                         return defSpecNorm.indexOf(reqNorm) !== -1 || reqNorm.indexOf(defSpecNorm) !== -1;
                     });
@@ -522,7 +549,7 @@ window.CD_AUTO_PLANNER = (function() {
 
         // Immer dynamisch das aktuellste Roster laden
         var currentRoster = window.effectiveRoster || window.rosterData || [];
-        return currentRoster.filter(function(p) {
+        return currentRoster.filter(function (p) {
             // 1. Klasse MUSS immer matchen
             if ((p.class || '').toUpperCase() !== (cls || '').toUpperCase()) return false;
 
@@ -532,7 +559,7 @@ window.CD_AUTO_PLANNER = (function() {
                 if (!playerSpec) return true;   // Spieler ohne Spec-Angabe nicht ausschließen
                 var specList = Array.isArray(requiredSpec) ? requiredSpec : [requiredSpec];
                 var pSpecNorm = normalizeSpec(playerSpec);
-                return specList.some(function(s) { return normalizeSpec(s) === pSpecNorm; });
+                return specList.some(function (s) { return normalizeSpec(s) === pSpecNorm; });
             }
 
             // 3. Role-Filter (wenn kein Spec-Filter gesetzt)
@@ -541,14 +568,14 @@ window.CD_AUTO_PLANNER = (function() {
             var firstRole = (Array.isArray(roles) ? (roles[0] || '') : roles).toString().toLowerCase();
             if (requiredRole === 'heal') return firstRole.indexOf('heal') !== -1;
             if (requiredRole === 'tank') return firstRole.indexOf('tank') !== -1;
-            if (requiredRole === 'dps')  {
+            if (requiredRole === 'dps') {
                 return firstRole.indexOf('heal') === -1 &&
-                       firstRole.indexOf('tank') === -1 &&
-                       firstRole.indexOf('bench') === -1 &&
-                       firstRole.indexOf('absence') === -1;
+                    firstRole.indexOf('tank') === -1 &&
+                    firstRole.indexOf('bench') === -1 &&
+                    firstRole.indexOf('absence') === -1;
             }
             return true;
-        }).map(function(p) { return p.name; });
+        }).map(function (p) { return p.name; });
     }
 
     // ── SpellID → DB-Eintrag ──
@@ -569,18 +596,18 @@ window.CD_AUTO_PLANNER = (function() {
         var cat = categories[catKey];
         if (!cat) return [];
         var result = [];
-        cat.spells.forEach(function(entry) {
+        cat.spells.forEach(function (entry) {
             var db = resolveSpell(entry.spellId);
             if (!db) return;
             result.push({
-                dbName:      db.name,
-                dbClass:     db.class,
-                spellId:     entry.spellId,
+                dbName: db.name,
+                dbClass: db.class,
+                spellId: entry.spellId,
                 cooldownSec: parseInt(db.cooldownSec) || entry.cooldownSec || 180,
                 durationSec: parseInt(db.durationSec) || entry.durationSec || 0,
                 requiredRole: entry.requiredRole || cat.requiredRole || null,
                 requiredSpec: entry.requiredSpec || cat.requiredSpec || null,
-                found:       true
+                found: true
             });
         });
         return result;
@@ -591,45 +618,47 @@ window.CD_AUTO_PLANNER = (function() {
     function getEffectiveEvents() {
         var result = [];
         // config.events mit Overrides
-        (config.events || []).forEach(function(evt, idx) {
+        (config.events || []).forEach(function (evt, idx) {
             var key = 'cfg_' + idx;
             var ov = eventOverrides[key] || {};
             var isMythic = evt.name && (evt.name.indexOf('(HC)') !== -1 || evt.name.indexOf('(Mythisch)') !== -1 || evt.name.indexOf('(Mythic)') !== -1 || evt.name.indexOf('(M)') !== -1);
             var disabled = ov.disabled !== undefined ? ov.disabled : isMythic;
             if (disabled) return;
             result.push({
-                _key:          key,
-                _origIdx:      idx,
-                _isCustom:     false,
+                _key: key,
+                _origIdx: idx,
+                _isCustom: false,
                 _hasManualCDs: ov.requiredCDs !== undefined,
-                name:          ov.name          !== undefined ? ov.name          : evt.name,
-                firstCast:     ov.firstCast     !== undefined ? ov.firstCast     : evt.firstCast,
-                cooldown:      ov.cooldown      !== undefined ? ov.cooldown      : (evt.cooldown || 0),
-                maxCasts:      ov.maxCasts      !== undefined ? ov.maxCasts      : (evt.maxCasts || 1),
-                delay:         ov.delay         !== undefined ? ov.delay         : (evt.delay || 0),
+                name: ov.name !== undefined ? ov.name : evt.name,
+                firstCast: ov.firstCast !== undefined ? ov.firstCast : evt.firstCast,
+                cooldown: ov.cooldown !== undefined ? ov.cooldown : (evt.cooldown || 0),
+                maxCasts: ov.maxCasts !== undefined ? ov.maxCasts : (evt.maxCasts || 1),
+                delay: ov.delay !== undefined ? ov.delay : (evt.delay || 0),
                 eventDuration: ov.eventDuration !== undefined ? ov.eventDuration : (evt.eventDuration || 0),
-                requiredCDs:   ov.requiredCDs   !== undefined ? ov.requiredCDs.slice() : (evt.requiredCDs ? evt.requiredCDs.slice() : []),
-                icon:          ov.icon          !== undefined ? ov.icon          : (evt.icon || ''),
-                spellId:       evt.spellId
+                requiredCDs: ov.requiredCDs !== undefined ? ov.requiredCDs.slice() : (evt.requiredCDs ? evt.requiredCDs.slice() : []),
+                icon: ov.icon !== undefined ? ov.icon : (evt.icon || ''),
+                spellId: evt.spellId,
+                soak: ov.soak !== undefined ? ov.soak : (evt.soak || null)
             });
         });
         // customEvents (komplett vom User angelegt)
-        customEvents.forEach(function(evt) {
+        customEvents.forEach(function (evt) {
             var ov = eventOverrides[evt._key] || {};
             if (ov.disabled) return;
             result.push({
-                _key:          evt._key,
-                _isCustom:     true,
+                _key: evt._key,
+                _isCustom: true,
                 _hasManualCDs: true,
-                name:          evt.name,
-                firstCast:     evt.firstCast,
-                cooldown:      evt.cooldown || 0,
-                maxCasts:      evt.maxCasts || 1,
-                delay:         evt.delay || 0,
+                name: evt.name,
+                firstCast: evt.firstCast,
+                cooldown: evt.cooldown || 0,
+                maxCasts: evt.maxCasts || 1,
+                delay: evt.delay || 0,
                 eventDuration: evt.eventDuration || 0,
-                requiredCDs:   evt.requiredCDs ? evt.requiredCDs.slice() : [],
-                icon:          evt.icon || '',
-                spellId:       evt.spellId || 0
+                requiredCDs: evt.requiredCDs ? evt.requiredCDs.slice() : [],
+                icon: evt.icon || '',
+                spellId: evt.spellId || 0,
+                soak: (eventOverrides[evt._key] && eventOverrides[evt._key].soak !== undefined) ? eventOverrides[evt._key].soak : (evt.soak || null)
             });
         });
 
@@ -639,7 +668,7 @@ window.CD_AUTO_PLANNER = (function() {
         var bloodlustEventExists = false;
         var bloodlustEvts = [];
 
-        result.forEach(function(evt) {
+        result.forEach(function (evt) {
             if (evt.requiredCDs && evt.requiredCDs.indexOf('bloodlust') !== -1) {
                 bloodlustEventExists = true;
 
@@ -647,7 +676,7 @@ window.CD_AUTO_PLANNER = (function() {
                     if (evt.requiredCDs.indexOf('stormlash') === -1) evt.requiredCDs.push('stormlash');
                     if (evt.requiredCDs.indexOf('skull_banner') === -1) evt.requiredCDs.push('skull_banner');
                 }
-                
+
                 if (evt.requiredCDs.indexOf('stormlash') !== -1 || evt.requiredCDs.indexOf('skull_banner') !== -1) {
                     bloodlustEvts.push(evt);
                 }
@@ -663,7 +692,7 @@ window.CD_AUTO_PLANNER = (function() {
         var maxCasts = Math.max(1, Math.max(numShamans, numWarriors));
 
         // 3. Folgecasts und 3-Minuten-Casts für die Bloodlust-Zeitpunkte
-        bloodlustEvts.forEach(function(blEvt) {
+        bloodlustEvts.forEach(function (blEvt) {
             var ovEntry = eventOverrides[blEvt._key];
             var triggerOv = ovEntry && ovEntry.triggerOverride;
             var blMapEntry = null;
@@ -701,7 +730,7 @@ window.CD_AUTO_PLANNER = (function() {
                 var currentDelay = isBlEncStart ? 0 : ((blEvt.delay || 0) + i * 10);
                 var timeOffset = 180 + (i * 10);
                 var evtName = (i === 0) ? 'SL/Banner (Nach 3 Min)' : 'SL/Banner (Nach 3 Min, Folge ' + i + ')';
-                
+
                 result.push({
                     _key: 'auto_sl_banner_3min_' + blEvt.firstCast + '_' + i,
                     _isCustom: true,
@@ -721,7 +750,7 @@ window.CD_AUTO_PLANNER = (function() {
         });
 
         if (bloodlustEventExists && hasLateBloodlust && !hasEarlyBloodlust) {
-            var startEvt = result.find(function(e) { return e.name === 'Kampfbeginn (SL/Banner)'; });
+            var startEvt = result.find(function (e) { return e.name === 'Kampfbeginn (SL/Banner)'; });
             if (!startEvt) {
                 var encStartObj = null;
                 if (config.triggerMap) {
@@ -737,7 +766,7 @@ window.CD_AUTO_PLANNER = (function() {
                 if (!encStartObj) {
                     var trgSelects = document.querySelectorAll('select.assignment-select[data-assignment-id$="-trigger"]');
                     if (trgSelects.length > 0) {
-                        var encOption = Array.from(trgSelects[0].options).find(function(o) { return o.value.indexOf('ENC_START') !== -1; });
+                        var encOption = Array.from(trgSelects[0].options).find(function (o) { return o.value.indexOf('ENC_START') !== -1; });
                         if (encOption) encStartObj = encOption.value;
                     }
                     if (!encStartObj && config.triggerMap) {
@@ -788,35 +817,36 @@ window.CD_AUTO_PLANNER = (function() {
     function generateTimeline() {
         var timeline = [];
         var effectiveEvents = getEffectiveEvents();
-        effectiveEvents.forEach(function(event, eventIdx) {
+        effectiveEvents.forEach(function (event, eventIdx) {
             var casts = event.maxCasts || 1;
             for (var c = 0; c < casts; c++) {
                 var absTime = event.firstCast + (c * (event.cooldown || 0));
                 if (event.cooldown === 0 && c > 0) break;
                 timeline.push({
-                    eventIdx:      eventIdx,
-                    eventKey:      event._key,
-                    castNum:       c + 1,
-                    absTime:       absTime,
-                    delay:         event.delay || 0,
-                    eventName:     event.name,
+                    eventIdx: eventIdx,
+                    eventKey: event._key,
+                    castNum: c + 1,
+                    absTime: absTime,
+                    delay: event.delay || 0,
+                    eventName: event.name,
                     eventDuration: event.eventDuration || 0,
-                    icon:          event.icon || '',
-                    requiredCDs:   event.requiredCDs,
-                    slots:         {},
-                    _sourceTriggerMap: event._sourceTriggerMap
+                    icon: event.icon || '',
+                    requiredCDs: event.requiredCDs,
+                    slots: {},
+                    _sourceTriggerMap: event._sourceTriggerMap,
+                    soak: event.soak || null
                 });
             }
         });
-        timeline.sort(function(a, b) { return a.absTime - b.absTime; });
+        timeline.sort(function (a, b) { return a.absTime - b.absTime; });
         return timeline;
     }
 
     function getUniqueCategoryKeys() {
         var keys = [];
         var effectiveEvents = getEffectiveEvents();
-        effectiveEvents.forEach(function(e) {
-            (e.requiredCDs || []).forEach(function(k) {
+        effectiveEvents.forEach(function (e) {
+            (e.requiredCDs || []).forEach(function (k) {
                 if (keys.indexOf(k) === -1) keys.push(k);
             });
         });
@@ -856,18 +886,18 @@ window.CD_AUTO_PLANNER = (function() {
         if (assignStrategy.spread) {
             // Events nach Name+Kategorie gruppieren
             var groups = {};
-            timeline.forEach(function(row) {
-                row.requiredCDs.forEach(function(catKey) {
+            timeline.forEach(function (row) {
+                row.requiredCDs.forEach(function (catKey) {
                     var gKey = row.eventName + '||' + catKey;
                     if (!groups[gKey]) groups[gKey] = [];
                     groups[gKey].push(row);
                 });
             });
 
-            Object.keys(groups).forEach(function(gKey) {
+            Object.keys(groups).forEach(function (gKey) {
                 var rows = groups[gKey];
                 if (rows.length <= 1) {
-                    rows.forEach(function(r) {
+                    rows.forEach(function (r) {
                         spreadAllow[r.eventIdx + '-' + r.castNum + '-' + r._catKey] = true;
                     });
                     return;
@@ -878,13 +908,13 @@ window.CD_AUTO_PLANNER = (function() {
 
                 // Capacity = wieviele verschiedene Player+Spell Kombinationen verfügbar?
                 var totalPlayers = 0;
-                spells.forEach(function(spell) {
+                spells.forEach(function (spell) {
                     totalPlayers += getPlayersOfClass(spell.dbClass, spell.requiredRole, spell.requiredSpec).length;
                 });
                 if (totalPlayers === 0) return;
 
                 // Wie oft kann jeder Spieler im Event-Span casten?
-                var minCd = spells.length ? Math.min.apply(null, spells.map(function(s) { return s.cooldownSec || 180; })) : 180;
+                var minCd = spells.length ? Math.min.apply(null, spells.map(function (s) { return s.cooldownSec || 180; })) : 180;
                 var firstT = rows[0].absTime;
                 var lastT = rows[rows.length - 1].absTime;
                 var span = lastT - firstT;
@@ -893,7 +923,7 @@ window.CD_AUTO_PLANNER = (function() {
 
                 if (capacity >= rows.length) {
                     // Alles abgedeckt → jeder Cast erlaubt
-                    rows.forEach(function(r) {
+                    rows.forEach(function (r) {
                         spreadAllow[r.eventIdx + '-' + r.castNum + '-' + catKey] = true;
                     });
                 } else {
@@ -905,7 +935,7 @@ window.CD_AUTO_PLANNER = (function() {
                         if (idx >= rows.length) idx = rows.length - 1;
                         marked[idx] = true;
                     }
-                    rows.forEach(function(r, ri) {
+                    rows.forEach(function (r, ri) {
                         spreadAllow[r.eventIdx + '-' + r.castNum + '-' + catKey] =
                             !!marked[ri];
                     });
@@ -972,10 +1002,10 @@ window.CD_AUTO_PLANNER = (function() {
             return p; // Keep class names like Priest as is
         }
 
-        timeline.forEach(function(row) {
+        timeline.forEach(function (row) {
             // Alle Kategorien initial mit leeren Slots vorbelegen,
             // damit die UI-Spalten stimmen.
-            allCatKeys.forEach(function(catKey) {
+            allCatKeys.forEach(function (catKey) {
                 if (!row.slots[catKey]) row.slots[catKey] = {};
             });
 
@@ -985,7 +1015,7 @@ window.CD_AUTO_PLANNER = (function() {
                 ? (row.requiredCDs || []).slice()
                 : allCatKeys;
 
-            iterCats.forEach(function(catKey) {
+            iterCats.forEach(function (catKey) {
                 var isRequired = (row.requiredCDs || []).indexOf(catKey) !== -1;
                 var oKey = row.eventIdx + '-' + row.castNum + '-' + catKey;
                 var hasOverride = !!manualOverrides[oKey];
@@ -998,7 +1028,7 @@ window.CD_AUTO_PLANNER = (function() {
                         row.slots[catKey] = { player: null, dbName: null, auto: false, skipped: true };
                         return;
                     }
-                    
+
                     if (ov.isVirtualCategoryKey) {
                         var vCat = categories[ov.isVirtualCategoryKey];
                         if (vCat) {
@@ -1057,7 +1087,7 @@ window.CD_AUTO_PLANNER = (function() {
                 var spells = resolveCategory(catKey);
 
                 if (assignStrategy.preferHeal) {
-                    spells.sort(function(a, b) {
+                    spells.sort(function (a, b) {
                         var aHeal = (a.requiredRole === 'healer') ? 1 : 0;
                         var bHeal = (b.requiredRole === 'healer') ? 1 : 0;
                         return bHeal - aHeal;
@@ -1068,7 +1098,7 @@ window.CD_AUTO_PLANNER = (function() {
                     var lastClass = lastClassUsed[catKey];
                     var diffClass = [];
                     var sameClass = [];
-                    spells.forEach(function(s) {
+                    spells.forEach(function (s) {
                         if (s.dbClass === lastClass) sameClass.push(s);
                         else diffClass.push(s);
                     });
@@ -1113,7 +1143,7 @@ window.CD_AUTO_PLANNER = (function() {
         var catKeys = getUniqueCategoryKeys();
 
         // Thead
-        var thCols = catKeys.map(function(k) {
+        var thCols = catKeys.map(function (k) {
             var cat = categories[k];
             var c = cat ? cat.color : '#888';
             var n = cat ? cat.shortName : k;
@@ -1130,11 +1160,11 @@ window.CD_AUTO_PLANNER = (function() {
 
         // Tbody
         var lastEvt = '';
-        var rows = timeline.map(function(row, rowIdx) {
+        var rows = timeline.map(function (row, rowIdx) {
             var isNew = row.eventName !== lastEvt;
             lastEvt = row.eventName;
 
-            var cells = catKeys.map(function(catKey) {
+            var cells = catKeys.map(function (catKey) {
                 var slot = row.slots[catKey];
                 var isReq = row.requiredCDs.indexOf(catKey) !== -1;
                 var options = buildDropdownOptions(catKey);
@@ -1204,13 +1234,13 @@ window.CD_AUTO_PLANNER = (function() {
         tbody.innerHTML = rows;
 
         // Set dropdown values
-        timeline.forEach(function(row, rowIdx) {
-            catKeys.forEach(function(catKey) {
+        timeline.forEach(function (row, rowIdx) {
+            catKeys.forEach(function (catKey) {
                 var slot = row.slots[catKey];
                 if (!slot || !slot.player || (!slot.dbName && !slot.isVirtual)) return;
                 var sel = tbody.querySelector('select[data-row="' + rowIdx + '"][data-cat="' + catKey + '"]');
                 if (!sel) return;
-                
+
                 var val;
                 if (slot.isVirtualCategoryKey) {
                     var playerStr = slot.player === 'Alle' ? 'ALL' : slot.player;
@@ -1222,7 +1252,7 @@ window.CD_AUTO_PLANNER = (function() {
                     val = slot.player + '::' + slot.dbName;
                 }
 
-                if (!Array.from(sel.options).some(function(o) { return o.value === val; })) {
+                if (!Array.from(sel.options).some(function (o) { return o.value === val; })) {
                     var displayCatName = slot.isVirtual ? (categories[slot.isVirtualCategoryKey || catKey].name) : slot.dbName;
                     var opt = new Option(slot.player + ' → ' + displayCatName, val);
                     opt.style.color = getClassColor(slot.dbClass || 'General');
@@ -1234,8 +1264,8 @@ window.CD_AUTO_PLANNER = (function() {
         });
 
         // Listeners: Dropdown
-        tbody.querySelectorAll('.auto-plan-select').forEach(function(sel) {
-            sel.addEventListener('change', function(e) {
+        tbody.querySelectorAll('.auto-plan-select').forEach(function (sel) {
+            sel.addEventListener('change', function (e) {
                 var ri = parseInt(e.target.dataset.row);
                 var ck = e.target.dataset.cat;
                 var row = assignments[ri];
@@ -1249,7 +1279,7 @@ window.CD_AUTO_PLANNER = (function() {
                 } else {
                     var parts = e.target.value.split('::');
                     var player = parts[0], dbName = parts[1];
-                    
+
                     if (dbName === '__VIRTUAL__') {
                         var virtKey = parts[2];
                         manualOverrides[oKey] = {
@@ -1257,8 +1287,8 @@ window.CD_AUTO_PLANNER = (function() {
                             isVirtualCategoryKey: virtKey
                         };
                     } else {
-                        var dbEntry = cooldownsDB.find(function(cd) { return cd.name === dbName; });
-                        var catSpell = resolveCategory(ck).find(function(s) { return s.dbName === dbName; });
+                        var dbEntry = cooldownsDB.find(function (cd) { return cd.name === dbName; });
+                        var catSpell = resolveCategory(ck).find(function (s) { return s.dbName === dbName; });
                         manualOverrides[oKey] = {
                             player: player, dbName: dbName,
                             dbClass: dbEntry ? dbEntry.class : 'UNKNOWN',
@@ -1273,15 +1303,15 @@ window.CD_AUTO_PLANNER = (function() {
         });
 
         // Listeners: Delay
-        tbody.querySelectorAll('.auto-plan-delay').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
+        tbody.querySelectorAll('.auto-plan-delay').forEach(function (inp) {
+            inp.addEventListener('change', function (e) {
                 var ri = parseInt(e.target.dataset.row);
                 if (assignments[ri]) assignments[ri].delay = parseInt(e.target.value) || 0;
             });
         });
 
-        var missing = timeline.filter(function(r) {
-            return Object.values(r.slots).some(function(s) { return s.unavailable; });
+        var missing = timeline.filter(function (r) {
+            return Object.values(r.slots).some(function (s) { return s.unavailable; });
         }).length;
         updateStatus(timeline.length + ' Events, ' + missing + ' ohne CD');
     }
@@ -1297,15 +1327,15 @@ window.CD_AUTO_PLANNER = (function() {
             if (recommended.length > 0) {
                 var recHtml = '';
                 var byClassR = {};
-                recommended.forEach(function(s) {
+                recommended.forEach(function (s) {
                     if (!byClassR[s.dbClass]) byClassR[s.dbClass] = [];
-                    if (!byClassR[s.dbClass].some(function(x) { return x.dbName === s.dbName; })) byClassR[s.dbClass].push(s);
+                    if (!byClassR[s.dbClass].some(function (x) { return x.dbName === s.dbName; })) byClassR[s.dbClass].push(s);
                 });
-                Object.entries(byClassR).forEach(function(entry) {
+                Object.entries(byClassR).forEach(function (entry) {
                     var cls = entry[0], spells = entry[1];
                     var color = getClassColor(cls);
                     var anyRendered = false;
-                    spells.forEach(function(s) {
+                    spells.forEach(function (s) {
                         var players = getPlayersOfClass(cls, s.requiredRole, s.requiredSpec, isSpec);
                         if (!players.length) return;
                         if (!anyRendered) {
@@ -1316,12 +1346,12 @@ window.CD_AUTO_PLANNER = (function() {
                         var specMark = '';
                         if (s.requiredSpec) {
                             var specs = Array.isArray(s.requiredSpec) ? s.requiredSpec : [s.requiredSpec];
-                            var labels = specs.map(function(v) { return getSpecLabel(v).replace(/\s*\([^)]+\)/, ''); });
+                            var labels = specs.map(function (v) { return getSpecLabel(v).replace(/\s*\([^)]+\)/, ''); });
                             specMark = ' [' + labels.join('/') + ']';
                         } else if (s.requiredRole) {
                             specMark = ' (' + s.requiredRole + ')';
                         }
-                        players.forEach(function(p) {
+                        players.forEach(function (p) {
                             recHtml += '<option value="' + p + '::' + s.dbName + '" style="color:' + color + ';">★ ' + p + ' → ' + s.dbName + dur + specMark + '</option>';
                         });
                     });
@@ -1331,26 +1361,26 @@ window.CD_AUTO_PLANNER = (function() {
                 }
             }
 
-            var allCDs = cooldownsDB.filter(function(cd) {
+            var allCDs = cooldownsDB.filter(function (cd) {
                 return cd.name && cd.spellId && cd.spellId !== "nil" && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 && cd.type !== 'Personal';
             });
             var byClassA = {};
-            allCDs.forEach(function(cd) {
+            allCDs.forEach(function (cd) {
                 var cls = (cd.class || 'UNKNOWN').toUpperCase();
                 if (!byClassA[cls]) byClassA[cls] = [];
-                if (!byClassA[cls].some(function(x) { return x.name === cd.name; })) byClassA[cls].push(cd);
+                if (!byClassA[cls].some(function (x) { return x.name === cd.name; })) byClassA[cls].push(cd);
             });
 
             if (Object.keys(byClassA).length > 0) {
                 var allHtml = '';
-                Object.entries(byClassA).forEach(function(entry) {
+                Object.entries(byClassA).forEach(function (entry) {
                     var cls = entry[0], cds = entry[1];
                     var players = getPlayersOfClass(cls, null, null, isSpec);
                     if (!players.length) return;
                     var color = getClassColor(cls);
                     allHtml += '<option disabled style="font-weight:bold; color:' + color + '; background:#1a202c; opacity:0.7;">── ' + cls + ' ──</option>';
-                    players.forEach(function(p) {
-                        cds.forEach(function(cd) {
+                    players.forEach(function (p) {
+                        cds.forEach(function (cd) {
                             allHtml += '<option value="' + p + '::' + cd.name + '" style="color:' + color + '; opacity:0.8;">' + p + ' → ' + cd.name + '</option>';
                         });
                     });
@@ -1359,11 +1389,11 @@ window.CD_AUTO_PLANNER = (function() {
                     sectionHtml += '<option disabled style="font-weight:bold; color:#64748b; background:#1a202c;">═══ ' + (isSpec ? 'SPEC SLOTS (ALLE CDs)' : 'ALLE CDs') + ' ═══</option>' + allHtml;
                 }
             }
-            
+
             // Virtuelle Kategorien (Warnungen)
             if (!isSpec) {
                 var virtHtml = '';
-                Object.keys(categories).forEach(function(vKey) {
+                Object.keys(categories).forEach(function (vKey) {
                     var cat = categories[vKey];
                     if (cat && cat.isVirtual && cat.name) {
                         var playerVal = cat.defaultPlayer || 'ALL';
@@ -1373,7 +1403,7 @@ window.CD_AUTO_PLANNER = (function() {
                         if (playerVal === 'HEALERS') playerDisplay = 'Heiler';
                         if (playerVal === 'MELEEDPS') playerDisplay = 'Melee';
                         if (playerVal === 'RANGEDDPS') playerDisplay = 'Range';
-                        
+
                         var ttsHint = cat.defaultTts ? ' (TTS: ' + cat.defaultTts + ')' : '';
                         virtHtml += '<option value="' + playerVal + '::__VIRTUAL__::' + vKey + '" style="color:' + cat.color + ';">★ ' + playerDisplay + ' → ' + cat.name + ttsHint + '</option>';
                     }
@@ -1422,6 +1452,15 @@ window.CD_AUTO_PLANNER = (function() {
 
         var timeline = generateTimeline();
         assignments = autoAssign(timeline);
+
+        // ── Blood-Rage-Soak: Events mit Kategorie tank_soak_phys expandieren ──
+        if (window.CD_BLOODRAGE) {
+            assignments = window.CD_BLOODRAGE.applyToAssignments(assignments, {
+                catKey: "tank_soak_phys",
+                planOpts: { expectedHitDmg: 1800000, threshold: 0.50, swingSec: 1.5 } // nur Fallback
+            });
+        }
+
         renderTimeline(assignments);
         renderEventManager();
         clearPreviewStale();
@@ -1460,38 +1499,38 @@ window.CD_AUTO_PLANNER = (function() {
 
         // Für Anzeige brauchen wir alle Events (auch deaktivierte)
         var allRows = [];
-        (config.events || []).forEach(function(evt, idx) {
+        (config.events || []).forEach(function (evt, idx) {
             var key = 'cfg_' + idx;
             var ov = eventOverrides[key] || {};
             var isMythic = evt.name && (evt.name.indexOf('(HC)') !== -1 || evt.name.indexOf('(Mythisch)') !== -1 || evt.name.indexOf('(Mythic)') !== -1 || evt.name.indexOf('(M)') !== -1);
             var disabled = ov.disabled !== undefined ? ov.disabled : isMythic;
             allRows.push({
                 _key: key, _isCustom: false,
-                disabled:      !!disabled,
-                name:          ov.name          !== undefined ? ov.name          : evt.name,
-                firstCast:     ov.firstCast     !== undefined ? ov.firstCast     : evt.firstCast,
-                cooldown:      ov.cooldown      !== undefined ? ov.cooldown      : (evt.cooldown || 0),
-                maxCasts:      ov.maxCasts      !== undefined ? ov.maxCasts      : (evt.maxCasts || 1),
-                requiredCDs:   ov.requiredCDs   !== undefined ? ov.requiredCDs   : (evt.requiredCDs || []),
-                icon:          ov.icon          !== undefined ? ov.icon          : (evt.icon || ''),
+                disabled: !!disabled,
+                name: ov.name !== undefined ? ov.name : evt.name,
+                firstCast: ov.firstCast !== undefined ? ov.firstCast : evt.firstCast,
+                cooldown: ov.cooldown !== undefined ? ov.cooldown : (evt.cooldown || 0),
+                maxCasts: ov.maxCasts !== undefined ? ov.maxCasts : (evt.maxCasts || 1),
+                requiredCDs: ov.requiredCDs !== undefined ? ov.requiredCDs : (evt.requiredCDs || []),
+                icon: ov.icon !== undefined ? ov.icon : (evt.icon || ''),
                 triggerOverride: ov.triggerOverride
             });
         });
-        customEvents.forEach(function(evt) {
+        customEvents.forEach(function (evt) {
             var ov = eventOverrides[evt._key] || {};
             allRows.push({
                 _key: evt._key, _isCustom: true,
-                disabled:      !!ov.disabled,
-                name:          evt.name, firstCast: evt.firstCast, cooldown: evt.cooldown || 0,
-                maxCasts:      evt.maxCasts || 1, requiredCDs: evt.requiredCDs || [], icon: evt.icon || '',
+                disabled: !!ov.disabled,
+                name: evt.name, firstCast: evt.firstCast, cooldown: evt.cooldown || 0,
+                maxCasts: evt.maxCasts || 1, requiredCDs: evt.requiredCDs || [], icon: evt.icon || '',
                 triggerOverride: ov.triggerOverride
             });
         });
 
         var header = '<div class="evt-row evt-header"><span></span><span>Ikon</span><span>Zeit</span><span>Name</span><span title="Cooldown zwischen Casts">CD</span><span title="Anzahl Casts">Casts</span><span title="Verzögerung">Delay</span><span>Kategorien</span><span title="Trigger-Modus für Export">Trigger</span><span></span></div>';
 
-        var html = allRows.map(function(r) {
-            var catLabels = (r.requiredCDs || []).map(function(k) {
+        var html = allRows.map(function (r) {
+            var catLabels = (r.requiredCDs || []).map(function (k) {
                 var c = categories[k];
                 return c ? c.shortName : k;
             }).join(', ');
@@ -1519,15 +1558,21 @@ window.CD_AUTO_PLANNER = (function() {
                 + '<input type="text" class="evt-name" data-key="' + r._key + '" value="' + (r.name || '').replace(/"/g, '&quot;') + '" placeholder="Event-Name">'
                 + '<input type="number" class="evt-cd" data-key="' + r._key + '" value="' + r.cooldown + '" step="1" title="Cooldown zwischen Casts">'
                 + '<input type="number" class="evt-max" data-key="' + r._key + '" value="' + r.maxCasts + '" min="1" step="1" title="Anzahl Casts">'
-                + '<input type="number" class="evt-delay" data-key="' + r._key + '" value="' + ((eventOverrides[r._key] && eventOverrides[r._key].delay !== undefined) ? eventOverrides[r._key].delay : (r._isCustom ? (customEvents.find(function(c){return c._key===r._key;}) || {}).delay || 0 : ((config.events[parseInt(r._key.replace("cfg_", ""))] || {}).delay || 0))) + '" step="1" title="Verzögerung (neg=vorher)">'
-                + '<button class="evt-cat-btn" data-key="' + r._key + '" title="Klicken um Kategorien zu ändern">' + catLabels + ' ' + customBadge + '</button>'
+                + '<input type="number" class="evt-delay" data-key="' + r._key + '" value="' + ((eventOverrides[r._key] && eventOverrides[r._key].delay !== undefined) ? eventOverrides[r._key].delay : (r._isCustom ? (customEvents.find(function (c) { return c._key === r._key; }) || {}).delay || 0 : ((config.events[parseInt(r._key.replace("cfg_", ""))] || {}).delay || 0))) + '" step="1" title="Verzögerung (neg=vorher)">'
+                + (function () {
+                    var soakActive = (r.requiredCDs || []).indexOf('tank_soak_phys') !== -1;
+                    return '<div style="display:flex;gap:4px;min-width:0;">'
+                        + '<button class="evt-cat-btn" data-key="' + r._key + '" title="Klicken um Kategorien zu ändern" style="flex:1;min-width:0;">' + catLabels + ' ' + customBadge + '</button>'
+                        + (soakActive ? '<button class="evt-soak-btn" data-key="' + r._key + '" title="Soak-Einstellungen" style="flex:0 0 auto;background:#0f172a;border:1px solid #c8aa6e;color:#c8aa6e;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;">🛡</button>' : '')
+                        + '</div>';
+                })()
                 + '<button class="evt-trg-btn mode-' + tMode + '" data-key="' + r._key + '" title="Trigger-Modus für Export anpassen">' + tLabel + '</button>'
                 + (r._isCustom ? '<button class="text-red-400 hover:text-red-300 text-xs evt-delete" data-key="' + r._key + '" title="Löschen">🗑</button>' : '<span class="text-gray-600 text-[9px] text-center" title="Basis-Event aus Config">cfg</span>')
                 + '</div>';
         }).join('');
 
         container.innerHTML = '<div class="flex items-center justify-between mb-2">'
-            + '<div class="text-xs font-bold text-gray-300">📋 Events (' + allRows.filter(function(r){return !r.disabled;}).length + ' aktiv / ' + allRows.length + ' gesamt)</div>'
+            + '<div class="text-xs font-bold text-gray-300">📋 Events (' + allRows.filter(function (r) { return !r.disabled; }).length + ' aktiv / ' + allRows.length + ' gesamt)</div>'
             + '<button id="btn-add-event" class="bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] py-1 px-2 rounded border border-emerald-500">+ Event hinzufügen</button>'
             + '</div>'
             + header + html;
@@ -1537,8 +1582,8 @@ window.CD_AUTO_PLANNER = (function() {
 
     function attachEventManagerListeners() {
         // Aktiv-Toggle
-        document.querySelectorAll('.evt-enabled').forEach(function(cb) {
-            cb.addEventListener('change', function(e) {
+        document.querySelectorAll('.evt-enabled').forEach(function (cb) {
+            cb.addEventListener('change', function (e) {
                 var key = e.target.dataset.key;
                 if (!eventOverrides[key]) eventOverrides[key] = {};
                 eventOverrides[key].disabled = !e.target.checked;
@@ -1548,67 +1593,74 @@ window.CD_AUTO_PLANNER = (function() {
         });
 
         // Icon
-        document.querySelectorAll('.evt-icon').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
+        document.querySelectorAll('.evt-icon').forEach(function (inp) {
+            inp.addEventListener('change', function (e) {
                 setOverride(e.target.dataset.key, 'icon', e.target.value);
             });
         });
 
         // FirstCast
-        document.querySelectorAll('.evt-first').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
+        document.querySelectorAll('.evt-first').forEach(function (inp) {
+            inp.addEventListener('change', function (e) {
                 setOverride(e.target.dataset.key, 'firstCast', parseFloat(e.target.value) || 0);
             });
         });
 
         // Name
-        document.querySelectorAll('.evt-name').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
+        document.querySelectorAll('.evt-name').forEach(function (inp) {
+            inp.addEventListener('change', function (e) {
                 setOverride(e.target.dataset.key, 'name', e.target.value);
             });
         });
 
         // Cooldown
-        document.querySelectorAll('.evt-cd').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
+        document.querySelectorAll('.evt-cd').forEach(function (inp) {
+            inp.addEventListener('change', function (e) {
                 setOverride(e.target.dataset.key, 'cooldown', parseFloat(e.target.value) || 0);
             });
         });
 
         // MaxCasts
-        document.querySelectorAll('.evt-max').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
+        document.querySelectorAll('.evt-max').forEach(function (inp) {
+            inp.addEventListener('change', function (e) {
                 setOverride(e.target.dataset.key, 'maxCasts', parseInt(e.target.value) || 1);
             });
         });
 
         // Delay
-        document.querySelectorAll('.evt-delay').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
+        document.querySelectorAll('.evt-delay').forEach(function (inp) {
+            inp.addEventListener('change', function (e) {
                 setOverride(e.target.dataset.key, 'delay', parseFloat(e.target.value) || 0);
             });
         });
 
         // Kategorien-Button → Modal
-        document.querySelectorAll('.evt-cat-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
+        document.querySelectorAll('.evt-cat-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
                 openEventCategoryPicker(e.currentTarget.dataset.key);
             });
         });
 
+        // Soak-Einstellungen → Modal
+        document.querySelectorAll('.evt-soak-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                openEventSoakPicker(e.currentTarget.dataset.key);
+            });
+        });
+
         // Trigger-Button → Trigger-Modus-Modal
-        document.querySelectorAll('.evt-trg-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
+        document.querySelectorAll('.evt-trg-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
                 openEventTriggerPicker(e.currentTarget.dataset.key);
             });
         });
 
         // Delete (nur Custom)
-        document.querySelectorAll('.evt-delete').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
+        document.querySelectorAll('.evt-delete').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
                 var key = e.currentTarget.dataset.key;
                 if (!confirm('Event wirklich löschen?')) return;
-                customEvents = customEvents.filter(function(evt) { return evt._key !== key; });
+                customEvents = customEvents.filter(function (evt) { return evt._key !== key; });
                 delete eventOverrides[key];
                 renderEventManager();
                 markPreviewStale();
@@ -1618,7 +1670,7 @@ window.CD_AUTO_PLANNER = (function() {
         // Add Event
         var addBtn = document.getElementById('btn-add-event');
         if (addBtn) {
-            addBtn.addEventListener('click', function() {
+            addBtn.addEventListener('click', function () {
                 var key = 'custom_' + Date.now();
                 customEvents.push({
                     _key: key,
@@ -1639,7 +1691,7 @@ window.CD_AUTO_PLANNER = (function() {
 
     function setOverride(key, field, value) {
         // Bei Custom-Events direkt in customEvents schreiben statt in eventOverrides
-        var custom = customEvents.find(function(e) { return e._key === key; });
+        var custom = customEvents.find(function (e) { return e._key === key; });
         if (custom) {
             custom[field] = value;
         } else {
@@ -1672,14 +1724,14 @@ window.CD_AUTO_PLANNER = (function() {
         // Fallback: Versuche über window (falls in globalem Scope)
         if (!triggerOptions.length && window.TRIGGER_OPTIONS) triggerOptions = window.TRIGGER_OPTIONS;
         if (!npcOptions.length && window.NPC_OPTIONS) npcOptions = window.NPC_OPTIONS;
-        
+
         // Letzter Fallback: Aus dem DOM extrahieren (vom CD-Planer-Container der Trigger-Selects hat)
         if (!triggerOptions.length) {
             var anyTriggerSelect = document.querySelector('select[data-assignment-id$="-trigger"]');
             if (anyTriggerSelect) {
                 triggerOptions = Array.from(anyTriggerSelect.options)
-                    .filter(function(o) { return o.value; })
-                    .map(function(o) { return { val: o.value, text: o.textContent }; });
+                    .filter(function (o) { return o.value; })
+                    .map(function (o) { return { val: o.value, text: o.textContent }; });
             }
         }
         if (!npcOptions.length) {
@@ -1687,17 +1739,17 @@ window.CD_AUTO_PLANNER = (function() {
             var anyNpcDatalist = document.querySelector('datalist[id$="-npc-list"]');
             if (anyNpcSelect) {
                 npcOptions = Array.from(anyNpcSelect.options)
-                    .filter(function(o) { return o.value; })
-                    .map(function(o) { return o.value; });
+                    .filter(function (o) { return o.value; })
+                    .map(function (o) { return o.value; });
             } else if (anyNpcDatalist) {
                 npcOptions = Array.from(anyNpcDatalist.options)
-                    .filter(function(o) { return o.value; })
-                    .map(function(o) { return o.value; });
+                    .filter(function (o) { return o.value; })
+                    .map(function (o) { return o.value; });
             }
         }
 
         // HEALTH-Trigger aus den Options filtern (nur der mit "HEALTH" im Val)
-        var healthTrigger = triggerOptions.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+        var healthTrigger = triggerOptions.find(function (t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
 
         // Overlay
         var overlay = document.createElement('div');
@@ -1710,7 +1762,7 @@ window.CD_AUTO_PLANNER = (function() {
         if (triggerOptions.length) {
             triggerDropdown = '<select id="trg-pick-trigger" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">'
                 + '<option value="">— Aus triggerMap (Default) —</option>'
-                + triggerOptions.map(function(t) {
+                + triggerOptions.map(function (t) {
                     return '<option value="' + t.val + '"' + (currentTrigger === t.val ? ' selected' : '') + ' title="' + t.val + '">' + t.text + '</option>';
                 }).join('')
                 + '</select>';
@@ -1721,7 +1773,7 @@ window.CD_AUTO_PLANNER = (function() {
         if (npcOptions.length) {
             npcDropdown = '<select id="trg-pick-npc" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">'
                 + '<option value="">— NPC wählen —</option>'
-                + npcOptions.map(function(n) {
+                + npcOptions.map(function (n) {
                     return '<option value="' + n + '"' + (currentNpc === n ? ' selected' : '') + '>' + n + '</option>';
                 }).join('')
                 + '</select>';
@@ -1734,54 +1786,54 @@ window.CD_AUTO_PLANNER = (function() {
 
             // Modus: Auto
             + '<label class="block p-3 bg-slate-900/50 rounded border border-slate-700 cursor-pointer hover:border-slate-500">'
-            +   '<div class="flex items-start gap-2">'
-            +     '<input type="radio" name="trg-mode" value="auto" class="mt-1"' + (currentMode === 'auto' ? ' checked' : '') + '>'
-            +     '<div class="flex-1">'
-            +       '<div class="text-sm font-bold text-gray-200">Auto (aus triggerMap)</div>'
-            +       '<div class="text-[10px] text-gray-500">Nutzt die Standard-Zuordnung aus der Boss-Config</div>'
-            +     '</div>'
-            +   '</div>'
+            + '<div class="flex items-start gap-2">'
+            + '<input type="radio" name="trg-mode" value="auto" class="mt-1"' + (currentMode === 'auto' ? ' checked' : '') + '>'
+            + '<div class="flex-1">'
+            + '<div class="text-sm font-bold text-gray-200">Auto (aus triggerMap)</div>'
+            + '<div class="text-[10px] text-gray-500">Nutzt die Standard-Zuordnung aus der Boss-Config</div>'
+            + '</div>'
+            + '</div>'
             + '</label>'
 
             // Modus: Cast-Counter
             + '<label class="block p-3 bg-slate-900/50 rounded border border-slate-700 cursor-pointer hover:border-slate-500">'
-            +   '<div class="flex items-start gap-2">'
-            +     '<input type="radio" name="trg-mode" value="cast" class="mt-1"' + (currentMode === 'cast' ? ' checked' : '') + '>'
-            +     '<div class="flex-1">'
-            +       '<div class="text-sm font-bold text-sky-300">Cast-Counter (#1, #2, #3...)</div>'
-            +       '<div class="text-[10px] text-gray-500 mb-2">Condition-Feld wird die fortlaufende Cast-Nummer</div>'
-            +       '<div class="text-[10px] text-gray-400 mb-1">Trigger-Typ im Planer (leer = aus triggerMap):</div>'
-            +       (triggerDropdown || '<input type="text" id="trg-pick-trigger" value="' + (currentTrigger || '').replace(/"/g, '&quot;') + '" placeholder="z.B. SHAPRIDE_BANISHMENT" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm font-mono">')
-            +     '</div>'
-            +   '</div>'
+            + '<div class="flex items-start gap-2">'
+            + '<input type="radio" name="trg-mode" value="cast" class="mt-1"' + (currentMode === 'cast' ? ' checked' : '') + '>'
+            + '<div class="flex-1">'
+            + '<div class="text-sm font-bold text-sky-300">Cast-Counter (#1, #2, #3...)</div>'
+            + '<div class="text-[10px] text-gray-500 mb-2">Condition-Feld wird die fortlaufende Cast-Nummer</div>'
+            + '<div class="text-[10px] text-gray-400 mb-1">Trigger-Typ im Planer (leer = aus triggerMap):</div>'
+            + (triggerDropdown || '<input type="text" id="trg-pick-trigger" value="' + (currentTrigger || '').replace(/"/g, '&quot;') + '" placeholder="z.B. SHAPRIDE_BANISHMENT" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm font-mono">')
+            + '</div>'
+            + '</div>'
             + '</label>'
 
             // Modus: HP-Prozent
             + '<label class="block p-3 bg-slate-900/50 rounded border border-slate-700 cursor-pointer hover:border-slate-500">'
-            +   '<div class="flex items-start gap-2">'
-            +     '<input type="radio" name="trg-mode" value="hp" class="mt-1"' + (currentMode === 'hp' ? ' checked' : '') + '>'
-            +     '<div class="flex-1">'
-            +       '<div class="text-sm font-bold text-red-300">HP-Prozent</div>'
-            +       '<div class="text-[10px] text-gray-500 mb-2">Condition wird der HP-%-Wert, NPC wird ausgewählt</div>'
-            +       '<div class="grid grid-cols-2 gap-2">'
-            +         '<div><label class="text-[10px] text-gray-400">Prozent</label><input type="number" id="trg-pick-percent" value="' + currentPercent + '" min="1" max="100" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm"></label></div>'
-            +         '<div><label class="text-[10px] text-gray-400">NPC</label>' + (npcDropdown || '<input type="text" id="trg-pick-npc" value="' + currentNpc + '" placeholder="NPC-Name" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">') + '</div>'
-            +       '</div>'
-            +     '</div>'
-            +   '</div>'
+            + '<div class="flex items-start gap-2">'
+            + '<input type="radio" name="trg-mode" value="hp" class="mt-1"' + (currentMode === 'hp' ? ' checked' : '') + '>'
+            + '<div class="flex-1">'
+            + '<div class="text-sm font-bold text-red-300">HP-Prozent</div>'
+            + '<div class="text-[10px] text-gray-500 mb-2">Condition wird der HP-%-Wert, NPC wird ausgewählt</div>'
+            + '<div class="grid grid-cols-2 gap-2">'
+            + '<div><label class="text-[10px] text-gray-400">Prozent</label><input type="number" id="trg-pick-percent" value="' + currentPercent + '" min="1" max="100" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm"></label></div>'
+            + '<div><label class="text-[10px] text-gray-400">NPC</label>' + (npcDropdown || '<input type="text" id="trg-pick-npc" value="' + currentNpc + '" placeholder="NPC-Name" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">') + '</div>'
+            + '</div>'
+            + '</div>'
+            + '</div>'
             + '</label>'
 
             + '</div>'
 
             + '<div class="flex justify-end gap-2">'
-            +   '<button id="trg-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
-            +   '<button id="trg-pick-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button>'
+            + '<button id="trg-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
+            + '<button id="trg-pick-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button>'
             + '</div>';
 
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
 
-        modal.querySelector('#trg-pick-save').addEventListener('click', function() {
+        modal.querySelector('#trg-pick-save').addEventListener('click', function () {
             var mode = modal.querySelector('input[name="trg-mode"]:checked').value;
             if (mode === 'auto') {
                 // Override löschen
@@ -1804,19 +1856,135 @@ window.CD_AUTO_PLANNER = (function() {
             renderEventManager();
             markPreviewStale();
         });
-        modal.querySelector('#trg-pick-cancel').addEventListener('click', function() {
+        modal.querySelector('#trg-pick-cancel').addEventListener('click', function () {
             document.body.removeChild(overlay);
         });
-        overlay.addEventListener('click', function(e) {
+        overlay.addEventListener('click', function (e) {
             if (e.target === overlay) document.body.removeChild(overlay);
         });
     }
+
+    // ── Soak-Settings pro Event (Schaden / Schwelle / Swing) + Live-Preview ──
+    function openEventSoakPicker(eventKey) {
+        var soak = {};
+        var custom = customEvents.find(function (e) { return e._key === eventKey; });
+        var ov = eventOverrides[eventKey] || {};
+        if (ov.soak) soak = ov.soak;
+        else if (custom && custom.soak) soak = custom.soak;
+        else { var cfgIdx = parseInt(eventKey.replace('cfg_', '')); soak = (config.events[cfgIdx] || {}).soak || {}; }
+
+        var hit = soak.expectedHitDmg != null ? soak.expectedHitDmg : 1800000;
+        var hpV = soak.tankHp != null ? soak.tankHp : 800000;
+        var thr = soak.threshold != null ? soak.threshold : 0.50;
+        var swing = soak.swingSec != null ? soak.swingSec : 1.5;
+        var curOverlap = soak.overlapSec != null ? soak.overlapSec : 1.0;
+        var curTank = soak.tankTarget || null;
+        var curSafety = soak.safetySpellId || "";
+        var curSafetyOff = soak.safetyOffsetSec != null ? soak.safetyOffsetSec : 0;
+
+        var BR = window.CD_BLOODRAGE;
+        var tanks = (BR && BR.getTanks) ? BR.getTanks() : [];
+        function safetyOptionsFor(tankName) {
+            if (!BR || !BR.getSafetyOptions) return [];
+            var raw = BR.getSafetyOptions(null, tankName), seen = {}, list = [];
+            raw.forEach(function (s) { if (!seen[s.spellId]) { seen[s.spellId] = true; list.push(s); } });
+            return list;
+        }
+        function tankOpts() {
+            if (!tanks.length) return '<option value="">(kein Tank gefunden)</option>';
+            return tanks.map(function (t) { return '<option value="' + t + '"' + ((curTank === t || (!curTank && tanks[0] === t)) ? ' selected' : '') + '>' + t + '</option>'; }).join('');
+        }
+        function safetyOpts(tankName) {
+            var opts = '<option value="">— kein Safety —</option>';
+            safetyOptionsFor(tankName).forEach(function (s) { opts += '<option value="' + s.spellId + '"' + (curSafety === s.spellId ? ' selected' : '') + '>' + s.dbName + ' (' + s.player + ')</option>'; });
+            return opts;
+        }
+
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;';
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:580px;width:92%;max-height:85vh;overflow-y:auto;';
+        modal.innerHTML =
+            '<h4 class="text-lg font-bold text-white mb-1">Tank-Soak Einstellungen</h4>'
+          + '<div class="text-xs text-gray-400 mb-3">Werte gelten nur für dieses Event und werden mit dem Plan gespeichert.</div>'
+          + '<div class="flex flex-wrap items-end gap-3 mb-3">'
+          +   '<label class="text-xs text-amber-300">Soakender Tank<select id="sk-tank" class="block mt-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-gray-100">' + tankOpts() + '</select></label>'
+          +   '<label class="text-xs text-amber-300">P2 Schaden / Hit (unmit.)<input id="sk-hit" type="number" value="' + hit + '" step="50000" class="block mt-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm w-32 text-gray-100"></label>'
+          +   '<label class="text-xs text-amber-300">Tank-HP<input id="sk-hp" type="number" value="' + hpV + '" step="50000" min="0" class="block mt-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm w-28 text-gray-100" title="HP des soakenden Tanks – markiert tödliche Hits"></label>'
+          +   '<label class="text-xs text-amber-300">Min. DR<select id="sk-thr" class="block mt-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-gray-100">'
+          +     ['0.50','0.55','0.60','0.65','0.70'].map(function(v){return '<option value="'+v+'"'+(Math.abs(thr-parseFloat(v))<1e-6?' selected':'')+'>'+Math.round(v*100)+'%</option>';}).join('') + '</select></label>'
+          +   '<label class="text-xs text-amber-300">Swing (s)<input id="sk-swing" type="number" value="' + swing + '" step="0.1" class="block mt-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm w-16 text-gray-100"></label>'
+          +   '<label class="text-xs text-amber-300">Überlappung (s)<input id="sk-overlap" type="number" value="' + curOverlap + '" step="0.5" min="0" class="block mt-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm w-16 text-gray-100" title="Lead-Time: Folge-CDs starten so viel früher (Reaktionszeit)"></label>'
+          + '</div>'
+          + '<div class="flex flex-wrap items-end gap-3 mb-3 p-2 rounded border border-violet-700/40 bg-violet-900/10">'
+          +   '<label class="text-xs text-violet-300">Optionaler Safety-CD (kein DR)<select id="sk-safety" class="block mt-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-gray-100">' + safetyOpts(curTank || tanks[0]) + '</select></label>'
+          +   '<label class="text-xs text-violet-300">Safety bei (s)<input id="sk-safetyoff" type="number" value="' + curSafetyOff + '" step="1" min="0" class="block mt-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm w-16 text-gray-100"></label>'
+          +   '<button id="sk-refresh" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Vorschau</button>'
+          + '</div>'
+          + '<div id="sk-preview" class="mb-4"></div>'
+          + '<div class="flex justify-between gap-2">'
+          +   '<button id="sk-off" class="bg-rose-700 hover:bg-rose-800 text-white px-3 py-1.5 rounded text-sm">Soak aus (→ Shield)</button>'
+          +   '<div class="flex gap-2"><button id="sk-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
+          +   '<button id="sk-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button></div>'
+          + '</div>';
+        overlay.appendChild(modal); document.body.appendChild(overlay);
+
+        function readVals() {
+            var ovv = parseFloat(modal.querySelector('#sk-overlap').value);
+            return {
+                expectedHitDmg: parseInt(modal.querySelector('#sk-hit').value) || 1800000,
+                tankHp: parseInt(modal.querySelector('#sk-hp').value) || 800000,
+                threshold: parseFloat(modal.querySelector('#sk-thr').value) || 0.50,
+                swingSec: parseFloat(modal.querySelector('#sk-swing').value) || 1.5,
+                overlapSec: isNaN(ovv) ? 1.0 : ovv,
+                tankTarget: modal.querySelector('#sk-tank').value || null,
+                safetySpellId: modal.querySelector('#sk-safety').value || null,
+                safetyOffsetSec: parseFloat(modal.querySelector('#sk-safetyoff').value) || 0
+            };
+        }
+        function preview() {
+            var mount = modal.querySelector('#sk-preview');
+            if (!window.CD_BLOODRAGE) { mount.innerHTML = '<div style="background:#3a1f1d;border:1px solid #c5524c;color:#f0c4c1;padding:10px;border-radius:6px;font-size:13px">⚠ Add-on CD_BLOODRAGE nicht geladen.</div>'; return; }
+            try {
+                var v = readVals();
+                var p = window.CD_BLOODRAGE.plan({
+                    expectedHitDmg: v.expectedHitDmg, tankHp: v.tankHp, threshold: v.threshold,
+                    swingSec: v.swingSec, overlapSec: v.overlapSec, windowSec: 22.5,
+                    tankTarget: v.tankTarget, safetySpellId: v.safetySpellId, safetyOffsetSec: v.safetyOffsetSec
+                });
+                window.CD_BLOODRAGE.renderPreview(p, mount);
+            } catch (err) { mount.innerHTML = '<div style="background:#3a1f1d;border:1px solid #c5524c;color:#f0c4c1;padding:10px;border-radius:6px;font-size:13px">Fehler: ' + (err && err.message) + '</div>'; }
+        }
+        modal.querySelector('#sk-tank').addEventListener('change', function () {
+            curSafety = modal.querySelector('#sk-safety').value;
+            modal.querySelector('#sk-safety').innerHTML = safetyOpts(modal.querySelector('#sk-tank').value);
+            preview();
+        });
+        ['#sk-hit','#sk-hp','#sk-swing','#sk-safetyoff','#sk-overlap'].forEach(function (s) { modal.querySelector(s).addEventListener('input', preview); });
+        ['#sk-thr','#sk-safety'].forEach(function (s) { modal.querySelector(s).addEventListener('change', preview); });
+        modal.querySelector('#sk-refresh').addEventListener('click', preview);
+        preview();
+
+        modal.querySelector('#sk-save').addEventListener('click', function () { setOverride(eventKey, 'soak', readVals()); document.body.removeChild(overlay); });
+        modal.querySelector('#sk-off').addEventListener('click', function () {
+            var reqNow = (function () {
+                if (custom) return (custom.requiredCDs || []).slice();
+                if (ov.requiredCDs !== undefined) return ov.requiredCDs.slice();
+                var i = parseInt(eventKey.replace('cfg_', '')); return ((config.events[i] || {}).requiredCDs || []).slice();
+            })().filter(function (k) { return k !== 'tank_soak_phys'; });
+            setOverride(eventKey, 'requiredCDs', reqNow);
+            document.body.removeChild(overlay);
+        });
+        modal.querySelector('#sk-cancel').addEventListener('click', function () { document.body.removeChild(overlay); });
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) document.body.removeChild(overlay); });
+    }
+
 
     // ── Kategorie-Picker pro Event ──
     function openEventCategoryPicker(eventKey) {
         // aktuelle requiredCDs holen
         var current = [];
-        var custom = customEvents.find(function(e) { return e._key === eventKey; });
+        var custom = customEvents.find(function (e) { return e._key === eventKey; });
         if (custom) {
             current = (custom.requiredCDs || []).slice();
         } else {
@@ -1834,7 +2002,7 @@ window.CD_AUTO_PLANNER = (function() {
         var modal = document.createElement('div');
         modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;';
 
-        var rows = Object.entries(categories).map(function(entry) {
+        var rows = Object.entries(categories).map(function (entry) {
             var key = entry[0], cat = entry[1];
             var checked = current.indexOf(key) !== -1;
             return '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
@@ -1848,1485 +2016,1485 @@ window.CD_AUTO_PLANNER = (function() {
             + '<div class="text-xs text-gray-400 mb-3">Welche CD-Kategorien sollen bei diesem Event automatisch gesucht werden?</div>'
             + '<div class="space-y-1 mb-4">' + rows + '</div>'
             + '<div class="flex justify-end gap-2">'
-            +   '<button id="cat-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
-            +   '<button id="cat-pick-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button>'
+            + '<button id="cat-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
+            + '<button id="cat-pick-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button>'
             + '</div>';
 
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
 
-        modal.querySelector('#cat-pick-save').addEventListener('click', function() {
+        modal.querySelector('#cat-pick-save').addEventListener('click', function () {
             var selected = [];
-            modal.querySelectorAll('.cat-pick-cb').forEach(function(cb) {
+            modal.querySelectorAll('.cat-pick-cb').forEach(function (cb) {
                 if (cb.checked) selected.push(cb.value);
             });
             setOverride(eventKey, 'requiredCDs', selected);
             document.body.removeChild(overlay);
         });
-        modal.querySelector('#cat-pick-cancel').addEventListener('click', function() {
+        modal.querySelector('#cat-pick-cancel').addEventListener('click', function () {
             document.body.removeChild(overlay);
         });
-        overlay.addEventListener('click', function(e) {
+        overlay.addEventListener('click', function (e) {
             if (e.target === overlay) document.body.removeChild(overlay);
         });
     }
 
-    function updateStatus(msg) {
-        var el = document.getElementById('auto-planner-status');
-        if (el) el.textContent = config.name + ' — ' + msg;
+function updateStatus(msg) {
+    var el = document.getElementById('auto-planner-status');
+    if (el) el.textContent = config.name + ' — ' + msg;
+}
+
+// ══════════════════════════════════════════════════════════════
+// EXPORT → CD-PLANER
+// Trigger = Event-Typ | Condition = # | Zeit = Delay | CD = DB-Name
+// ══════════════════════════════════════════════════════════════
+
+async function exportToPlanner() {
+    if (!window.isManager) {
+        if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+        return;
+    }
+    if (!assignments.length) return window.showModal && window.showModal("Erst Auto-Assign ausführen!");
+    var container = document.querySelector('[id$="-planner-container"]');
+    if (!container) return window.showModal && window.showModal("CD-Planer nicht gefunden.");
+
+    var prefix = container.id.replace('-planner-container', '');
+    var rowNum = 1, exported = 0, skipped = 0;
+    var catKeys = getUniqueCategoryKeys();
+    var triggerCounts = {};
+
+    // BATCH-MODE aktivieren: keine change-Events → keine setDoc-Calls aus handleAssignmentChange
+    window._suspendAssignListeners = true;
+
+    // Alle Änderungen sammeln für EINEN einzigen setDoc
+    var batchPayload = {};
+    var currentManager = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('currentManager')) || 'Unbekannt';
+    var serverTs = null;
+    if (window.firebaseTools && window.firebaseTools.serverTimestamp) {
+        serverTs = window.firebaseTools.serverTimestamp();
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // EXPORT → CD-PLANER
-    // Trigger = Event-Typ | Condition = # | Zeit = Delay | CD = DB-Name
-    // ══════════════════════════════════════════════════════════════
+    function addToBatch(fieldId, data) {
+        batchPayload[fieldId] = data;
+    }
 
-    async function exportToPlanner() {
+    try {
+        assignments.forEach(function (row) {
+            var validSlots = [];
+            catKeys.forEach(function (catKey) {
+                var slot = row.slots[catKey];
+                if (!slot || slot.skipped) return;
+                if (!slot.isVirtual && (!slot.player || !slot.dbName || slot.player === '__SKIP__')) return;
+                slot._catKey = catKey; // Store catKey for later use
+                validSlots.push(slot);
+            });
+
+            if (validSlots.length === 0) return;
+
+            // triggerMap kann String (nur Trigger) oder Object ({ trigger, npc, percent }) sein
+            var mapEntry = row._sourceTriggerMap || (config.triggerMap && config.triggerMap[row.eventName]);
+            var triggerVal = '';
+            var npcVal = '';
+            var percentVal = null;
+            if (typeof mapEntry === 'string') {
+                triggerVal = mapEntry;
+            } else if (mapEntry && typeof mapEntry === 'object') {
+                triggerVal = mapEntry.trigger || '';
+                npcVal = mapEntry.npc || '';
+                if (mapEntry.percent !== undefined && mapEntry.percent !== null) {
+                    percentVal = mapEntry.percent;
+                }
+            }
+
+            // triggerOverride aus Event-Manager überschreibt triggerMap
+            var ovEntry = eventOverrides[row.eventKey];
+            var triggerOv = ovEntry && ovEntry.triggerOverride;
+            if (triggerOv) {
+                if (triggerOv.mode === 'hp') {
+                    var healthTrigger = null;
+                    try {
+                        if (typeof TRIGGER_OPTIONS !== 'undefined') {
+                            var found = TRIGGER_OPTIONS.find(function (t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+                            if (found) healthTrigger = found.val;
+                        }
+                    } catch (e) { /* ignore */ }
+                    if (!healthTrigger && window.TRIGGER_OPTIONS) {
+                        var found2 = window.TRIGGER_OPTIONS.find(function (t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+                        if (found2) healthTrigger = found2.val;
+                    }
+                    if (healthTrigger) triggerVal = healthTrigger;
+                    npcVal = triggerOv.npc || '';
+                    percentVal = (triggerOv.percent !== undefined) ? triggerOv.percent : null;
+                } else if (triggerOv.mode === 'cast') {
+                    if (triggerOv.trigger) triggerVal = triggerOv.trigger;
+                    npcVal = '';
+                    percentVal = null;
+                }
+            }
+
+            var isHealthTrigger = triggerVal && triggerVal.indexOf('HEALTH') !== -1;
+            var isEncStartTrigger = triggerVal && triggerVal.indexOf('ENC_START') !== -1;
+
+            var conditionVal;
+            if (isEncStartTrigger) {
+                conditionVal = '1';
+            } else if (isHealthTrigger && percentVal !== null) {
+                conditionVal = String(percentVal);
+            } else if (triggerOv && triggerOv.mode === 'cast') {
+                conditionVal = String(row.castNum);
+            } else if (row._sourceEvent && typeof row._sourceEvent.forceTriggerCondition !== 'undefined') {
+                conditionVal = String(row._sourceEvent.forceTriggerCondition);
+            } else if (row._sourceEvent && row._sourceEvent._isFollowUp) {
+                conditionVal = String(triggerCounts[triggerVal] || 1);
+            } else {
+                triggerCounts[triggerVal] = (triggerCounts[triggerVal] || 0) + 1;
+                conditionVal = String(triggerCounts[triggerVal]);
+            }
+
+            var timeVal;
+            if (isEncStartTrigger) {
+                timeVal = String(Math.round((row.absTime || 0) + (row.delay || 0)));
+            } else {
+                timeVal = String(row.delay || 0);
+            }
+
+            validSlots.forEach(function (slot) {
+                if (rowNum > 100) return;
+                var rowPrefix = prefix + '-planner-row' + rowNum;
+
+                // DOM aktualisieren (für sofortige Anzeige, aber OHNE change-Events)
+                setPlannerSelect(rowPrefix + '-trigger', triggerVal, true);
+                addToBatch(rowPrefix + '-trigger', { player: triggerVal, editor: currentManager, timestamp: serverTs });
+
+                if (isHealthTrigger && npcVal) {
+                    setPlannerInput(rowPrefix + '-npc', npcVal, true);
+                    addToBatch(rowPrefix + '-npc', { player: npcVal, editor: currentManager, timestamp: serverTs });
+                }
+
+                setPlannerInput(rowPrefix + '-condition', conditionVal, true);
+                addToBatch(rowPrefix + '-condition', { text: conditionVal, editor: currentManager, timestamp: serverTs });
+
+                setPlannerInput(rowPrefix + '-time', timeVal, true);
+                addToBatch(rowPrefix + '-time', { text: timeVal, editor: currentManager, timestamp: serverTs });
+
+                if (slot.isVirtual) {
+                    setPlannerSelect(rowPrefix + '-player', slot.player, true);
+                    addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
+
+                    var virtCat = categories[slot.isVirtualCategoryKey] || categories[slot._catKey];
+                    var catName = virtCat ? virtCat.name : 'Virtuell';
+
+                    // Stelle sicher, dass die Option im Select existiert, sonst wird es leer angezeigt
+                    var sel = document.querySelector('[data-assignment-id="' + rowPrefix + '-cooldown"]');
+                    if (sel) {
+                        var exists = Array.from(sel.options).some(function (o) { return o.value === catName; });
+                        if (!exists) {
+                            var opt = document.createElement('option');
+                            opt.value = catName;
+                            opt.textContent = catName;
+                            opt.dataset.color = virtCat ? virtCat.color : '#fff';
+                            sel.appendChild(opt);
+                        }
+                    }
+
+                    setPlannerSelect(rowPrefix + '-cooldown', catName, true);
+                    addToBatch(rowPrefix + '-cooldown', { cooldown: catName, editor: currentManager, timestamp: serverTs });
+
+                    setPlannerInput(rowPrefix + '-note', slot.note || "", true);
+                    addToBatch(rowPrefix + '-note', { text: slot.note || "", editor: currentManager, timestamp: serverTs });
+
+                    setPlannerInput(rowPrefix + '-tts', slot.tts || "", true);
+                    addToBatch(rowPrefix + '-tts', { text: slot.tts || "", editor: currentManager, timestamp: serverTs });
+
+                    setPlannerInput(rowPrefix + '-varname', slot.varname || "", true);
+                    addToBatch(rowPrefix + '-varname', { text: slot.varname || "", editor: currentManager, timestamp: serverTs });
+
+                    setPlannerInput(rowPrefix + '-icon', slot.icon || "", true);
+                    addToBatch(rowPrefix + '-icon', { text: slot.icon || "", editor: currentManager, timestamp: serverTs });
+
+                    exported++;
+                } else {
+                    setPlannerSelect(rowPrefix + '-player', slot.player, true);
+                    addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
+
+                    var ok = setPlannerSelect(rowPrefix + '-cooldown', slot.dbName, true);
+                    addToBatch(rowPrefix + '-cooldown', { cooldown: slot.dbName, editor: currentManager, timestamp: serverTs });
+
+                    if (ok) exported++; else {
+                        skipped++;
+                        console.warn('[Auto-Planner] CD nicht gefunden: "' + slot.dbName + '" (' + slot.spellId + ')');
+                    }
+                }
+                rowNum++;
+            });
+        });
+
+        // EIN einziger Firestore-Write für alle Felder
+        if (firebaseRef && firebaseRef.setDoc && Object.keys(batchPayload).length > 0) {
+            var bossDocId = "boss-" + (config.id || prefix.toLowerCase());
+            await firebaseRef.setDoc(
+                firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
+                batchPayload,
+                { merge: true }
+            );
+        }
+    } finally {
+        window._suspendAssignListeners = false;
+    }
+
+    if (window.updatePlannerSummary) setTimeout(window.updatePlannerSummary, 200);
+    var msg = exported + ' Zeilen exportiert!';
+    if (skipped > 0) msg += '\n⚠ ' + skipped + ' CDs nicht im Dropdown.';
+    if (window.showModal) window.showModal(msg);
+}
+
+function setPlannerSelect(id, value, suppressEvent) {
+    var el = document.querySelector('[data-assignment-id="' + id + '"]');
+    if (!el) return false;
+    var exists = Array.from(el.options).some(function (o) { return o.value === value; });
+    el.value = value;
+    var opt = el.options[el.selectedIndex];
+    if (opt) el.style.color = (opt.dataset && opt.dataset.color) || '#FFFFFF';
+    if (!suppressEvent) {
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    return exists;
+}
+
+function setPlannerInput(id, value, suppressEvent) {
+    var el = document.querySelector('[data-assignment-id="' + id + '"]');
+    if (!el) return;
+    el.value = value;
+    if (!suppressEvent) {
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
+// FIRESTORE
+// ══════════════════════════════════════════════════════════════
+
+async function savePlan() {
+    if (!window.isManager) {
+        if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+        return;
+    }
+    if (!firebaseRef) return;
+    try {
+        await firebaseRef.setDoc(
+            firebaseRef.doc(firebaseRef.db, "auto-planner", config.id),
+            {
+                bossId: config.id, bossName: config.name,
+                timestamp: new Date().toISOString(),
+                editor: sessionStorage.getItem('currentManager') || 'Unbekannt',
+                manualOverrides: manualOverrides,
+                eventOverrides: eventOverrides,
+                customEvents: customEvents,
+                assignStrategy: assignStrategy,
+                assignments: assignments.map(function (r) {
+                    var slots = {};
+                    Object.entries(r.slots).forEach(function (e) {
+                        if (e[1].player && e[1].player !== '__SKIP__') {
+                            slots[e[0]] = { player: e[1].player, dbName: e[1].dbName, auto: e[1].auto };
+                        }
+                    });
+                    return { eventName: r.eventName, castNum: r.castNum, absTime: r.absTime, delay: r.delay || 0, slots: slots };
+                })
+            }, { merge: false }
+        );
+        if (window.showModal) window.showModal("Auto-Plan gespeichert!");
+    } catch (e) { if (window.showModal) window.showModal("Fehler: " + e.message); }
+}
+
+async function loadPlan() {
+    if (!firebaseRef) return false;
+    try {
+        var snap = await firebaseRef.getDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", config.id));
+        if (snap.exists()) {
+            var data = snap.data();
+            manualOverrides = data.manualOverrides || {};
+            eventOverrides = data.eventOverrides || {};
+            customEvents = data.customEvents || [];
+            if (data.assignStrategy && typeof data.assignStrategy === 'object') {
+                assignStrategy.spread = !!data.assignStrategy.spread;
+                assignStrategy.prioritizeCategories = !!data.assignStrategy.prioritizeCategories;
+                assignStrategy.roundRobin = !!data.assignStrategy.roundRobin;
+            }
+            return true;
+        }
+    } catch (e) { console.error("[Auto-Planner]", e); }
+    return false;
+}
+
+async function saveCategories() {
+    if (!window.isManager) {
+        if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+        return;
+    }
+    if (!firebaseRef) return;
+    try {
+        await firebaseRef.setDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", "_cd-categories"), { categories: categories }, { merge: false });
+        if (window.showModal) window.showModal("Kategorien gespeichert!");
+    } catch (e) { console.error("[Auto-Planner]", e); }
+}
+
+async function loadCategories() {
+    if (!firebaseRef) return;
+    try {
+        var snap = await firebaseRef.getDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", "_cd-categories"));
+        if (snap.exists() && snap.data().categories) {
+            var dbCats = snap.data().categories;
+            // Alte 'stormlash_banner' Kategorie aus der DB bereinigen, da sie jetzt in 2 geteilt wurde
+            if (dbCats['stormlash_banner']) {
+                delete dbCats['stormlash_banner'];
+            }
+
+            // Merge missing categories from DEFAULT_CATEGORIES
+            Object.keys(DEFAULT_CATEGORIES).forEach(function (k) {
+                if (!dbCats[k]) dbCats[k] = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES[k]));
+            });
+            categories = dbCats;
+            return;
+        }
+    } catch (e) { console.error("[Auto-Planner]", e); }
+    categories = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+}
+
+function renderCategoriesAdmin() {
+    var el = document.getElementById('cd-categories-container');
+    if (!el) return;
+
+    // Einmalig Styles injizieren, damit der Editor korrekt scrollt und Zeilen nicht clippen
+    if (!document.getElementById('cd-admin-styles')) {
+        var styleTag = document.createElement('style');
+        styleTag.id = 'cd-admin-styles';
+        styleTag.textContent =
+            '#cd-categories-container { max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 6px; }' +
+            '#cd-categories-container > div[data-cat-key] { overflow: visible; }' +
+            '#cd-categories-container .spells-container { overflow: visible; }' +
+            '#cd-categories-container .spell-row { overflow: visible; min-height: 32px; }' +
+            '#cd-categories-container::-webkit-scrollbar { width: 8px; }' +
+            '#cd-categories-container::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }' +
+            '#cd-categories-container::-webkit-scrollbar-track { background: #1e293b; }';
+        document.head.appendChild(styleTag);
+    }
+
+    var addCatBtn = '<div class="mb-3"><button id="btn-add-category" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Neue Kategorie</button></div>';
+
+    var catsHtml = Object.entries(categories).map(function (entry) {
+        var key = entry[0], cat = entry[1];
+
+        if (cat.isVirtual) {
+            var playerVal = cat.defaultPlayer || 'ALL';
+            var playerOptions = [
+                { val: 'ALL', label: 'Alle' },
+                { val: 'TANKS', label: 'Tanks' },
+                { val: 'HEALERS', label: 'Heiler' },
+                { val: 'MELEEDPS', label: 'Melee' },
+                { val: 'RANGEDDPS', label: 'Range' },
+                { val: 'PRIEST', label: 'Priest' },
+                { val: 'PALADIN', label: 'Paladin' },
+                { val: 'MAGE', label: 'Mage' },
+                { val: 'WARLOCK', label: 'Warlock' },
+                { val: 'ROGUE', label: 'Rogue' },
+                { val: 'DRUID', label: 'Druid' },
+                { val: 'HUNTER', label: 'Hunter' },
+                { val: 'SHAMAN', label: 'Shaman' },
+                { val: 'WARRIOR', label: 'Warrior' },
+                { val: 'DEATHKNIGHT', label: 'Death Knight' },
+                { val: 'MONK', label: 'Monk' }
+            ].map(function (opt) {
+                return '<option value="' + opt.val + '"' + (playerVal === opt.val || playerVal === opt.label ? ' selected' : '') + '>' + opt.label + '</option>';
+            }).join('');
+
+            return '<div class="bg-slate-750 p-3 rounded border border-slate-600 mb-2" data-cat-key="' + key + '">'
+                + '<div class="flex items-center gap-2 mb-2">'
+                + '<input type="color" class="cat-color-input w-6 h-6 bg-transparent border-0 cursor-pointer" data-cat="' + key + '" value="' + cat.color + '" title="Farbe">'
+                + '<input type="text" class="cat-name-input text-sm font-bold bg-slate-900 text-white px-2 py-1 rounded border border-slate-600 flex-1" data-cat="' + key + '" value="' + cat.name + '" placeholder="Anzeigename">'
+                + '<input type="text" class="cat-short-input text-xs bg-slate-900 text-gray-300 px-2 py-1 rounded border border-slate-600 w-24" data-cat="' + key + '" value="' + (cat.shortName || '') + '" placeholder="Kurzname">'
+                + '<span class="bg-indigo-600/30 text-indigo-300 border border-indigo-500/50 text-[10px] px-1.5 py-0.5 rounded font-bold" title="TTS/Text-Warnung ohne RaidCD">VIRTUELL</span>'
+                + '<span class="text-[10px] text-gray-500 font-mono">' + key + '</span>'
+                + '<button class="delete-cat-btn text-red-400 hover:text-red-300 text-lg px-1" data-cat="' + key + '" title="Kategorie löschen">🗑</button>'
+                + '</div>'
+                + '<div class="flex flex-col gap-1 pl-8 bg-slate-800/50 p-2 rounded text-xs">'
+                + '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Zielgruppe:</label><select class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultPlayer" data-cat="' + key + '">' + playerOptions + '</select></div>'
+                + '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Sprachausgabe:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultTts" data-cat="' + key + '" value="' + (cat.defaultTts || '') + '"></div>'
+                + '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Zusatztext:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultNote" data-cat="' + key + '" value="' + (cat.defaultNote || '') + '"></div>'
+                + '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Spalten-Name:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultName" data-cat="' + key + '" value="' + (cat.defaultName || '') + '"></div>'
+                + '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Icon-ID:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 w-32" data-field="defaultIcon" data-cat="' + key + '" value="' + (cat.defaultIcon || '') + '"></div>'
+                + '</div>'
+                + '</div>';
+        }
+
+        var resolved = resolveCategory(key);
+        var rows = cat.spells.map(function (sp, idx) {
+            var r = resolved.find(function (x) { return String(x.spellId) === String(sp.spellId); });
+            var found = !!r;
+            var name = r ? r.dbName : 'SpellID ' + sp.spellId;
+            var cls = r ? r.dbClass : '?';
+            var color = found ? getClassColor(cls) : '#ef4444';
+            var cdS = r ? r.cooldownSec : sp.cooldownSec;
+            var durS = r ? r.durationSec : (sp.durationSec || 0);
+            var role = sp.requiredRole || '';
+            var roleOptions = ['', 'heal', 'tank', 'dps'].map(function (r) {
+                return '<option value="' + r + '"' + (role === r ? ' selected' : '') + '>' + (r || 'alle') + '</option>';
+            }).join('');
+
+            // Spec-Anzeige: Lesbare Labels mit Klassen-Kontext
+            var specList = Array.isArray(sp.requiredSpec) ? sp.requiredSpec : (sp.requiredSpec ? [sp.requiredSpec] : []);
+            var specDisplay = '';
+            if (specList.length === 0) {
+                specDisplay = '<span class="text-gray-500 italic">alle Specs</span>';
+            } else if (specList.length <= 2) {
+                specDisplay = specList.map(function (s) { return getSpecLabel(s); }).join(', ');
+            } else {
+                specDisplay = specList.length + ' Specs';
+            }
+
+            return '<div class="spell-row flex items-center gap-2 text-[11px] bg-slate-800/50 p-1.5 rounded flex-wrap" draggable="true" data-cat="' + key + '" data-idx="' + idx + '">'
+                + '<span class="drag-handle cursor-move text-gray-600 px-1" title="Ziehen zum Sortieren">⋮⋮</span>'
+                + '<span class="text-gray-500 w-4 text-right">' + (idx + 1) + '.</span>'
+                + '<span style="color:' + color + ';" class="font-medium flex-1 min-w-[140px]">' + (found ? '' : '❌ ') + name + '</span>'
+                + '<span class="text-gray-500 w-20">' + cls + '</span>'
+                + '<select class="spell-role-select bg-slate-900 text-gray-400 text-[10px] px-1 py-0.5 rounded border border-slate-600" data-cat="' + key + '" data-idx="' + idx + '" title="Nur für diese Rolle">' + roleOptions + '</select>'
+                + '<button class="spell-spec-btn bg-slate-900 hover:bg-slate-700 text-gray-300 text-[10px] px-2 py-0.5 rounded border border-slate-600 w-44 text-left truncate" data-cat="' + key + '" data-idx="' + idx + '" title="Specs auswählen">'
+                + '<span class="opacity-60">Specs:</span> ' + specDisplay
+                + '</button>'
+                + '<span class="text-gray-600 font-mono" title="Wirkdauer">' + durS + 's</span>'
+                + '<span class="text-gray-600 font-mono" title="Cooldown">' + cdS + 's CD</span>'
+                + '<span class="text-gray-700 font-mono text-[9px] w-12">' + sp.spellId + '</span>'
+                + '<button class="remove-spell-btn text-red-400 hover:text-red-300 px-1" data-cat="' + key + '" data-idx="' + idx + '" title="Spell entfernen">✕</button>'
+                + '</div>';
+        }).join('');
+
+        var catRoleOptions = ['', 'heal', 'tank', 'dps'].map(function (r) {
+            return '<option value="' + r + '"' + ((cat.requiredRole || '') === r ? ' selected' : '') + '>' + (r || 'alle') + '</option>';
+        }).join('');
+
+        return '<div class="bg-slate-750 p-3 rounded border border-slate-600 mb-2" data-cat-key="' + key + '">'
+            + '<div class="flex items-center gap-2 mb-2">'
+            + '<input type="color" class="cat-color-input w-6 h-6 bg-transparent border-0 cursor-pointer" data-cat="' + key + '" value="' + cat.color + '" title="Farbe">'
+            + '<input type="text" class="cat-name-input text-sm font-bold bg-slate-900 text-white px-2 py-1 rounded border border-slate-600 flex-1" data-cat="' + key + '" value="' + cat.name + '" placeholder="Anzeigename">'
+            + '<input type="text" class="cat-short-input text-xs bg-slate-900 text-gray-300 px-2 py-1 rounded border border-slate-600 w-24" data-cat="' + key + '" value="' + (cat.shortName || '') + '" placeholder="Kurzname">'
+            + '<select class="cat-role-select bg-slate-900 text-gray-400 text-[10px] px-1 py-1 rounded border border-slate-600" data-cat="' + key + '" title="Rolle für gesamte Kategorie">' + catRoleOptions + '</select>'
+            + '<span class="text-[10px] text-gray-500 font-mono">' + key + '</span>'
+            + '<button class="delete-cat-btn text-red-400 hover:text-red-300 text-lg px-1" data-cat="' + key + '" title="Kategorie löschen">🗑</button>'
+            + '</div>'
+            + '<div class="spells-container space-y-1" data-cat-spells="' + key + '">' + rows + '</div>'
+            + '<button class="add-spell-btn mt-2 bg-slate-700 hover:bg-slate-600 text-gray-300 text-[11px] py-1 px-2 rounded border border-slate-600" data-cat="' + key + '">+ Spell aus DB hinzufügen</button>'
+            + '</div>';
+    }).join('');
+
+    el.innerHTML = addCatBtn + catsHtml;
+
+    // Event Listeners
+    attachEditorListeners();
+}
+
+function attachEditorListeners() {
+    // Add category
+    var addBtn = document.getElementById('btn-add-category');
+    if (addBtn) {
+        addBtn.addEventListener('click', function () {
+            var isVirt = confirm('Soll dies eine Virtuelle TTS-Kategorie (ohne Spieler-Zuordnung) werden? OK = Ja, Abbrechen = Nein (Normale Kategorie)');
+            var key = prompt('Eindeutiger Key für neue Kategorie (z.B. "dispel_magic" oder "gesundheitssteine"):');
+            if (!key) return;
+            if (categories[key]) { alert('Key existiert bereits!'); return; }
+            var name = prompt('Anzeigename:', key);
+            if (!name) return;
+
+            if (isVirt) {
+                categories[key] = {
+                    name: name, shortName: name.substring(0, 10), color: '#8b5cf6',
+                    isVirtual: true,
+                    defaultPlayer: "Alle",
+                    defaultNote: "Warnung!",
+                    defaultTts: "achtung",
+                    defaultName: "Warnung",
+                    defaultIcon: "1",
+                    spells: []
+                };
+            } else {
+                categories[key] = {
+                    name: name, shortName: name.substring(0, 10), color: '#8b5cf6',
+                    spells: []
+                };
+            }
+            renderCategoriesAdmin();
+        });
+    }
+
+    // Delete category
+    document.querySelectorAll('.delete-cat-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            var cat = e.target.dataset.cat;
+            if (!confirm('Kategorie "' + categories[cat].name + '" wirklich löschen?')) return;
+            delete categories[cat];
+            renderCategoriesAdmin();
+        });
+    });
+
+    // Name/Shortname/Color änderungen
+    document.querySelectorAll('.cat-name-input').forEach(function (inp) {
+        inp.addEventListener('change', function (e) {
+            categories[e.target.dataset.cat].name = e.target.value;
+        });
+    });
+    document.querySelectorAll('.cat-short-input').forEach(function (inp) {
+        inp.addEventListener('change', function (e) {
+            categories[e.target.dataset.cat].shortName = e.target.value;
+        });
+    });
+    document.querySelectorAll('.cat-color-input').forEach(function (inp) {
+        inp.addEventListener('change', function (e) {
+            categories[e.target.dataset.cat].color = e.target.value;
+        });
+    });
+
+    // Virtuelle Felder
+    document.querySelectorAll('.cat-virtual-input').forEach(function (inp) {
+        inp.addEventListener('change', function (e) {
+            categories[e.target.dataset.cat][e.target.dataset.field] = e.target.value;
+        });
+    });
+
+    // Kategorie-Role
+    document.querySelectorAll('.cat-role-select').forEach(function (sel) {
+        sel.addEventListener('change', function (e) {
+            var v = e.target.value;
+            if (v) categories[e.target.dataset.cat].requiredRole = v;
+            else delete categories[e.target.dataset.cat].requiredRole;
+        });
+    });
+
+    // Spell-Role
+    document.querySelectorAll('.spell-role-select').forEach(function (sel) {
+        sel.addEventListener('change', function (e) {
+            var cat = e.target.dataset.cat;
+            var idx = parseInt(e.target.dataset.idx);
+            var v = e.target.value;
+            if (v) categories[cat].spells[idx].requiredRole = v;
+            else delete categories[cat].spells[idx].requiredRole;
+        });
+    });
+
+    // Spell-Spec (Button öffnet Popup mit Checkbox-Liste)
+    document.querySelectorAll('.spell-spec-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            var cat = e.currentTarget.dataset.cat;
+            var idx = parseInt(e.currentTarget.dataset.idx);
+            openSpecPicker(cat, idx);
+        });
+    });
+
+    // Spell entfernen
+    document.querySelectorAll('.remove-spell-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            var cat = e.target.dataset.cat;
+            var idx = parseInt(e.target.dataset.idx);
+            categories[cat].spells.splice(idx, 1);
+            renderCategoriesAdmin();
+        });
+    });
+
+    // Spell hinzufügen
+    document.querySelectorAll('.add-spell-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            var cat = e.target.dataset.cat;
+            openSpellPicker(cat);
+        });
+    });
+
+    // Drag & Drop für Spells
+    attachDragDrop();
+}
+
+// ── Drag & Drop Sortierung ──
+function attachDragDrop() {
+    var dragged = null;
+    document.querySelectorAll('.spell-row').forEach(function (row) {
+        row.addEventListener('dragstart', function (e) {
+            dragged = e.currentTarget;
+            e.currentTarget.style.opacity = '0.4';
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        row.addEventListener('dragend', function (e) {
+            e.currentTarget.style.opacity = '';
+        });
+        row.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        });
+        row.addEventListener('drop', function (e) {
+            e.preventDefault();
+            if (!dragged || dragged === e.currentTarget) return;
+            var fromCat = dragged.dataset.cat;
+            var toCat = e.currentTarget.dataset.cat;
+            if (fromCat !== toCat) return;  // Nur innerhalb einer Kategorie
+            var fromIdx = parseInt(dragged.dataset.idx);
+            var toIdx = parseInt(e.currentTarget.dataset.idx);
+            var arr = categories[fromCat].spells;
+            var item = arr.splice(fromIdx, 1)[0];
+            arr.splice(toIdx, 0, item);
+            renderCategoriesAdmin();
+        });
+    });
+}
+
+// ── Spec-Picker: Multi-Select Dialog für Specs einer Klasse ──
+function openSpecPicker(catKey, spellIdx) {
+    var sp = categories[catKey].spells[spellIdx];
+    var db = resolveSpell(sp.spellId);
+    var cls = db ? db.dbClass : null;
+    if (!cls) {
+        // Fallback: resolve über cooldownsDB
+        var cd = cooldownsDB.find(function (c) { return String(c.spellId) === String(sp.spellId); });
+        cls = cd ? cd.class : null;
+    }
+    if (!cls) {
+        alert('Klasse für diesen Spell nicht ermittelbar.');
+        return;
+    }
+    cls = cls.toUpperCase();
+    var specs = SPEC_DEFINITIONS[cls] || [];
+    if (!specs.length) {
+        alert('Keine Specs für Klasse ' + cls + ' definiert.');
+        return;
+    }
+
+    var currentSpecs = Array.isArray(sp.requiredSpec) ? sp.requiredSpec.slice() : (sp.requiredSpec ? [sp.requiredSpec] : []);
+
+    // Overlay
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;';
+
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:420px;width:90%;';
+
+    var color = getClassColor(cls);
+    var spellName = db ? db.dbName : ('SpellID ' + sp.spellId);
+
+    var checkboxesHtml = specs.map(function (spec) {
+        var checked = currentSpecs.indexOf(spec.value) !== -1;
+        return '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
+            + '<input type="checkbox" class="spec-pick-cb" value="' + spec.value + '"' + (checked ? ' checked' : '') + ' style="accent-color: ' + color + ';">'
+            + '<span class="flex-1 text-sm" style="color:' + color + ';">' + spec.label + '</span>'
+            + '<span class="text-[9px] text-gray-500 font-mono">' + spec.value + '</span>'
+            + '</label>';
+    }).join('');
+
+    modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">' + spellName + '</h4>'
+        + '<div class="text-xs mb-4" style="color:' + color + ';">' + cls + '</div>'
+        + '<div class="text-xs text-gray-400 mb-3">Welche Specs sollen diesen Spell nutzen können?</div>'
+        + '<div class="space-y-1 mb-4">'
+        + '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer border-b border-slate-700">'
+        + '<input type="checkbox" id="spec-pick-all" class="spec-pick-cb-all">'
+        + '<span class="flex-1 text-xs italic text-gray-300">Alle Specs (kein Filter)</span>'
+        + '</label>'
+        + checkboxesHtml
+        + '</div>'
+        + '<div class="flex justify-end gap-2">'
+        + '<button id="spec-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
+        + '<button id="spec-pick-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button>'
+        + '</div>';
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // "Alle Specs" Checkbox-Logik
+    var allCb = modal.querySelector('#spec-pick-all');
+    var specCbs = modal.querySelectorAll('.spec-pick-cb');
+
+    // Initialzustand: "Alle" wenn nichts selektiert
+    allCb.checked = currentSpecs.length === 0;
+
+    allCb.addEventListener('change', function () {
+        if (allCb.checked) {
+            specCbs.forEach(function (cb) { cb.checked = false; });
+        }
+    });
+
+    specCbs.forEach(function (cb) {
+        cb.addEventListener('change', function () {
+            if (cb.checked) allCb.checked = false;
+        });
+    });
+
+    // Save
+    modal.querySelector('#spec-pick-save').addEventListener('click', function () {
+        var selected = [];
+        if (!allCb.checked) {
+            specCbs.forEach(function (cb) {
+                if (cb.checked) selected.push(cb.value);
+            });
+        }
+        if (selected.length === 0) {
+            delete categories[catKey].spells[spellIdx].requiredSpec;
+        } else {
+            categories[catKey].spells[spellIdx].requiredSpec = selected;
+        }
+        document.body.removeChild(overlay);
+        renderCategoriesAdmin();
+    });
+
+    // Cancel
+    modal.querySelector('#spec-pick-cancel').addEventListener('click', function () {
+        document.body.removeChild(overlay);
+    });
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) document.body.removeChild(overlay);
+    });
+}
+
+// ── Spell-Picker: Dialog zur Spell-Auswahl aus DB ──
+function openSpellPicker(catKey) {
+    // Overlay erstellen
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;';
+
+    var modal = document.createElement('div');
+    modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:700px;max-height:80vh;overflow-y:auto;width:90%;';
+
+    // Zähle wie oft jeder Spell bereits in der Kategorie ist (für Anzeige)
+    var existingCounts = {};
+    categories[catKey].spells.forEach(function (s) {
+        var sid = String(s.spellId);
+        existingCounts[sid] = (existingCounts[sid] || 0) + 1;
+    });
+    // Alle Spells aus der DB anzeigen — Duplikate explizit erlaubt für spec-spezifische Prio
+    var availableCDs = cooldownsDB.filter(function (cd) {
+        return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0;
+    });
+
+    // Gruppiere nach Klasse
+    var byClass = {};
+    availableCDs.forEach(function (cd) {
+        var cls = cd.class || 'UNKNOWN';
+        if (!byClass[cls]) byClass[cls] = [];
+        byClass[cls].push(cd);
+    });
+
+    var classSections = Object.entries(byClass).sort().map(function (entry) {
+        var cls = entry[0], cds = entry[1];
+        var color = getClassColor(cls);
+        var rows = cds.map(function (cd) {
+            var sid = String(cd.spellId);
+            var count = existingCounts[sid] || 0;
+            var badge = count > 0
+                ? '<span class="text-[9px] bg-amber-700/60 text-amber-200 px-1.5 py-0.5 rounded font-mono" title="Bereits ' + count + 'x in dieser Kategorie">×' + count + '</span>'
+                : '';
+            return '<div class="picker-row flex items-center gap-2 text-[11px] hover:bg-slate-700/40 p-1 rounded cursor-pointer" data-spellid="' + cd.spellId + '">'
+                + '<span style="color:' + color + ';" class="flex-1">' + cd.name + '</span>'
+                + badge
+                + '<span class="text-gray-500 font-mono text-[9px]">' + cd.spellId + '</span>'
+                + '</div>';
+        }).join('');
+        return '<div class="mb-3">'
+            + '<h6 class="font-bold text-xs mb-1" style="color:' + color + ';">' + cls + '</h6>'
+            + rows + '</div>';
+    }).join('');
+
+    modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">Spell zu "' + categories[catKey].name + '" hinzufügen</h4>'
+        + '<div class="text-[11px] text-gray-400 mb-3">💡 Spells können <strong>mehrfach</strong> hinzugefügt werden - z.B. um denselben Spell für unterschiedliche Specs mit eigener Priorität zu hinterlegen. <span class="text-amber-300">×N</span> zeigt wie oft schon vorhanden.</div>'
+        + '<input type="text" id="picker-search" placeholder="Suchen..." class="w-full bg-slate-900 text-white px-3 py-2 rounded mb-3 border border-slate-600">'
+        + '<div id="picker-list">' + classSections + '</div>'
+        + '<div class="flex justify-end mt-3"><button id="picker-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button></div>';
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // Search
+    var searchInp = modal.querySelector('#picker-search');
+    searchInp.addEventListener('input', function (e) {
+        var q = e.target.value.toLowerCase();
+        modal.querySelectorAll('.picker-row').forEach(function (row) {
+            var txt = row.textContent.toLowerCase();
+            row.style.display = txt.indexOf(q) !== -1 ? '' : 'none';
+        });
+    });
+    searchInp.focus();
+
+    // Pick
+    modal.querySelectorAll('.picker-row').forEach(function (row) {
+        row.addEventListener('click', function (e) {
+            var spellId = row.dataset.spellid;
+            var cd = cooldownsDB.find(function (c) { return String(c.spellId) === spellId; });
+            categories[catKey].spells.push({
+                spellId: spellId,
+                cooldownSec: parseInt(cd && cd.cooldownSec) || 180,
+                durationSec: parseInt(cd && cd.durationSec) || 0
+            });
+            document.body.removeChild(overlay);
+            renderCategoriesAdmin();
+        });
+    });
+
+    // Cancel
+    modal.querySelector('#picker-cancel').addEventListener('click', function () {
+        document.body.removeChild(overlay);
+    });
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) document.body.removeChild(overlay);
+    });
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+
+async function clearPlan() {
+    if (!window.isManager) {
+        if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+        return;
+    }
+
+    // Lokalen State auf "wie frisch geladen" setzen, aber Events behalten
+    manualOverrides = {};
+    assignments = [];
+
+    // Tabelle visuell leeren
+    var tbody = document.getElementById('auto-planner-tbody');
+    if (tbody) tbody.innerHTML = '';
+    var thead = document.getElementById('auto-planner-thead');
+    if (thead) thead.innerHTML = '';
+
+    if (typeof window._autoPlannerApplyProtection === 'function') {
+        window._autoPlannerApplyProtection();
+    }
+
+    // Änderungen (geleerte Zuweisungen) in DB speichern
+    try {
+        await savePlan();
+        updateStatus("Auto-Plan geleert (Zuweisungen entfernt, Events beibehalten).");
+    } catch (e) {
+        console.error("[Auto-Planner] clearPlan error:", e);
+        updateStatus("Plan lokal geleert (Fehler beim Speichern: " + e.message + ")");
+    }
+}
+
+async function doInit(bossConfig) {
+    config = bossConfig;
+    rosterRef = window.effectiveRoster || window.rosterData || [];
+    firebaseRef = window.firebaseTools;
+    cooldownsDB = window.allCooldowns || [];
+
+    if (!cooldownsDB.length) { updateStatus("⚠ Keine Cooldowns geladen."); return; }
+
+    await loadCategories();
+    var hasSavedPlan = await loadPlan();
+
+    var total = 0, found = 0;
+    Object.keys(categories).forEach(function (k) {
+        categories[k].spells.forEach(function (s) { total++; if (resolveSpell(s.spellId)) found++; });
+    });
+
+    if (window.isManager) {
+        // Category-Admin automatisch injizieren, falls nicht im Boss-HTML vorhanden
+        if (!document.getElementById('cd-categories-admin')) {
+            var plannerContainer = document.getElementById('auto-planner-timeline');
+            if (plannerContainer) {
+                var catWrapper = document.createElement('details');
+                catWrapper.id = 'cd-categories-admin';
+                catWrapper.className = 'mt-6 bg-slate-900 rounded-lg border border-slate-700';
+                catWrapper.innerHTML = '<summary class="p-3 text-sm font-bold text-gray-300 cursor-pointer hover:bg-slate-800 rounded-lg">⚙️ CD-Kategorien bearbeiten</summary>'
+                    + '<div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>';
+                plannerContainer.parentNode.appendChild(catWrapper);
+            }
+        }
+
+        var admin = document.getElementById('cd-categories-admin');
+        if (admin) admin.style.display = '';
+        renderCategoriesAdmin();
+
+        // Events-Container automatisch injizieren, falls nicht im Boss-HTML vorhanden
+        if (!document.getElementById('auto-planner-events')) {
+            var timelineEl = document.getElementById('auto-planner-timeline');
+            if (timelineEl) {
+                var evtWrapper = document.createElement('details');
+                evtWrapper.className = 'mb-4 bg-slate-800 rounded-lg border border-slate-700';
+                evtWrapper.innerHTML = '<summary class="cursor-pointer p-3 text-sm font-bold text-cyan-400 hover:bg-slate-750 rounded-t-lg">📋 Events bearbeiten (Zeit / Kategorien / Aktivieren)</summary>'
+                    + '<div class="p-3" id="auto-planner-events"></div>';
+                timelineEl.parentNode.insertBefore(evtWrapper, timelineEl);
+            }
+        }
+        renderEventManager();
+        renderStrategyPanel();
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // MANAGER-SCHUTZ — Nur Manager können Auto-Plan modifizieren
+    // ══════════════════════════════════════════════════════════
+    function applyManagerProtection() {
+        var isManager = !!window.isManager;
+
+        // 1. Aktions-Buttons komplett verstecken bei Nicht-Manager
+        var managerOnlyButtons = [
+            'btn-auto-assign',
+            'btn-export-to-planner',
+            'btn-save-auto-plan',
+            'btn-save-categories',
+            'btn-clear-auto',
+            'btn-reset-events',
+            'btn-clear-planner'
+        ];
+        managerOnlyButtons.forEach(function (btnId) {
+            var btn = document.getElementById(btnId);
+            if (btn) btn.style.display = isManager ? '' : 'none';
+        });
+
+        // Hinweis-Banner für Nicht-Manager (statt leerer Button-Reihe)
+        var hint = document.getElementById('auto-planner-readonly-hint');
+        if (!isManager && !hint) {
+            var statusEl = document.getElementById('auto-planner-status');
+            if (statusEl) {
+                hint = document.createElement('div');
+                hint.id = 'auto-planner-readonly-hint';
+                hint.className = 'text-xs italic mb-3 p-2 rounded bg-slate-700/40 border border-slate-600/50 text-gray-400';
+                hint.innerHTML = '🔒 <strong>Nur lesen</strong> - Änderungen am Auto-Plan können nur Gildenräte vornehmen.';
+                statusEl.parentNode.insertBefore(hint, statusEl);
+            }
+        } else if (isManager && hint) {
+            hint.remove();
+        }
+
+        // 2. Timeline-Tabelle: alle Selects/Inputs deaktivieren
+        var tbody = document.getElementById('auto-planner-tbody');
+        if (tbody) {
+            tbody.querySelectorAll('select, input, button').forEach(function (el) {
+                el.disabled = !isManager;
+            });
+        }
+
+        // 3. Event-Manager-Bereich: alle Steuer-Elemente deaktivieren
+        var eventArea = document.getElementById('auto-planner-events');
+        if (eventArea) {
+            eventArea.querySelectorAll('input, button, select').forEach(function (el) {
+                el.disabled = !isManager;
+            });
+        }
+
+        // 4. CD-Kategorien-Editor: gar nicht erst anzeigen
+        var catAdmin = document.getElementById('cd-categories-admin');
+        if (catAdmin) catAdmin.style.display = isManager ? '' : 'none';
+    }
+
+    // Initial anwenden
+    applyManagerProtection();
+
+    // Bei Re-Renders (z.B. nach Auto-Assign) erneut anwenden
+    window._autoPlannerApplyProtection = applyManagerProtection;
+
+    // Polling: bei isManager-Status-Wechsel (Login/Logout) erneut anwenden
+    var lastManagerState = !!window.isManager;
+    var managerWatcher = setInterval(function () {
+        var current = !!window.isManager;
+        if (current !== lastManagerState) {
+            lastManagerState = current;
+            applyManagerProtection();
+        }
+    }, 1500);
+    // Stop bei Page-Unload (verhindert Memory Leaks)
+    window.addEventListener('beforeunload', function () { clearInterval(managerWatcher); });
+
+    document.getElementById('btn-auto-assign').addEventListener('click', function () {
         if (!window.isManager) {
             if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
             return;
         }
-        if (!assignments.length) return window.showModal && window.showModal("Erst Auto-Assign ausführen!");
-        var container = document.querySelector('[id$="-planner-container"]');
-        if (!container) return window.showModal && window.showModal("CD-Planer nicht gefunden.");
-
-        var prefix = container.id.replace('-planner-container', '');
-        var rowNum = 1, exported = 0, skipped = 0;
-        var catKeys = getUniqueCategoryKeys();
-        var triggerCounts = {};
-
-        // BATCH-MODE aktivieren: keine change-Events → keine setDoc-Calls aus handleAssignmentChange
-        window._suspendAssignListeners = true;
-
-        // Alle Änderungen sammeln für EINEN einzigen setDoc
-        var batchPayload = {};
-        var currentManager = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('currentManager')) || 'Unbekannt';
-        var serverTs = null;
-        if (window.firebaseTools && window.firebaseTools.serverTimestamp) {
-            serverTs = window.firebaseTools.serverTimestamp();
+        runAutoAssign();
+    });
+    document.getElementById('btn-export-to-planner').addEventListener('click', function () {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
         }
-
-        function addToBatch(fieldId, data) {
-            batchPayload[fieldId] = data;
+        exportToPlanner();
+    });
+    document.getElementById('btn-save-auto-plan').addEventListener('click', function () {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
         }
+        savePlan();
+    });
+    var btnSaveCategories = document.getElementById('btn-save-categories');
+    if (btnSaveCategories) {
+        btnSaveCategories.addEventListener('click', function () {
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
+            saveCategories();
+        });
+    }
+    document.getElementById('btn-clear-auto').addEventListener('click', function () {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
+        var msg = "Auto-Plan Zuweisungen leeren?\n\nLöscht alle Zuweisungen im Auto-Plan, behält aber die Event-Anpassungen (Häkchen) bei.\nDie CD-Planer-Einträge im Raidplan bleiben unangetastet.";
+        if (typeof window.showModal === 'function') {
+            var r = window.showModal(msg, true);
+            if (r && typeof r.then === 'function') { r.then(function (ok) { if (ok) clearPlan(); }); }
+            else clearPlan();
+        } else { if (confirm(msg)) clearPlan(); }
+    });
 
-        try {
-            assignments.forEach(function(row) {
-                var validSlots = [];
-                catKeys.forEach(function(catKey) {
-                    var slot = row.slots[catKey];
-                    if (!slot || slot.skipped) return;
-                    if (!slot.isVirtual && (!slot.player || !slot.dbName || slot.player === '__SKIP__')) return;
-                    slot._catKey = catKey; // Store catKey for later use
-                    validSlots.push(slot);
-                });
+    // ── Events-Reset-Button dynamisch einfügen (nur für Manager) ──
+    injectResetEventsButton();
 
-                if (validSlots.length === 0) return;
+    // ── Clear-Planner-Button dynamisch einfügen (nur für Manager) ──
+    injectClearPlannerButton();
 
-                // triggerMap kann String (nur Trigger) oder Object ({ trigger, npc, percent }) sein
-                var mapEntry = row._sourceTriggerMap || (config.triggerMap && config.triggerMap[row.eventName]);
-                var triggerVal = '';
-                var npcVal = '';
-                var percentVal = null;
-                if (typeof mapEntry === 'string') {
-                    triggerVal = mapEntry;
-                } else if (mapEntry && typeof mapEntry === 'object') {
-                    triggerVal = mapEntry.trigger || '';
-                    npcVal = mapEntry.npc || '';
-                    if (mapEntry.percent !== undefined && mapEntry.percent !== null) {
-                        percentVal = mapEntry.percent;
-                    }
-                }
+    // ── DB-Wipe Button dynamisch einfügen (nur für Manager) ──
+    injectWipeButton();
 
-                // triggerOverride aus Event-Manager überschreibt triggerMap
-                var ovEntry = eventOverrides[row.eventKey];
-                var triggerOv = ovEntry && ovEntry.triggerOverride;
-                if (triggerOv) {
-                    if (triggerOv.mode === 'hp') {
-                        var healthTrigger = null;
-                        try {
-                            if (typeof TRIGGER_OPTIONS !== 'undefined') {
-                                var found = TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
-                                if (found) healthTrigger = found.val;
-                            }
-                        } catch (e) { /* ignore */ }
-                        if (!healthTrigger && window.TRIGGER_OPTIONS) {
-                            var found2 = window.TRIGGER_OPTIONS.find(function(t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
-                            if (found2) healthTrigger = found2.val;
-                        }
-                        if (healthTrigger) triggerVal = healthTrigger;
-                        npcVal = triggerOv.npc || '';
-                        percentVal = (triggerOv.percent !== undefined) ? triggerOv.percent : null;
-                    } else if (triggerOv.mode === 'cast') {
-                        if (triggerOv.trigger) triggerVal = triggerOv.trigger;
-                        npcVal = '';
-                        percentVal = null;
-                    }
-                }
+    // Wenn ein gespeicherter Plan existiert, direkt anzeigen
+    if (hasSavedPlan) {
+        runAutoAssign();
+    } else {
+        updateStatus('Bereit. ' + found + '/' + total + ' Spells in DB. Roster: ' + rosterRef.length + ' Spieler.');
+    }
+}
 
-                var isHealthTrigger = triggerVal && triggerVal.indexOf('HEALTH') !== -1;
-                var isEncStartTrigger = triggerVal && triggerVal.indexOf('ENC_START') !== -1;
+// ══════════════════════════════════════════════════════════════
+// STRATEGIE-PANEL — UI für die 3 Verteilungs-Toggles
+// ══════════════════════════════════════════════════════════════
+function renderStrategyPanel() {
+    if (!window.isManager) return;
 
-                var conditionVal;
-                if (isEncStartTrigger) {
-                    conditionVal = '1';
-                } else if (isHealthTrigger && percentVal !== null) {
-                    conditionVal = String(percentVal);
-                } else if (triggerOv && triggerOv.mode === 'cast') {
-                    conditionVal = String(row.castNum);
-                } else if (row._sourceEvent && typeof row._sourceEvent.forceTriggerCondition !== 'undefined') {
-                    conditionVal = String(row._sourceEvent.forceTriggerCondition);
-                } else if (row._sourceEvent && row._sourceEvent._isFollowUp) {
-                    conditionVal = String(triggerCounts[triggerVal] || 1);
-                } else {
-                    triggerCounts[triggerVal] = (triggerCounts[triggerVal] || 0) + 1;
-                    conditionVal = String(triggerCounts[triggerVal]);
-                }
+    var anchor = document.getElementById('auto-planner-events');
+    if (!anchor) return;
+    // Anker ist der Wrapper-Container des Events-Panels
+    var wrapper = anchor.closest('details') || anchor.parentNode;
+    if (!wrapper) return;
 
-                var timeVal;
-                if (isEncStartTrigger) {
-                    timeVal = String(Math.round((row.absTime || 0) + (row.delay || 0)));
-                } else {
-                    timeVal = String(row.delay || 0);
-                }
+    var existing = document.getElementById('auto-planner-strategy');
+    if (existing) existing.remove();
 
-                validSlots.forEach(function(slot) {
-                    if (rowNum > 100) return;
-                    var rowPrefix = prefix + '-planner-row' + rowNum;
+    var panel = document.createElement('details');
+    panel.id = 'auto-planner-strategy';
+    panel.className = 'mb-4 bg-slate-800 rounded-lg border border-slate-700';
+    panel.open = false;
 
-                    // DOM aktualisieren (für sofortige Anzeige, aber OHNE change-Events)
-                    setPlannerSelect(rowPrefix + '-trigger', triggerVal, true);
-                    addToBatch(rowPrefix + '-trigger', { player: triggerVal, editor: currentManager, timestamp: serverTs });
+    var s = assignStrategy;
+    panel.innerHTML =
+        '<summary class="cursor-pointer p-3 text-sm font-bold text-cyan-400 hover:bg-slate-750 rounded-t-lg">⚙ Verteilungs-Strategie</summary>' +
+        '<div class="p-3 space-y-2 text-xs text-gray-300">' +
+        '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+        '<input type="checkbox" id="strat-spread" class="mt-1 accent-cyan-500" ' + (s.spread ? 'checked' : '') + '>' +
+        '<div>' +
+        '<div class="font-semibold text-gray-200">A — Spread (Lookahead)</div>' +
+        '<div class="text-[10px] text-gray-400">Bei Knappheit Casts gleichmäßig über die Zeit verteilen statt am Anfang ballen. Lücken werden als "geplante Lücken" markiert.</div>' +
+        '</div>' +
+        '</label>' +
+        '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+        '<input type="checkbox" id="strat-prio" class="mt-1 accent-cyan-500" ' + (s.prioritizeCategories ? 'checked' : '') + '>' +
+        '<div>' +
+        '<div class="font-semibold text-gray-200">B — Kategorien-Priorisierung</div>' +
+        '<div class="text-[10px] text-gray-400">Wichtigere Kategorien (erste in der requiredCDs-Liste) zuerst füllen. Niedrige bleiben leer wenn die Wichtigen bereits Spieler verbraucht haben.</div>' +
+        '</div>' +
+        '</label>' +
+        '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+        '<input type="checkbox" id="strat-rr" class="mt-1 accent-cyan-500" ' + (s.roundRobin ? 'checked' : '') + '>' +
+        '<div>' +
+        '<div class="font-semibold text-gray-200">C — Round-Robin</div>' +
+        '<div class="text-[10px] text-gray-400">Spieler reihum nutzen statt immer den ersten. Bringt Fairness, hilft bei Lücken nur wenn Spieler-CD &lt; Event-Abstand ist.</div>' +
+        '</div>' +
+        '</label>' +
+        '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+        '<input type="checkbox" id="strat-prefer-heal" class="mt-1 accent-cyan-500" ' + (s.preferHeal ? 'checked' : '') + '>' +
+        '<div>' +
+        '<div class="font-semibold text-gray-200">D — Bevorzuge Heiler</div>' +
+        '<div class="text-[10px] text-gray-400">Zieht reine Heiler-Klassen für defensiven CDs heran, bevor Utility-Heals (z.B. Vampirumarmung) der DDs genutzt werden.</div>' +
+        '</div>' +
+        '</label>' +
+        '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
+        '<input type="checkbox" id="strat-strict-class" class="mt-1 accent-cyan-500" ' + (s.strictClassBalance ? 'checked' : '') + '>' +
+        '<div>' +
+        '<div class="font-semibold text-gray-200">E — Strikte Klassen-Rotation</div>' +
+        '<div class="text-[10px] text-gray-400">Verhindert, dass eine Klasse mehrfach hintereinander ihre Cooldowns ziehen muss, selbst wenn sie verfügbar wäre.</div>' +
+        '</div>' +
+        '</label>' +
+        '<div class="text-[10px] text-gray-500 italic pt-1 border-t border-slate-700">Änderungen werden mit dem nächsten "Auto-Assign" wirksam und beim Speichern persistiert.</div>' +
+        '</div>';
 
-                    if (isHealthTrigger && npcVal) {
-                        setPlannerInput(rowPrefix + '-npc', npcVal, true);
-                        addToBatch(rowPrefix + '-npc', { player: npcVal, editor: currentManager, timestamp: serverTs });
-                    }
+    wrapper.parentNode.insertBefore(panel, wrapper);
 
-                    setPlannerInput(rowPrefix + '-condition', conditionVal, true);
-                    addToBatch(rowPrefix + '-condition', { text: conditionVal, editor: currentManager, timestamp: serverTs });
+    function bind(id, key) {
+        var el = panel.querySelector('#' + id);
+        if (!el) return;
+        el.addEventListener('change', function () {
+            assignStrategy[key] = !!el.checked;
+            runAutoAssign();
+        });
+    }
+    bind('strat-spread', 'spread');
+    bind('strat-prio', 'prioritizeCategories');
+    bind('strat-rr', 'roundRobin');
+    bind('strat-prefer-heal', 'preferHeal');
+    bind('strat-strict-class', 'strictClassBalance');
+}
 
-                    setPlannerInput(rowPrefix + '-time', timeVal, true);
-                    addToBatch(rowPrefix + '-time', { text: timeVal, editor: currentManager, timestamp: serverTs });
+// ── Dynamischer Events-Reset-Button ──
+function injectResetEventsButton() {
+    if (!window.isManager) return;
+    if (document.getElementById('btn-reset-events')) return;
 
-                    if (slot.isVirtual) {
-                        setPlannerSelect(rowPrefix + '-player', slot.player, true);
-                        addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
-                        
-                        var virtCat = categories[slot.isVirtualCategoryKey] || categories[slot._catKey];
-                        var catName = virtCat ? virtCat.name : 'Virtuell';
-                        
-                        // Stelle sicher, dass die Option im Select existiert, sonst wird es leer angezeigt
-                        var sel = document.querySelector('[data-assignment-id="' + rowPrefix + '-cooldown"]');
-                        if (sel) {
-                            var exists = Array.from(sel.options).some(function(o) { return o.value === catName; });
-                            if (!exists) {
-                                var opt = document.createElement('option');
-                                opt.value = catName;
-                                opt.textContent = catName;
-                                opt.dataset.color = virtCat ? virtCat.color : '#fff';
-                                sel.appendChild(opt);
-                            }
-                        }
+    var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
+    if (!btnContainer) return;
 
-                        setPlannerSelect(rowPrefix + '-cooldown', catName, true);
-                        addToBatch(rowPrefix + '-cooldown', { cooldown: catName, editor: currentManager, timestamp: serverTs });
+    var resetBtn = document.createElement('button');
+    resetBtn.id = 'btn-reset-events';
+    resetBtn.className = 'bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500 mr-2';
+    resetBtn.innerHTML = '🔄 Events Reset';
+    resetBtn.title = 'Setzt alle Event-Anpassungen (Häkchen und eigene Events) auf Standard zurück';
 
-                        setPlannerInput(rowPrefix + '-note', slot.note || "", true);
-                        addToBatch(rowPrefix + '-note', { text: slot.note || "", editor: currentManager, timestamp: serverTs });
+    btnContainer.insertBefore(resetBtn, document.getElementById('btn-clear-auto'));
 
-                        setPlannerInput(rowPrefix + '-tts', slot.tts || "", true);
-                        addToBatch(rowPrefix + '-tts', { text: slot.tts || "", editor: currentManager, timestamp: serverTs });
+    resetBtn.addEventListener('click', function () {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
+        var msg = "Events zurücksetzen?\n\nSetzt alle Häkchen und manuell hinzugefügten Events auf die Standardwerte des Bosses zurück.\nBereits zugewiesene CDs bleiben in der Tabelle stehen (Auto-Assign erforderlich, um sie neu zu verteilen).";
+        if (typeof window.showModal === 'function') {
+            var r = window.showModal(msg, true);
+            if (r && typeof r.then === 'function') {
+                r.then(function (ok) { if (ok) resetEventsOnly(); });
+            } else {
+                resetEventsOnly();
+            }
+        } else {
+            if (confirm(msg)) resetEventsOnly();
+        }
+    });
+}
 
-                        setPlannerInput(rowPrefix + '-varname', slot.varname || "", true);
-                        addToBatch(rowPrefix + '-varname', { text: slot.varname || "", editor: currentManager, timestamp: serverTs });
+async function resetEventsOnly() {
+    eventOverrides = {};
+    customEvents = [];
+    renderEventManager();
 
-                        setPlannerInput(rowPrefix + '-icon', slot.icon || "", true);
-                        addToBatch(rowPrefix + '-icon', { text: slot.icon || "", editor: currentManager, timestamp: serverTs });
-                        
-                        exported++;
+    try {
+        await savePlan();
+        updateStatus("Events zurückgesetzt.");
+    } catch (e) {
+        console.error("[Auto-Planner] resetEvents error:", e);
+    }
+}
+
+// ── Dynamischer Clear-Button für Advanced CD-Plan ──
+function injectClearPlannerButton() {
+    if (!window.isManager) return;
+    if (document.getElementById('btn-clear-planner')) return;  // Schon da
+
+    var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
+    if (!btnContainer) return;
+
+    var clearBtn = document.createElement('button');
+    clearBtn.id = 'btn-clear-planner';
+    clearBtn.className = 'bg-orange-700 hover:bg-orange-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-orange-600';
+    clearBtn.innerHTML = '🧹 CD-Plan leeren';
+    clearBtn.title = 'Leert ALLE 100 Zeilen des Advanced CD-Plans dieses Bosses (Auto-Plan bleibt unangetastet)';
+    btnContainer.appendChild(clearBtn);
+
+    clearBtn.addEventListener('click', function () {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
+        var msg = "Advanced CD-Plan leeren?\n\nLöscht ALLE 100 Zeilen des CD-Planers dieses Bosses (Trigger, Spieler, Cooldowns, Zeiten, Texte).\nDer Auto-CD-Plan bleibt unangetastet.\n\nFortfahren?";
+        if (typeof window.showModal === 'function') {
+            var r = window.showModal(msg, true);
+            if (r && typeof r.then === 'function') {
+                r.then(function (ok) { if (ok) clearPlannerOnly(); });
+            } else {
+                clearPlannerOnly();
+            }
+        } else {
+            if (confirm(msg)) clearPlannerOnly();
+        }
+    });
+}
+
+// ── Leert ALLE 100 Zeilen des Advanced CD-Plans (DOM + Firestore) ──
+async function clearPlannerOnly() {
+    if (!window.isManager) {
+        if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+        return;
+    }
+
+    var container = document.querySelector('[id$="-planner-container"]');
+    if (!container) {
+        if (window.showModal) window.showModal("CD-Planer nicht gefunden.");
+        return;
+    }
+
+    var prefix = container.id.replace('-planner-container', '');
+
+    // BATCH-MODE aktivieren: keine change-Events während wir leeren
+    window._suspendAssignListeners = true;
+
+    var currentManager = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('currentManager')) || 'Unbekannt';
+    var serverTs = null;
+    if (firebaseRef && firebaseRef.serverTimestamp) {
+        serverTs = firebaseRef.serverTimestamp();
+    }
+
+    var batchPayload = {};
+    var fields = ['trigger', 'npc', 'condition', 'time', 'player', 'cooldown', 'note', 'tts', 'varname', 'icon'];
+
+    try {
+        // DOM leeren + Batch füllen
+        for (var i = 1; i <= 100; i++) {
+            var rowPrefix = prefix + '-planner-row' + i;
+            fields.forEach(function (f) {
+                var fieldId = rowPrefix + '-' + f;
+                var el = document.querySelector('[data-assignment-id="' + fieldId + '"]');
+                if (el) {
+                    if (el.tagName === 'SELECT') {
+                        el.value = '';
+                        var opt = el.options[el.selectedIndex];
+                        if (opt) el.style.color = (opt.dataset && opt.dataset.color) || '#FFFFFF';
                     } else {
-                        setPlannerSelect(rowPrefix + '-player', slot.player, true);
-                        addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
-
-                        var ok = setPlannerSelect(rowPrefix + '-cooldown', slot.dbName, true);
-                        addToBatch(rowPrefix + '-cooldown', { cooldown: slot.dbName, editor: currentManager, timestamp: serverTs });
-
-                        if (ok) exported++; else {
-                            skipped++;
-                            console.warn('[Auto-Planner] CD nicht gefunden: "' + slot.dbName + '" (' + slot.spellId + ')');
-                        }
+                        el.value = '';
                     }
-                    rowNum++;
-                });
+                }
+                // Auch wenn DOM-Element nicht da ist (z.B. text/tts/name/icon nicht in allen Bossen):
+                // Wenn Feld existiert hatte, in Firestore leeren — dafür ein leerer Eintrag.
+                var update = { editor: currentManager, timestamp: serverTs };
+                update[f] = '';
+                batchPayload[fieldId] = update;
             });
+        }
 
-            // EIN einziger Firestore-Write für alle Felder
-            if (firebaseRef && firebaseRef.setDoc && Object.keys(batchPayload).length > 0) {
-                var bossDocId = "boss-" + (config.id || prefix.toLowerCase());
+        // Firestore-Write
+        if (firebaseRef && firebaseRef.setDoc) {
+            var bossDocId = "boss-" + (config.id || prefix.toLowerCase());
+            try {
                 await firebaseRef.setDoc(
                     firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
                     batchPayload,
                     { merge: true }
                 );
-            }
-        } finally {
-            window._suspendAssignListeners = false;
-        }
-
-        if (window.updatePlannerSummary) setTimeout(window.updatePlannerSummary, 200);
-        var msg = exported + ' Zeilen exportiert!';
-        if (skipped > 0) msg += '\n⚠ ' + skipped + ' CDs nicht im Dropdown.';
-        if (window.showModal) window.showModal(msg);
-    }
-
-    function setPlannerSelect(id, value, suppressEvent) {
-        var el = document.querySelector('[data-assignment-id="' + id + '"]');
-        if (!el) return false;
-        var exists = Array.from(el.options).some(function(o) { return o.value === value; });
-        el.value = value;
-        var opt = el.options[el.selectedIndex];
-        if (opt) el.style.color = (opt.dataset && opt.dataset.color) || '#FFFFFF';
-        if (!suppressEvent) {
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-        return exists;
-    }
-
-    function setPlannerInput(id, value, suppressEvent) {
-        var el = document.querySelector('[data-assignment-id="' + id + '"]');
-        if (!el) return;
-        el.value = value;
-        if (!suppressEvent) {
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    // FIRESTORE
-    // ══════════════════════════════════════════════════════════════
-
-    async function savePlan() {
-        if (!window.isManager) {
-            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-            return;
-        }
-        if (!firebaseRef) return;
-        try {
-            await firebaseRef.setDoc(
-                firebaseRef.doc(firebaseRef.db, "auto-planner", config.id),
-                {
-                    bossId: config.id, bossName: config.name,
-                    timestamp: new Date().toISOString(),
-                    editor: sessionStorage.getItem('currentManager') || 'Unbekannt',
-                    manualOverrides: manualOverrides,
-                    eventOverrides: eventOverrides,
-                    customEvents: customEvents,
-                    assignStrategy: assignStrategy,
-                    assignments: assignments.map(function(r) {
-                        var slots = {};
-                        Object.entries(r.slots).forEach(function(e) {
-                            if (e[1].player && e[1].player !== '__SKIP__') {
-                                slots[e[0]] = { player: e[1].player, dbName: e[1].dbName, auto: e[1].auto };
-                            }
-                        });
-                        return { eventName: r.eventName, castNum: r.castNum, absTime: r.absTime, delay: r.delay || 0, slots: slots };
-                    })
-                }, { merge: false }
-            );
-            if (window.showModal) window.showModal("Auto-Plan gespeichert!");
-        } catch (e) { if (window.showModal) window.showModal("Fehler: " + e.message); }
-    }
-
-    async function loadPlan() {
-        if (!firebaseRef) return false;
-        try {
-            var snap = await firebaseRef.getDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", config.id));
-            if (snap.exists()) {
-                var data = snap.data();
-                manualOverrides = data.manualOverrides || {};
-                eventOverrides  = data.eventOverrides  || {};
-                customEvents    = data.customEvents    || [];
-                if (data.assignStrategy && typeof data.assignStrategy === 'object') {
-                    assignStrategy.spread              = !!data.assignStrategy.spread;
-                    assignStrategy.prioritizeCategories = !!data.assignStrategy.prioritizeCategories;
-                    assignStrategy.roundRobin          = !!data.assignStrategy.roundRobin;
-                }
-                return true;
-            }
-        } catch (e) { console.error("[Auto-Planner]", e); }
-        return false;
-    }
-
-    async function saveCategories() {
-        if (!window.isManager) {
-            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-            return;
-        }
-        if (!firebaseRef) return;
-        try {
-            await firebaseRef.setDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", "_cd-categories"), { categories: categories }, { merge: false });
-            if (window.showModal) window.showModal("Kategorien gespeichert!");
-        } catch (e) { console.error("[Auto-Planner]", e); }
-    }
-
-    async function loadCategories() {
-        if (!firebaseRef) return;
-        try {
-            var snap = await firebaseRef.getDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", "_cd-categories"));
-            if (snap.exists() && snap.data().categories) {
-                var dbCats = snap.data().categories;
-                // Alte 'stormlash_banner' Kategorie aus der DB bereinigen, da sie jetzt in 2 geteilt wurde
-                if (dbCats['stormlash_banner']) {
-                    delete dbCats['stormlash_banner'];
-                }
-                
-                // Merge missing categories from DEFAULT_CATEGORIES
-                Object.keys(DEFAULT_CATEGORIES).forEach(function(k) {
-                    if (!dbCats[k]) dbCats[k] = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES[k]));
-                });
-                categories = dbCats;
-                return;
-            }
-        } catch (e) { console.error("[Auto-Planner]", e); }
-        categories = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
-    }
-
-    function renderCategoriesAdmin() {
-        var el = document.getElementById('cd-categories-container');
-        if (!el) return;
-
-        // Einmalig Styles injizieren, damit der Editor korrekt scrollt und Zeilen nicht clippen
-        if (!document.getElementById('cd-admin-styles')) {
-            var styleTag = document.createElement('style');
-            styleTag.id = 'cd-admin-styles';
-            styleTag.textContent =
-                '#cd-categories-container { max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 6px; }' +
-                '#cd-categories-container > div[data-cat-key] { overflow: visible; }' +
-                '#cd-categories-container .spells-container { overflow: visible; }' +
-                '#cd-categories-container .spell-row { overflow: visible; min-height: 32px; }' +
-                '#cd-categories-container::-webkit-scrollbar { width: 8px; }' +
-                '#cd-categories-container::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }' +
-                '#cd-categories-container::-webkit-scrollbar-track { background: #1e293b; }';
-            document.head.appendChild(styleTag);
-        }
-
-        var addCatBtn = '<div class="mb-3"><button id="btn-add-category" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Neue Kategorie</button></div>';
-
-        var catsHtml = Object.entries(categories).map(function(entry) {
-            var key = entry[0], cat = entry[1];
-            
-            if (cat.isVirtual) {
-                    var playerVal = cat.defaultPlayer || 'ALL';
-                    var playerOptions = [
-                        {val: 'ALL', label: 'Alle'},
-                        {val: 'TANKS', label: 'Tanks'},
-                        {val: 'HEALERS', label: 'Heiler'},
-                        {val: 'MELEEDPS', label: 'Melee'},
-                        {val: 'RANGEDDPS', label: 'Range'},
-                        {val: 'PRIEST', label: 'Priest'},
-                        {val: 'PALADIN', label: 'Paladin'},
-                        {val: 'MAGE', label: 'Mage'},
-                        {val: 'WARLOCK', label: 'Warlock'},
-                        {val: 'ROGUE', label: 'Rogue'},
-                        {val: 'DRUID', label: 'Druid'},
-                        {val: 'HUNTER', label: 'Hunter'},
-                        {val: 'SHAMAN', label: 'Shaman'},
-                        {val: 'WARRIOR', label: 'Warrior'},
-                        {val: 'DEATHKNIGHT', label: 'Death Knight'},
-                        {val: 'MONK', label: 'Monk'}
-                    ].map(function(opt) {
-                        return '<option value="' + opt.val + '"' + (playerVal === opt.val || playerVal === opt.label ? ' selected' : '') + '>' + opt.label + '</option>';
-                    }).join('');
-
-                    return '<div class="bg-slate-750 p-3 rounded border border-slate-600 mb-2" data-cat-key="' + key + '">'
-                    + '<div class="flex items-center gap-2 mb-2">'
-                    +   '<input type="color" class="cat-color-input w-6 h-6 bg-transparent border-0 cursor-pointer" data-cat="' + key + '" value="' + cat.color + '" title="Farbe">'
-                    +   '<input type="text" class="cat-name-input text-sm font-bold bg-slate-900 text-white px-2 py-1 rounded border border-slate-600 flex-1" data-cat="' + key + '" value="' + cat.name + '" placeholder="Anzeigename">'
-                    +   '<input type="text" class="cat-short-input text-xs bg-slate-900 text-gray-300 px-2 py-1 rounded border border-slate-600 w-24" data-cat="' + key + '" value="' + (cat.shortName || '') + '" placeholder="Kurzname">'
-                    +   '<span class="bg-indigo-600/30 text-indigo-300 border border-indigo-500/50 text-[10px] px-1.5 py-0.5 rounded font-bold" title="TTS/Text-Warnung ohne RaidCD">VIRTUELL</span>'
-                    +   '<span class="text-[10px] text-gray-500 font-mono">' + key + '</span>'
-                    +   '<button class="delete-cat-btn text-red-400 hover:text-red-300 text-lg px-1" data-cat="' + key + '" title="Kategorie löschen">🗑</button>'
-                    + '</div>'
-                    + '<div class="flex flex-col gap-1 pl-8 bg-slate-800/50 p-2 rounded text-xs">'
-                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Zielgruppe:</label><select class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultPlayer" data-cat="' + key + '">' + playerOptions + '</select></div>'
-                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Sprachausgabe:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultTts" data-cat="' + key + '" value="' + (cat.defaultTts || '') + '"></div>'
-                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Zusatztext:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultNote" data-cat="' + key + '" value="' + (cat.defaultNote || '') + '"></div>'
-                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Spalten-Name:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 flex-1" data-field="defaultName" data-cat="' + key + '" value="' + (cat.defaultName || '') + '"></div>'
-                    +   '<div class="flex gap-2 items-center"><label class="w-24 text-gray-400 text-right">Icon-ID:</label><input type="text" class="cat-virtual-input bg-slate-900 border border-slate-600 rounded px-2 py-0.5 w-32" data-field="defaultIcon" data-cat="' + key + '" value="' + (cat.defaultIcon || '') + '"></div>'
-                    + '</div>'
-                    + '</div>';
-            }
-
-            var resolved = resolveCategory(key);
-            var rows = cat.spells.map(function(sp, idx) {
-                var r = resolved.find(function(x) { return String(x.spellId) === String(sp.spellId); });
-                var found = !!r;
-                var name = r ? r.dbName : 'SpellID ' + sp.spellId;
-                var cls = r ? r.dbClass : '?';
-                var color = found ? getClassColor(cls) : '#ef4444';
-                var cdS = r ? r.cooldownSec : sp.cooldownSec;
-                var durS = r ? r.durationSec : (sp.durationSec || 0);
-                var role = sp.requiredRole || '';
-                var roleOptions = ['', 'heal', 'tank', 'dps'].map(function(r) {
-                    return '<option value="' + r + '"' + (role === r ? ' selected' : '') + '>' + (r || 'alle') + '</option>';
-                }).join('');
-
-                // Spec-Anzeige: Lesbare Labels mit Klassen-Kontext
-                var specList = Array.isArray(sp.requiredSpec) ? sp.requiredSpec : (sp.requiredSpec ? [sp.requiredSpec] : []);
-                var specDisplay = '';
-                if (specList.length === 0) {
-                    specDisplay = '<span class="text-gray-500 italic">alle Specs</span>';
-                } else if (specList.length <= 2) {
-                    specDisplay = specList.map(function(s) { return getSpecLabel(s); }).join(', ');
-                } else {
-                    specDisplay = specList.length + ' Specs';
-                }
-
-                return '<div class="spell-row flex items-center gap-2 text-[11px] bg-slate-800/50 p-1.5 rounded flex-wrap" draggable="true" data-cat="' + key + '" data-idx="' + idx + '">'
-                    + '<span class="drag-handle cursor-move text-gray-600 px-1" title="Ziehen zum Sortieren">⋮⋮</span>'
-                    + '<span class="text-gray-500 w-4 text-right">' + (idx + 1) + '.</span>'
-                    + '<span style="color:' + color + ';" class="font-medium flex-1 min-w-[140px]">' + (found ? '' : '❌ ') + name + '</span>'
-                    + '<span class="text-gray-500 w-20">' + cls + '</span>'
-                    + '<select class="spell-role-select bg-slate-900 text-gray-400 text-[10px] px-1 py-0.5 rounded border border-slate-600" data-cat="' + key + '" data-idx="' + idx + '" title="Nur für diese Rolle">' + roleOptions + '</select>'
-                    + '<button class="spell-spec-btn bg-slate-900 hover:bg-slate-700 text-gray-300 text-[10px] px-2 py-0.5 rounded border border-slate-600 w-44 text-left truncate" data-cat="' + key + '" data-idx="' + idx + '" title="Specs auswählen">'
-                    +   '<span class="opacity-60">Specs:</span> ' + specDisplay
-                    + '</button>'
-                    + '<span class="text-gray-600 font-mono" title="Wirkdauer">' + durS + 's</span>'
-                    + '<span class="text-gray-600 font-mono" title="Cooldown">' + cdS + 's CD</span>'
-                    + '<span class="text-gray-700 font-mono text-[9px] w-12">' + sp.spellId + '</span>'
-                    + '<button class="remove-spell-btn text-red-400 hover:text-red-300 px-1" data-cat="' + key + '" data-idx="' + idx + '" title="Spell entfernen">✕</button>'
-                    + '</div>';
-            }).join('');
-
-            var catRoleOptions = ['', 'heal', 'tank', 'dps'].map(function(r) {
-                return '<option value="' + r + '"' + ((cat.requiredRole || '') === r ? ' selected' : '') + '>' + (r || 'alle') + '</option>';
-            }).join('');
-
-            return '<div class="bg-slate-750 p-3 rounded border border-slate-600 mb-2" data-cat-key="' + key + '">'
-                + '<div class="flex items-center gap-2 mb-2">'
-                +   '<input type="color" class="cat-color-input w-6 h-6 bg-transparent border-0 cursor-pointer" data-cat="' + key + '" value="' + cat.color + '" title="Farbe">'
-                +   '<input type="text" class="cat-name-input text-sm font-bold bg-slate-900 text-white px-2 py-1 rounded border border-slate-600 flex-1" data-cat="' + key + '" value="' + cat.name + '" placeholder="Anzeigename">'
-                +   '<input type="text" class="cat-short-input text-xs bg-slate-900 text-gray-300 px-2 py-1 rounded border border-slate-600 w-24" data-cat="' + key + '" value="' + (cat.shortName || '') + '" placeholder="Kurzname">'
-                +   '<select class="cat-role-select bg-slate-900 text-gray-400 text-[10px] px-1 py-1 rounded border border-slate-600" data-cat="' + key + '" title="Rolle für gesamte Kategorie">' + catRoleOptions + '</select>'
-                +   '<span class="text-[10px] text-gray-500 font-mono">' + key + '</span>'
-                +   '<button class="delete-cat-btn text-red-400 hover:text-red-300 text-lg px-1" data-cat="' + key + '" title="Kategorie löschen">🗑</button>'
-                + '</div>'
-                + '<div class="spells-container space-y-1" data-cat-spells="' + key + '">' + rows + '</div>'
-                + '<button class="add-spell-btn mt-2 bg-slate-700 hover:bg-slate-600 text-gray-300 text-[11px] py-1 px-2 rounded border border-slate-600" data-cat="' + key + '">+ Spell aus DB hinzufügen</button>'
-                + '</div>';
-        }).join('');
-
-        el.innerHTML = addCatBtn + catsHtml;
-
-        // Event Listeners
-        attachEditorListeners();
-    }
-
-    function attachEditorListeners() {
-        // Add category
-        var addBtn = document.getElementById('btn-add-category');
-        if (addBtn) {
-            addBtn.addEventListener('click', function() {
-                var isVirt = confirm('Soll dies eine Virtuelle TTS-Kategorie (ohne Spieler-Zuordnung) werden? OK = Ja, Abbrechen = Nein (Normale Kategorie)');
-                var key = prompt('Eindeutiger Key für neue Kategorie (z.B. "dispel_magic" oder "gesundheitssteine"):');
-                if (!key) return;
-                if (categories[key]) { alert('Key existiert bereits!'); return; }
-                var name = prompt('Anzeigename:', key);
-                if (!name) return;
-                
-                if (isVirt) {
-                    categories[key] = {
-                        name: name, shortName: name.substring(0, 10), color: '#8b5cf6',
-                        isVirtual: true,
-                        defaultPlayer: "Alle",
-                        defaultNote: "Warnung!",
-                        defaultTts: "achtung",
-                        defaultName: "Warnung",
-                        defaultIcon: "1",
-                        spells: []
-                    };
-                } else {
-                    categories[key] = {
-                        name: name, shortName: name.substring(0, 10), color: '#8b5cf6',
-                        spells: []
-                    };
-                }
-                renderCategoriesAdmin();
-            });
-        }
-
-        // Delete category
-        document.querySelectorAll('.delete-cat-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                var cat = e.target.dataset.cat;
-                if (!confirm('Kategorie "' + categories[cat].name + '" wirklich löschen?')) return;
-                delete categories[cat];
-                renderCategoriesAdmin();
-            });
-        });
-
-        // Name/Shortname/Color änderungen
-        document.querySelectorAll('.cat-name-input').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
-                categories[e.target.dataset.cat].name = e.target.value;
-            });
-        });
-        document.querySelectorAll('.cat-short-input').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
-                categories[e.target.dataset.cat].shortName = e.target.value;
-            });
-        });
-        document.querySelectorAll('.cat-color-input').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
-                categories[e.target.dataset.cat].color = e.target.value;
-            });
-        });
-        
-        // Virtuelle Felder
-        document.querySelectorAll('.cat-virtual-input').forEach(function(inp) {
-            inp.addEventListener('change', function(e) {
-                categories[e.target.dataset.cat][e.target.dataset.field] = e.target.value;
-            });
-        });
-
-        // Kategorie-Role
-        document.querySelectorAll('.cat-role-select').forEach(function(sel) {
-            sel.addEventListener('change', function(e) {
-                var v = e.target.value;
-                if (v) categories[e.target.dataset.cat].requiredRole = v;
-                else delete categories[e.target.dataset.cat].requiredRole;
-            });
-        });
-
-        // Spell-Role
-        document.querySelectorAll('.spell-role-select').forEach(function(sel) {
-            sel.addEventListener('change', function(e) {
-                var cat = e.target.dataset.cat;
-                var idx = parseInt(e.target.dataset.idx);
-                var v = e.target.value;
-                if (v) categories[cat].spells[idx].requiredRole = v;
-                else delete categories[cat].spells[idx].requiredRole;
-            });
-        });
-
-        // Spell-Spec (Button öffnet Popup mit Checkbox-Liste)
-        document.querySelectorAll('.spell-spec-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                var cat = e.currentTarget.dataset.cat;
-                var idx = parseInt(e.currentTarget.dataset.idx);
-                openSpecPicker(cat, idx);
-            });
-        });
-
-        // Spell entfernen
-        document.querySelectorAll('.remove-spell-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                var cat = e.target.dataset.cat;
-                var idx = parseInt(e.target.dataset.idx);
-                categories[cat].spells.splice(idx, 1);
-                renderCategoriesAdmin();
-            });
-        });
-
-        // Spell hinzufügen
-        document.querySelectorAll('.add-spell-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                var cat = e.target.dataset.cat;
-                openSpellPicker(cat);
-            });
-        });
-
-        // Drag & Drop für Spells
-        attachDragDrop();
-    }
-
-    // ── Drag & Drop Sortierung ──
-    function attachDragDrop() {
-        var dragged = null;
-        document.querySelectorAll('.spell-row').forEach(function(row) {
-            row.addEventListener('dragstart', function(e) {
-                dragged = e.currentTarget;
-                e.currentTarget.style.opacity = '0.4';
-                e.dataTransfer.effectAllowed = 'move';
-            });
-            row.addEventListener('dragend', function(e) {
-                e.currentTarget.style.opacity = '';
-            });
-            row.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'move';
-            });
-            row.addEventListener('drop', function(e) {
-                e.preventDefault();
-                if (!dragged || dragged === e.currentTarget) return;
-                var fromCat = dragged.dataset.cat;
-                var toCat = e.currentTarget.dataset.cat;
-                if (fromCat !== toCat) return;  // Nur innerhalb einer Kategorie
-                var fromIdx = parseInt(dragged.dataset.idx);
-                var toIdx = parseInt(e.currentTarget.dataset.idx);
-                var arr = categories[fromCat].spells;
-                var item = arr.splice(fromIdx, 1)[0];
-                arr.splice(toIdx, 0, item);
-                renderCategoriesAdmin();
-            });
-        });
-    }
-
-    // ── Spec-Picker: Multi-Select Dialog für Specs einer Klasse ──
-    function openSpecPicker(catKey, spellIdx) {
-        var sp = categories[catKey].spells[spellIdx];
-        var db = resolveSpell(sp.spellId);
-        var cls = db ? db.dbClass : null;
-        if (!cls) {
-            // Fallback: resolve über cooldownsDB
-            var cd = cooldownsDB.find(function(c) { return String(c.spellId) === String(sp.spellId); });
-            cls = cd ? cd.class : null;
-        }
-        if (!cls) {
-            alert('Klasse für diesen Spell nicht ermittelbar.');
-            return;
-        }
-        cls = cls.toUpperCase();
-        var specs = SPEC_DEFINITIONS[cls] || [];
-        if (!specs.length) {
-            alert('Keine Specs für Klasse ' + cls + ' definiert.');
-            return;
-        }
-
-        var currentSpecs = Array.isArray(sp.requiredSpec) ? sp.requiredSpec.slice() : (sp.requiredSpec ? [sp.requiredSpec] : []);
-
-        // Overlay
-        var overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;';
-
-        var modal = document.createElement('div');
-        modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:420px;width:90%;';
-
-        var color = getClassColor(cls);
-        var spellName = db ? db.dbName : ('SpellID ' + sp.spellId);
-
-        var checkboxesHtml = specs.map(function(spec) {
-            var checked = currentSpecs.indexOf(spec.value) !== -1;
-            return '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
-                + '<input type="checkbox" class="spec-pick-cb" value="' + spec.value + '"' + (checked ? ' checked' : '') + ' style="accent-color: ' + color + ';">'
-                + '<span class="flex-1 text-sm" style="color:' + color + ';">' + spec.label + '</span>'
-                + '<span class="text-[9px] text-gray-500 font-mono">' + spec.value + '</span>'
-                + '</label>';
-        }).join('');
-
-        modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">' + spellName + '</h4>'
-            + '<div class="text-xs mb-4" style="color:' + color + ';">' + cls + '</div>'
-            + '<div class="text-xs text-gray-400 mb-3">Welche Specs sollen diesen Spell nutzen können?</div>'
-            + '<div class="space-y-1 mb-4">'
-            +   '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer border-b border-slate-700">'
-            +   '<input type="checkbox" id="spec-pick-all" class="spec-pick-cb-all">'
-            +   '<span class="flex-1 text-xs italic text-gray-300">Alle Specs (kein Filter)</span>'
-            +   '</label>'
-            + checkboxesHtml
-            + '</div>'
-            + '<div class="flex justify-end gap-2">'
-            +   '<button id="spec-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
-            +   '<button id="spec-pick-save" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm">Übernehmen</button>'
-            + '</div>';
-
-        overlay.appendChild(modal);
-        document.body.appendChild(overlay);
-
-        // "Alle Specs" Checkbox-Logik
-        var allCb = modal.querySelector('#spec-pick-all');
-        var specCbs = modal.querySelectorAll('.spec-pick-cb');
-
-        // Initialzustand: "Alle" wenn nichts selektiert
-        allCb.checked = currentSpecs.length === 0;
-
-        allCb.addEventListener('change', function() {
-            if (allCb.checked) {
-                specCbs.forEach(function(cb) { cb.checked = false; });
-            }
-        });
-
-        specCbs.forEach(function(cb) {
-            cb.addEventListener('change', function() {
-                if (cb.checked) allCb.checked = false;
-            });
-        });
-
-        // Save
-        modal.querySelector('#spec-pick-save').addEventListener('click', function() {
-            var selected = [];
-            if (!allCb.checked) {
-                specCbs.forEach(function(cb) {
-                    if (cb.checked) selected.push(cb.value);
-                });
-            }
-            if (selected.length === 0) {
-                delete categories[catKey].spells[spellIdx].requiredSpec;
-            } else {
-                categories[catKey].spells[spellIdx].requiredSpec = selected;
-            }
-            document.body.removeChild(overlay);
-            renderCategoriesAdmin();
-        });
-
-        // Cancel
-        modal.querySelector('#spec-pick-cancel').addEventListener('click', function() {
-            document.body.removeChild(overlay);
-        });
-        overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) document.body.removeChild(overlay);
-        });
-    }
-
-    // ── Spell-Picker: Dialog zur Spell-Auswahl aus DB ──
-    function openSpellPicker(catKey) {
-        // Overlay erstellen
-        var overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;';
-
-        var modal = document.createElement('div');
-        modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:700px;max-height:80vh;overflow-y:auto;width:90%;';
-
-        // Zähle wie oft jeder Spell bereits in der Kategorie ist (für Anzeige)
-        var existingCounts = {};
-        categories[catKey].spells.forEach(function(s) {
-            var sid = String(s.spellId);
-            existingCounts[sid] = (existingCounts[sid] || 0) + 1;
-        });
-        // Alle Spells aus der DB anzeigen — Duplikate explizit erlaubt für spec-spezifische Prio
-        var availableCDs = cooldownsDB.filter(function(cd) {
-            return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0;
-        });
-
-        // Gruppiere nach Klasse
-        var byClass = {};
-        availableCDs.forEach(function(cd) {
-            var cls = cd.class || 'UNKNOWN';
-            if (!byClass[cls]) byClass[cls] = [];
-            byClass[cls].push(cd);
-        });
-
-        var classSections = Object.entries(byClass).sort().map(function(entry) {
-            var cls = entry[0], cds = entry[1];
-            var color = getClassColor(cls);
-            var rows = cds.map(function(cd) {
-                var sid = String(cd.spellId);
-                var count = existingCounts[sid] || 0;
-                var badge = count > 0
-                    ? '<span class="text-[9px] bg-amber-700/60 text-amber-200 px-1.5 py-0.5 rounded font-mono" title="Bereits ' + count + 'x in dieser Kategorie">×' + count + '</span>'
-                    : '';
-                return '<div class="picker-row flex items-center gap-2 text-[11px] hover:bg-slate-700/40 p-1 rounded cursor-pointer" data-spellid="' + cd.spellId + '">'
-                    + '<span style="color:' + color + ';" class="flex-1">' + cd.name + '</span>'
-                    + badge
-                    + '<span class="text-gray-500 font-mono text-[9px]">' + cd.spellId + '</span>'
-                    + '</div>';
-            }).join('');
-            return '<div class="mb-3">'
-                + '<h6 class="font-bold text-xs mb-1" style="color:' + color + ';">' + cls + '</h6>'
-                + rows + '</div>';
-        }).join('');
-
-        modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">Spell zu "' + categories[catKey].name + '" hinzufügen</h4>'
-            + '<div class="text-[11px] text-gray-400 mb-3">💡 Spells können <strong>mehrfach</strong> hinzugefügt werden - z.B. um denselben Spell für unterschiedliche Specs mit eigener Priorität zu hinterlegen. <span class="text-amber-300">×N</span> zeigt wie oft schon vorhanden.</div>'
-            + '<input type="text" id="picker-search" placeholder="Suchen..." class="w-full bg-slate-900 text-white px-3 py-2 rounded mb-3 border border-slate-600">'
-            + '<div id="picker-list">' + classSections + '</div>'
-            + '<div class="flex justify-end mt-3"><button id="picker-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button></div>';
-
-        overlay.appendChild(modal);
-        document.body.appendChild(overlay);
-
-        // Search
-        var searchInp = modal.querySelector('#picker-search');
-        searchInp.addEventListener('input', function(e) {
-            var q = e.target.value.toLowerCase();
-            modal.querySelectorAll('.picker-row').forEach(function(row) {
-                var txt = row.textContent.toLowerCase();
-                row.style.display = txt.indexOf(q) !== -1 ? '' : 'none';
-            });
-        });
-        searchInp.focus();
-
-        // Pick
-        modal.querySelectorAll('.picker-row').forEach(function(row) {
-            row.addEventListener('click', function(e) {
-                var spellId = row.dataset.spellid;
-                var cd = cooldownsDB.find(function(c) { return String(c.spellId) === spellId; });
-                categories[catKey].spells.push({
-                    spellId: spellId,
-                    cooldownSec: parseInt(cd && cd.cooldownSec) || 180,
-                    durationSec: parseInt(cd && cd.durationSec) || 0
-                });
-                document.body.removeChild(overlay);
-                renderCategoriesAdmin();
-            });
-        });
-
-        // Cancel
-        modal.querySelector('#picker-cancel').addEventListener('click', function() {
-            document.body.removeChild(overlay);
-        });
-        overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) document.body.removeChild(overlay);
-        });
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    // INIT
-    // ══════════════════════════════════════════════════════════════
-
-    async function clearPlan() {
-        if (!window.isManager) {
-            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-            return;
-        }
-        
-        // Lokalen State auf "wie frisch geladen" setzen, aber Events behalten
-        manualOverrides = {};
-        assignments = [];
-        
-        // Tabelle visuell leeren
-        var tbody = document.getElementById('auto-planner-tbody');
-        if (tbody) tbody.innerHTML = '';
-        var thead = document.getElementById('auto-planner-thead');
-        if (thead) thead.innerHTML = '';
-        
-        if (typeof window._autoPlannerApplyProtection === 'function') {
-            window._autoPlannerApplyProtection();
-        }
-        
-        // Änderungen (geleerte Zuweisungen) in DB speichern
-        try {
-            await savePlan();
-            updateStatus("Auto-Plan geleert (Zuweisungen entfernt, Events beibehalten).");
-        } catch (e) {
-            console.error("[Auto-Planner] clearPlan error:", e);
-            updateStatus("Plan lokal geleert (Fehler beim Speichern: " + e.message + ")");
-        }
-    }
-
-    async function doInit(bossConfig) {
-        config = bossConfig;
-        rosterRef = window.effectiveRoster || window.rosterData || [];
-        firebaseRef = window.firebaseTools;
-        cooldownsDB = window.allCooldowns || [];
-
-        if (!cooldownsDB.length) { updateStatus("⚠ Keine Cooldowns geladen."); return; }
-
-        await loadCategories();
-        var hasSavedPlan = await loadPlan();
-
-        var total = 0, found = 0;
-        Object.keys(categories).forEach(function(k) {
-            categories[k].spells.forEach(function(s) { total++; if (resolveSpell(s.spellId)) found++; });
-        });
-
-        if (window.isManager) {
-            // Category-Admin automatisch injizieren, falls nicht im Boss-HTML vorhanden
-            if (!document.getElementById('cd-categories-admin')) {
-                var plannerContainer = document.getElementById('auto-planner-timeline');
-                if (plannerContainer) {
-                    var catWrapper = document.createElement('details');
-                    catWrapper.id = 'cd-categories-admin';
-                    catWrapper.className = 'mt-6 bg-slate-900 rounded-lg border border-slate-700';
-                    catWrapper.innerHTML = '<summary class="p-3 text-sm font-bold text-gray-300 cursor-pointer hover:bg-slate-800 rounded-lg">⚙️ CD-Kategorien bearbeiten</summary>'
-                        + '<div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>';
-                    plannerContainer.parentNode.appendChild(catWrapper);
-                }
-            }
-
-            var admin = document.getElementById('cd-categories-admin');
-            if (admin) admin.style.display = '';
-            renderCategoriesAdmin();
-
-            // Events-Container automatisch injizieren, falls nicht im Boss-HTML vorhanden
-            if (!document.getElementById('auto-planner-events')) {
-                var timelineEl = document.getElementById('auto-planner-timeline');
-                if (timelineEl) {
-                    var evtWrapper = document.createElement('details');
-                    evtWrapper.className = 'mb-4 bg-slate-800 rounded-lg border border-slate-700';
-                    evtWrapper.innerHTML = '<summary class="cursor-pointer p-3 text-sm font-bold text-cyan-400 hover:bg-slate-750 rounded-t-lg">📋 Events bearbeiten (Zeit / Kategorien / Aktivieren)</summary>'
-                        + '<div class="p-3" id="auto-planner-events"></div>';
-                    timelineEl.parentNode.insertBefore(evtWrapper, timelineEl);
-                }
-            }
-            renderEventManager();
-            renderStrategyPanel();
-        }
-
-        // ══════════════════════════════════════════════════════════
-        // MANAGER-SCHUTZ — Nur Manager können Auto-Plan modifizieren
-        // ══════════════════════════════════════════════════════════
-        function applyManagerProtection() {
-            var isManager = !!window.isManager;
-            
-            // 1. Aktions-Buttons komplett verstecken bei Nicht-Manager
-            var managerOnlyButtons = [
-                'btn-auto-assign',
-                'btn-export-to-planner',
-                'btn-save-auto-plan',
-                'btn-save-categories',
-                'btn-clear-auto',
-                'btn-reset-events',
-                'btn-clear-planner'
-            ];
-            managerOnlyButtons.forEach(function(btnId) {
-                var btn = document.getElementById(btnId);
-                if (btn) btn.style.display = isManager ? '' : 'none';
-            });
-            
-            // Hinweis-Banner für Nicht-Manager (statt leerer Button-Reihe)
-            var hint = document.getElementById('auto-planner-readonly-hint');
-            if (!isManager && !hint) {
-                var statusEl = document.getElementById('auto-planner-status');
-                if (statusEl) {
-                    hint = document.createElement('div');
-                    hint.id = 'auto-planner-readonly-hint';
-                    hint.className = 'text-xs italic mb-3 p-2 rounded bg-slate-700/40 border border-slate-600/50 text-gray-400';
-                    hint.innerHTML = '🔒 <strong>Nur lesen</strong> - Änderungen am Auto-Plan können nur Gildenräte vornehmen.';
-                    statusEl.parentNode.insertBefore(hint, statusEl);
-                }
-            } else if (isManager && hint) {
-                hint.remove();
-            }
-            
-            // 2. Timeline-Tabelle: alle Selects/Inputs deaktivieren
-            var tbody = document.getElementById('auto-planner-tbody');
-            if (tbody) {
-                tbody.querySelectorAll('select, input, button').forEach(function(el) {
-                    el.disabled = !isManager;
-                });
-            }
-            
-            // 3. Event-Manager-Bereich: alle Steuer-Elemente deaktivieren
-            var eventArea = document.getElementById('auto-planner-events');
-            if (eventArea) {
-                eventArea.querySelectorAll('input, button, select').forEach(function(el) {
-                    el.disabled = !isManager;
-                });
-            }
-            
-            // 4. CD-Kategorien-Editor: gar nicht erst anzeigen
-            var catAdmin = document.getElementById('cd-categories-admin');
-            if (catAdmin) catAdmin.style.display = isManager ? '' : 'none';
-        }
-        
-        // Initial anwenden
-        applyManagerProtection();
-        
-        // Bei Re-Renders (z.B. nach Auto-Assign) erneut anwenden
-        window._autoPlannerApplyProtection = applyManagerProtection;
-        
-        // Polling: bei isManager-Status-Wechsel (Login/Logout) erneut anwenden
-        var lastManagerState = !!window.isManager;
-        var managerWatcher = setInterval(function() {
-            var current = !!window.isManager;
-            if (current !== lastManagerState) {
-                lastManagerState = current;
-                applyManagerProtection();
-            }
-        }, 1500);
-        // Stop bei Page-Unload (verhindert Memory Leaks)
-        window.addEventListener('beforeunload', function() { clearInterval(managerWatcher); });
-
-        document.getElementById('btn-auto-assign').addEventListener('click', function() {
-            if (!window.isManager) {
-                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                return;
-            }
-            runAutoAssign();
-        });
-        document.getElementById('btn-export-to-planner').addEventListener('click', function() {
-            if (!window.isManager) {
-                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                return;
-            }
-            exportToPlanner();
-        });
-        document.getElementById('btn-save-auto-plan').addEventListener('click', function() {
-            if (!window.isManager) {
-                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                return;
-            }
-            savePlan();
-        });
-        var btnSaveCategories = document.getElementById('btn-save-categories');
-        if (btnSaveCategories) {
-            btnSaveCategories.addEventListener('click', function() {
-                if (!window.isManager) {
-                    if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                    return;
-                }
-                saveCategories();
-            });
-        }
-        document.getElementById('btn-clear-auto').addEventListener('click', function() {
-            if (!window.isManager) {
-                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                return;
-            }
-            var msg = "Auto-Plan Zuweisungen leeren?\n\nLöscht alle Zuweisungen im Auto-Plan, behält aber die Event-Anpassungen (Häkchen) bei.\nDie CD-Planer-Einträge im Raidplan bleiben unangetastet.";
-            if (typeof window.showModal === 'function') {
-                var r = window.showModal(msg, true);
-                if (r && typeof r.then === 'function') { r.then(function(ok) { if (ok) clearPlan(); }); }
-                else clearPlan();
-            } else { if (confirm(msg)) clearPlan(); }
-        });
-
-        // ── Events-Reset-Button dynamisch einfügen (nur für Manager) ──
-        injectResetEventsButton();
-
-        // ── Clear-Planner-Button dynamisch einfügen (nur für Manager) ──
-        injectClearPlannerButton();
-
-        // ── DB-Wipe Button dynamisch einfügen (nur für Manager) ──
-        injectWipeButton();
-
-        // Wenn ein gespeicherter Plan existiert, direkt anzeigen
-        if (hasSavedPlan) {
-            runAutoAssign();
-        } else {
-            updateStatus('Bereit. ' + found + '/' + total + ' Spells in DB. Roster: ' + rosterRef.length + ' Spieler.');
-        }
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    // STRATEGIE-PANEL — UI für die 3 Verteilungs-Toggles
-    // ══════════════════════════════════════════════════════════════
-    function renderStrategyPanel() {
-        if (!window.isManager) return;
-
-        var anchor = document.getElementById('auto-planner-events');
-        if (!anchor) return;
-        // Anker ist der Wrapper-Container des Events-Panels
-        var wrapper = anchor.closest('details') || anchor.parentNode;
-        if (!wrapper) return;
-
-        var existing = document.getElementById('auto-planner-strategy');
-        if (existing) existing.remove();
-
-        var panel = document.createElement('details');
-        panel.id = 'auto-planner-strategy';
-        panel.className = 'mb-4 bg-slate-800 rounded-lg border border-slate-700';
-        panel.open = false;
-
-        var s = assignStrategy;
-        panel.innerHTML =
-            '<summary class="cursor-pointer p-3 text-sm font-bold text-cyan-400 hover:bg-slate-750 rounded-t-lg">⚙ Verteilungs-Strategie</summary>' +
-            '<div class="p-3 space-y-2 text-xs text-gray-300">' +
-                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
-                    '<input type="checkbox" id="strat-spread" class="mt-1 accent-cyan-500" ' + (s.spread ? 'checked' : '') + '>' +
-                    '<div>' +
-                        '<div class="font-semibold text-gray-200">A — Spread (Lookahead)</div>' +
-                        '<div class="text-[10px] text-gray-400">Bei Knappheit Casts gleichmäßig über die Zeit verteilen statt am Anfang ballen. Lücken werden als "geplante Lücken" markiert.</div>' +
-                    '</div>' +
-                '</label>' +
-                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
-                    '<input type="checkbox" id="strat-prio" class="mt-1 accent-cyan-500" ' + (s.prioritizeCategories ? 'checked' : '') + '>' +
-                    '<div>' +
-                        '<div class="font-semibold text-gray-200">B — Kategorien-Priorisierung</div>' +
-                        '<div class="text-[10px] text-gray-400">Wichtigere Kategorien (erste in der requiredCDs-Liste) zuerst füllen. Niedrige bleiben leer wenn die Wichtigen bereits Spieler verbraucht haben.</div>' +
-                    '</div>' +
-                '</label>' +
-                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
-                    '<input type="checkbox" id="strat-rr" class="mt-1 accent-cyan-500" ' + (s.roundRobin ? 'checked' : '') + '>' +
-                    '<div>' +
-                        '<div class="font-semibold text-gray-200">C — Round-Robin</div>' +
-                        '<div class="text-[10px] text-gray-400">Spieler reihum nutzen statt immer den ersten. Bringt Fairness, hilft bei Lücken nur wenn Spieler-CD &lt; Event-Abstand ist.</div>' +
-                    '</div>' +
-                '</label>' +
-                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
-                    '<input type="checkbox" id="strat-prefer-heal" class="mt-1 accent-cyan-500" ' + (s.preferHeal ? 'checked' : '') + '>' +
-                    '<div>' +
-                        '<div class="font-semibold text-gray-200">D — Bevorzuge Heiler</div>' +
-                        '<div class="text-[10px] text-gray-400">Zieht reine Heiler-Klassen für defensiven CDs heran, bevor Utility-Heals (z.B. Vampirumarmung) der DDs genutzt werden.</div>' +
-                    '</div>' +
-                '</label>' +
-                '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
-                    '<input type="checkbox" id="strat-strict-class" class="mt-1 accent-cyan-500" ' + (s.strictClassBalance ? 'checked' : '') + '>' +
-                    '<div>' +
-                        '<div class="font-semibold text-gray-200">E — Strikte Klassen-Rotation</div>' +
-                        '<div class="text-[10px] text-gray-400">Verhindert, dass eine Klasse mehrfach hintereinander ihre Cooldowns ziehen muss, selbst wenn sie verfügbar wäre.</div>' +
-                    '</div>' +
-                '</label>' +
-                '<div class="text-[10px] text-gray-500 italic pt-1 border-t border-slate-700">Änderungen werden mit dem nächsten "Auto-Assign" wirksam und beim Speichern persistiert.</div>' +
-            '</div>';
-
-        wrapper.parentNode.insertBefore(panel, wrapper);
-
-        function bind(id, key) {
-            var el = panel.querySelector('#' + id);
-            if (!el) return;
-            el.addEventListener('change', function() {
-                assignStrategy[key] = !!el.checked;
-                runAutoAssign();
-            });
-        }
-        bind('strat-spread', 'spread');
-        bind('strat-prio', 'prioritizeCategories');
-        bind('strat-rr', 'roundRobin');
-        bind('strat-prefer-heal', 'preferHeal');
-        bind('strat-strict-class', 'strictClassBalance');
-    }
-
-    // ── Dynamischer Events-Reset-Button ──
-    function injectResetEventsButton() {
-        if (!window.isManager) return;
-        if (document.getElementById('btn-reset-events')) return;
-
-        var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
-        if (!btnContainer) return;
-
-        var resetBtn = document.createElement('button');
-        resetBtn.id = 'btn-reset-events';
-        resetBtn.className = 'bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500 mr-2';
-        resetBtn.innerHTML = '🔄 Events Reset';
-        resetBtn.title = 'Setzt alle Event-Anpassungen (Häkchen und eigene Events) auf Standard zurück';
-        
-        btnContainer.insertBefore(resetBtn, document.getElementById('btn-clear-auto'));
-
-        resetBtn.addEventListener('click', function() {
-            if (!window.isManager) {
-                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                return;
-            }
-            var msg = "Events zurücksetzen?\n\nSetzt alle Häkchen und manuell hinzugefügten Events auf die Standardwerte des Bosses zurück.\nBereits zugewiesene CDs bleiben in der Tabelle stehen (Auto-Assign erforderlich, um sie neu zu verteilen).";
-            if (typeof window.showModal === 'function') {
-                var r = window.showModal(msg, true);
-                if (r && typeof r.then === 'function') {
-                    r.then(function(ok) { if (ok) resetEventsOnly(); });
-                } else {
-                    resetEventsOnly();
-                }
-            } else {
-                if (confirm(msg)) resetEventsOnly();
-            }
-        });
-    }
-
-    async function resetEventsOnly() {
-        eventOverrides = {};
-        customEvents = [];
-        renderEventManager();
-        
-        try {
-            await savePlan();
-            updateStatus("Events zurückgesetzt.");
-        } catch (e) {
-            console.error("[Auto-Planner] resetEvents error:", e);
-        }
-    }
-
-    // ── Dynamischer Clear-Button für Advanced CD-Plan ──
-    function injectClearPlannerButton() {
-        if (!window.isManager) return;
-        if (document.getElementById('btn-clear-planner')) return;  // Schon da
-
-        var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
-        if (!btnContainer) return;
-
-        var clearBtn = document.createElement('button');
-        clearBtn.id = 'btn-clear-planner';
-        clearBtn.className = 'bg-orange-700 hover:bg-orange-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-orange-600';
-        clearBtn.innerHTML = '🧹 CD-Plan leeren';
-        clearBtn.title = 'Leert ALLE 100 Zeilen des Advanced CD-Plans dieses Bosses (Auto-Plan bleibt unangetastet)';
-        btnContainer.appendChild(clearBtn);
-
-        clearBtn.addEventListener('click', function() {
-            if (!window.isManager) {
-                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                return;
-            }
-            var msg = "Advanced CD-Plan leeren?\n\nLöscht ALLE 100 Zeilen des CD-Planers dieses Bosses (Trigger, Spieler, Cooldowns, Zeiten, Texte).\nDer Auto-CD-Plan bleibt unangetastet.\n\nFortfahren?";
-            if (typeof window.showModal === 'function') {
-                var r = window.showModal(msg, true);
-                if (r && typeof r.then === 'function') {
-                    r.then(function(ok) { if (ok) clearPlannerOnly(); });
-                } else {
-                    clearPlannerOnly();
-                }
-            } else {
-                if (confirm(msg)) clearPlannerOnly();
-            }
-        });
-    }
-
-    // ── Leert ALLE 100 Zeilen des Advanced CD-Plans (DOM + Firestore) ──
-    async function clearPlannerOnly() {
-        if (!window.isManager) {
-            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-            return;
-        }
-
-        var container = document.querySelector('[id$="-planner-container"]');
-        if (!container) {
-            if (window.showModal) window.showModal("CD-Planer nicht gefunden.");
-            return;
-        }
-
-        var prefix = container.id.replace('-planner-container', '');
-
-        // BATCH-MODE aktivieren: keine change-Events während wir leeren
-        window._suspendAssignListeners = true;
-
-        var currentManager = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('currentManager')) || 'Unbekannt';
-        var serverTs = null;
-        if (firebaseRef && firebaseRef.serverTimestamp) {
-            serverTs = firebaseRef.serverTimestamp();
-        }
-
-        var batchPayload = {};
-        var fields = ['trigger', 'npc', 'condition', 'time', 'player', 'cooldown', 'note', 'tts', 'varname', 'icon'];
-
-        try {
-            // DOM leeren + Batch füllen
-            for (var i = 1; i <= 100; i++) {
-                var rowPrefix = prefix + '-planner-row' + i;
-                fields.forEach(function(f) {
-                    var fieldId = rowPrefix + '-' + f;
-                    var el = document.querySelector('[data-assignment-id="' + fieldId + '"]');
-                    if (el) {
-                        if (el.tagName === 'SELECT') {
-                            el.value = '';
-                            var opt = el.options[el.selectedIndex];
-                            if (opt) el.style.color = (opt.dataset && opt.dataset.color) || '#FFFFFF';
-                        } else {
-                            el.value = '';
-                        }
-                    }
-                    // Auch wenn DOM-Element nicht da ist (z.B. text/tts/name/icon nicht in allen Bossen):
-                    // Wenn Feld existiert hatte, in Firestore leeren — dafür ein leerer Eintrag.
-                    var update = { editor: currentManager, timestamp: serverTs };
-                    update[f] = '';
-                    batchPayload[fieldId] = update;
-                });
-            }
-
-            // Firestore-Write
-            if (firebaseRef && firebaseRef.setDoc) {
-                var bossDocId = "boss-" + (config.id || prefix.toLowerCase());
-                try {
-                    await firebaseRef.setDoc(
-                        firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
-                        batchPayload,
-                        { merge: true }
-                    );
-                } catch (e) {
-                    console.error("[Auto-Planner] clearPlannerOnly DB-Error:", e);
-                    if (window.showModal) window.showModal("CD-Plan lokal geleert, DB-Fehler: " + e.message);
-                    return;
-                }
-            }
-
-            // Logbuch
-            if (typeof window.logHistory === 'function') {
-                window.logHistory('Auto-Planner', 'Advanced CD-Plan geleert für Boss "' + config.name + '"',
-                    '100 Zeilen', currentManager);
-            }
-
-            updateStatus("Advanced CD-Plan geleert (100 Zeilen, lokal + DB).");
-            if (window.showModal) window.showModal("✓ Advanced CD-Plan geleert.");
-
-            // Planner-Summary neu rendern, falls verfügbar
-            if (window.updatePlannerSummary) setTimeout(window.updatePlannerSummary, 200);
-        } finally {
-            window._suspendAssignListeners = false;
-        }
-    }
-
-    // ── Dynamischer Wipe-Button für DB-Einträge ──
-    function injectWipeButton() {
-        if (!window.isManager) return;
-        if (document.getElementById('btn-wipe-db')) return;  // Schon da
-
-        var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
-        if (!btnContainer) return;
-
-        var wipeBtn = document.createElement('button');
-        wipeBtn.id = 'btn-wipe-db';
-        wipeBtn.className = 'bg-red-900 hover:bg-red-950 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-700';
-        wipeBtn.innerHTML = '☢️ DB-Einträge löschen';
-        wipeBtn.title = 'Löscht ALLE Datenbank-Einträge für diesen Boss (CD-Planer + Auto-Planer)';
-        btnContainer.appendChild(wipeBtn);
-
-        wipeBtn.addEventListener('click', wipeBossFromDb);
-    }
-
-    // ── Löscht ALLE DB-Einträge für diesen Boss ──
-    async function wipeBossFromDb() {
-        if (!window.isManager) {
-            if (window.showModal) window.showModal("Nur Manager dürfen DB-Einträge löschen.");
-            return;
-        }
-        if (!firebaseRef) {
-            if (window.showModal) window.showModal("Firebase nicht verfügbar.");
-            return;
-        }
-
-        // deleteDoc ist nicht im Standard-firebaseTools, dynamisch nachladen
-        var deleteDocFn = firebaseRef.deleteDoc;
-        if (!deleteDocFn) {
-            try {
-                var fbModule = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                deleteDocFn = fbModule.deleteDoc;
             } catch (e) {
-                if (window.showModal) window.showModal("Firestore deleteDoc konnte nicht geladen werden: " + e.message);
+                console.error("[Auto-Planner] clearPlannerOnly DB-Error:", e);
+                if (window.showModal) window.showModal("CD-Plan lokal geleert, DB-Fehler: " + e.message);
                 return;
             }
-        }
-
-        // Doppelte Bestätigung wegen Destruktiv
-        var confirmed = false;
-        if (typeof window.showModal === 'function') {
-            var r = window.showModal(
-                "⚠️ ACHTUNG: Alle Datenbank-Einträge für '" + config.name + "' werden GELÖSCHT.\n\n" +
-                "Das betrifft:\n" +
-                "• Den CD-Planer (alle 100 Zeilen)\n" +
-                "• Den Auto-Planer (gespeicherter Plan + Overrides + Custom-Events)\n" +
-                "• Sonstige Boss-Einteilungen (Tank-Zuteilungen, Bereich-Zuteilungen etc.)\n\n" +
-                "Diese Aktion kann NICHT rückgängig gemacht werden!\n\n" +
-                "Fortfahren?",
-                true
-            );
-            confirmed = (r && typeof r.then === 'function') ? await r : !!r;
-        } else {
-            confirmed = confirm("ALLE DB-Einträge für '" + config.name + "' löschen? NICHT rückgängig zu machen!");
-        }
-        if (!confirmed) return;
-
-        // Zweite Bestätigung mit Tippcode
-        var typed = prompt('Sicherheitsabfrage: Tippe "LÖSCHEN" (in Großbuchstaben), um zu bestätigen:');
-        if (typed !== 'LÖSCHEN') {
-            if (window.showModal) window.showModal("Abgebrochen - Sicherheitsabfrage nicht bestanden.");
-            return;
-        }
-
-        var prefix = config.prefix.toLowerCase();
-        var bossDocId1 = "boss-" + (config.id || prefix);             // Standard-Pattern aus index.html
-        var bossDocId2 = config.id;                     // Fallback (manche Bosse nutzen direkt id)
-        var autoPlannerDocId = config.id;               // Auto-Planner doc
-
-        var deleted = [];
-        var errors = [];
-
-        // 1. raid-tool-data/boss-{prefix} löschen
-        try {
-            await deleteDocFn(firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId1));
-            deleted.push("raid-tool-data/" + bossDocId1);
-        } catch (e) {
-            // Fehler nur loggen wenn Doc tatsächlich existierte
-            if (e.code !== 'not-found') errors.push(bossDocId1 + ": " + e.message);
-        }
-
-        // 2. Falls Boss-ID anders ist, auch versuchen
-        if (bossDocId2 !== bossDocId1) {
-            try {
-                await deleteDocFn(firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId2));
-                deleted.push("raid-tool-data/" + bossDocId2);
-            } catch (e) {
-                if (e.code !== 'not-found') errors.push(bossDocId2 + ": " + e.message);
-            }
-        }
-
-        // 3. auto-planner/{bossId} löschen
-        try {
-            await deleteDocFn(firebaseRef.doc(firebaseRef.db, "auto-planner", autoPlannerDocId));
-            deleted.push("auto-planner/" + autoPlannerDocId);
-        } catch (e) {
-            if (e.code !== 'not-found') errors.push("auto-planner/" + autoPlannerDocId + ": " + e.message);
         }
 
         // Logbuch
         if (typeof window.logHistory === 'function') {
-            var mgr = sessionStorage.getItem('currentManager') || 'Unbekannt';
-            window.logHistory('Auto-Planner', 'DB-Wipe für Boss "' + config.name + '"',
-                deleted.join(", ") || "(nichts gelöscht)", mgr);
+            window.logHistory('Auto-Planner', 'Advanced CD-Plan geleert für Boss "' + config.name + '"',
+                '100 Zeilen', currentManager);
         }
 
-        // Lokalen State leeren
-        clearPlan();
+        updateStatus("Advanced CD-Plan geleert (100 Zeilen, lokal + DB).");
+        if (window.showModal) window.showModal("✓ Advanced CD-Plan geleert.");
 
-        // Auch CD-Planer-Felder im DOM leeren wenn vorhanden
-        var plannerContainer = document.querySelector('[id$="-planner-container"]');
-        if (plannerContainer) {
-            plannerContainer.querySelectorAll('select, input').forEach(function(el) {
-                if (el.tagName === 'SELECT') {
-                    el.value = '';
-                } else if (el.type === 'number' || el.type === 'text') {
-                    el.value = '';
-                }
-            });
-            plannerContainer.dispatchEvent(new Event('change', { bubbles: true }));
-        }
+        // Planner-Summary neu rendern, falls verfügbar
+        if (window.updatePlannerSummary) setTimeout(window.updatePlannerSummary, 200);
+    } finally {
+        window._suspendAssignListeners = false;
+    }
+}
 
-        // Status-Meldung
-        var msg = "✓ Gelöscht: " + (deleted.length ? deleted.join("\n• ") : "Keine Einträge gefunden");
-        if (errors.length) msg += "\n\n⚠ Fehler:\n• " + errors.join("\n• ");
-        if (window.showModal) window.showModal(msg);
-        else alert(msg);
+// ── Dynamischer Wipe-Button für DB-Einträge ──
+function injectWipeButton() {
+    if (!window.isManager) return;
+    if (document.getElementById('btn-wipe-db')) return;  // Schon da
 
-        // Seite reload empfehlen für sauberen Zustand
-        setTimeout(function() {
-            if (confirm("Empfehlung: Seite neu laden für sauberen Zustand. Jetzt reloaden?")) {
-                location.reload();
-            }
-        }, 500);
+    var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
+    if (!btnContainer) return;
+
+    var wipeBtn = document.createElement('button');
+    wipeBtn.id = 'btn-wipe-db';
+    wipeBtn.className = 'bg-red-900 hover:bg-red-950 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-700';
+    wipeBtn.innerHTML = '☢️ DB-Einträge löschen';
+    wipeBtn.title = 'Löscht ALLE Datenbank-Einträge für diesen Boss (CD-Planer + Auto-Planer)';
+    btnContainer.appendChild(wipeBtn);
+
+    wipeBtn.addEventListener('click', wipeBossFromDb);
+}
+
+// ── Löscht ALLE DB-Einträge für diesen Boss ──
+async function wipeBossFromDb() {
+    if (!window.isManager) {
+        if (window.showModal) window.showModal("Nur Manager dürfen DB-Einträge löschen.");
+        return;
+    }
+    if (!firebaseRef) {
+        if (window.showModal) window.showModal("Firebase nicht verfügbar.");
+        return;
     }
 
-    return {
-        init: function(bossConfig) {
-            var w = setInterval(function() {
-                if (window.rosterData && window.firebaseTools && window.allCooldowns && window.allCooldowns.length) {
-                    clearInterval(w);
-                    doInit(bossConfig);
-                }
-            }, 500);
-            setTimeout(function() { clearInterval(w); }, 15000);
-        },
-
-        // Diagnose-Helper: in der Browser-Konsole `CD_AUTO_PLANNER.debugRoster()` aufrufen,
-        // um zu sehen, welche class/spec/roles-Werte die Spieler tatsächlich haben.
-        // Zeigt auch, wie normalizeSpec sie interpretiert.
-        debugRoster: function(filterClass) {
-            var roster = window.effectiveRoster || window.rosterData || [];
-            var rows = roster
-                .filter(function(p) { return !filterClass || (p.class || '').toUpperCase() === filterClass.toUpperCase(); })
-                .map(function(p) {
-                    return {
-                        name: p.name,
-                        class: p.class,
-                        spec: p.spec || p.specName || p.specialization || '(keine)',
-                        specNormalisiert: normalizeSpec(p.spec || p.specName || p.specialization || ''),
-                        roles: (p.roles || []).join(',')
-                    };
-                });
-            console.table(rows);
-            return rows;
-        },
-
-        // Testet, welche Spieler für eine Klasse+Spec gefunden werden.
-        // z.B. CD_AUTO_PLANNER.debugMatch('PALADIN', 'Protection1')
-        debugMatch: function(cls, spec) {
-            var players = getPlayersOfClass(cls, null, spec ? [spec] : null);
-            console.log('Treffer für', cls, spec || '(alle)', '→', players);
-
-            // Detail-Analyse: warum matcht/matcht nicht jeder Spieler der Klasse?
-            var roster = window.effectiveRoster || window.rosterData || [];
-            var detail = roster
-                .filter(function(p) { return (p.class || '').toUpperCase() === (cls || '').toUpperCase(); })
-                .map(function(p) {
-                    var pSpec = p.spec || p.specName || p.specialization || '';
-                    var pNorm = normalizeSpec(pSpec);
-                    var reqNorm = spec ? normalizeSpec(spec) : '(kein Spec-Filter)';
-                    return {
-                        name: p.name,
-                        spec_roh: pSpec || '(keine)',
-                        spec_normalisiert: pNorm,
-                        gesucht_normalisiert: reqNorm,
-                        match: spec ? (pNorm === normalizeSpec(spec)) : true
-                    };
-                });
-            console.table(detail);
-            return players;
+    // deleteDoc ist nicht im Standard-firebaseTools, dynamisch nachladen
+    var deleteDocFn = firebaseRef.deleteDoc;
+    if (!deleteDocFn) {
+        try {
+            var fbModule = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+            deleteDocFn = fbModule.deleteDoc;
+        } catch (e) {
+            if (window.showModal) window.showModal("Firestore deleteDoc konnte nicht geladen werden: " + e.message);
+            return;
         }
-    };
-})();
+    }
+
+    // Doppelte Bestätigung wegen Destruktiv
+    var confirmed = false;
+    if (typeof window.showModal === 'function') {
+        var r = window.showModal(
+            "⚠️ ACHTUNG: Alle Datenbank-Einträge für '" + config.name + "' werden GELÖSCHT.\n\n" +
+            "Das betrifft:\n" +
+            "• Den CD-Planer (alle 100 Zeilen)\n" +
+            "• Den Auto-Planer (gespeicherter Plan + Overrides + Custom-Events)\n" +
+            "• Sonstige Boss-Einteilungen (Tank-Zuteilungen, Bereich-Zuteilungen etc.)\n\n" +
+            "Diese Aktion kann NICHT rückgängig gemacht werden!\n\n" +
+            "Fortfahren?",
+            true
+        );
+        confirmed = (r && typeof r.then === 'function') ? await r : !!r;
+    } else {
+        confirmed = confirm("ALLE DB-Einträge für '" + config.name + "' löschen? NICHT rückgängig zu machen!");
+    }
+    if (!confirmed) return;
+
+    // Zweite Bestätigung mit Tippcode
+    var typed = prompt('Sicherheitsabfrage: Tippe "LÖSCHEN" (in Großbuchstaben), um zu bestätigen:');
+    if (typed !== 'LÖSCHEN') {
+        if (window.showModal) window.showModal("Abgebrochen - Sicherheitsabfrage nicht bestanden.");
+        return;
+    }
+
+    var prefix = config.prefix.toLowerCase();
+    var bossDocId1 = "boss-" + (config.id || prefix);             // Standard-Pattern aus index.html
+    var bossDocId2 = config.id;                     // Fallback (manche Bosse nutzen direkt id)
+    var autoPlannerDocId = config.id;               // Auto-Planner doc
+
+    var deleted = [];
+    var errors = [];
+
+    // 1. raid-tool-data/boss-{prefix} löschen
+    try {
+        await deleteDocFn(firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId1));
+        deleted.push("raid-tool-data/" + bossDocId1);
+    } catch (e) {
+        // Fehler nur loggen wenn Doc tatsächlich existierte
+        if (e.code !== 'not-found') errors.push(bossDocId1 + ": " + e.message);
+    }
+
+    // 2. Falls Boss-ID anders ist, auch versuchen
+    if (bossDocId2 !== bossDocId1) {
+        try {
+            await deleteDocFn(firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId2));
+            deleted.push("raid-tool-data/" + bossDocId2);
+        } catch (e) {
+            if (e.code !== 'not-found') errors.push(bossDocId2 + ": " + e.message);
+        }
+    }
+
+    // 3. auto-planner/{bossId} löschen
+    try {
+        await deleteDocFn(firebaseRef.doc(firebaseRef.db, "auto-planner", autoPlannerDocId));
+        deleted.push("auto-planner/" + autoPlannerDocId);
+    } catch (e) {
+        if (e.code !== 'not-found') errors.push("auto-planner/" + autoPlannerDocId + ": " + e.message);
+    }
+
+    // Logbuch
+    if (typeof window.logHistory === 'function') {
+        var mgr = sessionStorage.getItem('currentManager') || 'Unbekannt';
+        window.logHistory('Auto-Planner', 'DB-Wipe für Boss "' + config.name + '"',
+            deleted.join(", ") || "(nichts gelöscht)", mgr);
+    }
+
+    // Lokalen State leeren
+    clearPlan();
+
+    // Auch CD-Planer-Felder im DOM leeren wenn vorhanden
+    var plannerContainer = document.querySelector('[id$="-planner-container"]');
+    if (plannerContainer) {
+        plannerContainer.querySelectorAll('select, input').forEach(function (el) {
+            if (el.tagName === 'SELECT') {
+                el.value = '';
+            } else if (el.type === 'number' || el.type === 'text') {
+                el.value = '';
+            }
+        });
+        plannerContainer.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    // Status-Meldung
+    var msg = "✓ Gelöscht: " + (deleted.length ? deleted.join("\n• ") : "Keine Einträge gefunden");
+    if (errors.length) msg += "\n\n⚠ Fehler:\n• " + errors.join("\n• ");
+    if (window.showModal) window.showModal(msg);
+    else alert(msg);
+
+    // Seite reload empfehlen für sauberen Zustand
+    setTimeout(function () {
+        if (confirm("Empfehlung: Seite neu laden für sauberen Zustand. Jetzt reloaden?")) {
+            location.reload();
+        }
+    }, 500);
+}
+
+return {
+    init: function (bossConfig) {
+        var w = setInterval(function () {
+            if (window.rosterData && window.firebaseTools && window.allCooldowns && window.allCooldowns.length) {
+                clearInterval(w);
+                doInit(bossConfig);
+            }
+        }, 500);
+        setTimeout(function () { clearInterval(w); }, 15000);
+    },
+
+    // Diagnose-Helper: in der Browser-Konsole `CD_AUTO_PLANNER.debugRoster()` aufrufen,
+    // um zu sehen, welche class/spec/roles-Werte die Spieler tatsächlich haben.
+    // Zeigt auch, wie normalizeSpec sie interpretiert.
+    debugRoster: function (filterClass) {
+        var roster = window.effectiveRoster || window.rosterData || [];
+        var rows = roster
+            .filter(function (p) { return !filterClass || (p.class || '').toUpperCase() === filterClass.toUpperCase(); })
+            .map(function (p) {
+                return {
+                    name: p.name,
+                    class: p.class,
+                    spec: p.spec || p.specName || p.specialization || '(keine)',
+                    specNormalisiert: normalizeSpec(p.spec || p.specName || p.specialization || ''),
+                    roles: (p.roles || []).join(',')
+                };
+            });
+        console.table(rows);
+        return rows;
+    },
+
+    // Testet, welche Spieler für eine Klasse+Spec gefunden werden.
+    // z.B. CD_AUTO_PLANNER.debugMatch('PALADIN', 'Protection1')
+    debugMatch: function (cls, spec) {
+        var players = getPlayersOfClass(cls, null, spec ? [spec] : null);
+        console.log('Treffer für', cls, spec || '(alle)', '→', players);
+
+        // Detail-Analyse: warum matcht/matcht nicht jeder Spieler der Klasse?
+        var roster = window.effectiveRoster || window.rosterData || [];
+        var detail = roster
+            .filter(function (p) { return (p.class || '').toUpperCase() === (cls || '').toUpperCase(); })
+            .map(function (p) {
+                var pSpec = p.spec || p.specName || p.specialization || '';
+                var pNorm = normalizeSpec(pSpec);
+                var reqNorm = spec ? normalizeSpec(spec) : '(kein Spec-Filter)';
+                return {
+                    name: p.name,
+                    spec_roh: pSpec || '(keine)',
+                    spec_normalisiert: pNorm,
+                    gesucht_normalisiert: reqNorm,
+                    match: spec ? (pNorm === normalizeSpec(spec)) : true
+                };
+            });
+        console.table(detail);
+        return players;
+    }
+};
+}) ();

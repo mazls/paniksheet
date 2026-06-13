@@ -261,6 +261,8 @@
     </section>
 
     <script src="static/cd-auto-planner.js"></script>
+    <script src="static/cd-bloodrage-addon.js"></script>
+
     <script>
         // ══ Malkorok Auto-Planner Config ════════════════════════════════════
         CD_AUTO_PLANNER.init({
@@ -322,16 +324,22 @@
                 // BLOOD RAGE PHASE #1 (~70-92s) - SHIELD-MECHANIK
                 // ═══════════════════════════════════════════════════════
 
+                // -- TAKTIK A: Shield-Phase (wie bisher) --
                 {
                     name: "Blood Rage #1 (Shield-Phase)",
-                    spellId: 142879,
-                    firstCast: 70,        // direkt nach Breath
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: 0,
-                    eventDuration: 22,    // 22.5s Dauer
-                    requiredCDs: ["any_heal"],  // Healer müssen Shield aufrechthalten
+                    spellId: 142879, firstCast: 145, cooldown: 0, maxCasts: 1,
+                    delay: 0, eventDuration: 22,
+                    requiredCDs: ["any_heal"],
                     icon: "🩸"
+                },
+                // -- TAKTIK B: Tanks soaken allein (per Aktiv-Haken umschalten) --
+                {
+                    name: "Blood Rage #1 (Tank-Soak)",
+                    spellId: 142879, firstCast: 145, cooldown: 0, maxCasts: 1,
+                    delay: 0, eventDuration: 22.5,
+                    requiredCDs: ["tank_soak_phys"],
+                    soak: { expectedHitDmg: 1800000, threshold: 0.50, swingSec: 1.5 },
+                    icon: "🛡️"
                 },
                 {
                     name: "Displaced Energy #1 (Spam)",
@@ -387,17 +395,15 @@
                 // BLOOD RAGE PHASE #2 (~167-189s)
                 // ═══════════════════════════════════════════════════════
 
+                // -- TAKTIK A: Shield-Phase (wie bisher) --
                 {
-                    name: "Blood Rage #2 (Shield-Phase)",
-                    spellId: 142879,
-                    firstCast: 167,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: 0,
-                    eventDuration: 22,
+                    name: "Blood Rage #1 (Stacked)",
+                    spellId: 142879, firstCast: 145, cooldown: 0, maxCasts: 1,
+                    delay: 0, eventDuration: 22,
                     requiredCDs: ["any_heal", "any_dr"],
                     icon: "🩸"
                 },
+
                 {
                     name: "Displaced Energy #2 (Spam)",
                     spellId: 142913,
@@ -409,44 +415,6 @@
                     requiredCDs: ["any_heal", "additional_surv"],
                     icon: "⚡"
                 },
-
-                // ═══════════════════════════════════════════════════════
-                // NON-RAGE PHASE #3 + EXECUTE (Bloodlust hier optimal)
-                // ═══════════════════════════════════════════════════════
-
-                {
-                    name: "Arcing Smash #3.1 (Tank)",
-                    spellId: 142826,
-                    firstCast: 206,       // 17s nach Expel Miasma #2
-                    cooldown: 19,
-                    maxCasts: 3,
-                    delay: -1,
-                    eventDuration: 8,
-                    requiredCDs: ["tank_external"],
-                    icon: "💥"
-                },
-                {
-                    name: "Bloodlust (Execute Push)",
-                    spellId: 0,
-                    firstCast: 200,       // mittlere Phase 3, vor Berserk
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: 0,
-                    eventDuration: 40,
-                    requiredCDs: ["bloodlust"],
-                    icon: "⚡"
-                },
-                {
-                    name: "Breath of Y'Shaarj #3",
-                    spellId: 142842,
-                    firstCast: 261,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: -3,
-                    eventDuration: 8,
-                    requiredCDs: ["any_dr", "any_heal"],
-                    icon: "🐉"
-                }
             ],
 
             // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: MALKOROK_*)
@@ -465,6 +433,8 @@
                 "Breath of Y'Shaarj #3": "MALKOROK_BREATH",
                 "Blood Rage #1 (Shield-Phase)": "MALKOROK_BLOOD_RAGE",
                 "Blood Rage #2 (Shield-Phase)": "MALKOROK_BLOOD_RAGE",
+                "Blood Rage #1 (Tank-Soak)": "MALKOROK_BLOOD_RAGE",
+                "Blood Rage #2 (Tank-Soak)": "MALKOROK_BLOOD_RAGE",
                 "Displaced Energy #1 (Spam)": "MALKOROK_DISPLACED_ENERGY",
                 "Displaced Energy #2 (Spam)": "MALKOROK_DISPLACED_ENERGY",
                 "Bloodlust (Execute Push)": "MALKOROK_ENC_START"  // kein eigener Trigger, optional anpassbar
@@ -540,6 +510,8 @@
                 <span class="text-xl">📜</span> Planungsübersicht
             </h3>
 
+
+
             <div id="malkorok-planner-summary"
                 class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
                 <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
@@ -583,7 +555,8 @@
                             <em><a href="https://www.wowhead.com/mop-classic/de/spell=142851" target="_blank"
                                     rel="noopener noreferrer" class="text-gray-300 hover:underline">Seismisches
                                     Schmettern</a></em> getroffen wurden. Spieler, die in diesen Arealen stehen, sterben
-                            sofort. Merkt euch die Positionen der vorherigen Schläge!</li>
+                            sofort. Merkt euch die Positionen der vorherigen Schläge!
+                        </li>
                         <li>Malkorok generiert fortlaufend Wut. Erreicht er 100 Wut, beginnt Phase 2.</li>
                     </ul>
                 </div>
