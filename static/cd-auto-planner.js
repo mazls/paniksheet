@@ -1173,7 +1173,7 @@ window.CD_AUTO_PLANNER = (function () {
                 if (slot && slot.skipped) {
                     return '<td class="py-1 px-1 bg-slate-900/40 border border-red-900/20">'
                         + '<select class="auto-plan-select w-full bg-transparent text-[11px] border-none outline-none cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '" style="color:#ef4444;">'
-                        + '<option value="">-- leer --</option>'
+                        + '<option value="">-- Cooldown --</option>'
                         + '<option value="__SKIP__" selected style="color:#ef4444;">✖ Kein CD nötig</option>'
                         + options + '</select></td>';
                 }
@@ -1211,7 +1211,7 @@ window.CD_AUTO_PLANNER = (function () {
 
                 return '<td class="py-1 px-1 ' + bg + ' border ' + brd + '" title="' + title + '">'
                     + '<select class="auto-plan-select w-full bg-transparent text-[11px] border-none outline-none cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '" style="color:' + color + ';">'
-                    + '<option value="">-- leer --</option>'
+                    + '<option value="">-- Cooldown --</option>'
                     + '<option value="__SKIP__" style="color:#ef4444;">✖ Kein CD nötig</option>'
                     + options + '</select></td>';
             }).join('');
@@ -3261,10 +3261,29 @@ async function clearPlannerOnly() {
                         el.value = '';
                     }
                 }
-                // Auch wenn DOM-Element nicht da ist (z.B. text/tts/name/icon nicht in allen Bossen):
-                // Wenn Feld existiert hatte, in Firestore leeren — dafür ein leerer Eintrag.
+                // Korrektes DB-Feld ermitteln, genau wie in planner-bosses.js handleAssignmentChange
+                var dbField = 'player';
+                if (el && el.tagName === 'INPUT') {
+                    dbField = 'text';
+                } else if (!el) {
+                    // Fallback falls Element nicht im DOM, aber wir es leeren wollen
+                    if (['npc', 'condition', 'time', 'note', 'tts', 'varname', 'icon'].includes(f)) {
+                        dbField = 'text';
+                    } else if (f === 'cooldown') {
+                        dbField = 'cooldown';
+                    } else {
+                        dbField = 'player'; // trigger, player
+                    }
+                } else if (f === 'cooldown') {
+                    dbField = 'cooldown';
+                }
+
                 var update = { editor: currentManager, timestamp: serverTs };
-                update[f] = '';
+                // Alle potenziellen Keys explizit leeren, um Rückstände zu vermeiden
+                update['player'] = '';
+                update['text'] = '';
+                update['cooldown'] = '';
+                
                 batchPayload[fieldId] = update;
             });
         }

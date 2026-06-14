@@ -1810,7 +1810,7 @@
             })();
 
             const getCooldownOptions = () => {
-                let html = '<option value="">-- Bereitschaft --</option>';
+                let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
                 if (allCooldowns) {
                     allCooldowns.forEach(cd => {
                         if (cd.name.startsWith('---')) {

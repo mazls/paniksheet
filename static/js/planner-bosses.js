@@ -1083,7 +1083,7 @@ if (typeof Sortable !== 'undefined') {
                     if (choice === 'inactive') {
                         if (id.includes('-trigger')) {
                             input.value = "";
-                            updates[id] = { player: "", timestamp: ts };
+                            updates[id] = { player: "", text: "", cooldown: "", timestamp: ts };
                         }
                     }
                     // Fall 2: Alles leeren -> Alle Felder leeren
@@ -1091,11 +1091,7 @@ if (typeof Sortable !== 'undefined') {
                         input.value = "";
                         if (input.tagName === 'SELECT') input.style.color = '#fff';
                         
-                        let dbField = 'player';
-                        if (input.tagName === 'INPUT') dbField = 'text';
-                        else if (id.includes('cooldown')) dbField = 'cooldown';
-                        
-                        updates[id] = { [dbField]: "", timestamp: ts };
+                        updates[id] = { player: "", text: "", cooldown: "", timestamp: ts };
                     }
                 });
 
