@@ -35,6 +35,7 @@ import { state, getCurrentRaidId, debounce } from './state.js';
 import './auth-presence.js';
 import './roster-comp.js';
 import './planner-bosses.js';
+import './ping-system.js';
 
 
 // =============================================================================
