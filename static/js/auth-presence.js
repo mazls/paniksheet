@@ -10,7 +10,7 @@
    ========================================================================= */
 
 import {
-    db, auth,
+    db, auth, rtdb,
     DATA_COLLECTION, HISTORY_COLLECTION, USER_PROFILES_COLLECTION,
     LOOT_COLLECTION, SNAPSHOTS_COLLECTION,
     rosterDocRef, historyCollectionRef, userProfilesCollectionRef,
@@ -18,7 +18,8 @@ import {
     doc, setDoc, onSnapshot, collection, deleteDoc, getDoc,
     serverTimestamp, query, orderBy, addDoc, updateDoc, where,
     getDocs, limit,
-    onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously
+    onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously,
+    rtdbRef, rtdbSet, rtdbOnValue, rtdbOnDisconnect, rtdbOff, rtdbServerTimestamp
 } from './firebase-init.js';
 
 import { state, offensiveBuffsForAssignment, getCurrentRaidId, debounce, debouncedUpdatePools, debouncedUpdateSummary } from './state.js';
@@ -261,24 +262,73 @@ window.showLoginModal = showLoginModal;
                     }
                 }
 
-                const userStatusRef = doc(db, "presence", user.uid);
-                const updatePresenceTimestamp = () => {
-                    setDoc(userStatusRef, { online: true, last_changed: serverTimestamp() }, { merge: true });
+                // ══════════════════════════════════════════════════════════════
+                // PRESENCE via Firebase Realtime Database (RTDB)
+                // — Unterstützt mehrere Tabs/Sessions pro User!
+                // ══════════════════════════════════════════════════════════════
+
+                // Eindeutige ID für diesen Tab/Browser-Fenster generieren
+                const sessionId = Math.random().toString(36).substring(2, 15);
+                const userSessionRef = rtdbRef(rtdb, `presence/${user.uid}/${sessionId}`);
+
+                // Daten, die wir bei "online" schreiben
+                const onlineData = {
+                    online: true,
+                    last_changed: rtdbServerTimestamp()
                 };
-                updatePresenceTimestamp();
-                window.heartbeatIntervalId = setInterval(updatePresenceTimestamp, 15 * 60 * 1000);
 
-                // Lade nur User, die in den letzten 20 Minuten aktiv waren (spart massiv Lesevorgänge!)
-                const twentyMinsAgo = new Date(Date.now() - 20 * 60 * 1000);
-                const presenceQuery = query(collection(db, "presence"), where("last_changed", ">=", twentyMinsAgo));
+                // onDisconnect registrieren — löscht diese Session, wenn der Tab geschlossen wird
+                rtdbOnDisconnect(userSessionRef).remove();
 
-                onSnapshot(presenceQuery, snap => {
-                    const nowInSeconds = Date.now() / 1000;
-                    const onlineUsersCount = snap.docs.filter(doc => {
-                        const data = doc.data();
-                        return data.online && data.last_changed && (nowInSeconds - data.last_changed.seconds < 1000);
-                    }).length;
-                    presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div><span>${onlineUsersCount}</span> Online`;
+                // Sofort als online markieren
+                rtdbSet(userSessionRef, onlineData);
+
+                // Heartbeat: Timestamp alle 15 Min aktualisieren (in RTDB)
+                window.heartbeatIntervalId = setInterval(() => {
+                    rtdbSet(userSessionRef, onlineData);
+                }, 15 * 60 * 1000);
+
+                // ── RTDB-Listener für Online-Count ──────────────────────────
+                // Liest den gesamten /presence-Knoten und zählt einzigartige User
+                const allPresenceRef = rtdbRef(rtdb, 'presence');
+
+                // Alten Listener entfernen (falls vorhanden, z.B. bei Re-Auth)
+                if (window._rtdbPresenceListener) {
+                    rtdbOff(allPresenceRef, 'value', window._rtdbPresenceListener);
+                }
+
+                window._rtdbPresenceListener = rtdbOnValue(allPresenceRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (!data) {
+                        presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div><span>1</span> Online`;
+                        return;
+                    }
+
+                    const nowMs = Date.now();
+                    const twentyMinsMs = 20 * 60 * 1000;
+
+                    let onlineCount = 0;
+                    
+                    // data ist ein Objekt mit UIDs als Keys: { "UID1": { "sessionA": {...}, "sessionB": {...} }, "UID2": {...} }
+                    Object.values(data).forEach(userSessions => {
+                        if (!userSessions) return;
+                        
+                        // Prüfen, ob der User mindestens eine aktive Session hat
+                        let isUserOnline = false;
+                        Object.values(userSessions).forEach(session => {
+                            if (session && session.online && session.last_changed) {
+                                if ((nowMs - session.last_changed) < twentyMinsMs) {
+                                    isUserOnline = true;
+                                }
+                            }
+                        });
+                        
+                        if (isUserOnline) {
+                            onlineCount++;
+                        }
+                    });
+
+                    presenceIndicator.innerHTML = `<div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div><span>${onlineCount}</span> Online`;
                 });
             });
         });

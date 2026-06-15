@@ -1528,48 +1528,121 @@ window.allCooldowns = allCooldowns;
 window.handleImportFromUrl = handleImportFromUrl;
 
 // =============================================================================
-// fetchAllCooldowns — lädt CD-Stammdaten
+// fetchAllCooldowns — lädt CD-Stammdaten (mit localStorage-Cache + Live-Updates)
+// =============================================================================
+// Strategie:
+//   1. Sofort aus localStorage laden (0 Firestore-Reads)
+//   2. onSnapshot-Listener registrieren für Live-Updates
+//   3. Bei Änderungen: localStorage + window.allCooldowns aktualisieren
 // =============================================================================
 
+const COOLDOWN_CACHE_KEY = 'panik_cooldowns_cache';
+const CD_CATEGORIES_CACHE_KEY = 'panik_cd_categories_cache';
+let _cooldownListenerActive = false;
+
+/**
+ * Merged virtuelle Kategorien aus den CD-Kategorien in die Cooldown-Liste.
+ */
+function _mergeVirtualCategories(baseCooldowns, categoriesData) {
+    const merged = [...baseCooldowns];
+    if (!categoriesData || !categoriesData.categories) return merged;
+
+    const cats = categoriesData.categories;
+    let hasVirtuals = false;
+
+    Object.values(cats).forEach(c => {
+        if (c.isVirtual) {
+            if (!hasVirtuals) {
+                merged.push({ name: "--- Warnungen (Virtuell) ---", class: "General", spellId: "nil", order: 998 });
+                hasVirtuals = true;
+            }
+            merged.push({
+                name: c.name,
+                class: "General",
+                spellId: "nil",
+                cooldownSec: 0,
+                durationSec: 0,
+                tooltip: `Virtuell. Ziel: ${c.defaultPlayer || 'Alle'}<br>TTS: ${c.defaultTts || '-'}<br>Hinweis: ${c.defaultNote || '-'}`,
+                order: 999
+            });
+        }
+    });
+    return merged;
+}
+
 async function fetchAllCooldowns() {
+    // ── 1. Sofort aus localStorage laden (Instant, 0 Reads) ──────────────
+    if (!window.allCooldowns || window.allCooldowns.length === 0) {
+        try {
+            const cached = localStorage.getItem(COOLDOWN_CACHE_KEY);
+            const cachedCats = localStorage.getItem(CD_CATEGORIES_CACHE_KEY);
+            if (cached) {
+                const baseCooldowns = JSON.parse(cached);
+                const categoriesData = cachedCats ? JSON.parse(cachedCats) : null;
+                allCooldowns = _mergeVirtualCategories(baseCooldowns, categoriesData);
+                window.allCooldowns = allCooldowns;
+                console.log('[Cooldowns] Aus Cache geladen:', allCooldowns.length, 'Einträge');
+            }
+        } catch (e) {
+            console.warn('[Cooldowns] Cache-Lesen fehlgeschlagen:', e);
+        }
+    }
+
+    // ── 2. onSnapshot-Listener (nur einmal registrieren) ─────────────────
+    if (_cooldownListenerActive) return;
+    _cooldownListenerActive = true;
+
     try {
         const cooldownsCollectionRef = collection(db, "cooldowns");
         const q = query(cooldownsCollectionRef, orderBy("order", "asc"), orderBy("name", "asc"));
-        const snapshot = await getDocs(q);
-        let loadedCooldowns = snapshot.docs.map(doc => doc.data());
-        
-        // Virtuelle Kategorien aus dem Auto-Planner holen (z.B. Kampfpots, Warnungen)
-        try {
-            const autoCatDoc = await getDoc(doc(db, "auto-planner", "_cd-categories"));
-            if (autoCatDoc.exists() && autoCatDoc.data().categories) {
-                const cats = autoCatDoc.data().categories;
-                let hasVirtuals = false;
-                
-                Object.values(cats).forEach(c => {
-                    if (c.isVirtual) {
-                        if (!hasVirtuals) {
-                            loadedCooldowns.push({ name: "--- Warnungen (Virtuell) ---", class: "General", spellId: "nil", order: 998 });
-                            hasVirtuals = true;
-                        }
-                        loadedCooldowns.push({
-                            name: c.name,
-                            class: "General",
-                            spellId: "nil",
-                            cooldownSec: 0,
-                            durationSec: 0,
-                            tooltip: `Virtuell. Ziel: ${c.defaultPlayer || 'Alle'}<br>TTS: ${c.defaultTts || '-'}<br>Hinweis: ${c.defaultNote || '-'}`,
-                            order: 999
-                        });
-                    }
-                });
-            }
-        } catch(e) { console.warn("Virtuelle CDs konnten nicht geladen werden:", e); }
 
-        allCooldowns = loadedCooldowns;
-        console.log("Cooldowns erfolgreich aus der Datenbank geladen:", allCooldowns);
-        window.allCooldowns = allCooldowns;
+        // Cooldowns-Listener
+        onSnapshot(q, (snapshot) => {
+            const baseCooldowns = snapshot.docs.map(d => d.data());
+
+            // In localStorage cachen (nur die Basis-Daten, ohne virtuelle)
+            try {
+                localStorage.setItem(COOLDOWN_CACHE_KEY, JSON.stringify(baseCooldowns));
+            } catch (e) { console.warn('[Cooldowns] Cache-Schreiben fehlgeschlagen:', e); }
+
+            // Virtuelle Kategorien aus dem bestehenden Cache mergen
+            let categoriesData = null;
+            try {
+                const cachedCats = localStorage.getItem(CD_CATEGORIES_CACHE_KEY);
+                if (cachedCats) categoriesData = JSON.parse(cachedCats);
+            } catch (e) { /* ignore */ }
+
+            allCooldowns = _mergeVirtualCategories(baseCooldowns, categoriesData);
+            window.allCooldowns = allCooldowns;
+            console.log('[Cooldowns] Live-Update:', allCooldowns.length, 'Einträge');
+        });
+
+        // CD-Kategorien-Listener (für virtuelle Kategorien)
+        onSnapshot(doc(db, "auto-planner", "_cd-categories"), (docSnap) => {
+            const categoriesData = docSnap.exists() ? docSnap.data() : null;
+
+            // In localStorage cachen
+            try {
+                if (categoriesData) {
+                    localStorage.setItem(CD_CATEGORIES_CACHE_KEY, JSON.stringify(categoriesData));
+                }
+            } catch (e) { /* ignore */ }
+
+            // Basis-Cooldowns aus localStorage holen und mit neuen Kategorien mergen
+            try {
+                const cached = localStorage.getItem(COOLDOWN_CACHE_KEY);
+                if (cached) {
+                    const baseCooldowns = JSON.parse(cached);
+                    allCooldowns = _mergeVirtualCategories(baseCooldowns, categoriesData);
+                    window.allCooldowns = allCooldowns;
+                    console.log('[Cooldowns] Kategorien-Update, neu gemerged:', allCooldowns.length, 'Einträge');
+                }
+            } catch (e) { console.warn('[Cooldowns] Kategorien-Merge fehlgeschlagen:', e); }
+        });
+
     } catch (error) {
-        console.error("Fehler beim Laden der Cooldowns aus der Datenbank:", error);
+        console.error("Fehler beim Einrichten der Cooldown-Listener:", error);
+        _cooldownListenerActive = false;
     }
 }
 
@@ -2716,10 +2789,18 @@ async function loadMasterViewData() {
         document.getElementById('mv-stat-missing').textContent = totalMissing;
         document.getElementById('mv-stat-cds').textContent = totalCDs;
 
-        // Dropdowns befüllen und Werte setzen
+        // Snapshot-Daten als Map aufbereiten, damit setMasterViewValues
+        // sie nicht nochmal laden muss (spart N × getDoc Reads!)
+        const snapshotDataMap = {};
+        snapshots.forEach((snap, idx) => {
+            const docId = bossIds[idx].docId;
+            snapshotDataMap[docId] = snap.exists() ? snap.data() : {};
+        });
+
+        // Dropdowns befüllen und Werte setzen (mit bereits geladenen Daten)
         setTimeout(async () => {
             populateMasterViewDropdowns();
-            await setMasterViewValues();
+            await setMasterViewValues(snapshotDataMap);
             attachMasterViewChangeHandlers();
         }, 100);
 
@@ -2810,23 +2891,35 @@ function populateMasterViewDropdowns() {
     });
 }
 
-async function setMasterViewValues() {
-    // Für jeden Boss-Content-Block die Werte aus Firebase setzen
+async function setMasterViewValues(preloadedDataMap) {
+    // Für jeden Boss-Content-Block die Werte setzen.
+    // Wenn preloadedDataMap übergeben wird, verwenden wir die bereits geladenen
+    // Daten und sparen uns den erneuten getDoc-Aufruf (N × Reads gespart!).
     const containers = document.querySelectorAll('.mv-boss-content');
-    const selectedRaidId = document.getElementById('raid-selector').value;
 
     const bossDocIds = Array.from(containers).map(c => c.dataset.mvBossDocid).filter(Boolean);
     if (bossDocIds.length === 0) return;
 
-    const snapshots = await Promise.all(
-        bossDocIds.map(docId => getDoc(doc(db, 'raid-tool-data', docId)))
-    );
+    // Daten beschaffen: aus preloadedDataMap oder (Fallback) aus Firestore
+    let dataMap;
+    if (preloadedDataMap) {
+        dataMap = preloadedDataMap;
+    } else {
+        // Fallback: Daten aus Firestore laden (z.B. bei externem Aufruf ohne Cache)
+        const snapshots = await Promise.all(
+            bossDocIds.map(docId => getDoc(doc(db, 'raid-tool-data', docId)))
+        );
+        dataMap = {};
+        snapshots.forEach((snap, idx) => {
+            dataMap[bossDocIds[idx]] = snap.exists() ? snap.data() : {};
+        });
+    }
 
-    snapshots.forEach((snap, idx) => {
-        if (!snap.exists()) return;
-        const data = snap.data();
-        const container = containers[idx];
-        if (!container) return;
+    containers.forEach((container) => {
+        const docId = container.dataset.mvBossDocid;
+        if (!docId) return;
+        const data = dataMap[docId];
+        if (!data) return;
 
         // Selects befüllen
         container.querySelectorAll('.assignment-select').forEach(select => {

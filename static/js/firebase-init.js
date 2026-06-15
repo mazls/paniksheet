@@ -1,16 +1,19 @@
 /* =========================================================================
    firebase-init.js — Firebase Setup
    =========================================================================
-   Initialisiert Firebase App, Firestore (mit lokalem Cache), Auth. Exportiert die wichtigsten Refs und Helper-Funktionen, die andere Module brauchen.
+   Initialisiert Firebase App, Firestore (mit lokalem Cache), Auth und
+   Realtime Database (RTDB). Exportiert die wichtigsten Refs und
+   Helper-Funktionen, die andere Module brauchen.
    =========================================================================
    EXPORTIERT (window.*):
-   - db, auth, app (über Imports)
+   - db, auth, app, rtdb (über Imports)
    - rosterDocRef, historyCollectionRef, userProfilesCollectionRef,
    - lootCollectionRef, denylistCollectionRef, aliasDocRef, snapshotsCollectionRef
    - Konstanten: DATA_COLLECTION, HISTORY_COLLECTION, USER_PROFILES_COLLECTION, LOOT_COLLECTION, SNAPSHOTS_COLLECTION
    - Firestore-Funktionen (re-exportiert): doc, setDoc, onSnapshot, collection, etc.
+   - RTDB-Funktionen: rtdbRef, rtdbSet, rtdbOnValue, rtdbOnDisconnect, rtdbServerTimestamp, rtdbOff
    - Auth-Funktionen: onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously
-   - window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc }
+   - window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc, rtdb, ... }
    ========================================================================= */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -24,13 +27,24 @@ import {
     getAuth, signInAnonymously, onAuthStateChanged,
     signInWithEmailAndPassword, signOut
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import {
+    getDatabase,
+    ref as rtdbRef,
+    set as rtdbSet,
+    onValue as rtdbOnValue,
+    onDisconnect as rtdbOnDisconnect,
+    off as rtdbOff,
+    serverTimestamp as rtdbServerTimestamp
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
 // Firestore-Funktionen re-exportieren, damit andere Module nicht selbst importieren müssen
 export {
     doc, setDoc, onSnapshot, collection, deleteDoc, getDoc,
     serverTimestamp, query, orderBy, addDoc, updateDoc, where,
     getDocs, limit,
-    onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously
+    onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously,
+    // RTDB-Funktionen
+    rtdbRef, rtdbSet, rtdbOnValue, rtdbOnDisconnect, rtdbOff, rtdbServerTimestamp
 };
 
 
@@ -41,6 +55,7 @@ export {
 const firebaseConfig = {
     apiKey: "AIzaSyBmqCCIOKq0OQOTEgJJ7Lj8CYlLihVBVSU",
     authDomain: "panik-raid.firebaseapp.com",
+    databaseURL: "https://panik-raid-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "panik-raid",
     storageBucket: "panik-raid.appspot.com",
     messagingSenderId: "120578974053",
@@ -55,6 +70,9 @@ export const db = initializeFirestore(app, {
 });
 
 export const auth = getAuth(app);
+
+// Realtime Database initialisieren (für Presence-System)
+export const rtdb = getDatabase(app);
 
 
 // =============================================================================
@@ -89,8 +107,10 @@ export const snapshotsCollectionRef = collection(db, SNAPSHOTS_COLLECTION);
 // Wir exposen großzügig, damit alte Code-Pfade (slot-system.js, cd-auto-planner.js,
 // dynamisch geladene Boss-Seiten) ohne Anpassung funktionieren.
 window.firebaseTools = {
-    db, auth,
+    db, auth, rtdb,
     doc, setDoc, onSnapshot, collection, deleteDoc, getDoc,
     serverTimestamp, query, orderBy, addDoc, updateDoc, where,
-    getDocs, limit
+    getDocs, limit,
+    // RTDB-Funktionen
+    rtdbRef, rtdbSet, rtdbOnValue, rtdbOnDisconnect, rtdbOff, rtdbServerTimestamp
 };
