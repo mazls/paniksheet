@@ -82,8 +82,11 @@ window.authPromise.then((user) => {
         const now = Date.now();
         
         Object.values(data).forEach(ping => {
-            // Nur Pings rendern, die jünger als 3 Sekunden sind
-            if (ping && ping.timestamp && (now - ping.timestamp) < 3000) {
+            // Aktuelle Seite ermitteln (ohne Unter-Tabs wie &assignments)
+            const currentPage = window.location.hash.split('&')[0];
+            
+            // Nur Pings rendern, die jünger als 3 Sekunden sind UND zur selben Seite gehören
+            if (ping && ping.timestamp && (now - ping.timestamp) < 3000 && ping.pageId === currentPage) {
                 // Verhindern, dass derselbe Ping mehrfach gezeichnet wird
                 const pingId = `ping-${ping.timestamp}-${ping.userId}`;
                 if (!document.getElementById(pingId)) {
@@ -118,12 +121,16 @@ document.addEventListener('mousedown', (e) => {
         // Aktuellen Namen ermitteln (falls vorhanden, sonst Fallback)
         const currentManagerUsername = sessionStorage.getItem('currentManager') || 'Manager';
         
+        // Aktuelle Seite speichern (damit Pings nicht auf falschen Bossen aufpoppen)
+        const currentPage = window.location.hash.split('&')[0];
+        
         const pingData = {
             userId: currentUser.uid,
             name: currentManagerUsername,
             selector: selector,
             px: px,
             py: py,
+            pageId: currentPage,
             timestamp: Date.now()
         };
         
