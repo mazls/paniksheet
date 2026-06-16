@@ -1325,7 +1325,7 @@ window.CD_AUTO_PLANNER = (function () {
                         };
                     } else {
                         var dbEntry = cooldownsDB.find(function (cd) { return cd.name === dbName; });
-                        var catSpell = getResolvedCategory(ck).find(function (s) { return s.dbName === dbName; });
+                        var catSpell = resolveCategory(ck).find(function (s) { return s.dbName === dbName; });
                         manualOverrides[oKey] = {
                             player: player, dbName: dbName,
                             dbClass: dbEntry ? dbEntry.class : 'UNKNOWN',
