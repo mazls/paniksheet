@@ -453,7 +453,7 @@ const TRIGGER_OPTIONS = [
 
             // 4. Zeilen generieren
             let rowsHtml = "";
-            for (let i = 1; i <= 100; i++) {
+            for (let i = 1; i <= 200; i++) {
                 rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Verschieben"><i class="fas fa-grip-vertical"></i></div>
@@ -639,7 +639,7 @@ window.updatePlannerSummary = function() {
             };
 
             // Daten sammeln
-            for (let i = 1; i <= 100; i++) {
+            for (let i = 1; i <= 200; i++) {
                 const triggerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-trigger"]`);
                 const playerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-player"]`);
                 const cdEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-cooldown"]`);

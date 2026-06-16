@@ -3196,7 +3196,7 @@ function injectClearPlannerButton() {
     clearBtn.id = 'btn-clear-planner';
     clearBtn.className = 'bg-orange-700 hover:bg-orange-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-orange-600';
     clearBtn.innerHTML = '🧹 CD-Plan leeren';
-    clearBtn.title = 'Leert ALLE 100 Zeilen des Advanced CD-Plans dieses Bosses (Auto-Plan bleibt unangetastet)';
+    clearBtn.title = 'Leert ALLE 200 Zeilen des Advanced CD-Plans dieses Bosses (Auto-Plan bleibt unangetastet)';
     btnContainer.appendChild(clearBtn);
 
     clearBtn.addEventListener('click', function () {
@@ -3204,7 +3204,7 @@ function injectClearPlannerButton() {
             if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
             return;
         }
-        var msg = "Advanced CD-Plan leeren?\n\nLöscht ALLE 100 Zeilen des CD-Planers dieses Bosses (Trigger, Spieler, Cooldowns, Zeiten, Texte).\nDer Auto-CD-Plan bleibt unangetastet.\n\nFortfahren?";
+        var msg = "Advanced CD-Plan leeren?\n\nLöscht ALLE 200 Zeilen des CD-Planers dieses Bosses (Trigger, Spieler, Cooldowns, Zeiten, Texte).\nDer Auto-CD-Plan bleibt unangetastet.\n\nFortfahren?";
         if (typeof window.showModal === 'function') {
             var r = window.showModal(msg, true);
             if (r && typeof r.then === 'function') {
@@ -3218,7 +3218,7 @@ function injectClearPlannerButton() {
     });
 }
 
-// ── Leert ALLE 100 Zeilen des Advanced CD-Plans (DOM + Firestore) ──
+// ── Leert ALLE 200 Zeilen des Advanced CD-Plans (DOM + Firestore) ──
 async function clearPlannerOnly() {
     if (!window.isManager) {
         if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
@@ -3247,7 +3247,7 @@ async function clearPlannerOnly() {
 
     try {
         // DOM leeren + Batch füllen
-        for (var i = 1; i <= 100; i++) {
+        for (var i = 1; i <= 200; i++) {
             var rowPrefix = prefix + '-planner-row' + i;
             fields.forEach(function (f) {
                 var fieldId = rowPrefix + '-' + f;
@@ -3307,10 +3307,10 @@ async function clearPlannerOnly() {
         // Logbuch
         if (typeof window.logHistory === 'function') {
             window.logHistory('Auto-Planner', 'Advanced CD-Plan geleert für Boss "' + config.name + '"',
-                '100 Zeilen', currentManager);
+                '200 Zeilen', currentManager);
         }
 
-        updateStatus("Advanced CD-Plan geleert (100 Zeilen, lokal + DB).");
+        updateStatus("Advanced CD-Plan geleert (200 Zeilen, lokal + DB).");
         if (window.showModal) window.showModal("✓ Advanced CD-Plan geleert.");
 
         // Planner-Summary neu rendern, falls verfügbar
@@ -3367,7 +3367,7 @@ async function wipeBossFromDb() {
         var r = window.showModal(
             "⚠️ ACHTUNG: Alle Datenbank-Einträge für '" + config.name + "' werden GELÖSCHT.\n\n" +
             "Das betrifft:\n" +
-            "• Den CD-Planer (alle 100 Zeilen)\n" +
+            "• Den CD-Planer (alle 200 Zeilen)\n" +
             "• Den Auto-Planer (gespeicherter Plan + Overrides + Custom-Events)\n" +
             "• Sonstige Boss-Einteilungen (Tank-Zuteilungen, Bereich-Zuteilungen etc.)\n\n" +
             "Diese Aktion kann NICHT rückgängig gemacht werden!\n\n" +

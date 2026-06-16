@@ -784,7 +784,7 @@ window.updatePlannerSummary = function() {
     };
 
     // 2. DATEN SAMMELN
-    for (let i = 1; i <= 100; i++) {
+    for (let i = 1; i <= 200; i++) {
         const triggerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-trigger"]`);
         const playerEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-player"]`);
         const cdEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-cooldown"]`);
