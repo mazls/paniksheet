@@ -861,6 +861,14 @@ window.CD_AUTO_PLANNER = (function () {
         var usedUntil = {};
         var lastClassUsed = {}; // catKey -> dbClass
 
+        var cachedResolvedCats = {};
+        function getResolvedCategory(catKey) {
+            if (!cachedResolvedCats[catKey]) {
+                cachedResolvedCats[catKey] = resolveCategory(catKey);
+            }
+            return cachedResolvedCats[catKey];
+        }
+
         var allCatKeys = getUniqueCategoryKeys();
 
         var manualReservations = {};
@@ -1024,14 +1032,6 @@ window.CD_AUTO_PLANNER = (function () {
             if (up === 'MELEE' || up === 'MELEEDPS') return 'MELEEDPS';
             if (up === 'RANGE' || up === 'RANGED' || up === 'RANGEDDPS') return 'RANGEDDPS';
             return p; // Keep class names like Priest as is
-        }
-
-        var cachedResolvedCats = {};
-        function getResolvedCategory(catKey) {
-            if (!cachedResolvedCats[catKey]) {
-                cachedResolvedCats[catKey] = resolveCategory(catKey);
-            }
-            return cachedResolvedCats[catKey];
         }
 
         timeline.forEach(function (row) {
