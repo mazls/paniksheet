@@ -2784,10 +2784,13 @@ async function loadMasterViewData() {
         });
 
         // Stats aktualisieren
-        document.getElementById('mv-stat-bosses').textContent = bossIds.length;
-        document.getElementById('mv-stat-assigned').textContent = totalAssigned;
-        document.getElementById('mv-stat-missing').textContent = totalMissing;
-        document.getElementById('mv-stat-cds').textContent = totalCDs;
+        const mvStatBosses = document.getElementById('mv-stat-bosses');
+        if (mvStatBosses) {
+            mvStatBosses.textContent = bossIds.length;
+            document.getElementById('mv-stat-assigned').textContent = totalAssigned;
+            document.getElementById('mv-stat-missing').textContent = totalMissing;
+            document.getElementById('mv-stat-cds').textContent = totalCDs;
+        }
 
         // Snapshot-Daten als Map aufbereiten, damit setMasterViewValues
         // sie nicht nochmal laden muss (spart N × getDoc Reads!)
