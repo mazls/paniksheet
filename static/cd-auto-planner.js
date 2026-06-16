@@ -861,15 +861,38 @@ window.CD_AUTO_PLANNER = (function () {
         var usedUntil = {};
         var lastClassUsed = {}; // catKey -> dbClass
 
-        function isAvailable(player, dbName, atTime) {
+        var allCatKeys = getUniqueCategoryKeys();
+
+        var manualReservations = {};
+        timeline.forEach(function (row) {
+            allCatKeys.forEach(function(catKey) {
+                var oKey = row.eventIdx + '-' + row.castNum + '-' + catKey;
+                var ov = manualOverrides[oKey];
+                if (ov && ov.player && ov.dbName && !ov.skip && !ov.isVirtualCategoryKey) {
+                    var k = ov.player + '::' + ov.dbName;
+                    if (!manualReservations[k]) manualReservations[k] = [];
+                    manualReservations[k].push({ time: row.absTime, cdSec: ov.cooldownSec || 180 });
+                }
+            });
+        });
+
+        function isAvailable(player, dbName, atTime, currentCdSec) {
             var key = player + '::' + dbName;
-            return !usedUntil[key] || atTime >= usedUntil[key];
+            if (usedUntil[key] && atTime < usedUntil[key]) return false;
+            
+            if (manualReservations[key]) {
+                for (var i = 0; i < manualReservations[key].length; i++) {
+                    var res = manualReservations[key][i];
+                    if (atTime < res.time && atTime + currentCdSec > res.time) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
         function markUsed(player, dbName, cdSec, atTime) {
             usedUntil[player + '::' + dbName] = atTime + cdSec;
         }
-
-        var allCatKeys = getUniqueCategoryKeys();
 
         // ──────────────────────────────────────────────────────────────
         // STRATEGIE A — SPREAD-MASKE
@@ -904,7 +927,7 @@ window.CD_AUTO_PLANNER = (function () {
                 }
                 var parts = gKey.split('||');
                 var catKey = parts[1];
-                var spells = resolveCategory(catKey);
+                var spells = getResolvedCategory(catKey);
 
                 // Capacity = wieviele verschiedene Player+Spell Kombinationen verfügbar?
                 var totalPlayers = 0;
@@ -968,13 +991,14 @@ window.CD_AUTO_PLANNER = (function () {
             // Liefert ersten verfügbaren Spieler aus der Liste,
             // unter Berücksichtigung von Round-Robin wenn aktiv.
             if (!players.length) return null;
+            var cdSec = spell.cooldownSec || 180;
 
             if (assignStrategy.roundRobin) {
                 var rrKey = spell.dbName + '::' + spell.dbClass;
                 var start = _rrCounters[rrKey] || 0;
                 for (var k = 0; k < players.length; k++) {
                     var idx = (start + k) % players.length;
-                    if (isAvailable(players[idx], spell.dbName, atTime)) {
+                    if (isAvailable(players[idx], spell.dbName, atTime, cdSec)) {
                         _rrCounters[rrKey] = (idx + 1) % players.length;
                         return players[idx];
                     }
@@ -983,7 +1007,7 @@ window.CD_AUTO_PLANNER = (function () {
             }
 
             for (var i = 0; i < players.length; i++) {
-                if (isAvailable(players[i], spell.dbName, atTime)) return players[i];
+                if (isAvailable(players[i], spell.dbName, atTime, cdSec)) return players[i];
             }
             return null;
         }
@@ -1000,6 +1024,14 @@ window.CD_AUTO_PLANNER = (function () {
             if (up === 'MELEE' || up === 'MELEEDPS') return 'MELEEDPS';
             if (up === 'RANGE' || up === 'RANGED' || up === 'RANGEDDPS') return 'RANGEDDPS';
             return p; // Keep class names like Priest as is
+        }
+
+        var cachedResolvedCats = {};
+        function getResolvedCategory(catKey) {
+            if (!cachedResolvedCats[catKey]) {
+                cachedResolvedCats[catKey] = resolveCategory(catKey);
+            }
+            return cachedResolvedCats[catKey];
         }
 
         timeline.forEach(function (row) {
@@ -1084,7 +1116,7 @@ window.CD_AUTO_PLANNER = (function () {
                     }
                 }
 
-                var spells = resolveCategory(catKey);
+                var spells = getResolvedCategory(catKey);
 
                 if (assignStrategy.preferHeal) {
                     spells.sort(function (a, b) {
@@ -1160,6 +1192,11 @@ window.CD_AUTO_PLANNER = (function () {
 
         // Tbody
         var lastEvt = '';
+        var cachedOptions = {};
+        catKeys.forEach(function (catKey) {
+            cachedOptions[catKey] = buildDropdownOptions(catKey);
+        });
+
         var rows = timeline.map(function (row, rowIdx) {
             var isNew = row.eventName !== lastEvt;
             lastEvt = row.eventName;
@@ -1167,7 +1204,7 @@ window.CD_AUTO_PLANNER = (function () {
             var cells = catKeys.map(function (catKey) {
                 var slot = row.slots[catKey];
                 var isReq = row.requiredCDs.indexOf(catKey) !== -1;
-                var options = buildDropdownOptions(catKey);
+                var options = cachedOptions[catKey];
 
                 // Skipped
                 if (slot && slot.skipped) {
@@ -1288,7 +1325,7 @@ window.CD_AUTO_PLANNER = (function () {
                         };
                     } else {
                         var dbEntry = cooldownsDB.find(function (cd) { return cd.name === dbName; });
-                        var catSpell = resolveCategory(ck).find(function (s) { return s.dbName === dbName; });
+                        var catSpell = getResolvedCategory(ck).find(function (s) { return s.dbName === dbName; });
                         manualOverrides[oKey] = {
                             player: player, dbName: dbName,
                             dbClass: dbEntry ? dbEntry.class : 'UNKNOWN',
@@ -2159,7 +2196,7 @@ async function exportToPlanner() {
             }
 
             validSlots.forEach(function (slot) {
-                if (rowNum > 100) return;
+                if (rowNum > 300) return;
                 var rowPrefix = prefix + '-planner-row' + rowNum;
 
                 // DOM aktualisieren (für sofortige Anzeige, aber OHNE change-Events)
