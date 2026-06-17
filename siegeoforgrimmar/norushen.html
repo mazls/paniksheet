@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,19 +17,23 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
         margin-left: 8px;
     }
+
     /* Drop-Indikatoren für Drag&Drop in der Prio-Liste */
     #norushen-orb-prio-list li.drop-above {
         box-shadow: 0 -2px 0 0 #fbbf24;
     }
+
     #norushen-orb-prio-list li.drop-below {
         box-shadow: 0 2px 0 0 #fbbf24;
     }
@@ -40,433 +46,500 @@
         <a href="#planner">Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            Jeder Spieler startet mit massiver Verderbnis, die euren Boss-Damage verringert. Tretet in gelbe Lichtkugeln für eine Solo-Prüfung, um gereinigt zu werden und wieder vollen (bzw. Bonus-)Schaden zu verursachen. Priorität liegt auf dem Besiegen und Soaken der Adds.
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li>Stetiger Tank-Swap (bei ca. 3 Stacks <strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=145216" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Entfesselter Zorn</a></strong>) ist Pflicht.</li>
-                    <li>Plant in der Prüfung eure CDs gut ein, eine Minute zu überleben ist lang!</li>
-                    <li>Der Off-Tank sammelt alle Adds ein und soakt die schwarzen Kugeln, da +25 Verderbnis Tanks kaum stört.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li>Dem Laserstrahl <strong><a href="https://www.wowhead.com/mop-classic/de/spell=145226" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Blinder Hass</a></strong> müsst ihr zwingend ausweichen!</li>
-                    <li><strong>Heiler:</strong> Stellt euer UI so ein, dass ihr Debuffs auf befreundeten NPCs in der Prüfung sofort seht, um diese zu dispellen.</li>
-                    <li><strong>DPS:</strong> Die kleinen Adds in eurer Prüfung parieren von vorn. Steht immer hinter ihnen! Nach dem Kill droppen Adds schwarze Kugeln, die von gereinigten Spielern gesoakt werden müssen.</li>
-                </ul>
-            </div>
-        </div>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                Jeder Spieler startet mit massiver Verderbnis, die euren Boss-Damage verringert. Tretet in gelbe
+                Lichtkugeln für eine Solo-Prüfung, um gereinigt zu werden und wieder vollen (bzw. Bonus-)Schaden zu
+                verursachen. Priorität liegt auf dem Besiegen und Soaken der Adds.
+            </p>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktik-Tipps & Kampfrausch</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200">⚡ HT / Bloodlust:</strong><br>
-                    Heroisch: Zieht HT oft direkt auf Pull!<br>
-                    Normal: Zieht HT bei ca. 30%, wenn die meisten DPS ihre Prüfung beendet haben und wieder maximalen Schaden machen.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Zuteilung:</strong><br>
-                    Sprecht vor dem Kampf genau ab, wer wann in die Prüfung geht (nicht alle Heiler gleichzeitig!).
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Fokus-Target:</strong><br>
-                    Fokussiert stets die Adds vor dem Boss. Sie verursachen sonst fiesen Raid-AoE.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Tank 1:</span><select class="assignment-select" data-assignment-id="norushen-tank-1"></select></li>
-                        <li><span>Tank 2:</span><select class="assignment-select" data-assignment-id="norushen-tank-2"></select></li>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li>Stetiger Tank-Swap (bei ca. 3 Stacks <strong class="text-red-400"><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=145216" target="_blank"
+                                    rel="noopener noreferrer" class="text-gray-300 hover:underline">Entfesselter
+                                    Zorn</a></strong>) ist Pflicht.</li>
+                        <li>Plant in der Prüfung eure CDs gut ein, eine Minute zu überleben ist lang!</li>
+                        <li>Der Off-Tank sammelt alle Adds ein und soakt die schwarzen Kugeln, da +25 Verderbnis Tanks
+                            kaum stört.</li>
                     </ul>
                 </div>
-                
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-yellow-400">✨ Prio-Liste für die Kugeln (Prüfung)</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Reihenfolge wer wann in die Lichtkugel geht, mit Delay (Sekunden).</p>
-                    
-                    <div class="overflow-x-auto rounded border border-slate-700 mb-3">
-                        <table class="w-full text-left text-xs text-gray-300">
-                            <thead class="bg-slate-900 text-gray-400 font-bold uppercase">
-                                <tr>
-                                    <th class="p-2 w-10 text-center">#</th>
-                                    <th class="p-2">Spieler</th>
-                                    <th class="p-2 w-24" title="Verzögerung in Sekunden ab Encounter-Start">Delay (s)</th>
-                                    <th class="p-2 w-10"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="norushen-orb-order-body" class="divide-y divide-slate-700 bg-slate-800"></tbody>
-                        </table>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li>Dem Laserstrahl <strong><a href="https://www.wowhead.com/mop-classic/de/spell=145226"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-blue-400 hover:underline">Blinder Hass</a></strong> müsst ihr zwingend
+                            ausweichen!</li>
+                        <li><strong>Heiler:</strong> Stellt euer UI so ein, dass ihr Debuffs auf befreundeten NPCs in
+                            der Prüfung sofort seht, um diese zu dispellen.</li>
+                        <li><strong>DPS:</strong> Die kleinen Adds in eurer Prüfung parieren von vorn. Steht immer
+                            hinter ihnen! Nach dem Kill droppen Adds schwarze Kugeln, die von gereinigten Spielern
+                            gesoakt werden müssen.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+                <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktik-Tipps
+                    & Kampfrausch</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                    <div>
+                        <strong class="text-emerald-200">⚡ HT / Bloodlust:</strong><br>
+                        Heroisch: Zieht HT oft direkt auf Pull!<br>
+                        Normal: Zieht HT bei ca. 30%, wenn die meisten DPS ihre Prüfung beendet haben und wieder
+                        maximalen Schaden machen.
                     </div>
-                    
-                    <!-- ✨ AUTO-FÜLLEN: Prio-Konfiguration -->
-                    <details id="norushen-orb-auto-section" class="mb-3 bg-slate-900/60 border border-slate-700 rounded">
-                        <summary class="cursor-pointer p-2 text-xs font-bold text-yellow-300 hover:bg-slate-800 rounded">
-                            ⚡ Auto-Füllen nach Spec-Priorität
-                        </summary>
-                        <div class="p-3 space-y-3">
-                            <p class="text-[11px] text-gray-400">
-                                Kategorien definieren Reihenfolge + Limits. "Auto-Füllen" trägt Spieler aus dem Kader nach Priorität ein, respektiert dabei eure Limits (z.B. "max 1 Tank in den ersten 4 Plätzen").
-                            </p>
-                            
-                            <div>
-                                <div class="flex items-center justify-between mb-1">
-                                    <span class="text-[10px] text-gray-500 uppercase tracking-wide">Prioritäts-Reihenfolge:</span>
-                                    <span class="text-[10px] text-gray-500">⋮⋮ ziehen | ✎ bearbeiten | ✕ löschen</span>
-                                </div>
-                                <ul id="norushen-orb-prio-list" class="space-y-1"></ul>
-                                
-                                <div class="flex flex-wrap gap-2 mt-2">
-                                    <button id="norushen-orb-prio-add" class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">
-                                        + Eigene Kategorie
-                                    </button>
-                                    <button id="norushen-orb-prio-detect" class="bg-blue-700 hover:bg-blue-800 text-white text-[11px] py-1 px-2 rounded border border-blue-500" title="Liest die Specs aus dem Kader und legt automatisch passende Kategorien an">
-                                        🪄 Aus Kader ableiten
-                                    </button>
-                                    <button id="norushen-orb-prio-reset" class="bg-slate-700 hover:bg-slate-800 text-white text-[11px] py-1 px-2 rounded border border-slate-500">
-                                        ↺ Defaults
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="border-t border-slate-700 pt-3 flex flex-wrap gap-2 items-center">
-                                <button id="norushen-orb-auto-fill" class="bg-yellow-700 hover:bg-yellow-800 text-white text-xs py-1.5 px-3 rounded border border-yellow-500">
-                                    ⚡ Auto-Füllen
-                                </button>
-                                <button id="norushen-orb-show-debug" class="bg-slate-700 hover:bg-slate-800 text-gray-300 text-[11px] py-1 px-2 rounded border border-slate-600" title="Zeigt welcher Spieler welcher Kategorie zugeordnet wird">
-                                    🔍 Zuordnung anzeigen
-                                </button>
-                                <span class="text-[10px] text-gray-500 ml-auto">
-                                    Spec → Klasse → Rolle (Fallback-Kette)
-                                </span>
-                            </div>
-                            
-                            <div id="norushen-orb-debug-output" class="hidden bg-slate-900 border border-slate-700 rounded p-2 max-h-48 overflow-y-auto text-[11px]"></div>
+                    <div>
+                        <strong class="text-emerald-200">Zuteilung:</strong><br>
+                        Sprecht vor dem Kampf genau ab, wer wann in die Prüfung geht (nicht alle Heiler gleichzeitig!).
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Fokus-Target:</strong><br>
+                        Fokussiert stets die Adds vor dem Boss. Sie verursachen sonst fiesen Raid-AoE.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div class="space-y-6">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
+                        <ul class="assignment-list">
+                            <li><span>Tank 1:</span><select class="assignment-select"
+                                    data-assignment-id="norushen-tank-1"></select></li>
+                            <li><span>Tank 2:</span><select class="assignment-select"
+                                    data-assignment-id="norushen-tank-2"></select></li>
+                        </ul>
+                    </div>
+
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-yellow-400">✨ Prio-Liste für die Kugeln (Prüfung)</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Reihenfolge wer wann in die Lichtkugel geht, mit
+                            Delay (Sekunden).</p>
+
+                        <div class="overflow-x-auto rounded border border-slate-700 mb-3">
+                            <table class="w-full text-left text-xs text-gray-300">
+                                <thead class="bg-slate-900 text-gray-400 font-bold uppercase">
+                                    <tr>
+                                        <th class="p-2 w-10 text-center">#</th>
+                                        <th class="p-2">Spieler</th>
+                                        <th class="p-2 w-24" title="Verzögerung in Sekunden ab Encounter-Start">Delay
+                                            (s)</th>
+                                        <th class="p-2 w-10"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="norushen-orb-order-body" class="divide-y divide-slate-700 bg-slate-800">
+                                </tbody>
+                            </table>
                         </div>
-                    </details>
-                    
-                    <!-- Modal für Kategorie-Bearbeitung -->
-                    <div id="norushen-orb-prio-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-                        <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 max-w-md w-full" style="font-size: 13px;">
-                            <h4 class="text-base font-bold text-yellow-300 mb-3" id="norushen-orb-prio-modal-title">Kategorie bearbeiten</h4>
-                            <div class="space-y-3">
+
+                        <!-- ✨ AUTO-FÜLLEN: Prio-Konfiguration -->
+                        <details id="norushen-orb-auto-section"
+                            class="mb-3 bg-slate-900/60 border border-slate-700 rounded">
+                            <summary
+                                class="cursor-pointer p-2 text-xs font-bold text-yellow-300 hover:bg-slate-800 rounded">
+                                ⚡ Auto-Füllen nach Spec-Priorität
+                            </summary>
+                            <div class="p-3 space-y-3">
+                                <p class="text-[11px] text-gray-400">
+                                    Kategorien definieren Reihenfolge + Limits. "Auto-Füllen" trägt Spieler aus dem
+                                    Kader nach Priorität ein, respektiert dabei eure Limits (z.B. "max 1 Tank in den
+                                    ersten 4 Plätzen").
+                                </p>
+
                                 <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Anzeigename</label>
-                                    <input id="norushen-orb-prio-modal-label" type="text" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white" placeholder="z.B. Shadow Priester">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span
+                                            class="text-[10px] text-gray-500 uppercase tracking-wide">Prioritäts-Reihenfolge:</span>
+                                        <span class="text-[10px] text-gray-500">⋮⋮ ziehen | ✎ bearbeiten | ✕
+                                            löschen</span>
+                                    </div>
+                                    <ul id="norushen-orb-prio-list" class="space-y-1"></ul>
+
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        <button id="norushen-orb-prio-add"
+                                            class="bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] py-1 px-2 rounded border border-emerald-500">
+                                            + Eigene Kategorie
+                                        </button>
+                                        <button id="norushen-orb-prio-detect"
+                                            class="bg-blue-700 hover:bg-blue-800 text-white text-[11px] py-1 px-2 rounded border border-blue-500"
+                                            title="Liest die Specs aus dem Kader und legt automatisch passende Kategorien an">
+                                            🪄 Aus Kader ableiten
+                                        </button>
+                                        <button id="norushen-orb-prio-reset"
+                                            class="bg-slate-700 hover:bg-slate-800 text-white text-[11px] py-1 px-2 rounded border border-slate-500">
+                                            ↺ Defaults
+                                        </button>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Klasse</label>
-                                    <select id="norushen-orb-prio-modal-class" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                        <option value="">— alle Klassen —</option>
-                                        <!-- wird von JS gefüllt -->
-                                    </select>
+
+                                <div class="border-t border-slate-700 pt-3 flex flex-wrap gap-2 items-center">
+                                    <button id="norushen-orb-auto-fill"
+                                        class="bg-yellow-700 hover:bg-yellow-800 text-white text-xs py-1.5 px-3 rounded border border-yellow-500">
+                                        ⚡ Auto-Füllen
+                                    </button>
+                                    <button id="norushen-orb-show-debug"
+                                        class="bg-slate-700 hover:bg-slate-800 text-gray-300 text-[11px] py-1 px-2 rounded border border-slate-600"
+                                        title="Zeigt welcher Spieler welcher Kategorie zugeordnet wird">
+                                        🔍 Zuordnung anzeigen
+                                    </button>
+                                    <span class="text-[10px] text-gray-500 ml-auto">
+                                        Spec → Klasse → Rolle (Fallback-Kette)
+                                    </span>
                                 </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Spec</label>
-                                    <select id="norushen-orb-prio-modal-spec" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                        <option value="">— alle Specs —</option>
-                                        <!-- wird von JS gefüllt, abhängig von Klasse -->
-                                    </select>
+
+                                <div id="norushen-orb-debug-output"
+                                    class="hidden bg-slate-900 border border-slate-700 rounded p-2 max-h-48 overflow-y-auto text-[11px]">
                                 </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Rolle</label>
-                                    <select id="norushen-orb-prio-modal-role" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                        <option value="">— beliebig —</option>
-                                        <option value="tank">Tank</option>
-                                        <option value="healer">Healer</option>
-                                        <option value="dps">Alle DPS</option>
-                                        <option value="melee">Melee DPS</option>
-                                        <option value="ranged_physical">Physical Range DPS</option>
-                                        <option value="caster">Caster DPS</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="border-t border-slate-700 pt-3">
-                                    <div class="text-xs font-bold text-yellow-300 mb-2">Begrenzungen (optional)</div>
-                                    <div class="space-y-3">
-                                        <div class="bg-slate-900/50 p-2 rounded border border-slate-600">
-                                            <label class="block text-xs text-gray-300 mb-1 font-semibold">1. Limitierung am Anfang</label>
-                                            <div class="text-[10px] text-gray-500 mb-2">
-                                                Erlaubt z.B. maximal 1 Heiler in den ersten 4 Zeilen.
-                                            </div>
-                                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                                <span>Maximal</span>
-                                                <input id="norushen-orb-prio-modal-limit-count" type="number" min="0" class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white text-center" placeholder="Anz">
-                                                <span>Spieler in den ersten</span>
-                                                <input id="norushen-orb-prio-modal-limit-rows" type="number" min="1" class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white text-center" placeholder="Zln">
-                                                <span>Zeilen.</span>
-                                            </div>
+                            </div>
+                        </details>
+
+                        <!-- Modal für Kategorie-Bearbeitung -->
+                        <div id="norushen-orb-prio-modal"
+                            class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+                            <div class="bg-slate-800 border border-slate-600 rounded-lg p-4 max-w-md w-full"
+                                style="font-size: 13px;">
+                                <h4 class="text-base font-bold text-yellow-300 mb-3" id="norushen-orb-prio-modal-title">
+                                    Kategorie bearbeiten</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Anzeigename</label>
+                                        <input id="norushen-orb-prio-modal-label" type="text"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white"
+                                            placeholder="z.B. Shadow Priester">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Klasse</label>
+                                        <select id="norushen-orb-prio-modal-class"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                            <option value="">— alle Klassen —</option>
+                                            <!-- wird von JS gefüllt -->
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Spec</label>
+                                        <select id="norushen-orb-prio-modal-spec"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                            <option value="">— alle Specs —</option>
+                                            <!-- wird von JS gefüllt, abhängig von Klasse -->
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-1">Rolle</label>
+                                        <select id="norushen-orb-prio-modal-role"
+                                            class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
+                                            <option value="">— beliebig —</option>
+                                            <option value="tank">Tank</option>
+                                            <option value="healer">Healer</option>
+                                            <option value="dps">Alle DPS</option>
+                                            <option value="melee">Melee DPS</option>
+                                            <option value="ranged_physical">Physical Range DPS</option>
+                                            <option value="caster">Caster DPS</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="border-t border-slate-700 pt-3">
+                                        <div class="text-xs font-bold text-yellow-300 mb-2">Begrenzungen (optional)
                                         </div>
-                                        <div class="bg-slate-900/50 p-2 rounded border border-slate-600">
-                                            <label class="block text-xs text-gray-300 mb-1 font-semibold">2. Absolute Obergrenze</label>
-                                            <div class="text-[10px] text-gray-500 mb-2">
-                                                Wie viele Spieler dieser Kategorie dürfen insgesamt in der gesamten Tabelle eingetragen werden? (Leer lassen für unbegrenzt)
+                                        <div class="space-y-3">
+                                            <div class="bg-slate-900/50 p-2 rounded border border-slate-600">
+                                                <label class="block text-xs text-gray-300 mb-1 font-semibold">1.
+                                                    Limitierung am Anfang</label>
+                                                <div class="text-[10px] text-gray-500 mb-2">
+                                                    Erlaubt z.B. maximal 1 Heiler in den ersten 4 Zeilen.
+                                                </div>
+                                                <div class="flex items-center gap-2 text-sm text-gray-300">
+                                                    <span>Maximal</span>
+                                                    <input id="norushen-orb-prio-modal-limit-count" type="number"
+                                                        min="0"
+                                                        class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white text-center"
+                                                        placeholder="Anz">
+                                                    <span>Spieler in den ersten</span>
+                                                    <input id="norushen-orb-prio-modal-limit-rows" type="number" min="1"
+                                                        class="w-16 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white text-center"
+                                                        placeholder="Zln">
+                                                    <span>Zeilen.</span>
+                                                </div>
                                             </div>
-                                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                                <span>Maximal</span>
-                                                <input id="norushen-orb-prio-modal-max-total" type="number" min="0" class="w-20 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white text-center" placeholder="z.B. 3">
-                                                <span>Spieler insgesamt.</span>
+                                            <div class="bg-slate-900/50 p-2 rounded border border-slate-600">
+                                                <label class="block text-xs text-gray-300 mb-1 font-semibold">2.
+                                                    Absolute Obergrenze</label>
+                                                <div class="text-[10px] text-gray-500 mb-2">
+                                                    Wie viele Spieler dieser Kategorie dürfen insgesamt in der gesamten
+                                                    Tabelle eingetragen werden? (Leer lassen für unbegrenzt)
+                                                </div>
+                                                <div class="flex items-center gap-2 text-sm text-gray-300">
+                                                    <span>Maximal</span>
+                                                    <input id="norushen-orb-prio-modal-max-total" type="number" min="0"
+                                                        class="w-20 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white text-center"
+                                                        placeholder="z.B. 3">
+                                                    <span>Spieler insgesamt.</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="text-[10px] text-gray-500 italic">
+                                        Tipp: Filter sind UND-verknüpft. Leer lassen = nicht filtern.
+                                    </div>
                                 </div>
-                                
-                                <div class="text-[10px] text-gray-500 italic">
-                                    Tipp: Filter sind UND-verknüpft. Leer lassen = nicht filtern.
+                                <div class="flex gap-2 mt-4">
+                                    <button id="norushen-orb-prio-modal-save"
+                                        class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded">Speichern</button>
+                                    <button id="norushen-orb-prio-modal-cancel"
+                                        class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded">Abbrechen</button>
                                 </div>
-                            </div>
-                            <div class="flex gap-2 mt-4">
-                                <button id="norushen-orb-prio-modal-save" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded">Speichern</button>
-                                <button id="norushen-orb-prio-modal-cancel" class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded">Abbrechen</button>
                             </div>
                         </div>
+
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            <button id="norushen-orb-add-row"
+                                class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+
+                                Zeile hinzufügen</button>
+                            <button id="norushen-orb-clear"
+                                class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded border border-slate-500">🗑
+                                Alle leeren</button>
+                            <button id="norushen-orb-copy-wa"
+                                class="bg-purple-700 hover:bg-purple-800 text-white text-xs py-1.5 px-3 rounded border border-purple-500 ml-auto">📋
+                                WeakAura-String kopieren</button>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-700 rounded p-2">
+                            <div class="text-[10px] text-gray-500 uppercase mb-1 tracking-wide">WeakAura Export:</div>
+                            <code id="norushen-orb-wa-output"
+                                class="text-xs text-purple-300 font-mono break-all select-all block">—</code>
+                        </div>
                     </div>
-                    
-                    <div class="flex flex-wrap items-center gap-2 mb-3">
-                        <button id="norushen-orb-add-row" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Zeile hinzufügen</button>
-                        <button id="norushen-orb-clear" class="bg-slate-700 hover:bg-slate-800 text-white text-xs py-1.5 px-3 rounded border border-slate-500">🗑 Alle leeren</button>
-                        <button id="norushen-orb-copy-wa" class="bg-purple-700 hover:bg-purple-800 text-white text-xs py-1.5 px-3 rounded border border-purple-500 ml-auto">📋 WeakAura-String kopieren</button>
-                    </div>
-                    
-                    <div class="bg-slate-900 border border-slate-700 rounded p-2">
-                        <div class="text-[10px] text-gray-500 uppercase mb-1 tracking-wide">WeakAura Export:</div>
-                        <code id="norushen-orb-wa-output" class="text-xs text-purple-300 font-mono break-all select-all block">—</code>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+
+                    <div class="space-y-6">
+                        <div id="positioning-toggle"
+                            class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                            <button data-phase="norushen-p1"
+                                class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Hauptplattform</button>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                            <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                                <p class="positioning-text" data-phase="norushen-p1">Sammeln hinter dem Boss. Adds
+                                    werden sofort gepullt und in den Cleave gezogen.</p>
+                                <p class="positioning-text hidden" data-phase="norushen-p2">In der Prüfung: Ausweichen,
+                                    gegnerische Angriffe kicken und die zugewiesene Rolle erfüllen.</p>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <img src="siegeoforgrimmar/norushen.png" alt="Aufstellung Hauptplattform"
+                                class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                                data-phase="norushen-p1"
+                                onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;norushen-p1&quot;>Bild für die Hauptplattform noch nicht verfügbar.</div>'">
+
+
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="norushen-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Hauptplattform</button>
-                    </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="norushen-p1">Sammeln hinter dem Boss. Adds werden sofort gepullt und in den Cleave gezogen.</p>
-                            <p class="positioning-text hidden" data-phase="norushen-p2">In der Prüfung: Ausweichen, gegnerische Angriffe kicken und die zugewiesene Rolle erfüllen.</p>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/norushen.png" alt="Aufstellung Hauptplattform" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="norushen-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;norushen-p1&quot;>Bild für die Hauptplattform noch nicht verfügbar.</div>'">
-                            
-                
-                    </div>
-                </div>
+    <!-- Auto-Planner Block -->
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Auto-CD-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="text-sm text-gray-400 mb-4 italic">
+                Plant automatisch CD-Zuteilungen für Blinder Hass und Phasenübergänge.
+                Phase 2 startet bei 50% HP (Große Adds und erhöhter Boss-Damage).
+            </p>
+
+            <!-- Steuerung -->
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Auto-Zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In CD-Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+                <button id="btn-save-categories"
+                    class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500"
+                    style="display:none;">📂 Kategorien speichern</button>
             </div>
-        </div>
-    </div>
-</section>
 
-<!-- Auto-Planner Block -->
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="text-sm text-gray-400 mb-4 italic">
-            Plant automatisch CD-Zuteilungen für Blinder Hass und Phasenübergänge.
-            Phase 2 startet bei 50% HP (Große Adds und erhöhter Boss-Damage).
-        </p>
-        
-        <!-- Steuerung -->
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
-        </div>
-        
-        <!-- Status -->
-        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
-        
-        <!-- Timeline -->
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="w-full text-xs">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
-        </div>
-        
-        <!-- Kategorien-Editor (nur Manager) -->
-        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
-            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
-        </details>
-    </div>
-</section>
+            <!-- Status -->
+            <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
 
-<script src="static/cd-auto-planner.js"></script>
-<script>
-// ══ Norushen Auto-Planner Config ═══════════════════════════════════
-CD_AUTO_PLANNER.init({
-    id: 'norushen',
-    name: 'Norushen',
-    prefix: 'norushen',  // Container-Prefix in der Boss-HTML (norushen-planner-container)
-    
-    events: [
-        // ── PHASE 1 (100% → 50% HP) ──
-        {
-            name: "Blinder Hass #1 (Raid AOE)",
-            spellId: 145226,
-            firstCast: 25,        
-            cooldown: 60,         
-            maxCasts: 4,          
-            delay: -3,            
-            eventDuration: 30,    
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "💢"
-        },
-        {
-            name: "Tank-Test",
-            spellId: 144851,
-            firstCast: 30,        
-            cooldown: 90,         
-            maxCasts: 3,          
-            delay: 0,
-            eventDuration: 60,    
-            requiredCDs: ["tank_external"],  
-            icon: "🛡️"
-        },
-        {
-            name: "Heiler-Test",
-            spellId: 144850,
-            firstCast: 60,        
-            cooldown: 90,         
-            maxCasts: 3,          
-            delay: -2,
-            eventDuration: 60,
-            requiredCDs: ["mana"],  
-            icon: "✨"
-        },
-        
-        // ── PHASE 2 ÜBERGANG (50% HP) ──
-        {
-            name: "Phase 2 Start (50% HP)",
-            spellId: 146179,
-            firstCast: 240,       
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 20,
-            requiredCDs: ["bloodlust", "any_dr", "any_heal"],
-            icon: "⚡"
-        },
-        
-        // ── PHASE 2: Big Adds bei jedem 10%-Schwellwert ──
-        {
-            name: "Großes Add 40% (Phase 2)",
-            spellId: 145769,
-            firstCast: 270,       
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 15,
-            requiredCDs: ["any_dr", "aoe_stun"],
-            icon: "👹"
-        },
-        {
-            name: "Großes Add 30% (Phase 2)",
-            spellId: 145769,
-            firstCast: 310,       
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 15,
-            requiredCDs: ["any_dr", "aoe_stun"],
-            icon: "👹"
-        },
-        {
-            name: "Großes Add 20% (Phase 2)",
-            spellId: 145769,
-            firstCast: 350,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 15,
-            requiredCDs: ["any_dr", "aoe_stun"],
-            icon: "👹"
-        },
-        {
-            name: "Großes Add 10% (Phase 2)",
-            spellId: 145769,
-            firstCast: 390,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 15,
-            requiredCDs: ["any_dr", "additional_surv"],
-            icon: "👹"
-        },
-        
-        // Blinder Hass läuft auch in Phase 2 weiter
-        {
-            name: "Blinder Hass #2 (Phase 2)",
-            spellId: 145226,
-            firstCast: 250,       
-            cooldown: 60,
-            maxCasts: 3,          
-            delay: -3,
-            eventDuration: 30,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "💢"
-        }
-    ],
-    
-    triggerMap: {
-        "Blinder Hass #1 (Raid AOE)":         "NORUSHEN_BLIND_HATRED",
-        "Blinder Hass #2 (Phase 2)":          "NORUSHEN_BLIND_HATRED",
-        "Tank-Test":                          "NORUSHEN_ENC_START",       
-        "Heiler-Test":                        "NORUSHEN_LINGERING_CORRUPTION",
-        "Phase 2 Start (50% HP)":             { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 50 },
-        "Großes Add 40% (Phase 2)":           { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 40 },
-        "Großes Add 30% (Phase 2)":           { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 30 },
-        "Großes Add 20% (Phase 2)":           { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 20 },
-        "Großes Add 10% (Phase 2)":           { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 10 }
-    }
-});
-</script>
+            <!-- Timeline -->
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
 
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            <!-- Kategorien-Editor (nur Manager) -->
+            <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700"
+                style="display:none;">
+                <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️
+                    CD-Kategorien bearbeiten (Manager)</summary>
+                <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+            </details>
+        </div>
+    </section>
+
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        // ══ Norushen Auto-Planner Config ═══════════════════════════════════
+        CD_AUTO_PLANNER.init({
+            id: 'norushen',
+            name: 'Norushen',
+            prefix: 'norushen',  // Container-Prefix in der Boss-HTML (norushen-planner-container)
+
+            events: [
+                // ── PHASE 1 (100% → 50% HP) ──
+                {
+                    name: "Blinder Hass #1 (Raid AOE)",
+                    spellId: 145226,
+                    firstCast: 25,
+                    cooldown: 60,
+                    maxCasts: 4,
+                    delay: -3,
+                    eventDuration: 30,
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "💢"
+                },
+                {
+                    name: "Tank-Test",
+                    spellId: 144851,
+                    firstCast: 30,
+                    cooldown: 90,
+                    maxCasts: 3,
+                    delay: 0,
+                    eventDuration: 60,
+                    requiredCDs: ["tank_external"],
+                    icon: "🛡️"
+                },
+                {
+                    name: "Heiler-Test",
+                    spellId: 144850,
+                    firstCast: 60,
+                    cooldown: 90,
+                    maxCasts: 3,
+                    delay: -2,
+                    eventDuration: 60,
+                    requiredCDs: ["mana"],
+                    icon: "✨"
+                },
+
+                // ── PHASE 2 ÜBERGANG (50% HP) ──
+                {
+                    name: "Phase 2 Start (50% HP)",
+                    spellId: 146179,
+                    firstCast: 240,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 20,
+                    requiredCDs: ["bloodlust", "any_dr", "any_heal"],
+                    icon: "⚡"
+                },
+
+                // ── PHASE 2: Big Adds bei jedem 10%-Schwellwert ──
+                {
+                    name: "Großes Add 40% (Phase 2)",
+                    spellId: 145769,
+                    firstCast: 270,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 15,
+                    requiredCDs: ["any_dr", "aoe_stun"],
+                    icon: "👹"
+                },
+                {
+                    name: "Großes Add 30% (Phase 2)",
+                    spellId: 145769,
+                    firstCast: 310,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 15,
+                    requiredCDs: ["any_dr", "aoe_stun"],
+                    icon: "👹"
+                },
+                {
+                    name: "Großes Add 20% (Phase 2)",
+                    spellId: 145769,
+                    firstCast: 350,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 15,
+                    requiredCDs: ["any_dr", "aoe_stun"],
+                    icon: "👹"
+                },
+                {
+                    name: "Großes Add 10% (Phase 2)",
+                    spellId: 145769,
+                    firstCast: 390,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 15,
+                    requiredCDs: ["any_dr", "additional_surv"],
+                    icon: "👹"
+                },
+
+            ],
+
+            triggerMap: {
+                "Blinder Hass": "NORUSHEN_BLIND_HATRED",
+                "Tank-Test": "NORUSHEN_ENC_START",
+                "Heiler-Test": "NORUSHEN_LINGERING_CORRUPTION",
+                "Phase 2 Start (50% HP)": { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 50 },
+                "Großes Add 40% (Phase 2)": { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 40 },
+                "Großes Add 30% (Phase 2)": { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 30 },
+                "Großes Add 20% (Phase 2)": { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 20 },
+                "Großes Add 10% (Phase 2)": { trigger: "NORUSHEN_HEALTH", npc: "Amalgam des Stolzes", percent: 10 }
+            }
+        });
+    </script>
+
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globale WA Exportieren
         </button>
         <div class="mt-4 text-xs text-gray-500 italic">
@@ -476,26 +549,28 @@ CD_AUTO_PLANNER.init({
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
-<div class="mb-6">
-    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> CD-Einteilung Übersicht
-    </h3>
-    
-    <div id="norushen-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Wartet auf Eingaben... <br>
-            <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-        </p>
-    </div>
-</div>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> CD-Einteilung Übersicht
+            </h3>
+
+            <div id="norushen-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+                    Wartet auf Eingaben... <br>
+                    <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
+                </p>
+            </div>
+        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    <strong>% / #:</strong> Gebt entweder die HP in Prozent an oder die fortlaufende Cast-Reihenfolge (1, 2, 3...).
+                    <strong>% / #:</strong> Gebt entweder die HP in Prozent an oder die fortlaufende Cast-Reihenfolge
+                    (1, 2, 3...).
                 </div>
 
                 <div id="norushen-planner-container" class="space-y-2 planner-scroll-container"></div>
-                
+
                 <div class="mt-4 text-xs text-gray-500 italic">
                     * <strong>Zielvorgabe:</strong> Wählt hier das entsprechende Target, wenn ihr prozentuale HP nutzt.
                 </div>
@@ -503,94 +578,131 @@ CD_AUTO_PLANNER.init({
         </div>
     </section>
 
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Der Boss (Amalgam des Stolzes)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li>Jeder Spieler startet mit 75 Verderbnis. Reduziert die Verderbnis (durch Prüfungen), um vollen Schaden zu machen (oder Bonus-Schaden/-Heilung, falls gereinigt).</li>
-                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=145216" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Entfesselter Zorn</a>:</strong> Verursacht massiven Tank-Damage.</li>
-                    <li><strong class="text-purple-400"><a href="https://www.wowhead.com/mop-classic/de/spell=144532" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Eisige Furcht</a>:</strong> Stetiger Raid-AoE, der immer härter hittet, je weniger HP der Boss hat.</li>
-                    <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/spell=145226" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Blinder Hass</a>:</strong> Ein Energiestrahl, der von der Mitte nach außen wandert und bei Berührung tödlichen Schaden verursacht.</li>
-                </ul>
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Der Boss (Amalgam des
+                        Stolzes)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li>Jeder Spieler startet mit 75 Verderbnis. Reduziert die Verderbnis (durch Prüfungen), um
+                            vollen Schaden zu machen (oder Bonus-Schaden/-Heilung, falls gereinigt).</li>
+                        <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=145216"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-red-400 hover:underline">Entfesselter Zorn</a>:</strong> Verursacht
+                            massiven Tank-Damage.</li>
+                        <li><strong class="text-purple-400"><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=144532" target="_blank"
+                                    rel="noopener noreferrer" class="text-purple-400 hover:underline">Eisige
+                                    Furcht</a>:</strong> Stetiger Raid-AoE, der immer härter hittet, je weniger HP der
+                            Boss hat.</li>
+                        <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/spell=145226"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-cyan-400 hover:underline">Blinder Hass</a>:</strong> Ein Energiestrahl,
+                            der von der Mitte nach außen wandert und bei Berührung tödlichen Schaden verursacht.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Die Prüfungen
+                        (Teleport)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-green-400"><a href="https://www.wowhead.com/mop-classic/de/spell=144473"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-green-400 hover:underline">Prüfung des Vertrauens</a> (Heiler):</strong>
+                            Besiegt eine <em>Große Verderbnis</em>. Helft den NPCs, weicht Void-Zonen aus und dispellt
+                            <a href="https://www.wowhead.com/mop-classic/de/spell=144514" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-300 hover:underline">Anhaltende
+                                Verderbnis</a> umgehend von den NPCs.</li>
+                        <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=144471"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-red-400 hover:underline">Prüfung der Zuversicht</a> (Tanks):</strong>
+                            Überlebt 1 Minute gegen die <em>Titanische Verderbnis</em>. Weicht <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=144628" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-300 hover:underline">Titanischer Schlag</a>
+                            aus, unterbrecht <a href="https://www.wowhead.com/mop-classic/de/spell=144654"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-gray-300 hover:underline">Verderbnis schleudern</a> und nutzt Def-CDs gegen
+                            extremen Burst-Schaden.</li>
+                        <li><strong class="text-yellow-400"><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=144470" target="_blank"
+                                    rel="noopener noreferrer" class="text-yellow-400 hover:underline">Prüfung der
+                                    Gelassenheit</a> (DPS):</strong> Tötet die Elemente der Verderbnis. Fokussiert das
+                            große Add zuerst. <strong>Wichtig:</strong> Die kleinen Adds parieren von vorne, also steht
+                            immer in ihrem Rücken!</li>
+                    </ul>
+                </div>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Die Prüfungen (Teleport)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-green-400"><a href="https://www.wowhead.com/mop-classic/de/spell=144473" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">Prüfung des Vertrauens</a> (Heiler):</strong> Besiegt eine <em>Große Verderbnis</em>. Helft den NPCs, weicht Void-Zonen aus und dispellt <a href="https://www.wowhead.com/mop-classic/de/spell=144514" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Anhaltende Verderbnis</a> umgehend von den NPCs.</li>
-                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=144471" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Prüfung der Zuversicht</a> (Tanks):</strong> Überlebt 1 Minute gegen die <em>Titanische Verderbnis</em>. Weicht <a href="https://www.wowhead.com/mop-classic/de/spell=144628" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Titanischer Schlag</a> aus, unterbrecht <a href="https://www.wowhead.com/mop-classic/de/spell=144654" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Verderbnis schleudern</a> und nutzt Def-CDs gegen extremen Burst-Schaden.</li>
-                    <li><strong class="text-yellow-400"><a href="https://www.wowhead.com/mop-classic/de/spell=144470" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:underline">Prüfung der Gelassenheit</a> (DPS):</strong> Tötet die Elemente der Verderbnis. Fokussiert das große Add zuerst. <strong>Wichtig:</strong> Die kleinen Adds parieren von vorne, also steht immer in ihrem Rücken!</li>
+
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen (HC)</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li>Die "<a href="https://www.wowhead.com/mop-classic/de/spell=144532" target="_blank"
+                            rel="noopener noreferrer" class="text-gray-300 hover:underline">Eisige Furcht</a>" hittet
+                        extrem hart. Der Boss muss schnell liegen, bevor der Schaden die Heiler überfordert.</li>
+                    <li>Das Betreten einer Lichtkugel löst fetten Raid-Damage aus. Die DPS auf Heroisch gehen oft
+                        <strong>nicht</strong> in die Prüfungen, da der einkommende Raid-Schaden zu hoch ist. Alle
+                        verbleiben draußen und nuken den Boss + Adds.</li>
                 </ul>
             </div>
         </div>
-        
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen (HC)</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li>Die "<a href="https://www.wowhead.com/mop-classic/de/spell=144532" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Eisige Furcht</a>" hittet extrem hart. Der Boss muss schnell liegen, bevor der Schaden die Heiler überfordert.</li>
-                <li>Das Betreten einer Lichtkugel löst fetten Raid-Damage aus. Die DPS auf Heroisch gehen oft <strong>nicht</strong> in die Prüfungen, da der einkommende Raid-Schaden zu hoch ist. Alle verbleiben draußen und nuken den Boss + Adds.</li>
-            </ul>
-        </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "NORUSHEN_ENC_START",            text: "Kampfbeginn" },
-            { val: "NORUSHEN_HEALTH",               text: "HP % (Wähle NPC)" },
-            { val: "NORUSHEN_UNLEASHED_ANGER",      text: "Entfesselter Zorn (Tank-Hit)" },
-            { val: "NORUSHEN_BLIND_HATRED",         text: "Blinder Hass (Laser)" },
-            { val: "NORUSHEN_DISHEARTENING_LAUGH",  text: "Entmutigendes Gelächter" },
-            { val: "NORUSHEN_LINGERING_CORRUPTION", text: "Anhaltende Verderbnis (Dispel)" },
-            { val: "NORUSHEN_TITANIC_SMASH",        text: "Titanischer Schlag" },
-            { val: "NORUSHEN_PIERCING_CORRUPTION",  text: "Durchbohrende Verderbnis" },
-            { val: "NORUSHEN_HURL_CORRUPTION",      text: "Verderbnis schleudern (Kick)" },
-            { val: "NORUSHEN_MANIFESTATION",        text: "Manifestation (Add-Spawn)" },
-            { val: "NORUSHEN_SELF_DOUBT",           text: "Selbstzweifel (Tank-Debuff)" }
-        ];
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
 
-        const NPC_OPTIONS = [
-            "Amalgam des Stolzes",
-            "Blinde Manifestation",
-            "Manifestation der Verderbnis"
-        ];
-        
-        const container = document.getElementById('norushen-planner-container');
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
-            }
-            return html;
-        };
+            const TRIGGER_OPTIONS = [
+                { val: "NORUSHEN_ENC_START", text: "Kampfbeginn" },
+                { val: "NORUSHEN_HEALTH", text: "HP % (Wähle NPC)" },
+                { val: "NORUSHEN_UNLEASHED_ANGER", text: "Entfesselter Zorn (Tank-Hit)" },
+                { val: "NORUSHEN_BLIND_HATRED", text: "Blinder Hass (Laser)" },
+                { val: "NORUSHEN_DISHEARTENING_LAUGH", text: "Entmutigendes Gelächter" },
+                { val: "NORUSHEN_LINGERING_CORRUPTION", text: "Anhaltende Verderbnis (Dispel)" },
+                { val: "NORUSHEN_TITANIC_SMASH", text: "Titanischer Schlag" },
+                { val: "NORUSHEN_PIERCING_CORRUPTION", text: "Durchbohrende Verderbnis" },
+                { val: "NORUSHEN_HURL_CORRUPTION", text: "Verderbnis schleudern (Kick)" },
+                { val: "NORUSHEN_MANIFESTATION", text: "Manifestation (Add-Spawn)" },
+                { val: "NORUSHEN_SELF_DOUBT", text: "Selbstzweifel (Tank-Debuff)" }
+            ];
 
-        if (container && container.innerHTML.trim() === "") {
-            
-            const p = container.id.replace('-planner-container', '');
+            const NPC_OPTIONS = [
+                "Amalgam des Stolzes",
+                "Blinde Manifestation",
+                "Manifestation der Verderbnis"
+            ];
 
-            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
-            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
-            
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+            const container = document.getElementById('norushen-planner-container');
 
-            const headerHtml = `
+            const getCooldownOptions = () => {
+                let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+
+                const p = container.id.replace('-planner-container', '');
+
+                const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+                const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+
+                const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -613,9 +725,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 200; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 200; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
 
@@ -650,95 +762,95 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
+                });
+                setTimeout(window.updatePlannerSummary, 500);
             }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
 
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
+            // ══════════════════════════════════════════════════════════
+            // REIHENFOLGE LICHTKUGELN — Tabelle + WeakAura Export
+            // ══════════════════════════════════════════════════════════
+            (function initOrbOrder() {
+                const tbody = document.getElementById('norushen-orb-order-body');
+                const addBtn = document.getElementById('norushen-orb-add-row');
+                const clearBtn = document.getElementById('norushen-orb-clear');
+                const copyBtn = document.getElementById('norushen-orb-copy-wa');
+                const waOutput = document.getElementById('norushen-orb-wa-output');
+                if (!tbody || !addBtn) return;
 
-        // ══════════════════════════════════════════════════════════
-        // REIHENFOLGE LICHTKUGELN — Tabelle + WeakAura Export
-        // ══════════════════════════════════════════════════════════
-        (function initOrbOrder() {
-            const tbody      = document.getElementById('norushen-orb-order-body');
-            const addBtn     = document.getElementById('norushen-orb-add-row');
-            const clearBtn   = document.getElementById('norushen-orb-clear');
-            const copyBtn    = document.getElementById('norushen-orb-copy-wa');
-            const waOutput   = document.getElementById('norushen-orb-wa-output');
-            if (!tbody || !addBtn) return;
+                const ASSIGNMENT_ID = 'norushen-orb-order';
+                const DEFAULT_ROWS = 10;
+                let orderData = [];
+                let saveTimer = null;
 
-            const ASSIGNMENT_ID = 'norushen-orb-order';
-            const DEFAULT_ROWS = 10;
-            let orderData = []; 
-            let saveTimer = null;
+                function getPlayerOptions(selectedName, currentIndex) {
+                    let html = '<option value="">-- Spieler --</option>';
+                    if (Array.isArray(roster)) {
+                        roster.forEach(p => {
+                            const name = p.name || p;
+                            const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
+                            const sel = name === selectedName ? ' selected' : '';
 
-            function getPlayerOptions(selectedName, currentIndex) {
-                let html = '<option value="">-- Spieler --</option>';
-                if (Array.isArray(roster)) {
-                    roster.forEach(p => {
-                        const name = p.name || p;
-                        const color = (p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
-                        const sel = name === selectedName ? ' selected' : '';
-                        
-                        let isDup = false;
-                        if (currentIndex !== undefined) {
-                            for (let j = 0; j < orderData.length; j++) {
-                                if (j !== currentIndex && orderData[j] && orderData[j].player === name) {
-                                    isDup = true;
-                                    break;
+                            let isDup = false;
+                            if (currentIndex !== undefined) {
+                                for (let j = 0; j < orderData.length; j++) {
+                                    if (j !== currentIndex && orderData[j] && orderData[j].player === name) {
+                                        isDup = true;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        
-                        let isBench = false;
-                        if (typeof window.isPlayerOnBench === 'function') {
-                            isBench = window.isPlayerOnBench(name);
-                        }
-                        
-                        const prefix = (isBench ? '⚠ ' : '') + (isDup ? '🟡 ' : '');
-                        const suffix = isBench ? ' (Ersatz)' : '';
-                        
-                        html += `<option value="${name}" style="color:${color};"${sel}>${prefix}${name}${suffix}</option>`;
+
+                            let isBench = false;
+                            if (typeof window.isPlayerOnBench === 'function') {
+                                isBench = window.isPlayerOnBench(name);
+                            }
+
+                            const prefix = (isBench ? '⚠ ' : '') + (isDup ? '🟡 ' : '');
+                            const suffix = isBench ? ' (Ersatz)' : '';
+
+                            html += `<option value="${name}" style="color:${color};"${sel}>${prefix}${name}${suffix}</option>`;
+                        });
+                    }
+                    return html;
+                }
+
+                function updateAllSelects() {
+                    const selects = tbody.querySelectorAll('select[data-orb-field="player"]');
+                    selects.forEach(select => {
+                        const idx = parseInt(select.dataset.orbIdx);
+                        const currentValue = select.value;
+                        select.innerHTML = getPlayerOptions(currentValue, idx);
+                        const selectedOpt = select.options[select.selectedIndex];
+                        if (selectedOpt) select.style.color = selectedOpt.style.color || '#FFFFFF';
                     });
                 }
-                return html;
-            }
 
-            function updateAllSelects() {
-                const selects = tbody.querySelectorAll('select[data-orb-field="player"]');
-                selects.forEach(select => {
-                    const idx = parseInt(select.dataset.orbIdx);
-                    const currentValue = select.value;
-                    select.innerHTML = getPlayerOptions(currentValue, idx);
-                    const selectedOpt = select.options[select.selectedIndex];
-                    if (selectedOpt) select.style.color = selectedOpt.style.color || '#FFFFFF';
-                });
-            }
-
-            function renderRows() {
-                tbody.innerHTML = '';
-                const isM = !!window.isManager;
-                const disCls = isM ? '' : 'opacity-50 cursor-not-allowed';
-                const disAttr = isM ? '' : 'disabled';
-                const targetRows = Math.max(DEFAULT_ROWS, orderData.length + 1);
-                for (let i = 0; i < targetRows; i++) {
-                    const row = orderData[i] || { player: '', delay: '' };
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-slate-700/40';
-                    tr.innerHTML = `
+                function renderRows() {
+                    tbody.innerHTML = '';
+                    const isM = !!window.isManager;
+                    const disCls = isM ? '' : 'opacity-50 cursor-not-allowed';
+                    const disAttr = isM ? '' : 'disabled';
+                    const targetRows = Math.max(DEFAULT_ROWS, orderData.length + 1);
+                    for (let i = 0; i < targetRows; i++) {
+                        const row = orderData[i] || { player: '', delay: '' };
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-slate-700/40';
+                        tr.innerHTML = `
                         <td class="p-1 text-center text-gray-500 font-mono">${i + 1}</td>
                         <td class="p-1">
                             <select class="orb-select text-xs w-full h-7 bg-slate-900 border border-slate-600 rounded text-white ${disCls}" data-orb-idx="${i}" data-orb-field="player" ${disAttr}>
@@ -753,469 +865,469 @@ CD_AUTO_PLANNER.init({
                             ${row.player || row.delay ? '<button class="orb-row-del text-red-400 hover:text-red-300 text-xs ' + disCls + '" data-orb-idx="' + i + '" title="Leeren" ' + disAttr + '>✕</button>' : ''}
                         </td>
                     `;
-                    tbody.appendChild(tr);
-                    const sel = tr.querySelector('select');
-                    if (sel && row.player) {
-                        const selectedOpt = sel.options[sel.selectedIndex];
-                        if (selectedOpt) sel.style.color = selectedOpt.style.color || '#FFFFFF';
-                    }
-                }
-                updateWaString();
-            }
-
-            function updateWaString() {
-                const entries = orderData
-                    .filter(r => r.player && (r.delay !== '' && r.delay !== null && r.delay !== undefined))
-                    .map(r => `${r.player}-${r.delay}`);
-                waOutput.textContent = entries.length > 0 ? entries.join(',') : '—';
-            }
-
-            function normalizeData() {
-                while (orderData.length > 0) {
-                    const last = orderData[orderData.length - 1];
-                    if (!last.player && (last.delay === '' || last.delay === null || last.delay === undefined)) {
-                        orderData.pop();
-                    } else break;
-                }
-            }
-
-            function scheduleSave() {
-                if (saveTimer) clearTimeout(saveTimer);
-                saveTimer = setTimeout(saveOrder, 600);
-            }
-
-            async function saveOrder() {
-                if (!window.isManager) return;
-                if (!firebaseTools || !firebaseTools.db) return;
-                normalizeData();
-                const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-                try {
-                    const hash = location.hash.substring(1);
-                    const bossId = hash.split('/')[1] || 'norushen';
-                    const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
-                    await firebaseTools.setDoc(docRef, {
-                        [ASSIGNMENT_ID]: {
-                            orderData: orderData,
-                            editor: currentManager,
-                            timestamp: new Date().toISOString()
+                        tbody.appendChild(tr);
+                        const sel = tr.querySelector('select');
+                        if (sel && row.player) {
+                            const selectedOpt = sel.options[sel.selectedIndex];
+                            if (selectedOpt) sel.style.color = selectedOpt.style.color || '#FFFFFF';
                         }
-                    }, { merge: true });
-                    if (window.logHistory) {
-                        window.logHistory(bossId, `Reihenfolge Lichtkugeln (${orderData.length} Einträge)`, 'aktualisiert', currentManager);
                     }
-                } catch (e) {
-                    console.error('[Norushen Orb-Order] Save fehlgeschlagen:', e);
+                    updateWaString();
                 }
-            }
 
-            function loadFromAssignments() {
-                if (!assignments) return;
-                const saved = assignments[ASSIGNMENT_ID];
-                if (saved && Array.isArray(saved.orderData)) {
-                    orderData = saved.orderData.slice();
-                    renderRows();
+                function updateWaString() {
+                    const entries = orderData
+                        .filter(r => r.player && (r.delay !== '' && r.delay !== null && r.delay !== undefined))
+                        .map(r => `${r.player}-${r.delay}`);
+                    waOutput.textContent = entries.length > 0 ? entries.join(',') : '—';
                 }
-            }
 
-            tbody.addEventListener('change', (e) => {
-                const idx = parseInt(e.target.dataset.orbIdx);
-                const field = e.target.dataset.orbField;
-                if (isNaN(idx) || !field) return;
-                
-                while (orderData.length <= idx) orderData.push({ player: '', delay: '' });
-                
-                const wasEmpty = !orderData[idx].player && (orderData[idx].delay === '' || orderData[idx].delay === null || orderData[idx].delay === undefined);
-                
-                if (field === 'delay') {
-                    const v = e.target.value.trim();
-                    orderData[idx].delay = v === '' ? '' : parseInt(v);
-                } else {
-                    orderData[idx][field] = e.target.value;
-                    if (field === 'player') {
-                        const opt = e.target.options[e.target.selectedIndex];
-                        e.target.style.color = opt ? (opt.style.color || '#FFFFFF') : '#FFFFFF';
+                function normalizeData() {
+                    while (orderData.length > 0) {
+                        const last = orderData[orderData.length - 1];
+                        if (!last.player && (last.delay === '' || last.delay === null || last.delay === undefined)) {
+                            orderData.pop();
+                        } else break;
                     }
                 }
-                
-                const nowFilled = orderData[idx].player || (orderData[idx].delay !== '' && orderData[idx].delay !== null && orderData[idx].delay !== undefined);
-                
-                updateWaString();
-                scheduleSave();
-                
-                if (wasEmpty && nowFilled) {
-                    const cell = e.target.closest('tr')?.querySelector('td:last-child');
-                    if (cell && !cell.querySelector('button.orb-row-del')) {
-                        cell.innerHTML = '<button class="orb-row-del text-red-400 hover:text-red-300 text-xs" data-orb-idx="' + idx + '" title="Leeren">✕</button>';
+
+                function scheduleSave() {
+                    if (saveTimer) clearTimeout(saveTimer);
+                    saveTimer = setTimeout(saveOrder, 600);
+                }
+
+                async function saveOrder() {
+                    if (!window.isManager) return;
+                    if (!firebaseTools || !firebaseTools.db) return;
+                    normalizeData();
+                    const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+                    try {
+                        const hash = location.hash.substring(1);
+                        const bossId = hash.split('/')[1] || 'norushen';
+                        const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                        await firebaseTools.setDoc(docRef, {
+                            [ASSIGNMENT_ID]: {
+                                orderData: orderData,
+                                editor: currentManager,
+                                timestamp: new Date().toISOString()
+                            }
+                        }, { merge: true });
+                        if (window.logHistory) {
+                            window.logHistory(bossId, `Reihenfolge Lichtkugeln (${orderData.length} Einträge)`, 'aktualisiert', currentManager);
+                        }
+                    } catch (e) {
+                        console.error('[Norushen Orb-Order] Save fehlgeschlagen:', e);
                     }
                 }
-                
-                if (field === 'player') {
-                    updateAllSelects();
-                }
-            });
-            
-            tbody.addEventListener('click', (e) => {
-                if (e.target.classList.contains('orb-row-del')) {
-                    const idx = parseInt(e.target.dataset.orbIdx);
-                    if (!isNaN(idx) && orderData[idx]) {
-                        orderData[idx] = { player: '', delay: '' };
-                        updateWaString();
-                        scheduleSave();
+
+                function loadFromAssignments() {
+                    if (!assignments) return;
+                    const saved = assignments[ASSIGNMENT_ID];
+                    if (saved && Array.isArray(saved.orderData)) {
+                        orderData = saved.orderData.slice();
                         renderRows();
                     }
                 }
-            });
 
-            addBtn.addEventListener('click', () => {
-                orderData.push({ player: '', delay: '' });
-                renderRows();
-            });
+                tbody.addEventListener('change', (e) => {
+                    const idx = parseInt(e.target.dataset.orbIdx);
+                    const field = e.target.dataset.orbField;
+                    if (isNaN(idx) || !field) return;
 
-            clearBtn.addEventListener('click', () => {
-                if (!confirm('Alle Spieler-Zuweisungen leeren? (Slots und Verzögerung bleiben erhalten)')) return;
-                orderData.forEach(row => { row.player = ''; });
-                renderRows();
-                scheduleSave();
-            });
+                    while (orderData.length <= idx) orderData.push({ player: '', delay: '' });
 
-            copyBtn.addEventListener('click', () => {
-                const text = waOutput.textContent;
-                if (!text || text === '—') {
-                    if (window.showModal) window.showModal('Keine Einträge zum Kopieren.');
-                    return;
-                }
-                navigator.clipboard.writeText(text).then(() => {
-                    const old = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '✓ Kopiert!';
-                    copyBtn.classList.add('bg-emerald-700');
-                    setTimeout(() => {
-                        copyBtn.innerHTML = old;
-                        copyBtn.classList.remove('bg-emerald-700');
-                    }, 1500);
-                }).catch(() => {
-                    if (window.showModal) window.showModal('Kopieren fehlgeschlagen. String manuell markieren.');
-                });
-            });
-            
-            const SPEC_DEFINITIONS = {
-                DEATHKNIGHT: [
-                    { value: 'Blood',        label: 'Blood (Tank)',        role: 'tank' },
-                    { value: 'Frost1',       label: 'Frost',               role: 'dps', archetype: 'melee' },
-                    { value: 'Unholy',       label: 'Unholy',              role: 'dps', archetype: 'melee' }
-                ],
-                DRUID: [
-                    { value: 'Balance',      label: 'Balance',             role: 'dps', archetype: 'caster' },
-                    { value: 'Feral',        label: 'Feral',               role: 'dps', archetype: 'melee' },
-                    { value: 'Guardian',     label: 'Guardian (Tank)',     role: 'tank' },
-                    { value: 'Restoration',  label: 'Restoration (Heal)',  role: 'healer' }
-                ],
-                HUNTER: [
-                    { value: 'Beastmastery', label: 'Beastmastery',        role: 'dps', archetype: 'ranged_physical' },
-                    { value: 'Marksmanship', label: 'Marksmanship',        role: 'dps', archetype: 'ranged_physical' },
-                    { value: 'Survival',     label: 'Survival',            role: 'dps', archetype: 'ranged_physical' }
-                ],
-                MAGE: [
-                    { value: 'Arcane',       label: 'Arcane',              role: 'dps', archetype: 'caster' },
-                    { value: 'Fire',         label: 'Fire',                role: 'dps', archetype: 'caster' },
-                    { value: 'Frost',        label: 'Frost',               role: 'dps', archetype: 'caster' }
-                ],
-                MONK: [
-                    { value: 'Brewmaster',   label: 'Brewmaster (Tank)',   role: 'tank' },
-                    { value: 'Mistweaver',   label: 'Mistweaver (Heal)',   role: 'healer' },
-                    { value: 'Windwalker',   label: 'Windwalker',          role: 'dps', archetype: 'melee' }
-                ],
-                PALADIN: [
-                    { value: 'Holy1',        label: 'Holy (Heal)',         role: 'healer' },
-                    { value: 'Protection1',  label: 'Protection (Tank)',   role: 'tank' },
-                    { value: 'Retribution',  label: 'Retribution',         role: 'dps', archetype: 'melee' }
-                ],
-                PRIEST: [
-                    { value: 'Discipline',   label: 'Discipline (Heal)',   role: 'healer' },
-                    { value: 'Holy',         label: 'Holy (Heal)',         role: 'healer' },
-                    { value: 'Shadow',       label: 'Shadow',              role: 'dps', archetype: 'caster' }
-                ],
-                ROGUE: [
-                    { value: 'Assassination', label: 'Assassination',      role: 'dps', archetype: 'melee' },
-                    { value: 'Combat',       label: 'Combat',              role: 'dps', archetype: 'melee' },
-                    { value: 'Subtlety',     label: 'Subtlety',            role: 'dps', archetype: 'melee' }
-                ],
-                SHAMAN: [
-                    { value: 'Elemental',    label: 'Elemental',           role: 'dps', archetype: 'caster' },
-                    { value: 'Enhancement',  label: 'Enhancement',         role: 'dps', archetype: 'melee' },
-                    { value: 'Restoration1', label: 'Restoration (Heal)',  role: 'healer' }
-                ],
-                WARLOCK: [
-                    { value: 'Affliction',   label: 'Affliction',          role: 'dps', archetype: 'caster' },
-                    { value: 'Demonology',   label: 'Demonology',          role: 'dps', archetype: 'caster' },
-                    { value: 'Destruction',  label: 'Destruction',         role: 'dps', archetype: 'caster' }
-                ],
-                WARRIOR: [
-                    { value: 'Arms',         label: 'Arms',                role: 'dps', archetype: 'melee' },
-                    { value: 'Fury',         label: 'Fury',                role: 'dps', archetype: 'melee' },
-                    { value: 'Protection',   label: 'Protection (Tank)',   role: 'tank' }
-                ]
-            };
-            
-            const CLASS_ALIASES = {
-                'death knight': 'DEATHKNIGHT', 'deathknight': 'DEATHKNIGHT', 'dk': 'DEATHKNIGHT', 'todesritter': 'DEATHKNIGHT',
-                'druid': 'DRUID', 'druide': 'DRUID',
-                'hunter': 'HUNTER', 'jäger': 'HUNTER', 'jaeger': 'HUNTER',
-                'mage': 'MAGE', 'magier': 'MAGE',
-                'monk': 'MONK', 'mönch': 'MONK', 'moench': 'MONK',
-                'paladin': 'PALADIN',
-                'priest': 'PRIEST', 'priester': 'PRIEST',
-                'rogue': 'ROGUE', 'schurke': 'ROGUE',
-                'shaman': 'SHAMAN', 'schamane': 'SHAMAN',
-                'warlock': 'WARLOCK', 'hexenmeister': 'WARLOCK',
-                'warrior': 'WARRIOR', 'krieger': 'WARRIOR'
-            };
-            const CLASS_DISPLAY = {
-                'DEATHKNIGHT': 'Todesritter', 'DRUID': 'Druide', 'HUNTER': 'Jäger',
-                'MAGE': 'Magier', 'MONK': 'Mönch', 'PALADIN': 'Paladin',
-                'PRIEST': 'Priester', 'ROGUE': 'Schurke', 'SHAMAN': 'Schamane',
-                'WARLOCK': 'Hexenmeister', 'WARRIOR': 'Krieger'
-            };
-            
-            function normalizeClass(cls) {
-                if (!cls) return '';
-                return CLASS_ALIASES[String(cls).toLowerCase().trim()] || '';
-            }
-            
-            const DEFAULT_PRIO_CATEGORIES = [
-                { id: 'healer',      label: 'Healer',      class: '',            spec: '',             role: 'healer' },
-                { id: 'tank',        label: 'Tank',        class: '',            spec: '',             role: 'tank',   limitRows: 4, limitCount: 1 },
-                { id: 'shadow',      label: 'Shadow',      class: 'PRIEST',      spec: 'Shadow',       role: 'dps' },
-                { id: 'elemental',   label: 'Elementar',   class: 'SHAMAN',      spec: 'Elemental',    role: 'dps' },
-                { id: 'enhancement', label: 'Enhancement', class: 'SHAMAN',      spec: 'Enhancement',  role: 'dps' },
-                { id: 'unholy',      label: 'Unholy',      class: 'DEATHKNIGHT', spec: 'Unholy',       role: 'dps' }
-            ];
-            
-            const PRIO_STORAGE_KEY = 'norushen-orb-prio-categories-v4';
-            let prioCategories = [];
-            
-            function loadPrio() {
-                try {
-                    const saved = localStorage.getItem(PRIO_STORAGE_KEY);
-                    if (saved) {
-                        const parsed = JSON.parse(saved);
-                        if (Array.isArray(parsed) && parsed.every(c => c && c.id && c.label)) {
-                            prioCategories = parsed;
-                            return;
+                    const wasEmpty = !orderData[idx].player && (orderData[idx].delay === '' || orderData[idx].delay === null || orderData[idx].delay === undefined);
+
+                    if (field === 'delay') {
+                        const v = e.target.value.trim();
+                        orderData[idx].delay = v === '' ? '' : parseInt(v);
+                    } else {
+                        orderData[idx][field] = e.target.value;
+                        if (field === 'player') {
+                            const opt = e.target.options[e.target.selectedIndex];
+                            e.target.style.color = opt ? (opt.style.color || '#FFFFFF') : '#FFFFFF';
                         }
                     }
-                } catch (e) { }
-                prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
-            }
-            
-            function savePrio() {
-                try { localStorage.setItem(PRIO_STORAGE_KEY, JSON.stringify(prioCategories)); } catch (e) { }
-            }
-            
-            loadPrio();
-            
-            const prioListEl   = document.getElementById('norushen-orb-prio-list');
-            const autoFillBtn  = document.getElementById('norushen-orb-auto-fill');
-            const prioResetBtn = document.getElementById('norushen-orb-prio-reset');
-            const prioAddBtn   = document.getElementById('norushen-orb-prio-add');
-            const prioDetectBtn= document.getElementById('norushen-orb-prio-detect');
-            const showDebugBtn = document.getElementById('norushen-orb-show-debug');
-            const debugOutEl   = document.getElementById('norushen-orb-debug-output');
-            const modalEl      = document.getElementById('norushen-orb-prio-modal');
-            const modalTitle   = document.getElementById('norushen-orb-prio-modal-title');
-            const modalLabel   = document.getElementById('norushen-orb-prio-modal-label');
-            const modalClass   = document.getElementById('norushen-orb-prio-modal-class');
-            const modalSpec    = document.getElementById('norushen-orb-prio-modal-spec');
-            const modalRole    = document.getElementById('norushen-orb-prio-modal-role');
-            const modalLimitRows  = document.getElementById('norushen-orb-prio-modal-limit-rows');
-            const modalLimitCount = document.getElementById('norushen-orb-prio-modal-limit-count');
-            const modalMaxTotal   = document.getElementById('norushen-orb-prio-modal-max-total');
-            const modalSave    = document.getElementById('norushen-orb-prio-modal-save');
-            const modalCancel  = document.getElementById('norushen-orb-prio-modal-cancel');
-            
-            if (modalClass) {
-                Object.keys(SPEC_DEFINITIONS).forEach(clsKey => {
-                    const opt = new Option(CLASS_DISPLAY[clsKey] || clsKey, clsKey);
-                    modalClass.appendChild(opt);
+
+                    const nowFilled = orderData[idx].player || (orderData[idx].delay !== '' && orderData[idx].delay !== null && orderData[idx].delay !== undefined);
+
+                    updateWaString();
+                    scheduleSave();
+
+                    if (wasEmpty && nowFilled) {
+                        const cell = e.target.closest('tr')?.querySelector('td:last-child');
+                        if (cell && !cell.querySelector('button.orb-row-del')) {
+                            cell.innerHTML = '<button class="orb-row-del text-red-400 hover:text-red-300 text-xs" data-orb-idx="' + idx + '" title="Leeren">✕</button>';
+                        }
+                    }
+
+                    if (field === 'player') {
+                        updateAllSelects();
+                    }
                 });
-            }
-            
-            function updateSpecDropdown(selectedClass, selectedSpec) {
-                if (!modalSpec) return;
-                modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
-                if (selectedClass && SPEC_DEFINITIONS[selectedClass]) {
-                    SPEC_DEFINITIONS[selectedClass].forEach(s => {
-                        const opt = new Option(s.label, s.value);
-                        modalSpec.appendChild(opt);
+
+                tbody.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('orb-row-del')) {
+                        const idx = parseInt(e.target.dataset.orbIdx);
+                        if (!isNaN(idx) && orderData[idx]) {
+                            orderData[idx] = { player: '', delay: '' };
+                            updateWaString();
+                            scheduleSave();
+                            renderRows();
+                        }
+                    }
+                });
+
+                addBtn.addEventListener('click', () => {
+                    orderData.push({ player: '', delay: '' });
+                    renderRows();
+                });
+
+                clearBtn.addEventListener('click', () => {
+                    if (!confirm('Alle Spieler-Zuweisungen leeren? (Slots und Verzögerung bleiben erhalten)')) return;
+                    orderData.forEach(row => { row.player = ''; });
+                    renderRows();
+                    scheduleSave();
+                });
+
+                copyBtn.addEventListener('click', () => {
+                    const text = waOutput.textContent;
+                    if (!text || text === '—') {
+                        if (window.showModal) window.showModal('Keine Einträge zum Kopieren.');
+                        return;
+                    }
+                    navigator.clipboard.writeText(text).then(() => {
+                        const old = copyBtn.innerHTML;
+                        copyBtn.innerHTML = '✓ Kopiert!';
+                        copyBtn.classList.add('bg-emerald-700');
+                        setTimeout(() => {
+                            copyBtn.innerHTML = old;
+                            copyBtn.classList.remove('bg-emerald-700');
+                        }, 1500);
+                    }).catch(() => {
+                        if (window.showModal) window.showModal('Kopieren fehlgeschlagen. String manuell markieren.');
+                    });
+                });
+
+                const SPEC_DEFINITIONS = {
+                    DEATHKNIGHT: [
+                        { value: 'Blood', label: 'Blood (Tank)', role: 'tank' },
+                        { value: 'Frost1', label: 'Frost', role: 'dps', archetype: 'melee' },
+                        { value: 'Unholy', label: 'Unholy', role: 'dps', archetype: 'melee' }
+                    ],
+                    DRUID: [
+                        { value: 'Balance', label: 'Balance', role: 'dps', archetype: 'caster' },
+                        { value: 'Feral', label: 'Feral', role: 'dps', archetype: 'melee' },
+                        { value: 'Guardian', label: 'Guardian (Tank)', role: 'tank' },
+                        { value: 'Restoration', label: 'Restoration (Heal)', role: 'healer' }
+                    ],
+                    HUNTER: [
+                        { value: 'Beastmastery', label: 'Beastmastery', role: 'dps', archetype: 'ranged_physical' },
+                        { value: 'Marksmanship', label: 'Marksmanship', role: 'dps', archetype: 'ranged_physical' },
+                        { value: 'Survival', label: 'Survival', role: 'dps', archetype: 'ranged_physical' }
+                    ],
+                    MAGE: [
+                        { value: 'Arcane', label: 'Arcane', role: 'dps', archetype: 'caster' },
+                        { value: 'Fire', label: 'Fire', role: 'dps', archetype: 'caster' },
+                        { value: 'Frost', label: 'Frost', role: 'dps', archetype: 'caster' }
+                    ],
+                    MONK: [
+                        { value: 'Brewmaster', label: 'Brewmaster (Tank)', role: 'tank' },
+                        { value: 'Mistweaver', label: 'Mistweaver (Heal)', role: 'healer' },
+                        { value: 'Windwalker', label: 'Windwalker', role: 'dps', archetype: 'melee' }
+                    ],
+                    PALADIN: [
+                        { value: 'Holy1', label: 'Holy (Heal)', role: 'healer' },
+                        { value: 'Protection1', label: 'Protection (Tank)', role: 'tank' },
+                        { value: 'Retribution', label: 'Retribution', role: 'dps', archetype: 'melee' }
+                    ],
+                    PRIEST: [
+                        { value: 'Discipline', label: 'Discipline (Heal)', role: 'healer' },
+                        { value: 'Holy', label: 'Holy (Heal)', role: 'healer' },
+                        { value: 'Shadow', label: 'Shadow', role: 'dps', archetype: 'caster' }
+                    ],
+                    ROGUE: [
+                        { value: 'Assassination', label: 'Assassination', role: 'dps', archetype: 'melee' },
+                        { value: 'Combat', label: 'Combat', role: 'dps', archetype: 'melee' },
+                        { value: 'Subtlety', label: 'Subtlety', role: 'dps', archetype: 'melee' }
+                    ],
+                    SHAMAN: [
+                        { value: 'Elemental', label: 'Elemental', role: 'dps', archetype: 'caster' },
+                        { value: 'Enhancement', label: 'Enhancement', role: 'dps', archetype: 'melee' },
+                        { value: 'Restoration1', label: 'Restoration (Heal)', role: 'healer' }
+                    ],
+                    WARLOCK: [
+                        { value: 'Affliction', label: 'Affliction', role: 'dps', archetype: 'caster' },
+                        { value: 'Demonology', label: 'Demonology', role: 'dps', archetype: 'caster' },
+                        { value: 'Destruction', label: 'Destruction', role: 'dps', archetype: 'caster' }
+                    ],
+                    WARRIOR: [
+                        { value: 'Arms', label: 'Arms', role: 'dps', archetype: 'melee' },
+                        { value: 'Fury', label: 'Fury', role: 'dps', archetype: 'melee' },
+                        { value: 'Protection', label: 'Protection (Tank)', role: 'tank' }
+                    ]
+                };
+
+                const CLASS_ALIASES = {
+                    'death knight': 'DEATHKNIGHT', 'deathknight': 'DEATHKNIGHT', 'dk': 'DEATHKNIGHT', 'todesritter': 'DEATHKNIGHT',
+                    'druid': 'DRUID', 'druide': 'DRUID',
+                    'hunter': 'HUNTER', 'jäger': 'HUNTER', 'jaeger': 'HUNTER',
+                    'mage': 'MAGE', 'magier': 'MAGE',
+                    'monk': 'MONK', 'mönch': 'MONK', 'moench': 'MONK',
+                    'paladin': 'PALADIN',
+                    'priest': 'PRIEST', 'priester': 'PRIEST',
+                    'rogue': 'ROGUE', 'schurke': 'ROGUE',
+                    'shaman': 'SHAMAN', 'schamane': 'SHAMAN',
+                    'warlock': 'WARLOCK', 'hexenmeister': 'WARLOCK',
+                    'warrior': 'WARRIOR', 'krieger': 'WARRIOR'
+                };
+                const CLASS_DISPLAY = {
+                    'DEATHKNIGHT': 'Todesritter', 'DRUID': 'Druide', 'HUNTER': 'Jäger',
+                    'MAGE': 'Magier', 'MONK': 'Mönch', 'PALADIN': 'Paladin',
+                    'PRIEST': 'Priester', 'ROGUE': 'Schurke', 'SHAMAN': 'Schamane',
+                    'WARLOCK': 'Hexenmeister', 'WARRIOR': 'Krieger'
+                };
+
+                function normalizeClass(cls) {
+                    if (!cls) return '';
+                    return CLASS_ALIASES[String(cls).toLowerCase().trim()] || '';
+                }
+
+                const DEFAULT_PRIO_CATEGORIES = [
+                    { id: 'healer', label: 'Healer', class: '', spec: '', role: 'healer' },
+                    { id: 'tank', label: 'Tank', class: '', spec: '', role: 'tank', limitRows: 4, limitCount: 1 },
+                    { id: 'shadow', label: 'Shadow', class: 'PRIEST', spec: 'Shadow', role: 'dps' },
+                    { id: 'elemental', label: 'Elementar', class: 'SHAMAN', spec: 'Elemental', role: 'dps' },
+                    { id: 'enhancement', label: 'Enhancement', class: 'SHAMAN', spec: 'Enhancement', role: 'dps' },
+                    { id: 'unholy', label: 'Unholy', class: 'DEATHKNIGHT', spec: 'Unholy', role: 'dps' }
+                ];
+
+                const PRIO_STORAGE_KEY = 'norushen-orb-prio-categories-v4';
+                let prioCategories = [];
+
+                function loadPrio() {
+                    try {
+                        const saved = localStorage.getItem(PRIO_STORAGE_KEY);
+                        if (saved) {
+                            const parsed = JSON.parse(saved);
+                            if (Array.isArray(parsed) && parsed.every(c => c && c.id && c.label)) {
+                                prioCategories = parsed;
+                                return;
+                            }
+                        }
+                    } catch (e) { }
+                    prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+                }
+
+                function savePrio() {
+                    try { localStorage.setItem(PRIO_STORAGE_KEY, JSON.stringify(prioCategories)); } catch (e) { }
+                }
+
+                loadPrio();
+
+                const prioListEl = document.getElementById('norushen-orb-prio-list');
+                const autoFillBtn = document.getElementById('norushen-orb-auto-fill');
+                const prioResetBtn = document.getElementById('norushen-orb-prio-reset');
+                const prioAddBtn = document.getElementById('norushen-orb-prio-add');
+                const prioDetectBtn = document.getElementById('norushen-orb-prio-detect');
+                const showDebugBtn = document.getElementById('norushen-orb-show-debug');
+                const debugOutEl = document.getElementById('norushen-orb-debug-output');
+                const modalEl = document.getElementById('norushen-orb-prio-modal');
+                const modalTitle = document.getElementById('norushen-orb-prio-modal-title');
+                const modalLabel = document.getElementById('norushen-orb-prio-modal-label');
+                const modalClass = document.getElementById('norushen-orb-prio-modal-class');
+                const modalSpec = document.getElementById('norushen-orb-prio-modal-spec');
+                const modalRole = document.getElementById('norushen-orb-prio-modal-role');
+                const modalLimitRows = document.getElementById('norushen-orb-prio-modal-limit-rows');
+                const modalLimitCount = document.getElementById('norushen-orb-prio-modal-limit-count');
+                const modalMaxTotal = document.getElementById('norushen-orb-prio-modal-max-total');
+                const modalSave = document.getElementById('norushen-orb-prio-modal-save');
+                const modalCancel = document.getElementById('norushen-orb-prio-modal-cancel');
+
+                if (modalClass) {
+                    Object.keys(SPEC_DEFINITIONS).forEach(clsKey => {
+                        const opt = new Option(CLASS_DISPLAY[clsKey] || clsKey, clsKey);
+                        modalClass.appendChild(opt);
                     });
                 }
-                modalSpec.value = selectedSpec || '';
-                if (modalSpec.value !== (selectedSpec || '')) modalSpec.value = '';
-            }
-            
-            if (modalClass) {
-                modalClass.addEventListener('change', () => {
-                    updateSpecDropdown(modalClass.value, '');
-                });
-            }
-            if (modalSpec) {
-                modalSpec.addEventListener('change', () => {
-                    const cls = modalClass.value;
-                    const spec = modalSpec.value;
-                    if (cls && spec && SPEC_DEFINITIONS[cls]) {
-                        const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
-                        if (def && !modalRole.value) modalRole.value = def.role;
-                    }
-                });
-            }
-            
-            function getPlayerRoleNormalized(p) {
-                if (Array.isArray(p.roles) && p.roles.length > 0) return String(p.roles[0]).toLowerCase();
-                if (p.role) return String(p.role).toLowerCase();
-                return '';
-            }
-            function getPlayerSpec(p) {
-                return (p.spec || p.specName || p.specialization || '').toString();
-            }
-            function getPlayerClass(p) {
-                return (p.class || p.className || '').toString();
-            }
-            
-            const SPEC_ARCHETYPE_LOOKUP = (() => {
-                const m = {};
-                Object.keys(SPEC_DEFINITIONS).forEach(cls => {
-                    SPEC_DEFINITIONS[cls].forEach(s => { if (s.archetype) m[cls + '|' + s.value] = s.archetype; });
-                });
-                return m;
-            })();
 
-            function getPlayerArchetype(p) {
-                const cls  = normalizeClass(getPlayerClass(p));
-                const spec = getPlayerSpec(p);
-                if (!cls || !spec) return '';
-                return SPEC_ARCHETYPE_LOOKUP[cls + '|' + spec] || '';
-            }
-
-            function playerMatchesCategory(p, cat) {
-                const playerClass = normalizeClass(getPlayerClass(p));
-                const playerSpec  = getPlayerSpec(p);
-                const playerRole  = getPlayerRoleNormalized(p);
-                const playerArch  = getPlayerArchetype(p);
-                
-                if (cat.class && cat.class.trim()) {
-                    if (playerClass !== cat.class) return false;
-                }
-                if (cat.spec && cat.spec.trim()) {
-                    if (playerSpec !== cat.spec) return false;
-                }
-                if (cat.role && cat.role.trim()) {
-                    if (playerRole !== cat.role.toLowerCase()) return false;
-                }
-                if (cat.archetype && cat.archetype.trim()) {
-                    if (playerArch !== cat.archetype) return false;
-                }
-                
-                return true;
-            }
-            
-            function detectCategoriesFromRoster() {
-                if (!Array.isArray(roster) || roster.length === 0) return [];
-                
-                const cats = [];
-                
-                function findExistingMatch(filter) {
-                    return prioCategories.find(c =>
-                        (c.class || '') === (filter.class || '') &&
-                        (c.spec  || '') === (filter.spec  || '') &&
-                        (c.role  || '') === (filter.role  || '')
-                    );
-                }
-                function withLimits(base) {
-                    const ex = findExistingMatch(base);
-                    if (ex) {
-                        if (ex.limitRows  !== undefined) base.limitRows  = ex.limitRows;
-                        if (ex.limitCount !== undefined) base.limitCount = ex.limitCount;
-                        if (ex.maxTotal   !== undefined) base.maxTotal   = ex.maxTotal;
+                function updateSpecDropdown(selectedClass, selectedSpec) {
+                    if (!modalSpec) return;
+                    modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
+                    if (selectedClass && SPEC_DEFINITIONS[selectedClass]) {
+                        SPEC_DEFINITIONS[selectedClass].forEach(s => {
+                            const opt = new Option(s.label, s.value);
+                            modalSpec.appendChild(opt);
+                        });
                     }
-                    return base;
+                    modalSpec.value = selectedSpec || '';
+                    if (modalSpec.value !== (selectedSpec || '')) modalSpec.value = '';
                 }
-                
-                const healers = roster.filter(p => getPlayerRoleNormalized(p) === 'healer');
-                const tanks   = roster.filter(p => getPlayerRoleNormalized(p) === 'tank');
-                if (healers.length > 0) {
-                    cats.push(withLimits({ id: 'auto_healer', label: `Healer (${healers.length})`, class: '', spec: '', role: 'healer' }));
+
+                if (modalClass) {
+                    modalClass.addEventListener('change', () => {
+                        updateSpecDropdown(modalClass.value, '');
+                    });
                 }
-                if (tanks.length > 0) {
-                    const t = withLimits({ id: 'auto_tank', label: `Tank (${tanks.length})`, class: '', spec: '', role: 'tank' });
-                    if (t.limitRows === undefined) { t.limitRows = 4; t.limitCount = 1; }
-                    cats.push(t);
+                if (modalSpec) {
+                    modalSpec.addEventListener('change', () => {
+                        const cls = modalClass.value;
+                        const spec = modalSpec.value;
+                        if (cls && spec && SPEC_DEFINITIONS[cls]) {
+                            const def = SPEC_DEFINITIONS[cls].find(s => s.value === spec);
+                            if (def && !modalRole.value) modalRole.value = def.role;
+                        }
+                    });
                 }
-                
-                const specBuckets = {}; 
-                roster.forEach(p => {
-                    if (getPlayerRoleNormalized(p) !== 'dps') return;
-                    const cls  = normalizeClass(getPlayerClass(p));
+
+                function getPlayerRoleNormalized(p) {
+                    if (Array.isArray(p.roles) && p.roles.length > 0) return String(p.roles[0]).toLowerCase();
+                    if (p.role) return String(p.role).toLowerCase();
+                    return '';
+                }
+                function getPlayerSpec(p) {
+                    return (p.spec || p.specName || p.specialization || '').toString();
+                }
+                function getPlayerClass(p) {
+                    return (p.class || p.className || '').toString();
+                }
+
+                const SPEC_ARCHETYPE_LOOKUP = (() => {
+                    const m = {};
+                    Object.keys(SPEC_DEFINITIONS).forEach(cls => {
+                        SPEC_DEFINITIONS[cls].forEach(s => { if (s.archetype) m[cls + '|' + s.value] = s.archetype; });
+                    });
+                    return m;
+                })();
+
+                function getPlayerArchetype(p) {
+                    const cls = normalizeClass(getPlayerClass(p));
                     const spec = getPlayerSpec(p);
-                    if (!cls || !spec) return;
-                    
-                    const known = (SPEC_DEFINITIONS[cls] || []).find(s => s.value === spec);
-                    if (!known) return;
-                    
-                    const key = cls + '|' + spec;
-                    if (!specBuckets[key]) {
-                        specBuckets[key] = {
-                            class: cls,
-                            spec: spec,
-                            label: known.label + ' ' + (CLASS_DISPLAY[cls] || cls),
-                            count: 0
-                        };
-                    }
-                    specBuckets[key].count++;
-                });
-                
-                const sortedDps = Object.values(specBuckets).sort((a, b) => b.count - a.count);
-                sortedDps.forEach(b => {
-                    const id = 'auto_' + b.class.toLowerCase() + '_' + b.spec.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                    cats.push(withLimits({
-                        id: id,
-                        label: b.label + ' (' + b.count + ')',
-                        class: b.class,
-                        spec: b.spec,
-                        role: 'dps'
-                    }));
-                });
-                
-                return cats;
-            }
-            
-            function renderPrioList() {
-                if (!prioListEl) return;
-                prioListEl.innerHTML = '';
-                if (prioCategories.length === 0) {
-                    prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien — auf "+" klicken oder "Aus Kader ableiten".</li>';
-                    return;
+                    if (!cls || !spec) return '';
+                    return SPEC_ARCHETYPE_LOOKUP[cls + '|' + spec] || '';
                 }
-                prioCategories.forEach((cat, idx) => {
-                    const li = document.createElement('li');
-                    li.draggable = !!window.isManager;
-                    li.dataset.catId = cat.id;
-                    li.className = 'flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs';
-                    
-                    const filters = [];
-                    if (cat.class) filters.push(CLASS_DISPLAY[cat.class] || cat.class);
-                    if (cat.spec)  filters.push(cat.spec);
-                    if (cat.role)  filters.push(cat.role);
-                    const filterStr = filters.length > 0 ? filters.join(' · ') : '<span class="text-yellow-500">⚠ kein Filter</span>';
-                    
-                    const limits = [];
-                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '') {
-                        limits.push(`max ${cat.limitCount} in ersten ${cat.limitRows}`);
+
+                function playerMatchesCategory(p, cat) {
+                    const playerClass = normalizeClass(getPlayerClass(p));
+                    const playerSpec = getPlayerSpec(p);
+                    const playerRole = getPlayerRoleNormalized(p);
+                    const playerArch = getPlayerArchetype(p);
+
+                    if (cat.class && cat.class.trim()) {
+                        if (playerClass !== cat.class) return false;
                     }
-                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
-                        limits.push(`max ${cat.maxTotal} gesamt`);
+                    if (cat.spec && cat.spec.trim()) {
+                        if (playerSpec !== cat.spec) return false;
                     }
-                    const limitStr = limits.length > 0 ? `<span class="text-amber-400 ml-1">[${limits.join(', ')}]</span>` : '';
-                    
-                    li.innerHTML = `
+                    if (cat.role && cat.role.trim()) {
+                        if (playerRole !== cat.role.toLowerCase()) return false;
+                    }
+                    if (cat.archetype && cat.archetype.trim()) {
+                        if (playerArch !== cat.archetype) return false;
+                    }
+
+                    return true;
+                }
+
+                function detectCategoriesFromRoster() {
+                    if (!Array.isArray(roster) || roster.length === 0) return [];
+
+                    const cats = [];
+
+                    function findExistingMatch(filter) {
+                        return prioCategories.find(c =>
+                            (c.class || '') === (filter.class || '') &&
+                            (c.spec || '') === (filter.spec || '') &&
+                            (c.role || '') === (filter.role || '')
+                        );
+                    }
+                    function withLimits(base) {
+                        const ex = findExistingMatch(base);
+                        if (ex) {
+                            if (ex.limitRows !== undefined) base.limitRows = ex.limitRows;
+                            if (ex.limitCount !== undefined) base.limitCount = ex.limitCount;
+                            if (ex.maxTotal !== undefined) base.maxTotal = ex.maxTotal;
+                        }
+                        return base;
+                    }
+
+                    const healers = roster.filter(p => getPlayerRoleNormalized(p) === 'healer');
+                    const tanks = roster.filter(p => getPlayerRoleNormalized(p) === 'tank');
+                    if (healers.length > 0) {
+                        cats.push(withLimits({ id: 'auto_healer', label: `Healer (${healers.length})`, class: '', spec: '', role: 'healer' }));
+                    }
+                    if (tanks.length > 0) {
+                        const t = withLimits({ id: 'auto_tank', label: `Tank (${tanks.length})`, class: '', spec: '', role: 'tank' });
+                        if (t.limitRows === undefined) { t.limitRows = 4; t.limitCount = 1; }
+                        cats.push(t);
+                    }
+
+                    const specBuckets = {};
+                    roster.forEach(p => {
+                        if (getPlayerRoleNormalized(p) !== 'dps') return;
+                        const cls = normalizeClass(getPlayerClass(p));
+                        const spec = getPlayerSpec(p);
+                        if (!cls || !spec) return;
+
+                        const known = (SPEC_DEFINITIONS[cls] || []).find(s => s.value === spec);
+                        if (!known) return;
+
+                        const key = cls + '|' + spec;
+                        if (!specBuckets[key]) {
+                            specBuckets[key] = {
+                                class: cls,
+                                spec: spec,
+                                label: known.label + ' ' + (CLASS_DISPLAY[cls] || cls),
+                                count: 0
+                            };
+                        }
+                        specBuckets[key].count++;
+                    });
+
+                    const sortedDps = Object.values(specBuckets).sort((a, b) => b.count - a.count);
+                    sortedDps.forEach(b => {
+                        const id = 'auto_' + b.class.toLowerCase() + '_' + b.spec.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                        cats.push(withLimits({
+                            id: id,
+                            label: b.label + ' (' + b.count + ')',
+                            class: b.class,
+                            spec: b.spec,
+                            role: 'dps'
+                        }));
+                    });
+
+                    return cats;
+                }
+
+                function renderPrioList() {
+                    if (!prioListEl) return;
+                    prioListEl.innerHTML = '';
+                    if (prioCategories.length === 0) {
+                        prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien — auf "+" klicken oder "Aus Kader ableiten".</li>';
+                        return;
+                    }
+                    prioCategories.forEach((cat, idx) => {
+                        const li = document.createElement('li');
+                        li.draggable = !!window.isManager;
+                        li.dataset.catId = cat.id;
+                        li.className = 'flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs';
+
+                        const filters = [];
+                        if (cat.class) filters.push(CLASS_DISPLAY[cat.class] || cat.class);
+                        if (cat.spec) filters.push(cat.spec);
+                        if (cat.role) filters.push(cat.role);
+                        const filterStr = filters.length > 0 ? filters.join(' · ') : '<span class="text-yellow-500">⚠ kein Filter</span>';
+
+                        const limits = [];
+                        if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '') {
+                            limits.push(`max ${cat.limitCount} in ersten ${cat.limitRows}`);
+                        }
+                        if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                            limits.push(`max ${cat.maxTotal} gesamt`);
+                        }
+                        const limitStr = limits.length > 0 ? `<span class="text-amber-400 ml-1">[${limits.join(', ')}]</span>` : '';
+
+                        li.innerHTML = `
                         <span class="text-gray-500 font-mono w-6 text-center">${idx + 1}</span>
                         <span class="text-gray-400 select-none cursor-move drag-handle">⋮⋮</span>
                         <span class="flex-1 text-white truncate" title="${cat.label}">${cat.label}${limitStr}</span>
@@ -1223,410 +1335,410 @@ CD_AUTO_PLANNER.init({
                         <button class="prio-edit text-blue-400 hover:text-blue-300 text-xs px-1" data-cat-id="${cat.id}" title="Bearbeiten">✎</button>
                         <button class="prio-del text-red-400 hover:text-red-300 text-xs px-1" data-cat-id="${cat.id}" title="Löschen">✕</button>
                     `;
-                    prioListEl.appendChild(li);
-                });
-            }
-            
-            let dragSourceId = null;
-            
-            if (prioListEl) {
-                prioListEl.addEventListener('dragstart', (e) => {
-                    if (!window.isManager) { e.preventDefault(); return; }
-                    const li = e.target.closest('[data-cat-id]');
-                    if (!li) { e.preventDefault(); return; }
-                    dragSourceId = li.dataset.catId;
-                    li.classList.add('opacity-50');
-                    e.dataTransfer.effectAllowed = 'move';
-                    try { e.dataTransfer.setData('text/plain', dragSourceId); } catch (err) {}
-                });
-                
-                prioListEl.addEventListener('dragover', (e) => {
-                    if (!dragSourceId) return;
-                    e.preventDefault();
-                    e.dataTransfer.dropEffect = 'move';
-                    const target = e.target.closest('[data-cat-id]');
-                    prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => {
-                        el.classList.remove('drop-above', 'drop-below');
+                        prioListEl.appendChild(li);
                     });
-                    if (!target || target.dataset.catId === dragSourceId) return;
-                    const rect = target.getBoundingClientRect();
-                    const after = (e.clientY - rect.top) > rect.height / 2;
-                    target.classList.add(after ? 'drop-below' : 'drop-above');
-                });
-                
-                prioListEl.addEventListener('dragleave', (e) => {
-                    if (!prioListEl.contains(e.relatedTarget)) {
+                }
+
+                let dragSourceId = null;
+
+                if (prioListEl) {
+                    prioListEl.addEventListener('dragstart', (e) => {
+                        if (!window.isManager) { e.preventDefault(); return; }
+                        const li = e.target.closest('[data-cat-id]');
+                        if (!li) { e.preventDefault(); return; }
+                        dragSourceId = li.dataset.catId;
+                        li.classList.add('opacity-50');
+                        e.dataTransfer.effectAllowed = 'move';
+                        try { e.dataTransfer.setData('text/plain', dragSourceId); } catch (err) { }
+                    });
+
+                    prioListEl.addEventListener('dragover', (e) => {
+                        if (!dragSourceId) return;
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        const target = e.target.closest('[data-cat-id]');
                         prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => {
                             el.classList.remove('drop-above', 'drop-below');
                         });
-                    }
-                });
-                
-                prioListEl.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    if (!dragSourceId) return;
-                    
-                    const target = e.target.closest('[data-cat-id]');
-                    if (!target || target.dataset.catId === dragSourceId) {
-                        return;
-                    }
-                    
-                    const rect = target.getBoundingClientRect();
-                    const dropAfter = (e.clientY - rect.top) > rect.height / 2;
-                    
-                    const fromIdx = prioCategories.findIndex(c => c.id === dragSourceId);
-                    const toIdxRaw = prioCategories.findIndex(c => c.id === target.dataset.catId);
-                    if (fromIdx < 0 || toIdxRaw < 0) return;
-                    
-                    const [moved] = prioCategories.splice(fromIdx, 1);
-                    
-                    let toIdx = prioCategories.findIndex(c => c.id === target.dataset.catId);
-                    if (dropAfter) toIdx += 1;
-                    
-                    if (toIdx < 0) toIdx = 0;
-                    if (toIdx > prioCategories.length) toIdx = prioCategories.length;
-                    
-                    prioCategories.splice(toIdx, 0, moved);
-                    savePrio();
-                });
-                
-                prioListEl.addEventListener('dragend', () => {
-                    prioListEl.querySelectorAll('.opacity-50, .drop-above, .drop-below').forEach(el => {
-                        el.classList.remove('opacity-50', 'drop-above', 'drop-below');
+                        if (!target || target.dataset.catId === dragSourceId) return;
+                        const rect = target.getBoundingClientRect();
+                        const after = (e.clientY - rect.top) > rect.height / 2;
+                        target.classList.add(after ? 'drop-below' : 'drop-above');
                     });
-                    dragSourceId = null;
-                    renderPrioList();
-                });
-                
-                prioListEl.addEventListener('click', (e) => {
-                    if (!window.isManager) return;
-                    const editBtn = e.target.closest('.prio-edit');
-                    const delBtn  = e.target.closest('.prio-del');
-                    if (editBtn) {
-                        openPrioModal(editBtn.dataset.catId);
-                    } else if (delBtn) {
-                        const id = delBtn.dataset.catId;
-                        const cat = prioCategories.find(c => c.id === id);
-                        if (cat && confirm(`Kategorie "${cat.label}" wirklich löschen?`)) {
-                            prioCategories = prioCategories.filter(c => c.id !== id);
-                            savePrio();
-                            renderPrioList();
+
+                    prioListEl.addEventListener('dragleave', (e) => {
+                        if (!prioListEl.contains(e.relatedTarget)) {
+                            prioListEl.querySelectorAll('.drop-above, .drop-below').forEach(el => {
+                                el.classList.remove('drop-above', 'drop-below');
+                            });
                         }
-                    }
-                });
-            }
-            
-            let editingCatId = null;
-            
-            function openPrioModal(catId) {
-                if (!window.isManager) return;
-                editingCatId = catId || null;
-                if (catId) {
-                    const cat = prioCategories.find(c => c.id === catId);
-                    if (!cat) return;
-                    modalTitle.textContent = 'Kategorie bearbeiten';
-                    modalLabel.value      = cat.label || '';
-                    modalClass.value      = cat.class || '';
-                    updateSpecDropdown(cat.class || '', cat.spec || '');
-                    if (cat.archetype) {
-                        modalRole.value = cat.archetype;
-                    } else {
-                        modalRole.value = cat.role || '';
-                    }
-                    modalLimitRows.value  = cat.limitRows ?? '';
-                    modalLimitCount.value = cat.limitCount ?? '';
-                    modalMaxTotal.value   = cat.maxTotal ?? '';
-                } else {
-                    modalTitle.textContent = 'Neue Kategorie';
-                    modalLabel.value = '';
-                    modalClass.value = '';
-                    updateSpecDropdown('', '');
-                    modalRole.value = '';
-                    modalLimitRows.value = '';
-                    modalLimitCount.value = '';
-                    modalMaxTotal.value = '';
+                    });
+
+                    prioListEl.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        if (!dragSourceId) return;
+
+                        const target = e.target.closest('[data-cat-id]');
+                        if (!target || target.dataset.catId === dragSourceId) {
+                            return;
+                        }
+
+                        const rect = target.getBoundingClientRect();
+                        const dropAfter = (e.clientY - rect.top) > rect.height / 2;
+
+                        const fromIdx = prioCategories.findIndex(c => c.id === dragSourceId);
+                        const toIdxRaw = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                        if (fromIdx < 0 || toIdxRaw < 0) return;
+
+                        const [moved] = prioCategories.splice(fromIdx, 1);
+
+                        let toIdx = prioCategories.findIndex(c => c.id === target.dataset.catId);
+                        if (dropAfter) toIdx += 1;
+
+                        if (toIdx < 0) toIdx = 0;
+                        if (toIdx > prioCategories.length) toIdx = prioCategories.length;
+
+                        prioCategories.splice(toIdx, 0, moved);
+                        savePrio();
+                    });
+
+                    prioListEl.addEventListener('dragend', () => {
+                        prioListEl.querySelectorAll('.opacity-50, .drop-above, .drop-below').forEach(el => {
+                            el.classList.remove('opacity-50', 'drop-above', 'drop-below');
+                        });
+                        dragSourceId = null;
+                        renderPrioList();
+                    });
+
+                    prioListEl.addEventListener('click', (e) => {
+                        if (!window.isManager) return;
+                        const editBtn = e.target.closest('.prio-edit');
+                        const delBtn = e.target.closest('.prio-del');
+                        if (editBtn) {
+                            openPrioModal(editBtn.dataset.catId);
+                        } else if (delBtn) {
+                            const id = delBtn.dataset.catId;
+                            const cat = prioCategories.find(c => c.id === id);
+                            if (cat && confirm(`Kategorie "${cat.label}" wirklich löschen?`)) {
+                                prioCategories = prioCategories.filter(c => c.id !== id);
+                                savePrio();
+                                renderPrioList();
+                            }
+                        }
+                    });
                 }
-                modalEl.classList.remove('hidden');
-                setTimeout(() => modalLabel.focus(), 50);
-            }
-            
-            function closePrioModal() {
-                modalEl.classList.add('hidden');
-                editingCatId = null;
-            }
-            
-            if (prioAddBtn) prioAddBtn.addEventListener('click', () => openPrioModal(null));
-            if (modalCancel) modalCancel.addEventListener('click', closePrioModal);
-            if (modalEl) modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closePrioModal(); });
-            
-            if (modalSave) {
-                modalSave.addEventListener('click', () => {
-                    const label = modalLabel.value.trim();
-                    if (!label) {
-                        modalLabel.focus();
-                        modalLabel.style.borderColor = '#ef4444';
-                        return;
-                    }
-                    modalLabel.style.borderColor = '';
-                    
-                    const roleArchVal = modalRole.value.trim();
-                    let r = '', a = '';
-                    if (['tank', 'healer', 'dps'].includes(roleArchVal)) {
-                        r = roleArchVal;
-                    } else if (['melee', 'ranged_physical', 'caster'].includes(roleArchVal)) {
-                        r = 'dps';
-                        a = roleArchVal;
-                    }
-                    
-                    const data = {
-                        label: label,
-                        class: modalClass.value.trim(),
-                        spec:  modalSpec.value.trim(),
-                        role:  r,
-                        archetype: a
-                    };
-                    
-                    const lr = parseInt(modalLimitRows.value, 10);
-                    const lc = parseInt(modalLimitCount.value, 10);
-                    if (!isNaN(lr) && lr > 0 && !isNaN(lc) && lc >= 0) {
-                        data.limitRows = lr;
-                        data.limitCount = lc;
-                    }
-                    const mt = parseInt(modalMaxTotal.value, 10);
-                    if (!isNaN(mt) && mt >= 0) {
-                        data.maxTotal = mt;
-                    }
-                    
-                    if (editingCatId) {
-                        const cat = prioCategories.find(c => c.id === editingCatId);
-                        if (cat) {
-                            delete cat.limitRows;
-                            delete cat.limitCount;
-                            delete cat.maxTotal;
-                            delete cat.pattern;   
-                            delete cat.classes;   
-                            Object.assign(cat, data);
+
+                let editingCatId = null;
+
+                function openPrioModal(catId) {
+                    if (!window.isManager) return;
+                    editingCatId = catId || null;
+                    if (catId) {
+                        const cat = prioCategories.find(c => c.id === catId);
+                        if (!cat) return;
+                        modalTitle.textContent = 'Kategorie bearbeiten';
+                        modalLabel.value = cat.label || '';
+                        modalClass.value = cat.class || '';
+                        updateSpecDropdown(cat.class || '', cat.spec || '');
+                        if (cat.archetype) {
+                            modalRole.value = cat.archetype;
+                        } else {
+                            modalRole.value = cat.role || '';
                         }
+                        modalLimitRows.value = cat.limitRows ?? '';
+                        modalLimitCount.value = cat.limitCount ?? '';
+                        modalMaxTotal.value = cat.maxTotal ?? '';
                     } else {
-                        const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20) + '_' + Date.now().toString(36);
-                        prioCategories.push({ id, ...data });
+                        modalTitle.textContent = 'Neue Kategorie';
+                        modalLabel.value = '';
+                        modalClass.value = '';
+                        updateSpecDropdown('', '');
+                        modalRole.value = '';
+                        modalLimitRows.value = '';
+                        modalLimitCount.value = '';
+                        modalMaxTotal.value = '';
                     }
-                    savePrio();
-                    renderPrioList();
-                    closePrioModal();
-                });
-            }
-            
-            if (prioResetBtn) {
-                prioResetBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    if (!confirm('Alle Kategorien auf die Defaults zurücksetzen? Eigene gehen verloren.')) return;
-                    prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
-                    savePrio();
-                    renderPrioList();
-                });
-            }
-            
-            if (prioDetectBtn) {
-                prioDetectBtn.addEventListener('click', () => {
-                    if (!window.isManager) return;
-                    const detected = detectCategoriesFromRoster();
-                    if (detected.length === 0) {
-                        if (window.showModal) window.showModal('Konnte aus dem Kader keine Kategorien ableiten.\nIst das Roster geladen? Hat es Klassen-/Spec-Daten?');
-                        return;
-                    }
-                    const msg = `${detected.length} Kategorien aus dem Kader erkannt:\n${detected.map(c => '• ' + c.label).join('\n')}\n\nVorhandene Kategorien überschreiben?`;
-                    if (!confirm(msg)) return;
-                    prioCategories = detected;
-                    savePrio();
-                    renderPrioList();
-                });
-            }
-            
-            function buildSortedRoster() {
-                if (!Array.isArray(roster)) return [];
-                const used = new Set();
-                const out = [];
-                
-                prioCategories.forEach(cat => {
+                    modalEl.classList.remove('hidden');
+                    setTimeout(() => modalLabel.focus(), 50);
+                }
+
+                function closePrioModal() {
+                    modalEl.classList.add('hidden');
+                    editingCatId = null;
+                }
+
+                if (prioAddBtn) prioAddBtn.addEventListener('click', () => openPrioModal(null));
+                if (modalCancel) modalCancel.addEventListener('click', closePrioModal);
+                if (modalEl) modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closePrioModal(); });
+
+                if (modalSave) {
+                    modalSave.addEventListener('click', () => {
+                        const label = modalLabel.value.trim();
+                        if (!label) {
+                            modalLabel.focus();
+                            modalLabel.style.borderColor = '#ef4444';
+                            return;
+                        }
+                        modalLabel.style.borderColor = '';
+
+                        const roleArchVal = modalRole.value.trim();
+                        let r = '', a = '';
+                        if (['tank', 'healer', 'dps'].includes(roleArchVal)) {
+                            r = roleArchVal;
+                        } else if (['melee', 'ranged_physical', 'caster'].includes(roleArchVal)) {
+                            r = 'dps';
+                            a = roleArchVal;
+                        }
+
+                        const data = {
+                            label: label,
+                            class: modalClass.value.trim(),
+                            spec: modalSpec.value.trim(),
+                            role: r,
+                            archetype: a
+                        };
+
+                        const lr = parseInt(modalLimitRows.value, 10);
+                        const lc = parseInt(modalLimitCount.value, 10);
+                        if (!isNaN(lr) && lr > 0 && !isNaN(lc) && lc >= 0) {
+                            data.limitRows = lr;
+                            data.limitCount = lc;
+                        }
+                        const mt = parseInt(modalMaxTotal.value, 10);
+                        if (!isNaN(mt) && mt >= 0) {
+                            data.maxTotal = mt;
+                        }
+
+                        if (editingCatId) {
+                            const cat = prioCategories.find(c => c.id === editingCatId);
+                            if (cat) {
+                                delete cat.limitRows;
+                                delete cat.limitCount;
+                                delete cat.maxTotal;
+                                delete cat.pattern;
+                                delete cat.classes;
+                                Object.assign(cat, data);
+                            }
+                        } else {
+                            const id = label.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 20) + '_' + Date.now().toString(36);
+                            prioCategories.push({ id, ...data });
+                        }
+                        savePrio();
+                        renderPrioList();
+                        closePrioModal();
+                    });
+                }
+
+                if (prioResetBtn) {
+                    prioResetBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        if (!confirm('Alle Kategorien auf die Defaults zurücksetzen? Eigene gehen verloren.')) return;
+                        prioCategories = DEFAULT_PRIO_CATEGORIES.map(c => ({ ...c }));
+                        savePrio();
+                        renderPrioList();
+                    });
+                }
+
+                if (prioDetectBtn) {
+                    prioDetectBtn.addEventListener('click', () => {
+                        if (!window.isManager) return;
+                        const detected = detectCategoriesFromRoster();
+                        if (detected.length === 0) {
+                            if (window.showModal) window.showModal('Konnte aus dem Kader keine Kategorien ableiten.\nIst das Roster geladen? Hat es Klassen-/Spec-Daten?');
+                            return;
+                        }
+                        const msg = `${detected.length} Kategorien aus dem Kader erkannt:\n${detected.map(c => '• ' + c.label).join('\n')}\n\nVorhandene Kategorien überschreiben?`;
+                        if (!confirm(msg)) return;
+                        prioCategories = detected;
+                        savePrio();
+                        renderPrioList();
+                    });
+                }
+
+                function buildSortedRoster() {
+                    if (!Array.isArray(roster)) return [];
+                    const used = new Set();
+                    const out = [];
+
+                    prioCategories.forEach(cat => {
+                        roster.forEach(p => {
+                            const name = p.name || p;
+                            if (used.has(name)) return;
+                            if (playerMatchesCategory(p, cat)) {
+                                out.push({ player: p, name: name, category: cat });
+                                used.add(name);
+                            }
+                        });
+                    });
+
                     roster.forEach(p => {
                         const name = p.name || p;
-                        if (used.has(name)) return;
-                        if (playerMatchesCategory(p, cat)) {
-                            out.push({ player: p, name: name, category: cat });
+                        if (!used.has(name)) {
+                            out.push({ player: p, name: name, category: null });
                             used.add(name);
                         }
                     });
-                });
-                
-                roster.forEach(p => {
-                    const name = p.name || p;
-                    if (!used.has(name)) {
-                        out.push({ player: p, name: name, category: null });
-                        used.add(name);
-                    }
-                });
-                
-                return out;
-            }
-            
-            if (showDebugBtn) {
-                showDebugBtn.addEventListener('click', () => {
-                    const sorted = buildSortedRoster();
-                    if (sorted.length === 0) {
-                        debugOutEl.innerHTML = '<div class="text-gray-500 italic">Kader leer.</div>';
-                    } else {
-                        const byGroup = {};
-                        sorted.forEach(s => {
-                            const grp = s.category ? s.category.label : '(Sonstige)';
-                            if (!byGroup[grp]) byGroup[grp] = [];
-                            byGroup[grp].push(s);
-                        });
-                        let html = '';
-                        Object.keys(byGroup).forEach(grp => {
-                            html += `<div class="mb-2"><div class="font-bold text-yellow-400">${grp} (${byGroup[grp].length})</div><div class="ml-2">`;
-                            byGroup[grp].forEach(s => {
-                                const cls  = getPlayerClass(s.player) || '?';
-                                const spec = getPlayerSpec(s.player)  || '—';
-                                const role = getPlayerRoleNormalized(s.player) || '—';
-                                html += `<div class="text-gray-400">• <span class="text-white">${s.name}</span> <span class="text-gray-500">[${cls}/${spec}/${role}]</span></div>`;
+
+                    return out;
+                }
+
+                if (showDebugBtn) {
+                    showDebugBtn.addEventListener('click', () => {
+                        const sorted = buildSortedRoster();
+                        if (sorted.length === 0) {
+                            debugOutEl.innerHTML = '<div class="text-gray-500 italic">Kader leer.</div>';
+                        } else {
+                            const byGroup = {};
+                            sorted.forEach(s => {
+                                const grp = s.category ? s.category.label : '(Sonstige)';
+                                if (!byGroup[grp]) byGroup[grp] = [];
+                                byGroup[grp].push(s);
                             });
-                            html += '</div></div>';
-                        });
-                        debugOutEl.innerHTML = html;
-                    }
-                    debugOutEl.classList.toggle('hidden');
-                });
-            }
-            
-            if (autoFillBtn) {
-                autoFillBtn.addEventListener('click', () => {
-                    if (!window.isManager) {
-                        if (window.showModal) window.showModal('Nur Gildenräte können diese Aktion ausführen.');
-                        return;
-                    }
-                    if (!Array.isArray(roster) || roster.length === 0) {
-                        if (window.showModal) window.showModal('Kader leer — keine Spieler zum Eintragen.');
-                        return;
-                    }
-                    
-                    const currentRowCount = tbody.querySelectorAll('tr').length;
-                    if (currentRowCount === 0) {
-                        if (window.showModal) window.showModal('Keine Zeilen vorhanden. Erst "+ Zeile hinzufügen" klicken.');
-                        return;
-                    }
-                    
-                    const alreadyAssigned = new Set();
-                    const usedInRows = {};  
-                    orderData.forEach((r, idx) => {
-                        if (r && r.player) {
-                            alreadyAssigned.add(r.player);
-                            const p = roster.find(rp => (rp.name || rp) === r.player);
-                            if (p) {
-                                for (const cat of prioCategories) {
-                                    if (playerMatchesCategory(p, cat)) {
-                                        if (!usedInRows[cat.id]) usedInRows[cat.id] = [];
-                                        usedInRows[cat.id].push(idx);
-                                        break;  
+                            let html = '';
+                            Object.keys(byGroup).forEach(grp => {
+                                html += `<div class="mb-2"><div class="font-bold text-yellow-400">${grp} (${byGroup[grp].length})</div><div class="ml-2">`;
+                                byGroup[grp].forEach(s => {
+                                    const cls = getPlayerClass(s.player) || '?';
+                                    const spec = getPlayerSpec(s.player) || '—';
+                                    const role = getPlayerRoleNormalized(s.player) || '—';
+                                    html += `<div class="text-gray-400">• <span class="text-white">${s.name}</span> <span class="text-gray-500">[${cls}/${spec}/${role}]</span></div>`;
+                                });
+                                html += '</div></div>';
+                            });
+                            debugOutEl.innerHTML = html;
+                        }
+                        debugOutEl.classList.toggle('hidden');
+                    });
+                }
+
+                if (autoFillBtn) {
+                    autoFillBtn.addEventListener('click', () => {
+                        if (!window.isManager) {
+                            if (window.showModal) window.showModal('Nur Gildenräte können diese Aktion ausführen.');
+                            return;
+                        }
+                        if (!Array.isArray(roster) || roster.length === 0) {
+                            if (window.showModal) window.showModal('Kader leer — keine Spieler zum Eintragen.');
+                            return;
+                        }
+
+                        const currentRowCount = tbody.querySelectorAll('tr').length;
+                        if (currentRowCount === 0) {
+                            if (window.showModal) window.showModal('Keine Zeilen vorhanden. Erst "+ Zeile hinzufügen" klicken.');
+                            return;
+                        }
+
+                        const alreadyAssigned = new Set();
+                        const usedInRows = {};
+                        orderData.forEach((r, idx) => {
+                            if (r && r.player) {
+                                alreadyAssigned.add(r.player);
+                                const p = roster.find(rp => (rp.name || rp) === r.player);
+                                if (p) {
+                                    for (const cat of prioCategories) {
+                                        if (playerMatchesCategory(p, cat)) {
+                                            if (!usedInRows[cat.id]) usedInRows[cat.id] = [];
+                                            usedInRows[cat.id].push(idx);
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
-                    
-                    const sorted = buildSortedRoster().filter(s => !alreadyAssigned.has(s.name));
-                    
-                    let pickIdx = 0;
-                    let fillCount = 0;
-                    let skippedDueLimit = 0;
-                    
-                    for (let i = 0; i < currentRowCount; i++) {
-                        const existing = orderData[i] || { player: '', delay: '' };
-                        if (existing.player) continue;
-                        
-                        let found = -1;
-                        for (let j = pickIdx; j < sorted.length; j++) {
-                            const candidate = sorted[j];
-                            const cat = candidate.category;
-                            
-                            if (cat) {
-                                if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && i < cat.limitRows) {
-                                    const usedInFirstN = (usedInRows[cat.id] || []).filter(idx => idx < cat.limitRows).length;
-                                    if (usedInFirstN >= cat.limitCount) continue;  
+                        });
+
+                        const sorted = buildSortedRoster().filter(s => !alreadyAssigned.has(s.name));
+
+                        let pickIdx = 0;
+                        let fillCount = 0;
+                        let skippedDueLimit = 0;
+
+                        for (let i = 0; i < currentRowCount; i++) {
+                            const existing = orderData[i] || { player: '', delay: '' };
+                            if (existing.player) continue;
+
+                            let found = -1;
+                            for (let j = pickIdx; j < sorted.length; j++) {
+                                const candidate = sorted[j];
+                                const cat = candidate.category;
+
+                                if (cat) {
+                                    if (cat.limitRows && cat.limitCount !== undefined && cat.limitCount !== '' && i < cat.limitRows) {
+                                        const usedInFirstN = (usedInRows[cat.id] || []).filter(idx => idx < cat.limitRows).length;
+                                        if (usedInFirstN >= cat.limitCount) continue;
+                                    }
+                                    if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
+                                        const usedTotal = (usedInRows[cat.id] || []).length;
+                                        if (usedTotal >= cat.maxTotal) continue;
+                                    }
                                 }
-                                if (cat.maxTotal !== undefined && cat.maxTotal !== '' && cat.maxTotal !== null) {
-                                    const usedTotal = (usedInRows[cat.id] || []).length;
-                                    if (usedTotal >= cat.maxTotal) continue;
-                                }
+
+                                found = j;
+                                break;
                             }
-                            
-                            found = j;
-                            break;
+
+                            if (found < 0) {
+                                skippedDueLimit++;
+                                continue;
+                            }
+
+                            const candidate = sorted[found];
+                            sorted.splice(found, 1);
+
+                            while (orderData.length <= i) orderData.push({ player: '', delay: '' });
+                            orderData[i] = {
+                                player: candidate.name,
+                                delay: existing.delay !== undefined ? existing.delay : ''
+                            };
+                            if (candidate.category) {
+                                if (!usedInRows[candidate.category.id]) usedInRows[candidate.category.id] = [];
+                                usedInRows[candidate.category.id].push(i);
+                            }
+                            fillCount++;
                         }
-                        
-                        if (found < 0) {
-                            skippedDueLimit++;
-                            continue;  
-                        }
-                        
-                        const candidate = sorted[found];
-                        sorted.splice(found, 1);
-                        
-                        while (orderData.length <= i) orderData.push({ player: '', delay: '' });
-                        orderData[i] = {
-                            player: candidate.name,
-                            delay: existing.delay !== undefined ? existing.delay : ''
-                        };
-                        if (candidate.category) {
-                            if (!usedInRows[candidate.category.id]) usedInRows[candidate.category.id] = [];
-                            usedInRows[candidate.category.id].push(i);
-                        }
-                        fillCount++;
-                    }
-                    
-                    renderRows();
-                    scheduleSave();
-                    
-                    let msg = `Auto-Füllen: ${fillCount} Spieler eingetragen.`;
-                    if (skippedDueLimit > 0) msg += `\n(${skippedDueLimit} Zeilen übersprungen wegen Limits.)`;
-                    if (window.showModal) window.showModal(msg);
-                });
-            }
-            
-            function applyPrioProtection() {
-                const isManager = !!window.isManager;
-                [autoFillBtn, prioResetBtn, prioAddBtn, prioDetectBtn, addBtn, clearBtn].forEach(btn => {
-                    if (btn) {
-                        btn.disabled = !isManager;
-                        if (!isManager) btn.classList.add('opacity-50', 'cursor-not-allowed');
-                        else btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    }
-                });
-                if (prioListEl) {
-                    prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
-                        el.draggable = isManager;
-                        const handle = el.querySelector('.drag-handle');
-                        if (handle) handle.style.cursor = isManager ? 'move' : 'not-allowed';
-                        el.style.opacity = isManager ? '' : '0.6';
-                        el.querySelectorAll('button').forEach(b => b.disabled = !isManager);
+
+                        renderRows();
+                        scheduleSave();
+
+                        let msg = `Auto-Füllen: ${fillCount} Spieler eingetragen.`;
+                        if (skippedDueLimit > 0) msg += `\n(${skippedDueLimit} Zeilen übersprungen wegen Limits.)`;
+                        if (window.showModal) window.showModal(msg);
                     });
                 }
-                if (tbody) {
-                    tbody.querySelectorAll('select, input, button').forEach(el => {
-                        el.disabled = !isManager;
-                        if (!isManager) el.classList.add('opacity-50', 'cursor-not-allowed');
-                        else el.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                function applyPrioProtection() {
+                    const isManager = !!window.isManager;
+                    [autoFillBtn, prioResetBtn, prioAddBtn, prioDetectBtn, addBtn, clearBtn].forEach(btn => {
+                        if (btn) {
+                            btn.disabled = !isManager;
+                            if (!isManager) btn.classList.add('opacity-50', 'cursor-not-allowed');
+                            else btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                        }
                     });
+                    if (prioListEl) {
+                        prioListEl.querySelectorAll('[data-cat-id]').forEach(el => {
+                            el.draggable = isManager;
+                            const handle = el.querySelector('.drag-handle');
+                            if (handle) handle.style.cursor = isManager ? 'move' : 'not-allowed';
+                            el.style.opacity = isManager ? '' : '0.6';
+                            el.querySelectorAll('button').forEach(b => b.disabled = !isManager);
+                        });
+                    }
+                    if (tbody) {
+                        tbody.querySelectorAll('select, input, button').forEach(el => {
+                            el.disabled = !isManager;
+                            if (!isManager) el.classList.add('opacity-50', 'cursor-not-allowed');
+                            else el.classList.remove('opacity-50', 'cursor-not-allowed');
+                        });
+                    }
                 }
-            }
-            
-            renderPrioList();
-            applyPrioProtection();
-            setInterval(applyPrioProtection, 1500);
-            
-            loadFromAssignments();
-            if (orderData.length === 0) renderRows();
-        })();
-    };
-</script>
+
+                renderPrioList();
+                applyPrioProtection();
+                setInterval(applyPrioProtection, 1500);
+
+                loadFromAssignments();
+                if (orderData.length === 0) renderRows();
+            })();
+        };
+    </script>
 </main>

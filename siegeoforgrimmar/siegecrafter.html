@@ -499,7 +499,7 @@
                     icon: "⚡"
                 },
                 {
-                    name: "Launch Sawblade #1",
+                    name: "Launch Sawblade",
                     spellId: 143265,
                     firstCast: 9,
                     cooldown: 12,
@@ -510,26 +510,48 @@
                     icon: "🪚"
                 },
                 {
-                    name: "Shredder #1 Spawn",
+                    name: "Shredder Spawn",
                     spellId: 144208,
                     firstCast: 35,
-                    cooldown: 0,
-                    maxCasts: 1,
+                    cooldown: 60,
+                    maxCasts: 12,
                     delay: 0,
                     eventDuration: 30,
                     requiredCDs: ["aoe_stun"],
                     icon: "🤖"
                 },
                 {
-                    name: "Death From Above #1 (Tank)",
+                    name: "Assembly Line (Item Spawn)",
+                    spellId: 0,
+                    firstCast: 40,
+                    cooldown: 40,
+                    maxCasts: 15,
+                    delay: 0,
+                    eventDuration: 13,
+                    requiredCDs: [],
+                    icon: "📦"
+                },
+                {
+                    name: "Death From Above (Tank)",
                     spellId: 144208,
                     firstCast: 51,
-                    cooldown: 41,
-                    maxCasts: 3,
+                    cooldown: 60,
+                    maxCasts: 12,
                     delay: -1,
                     eventDuration: 8,
                     requiredCDs: ["tank_external", "any_dr"],
                     icon: "💥"
+                },
+                {
+                    name: "Crawler Mines (Soak)",
+                    spellId: 145269,
+                    firstCast: 53,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 30,
+                    requiredCDs: ["any_dr"],
+                    icon: "💣"
                 },
                 {
                     name: "Overload Stacks 5-10",
@@ -543,73 +565,32 @@
                     icon: "📈"
                 },
                 {
-                    name: "Assembly Line #1 (Item Spawn)",
-                    spellId: 0,
-                    firstCast: 40,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: 0,
-                    eventDuration: 13,
-                    requiredCDs: [],
-                    icon: "📦"
-                },
-                {
-                    name: "Crawler Mines #1 (Soak)",
-                    spellId: 145269,
-                    firstCast: 53,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: 0,
-                    eventDuration: 30,
-                    requiredCDs: ["any_dr"],
-                    icon: "💣"
-                },
-                {
-                    name: "Magnetic Crush #1 (Raid AOE)",
-                    spellId: 144466,
-                    firstCast: 130,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: -3,
-                    eventDuration: 30,
-                    requiredCDs: ["any_dr", "any_heal"],
-                    icon: "🧲"
-                },
-                {
-                    name: "Shockwave Missile #1 (Big AOE)",
+                    name: "Shockwave Missile",
                     spellId: 143641,
                     firstCast: 90,
-                    cooldown: 0,
-                    maxCasts: 1,
+                    cooldown: 200,
+                    maxCasts: 3,
                     delay: -3,
                     eventDuration: 10,
                     requiredCDs: ["any_dr"],
                     icon: "🚀"
                 },
                 {
-                    name: "Shredder #2 Spawn",
-                    spellId: 144208,
-                    firstCast: 95,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: 0,
+                    name: "Magnetic Crush (Raid AOE)",
+                    spellId: 144466,
+                    firstCast: 130,
+                    cooldown: 120,
+                    maxCasts: 5,
+                    delay: -3,
                     eventDuration: 30,
-                    requiredCDs: ["aoe_stun"],
-                    icon: "🤖"
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "🧲",
+                    escalationRanges: [
+                        { start: 3, end: 10, categories: ["any_dr", "any_heal", "additional_surv"] }
+                    ]
                 },
                 {
-                    name: "Death From Above #2 (Tank)",
-                    spellId: 144208,
-                    firstCast: 111,
-                    cooldown: 41,
-                    maxCasts: 3,
-                    delay: -1,
-                    eventDuration: 8,
-                    requiredCDs: ["tank_external", "any_dr"],
-                    icon: "💥"
-                },
-                {
-                    name: "Protective Frenzy #1 (Heavy Damage)",
+                    name: "Protective Frenzy (Heavy Damage)",
                     spellId: 145365,
                     firstCast: 180,
                     cooldown: 0,
@@ -618,50 +599,6 @@
                     eventDuration: 10,
                     requiredCDs: ["any_heal", "any_dr"],
                     icon: "🔥"
-                },
-                {
-                    name: "Magnetic Crush #2 (Raid AOE)",
-                    spellId: 144466,
-                    firstCast: 250,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: -3,
-                    eventDuration: 30,
-                    requiredCDs: ["any_dr", "any_heal"],
-                    icon: "🧲"
-                },
-                {
-                    name: "Shockwave Missile #2",
-                    spellId: 143641,
-                    firstCast: 290,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: -3,
-                    eventDuration: 10,
-                    requiredCDs: ["any_dr"],
-                    icon: "🚀"
-                },
-                {
-                    name: "Bloodlust (Execute)",
-                    spellId: 0,
-                    firstCast: 350,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: 0,
-                    eventDuration: 40,
-                    requiredCDs: ["bloodlust"],
-                    icon: "⚡"
-                },
-                {
-                    name: "Magnetic Crush #3 (Execute)",
-                    spellId: 144466,
-                    firstCast: 370,
-                    cooldown: 0,
-                    maxCasts: 1,
-                    delay: -3,
-                    eventDuration: 30,
-                    requiredCDs: ["any_dr", "any_heal", "additional_surv"],
-                    icon: "🧲"
                 },
                 {
                     name: "Overcharge Mine (Mythic)",
@@ -684,25 +621,31 @@
                     eventDuration: 15,
                     requiredCDs: ["any_dr"],
                     icon: "🚀"
+                },
+                {
+                    name: "Bloodlust (Execute)",
+                    spellId: 0,
+                    firstCast: 350,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 40,
+                    requiredCDs: ["bloodlust"],
+                    icon: "⚡"
                 }
             ],
 
             triggerMap: {
                 "Electrostatic Charge (Tank Stack)": "BLACKFUSE_ELECTRO_STATIC",
-                "Launch Sawblade #1": "BLACKFUSE_SAWBLADE",
-                "Shredder #1 Spawn": "BLACKFUSE_SHREDDER",
-                "Shredder #2 Spawn": "BLACKFUSE_SHREDDER",
-                "Death From Above #1 (Tank)": "BLACKFUSE_DEATH_FROM_ABOVE",
-                "Death From Above #2 (Tank)": "BLACKFUSE_DEATH_FROM_ABOVE",
+                "Launch Sawblade": "BLACKFUSE_SAWBLADE",
+                "Shredder Spawn": "BLACKFUSE_SHREDDER",
+                "Death From Above (Tank)": "BLACKFUSE_DEATH_FROM_ABOVE",
                 "Overload Stacks 5-10": "BLACKFUSE_OVERLOAD_5",
-                "Assembly Line #1 (Item Spawn)": "BLACKFUSE_ASSEMBLY",
-                "Crawler Mines #1 (Soak)": "BLACKFUSE_MINES",
-                "Magnetic Crush #1 (Raid AOE)": "BLACKFUSE_MAGNETIC_CRUSH",
-                "Magnetic Crush #2 (Raid AOE)": "BLACKFUSE_MAGNETIC_CRUSH",
-                "Magnetic Crush #3 (Execute)": "BLACKFUSE_MAGNETIC_CRUSH",
-                "Shockwave Missile #1 (Big AOE)": "BLACKFUSE_MISSILE",
-                "Shockwave Missile #2": "BLACKFUSE_MISSILE",
-                "Protective Frenzy #1 (Heavy Damage)": "BLACKFUSE_PROTECTIVE_FRENZY",
+                "Assembly Line (Item Spawn)": "BLACKFUSE_ASSEMBLY",
+                "Crawler Mines (Soak)": "BLACKFUSE_MINES",
+                "Magnetic Crush (Raid AOE)": "BLACKFUSE_MAGNETIC_CRUSH",
+                "Shockwave Missile": "BLACKFUSE_MISSILE",
+                "Protective Frenzy (Heavy Damage)": "BLACKFUSE_PROTECTIVE_FRENZY",
                 "Bloodlust (Execute)": "BLACKFUSE_ENC_START",
                 "Overcharge Mine (Mythic)": "BLACKFUSE_OVERCHARGE_MINE",
                 "Overcharge Missile (Mythic)": "BLACKFUSE_OVERCHARGE_MISSILE"

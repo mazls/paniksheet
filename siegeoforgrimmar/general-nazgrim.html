@@ -285,70 +285,18 @@ CD_AUTO_PLANNER.init({
         // ═══════════════════════════════════════════════════════
         
         {
-            name: "Adds-Welle #1 (2 Adds)",
+            name: "Adds-Welle",
             spellId: 0,
             firstCast: 46,        // erste Welle bei 46s
-            cooldown: 0,
-            maxCasts: 1,
+            cooldown: 46,
+            maxCasts: 10,
             delay: -2,
             eventDuration: 20,
             requiredCDs: ["aoe_stun"],
-            icon: "⚔️"
-        },
-        {
-            name: "Adds-Welle #2",
-            spellId: 0,
-            firstCast: 92,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -2,
-            eventDuration: 20,
-            requiredCDs: ["aoe_stun"],
-            icon: "⚔️"
-        },
-        {
-            name: "Adds-Welle #3",
-            spellId: 0,
-            firstCast: 138,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -2,
-            eventDuration: 20,
-            requiredCDs: ["aoe_stun", "any_dr"],
-            icon: "⚔️"
-        },
-        {
-            name: "Adds-Welle #4",
-            spellId: 0,
-            firstCast: 184,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -2,
-            eventDuration: 20,
-            requiredCDs: ["aoe_stun", "any_dr"],
-            icon: "⚔️"
-        },
-        {
-            name: "Adds-Welle #5 (3 Adds)",
-            spellId: 0,
-            firstCast: 230,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -2,
-            eventDuration: 20,
-            requiredCDs: ["aoe_stun", "any_dr"],
-            icon: "⚔️"
-        },
-        {
-            name: "Adds-Welle #6",
-            spellId: 0,
-            firstCast: 276,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -2,
-            eventDuration: 20,
-            requiredCDs: ["aoe_stun", "any_dr"],
-            icon: "⚔️"
+            icon: "⚔️",
+            escalationRanges: [
+                { start: 3, end: 10, categories: ["aoe_stun", "any_dr"] }
+            ]
         },
         
         // ═══════════════════════════════════════════════════════
@@ -413,12 +361,7 @@ CD_AUTO_PLANNER.init({
     triggerMap: {
         "Sundering Blow (Tank Stack)":             "NAZGRIM_SUNDERING_BLOW",
         "Bonecracker (HP-Halbierung)":             "NAZGRIM_BONECRACKER",
-        "Adds-Welle #1 (2 Adds)":                   "NAZGRIM_ADDS",
-        "Adds-Welle #2":                            "NAZGRIM_ADDS",
-        "Adds-Welle #3":                            "NAZGRIM_ADDS",
-        "Adds-Welle #4":                            "NAZGRIM_ADDS",
-        "Adds-Welle #5 (3 Adds)":                   "NAZGRIM_ADDS",
-        "Adds-Welle #6":                            "NAZGRIM_ADDS",
+        "Adds-Welle":                               "NAZGRIM_ADDS",
         "Battle Stance (War Song)":                 "NAZGRIM_WAR_SONG",
         "Berserker Stance (Ravager)":               "NAZGRIM_RAVAGER",
         "Defensive Stance (Banner+Shockwave)":      "NAZGRIM_HEROIC_SHOCKWAVE",

@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,10 +17,12 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
@@ -33,117 +37,160 @@
         <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            Der Kampf gegen Thok wechselt zwischen zwei Phasen: Einer stationären Phase, in der sich der eintreffende Schaden stetig erhöht, und einer Bewegungsphase (Kiting). Wenn in der ersten Phase 5 oder mehr Spieler (bzw. 3 im 10er-Modus) dicht beisammen stehen und unter 50% Gesundheit fallen, wechselt Thok in die <a href="https://www.wowhead.com/mop-classic/de/spell=143440" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Blutraserei</a> (Phase 2).
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Positionierung:</strong> Thok hat einen tödlichen Frontalangriff (<a href="https://www.wowhead.com/mop-classic/de/spell=143426" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Furchteinflößendes Brüllen</a>) und einen <a href="https://www.wowhead.com/mop-classic/de/spell=143766" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Schockschlag</a> (Schwanzfeger). Er muss stets quer zum Raid stehen. Niemand darf vor oder hinter ihm stehen!</li>
-                    <li><strong class="text-purple-400">Tank-Swap:</strong> Bei 2 bis 3 Stacks von <a href="https://www.wowhead.com/mop-classic/de/spell=143767" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Panikmache</a> abspotten.</li>
-                    <li><strong class="text-orange-400">Phase 2:</strong> Der <a href="https://www.wowhead.com/mop-classic/de/npc=71298" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Kerkermeister der Kor'kron</a> spawnt. Er muss getankt und schnell getötet werden, damit er den Schlüssel für die Käfige fallen lässt.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-blue-400">Das Kreischen (P1):</strong> Thok wirkt <a href="https://www.wowhead.com/mop-classic/de/spell=143343" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">Ohrenbetäubendes Kreischen</a>. Dieser Zauber unterbricht alle laufenden Zauber und sperrt die Magieschule. Zauberklassen müssen ihren Cast rechtzeitig abbrechen!</li>
-                    <li><strong class="text-orange-400">Kiting (P2):</strong> Thok fixiert in der Blutraserei Spieler und läuft hinter ihnen her. Erreicht er sein Ziel, frisst er es (Insta-Kill). Der fixierte Spieler muss sofort weglaufen.</li>
-                    <li><strong class="text-green-400">Heiler CD-Planung:</strong> Das Kreischen kommt im Verlauf von Phase 1 immer schneller. Ab dem 15. Schrei sind strikte Raid-CDs nötig, um die Gruppe am Leben zu halten.</li>
-                </ul>
-            </div>
-        </div>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                Der Kampf gegen Thok wechselt zwischen zwei Phasen: Einer stationären Phase, in der sich der
+                eintreffende Schaden stetig erhöht, und einer Bewegungsphase (Kiting). Wenn in der ersten Phase 5 oder
+                mehr Spieler (bzw. 3 im 10er-Modus) dicht beisammen stehen und unter 50% Gesundheit fallen, wechselt
+                Thok in die <a href="https://www.wowhead.com/mop-classic/de/spell=143440" target="_blank"
+                    rel="noopener noreferrer" class="text-red-400 hover:underline">Blutraserei</a> (Phase 2).
+            </p>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische Tipps & Gefängnisse</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200">Gefängnisse öffnen:</strong><br>
-                    Sobald der Kerkermeister stirbt, muss ein eingeteilter Spieler den Schlüssel looten und ein Gefängnis am Rand öffnen. Thok frisst den Insassen und Phase 1 beginnt erneut, jedoch mit einer neuen Elementar-Fähigkeit.
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-red-400">Positionierung:</strong> Thok hat einen tödlichen
+                            Frontalangriff (<a href="https://www.wowhead.com/mop-classic/de/spell=143426"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-red-400 hover:underline">Furchteinflößendes Brüllen</a>) und einen <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143766" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-300 hover:underline">Schockschlag</a>
+                            (Schwanzfeger). Er muss stets quer zum Raid stehen. Niemand darf vor oder hinter ihm stehen!
+                        </li>
+                        <li><strong class="text-purple-400">Tank-Swap:</strong> Bei 2 bis 3 Stacks von <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143767" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-300 hover:underline">Panikmache</a>
+                            abspotten.</li>
+                        <li><strong class="text-orange-400">Phase 2:</strong> Der <a
+                                href="https://www.wowhead.com/mop-classic/de/npc=71298" target="_blank"
+                                rel="noopener noreferrer" class="text-orange-400 hover:underline">Kerkermeister der
+                                Kor'kron</a> spawnt. Er muss getankt und schnell getötet werden, damit er den Schlüssel
+                            für die Käfige fallen lässt.</li>
+                    </ul>
                 </div>
-                <div>
-                    <strong class="text-emerald-200">Gift-Phase (Giftgrunzer):</strong><br>
-                    Spieler erhalten den Debuff <a href="https://www.wowhead.com/mop-classic/de/spell=143780" target="_blank" rel="noopener noreferrer" class="text-green-300 hover:underline">Ätzendes Blut</a>, der extrem hohen Schaden an Verbündeten im Umkreis verursacht. Betroffene müssen sofort aus dem Camp laufen!
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Frost-Phase (Wassersprecher):</strong><br>
-                    Spieler werden in Eisblöcken eingefroren (Froststachel). DPS müssen diese sofort zerstören, um die Spieler zu befreien.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Beschleunigung (P1):</strong><br>
-                    Jedes Kreischen gibt Thok einen Buff, wodurch er Energie schneller aufbaut. Ein erzwungener Wechsel in P2 (durch Drop unter 50% HP) setzt diesen Timer zurück.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">🛡️ Paladine (Segen des Schutzes):</strong><br>
-                    Paladine können Segen des Schutzes (Hand des Schutzes) auf Heiler wirken, um sie vor dem Unterbrechungseffekt von Ohrenbetäubendes Kreischen zu bewahren. Aura der Hingabe hilft ebenfalls massiv bei hohen Stacks!
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Abstand in Phase 2:</strong><br>
-                    Um nicht direkt wieder von Thok fixiert zu werden, solltet ihr am Ende eurer Kiting-Phase etwa 20-30 Meter Abstand zu ihm haben.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
-                    <div id="thok-lane-groups"></div>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-blue-400">Das Kreischen (P1):</strong> Thok wirkt <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143343" target="_blank"
+                                rel="noopener noreferrer" class="text-blue-300 hover:underline">Ohrenbetäubendes
+                                Kreischen</a>. Dieser Zauber unterbricht alle laufenden Zauber und sperrt die
+                            Magieschule. Zauberklassen müssen ihren Cast rechtzeitig abbrechen!</li>
+                        <li><strong class="text-orange-400">Kiting (P2):</strong> Thok fixiert in der Blutraserei
+                            Spieler und läuft hinter ihnen her. Erreicht er sein Ziel, frisst er es (Insta-Kill). Der
+                            fixierte Spieler muss sofort weglaufen.</li>
+                        <li><strong class="text-green-400">Heiler CD-Planung:</strong> Das Kreischen kommt im Verlauf
+                            von Phase 1 immer schneller. Ab dem 15. Schrei sind strikte Raid-CDs nötig, um die Gruppe am
+                            Leben zu halten.</li>
+                    </ul>
                 </div>
             </div>
 
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-6">
-                    <div id="positioning-toggle" class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
-                        <button data-phase="thok-p1" class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1 (Stack)</button>
-                        
+            <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+                <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische
+                    Tipps & Gefängnisse</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                    <div>
+                        <strong class="text-emerald-200">Gefängnisse öffnen:</strong><br>
+                        Sobald der Kerkermeister stirbt, muss ein eingeteilter Spieler den Schlüssel looten und ein
+                        Gefängnis am Rand öffnen. Thok frisst den Insassen und Phase 1 beginnt erneut, jedoch mit einer
+                        neuen Elementar-Fähigkeit.
                     </div>
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text" data-phase="thok-p1">Raid sammelt sich kompakt an der Seite des Bosses. Bei Giftphase (Ätzendes Blut) aus dem Camp laufen!</p>
-                            <p class="positioning-text hidden" data-phase="thok-p2">Thok wird im großen Kreis durch den Raum gezogen. Niemals durch die Mitte laufen, wenn er euch fixiert hat!</p>
+                    <div>
+                        <strong class="text-emerald-200">Gift-Phase (Giftgrunzer):</strong><br>
+                        Spieler erhalten den Debuff <a href="https://www.wowhead.com/mop-classic/de/spell=143780"
+                            target="_blank" rel="noopener noreferrer" class="text-green-300 hover:underline">Ätzendes
+                            Blut</a>, der extrem hohen Schaden an Verbündeten im Umkreis verursacht. Betroffene müssen
+                        sofort aus dem Camp laufen!
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Frost-Phase (Wassersprecher):</strong><br>
+                        Spieler werden in Eisblöcken eingefroren (Froststachel). DPS müssen diese sofort zerstören, um
+                        die Spieler zu befreien.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Beschleunigung (P1):</strong><br>
+                        Jedes Kreischen gibt Thok einen Buff, wodurch er Energie schneller aufbaut. Ein erzwungener
+                        Wechsel in P2 (durch Drop unter 50% HP) setzt diesen Timer zurück.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">🛡️ Paladine (Segen des Schutzes):</strong><br>
+                        Paladine können Segen des Schutzes (Hand des Schutzes) auf Heiler wirken, um sie vor dem
+                        Unterbrechungseffekt von Ohrenbetäubendes Kreischen zu bewahren. Aura der Hingabe hilft
+                        ebenfalls massiv bei hohen Stacks!
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Abstand in Phase 2:</strong><br>
+                        Um nicht direkt wieder von Thok fixiert zu werden, solltet ihr am Ende eurer Kiting-Phase etwa
+                        20-30 Meter Abstand zu ihm haben.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div class="space-y-6">
+
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout
+                            bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
+                        <div id="thok-lane-groups"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+
+                    <div class="space-y-6">
+                        <div id="positioning-toggle"
+                            class="flex justify-center mb-4 bg-slate-900 p-1 rounded-lg w-max mx-auto">
+                            <button data-phase="thok-p1"
+                                class="positioning-btn text-gray-400 py-2 px-6 rounded-md">Phase 1 (Stack)</button>
+
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                            <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                                <p class="positioning-text" data-phase="thok-p1">Raid sammelt sich kompakt an der Seite
+                                    des Bosses. Bei Giftphase (Ätzendes Blut) aus dem Camp laufen!</p>
+                                <p class="positioning-text hidden" data-phase="thok-p2">Thok wird im großen Kreis durch
+                                    den Raum gezogen. Niemals durch die Mitte laufen, wenn er euch fixiert hat!</p>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <img src="siegeoforgrimmar/thok.png" alt="Aufstellung Phase 1"
+                                class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                                data-phase="thok-p1"
+                                onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;thok-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/thok.png" alt="Aufstellung Phase 1" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            data-phase="thok-p1" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot; data-phase=&quot;thok-p1&quot;>Bild für Phase 1 noch nicht verfügbar.</div>'">
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ════════════════════════════════════════════════════════════════════
+    <!-- ════════════════════════════════════════════════════════════════════
      THOK THE BLOODTHIRSTY (THOK DER BLUTRÜNSTIGE) AUTO-PLANNER
      ════════════════════════════════════════════════════════════════════
      
@@ -180,300 +227,282 @@
      - BigWigs Thok.lua (Phasen-Übergänge, Skeleton Key, Adds)
      ════════════════════════════════════════════════════════════════════ -->
 
-<!-- HTML-Block für thok.html -->
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="text-sm text-gray-400 mb-4 italic">
-            Plant automatisch Cooldown-Zuteilungen. Boss alterniert zwischen Stage 1 (Deafening Screech accelerating) und Stage 2 (Blood Frenzy + Infusion).
-            Hauptfokus: Raid-DR für Screech-Bursts, Heal-CDs in Blood Frenzy.
-        </p>
-        
-        <!-- Steuerung -->
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
-        </div>
-        
-        <!-- Status -->
-        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
-        
-        <!-- Timeline mit Tabelle -->
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="w-full text-xs">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
-        </div>
-        
-        <!-- Kategorien-Editor (nur Manager) -->
-        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
-            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
-        </details>
-    </div>
-</section>
+    <!-- HTML-Block für thok.html -->
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Auto-CD-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="text-sm text-gray-400 mb-4 italic">
+                Plant automatisch Cooldown-Zuteilungen. Boss alterniert zwischen Stage 1 (Deafening Screech
+                accelerating) und Stage 2 (Blood Frenzy + Infusion).
+                Hauptfokus: Raid-DR für Screech-Bursts, Heal-CDs in Blood Frenzy.
+            </p>
 
-<script src="static/cd-auto-planner.js"></script>
-<script>
-// ══ Thok the Bloodthirsty Auto-Planner Config ══════════════════════
-CD_AUTO_PLANNER.init({
-    id: 'thok',
-    name: 'Thok der Blutrünstige',
-    prefix: 'thok',  // Container-Prefix in der Boss-HTML (thok-planner-container)
-    
-    events: [
-        // ═══════════════════════════════════════════════════════
-        // STAGE 1 #1 - Deafening Screech accelerating
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Fearsome Roar #1 (Tank)",
-            spellId: 143426,
-            firstCast: 12,        // 12s nach Pull (BigWigs)
-            cooldown: 11,         // 11s CD (DBM)
-            maxCasts: 4,          // ~4 Casts in 50s Stage 1
-            delay: -1,
-            eventDuration: 30,
-            requiredCDs: ["tank_external"],
-            icon: "🦁"
-        },
-        {
-            name: "Deafening Screech #1 (13.5s)",
-            spellId: 143343,
-            firstCast: 13.5,      // erster Screech bei 13.5s
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -2,
-            eventDuration: 4,
-            requiredCDs: ["any_dr"],
-            icon: "🔊"
-        },
-        {
-            name: "Deafening Screech #2 (11s nach #1)",
-            spellId: 143343,
-            firstCast: 24.5,      // 13.5 + 11s
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -2,
-            eventDuration: 4,
-            requiredCDs: ["any_dr"],
-            icon: "🔊"
-        },
-        {
-            name: "Deafening Screech #3 (7.2s nach #2)",
-            spellId: 143343,
-            firstCast: 31.7,      // accelerating!
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -2,
-            eventDuration: 4,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "🔊"
-        },
-        {
-            name: "Deafening Screech #4 (5s nach #3)",
-            spellId: 143343,
-            firstCast: 36.7,      // sehr schnell
-            cooldown: 0,
-            maxCasts: 1,
-            delay: -2,
-            eventDuration: 4,
-            requiredCDs: ["any_dr", "any_heal", "additional_surv"],
-            icon: "🔊"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // STAGE 2 #1 - Blood Frenzy + Skeleton Key
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Blood Frenzy #1 (Phase Start)",
-            spellId: 143440,
-            firstCast: 50,        // ~5x Screech später
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 13,    // 13.5s Frenzy Phase
-            requiredCDs: ["any_heal", "any_dr"],
-            icon: "🩸"
-        },
-        {
-            name: "Skeleton Key #1 (Käfig öffnen)",
-            spellId: 146589,
-            firstCast: 52,        // ~2s nach Frenzy
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 60,
-            requiredCDs: [],       // Spieler-Aktion, keine CDs
-            icon: "🔑"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // INFUSION #1 (Acid/Frost/Fire - dynamisch)
-        // Standard: Acid (am häufigsten als 1. Infusion)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Acid Breath #1 (Tank)",
-            spellId: 143780,
-            firstCast: 70,        // nach Käfig-Open
-            cooldown: 11,         // 11s CD
-            maxCasts: 4,
-            delay: -1,
-            eventDuration: 30,
-            requiredCDs: ["tank_external"],
-            icon: "🧪"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // STAGE 1 #2 - 2. Screech-Burst
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Deafening Screech #5-8 Burst",
-            spellId: 143343,
-            firstCast: 130,       // ~Stage 1 #2 Beginn
-            cooldown: 8,           // approx. avg
-            maxCasts: 4,
-            delay: -2,
-            eventDuration: 4,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "🔊"
-        },
-        {
-            name: "Fearsome Roar #2 (Tank)",
-            spellId: 143426,
-            firstCast: 132,
-            cooldown: 11,
-            maxCasts: 4,
-            delay: -1,
-            eventDuration: 30,
-            requiredCDs: ["tank_external"],
-            icon: "🦁"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // STAGE 2 #2 - Blood Frenzy #2
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Blood Frenzy #2 (Phase Start)",
-            spellId: 143440,
-            firstCast: 170,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 13,
-            requiredCDs: ["any_heal", "any_dr"],
-            icon: "🩸"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // INFUSION #2 (Frost - 2. häufigste Infusion)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Freezing Breath (Tank)",
-            spellId: 143773,
-            firstCast: 190,
-            cooldown: 9.5,        // 9.5s CD (kürzer als Acid)
-            maxCasts: 4,
-            delay: -1,
-            eventDuration: 30,
-            requiredCDs: ["tank_external"],
-            icon: "❄️"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // STAGE 2 #3 + EXECUTE (Bloodlust hier)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Blood Frenzy #3 (Phase Start)",
-            spellId: 143440,
-            firstCast: 290,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 13,
-            requiredCDs: ["bloodlust", "any_heal", "any_dr"],
-            icon: "🩸"
-        },
-        {
-            name: "Scorching Breath (Tank Execute)",
-            spellId: 143767,
-            firstCast: 310,
-            cooldown: 11,
-            maxCasts: 4,
-            delay: -1,
-            eventDuration: 30,
-            requiredCDs: ["tank_external"],
-            icon: "🔥"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // MYTHIC: Adds (Yeti / Bats - optional)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Yeti Spawn (Mythic)",
-            spellId: 0,
-            firstCast: 80,        // nach Käfig-Open ~10s
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 30,
-            requiredCDs: ["aoe_stun", "any_dr"],
-            icon: "🐻"
-        },
-        {
-            name: "Bats Spawn (Mythic)",
-            spellId: 0,
-            firstCast: 200,       // 2. Add-Welle
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 30,
-            requiredCDs: ["aoe_stun", "any_dr"],
-            icon: "🦇"
-        }
-    ],
-    
-    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: THOK_*)
-    // - Spell-spezifische Trigger
-    // - Phase-Übergänge mit eigenen Keys
-    // - Mythic Adds via Yeti/Bats Trigger
-    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
-    triggerMap: {
-        "Fearsome Roar #1 (Tank)":            "THOK_FEARSOME_ROAR",
-        "Fearsome Roar #2 (Tank)":            "THOK_FEARSOME_ROAR",
-        "Deafening Screech #1 (13.5s)":       "THOK_DEAFENING_SCREECH_1",
-        "Deafening Screech #2 (11s nach #1)": "THOK_DEAFENING_SCREECH_2",
-        "Deafening Screech #3 (7.2s nach #2)":"THOK_DEAFENING_SCREECH_3",
-        "Deafening Screech #4 (5s nach #3)":  "THOK_DEAFENING_SCREECH_4",
-        "Deafening Screech #5-8 Burst":       "THOK_DEAFENING_SCREECH_1",  // Counter resetted nach Frenzy
-        "Blood Frenzy #1 (Phase Start)":      "THOK_BLOOD_FRENZY",
-        "Blood Frenzy #2 (Phase Start)":      "THOK_BLOOD_FRENZY",
-        "Blood Frenzy #3 (Phase Start)":      "THOK_BLOOD_FRENZY",
-        "Skeleton Key #1 (Käfig öffnen)":     "THOK_BLOOD_FRENZY",  // läuft während Frenzy
-        "Acid Breath #1 (Tank)":              "THOK_ACID_BREATH",
-        "Freezing Breath (Tank)":             "THOK_FREEZING_BREATH",
-        "Scorching Breath (Tank Execute)":    "THOK_SCORCHING_BREATH",
-        "Yeti Spawn (Mythic)":                "THOK_YETI",
-        "Bats Spawn (Mythic)":                "THOK_BATS"
-    }
-});
-</script>
+            <!-- Steuerung -->
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Auto-Zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In CD-Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+                <button id="btn-save-categories"
+                    class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500"
+                    style="display:none;">📂 Kategorien speichern</button>
+            </div>
 
-<!-- ════════════════════════════════════════════════════════════════════
+            <!-- Status -->
+            <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+
+            <!-- Timeline mit Tabelle -->
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- Kategorien-Editor (nur Manager) -->
+            <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700"
+                style="display:none;">
+                <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️
+                    CD-Kategorien bearbeiten (Manager)</summary>
+                <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+            </details>
+        </div>
+    </section>
+
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        // ══ Thok the Bloodthirsty Auto-Planner Config ══════════════════════
+        CD_AUTO_PLANNER.init({
+            id: 'thok',
+            name: 'Thok der Blutrünstige',
+            prefix: 'thok',  // Container-Prefix in der Boss-HTML (thok-planner-container)
+
+            events: [
+                // ═══════════════════════════════════════════════════════
+                // STAGE 1 #1 - Deafening Screech accelerating
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Fearsome Roar (Tank)",
+                    spellId: 143426,
+                    firstCast: 12,        // 12s nach Pull (BigWigs)
+                    cooldown: 11,         // 11s CD (DBM)
+                    maxCasts: 4,          // ~4 Casts in 50s Stage 1
+                    delay: -1,
+                    eventDuration: 30,
+                    requiredCDs: ["tank_external"],
+                    icon: "🦁"
+                },
+                {
+                    name: "Deafening Screech P1",
+                    spellId: 143343,
+                    firstCast: 13.5,      // erster Screech bei 13.5s
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -2,
+                    eventDuration: 4,
+                    requiredCDs: ["any_dr"],
+                    icon: "🔊"
+                },
+                {
+                    name: "Deafening Screech P2",
+                    spellId: 143343,
+                    firstCast: 24.5,      // 13.5 + 11s
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -2,
+                    eventDuration: 4,
+                    requiredCDs: ["any_dr"],
+                    icon: "🔊"
+                },
+                {
+                    name: "Deafening Screech P3",
+                    spellId: 143343,
+                    firstCast: 31.7,      // accelerating!
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -2,
+                    eventDuration: 4,
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "🔊"
+                },
+                {
+                    name: "Deafening Screech P4",
+                    spellId: 143343,
+                    firstCast: 36.7,      // sehr schnell
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: -2,
+                    eventDuration: 4,
+                    requiredCDs: ["any_dr", "any_heal", "additional_surv"],
+                    icon: "🔊"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // STAGE 2 #1 - Blood Frenzy + Skeleton Key
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Blood Frenzy",
+                    spellId: 143440,
+                    firstCast: 50,        // ~5x Screech später
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 13,    // 13.5s Frenzy Phase
+                    requiredCDs: ["any_heal", "any_dr"],
+                    icon: "🩸"
+                },
+                {
+                    name: "Skeleton Key",
+                    spellId: 146589,
+                    firstCast: 52,        // ~2s nach Frenzy
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 60,
+                    requiredCDs: [],       // Spieler-Aktion, keine CDs
+                    icon: "🔑"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // INFUSION #1 (Acid/Frost/Fire - dynamisch)
+                // Standard: Acid (am häufigsten als 1. Infusion)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Acid Breath",
+                    spellId: 143780,
+                    firstCast: 70,        // nach Käfig-Open
+                    cooldown: 11,         // 11s CD
+                    maxCasts: 4,
+                    delay: -1,
+                    eventDuration: 30,
+                    requiredCDs: ["tank_external"],
+                    icon: "🧪"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // STAGE 1 #2 - 2. Screech-Burst
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Fearsome Roar (Tank)",
+                    spellId: 143426,
+                    firstCast: 132,
+                    cooldown: 11,
+                    maxCasts: 4,
+                    delay: -1,
+                    eventDuration: 30,
+                    requiredCDs: ["tank_external"],
+                    icon: "🦁"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // INFUSION #2 (Frost - 2. häufigste Infusion)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Freezing Breath",
+                    spellId: 143773,
+                    firstCast: 190,
+                    cooldown: 9.5,        // 9.5s CD (kürzer als Acid)
+                    maxCasts: 4,
+                    delay: -1,
+                    eventDuration: 30,
+                    requiredCDs: ["tank_external"],
+                    icon: "❄️"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // STAGE 2 #3 + EXECUTE (Bloodlust hier)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Blood Frenzy",
+                    spellId: 143440,
+                    firstCast: 290,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 13,
+                    requiredCDs: ["bloodlust", "any_heal", "any_dr"],
+                    icon: "🩸"
+                },
+                {
+                    name: "Scorching Breath",
+                    spellId: 143767,
+                    firstCast: 310,
+                    cooldown: 11,
+                    maxCasts: 4,
+                    delay: -1,
+                    eventDuration: 30,
+                    requiredCDs: ["tank_external"],
+                    icon: "🔥"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // MYTHIC: Adds (Yeti / Bats - optional)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Yeti Spawn",
+                    spellId: 0,
+                    firstCast: 80,        // nach Käfig-Open ~10s
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 30,
+                    requiredCDs: ["aoe_stun", "any_dr"],
+                    icon: "🐻"
+                },
+                {
+                    name: "Bats Spawn",
+                    spellId: 0,
+                    firstCast: 200,       // 2. Add-Welle
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 30,
+                    requiredCDs: ["aoe_stun", "any_dr"],
+                    icon: "🦇"
+                }
+            ],
+
+            // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: THOK_*)
+            // - Spell-spezifische Trigger
+            // - Phase-Übergänge mit eigenen Keys
+            // - Mythic Adds via Yeti/Bats Trigger
+            // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+            triggerMap: {
+                "Fearsome Roar (Tank)": "THOK_FEARSOME_ROAR",
+                "Deafening Screech P1": "THOK_DEAFENING_SCREECH_1",
+                "Deafening Screech P2": "THOK_DEAFENING_SCREECH_2",
+                "Deafening Screech P3": "THOK_DEAFENING_SCREECH_3",
+                "Deafening Screech P4": "THOK_DEAFENING_SCREECH_4",
+                "Blood Frenzy": "THOK_BLOOD_FRENZY",
+                "Skeleton Key": "THOK_BLOOD_FRENZY",  // läuft während Frenzy
+                "Acid Breath": "THOK_ACID_BREATH",
+                "Freezing Breath": "THOK_FREEZING_BREATH",
+                "Scorching Breath": "THOK_SCORCHING_BREATH",
+                "Yeti Spawn": "THOK_YETI",
+                "Bats Spawn": "THOK_BATS"
+            }
+        });
+    </script>
+
+    <!-- ════════════════════════════════════════════════════════════════════
      EVENT-MANAGER HINWEISE
      ════════════════════════════════════════════════════════════════════
      
@@ -532,19 +561,20 @@ CD_AUTO_PLANNER.init({
      ════════════════════════════════════════════════════════════════════ -->
 
 
-<!-- ════════════════════════════════════════════════════════════════════
+    <!-- ════════════════════════════════════════════════════════════════════
      ZUSÄTZLICH: TRIGGER_OPTIONS für thok.html
      
      Falls die Boss-HTML die TRIGGER_OPTIONS noch nicht definiert hat,
      hier die offiziellen Keys aus deiner WeakAura-Liste:
      ════════════════════════════════════════════════════════════════════ -->
 
-<!--
+    <!--
 
 -->
 
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
         </button>
         <div class="mt-4 text-xs text-gray-500 italic">
@@ -554,18 +584,20 @@ CD_AUTO_PLANNER.init({
             CD Planer
             <span class="toggle-icon">▼</span>
         </h2>
-<div class="mb-6">
-    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> Planungsübersicht
-    </h3>
-    
-    <div id="thok-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Warte auf Eingaben... <br>
-            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-        </p>
-    </div>
-</div>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> Planungsübersicht
+            </h3>
+
+            <div id="thok-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+                    Warte auf Eingaben... <br>
+                    <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu
+                        aktualisieren)</span>
+                </p>
+            </div>
+        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
@@ -573,112 +605,127 @@ CD_AUTO_PLANNER.init({
                 </div>
 
                 <div id="thok-planner-container" class="space-y-2 planner-scroll-container"></div>
-                
+
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale
+                    Gesundheit nutzen.
                 </div>
             </div>
         </div>
     </section>
 
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 2: Blutraserei (Kiting)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li>Thok fixiert einen Spieler. Ist er nahe dran, frisst er ihn.</li>
-                    <li>Thok wird immer schneller, je länger er in Phase 2 ist. Nutzt geschwindigkeitserhöhende Fähigkeiten (z.B. Anstachelndes Gebrüll) für das Fixieren am Ende der Phase.</li>
-                    <li>Gleichzeitig spawnt der Kerkermeister. Sein Loot (der Schlüssel) muss in das passende Schloss gesteckt werden, um die Kiting-Phase zu beenden.</li>
-                </ul>
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 2: Blutraserei
+                        (Kiting)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li>Thok fixiert einen Spieler. Ist er nahe dran, frisst er ihn.</li>
+                        <li>Thok wird immer schneller, je länger er in Phase 2 ist. Nutzt geschwindigkeitserhöhende
+                            Fähigkeiten (z.B. Anstachelndes Gebrüll) für das Fixieren am Ende der Phase.</li>
+                        <li>Gleichzeitig spawnt der Kerkermeister. Sein Loot (der Schlüssel) muss in das passende
+                            Schloss gesteckt werden, um die Kiting-Phase zu beenden.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Die Gefangenen
+                        (Elementar-Buffs)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-green-400">Gift (Hozen):</strong> Adds müssen im Hintergrund gekleavt
+                            werden. Das "Ätzende Blut" erzwingt temporäres Rauslaufen aus dem Stack.</li>
+                        <li><strong class="text-blue-400">Frost (Jinyu):</strong> "Gefrierendes Blut" zwingt das
+                            Rauslaufen, andernfalls wird der Spieler eingefroren und benötigt DPS, um den Eisblock zu
+                            zerstören.</li>
+                        <li><strong class="text-red-400">Feuer (Mogu):</strong> Legt Feuerspuren. Ist oft die
+                            gefährlichste Phase und wird zuletzt gespielt oder komplett ignoriert (Kampfende).</li>
+                    </ul>
+                </div>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Die Gefangenen (Elementar-Buffs)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-green-400">Gift (Hozen):</strong> Adds müssen im Hintergrund gekleavt werden. Das "Ätzende Blut" erzwingt temporäres Rauslaufen aus dem Stack.</li>
-                    <li><strong class="text-blue-400">Frost (Jinyu):</strong> "Gefrierendes Blut" zwingt das Rauslaufen, andernfalls wird der Spieler eingefroren und benötigt DPS, um den Eisblock zu zerstören.</li>
-                    <li><strong class="text-red-400">Feuer (Mogu):</strong> Legt Feuerspuren. Ist oft die gefährlichste Phase und wird zuletzt gespielt oder komplett ignoriert (Kampfende).</li>
+
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong class="text-purple-400">Heilung beim Gefangenen:</strong> Thok heilt sich um 50
+                        Millionen Gesundheit, jedes Mal wenn er einen Gefangenen frisst! Phase 1 muss daher so lange wie
+                        möglich (nahe 30 Stacks, aber nicht 30!) ausgereizt werden, um den Kampf nicht endlos zu
+                        verlängern.</li>
+                    <li><strong class="text-purple-400">Zusätzliche Adds in Phase 1:</strong> In der zweiten Phase 1
+                        spawnen Gefangene Höhlenfledermäuse, in der dritten Phase 1 ein Verhungerter Yeti, der Spieler
+                        anstürmt.</li>
+                    <li>Das Kreischen skaliert deutlich schneller. Heiler-Einteilungen (Paladin-Auren,
+                        Priester-Barrieren) müssen auf die Sekunde genau sitzen.</li>
                 </ul>
             </div>
         </div>
-        
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong class="text-purple-400">Heilung beim Gefangenen:</strong> Thok heilt sich um 50 Millionen Gesundheit, jedes Mal wenn er einen Gefangenen frisst! Phase 1 muss daher so lange wie möglich (nahe 30 Stacks, aber nicht 30!) ausgereizt werden, um den Kampf nicht endlos zu verlängern.</li>
-                <li><strong class="text-purple-400">Zusätzliche Adds in Phase 1:</strong> In der zweiten Phase 1 spawnen Gefangene Höhlenfledermäuse, in der dritten Phase 1 ein Verhungerter Yeti, der Spieler anstürmt.</li>
-                <li>Das Kreischen skaliert deutlich schneller. Heiler-Einteilungen (Paladin-Auren, Priester-Barrieren) müssen auf die Sekunde genau sitzen.</li>
-            </ul>
-        </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "THOK_ENC_START",            text: "Kampfbeginn" },
-            { val: "THOK_HEALTH",               text: "Gesundheit % (Wähle NPC)" },
-            { val: "THOK_DEAFENING_SCREECH_1",  text: "Ohrenbetäubendes Kreischen #1 (13.5s)" },
-            { val: "THOK_DEAFENING_SCREECH_2",  text: "Ohrenbetäubendes Kreischen #2 (11s)" },
-            { val: "THOK_DEAFENING_SCREECH_3",  text: "Ohrenbetäubendes Kreischen #3 (7.2s)" },
-            { val: "THOK_DEAFENING_SCREECH_4",  text: "Ohrenbetäubendes Kreischen #4 (5s)" },
-            { val: "THOK_BLOOD_FRENZY",         text: "Blutraserei (Stage 2)" },
-            { val: "THOK_FEARSOME_ROAR",        text: "Furchteinflößendes Brüllen (Tank)" },
-            { val: "THOK_ACID_BREATH",          text: "Säure-Atem (Tank, Acid Infusion)" },
-            { val: "THOK_FREEZING_BREATH",      text: "Eis-Atem (Tank, Frost Infusion)" },
-            { val: "THOK_SCORCHING_BREATH",     text: "Glüh-Atem (Tank, Fire Infusion)" },
-            { val: "THOK_BURNING_BLOOD",        text: "Brennendes Blut (Fire Pustules)" },
-            { val: "THOK_P1_AKOLIK",            text: "Akolik gefressen (Mythic, → Bats)" },
-            { val: "THOK_P1_GORAI",             text: "Gorai gefressen (Mythic, → Yeti)" },
-            { val: "THOK_P1_MONTAK",            text: "Montak gefressen (Mythic)" },
-            { val: "THOK_P2",                   text: "Phase 2 Start" },
-            { val: "THOK_YETI",                 text: "Yeti Spawn (Mythic)" },
-            { val: "THOK_BATS",                 text: "Bats Spawn (Mythic)" }
-        ];
-        
-        const NPC_OPTIONS = [
-            "Thok der Blutrünstige",
-            "Akolik",
-            "Wassersprecher Gorai",
-            "Montak",
-            "Verhungerter Yeti",
-            "Echsenkessel-Bote"
-        ];
-        
-        const container = document.getElementById('thok-planner-container');
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
-            }
-            return html;
-        };
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
 
-        if (container && container.innerHTML.trim() === "") {
-            
-            const p = container.id.replace('-planner-container', '');
+            const TRIGGER_OPTIONS = [
+                { val: "THOK_ENC_START", text: "Kampfbeginn" },
+                { val: "THOK_HEALTH", text: "Gesundheit % (Wähle NPC)" },
+                { val: "THOK_DEAFENING_SCREECH_1", text: "Ohrenbetäubendes Kreischen P1" },
+                { val: "THOK_DEAFENING_SCREECH_2", text: "Ohrenbetäubendes Kreischen P2" },
+                { val: "THOK_DEAFENING_SCREECH_3", text: "Ohrenbetäubendes Kreischen P3" },
+                { val: "THOK_DEAFENING_SCREECH_4", text: "Ohrenbetäubendes Kreischen P4" },
+                { val: "THOK_BLOOD_FRENZY", text: "Blutraserei (Stage 2)" },
+                { val: "THOK_FEARSOME_ROAR", text: "Furchteinflößendes Brüllen (Tank)" },
+                { val: "THOK_ACID_BREATH", text: "Säure-Atem (Tank, Acid Infusion)" },
+                { val: "THOK_FREEZING_BREATH", text: "Eis-Atem (Tank, Frost Infusion)" },
+                { val: "THOK_SCORCHING_BREATH", text: "Glüh-Atem (Tank, Fire Infusion)" },
+                { val: "THOK_BURNING_BLOOD", text: "Brennendes Blut (Fire Pustules)" },
+                { val: "THOK_P1_AKOLIK", text: "Akolik gefressen (Bats)" },
+                { val: "THOK_P1_GORAI", text: "Gorai gefressen (Yeti)" },
+                { val: "THOK_P1_MONTAK", text: "Montak gefressen" },
+                { val: "THOK_P2", text: "Phase 2 Start" },
+                { val: "THOK_YETI", text: "Yeti Spawn" },
+                { val: "THOK_BATS", text: "Bats Spawn" }
+            ];
 
-            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
-            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
-            
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+            const NPC_OPTIONS = [
+                "Thok der Blutrünstige",
+                "Akolik",
+                "Wassersprecher Gorai",
+                "Montak",
+                "Verhungerter Yeti",
+                "Echsenkessel-Bote"
+            ];
 
-            const headerHtml = `
+            const container = document.getElementById('thok-planner-container');
+
+            const getCooldownOptions = () => {
+                let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+
+                const p = container.id.replace('-planner-container', '');
+
+                const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+                const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+
+                const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -701,9 +748,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 200; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 200; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
 
@@ -738,53 +785,53 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
-            }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
-
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
-                        if (window.LaneGroups) {
-            try {
-                window.LaneGroups.init({
-                    containerId: 'thok-lane-groups',
-                    bossId: 'thok',
-                    assignmentId: 'thok-lane-assignments',
-                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
-                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
-                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
-                    defaultBlocks: [
-                        {
-                            title: 'P1',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            lanes: [
-                                { marker: 'star',   slots: ['', '', ''] },
-                                { marker: 'circle', slots: ['', '', ''] },
-                                { marker: 'square', slots: ['', '', ''] },
-                                { marker: 'diamond',slots: ['', '', ''] },
-                            ]
-                        },
-                    ]
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
                 });
-            } catch (e) {
-                console.error('[thok] LaneGroups.init Fehler:', e);
+                setTimeout(window.updatePlannerSummary, 500);
             }
-        } else {
-            console.warn('[thok] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
-        }
-    };
-</script>
+            if (window.LaneGroups) {
+                try {
+                    window.LaneGroups.init({
+                        containerId: 'thok-lane-groups',
+                        bossId: 'thok',
+                        assignmentId: 'thok-lane-assignments',
+                        roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                        firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                        assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                        defaultBlocks: [
+                            {
+                                title: 'P1',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                lanes: [
+                                    { marker: 'star', slots: ['', '', ''] },
+                                    { marker: 'circle', slots: ['', '', ''] },
+                                    { marker: 'square', slots: ['', '', ''] },
+                                    { marker: 'diamond', slots: ['', '', ''] },
+                                ]
+                            },
+                        ]
+                    });
+                } catch (e) {
+                    console.error('[thok] LaneGroups.init Fehler:', e);
+                }
+            } else {
+                console.warn('[thok] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
+            }
+        };
+    </script>
 </main>

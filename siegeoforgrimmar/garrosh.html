@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,10 +17,12 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
@@ -33,204 +37,274 @@
         <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            Der Kampf gegen Garrosh ist ein Ausdauertest über mehrere Phasen. <strong>Phase 1:</strong> Die Wahre Horde (Adds und Belagerungswaffen). <strong>Phase 2:</strong> Die Macht von Y'Shaarj (Garrosh absorbiert Energie und ihr werdet in Zwischenwelten gezogen). <strong>Phase 3:</strong> Meine Welt (Garrosh ist bei 100% Energie und alle Fähigkeiten sind dauerhaft verstärkt).
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Phase 1 (Adds):</strong> Ein Tank hält Garrosh, der andere fängt stetig die heranstürmenden Adds ab. Achtet auf die Schamanen!</li>
-                    <li><strong class="text-purple-400">Phase 2 & 3:</strong> Garrosh wirkt <em><a href="https://www.wowhead.com/mop-classic/de/spell=145183" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Packende Verzweiflung</a></em> (Debuff). Tank-Swap bei 3-4 Stacks. Wenn die Fähigkeit in Phase 3 verstärkt ist, hinterlässt der auslaufende Debuff eine <em><a href="https://www.wowhead.com/mop-classic/de/spell=145195" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Explosive Verzweiflung</a></em>, die AoE-Schaden verursacht.</li>
-                </ul>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                Der Kampf gegen Garrosh ist ein Ausdauertest über mehrere Phasen. <strong>Phase 1:</strong> Die Wahre
+                Horde (Adds und Belagerungswaffen). <strong>Phase 2:</strong> Die Macht von Y'Shaarj (Garrosh absorbiert
+                Energie und ihr werdet in Zwischenwelten gezogen). <strong>Phase 3:</strong> Meine Welt (Garrosh ist bei
+                100% Energie und alle Fähigkeiten sind dauerhaft verstärkt).
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-red-400">Phase 1 (Adds):</strong> Ein Tank hält Garrosh, der andere
+                            fängt stetig die heranstürmenden Adds ab. Achtet auf die Schamanen!</li>
+                        <li><strong class="text-purple-400">Phase 2 & 3:</strong> Garrosh wirkt <em><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=145183" target="_blank"
+                                    rel="noopener noreferrer" class="text-purple-400 hover:underline">Packende
+                                    Verzweiflung</a></em> (Debuff). Tank-Swap bei 3-4 Stacks. Wenn die Fähigkeit in
+                            Phase 3 verstärkt ist, hinterlässt der auslaufende Debuff eine <em><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=145195" target="_blank"
+                                    rel="noopener noreferrer" class="text-purple-400 hover:underline">Explosive
+                                    Verzweiflung</a></em>, die AoE-Schaden verursacht.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li><strong class="text-blue-400">Gedankenkontrolle (MC):</strong> Spieler werden übernommen
+                                (<a href="https://www.wowhead.com/mop-classic/de/spell=145071" target="_blank"
+                                    rel="noopener noreferrer" class="text-blue-300 hover:underline">Berührung von
+                                    Y'Shaarj</a>). Sie müssen sofort gekickt, gestunnt und auf 20% HP geprügelt werden,
+                                um den MC zu brechen. Vermeidet DoTs auf diesen Spielern, da diese nach Brechen der
+                                Gedankenkontrolle weiter ticken!</li>
+                            <li><strong class="text-orange-400">Entweihen (Desecrate):</strong> Garrosh wirft eine Waffe
+                                auf einen Spieler, die eine stetig wachsende Leere hinterlässt (<a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=144748" target="_blank"
+                                    rel="noopener noreferrer" class="text-orange-300 hover:underline">Entweihen</a>).
+                                Ranged-DPS ködern diese Waffe am Rand und der Raid bewegt sich langsam weiter.
+                                Ranged-DPS können den Bereich durch Schaden auf die Waffe verkleinern.</li>
+                            <li><strong class="text-green-400">Wirbelnde Verderbnis:</strong> Garrosh wirbelt und
+                                verursacht massiven AoE-Schaden (<a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=144473" target="_blank"
+                                    rel="noopener noreferrer" class="text-green-300 hover:underline">Wirbelnde
+                                    Verderbnis</a>). Je weiter ihr weg steht, desto weniger Schaden erhaltet ihr. Heiler
+                                müssen hier starke CDs ziehen.</li>
+                        </ul>
+                </div>
             </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-blue-400">Gedankenkontrolle (MC):</strong> Spieler werden übernommen (<a href="https://www.wowhead.com/mop-classic/de/spell=145071" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">Berührung von Y'Shaarj</a>). Sie müssen sofort gekickt, gestunnt und auf 20% HP geprügelt werden, um den MC zu brechen. Vermeidet DoTs auf diesen Spielern, da diese nach Brechen der Gedankenkontrolle weiter ticken!</li>
-                    <li><strong class="text-orange-400">Entweihen (Desecrate):</strong> Garrosh wirft eine Waffe auf einen Spieler, die eine stetig wachsende Leere hinterlässt (<a href="https://www.wowhead.com/mop-classic/de/spell=144748" target="_blank" rel="noopener noreferrer" class="text-orange-300 hover:underline">Entweihen</a>). Ranged-DPS ködern diese Waffe am Rand und der Raid bewegt sich langsam weiter. Ranged-DPS können den Bereich durch Schaden auf die Waffe verkleinern.</li>
-                    <li><strong class="text-green-400">Wirbelnde Verderbnis:</strong> Garrosh wirbelt und verursacht massiven AoE-Schaden (<a href="https://www.wowhead.com/mop-classic/de/spell=144473" target="_blank" rel="noopener noreferrer" class="text-green-300 hover:underline">Wirbelnde Verderbnis</a>). Je weiter ihr weg steht, desto weniger Schaden erhaltet ihr. Heiler müssen hier starke CDs ziehen.</li>
-                </ul>
+
+            <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+                <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische
+                    Tipps & Ingenieure</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                    <div>
+                        <strong class="text-emerald-200">Balkon-Gruppen (P1):</strong><br>
+                        Eingeteilte Spieler müssen auf die seitlichen Balkone und dort die <em><a
+                                href="https://www.wowhead.com/mop-classic/de/npc=71504" target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-emerald-200 hover:underline">Belagerungsingenieure</a></em> töten, bevor
+                        diese den <em><a href="https://www.wowhead.com/mop-classic/de/npc=71364" target="_blank"
+                                rel="noopener noreferrer" class="text-emerald-200 hover:underline">Eisernen
+                                Stern</a></em> feuern können. Schafft man beide rechtzeitig, kommt keine Kugel. (Oft
+                        wird nur eine Seite getötet, um die andere Kugel zum Add-Cleave zu nutzen).
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Intermission (Die Reiche):</strong><br>
+                        Garrosh zieht euch in das Reich von Y'Shaarj. Sammelt die gelben Kugeln für den Schadens-Buff
+                        (<a href="https://www.wowhead.com/mop-classic/de/spell=144983" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-200 hover:underline">Mut</a>), lauft zusammen,
+                        tötet die Adds und nutzt schadensreduzierende CDs für <em><a
+                                href="https://www.wowhead.com/mop-classic/de/spell=144969" target="_blank"
+                                rel="noopener noreferrer" class="text-emerald-200 hover:underline">Y'Shaarjs
+                                Vernichtung</a></em>. Tanks sollten hier so viele Adds wie möglich sammeln, um sie durch
+                        hohe Rache schnell zu cleaven.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">MC Stuns & Heiler:</strong><br>
+                        Achtet beim CC der übernommenen Spieler darauf, keine tödlichen DoTs zu verteilen. Massen-Stuns
+                        (wie Schockwelle, Schattenfurie, Fußfeger) sind hier Gold wert. Ein fähiger Heiler kann in P1
+                        auch abgestellt werden, um einen Belagerungsingenieur im Solo zu töten, was den DPS-Druck enorm
+                        entlastet.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Verstärkte Fähigkeiten (P3):</strong><br>
+                        In Phase 3 sind alle Mechaniken permanent verstärkt. <em><a
+                                href="https://www.wowhead.com/mop-classic/de/spell=144748" target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-emerald-200 hover:underline">Entweihen</a></em>-Waffen sind unverwüstlich,
+                        und aus der <em><a href="https://www.wowhead.com/mop-classic/de/spell=144473" target="_blank"
+                                rel="noopener noreferrer" class="text-emerald-200 hover:underline">Wirbelnden
+                                Verderbnis</a></em> spawnen Adds (<a
+                            href="https://www.wowhead.com/mop-classic/de/npc=71796" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-200 hover:underline">Diener von Y'Shaarj</a>),
+                        die sofort gebunden werden müssen und auf Abstand zueinander getötet werden sollten.
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische Tipps & Ingenieure</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200">Balkon-Gruppen (P1):</strong><br>
-                    Eingeteilte Spieler müssen auf die seitlichen Balkone und dort die <em><a href="https://www.wowhead.com/mop-classic/de/npc=71504" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Belagerungsingenieure</a></em> töten, bevor diese den <em><a href="https://www.wowhead.com/mop-classic/de/npc=71364" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Eisernen Stern</a></em> feuern können. Schafft man beide rechtzeitig, kommt keine Kugel. (Oft wird nur eine Seite getötet, um die andere Kugel zum Add-Cleave zu nutzen).
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Intermission (Die Reiche):</strong><br>
-                    Garrosh zieht euch in das Reich von Y'Shaarj. Sammelt die gelben Kugeln für den Schadens-Buff (<a href="https://www.wowhead.com/mop-classic/de/spell=144983" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Mut</a>), lauft zusammen, tötet die Adds und nutzt schadensreduzierende CDs für <em><a href="https://www.wowhead.com/mop-classic/de/spell=144969" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Y'Shaarjs Vernichtung</a></em>. Tanks sollten hier so viele Adds wie möglich sammeln, um sie durch hohe Rache schnell zu cleaven.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">MC Stuns & Heiler:</strong><br>
-                    Achtet beim CC der übernommenen Spieler darauf, keine tödlichen DoTs zu verteilen. Massen-Stuns (wie Schockwelle, Schattenfurie, Fußfeger) sind hier Gold wert. Ein fähiger Heiler kann in P1 auch abgestellt werden, um einen Belagerungsingenieur im Solo zu töten, was den DPS-Druck enorm entlastet.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Verstärkte Fähigkeiten (P3):</strong><br>
-                    In Phase 3 sind alle Mechaniken permanent verstärkt. <em><a href="https://www.wowhead.com/mop-classic/de/spell=144748" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Entweihen</a></em>-Waffen sind unverwüstlich, und aus der <em><a href="https://www.wowhead.com/mop-classic/de/spell=144473" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Wirbelnden Verderbnis</a></em> spawnen Adds (<a href="https://www.wowhead.com/mop-classic/de/npc=71796" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Diener von Y'Shaarj</a>), die sofort gebunden werden müssen und auf Abstand zueinander getötet werden sollten.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <!-- ════ EINTEILUNGS-BLÖCKE ════════════════════════════════════ -->
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout bearbeiten", Spieler per Klick zuweisen.</p>
-                    <div id="garrosh-lane-groups"></div>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
                 <div class="space-y-6">
-                    <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
-                        <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
-                            <p class="positioning-text">Raid sammelt sich mittig. Add-Tank holt die Horden-Adds zum Boss, um sie mit Cleave zu töten. Ranged-DPS legen die <em>Entweihen</em>-Waffen geschlossen im äußeren Kreis ab.</p>
+                    <!-- ════ EINTEILUNGS-BLÖCKE ════════════════════════════════════ -->
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout
+                            bearbeiten", Spieler per Klick zuweisen.</p>
+                        <div id="garrosh-lane-groups"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+
+                    <div class="space-y-6">
+                        <div class="bg-slate-900/50 p-4 rounded-lg mt-2 border border-gold-border-light">
+                            <div class="text-center text-gray-400 text-sm mb-2 min-h-[1.25rem]">
+                                <p class="positioning-text">Raid sammelt sich mittig. Add-Tank holt die Horden-Adds zum
+                                    Boss, um sie mit Cleave zu töten. Ranged-DPS legen die <em>Entweihen</em>-Waffen
+                                    geschlossen im äußeren Kreis ab.</p>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <img src="siegeoforgrimmar/garrosh.png" alt="Aufstellung Garrosh"
+                                class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                                onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild für Garrosh noch nicht verfügbar.</div>'">
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/garrosh.png" alt="Aufstellung Garrosh" 
-                            class="positioning-image lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600" 
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild für Garrosh noch nicht verfügbar.</div>'">
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- AUTO-PLANNER -->
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="text-sm text-gray-400 mb-4 italic">
-            Endboss-Encounter mit 4 Phasen + 2 Intermissions. 25min Berserk, daher höchste Komplexität in SoO.
-            Bloodlust auf Phase 4 (Execute). Plan nach erstem Kill MUSS kalibriert werden!
-        </p>
-        
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
+    <!-- AUTO-PLANNER -->
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Auto-CD-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="text-sm text-gray-400 mb-4 italic">
+                Endboss-Encounter mit 4 Phasen + 2 Intermissions. 25min Berserk, daher höchste Komplexität in SoO.
+                Bloodlust auf Phase 4 (Execute). Plan nach erstem Kill MUSS kalibriert werden!
+            </p>
+
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Auto-Zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In CD-Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+                <button id="btn-save-categories"
+                    class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500"
+                    style="display:none;">📂 Kategorien speichern</button>
+            </div>
+
+            <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- Kategorien-Editor (nur Manager) -->
+            <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700"
+                style="display:none;">
+                <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️
+                    CD-Kategorien bearbeiten (Manager)</summary>
+                <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+            </details>
         </div>
-        
-        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
-        
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="w-full text-xs">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
-        </div>
-        
-        <!-- Kategorien-Editor (nur Manager) -->
-        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
-            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
-        </details>
-    </div>
-</section>
+    </section>
 
-<script src="static/cd-auto-planner.js"></script>
-<script>
-CD_AUTO_PLANNER.init({
-    id: 'garrosh',
-    name: 'Garrosh Höllschrei',
-    prefix: 'garrosh',
-    
-    events: [
-        { name: "Warbringers (Add-Welle #1)", spellId: 144582, firstCast: 2, cooldown: 40, maxCasts: 4, delay: -1, eventDuration: 15, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
-        { name: "Hellscream's Warsong #1", spellId: 144821, firstCast: 22, cooldown: 22, maxCasts: 7, delay: -2, eventDuration: 5, requiredCDs: ["any_dr"], icon: "📯" },
-        { name: "Desecrate P1", spellId: 144758, firstCast: 11, cooldown: 42, maxCasts: 4, delay: -1, eventDuration: 10, requiredCDs: ["any_heal"], icon: "🟫" },
-        { name: "Farseer Wolf Riders", spellId: 144584, firstCast: 30, cooldown: 40, maxCasts: 4, delay: 0, eventDuration: 15, requiredCDs: ["aoe_stun"], icon: "🐺" },
-        { name: "Siege Engineers", spellId: 144616, firstCast: 20, cooldown: 42, maxCasts: 4, delay: 0, eventDuration: 15, requiredCDs: ["aoe_stun"], icon: "🔧" },
-        { name: "Power Iron Star", spellId: 144653, firstCast: 60, cooldown: 60, maxCasts: 3, delay: 0, eventDuration: 9, requiredCDs: [], icon: "⭐" },
-        { name: "Manifest Rage (Adds)", spellId: 147011, firstCast: 100, cooldown: 100, maxCasts: 2, delay: -3, eventDuration: 15, requiredCDs: ["any_dr", "any_heal"], icon: "💢" },
-        { name: "Intermission #1 Start", spellId: 0, firstCast: 180, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 62, requiredCDs: ["any_dr", "any_heal"], icon: "🌌" },
-        { name: "Annihilate I1", spellId: 144969, firstCast: 185, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 8, requiredCDs: ["any_dr"], icon: "💥" },
-        { name: "Annihilate I2", spellId: 144969, firstCast: 200, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 8, requiredCDs: ["any_dr"], icon: "💥" },
-        { name: "Annihilate I3", spellId: 144969, firstCast: 215, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 8, requiredCDs: ["any_dr"], icon: "💥" },
-        { name: "Phase 2 Start", spellId: 0, firstCast: 242, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 30, requiredCDs: ["any_dr", "any_heal"], icon: "⚡" },
-        { name: "Whirling Corruption P2 #1", spellId: 144985, firstCast: 260, cooldown: 50, maxCasts: 4, delay: -3, eventDuration: 8.5, requiredCDs: ["any_dr", "any_heal"], icon: "🌀" },
-        { name: "Touch of Y'Shaarj P2", spellId: 0, firstCast: 280, cooldown: 35, maxCasts: 5, delay: -1, eventDuration: 8, requiredCDs: ["any_heal"], icon: "👁️" },
-        { name: "Desecrate P2", spellId: 0, firstCast: 252, cooldown: 42, maxCasts: 5, delay: -1, eventDuration: 10, requiredCDs: ["any_heal"], icon: "🟫" },
-        { name: "Intermission #2 Start", spellId: 0, firstCast: 440, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 62, requiredCDs: ["any_dr", "any_heal"], icon: "🌌" },
-        { name: "Phase 3 Start", spellId: 0, firstCast: 502, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 30, requiredCDs: ["any_dr", "any_heal", "additional_surv"], icon: "💀" },
-        { name: "Whirling Corruption P3 #1", spellId: 145037, firstCast: 520, cooldown: 50, maxCasts: 4, delay: -3, eventDuration: 8.5, requiredCDs: ["any_dr", "any_heal"], icon: "🌀" },
-        { name: "Touch of Y'Shaarj P3", spellId: 0, firstCast: 540, cooldown: 35, maxCasts: 5, delay: -1, eventDuration: 8, requiredCDs: ["any_heal"], icon: "👁️" },
-        { name: "Desecrate P3", spellId: 0, firstCast: 512, cooldown: 42, maxCasts: 5, delay: -1, eventDuration: 10, requiredCDs: ["any_heal"], icon: "🟫" },
-        { name: "Malice #1", spellId: 0, firstCast: 525, cooldown: 30, maxCasts: 6, delay: -2, eventDuration: 10, requiredCDs: ["any_heal", "any_dr"], icon: "💀" },
-        { name: "Call Bombardment", spellId: 0, firstCast: 530, cooldown: 15, maxCasts: 8, delay: 0, eventDuration: 13, requiredCDs: ["movement", "any_dr"], icon: "💣" },
-        { name: "Fixate (P3)", spellId: 0, firstCast: 545, cooldown: 45, maxCasts: 4, delay: -1, eventDuration: 10, requiredCDs: ["movement"], icon: "🎯" },
-        { name: "Phase 4 Start (Execute)", spellId: 0, firstCast: 720, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 60, requiredCDs: ["bloodlust", "any_dr", "any_heal", "additional_surv"], icon: "🔥" }
-    ],
-    
-    triggerMap: {
-        "Warbringers (Add-Welle #1)":          "GARROSH_WARBRINGERS",
-        "Hellscream's Warsong #1":              "GARROSH_HELLSCREAM_WARSONG",
-        "Desecrate P1":                         "GARROSH_DESECRATE_P1",
-        "Farseer Wolf Riders":                  "GARROSH_SHAMANS",
-        "Siege Engineers":                      "GARROSH_ENGINEERS",
-        "Power Iron Star":                      "GARROSH_IRON_STAR",
-        "Manifest Rage (Adds)":                 "GARROSH_MANIFEST_RAGE",
-        "Intermission #1 Start":                "GARROSH_INTERMISSION",
-        "Annihilate I1":                        "GARROSH_ANNIHILATE_I1",
-        "Annihilate I2":                        "GARROSH_ANNIHILATE_I2",
-        "Annihilate I3":                        "GARROSH_ANNIHILATE_I3",
-        "Phase 2 Start":                        "GARROSH_P2",
-        "Whirling Corruption P2 #1":            "GARROSH_WHIRLING_P2",
-        "Touch of Y'Shaarj P2":                 "GARROSH_TOUCH_P2",
-        "Desecrate P2":                         "GARROSH_DESECRATE_P2",
-        "Intermission #2 Start":                "GARROSH_DESPAIR_P2",
-        "Phase 3 Start":                        "GARROSH_P3",
-        "Whirling Corruption P3 #1":            "GARROSH_WHIRLING_P3",
-        "Touch of Y'Shaarj P3":                 "GARROSH_TOUCH_P3",
-        "Desecrate P3":                         "GARROSH_DESECRATE_P3",
-        "Malice #1":                            "GARROSH_MALICE",
-        "Call Bombardment":                     "GARROSH_BOMBARDMENT",
-        "Fixate (P3)":                          "GARROSH_FIXATE",
-        "Phase 4 Start (Execute)":              "GARROSH_P4"
-    }
-});
-</script>
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        CD_AUTO_PLANNER.init({
+            id: 'garrosh',
+            name: 'Garrosh Höllschrei',
+            prefix: 'garrosh',
 
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            events: [
+                { name: "Warbringers (Add-Welle #1)", spellId: 144582, firstCast: 2, cooldown: 40, maxCasts: 4, delay: -1, eventDuration: 15, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
+                { name: "Hellscream's Warsong #1", spellId: 144821, firstCast: 22, cooldown: 22, maxCasts: 7, delay: -2, eventDuration: 5, requiredCDs: ["any_dr"], icon: "📯" },
+                { name: "Desecrate P1", spellId: 144758, firstCast: 11, cooldown: 42, maxCasts: 4, delay: -1, eventDuration: 10, requiredCDs: ["any_heal"], icon: "🟫" },
+                { name: "Farseer Wolf Riders", spellId: 144584, firstCast: 30, cooldown: 40, maxCasts: 4, delay: 0, eventDuration: 15, requiredCDs: ["aoe_stun"], icon: "🐺" },
+                { name: "Siege Engineers", spellId: 144616, firstCast: 20, cooldown: 42, maxCasts: 4, delay: 0, eventDuration: 15, requiredCDs: ["aoe_stun"], icon: "🔧" },
+                { name: "Power Iron Star", spellId: 144653, firstCast: 60, cooldown: 60, maxCasts: 3, delay: 0, eventDuration: 9, requiredCDs: [], icon: "⭐" },
+                { name: "Manifest Rage (Adds)", spellId: 147011, firstCast: 100, cooldown: 100, maxCasts: 2, delay: -3, eventDuration: 15, requiredCDs: ["any_dr", "any_heal"], icon: "💢" },
+                { name: "Intermission #1 Start", spellId: 0, firstCast: 180, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 62, requiredCDs: ["any_dr", "any_heal"], icon: "🌌" },
+                { name: "Annihilate I1", spellId: 144969, firstCast: 185, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 8, requiredCDs: ["any_dr"], icon: "💥" },
+                { name: "Annihilate I2", spellId: 144969, firstCast: 200, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 8, requiredCDs: ["any_dr"], icon: "💥" },
+                { name: "Annihilate I3", spellId: 144969, firstCast: 215, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 8, requiredCDs: ["any_dr"], icon: "💥" },
+                { name: "Phase 2 Start", spellId: 0, firstCast: 242, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 30, requiredCDs: ["any_dr", "any_heal"], icon: "⚡" },
+                { name: "Whirling Corruption P2 #1", spellId: 144985, firstCast: 260, cooldown: 50, maxCasts: 4, delay: -3, eventDuration: 8.5, requiredCDs: ["any_dr", "any_heal"], icon: "🌀" },
+                { name: "Touch of Y'Shaarj P2", spellId: 0, firstCast: 280, cooldown: 35, maxCasts: 5, delay: -1, eventDuration: 8, requiredCDs: ["any_heal"], icon: "👁️" },
+                { name: "Desecrate P2", spellId: 0, firstCast: 252, cooldown: 42, maxCasts: 5, delay: -1, eventDuration: 10, requiredCDs: ["any_heal"], icon: "🟫" },
+                { name: "Intermission #2 Start", spellId: 0, firstCast: 440, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 62, requiredCDs: ["any_dr", "any_heal"], icon: "🌌" },
+                { name: "Phase 3 Start", spellId: 0, firstCast: 502, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 30, requiredCDs: ["any_dr", "any_heal", "additional_surv"], icon: "💀" },
+                { name: "Whirling Corruption P3 #1", spellId: 145037, firstCast: 520, cooldown: 50, maxCasts: 4, delay: -3, eventDuration: 8.5, requiredCDs: ["any_dr", "any_heal"], icon: "🌀" },
+                { name: "Touch of Y'Shaarj P3", spellId: 0, firstCast: 540, cooldown: 35, maxCasts: 5, delay: -1, eventDuration: 8, requiredCDs: ["any_heal"], icon: "👁️" },
+                { name: "Desecrate P3", spellId: 0, firstCast: 512, cooldown: 42, maxCasts: 5, delay: -1, eventDuration: 10, requiredCDs: ["any_heal"], icon: "🟫" },
+                { name: "Malice #1", spellId: 0, firstCast: 525, cooldown: 30, maxCasts: 6, delay: -2, eventDuration: 10, requiredCDs: ["any_heal", "any_dr"], icon: "💀" },
+                { name: "Call Bombardment", spellId: 0, firstCast: 530, cooldown: 15, maxCasts: 8, delay: 0, eventDuration: 13, requiredCDs: ["movement", "any_dr"], icon: "💣" },
+                { name: "Fixate (P3)", spellId: 0, firstCast: 545, cooldown: 45, maxCasts: 4, delay: -1, eventDuration: 10, requiredCDs: ["movement"], icon: "🎯" },
+                { name: "Phase 4 Start (Execute)", spellId: 0, firstCast: 720, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 60, requiredCDs: ["bloodlust", "any_dr", "any_heal", "additional_surv"], icon: "🔥" }
+            ],
+
+            triggerMap: {
+                "Warbringers (Add-Welle #1)": "GARROSH_WARBRINGERS",
+                "Hellscream's Warsong #1": "GARROSH_HELLSCREAM_WARSONG",
+                "Desecrate P1": "GARROSH_DESECRATE_P1",
+                "Farseer Wolf Riders": "GARROSH_SHAMANS",
+                "Siege Engineers": "GARROSH_ENGINEERS",
+                "Power Iron Star": "GARROSH_IRON_STAR",
+                "Manifest Rage (Adds)": "GARROSH_MANIFEST_RAGE",
+                "Intermission #1 Start": "GARROSH_INTERMISSION",
+                "Annihilate I1": "GARROSH_ANNIHILATE_I1",
+                "Annihilate I2": "GARROSH_ANNIHILATE_I2",
+                "Annihilate I3": "GARROSH_ANNIHILATE_I3",
+                "Phase 2 Start": "GARROSH_P2",
+                "Whirling Corruption P2 #1": "GARROSH_WHIRLING_P2",
+                "Touch of Y'Shaarj P2": "GARROSH_TOUCH_P2",
+                "Desecrate P2": "GARROSH_DESECRATE_P2",
+                "Intermission #2 Start": "GARROSH_DESPAIR_P2",
+                "Phase 3 Start": "GARROSH_P3",
+                "Whirling Corruption P3 #1": "GARROSH_WHIRLING_P3",
+                "Touch of Y'Shaarj P3": "GARROSH_TOUCH_P3",
+                "Desecrate P3": "GARROSH_DESECRATE_P3",
+                "Malice #1": "GARROSH_MALICE",
+                "Call Bombardment": "GARROSH_BOMBARDMENT",
+                "Fixate (P3)": "GARROSH_FIXATE",
+                "Phase 4 Start (Execute)": "GARROSH_P4"
+            }
+        });
+    </script>
+
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
         </button>
         <div class="mt-4 text-xs text-gray-500 italic">
@@ -240,153 +314,188 @@ CD_AUTO_PLANNER.init({
             CD Planer
             <span class="toggle-icon">▼</span>
         </h2>
-<div class="mb-6">
-    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> Planungsübersicht
-    </h3>
-    
-    <div id="garrosh-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Warte auf Eingaben... <br>
-            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-        </p>
-    </div>
-</div>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> Planungsübersicht
+            </h3>
+
+            <div id="garrosh-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+                    Warte auf Eingaben... <br>
+                    <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu
+                        aktualisieren)</span>
+                </p>
+            </div>
+        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    <strong>% / #:</strong> Geben Sie die Nummer des Wirbels oder des MCs (z.B. Wirbel #1) ein, um Heil-CDs zu koordinieren.
+                    <strong>% / #:</strong> Geben Sie die Nummer des Wirbels oder des MCs (z.B. Wirbel #1) ein, um
+                    Heil-CDs zu koordinieren.
                 </div>
 
                 <div id="garrosh-planner-container" class="space-y-2 planner-scroll-container"></div>
-                
+
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale
+                    Gesundheit nutzen.
                 </div>
             </div>
         </div>
     </section>
 
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 1 Gefahren</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-gray-400">Schamanen-Heilung & Unterbrechungen:</strong> Die Schamanen der Kor'kron heilen Verbündete und wirken Kettenblitze. Jeder Interrupt erhöht jedoch ihre Zaubergeschwindigkeit um 25% (Ahnengroll)! Tötet sie daher zügig, bevor sie ununterbrechbar werden.</li>
-                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/npc=71364" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Eiserner Stern</a>:</strong> Rollt er quer durch den Raum, überrollt er Spieler und Adds (Insta-Kill für Spieler, massiver Schaden für Adds). Passt auf!</li>
-                </ul>
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 1 Gefahren</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-gray-400">Schamanen-Heilung & Unterbrechungen:</strong> Die Schamanen
+                            der Kor'kron heilen Verbündete und wirken Kettenblitze. Jeder Interrupt erhöht jedoch ihre
+                            Zaubergeschwindigkeit um 25% (Ahnengroll)! Tötet sie daher zügig, bevor sie ununterbrechbar
+                            werden.</li>
+                        <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/npc=71364"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-red-400 hover:underline">Eiserner Stern</a>:</strong> Rollt er quer
+                            durch den Raum, überrollt er Spieler und Adds (Insta-Kill für Spieler, massiver Schaden für
+                            Adds). Passt auf!</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Verstärkte Fähigkeiten
+                        (Energie)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li>Mit jeder Intermission gewinnt Garrosh dauerhaft 25 Energie.</li>
+                        <li><strong class="text-purple-400">25 Energie: <a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=145037" target="_blank"
+                                    rel="noopener noreferrer" class="text-purple-400 hover:underline">Verstärktes
+                                    Wirbeln</a>:</strong> Es spawnen Adds aus dem Wirbel.</li>
+                        <li><strong class="text-blue-400">50 Energie: <a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=145171" target="_blank"
+                                    rel="noopener noreferrer" class="text-blue-400 hover:underline">Verstärkte
+                                    Berührung</a>:</strong> MC-Spieler sind immun gegen Kontrollverluste. Sie müssen
+                            extrem schnell runtergeburstet werden!</li>
+                        <li><strong class="text-orange-400">75 Energie: <a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=144749" target="_blank"
+                                    rel="noopener noreferrer" class="text-orange-400 hover:underline">Verstärktes
+                                    Entweihen</a>:</strong> Die Waffe ist immun gegen Schaden und bleibt bis zum
+                            Kampfende liegen.</li>
+                    </ul>
+                </div>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Verstärkte Fähigkeiten (Energie)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li>Mit jeder Intermission gewinnt Garrosh dauerhaft 25 Energie.</li>
-                    <li><strong class="text-purple-400">25 Energie: <a href="https://www.wowhead.com/mop-classic/de/spell=145037" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Verstärktes Wirbeln</a>:</strong> Es spawnen Adds aus dem Wirbel.</li>
-                    <li><strong class="text-blue-400">50 Energie: <a href="https://www.wowhead.com/mop-classic/de/spell=145171" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Verstärkte Berührung</a>:</strong> MC-Spieler sind immun gegen Kontrollverluste. Sie müssen extrem schnell runtergeburstet werden!</li>
-                    <li><strong class="text-orange-400">75 Energie: <a href="https://www.wowhead.com/mop-classic/de/spell=144749" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Verstärktes Entweihen</a>:</strong> Die Waffe ist immun gegen Schaden und bleibt bis zum Kampfende liegen.</li>
+
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen (Phase 4)</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong class="text-purple-400">Sturmwind-Reich:</strong> Bei 1% in Phase 3 heilt sich Garrosh
+                        auf ca. 30% und zieht den Raid in eine geheime Phase 4.</li>
+                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=147209"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-red-400 hover:underline">Bösartigkeit (Malice)</a>:</strong> Ein Debuff, der
+                        zwischen Spielern geteilt werden muss. Spieler, die den Debuff soaken, können dies nicht
+                        mehrmals hintereinander tun. Hierfür wird eine strikte Kiting- und Soak-Rotation gebildet.</li>
+                    <li><strong class="text-orange-400"><a href="https://www.wowhead.com/mop-classic/de/spell=147120"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-orange-400 hover:underline">Bombardement</a>:</strong> Garrosh ruft
+                        Luftschläge. Wenn das Bombardement beginnt, muss sich die Gruppe bewegen und darf niemals im
+                        Zentrum der Einschläge stehen bleiben. Der <a
+                            href="https://www.wowhead.com/mop-classic/de/npc=71364" target="_blank"
+                            rel="noopener noreferrer" class="text-orange-400 hover:underline">Eiserne Stern</a> der
+                        daraus entsteht, muss vom Tank für Interrupts des Bosses genutzt werden.</li>
                 </ul>
             </div>
         </div>
-        
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen (Phase 4)</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong class="text-purple-400">Sturmwind-Reich:</strong> Bei 1% in Phase 3 heilt sich Garrosh auf ca. 30% und zieht den Raid in eine geheime Phase 4.</li>
-                <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=147209" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Bösartigkeit (Malice)</a>:</strong> Ein Debuff, der zwischen Spielern geteilt werden muss. Spieler, die den Debuff soaken, können dies nicht mehrmals hintereinander tun. Hierfür wird eine strikte Kiting- und Soak-Rotation gebildet.</li>
-                <li><strong class="text-orange-400"><a href="https://www.wowhead.com/mop-classic/de/spell=147120" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Bombardement</a>:</strong> Garrosh ruft Luftschläge. Wenn das Bombardement beginnt, muss sich die Gruppe bewegen und darf niemals im Zentrum der Einschläge stehen bleiben. Der <a href="https://www.wowhead.com/mop-classic/de/npc=71364" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Eiserne Stern</a> der daraus entsteht, muss vom Tank für Interrupts des Bosses genutzt werden.</li>
-            </ul>
-        </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "GARROSH_ENC_START",          text: "Kampfbeginn" },
-            { val: "GARROSH_HEALTH",             text: "Gesundheit % (Wähle NPC)" },
-            
-            // Phase Triggers
-            { val: "GARROSH_P2",                 text: "Phase 2 Start" },
-            { val: "GARROSH_P3",                 text: "Phase 3 Start" },
-            { val: "GARROSH_P4",                 text: "Phase 4 Start (Execute)" },
-            { val: "GARROSH_INTERMISSION",       text: "Intermission Start" },
-            { val: "GARROSH_DESPAIR_P2",         text: "Packende Verzweiflung (Realm P2)" },
-            { val: "GARROSH_DESPAIR_P3",         text: "Y'Shaarj Schutz (P3)" },
-            
-            // Phase 1
-            { val: "GARROSH_HELLSCREAM_WARSONG", text: "Höllschreis Schlachtgesang" },
-            { val: "GARROSH_WARBRINGERS",        text: "Kriegsbringer Welle" },
-            { val: "GARROSH_SHAMANS",            text: "Fernsicht-Wolfreiter" },
-            { val: "GARROSH_ENGINEERS",          text: "Belagerungstechniker" },
-            { val: "GARROSH_IRON_STAR",          text: "Eisenstern (Power)" },
-            { val: "GARROSH_DESECRATE_P1",       text: "Entweihen P1" },
-            { val: "GARROSH_MANIFEST_RAGE",      text: "Manifestierte Wut (Adds)" },
-            
-            // Annihilate
-            { val: "GARROSH_ANNIHILATE_I1",      text: "Vernichten I1" },
-            { val: "GARROSH_ANNIHILATE_I2",      text: "Vernichten I2" },
-            { val: "GARROSH_ANNIHILATE_I3",      text: "Vernichten I3" },
-            
-            // Phase 2
-            { val: "GARROSH_WHIRLING_P2",        text: "Wirbelnde Verderbnis P2" },
-            { val: "GARROSH_TOUCH_P2",           text: "Berührung von Y'Shaarj P2" },
-            { val: "GARROSH_DESECRATE_P2",       text: "Entweihen P2" },
-            
-            // Phase 3
-            { val: "GARROSH_WHIRLING_P3",        text: "Wirbelnde Verderbnis P3" },
-            { val: "GARROSH_TOUCH_P3",           text: "Berührung von Y'Shaarj P3" },
-            { val: "GARROSH_DESECRATE_P3",       text: "Entweihen P3" },
-            { val: "GARROSH_MALICE",             text: "Bösartigkeit" },
-            { val: "GARROSH_BOMBARDMENT",        text: "Bombardement" },
-            { val: "GARROSH_CLUMP_CHECK",        text: "Cluster-Prüfung" },
-            { val: "GARROSH_FIXATE",             text: "Fixierung" }
-        ];
-        
-        const NPC_OPTIONS = [
-            "Garrosh Höllschrei",
-            "Y'Shaarj",
-            "Verkörperung der Wut",
-            "Wirbelnde Verderbnis",
-            "Empowered Wirbelnde Verderbnis",
-            "Kor'kron Kriegsbringer",
-            "Kor'kron Fernsicht",
-            "Kor'kron Belagerungstechniker"
-        ];
-        
-        const container = document.getElementById('garrosh-planner-container');
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
-            }
-            return html;
-        };
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
 
-        if (container && container.innerHTML.trim() === "") {
-            
-            const p = container.id.replace('-planner-container', '');
+            const TRIGGER_OPTIONS = [
+                { val: "GARROSH_ENC_START", text: "Kampfbeginn" },
+                { val: "GARROSH_HEALTH", text: "Gesundheit % (Wähle NPC)" },
 
-            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
-            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
-            
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+                // Phase Triggers
+                { val: "GARROSH_P2", text: "Phase 2 Start" },
+                { val: "GARROSH_P3", text: "Phase 3 Start" },
+                { val: "GARROSH_P4", text: "Phase 4 Start (Execute)" },
+                { val: "GARROSH_INTERMISSION", text: "Intermission Start" },
+                { val: "GARROSH_DESPAIR_P2", text: "Packende Verzweiflung (Realm P2)" },
+                { val: "GARROSH_DESPAIR_P3", text: "Y'Shaarj Schutz (P3)" },
 
-            const headerHtml = `
+                // Phase 1
+                { val: "GARROSH_HELLSCREAM_WARSONG", text: "Höllschreis Schlachtgesang" },
+                { val: "GARROSH_WARBRINGERS", text: "Kriegsbringer Welle" },
+                { val: "GARROSH_SHAMANS", text: "Fernsicht-Wolfreiter" },
+                { val: "GARROSH_ENGINEERS", text: "Belagerungstechniker" },
+                { val: "GARROSH_IRON_STAR", text: "Eisenstern (Power)" },
+                { val: "GARROSH_DESECRATE_P1", text: "Entweihen P1" },
+                { val: "GARROSH_MANIFEST_RAGE", text: "Manifestierte Wut (Adds)" },
+
+                // Annihilate
+                { val: "GARROSH_ANNIHILATE_I1", text: "Vernichten I1" },
+                { val: "GARROSH_ANNIHILATE_I2", text: "Vernichten I2" },
+                { val: "GARROSH_ANNIHILATE_I3", text: "Vernichten I3" },
+
+                // Phase 2
+                { val: "GARROSH_WHIRLING_P2", text: "Wirbelnde Verderbnis P2" },
+                { val: "GARROSH_TOUCH_P2", text: "Berührung von Y'Shaarj P2" },
+                { val: "GARROSH_DESECRATE_P2", text: "Entweihen P2" },
+
+                // Phase 3
+                { val: "GARROSH_WHIRLING_P3", text: "Wirbelnde Verderbnis P3" },
+                { val: "GARROSH_TOUCH_P3", text: "Berührung von Y'Shaarj P3" },
+                { val: "GARROSH_DESECRATE_P3", text: "Entweihen P3" },
+                { val: "GARROSH_MALICE", text: "Bösartigkeit" },
+                { val: "GARROSH_BOMBARDMENT", text: "Bombardement" },
+                { val: "GARROSH_CLUMP_CHECK", text: "Cluster-Prüfung" },
+                { val: "GARROSH_FIXATE", text: "Fixierung" }
+            ];
+
+            const NPC_OPTIONS = [
+                "Garrosh Höllschrei",
+                "Y'Shaarj",
+                "Verkörperung der Wut",
+                "Wirbelnde Verderbnis",
+                "Empowered Wirbelnde Verderbnis",
+                "Kor'kron Kriegsbringer",
+                "Kor'kron Fernsicht",
+                "Kor'kron Belagerungstechniker"
+            ];
+
+            const container = document.getElementById('garrosh-planner-container');
+
+            const getCooldownOptions = () => {
+                let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+
+                const p = container.id.replace('-planner-container', '');
+
+                const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+                const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+
+                const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -409,9 +518,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 200; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 200; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
 
@@ -446,77 +555,77 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
-            }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
-
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
-
-        // ════════════════════════════════════════════════════════════════
-        // LANE GROUPS (Einteilungen)
-        // ════════════════════════════════════════════════════════════════
-        if (window.LaneGroups) {
-            try {
-                window.LaneGroups.init({
-                    containerId: 'garrosh-lane-groups',
-                    bossId: 'garrosh',
-                    assignmentId: 'garrosh-lanes',
-                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
-                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
-                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
-                    defaultBlocks: [
-                        {
-                            title: 'Gruppen (A-E)',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            waExport: true,
-                            isolatedBlock: true,
-                            sharedLanes: true,
-                            lanes: [
-                                { title: 'A', marker: '', slots: ['', '', '', '', ''] },
-                                { title: 'B', marker: '', slots: ['', '', '', '', ''] },
-                                { title: 'C', marker: '', slots: ['', '', '', '', ''] },
-                                { title: 'D', marker: '', slots: ['', '', '', '', ''] },
-                                { title: 'E', marker: '', slots: ['', '', '', '', ''] }
-                            ]
-                        },
-                        {
-                            title: 'Engineer Squad',
-                            type: 'single-list',
-                            autoFill: false,
-                            waExport: true,
-                            isolatedBlock: true,
-                            slots: ['', '', '', '', '']
-                        },
-                        {
-                            title: 'Desecrate Baiters',
-                            type: 'single-list',
-                            autoFill: false,
-                            waExport: true,
-                            isolatedBlock: true,
-                            slots: ['', '', '', '', '', '', '', '']
-                        }
-                    ]
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
                 });
-            } catch (e) {
-                console.error('[Garrosh] LaneGroups.init Fehler:', e);
+                setTimeout(window.updatePlannerSummary, 500);
             }
-        } else {
-            console.warn('[Garrosh] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
-        }
-    };
-</script>
+
+            // ════════════════════════════════════════════════════════════════
+            // LANE GROUPS (Einteilungen)
+            // ════════════════════════════════════════════════════════════════
+            if (window.LaneGroups) {
+                try {
+                    window.LaneGroups.init({
+                        containerId: 'garrosh-lane-groups',
+                        bossId: 'garrosh',
+                        assignmentId: 'garrosh-lanes',
+                        roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                        firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                        assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                        defaultBlocks: [
+                            {
+                                title: 'Gruppen (A-E)',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                waExport: true,
+                                isolatedBlock: true,
+                                sharedLanes: true,
+                                lanes: [
+                                    { title: 'A', marker: '', slots: ['', '', '', '', ''] },
+                                    { title: 'B', marker: '', slots: ['', '', '', '', ''] },
+                                    { title: 'C', marker: '', slots: ['', '', '', '', ''] },
+                                    { title: 'D', marker: '', slots: ['', '', '', '', ''] },
+                                    { title: 'E', marker: '', slots: ['', '', '', '', ''] }
+                                ]
+                            },
+                            {
+                                title: 'Engineer Squad',
+                                type: 'single-list',
+                                autoFill: false,
+                                waExport: true,
+                                isolatedBlock: true,
+                                slots: ['', '', '', '', '']
+                            },
+                            {
+                                title: 'Desecrate Baiters',
+                                type: 'single-list',
+                                autoFill: false,
+                                waExport: true,
+                                isolatedBlock: true,
+                                slots: ['', '', '', '', '', '', '', '']
+                            }
+                        ]
+                    });
+                } catch (e) {
+                    console.error('[Garrosh] LaneGroups.init Fehler:', e);
+                }
+            } else {
+                console.warn('[Garrosh] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
+            }
+        };
+    </script>
 </main>

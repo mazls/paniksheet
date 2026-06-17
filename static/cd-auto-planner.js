@@ -635,6 +635,10 @@ window.CD_AUTO_PLANNER = (function () {
                 maxCasts: ov.maxCasts !== undefined ? ov.maxCasts : (evt.maxCasts || 1),
                 delay: ov.delay !== undefined ? ov.delay : (evt.delay || 0),
                 eventDuration: ov.eventDuration !== undefined ? ov.eventDuration : (evt.eventDuration || 0),
+                overlapSec: ov.overlapSec !== undefined ? ov.overlapSec : (evt.overlapSec || 0),
+                resetEscalation: ov.resetEscalation !== undefined ? ov.resetEscalation : (evt.resetEscalation || 0),
+                escalationRanges: ov.escalationRanges !== undefined ? ov.escalationRanges : (evt.escalationRanges || []),
+                continuousCoverage: ov.continuousCoverage !== undefined ? ov.continuousCoverage : (evt.continuousCoverage || false),
                 requiredCDs: ov.requiredCDs !== undefined ? ov.requiredCDs.slice() : (evt.requiredCDs ? evt.requiredCDs.slice() : []),
                 icon: ov.icon !== undefined ? ov.icon : (evt.icon || ''),
                 spellId: evt.spellId,
@@ -655,6 +659,10 @@ window.CD_AUTO_PLANNER = (function () {
                 maxCasts: evt.maxCasts || 1,
                 delay: evt.delay || 0,
                 eventDuration: evt.eventDuration || 0,
+                overlapSec: (eventOverrides[evt._key] && eventOverrides[evt._key].overlapSec !== undefined) ? eventOverrides[evt._key].overlapSec : (evt.overlapSec || 0),
+                resetEscalation: (eventOverrides[evt._key] && eventOverrides[evt._key].resetEscalation !== undefined) ? eventOverrides[evt._key].resetEscalation : (evt.resetEscalation || 0),
+                escalationRanges: (eventOverrides[evt._key] && eventOverrides[evt._key].escalationRanges !== undefined) ? eventOverrides[evt._key].escalationRanges : (evt.escalationRanges || []),
+                continuousCoverage: (eventOverrides[evt._key] && eventOverrides[evt._key].continuousCoverage !== undefined) ? eventOverrides[evt._key].continuousCoverage : (evt.continuousCoverage || false),
                 requiredCDs: evt.requiredCDs ? evt.requiredCDs.slice() : [],
                 icon: evt.icon || '',
                 spellId: evt.spellId || 0,
@@ -822,23 +830,49 @@ window.CD_AUTO_PLANNER = (function () {
             for (var c = 0; c < casts; c++) {
                 var absTime = event.firstCast + (c * (event.cooldown || 0));
                 if (event.cooldown === 0 && c > 0) break;
+
+                var currentCastNum = c + 1;
+                var effectiveReqCDs = event.requiredCDs || [];
+
+                if (event.escalationRanges && event.escalationRanges.length > 0) {
+                    var evaluateCastNum = currentCastNum;
+                    if (event.resetEscalation) {
+                        evaluateCastNum = ((currentCastNum - 1) % event.resetEscalation) + 1;
+                    }
+                    var matchRange = event.escalationRanges.find(function(r) { return evaluateCastNum >= r.start && evaluateCastNum <= r.end; });
+                    if (matchRange) {
+                        effectiveReqCDs = matchRange.categories || [];
+                    } else {
+                        effectiveReqCDs = [];
+                    }
+                }
+
                 timeline.push({
                     eventIdx: eventIdx,
                     eventKey: event._key,
-                    castNum: c + 1,
+                    castNum: currentCastNum,
                     absTime: absTime,
                     delay: event.delay || 0,
                     eventName: event.name,
                     eventDuration: event.eventDuration || 0,
+                    continuousCoverage: event.continuousCoverage || false,
+                    overlapSec: event.overlapSec || 0,
                     icon: event.icon || '',
-                    requiredCDs: event.requiredCDs,
+                    requiredCDs: effectiveReqCDs,
                     slots: {},
-                    _sourceTriggerMap: event._sourceTriggerMap,
+                    _sourceTriggerMap: event._sourceTriggerMap || (config.triggerMap && config.triggerMap[event.name]) || null,
                     soak: event.soak || null
                 });
             }
         });
         timeline.sort(function (a, b) { return a.absTime - b.absTime; });
+        
+        var nameCounters = {};
+        timeline.forEach(function(row) {
+            nameCounters[row.eventName] = (nameCounters[row.eventName] || 0) + 1;
+            row.castNum = nameCounters[row.eventName];
+        });
+
         return timeline;
     }
 
@@ -849,6 +883,11 @@ window.CD_AUTO_PLANNER = (function () {
             (e.requiredCDs || []).forEach(function (k) {
                 if (keys.indexOf(k) === -1) keys.push(k);
             });
+            (e.escalationRanges || []).forEach(function(r) {
+                (r.categories || []).forEach(function (k) {
+                    if (keys.indexOf(k) === -1) keys.push(k);
+                });
+            });
         });
         return keys;
     }
@@ -857,10 +896,9 @@ window.CD_AUTO_PLANNER = (function () {
     // AUTO-ASSIGN
     // ══════════════════════════════════════════════════════════════
 
-    function autoAssign(timeline) {
+    async function autoAssign(timeline) {
         var usedUntil = {};
         var lastClassUsed = {}; // catKey -> dbClass
-
         var cachedResolvedCats = {};
         function getResolvedCategory(catKey) {
             if (!cachedResolvedCats[catKey]) {
@@ -870,7 +908,6 @@ window.CD_AUTO_PLANNER = (function () {
         }
 
         var allCatKeys = getUniqueCategoryKeys();
-
         var manualReservations = {};
         timeline.forEach(function (row) {
             allCatKeys.forEach(function(catKey) {
@@ -887,13 +924,10 @@ window.CD_AUTO_PLANNER = (function () {
         function isAvailable(player, dbName, atTime, currentCdSec) {
             var key = player + '::' + dbName;
             if (usedUntil[key] && atTime < usedUntil[key]) return false;
-            
             if (manualReservations[key]) {
                 for (var i = 0; i < manualReservations[key].length; i++) {
                     var res = manualReservations[key][i];
-                    if (atTime < res.time && atTime + currentCdSec > res.time) {
-                        return false;
-                    }
+                    if (atTime < res.time && atTime + currentCdSec > res.time) return false;
                 }
             }
             return true;
@@ -902,26 +936,16 @@ window.CD_AUTO_PLANNER = (function () {
             usedUntil[player + '::' + dbName] = atTime + cdSec;
         }
 
-        // ──────────────────────────────────────────────────────────────
-        // STRATEGIE A — SPREAD-MASKE
-        // Vor dem Verteilen für jedes (Event-Name, Kategorie)-Paar prüfen:
-        // Wie viele Casts gibt es vs. wie viele Spieler stehen zur Verfügung?
-        // Wenn Casts > Capacity → eine Spread-Maske bauen, die nur jeden
-        // n-ten Cast als "auto-fill" markiert. Lücken werden gleichmäßig
-        // über die Zeit verteilt statt am Ende geballt.
-        //
-        // capacity = Anzahl Spieler die DIESEN Spell jemals casten könnten
-        //   × floor(eventSpanInSec / minPlayerCooldown) + 1
-        // ──────────────────────────────────────────────────────────────
-        var spreadAllow = {};   // eventIdx + '-' + catKey + '-' + castNum → true/false
+        var spreadAllow = {};
         if (assignStrategy.spread) {
-            // Events nach Name+Kategorie gruppieren
             var groups = {};
             timeline.forEach(function (row) {
-                row.requiredCDs.forEach(function (catKey) {
-                    var gKey = row.eventName + '||' + catKey;
-                    if (!groups[gKey]) groups[gKey] = [];
-                    groups[gKey].push(row);
+                allCatKeys.forEach(function (catKey) {
+                    var isReq = (row.requiredCDs || []).indexOf(catKey) !== -1;
+                    if (!isReq) return;
+                    var key = row.eventIdx + '||' + catKey;
+                    if (!groups[key]) groups[key] = [];
+                    groups[key].push(row);
                 });
             });
 
@@ -1020,9 +1044,6 @@ window.CD_AUTO_PLANNER = (function () {
             return null;
         }
 
-        // ──────────────────────────────────────────────────────────────
-        // HAUPT-SCHLEIFE
-        // ──────────────────────────────────────────────────────────────
         function normalizePlayerForPlanner(p) {
             if (!p) return 'ALL';
             var up = p.toUpperCase();
@@ -1034,7 +1055,18 @@ window.CD_AUTO_PLANNER = (function () {
             return p; // Keep class names like Priest as is
         }
 
-        timeline.forEach(function (row) {
+        var chunkCounter = 0;
+        var finalAssignments = [];
+
+        while (timeline.length > 0) {
+            var row = timeline.shift();
+            finalAssignments.push(row);
+
+            chunkCounter++;
+            if (chunkCounter % 15 === 0) {
+                await new Promise(function(r) { setTimeout(r, 0); });
+            }
+
             // Alle Kategorien initial mit leeren Slots vorbelegen,
             // damit die UI-Spalten stimmen.
             allCatKeys.forEach(function (catKey) {
@@ -1158,10 +1190,42 @@ window.CD_AUTO_PLANNER = (function () {
                 if (!assigned) {
                     row.slots[catKey] = { player: null, dbName: null, auto: true, unavailable: true };
                 }
-            });
-        });
 
-        return timeline;
+                // Continuous Coverage Logic
+                if (assigned && row.continuousCoverage && row.eventDuration > 0 && row.slots[catKey].durationSec) {
+                    var dur = row.slots[catKey].durationSec;
+                    var remaining = row.eventDuration - dur;
+                    if (remaining > 0) {
+                        var nextAbsTime = row.absTime + dur + (row.overlapSec || 0);
+                        var nextDelay = row.delay + dur + (row.overlapSec || 0);
+
+                        // Push a new timeline event specifically for this category
+                        timeline.push({
+                            eventIdx: row.eventIdx,
+                            eventKey: row.eventKey,
+                            castNum: row.castNum, // keep same castNum or mark as subcast? Keep same so manual overrides can't easily target it without care, but we just want auto filler.
+                            absTime: nextAbsTime,
+                            delay: nextDelay,
+                            eventName: row.eventName + ' (Forts. ' + catKey + ')',
+                            eventDuration: remaining,
+                            continuousCoverage: true,
+                            overlapSec: row.overlapSec || 0,
+                            icon: row.icon || '',
+                            requiredCDs: [catKey], // ONLY this category needs coverage now
+                            slots: {},
+                            _sourceTriggerMap: row._sourceTriggerMap,
+                            _isContinuous: true,
+                            _continuousOffset: (row._continuousOffset || 0) + dur + (row.overlapSec || 0),
+                            soak: row.soak || null
+                        });
+                        timeline.sort(function (a, b) { return a.absTime - b.absTime; });
+                    }
+                }
+            });
+        }
+
+        // The original timeline arrays were returned by autoAssign, but now finalAssignments holds them in sorted order.
+        return finalAssignments;
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -1483,27 +1547,40 @@ window.CD_AUTO_PLANNER = (function () {
         }
     }
 
-    function runAutoAssign() {
-
-        rosterRef = window.effectiveRoster || window.rosterData || [];
-
-        var timeline = generateTimeline();
-        assignments = autoAssign(timeline);
-
-        // ── Blood-Rage-Soak: Events mit Kategorie tank_soak_phys expandieren ──
-        if (window.CD_BLOODRAGE) {
-            assignments = window.CD_BLOODRAGE.applyToAssignments(assignments, {
-                catKey: "tank_soak_phys",
-                planOpts: { expectedHitDmg: 1800000, threshold: 0.50, swingSec: 1.5 } // nur Fallback
-            });
+    async function runAutoAssign() {
+        var btn = document.getElementById('btn-auto-assign');
+        var oldBtnHTML = '';
+        if (btn) {
+            oldBtnHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="animate-pulse">⏳ Berechne...</span>';
+            btn.disabled = true;
         }
 
-        renderTimeline(assignments);
-        renderEventManager();
-        clearPreviewStale();
-        // Manager-Schutz erneut anwenden (neu erzeugte Felder)
-        if (typeof window._autoPlannerApplyProtection === 'function') {
-            window._autoPlannerApplyProtection();
+        try {
+            rosterRef = window.effectiveRoster || window.rosterData || [];
+            var timeline = generateTimeline();
+            assignments = await autoAssign(timeline);
+
+            // ── Blood-Rage-Soak: Events mit Kategorie tank_soak_phys expandieren ──
+            if (window.CD_BLOODRAGE) {
+                assignments = window.CD_BLOODRAGE.applyToAssignments(assignments, {
+                    catKey: "tank_soak_phys",
+                    planOpts: { expectedHitDmg: 1800000, threshold: 0.50, swingSec: 1.5 } // nur Fallback
+                });
+            }
+
+            renderTimeline(assignments);
+            renderEventManager();
+            clearPreviewStale();
+            // Manager-Schutz erneut anwenden (neu erzeugte Felder)
+            if (typeof window._autoPlannerApplyProtection === 'function') {
+                window._autoPlannerApplyProtection();
+            }
+        } finally {
+            if (btn) {
+                btn.innerHTML = oldBtnHTML;
+                btn.disabled = false;
+            }
         }
     }
 
@@ -1601,6 +1678,7 @@ window.CD_AUTO_PLANNER = (function () {
                     return '<div style="display:flex;gap:4px;min-width:0;">'
                         + '<button class="evt-cat-btn" data-key="' + r._key + '" title="Klicken um Kategorien zu ändern" style="flex:1;min-width:0;">' + catLabels + ' ' + customBadge + '</button>'
                         + (soakActive ? '<button class="evt-soak-btn" data-key="' + r._key + '" title="Soak-Einstellungen" style="flex:0 0 auto;background:#0f172a;border:1px solid #c8aa6e;color:#c8aa6e;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;">🛡</button>' : '')
+                        + '<button class="evt-settings-btn" data-key="' + r._key + '" title="Event-Dauer & Eskalations-Phasen" style="flex:0 0 auto;background:#0f172a;border:1px solid #64748b;color:#94a3b8;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;">⚙️</button>'
                         + '</div>';
                 })()
                 + '<button class="evt-trg-btn mode-' + tMode + '" data-key="' + r._key + '" title="Trigger-Modus für Export anpassen">' + tLabel + '</button>'
@@ -1682,6 +1760,13 @@ window.CD_AUTO_PLANNER = (function () {
         document.querySelectorAll('.evt-soak-btn').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 openEventSoakPicker(e.currentTarget.dataset.key);
+            });
+        });
+
+        // Event-Settings (Dauer, Eskalation) → Modal
+        document.querySelectorAll('.evt-settings-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                openEventSettingsPicker(e.currentTarget.dataset.key);
             });
         });
 
@@ -1899,6 +1984,145 @@ window.CD_AUTO_PLANNER = (function () {
         overlay.addEventListener('click', function (e) {
             if (e.target === overlay) document.body.removeChild(overlay);
         });
+    }
+
+    function openEventSettingsPicker(eventKey) {
+        var evtObj = null;
+        if (eventKey.startsWith('cfg_')) {
+            evtObj = config.events[parseInt(eventKey.replace('cfg_', ''))] || {};
+        } else {
+            evtObj = customEvents.find(function(e) { return e._key === eventKey; }) || {};
+        }
+        var ov = eventOverrides[eventKey] || {};
+
+        var evtDur = ov.eventDuration !== undefined ? ov.eventDuration : (evtObj.eventDuration || 0);
+        var overlap = ov.overlapSec !== undefined ? ov.overlapSec : (evtObj.overlapSec || 0);
+        var resEsc = ov.resetEscalation !== undefined ? ov.resetEscalation : (evtObj.resetEscalation || 0);
+        var contCov = ov.continuousCoverage !== undefined ? ov.continuousCoverage : (evtObj.continuousCoverage || false);
+        
+        var escRanges = ov.escalationRanges !== undefined ? ov.escalationRanges : (evtObj.escalationRanges || []);
+
+        var html = '<div class="mb-4 space-y-3">'
+            + '<div class="flex gap-4">'
+            +   '<div class="flex-1"><label class="block text-[10px] text-gray-400 mb-1">Event-Dauer (Sek)</label><input type="number" id="es-dur" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1 rounded" value="' + evtDur + '" step="0.5"></div>'
+            +   '<div class="flex-1"><label class="block text-[10px] text-gray-400 mb-1" title="Wie viel Sek. vor Ablauf des vorherigen CD soll der nächste gezogen werden?">Overlap (Sek)</label><input type="number" id="es-overlap" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1 rounded" value="' + overlap + '" step="0.5"></div>'
+            + '</div>'
+            + '<div><label class="block text-[10px] text-gray-400 mb-1" title="Nach wie vielen Casts fängt die Eskalation wieder bei 1 an? (0 = Nie)">Reset Eskalation nach Cast-Count (z.B. nach dem 3. Cast wieder bei 1 anfangen)</label><input type="number" id="es-res" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1 rounded" value="' + resEsc + '"></div>'
+            + '<div class="flex items-center gap-2 mt-2"><input type="checkbox" id="es-cont-cov" ' + (contCov ? 'checked' : '') + ' style="accent-color:#10b981;"><label for="es-cont-cov" class="text-[10px] text-gray-400 cursor-pointer">Continuous Coverage (Folge-CDs automatisch anreihen, falls Event länger dauert)</label></div>'
+            + '</div>'
+            
+            + '<div class="text-[11px] font-bold text-gray-300 mb-2">Eskalations-Phasen (Nach Cast-Nummer)</div>'
+            + '<div class="text-[10px] text-gray-500 mb-2">Die Zahlen unten stehen für die Nummer des Casts (z.B. Cast 1 bis 3). Für jede Phase können individuelle Kategorien (CDs) festgelegt werden.</div>'
+            + '<div id="es-ranges-container" class="space-y-2 mb-2"></div>'
+            + '<button id="es-add-range" class="w-full py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-[10px] text-gray-300">+ Phase hinzufügen</button>';
+
+        var content = document.createElement('div');
+        content.innerHTML = html;
+
+        var rCont = content.querySelector('#es-ranges-container');
+        
+        function renderRanges() {
+            rCont.innerHTML = '';
+            escRanges.forEach(function(r, idx) {
+                var d = document.createElement('div');
+                d.className = "flex flex-col gap-2 bg-slate-900 p-2 border border-slate-700 rounded";
+                
+                var topRow = document.createElement('div');
+                topRow.className = "flex gap-2 items-center";
+                
+                topRow.innerHTML = '<span class="text-[10px] text-gray-400">Cast</span>'
+                    + '<input type="number" class="w-12 bg-slate-800 border border-slate-600 text-[10px] px-1 py-1 rounded text-center es-r-start" value="' + r.start + '" title="Start-Cast (Nummer)">'
+                    + '<span class="text-[10px] text-gray-500">bis</span>'
+                    + '<input type="number" class="w-12 bg-slate-800 border border-slate-600 text-[10px] px-1 py-1 rounded text-center es-r-end" value="' + r.end + '" title="End-Cast (Nummer)">'
+                    + '<div class="flex-1"></div>'
+                    + '<button class="text-red-400 hover:text-red-300 px-1 es-r-del" title="Phase löschen">✕</button>';
+                
+                var catSelectBox = document.createElement('div');
+                catSelectBox.className = "bg-slate-800 border border-slate-600 rounded p-1 max-h-32 overflow-y-auto";
+                
+                var rCats = r.categories || [];
+                Object.keys(categories).forEach(function(catKey) {
+                    var cat = categories[catKey];
+                    var isChecked = rCats.indexOf(catKey) !== -1;
+                    var lbl = document.createElement('label');
+                    lbl.className = "flex items-center gap-2 p-1 hover:bg-slate-700/50 rounded cursor-pointer text-[10px]";
+                    lbl.innerHTML = '<input type="checkbox" value="' + catKey + '" ' + (isChecked ? 'checked' : '') + ' style="accent-color:' + cat.color + ';">'
+                        + '<span style="color:' + cat.color + '">' + cat.name + '</span>';
+                    
+                    lbl.querySelector('input').addEventListener('change', function(e) {
+                        if (e.target.checked) {
+                            if (r.categories.indexOf(catKey) === -1) r.categories.push(catKey);
+                        } else {
+                            var i = r.categories.indexOf(catKey);
+                            if (i !== -1) r.categories.splice(i, 1);
+                        }
+                    });
+                    catSelectBox.appendChild(lbl);
+                });
+
+                topRow.querySelector('.es-r-del').addEventListener('click', function() {
+                    escRanges.splice(idx, 1);
+                    renderRanges();
+                });
+                topRow.querySelector('.es-r-start').addEventListener('change', function(e) { r.start = parseInt(e.target.value)||1; });
+                topRow.querySelector('.es-r-end').addEventListener('change', function(e) { r.end = parseInt(e.target.value)||99; });
+                
+                d.appendChild(topRow);
+                d.appendChild(catSelectBox);
+                rCont.appendChild(d);
+            });
+        }
+        renderRanges();
+
+        content.querySelector('#es-add-range').addEventListener('click', function() {
+            var lastEnd = escRanges.length > 0 ? escRanges[escRanges.length-1].end : 0;
+            escRanges.push({start: lastEnd + 1, end: lastEnd + 1, categories: []});
+            renderRanges();
+        });
+
+        var overlay = document.createElement('div');
+        overlay.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[9999]';
+        var modal = document.createElement('div');
+        modal.className = 'bg-slate-800 border border-slate-600 rounded-lg shadow-xl w-[400px] max-w-full flex flex-col max-h-[90vh]';
+        
+        var mHead = document.createElement('div');
+        mHead.className = 'p-3 border-b border-slate-700 flex justify-between items-center';
+        mHead.innerHTML = '<h3 class="text-sm font-bold text-gray-200">Event-Einstellungen</h3>';
+        
+        var mBody = document.createElement('div');
+        mBody.className = 'p-3 overflow-y-auto';
+        mBody.appendChild(content);
+
+        var mFoot = document.createElement('div');
+        mFoot.className = 'p-3 border-t border-slate-700 flex justify-end gap-2';
+        
+        var btnCancel = document.createElement('button');
+        btnCancel.className = 'px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs rounded';
+        btnCancel.textContent = 'Abbrechen';
+        btnCancel.onclick = function() { overlay.remove(); };
+
+        var btnSave = document.createElement('button');
+        btnSave.className = 'px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded font-bold';
+        btnSave.textContent = 'Speichern';
+        btnSave.onclick = function() {
+            setOverride(eventKey, 'eventDuration', parseFloat(content.querySelector('#es-dur').value) || 0);
+            setOverride(eventKey, 'overlapSec', parseFloat(content.querySelector('#es-overlap').value) || 0);
+            setOverride(eventKey, 'resetEscalation', parseInt(content.querySelector('#es-res').value) || 0);
+            setOverride(eventKey, 'continuousCoverage', content.querySelector('#es-cont-cov').checked);
+            // Deep copy der Ranges um Proxy-Probleme zu vermeiden
+            var cleanRanges = JSON.parse(JSON.stringify(escRanges));
+            setOverride(eventKey, 'escalationRanges', cleanRanges);
+            overlay.remove();
+        };
+
+        mFoot.appendChild(btnCancel);
+        mFoot.appendChild(btnSave);
+
+        modal.appendChild(mHead);
+        modal.appendChild(mBody);
+        modal.appendChild(mFoot);
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
     }
 
     // ── Soak-Settings pro Event (Schaden / Schwelle / Swing) + Live-Preview ──
@@ -2183,6 +2407,8 @@ async function exportToPlanner() {
                 conditionVal = String(row._sourceEvent.forceTriggerCondition);
             } else if (row._sourceEvent && row._sourceEvent._isFollowUp) {
                 conditionVal = String(triggerCounts[triggerVal] || 1);
+            } else if (row._isContinuous) {
+                conditionVal = String(triggerCounts[triggerVal] || 1);
             } else {
                 triggerCounts[triggerVal] = (triggerCounts[triggerVal] || 0) + 1;
                 conditionVal = String(triggerCounts[triggerVal]);
@@ -2190,7 +2416,8 @@ async function exportToPlanner() {
 
             var timeVal;
             if (isEncStartTrigger) {
-                timeVal = String(Math.round((row.absTime || 0) + (row.delay || 0)));
+                var cOff = row._continuousOffset || 0;
+                timeVal = String(Math.round((row.absTime || 0) + (row.delay || 0) - cOff));
             } else {
                 timeVal = String(row.delay || 0);
             }
@@ -2335,7 +2562,20 @@ async function savePlan() {
                             slots[e[0]] = { player: e[1].player, dbName: e[1].dbName, auto: e[1].auto };
                         }
                     });
-                    return { eventName: r.eventName, castNum: r.castNum, absTime: r.absTime, delay: r.delay || 0, slots: slots };
+                    return { 
+                        eventName: r.eventName, 
+                        eventKey: r.eventKey,
+                        castNum: r.castNum, 
+                        absTime: r.absTime, 
+                        delay: r.delay || 0, 
+                        slots: slots,
+                        eventDuration: r.eventDuration || 0,
+                        overlapSec: r.overlapSec || 0,
+                        _isContinuous: r._isContinuous || false,
+                        _continuousOffset: r._continuousOffset || 0,
+                        _sourceTriggerMap: r._sourceTriggerMap || null,
+                        soak: r.soak || null
+                    };
                 })
             }, { merge: false }
         );

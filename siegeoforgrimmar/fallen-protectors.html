@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,10 +17,12 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
@@ -33,264 +37,290 @@
         <a href="#planner">Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            <strong>Die goldene Regel:</strong> Alle drei Bosse müssen innerhalb eines 20-Sekunden-Fensters auf 1 HP droppen! Wenn ein Boss 1 HP erreicht, während ein anderer noch lebt, startet er einen Heal-Channel – sterben die anderen nicht rechtzeitig, heilt er sich um 30% hoch und es droht ein Wipe.<br><br>
-            Jeder Boss pusht bei 66% und 33% seiner Max-HP in eine Spezialphase ("Desperate Measures" / DM). Ihr müsst diese DM-Phasen zwingend nacheinander auslösen, niemals zeitgleich! Die ideale Push-Reihenfolge ist: Sun → Rook → He.
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Rook Steinzeh:</strong> Macht harte frontale Cleaves. Niemals in den Raid drehen! Bei seiner DM-Phase müssen die spawnenden Adds sofort von euch eingesammelt werden.</li>
-                    <li><strong class="text-purple-400">He der Leisetreter:</strong> Hinterlässt stetig Gift-Voidzones. Der aufbauende Schaden und sein permanenter Bleed erfordern ständiges Kiten.</li>
-                    <li><strong class="text-yellow-400">Sun zartes Herz:</strong> Braucht keinen direkten Tank, aber ihr "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143423" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:underline">Sha-Sengen</a></em>" muss konsequent gekickt werden.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-blue-400">Kicks:</strong> Das "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143423" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Sha-Sengen</a></em>" von Sun muss von eingeteilten Spielern zwingend bei ca. der Hälfte der Castzeit gekickt werden.</li>
-                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143491" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Unheil (Calamity)</a>:</strong> Massiver Raid-AoE von Sun, der 30% Max-HP abzieht. Heiler müssen hier eine feste Raid-CD-Rotation spielen!</li>
-                    <li><strong class="text-emerald-400">Movement:</strong> Den Gift-Voidzones und einschlagenden Fässern sofort ausweichen. Bei Rooks "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143330" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">Wirbelnder Kranichtritt</a></em>" sofort rauslaufen.</li>
-                </ul>
-            </div>
-        </div>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                <strong>Die goldene Regel:</strong> Alle drei Bosse müssen innerhalb eines 20-Sekunden-Fensters auf 1 HP
+                droppen! Wenn ein Boss 1 HP erreicht, während ein anderer noch lebt, startet er einen Heal-Channel –
+                sterben die anderen nicht rechtzeitig, heilt er sich um 30% hoch und es droht ein Wipe.<br><br>
+                Jeder Boss pusht bei 66% und 33% seiner Max-HP in eine Spezialphase ("Desperate Measures" / DM). Ihr
+                müsst diese DM-Phasen zwingend nacheinander auslösen, niemals zeitgleich! Die ideale Push-Reihenfolge
+                ist: Sun → Rook → He.
+            </p>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktik-Tipps & Kampfrausch</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200">⚡ HT / Bloodlust:</strong><br>
-                    Zieht Kampfrausch/Heldentum direkt beim Pull! So maximiert ihr euren Burst-Damage im längsten ungestörten Zeitfenster, bevor Sun bei 66% in ihre erste DM-Phase gepusht wird.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">DPS (Fokus):</strong><br>
-                    Haltet euch strikt an die Push-Reihenfolge (Sun → Rook → He). Sobald eine DM-Phase triggert, absoluter DPS-Stopp auf die Bosse! Cleart erst komplett die Adds. Achtet am Ende bei 33% darauf, alle Bosse gleichmäßig auf 1 HP zu bringen!
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Heiler:</strong><br>
-                    Spart eure stärksten Output-CDs für Suns DM-Phase ("<em><a href="https://www.wowhead.com/mop-classic/de/spell=143546" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Dunkle Meditation</a></em>") und für die späten "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143491" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Unheil</a></em>"-Casts. Entfernt <em><a href="https://www.wowhead.com/mop-classic/de/spell=143434" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Schattenwort: Fluch</a></em> umgehend!
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Cleave & Multi-DoT:</strong><br>
-                    Klassen mit starkem Cleave sind perfekt, um alle drei Bosse gleichmäßig runterzuspielen. Achtet aber genau auf die 66%- und 33%-Schwellen!
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
-                    <ul class="assignment-list">
-                        <li><span>Rook Steinzeh:</span><select class="assignment-select" data-assignment-id="protectors-tank-rook"></select></li>
-                        <li><span>He der Leisetreter:</span><select class="assignment-select" data-assignment-id="protectors-tank-he"></select></li>
-                        <li><span>DM-Adds (Spezialphase):</span><select class="assignment-select" data-assignment-id="protectors-tank-adds"></select></li>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-red-400">Rook Steinzeh:</strong> Macht harte frontale Cleaves. Niemals
+                            in den Raid drehen! Bei seiner DM-Phase müssen die spawnenden Adds sofort von euch
+                            eingesammelt werden.</li>
+                        <li><strong class="text-purple-400">He der Leisetreter:</strong> Hinterlässt stetig
+                            Gift-Voidzones. Der aufbauende Schaden und sein permanenter Bleed erfordern ständiges Kiten.
+                        </li>
+                        <li><strong class="text-yellow-400">Sun zartes Herz:</strong> Braucht keinen direkten Tank, aber
+                            ihr "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143423" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-yellow-400 hover:underline">Sha-Sengen</a></em>" muss konsequent gekickt
+                            werden.</li>
                     </ul>
                 </div>
-                
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
-                    <div id="protectors-lane-groups"></div>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-blue-400">Kicks:</strong> Das "<em><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143423" target="_blank"
+                                    rel="noopener noreferrer" class="text-blue-400 hover:underline">Sha-Sengen</a></em>"
+                            von Sun muss von eingeteilten Spielern zwingend bei ca. der Hälfte der Castzeit gekickt
+                            werden.</li>
+                        <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143491"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-red-400 hover:underline">Unheil (Calamity)</a>:</strong> Massiver
+                            Raid-AoE von Sun, der 30% Max-HP abzieht. Heiler müssen hier eine feste Raid-CD-Rotation
+                            spielen!</li>
+                        <li><strong class="text-emerald-400">Movement:</strong> Den Gift-Voidzones und einschlagenden
+                            Fässern sofort ausweichen. Bei Rooks "<em><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143330" target="_blank"
+                                    rel="noopener noreferrer" class="text-emerald-400 hover:underline">Wirbelnder
+                                    Kranichtritt</a></em>" sofort rauslaufen.</li>
+                    </ul>
                 </div>
             </div>
 
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-                
-                <div class="space-y-4">
-                    <img src="siegeoforgrimmar/protectors.png" alt="Aufstellung Die gefallenen Beschützer"
-                        class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
-                        onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
+            <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+                <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktik-Tipps
+                    & Kampfrausch</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                    <div>
+                        <strong class="text-emerald-200">⚡ HT / Bloodlust:</strong><br>
+                        Zieht Kampfrausch/Heldentum direkt beim Pull! So maximiert ihr euren Burst-Damage im längsten
+                        ungestörten Zeitfenster, bevor Sun bei 66% in ihre erste DM-Phase gepusht wird.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">DPS (Fokus):</strong><br>
+                        Haltet euch strikt an die Push-Reihenfolge (Sun → Rook → He). Sobald eine DM-Phase triggert,
+                        absoluter DPS-Stopp auf die Bosse! Cleart erst komplett die Adds. Achtet am Ende bei 33% darauf,
+                        alle Bosse gleichmäßig auf 1 HP zu bringen!
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Heiler:</strong><br>
+                        Spart eure stärksten Output-CDs für Suns DM-Phase ("<em><a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143546" target="_blank"
+                                rel="noopener noreferrer" class="text-emerald-200 hover:underline">Dunkle
+                                Meditation</a></em>") und für die späten "<em><a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143491" target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-emerald-200 hover:underline">Unheil</a></em>"-Casts. Entfernt <em><a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143434" target="_blank"
+                                rel="noopener noreferrer" class="text-emerald-200 hover:underline">Schattenwort:
+                                Fluch</a></em> umgehend!
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Cleave & Multi-DoT:</strong><br>
+                        Klassen mit starkem Cleave sind perfekt, um alle drei Bosse gleichmäßig runterzuspielen. Achtet
+                        aber genau auf die 66%- und 33%-Schwellen!
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
-        </div>
-        <details id="cd-categories-admin" class="mb-4 bg-slate-800 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-yellow-400 hover:bg-slate-750 rounded-t-lg">⚙️ CD-Kategorien & Prioritäten</summary>
-            <div class="p-4">
-                <div class="text-xs text-gray-400 mb-3">SpellID-Match gegen deine Cooldown-DB. ❌ = nicht gefunden.</div>
-                <div id="cd-categories-container" class="space-y-3"></div>
-                <button id="btn-save-categories" class="mt-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">💾 Kategorien speichern</button>
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div class="space-y-6">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold">🛡️ Tank-Zuteilung</h4>
+                        <ul class="assignment-list">
+                            <li><span>Rook Steinzeh:</span><select class="assignment-select"
+                                    data-assignment-id="protectors-tank-rook"></select></li>
+                            <li><span>He der Leisetreter:</span><select class="assignment-select"
+                                    data-assignment-id="protectors-tank-he"></select></li>
+                            <li><span>DM-Adds (Spezialphase):</span><select class="assignment-select"
+                                    data-assignment-id="protectors-tank-adds"></select></li>
+                        </ul>
+                    </div>
+
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout
+                            bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
+                        <div id="protectors-lane-groups"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+
+                    <div class="space-y-4">
+                        <img src="siegeoforgrimmar/protectors.png" alt="Aufstellung Die gefallenen Beschützer"
+                            class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
+                    </div>
+                </div>
             </div>
-        </details>
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="min-w-full text-xs border-collapse">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
         </div>
-        <div class="mt-3 flex flex-wrap gap-4 text-[10px] text-gray-500">
-            <span>✅ Auto | ✏️ Manuell | ⚠️ Kein CD | ✖ Übersprungen | — Nicht benötigt (klickbar)</span>
+    </section>
+
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Auto-CD-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Auto-Zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In CD-Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+                <button id="btn-save-categories"
+                    class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500"
+                    style="display:none;">📂 Kategorien speichern</button>
+            </div>
+            <details id="cd-categories-admin" class="mb-4 bg-slate-800 rounded-lg border border-slate-700"
+                style="display:none;">
+                <summary class="cursor-pointer p-3 text-sm font-bold text-yellow-400 hover:bg-slate-750 rounded-t-lg">⚙️
+                    CD-Kategorien & Prioritäten</summary>
+                <div class="p-4">
+                    <div class="text-xs text-gray-400 mb-3">SpellID-Match gegen deine Cooldown-DB. ❌ = nicht gefunden.
+                    </div>
+                    <div id="cd-categories-container" class="space-y-3"></div>
+                    <button id="btn-save-categories"
+                        class="mt-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">💾
+                        Kategorien speichern</button>
+                </div>
+            </details>
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="min-w-full text-xs border-collapse">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-4 text-[10px] text-gray-500">
+                <span>✅ Auto | ✏️ Manuell | ⚠️ Kein CD | ✖ Übersprungen | — Nicht benötigt (klickbar)</span>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<script src="static/lane-groups.js"></script>
-<script src="static/cd-auto-planner.js"></script>
-<script>
-CD_AUTO_PLANNER.init({
-    id: 'fallen-protectors',
-    name: "Die gefallenen Beschützer",
-    prefix: 'PROTECTORS',
+    <script src="static/lane-groups.js"></script>
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        CD_AUTO_PLANNER.init({
+            id: 'fallen-protectors',
+            name: "Die gefallenen Beschützer",
+            prefix: 'PROTECTORS',
 
-    events: [
-        {
-            name: "Unheil (Calamity)",
-            spellId: 143491,
-            firstCast: 31,
-            cooldown: 37.5,
-            maxCasts: 8,
-            delay: -3,
-            eventDuration: 5,
-            requiredCDs: ["any_dr", "any_heal"],
-            icon: "☀️"
-        },
-        {
-            name: "Zusammenstoß (Clash)",
-            spellId: 143027,
-            firstCast: 45,
-            cooldown: 46,
-            maxCasts: 6,
-            delay: 0,
-            eventDuration: 0,
-            requiredCDs: ["movement"],
-            icon: "💥"
-        },
-        {
-            name: "Rook 66% (Misery/Sorrow/Gloom)",
-            spellId: 143955,
-            firstCast: 90,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 30,
-            requiredCDs: ["any_dr", "additional_surv"],
-            icon: "🔥"
-        },
-        {
-            name: "He 66% (Mark of Anguish)",
-            spellId: 143812,
-            firstCast: 120,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 20,
-            requiredCDs: ["any_heal", "tank_external"],
-            icon: "🗡️"
-        },
-        {
-            name: "Sun 66% (Dark Meditation)",
-            spellId: 143546,
-            firstCast: 150,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 20,
-            requiredCDs: ["any_dr", "mana"],
-            icon: "🌙"
-        },
-        {
-            name: "Rook 33% (Misery/Sorrow/Gloom)",
-            spellId: 143955,
-            firstCast: 210,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 30,
-            requiredCDs: ["any_dr", "additional_surv"],
-            icon: "🔥"
-        },
-        {
-            name: "He 33% (Mark of Anguish)",
-            spellId: 143812,
-            firstCast: 260,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 20,
-            requiredCDs: ["any_heal", "tank_external"],
-            icon: "🗡️"
-        },
-        {
-            name: "Sun 33% (Dark Meditation)",
-            spellId: 143546,
-            firstCast: 310,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 20,
-            requiredCDs: ["any_dr", "any_heal", "mana"],
-            icon: "🌙"
-        },
-        {
-            name: "Bloodlust / HT",
-            spellId: 0,
-            firstCast: 0,
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 40,
-            requiredCDs: ["bloodlust"],
-            icon: "⚡"
-        }
-    ],
+            events: [
+                {
+                    name: "Unheil (Calamity)",
+                    spellId: 143491,
+                    firstCast: 31,
+                    cooldown: 37.5,
+                    maxCasts: 8,
+                    delay: -3,
+                    eventDuration: 5,
+                    requiredCDs: ["any_dr", "any_heal"],
+                    icon: "☀️"
+                },
+                {
+                    name: "Zusammenstoß (Clash)",
+                    spellId: 143027,
+                    firstCast: 45,
+                    cooldown: 46,
+                    maxCasts: 6,
+                    delay: 0,
+                    eventDuration: 0,
+                    requiredCDs: ["movement"],
+                    icon: "💥"
+                },
+                {
+                    name: "Rook (Misery/Sorrow/Gloom)",
+                    spellId: 143955,
+                    firstCast: 90,
+                    cooldown: 120,
+                    maxCasts: 2,
+                    delay: 0,
+                    eventDuration: 30,
+                    requiredCDs: ["any_dr", "additional_surv"],
+                    icon: "🔥"
+                },
+                {
+                    name: "He (Mark of Anguish)",
+                    spellId: 143812,
+                    firstCast: 120,
+                    cooldown: 140,
+                    maxCasts: 2,
+                    delay: 0,
+                    eventDuration: 20,
+                    requiredCDs: ["any_heal", "tank_external"],
+                    icon: "🗡️"
+                },
+                {
+                    name: "Sun (Dark Meditation)",
+                    spellId: 143546,
+                    firstCast: 150,
+                    cooldown: 160,
+                    maxCasts: 2,
+                    delay: 0,
+                    eventDuration: 20,
+                    requiredCDs: ["any_dr", "mana"],
+                    icon: "🌙",
+                    escalationRanges: [
+                        { start: 2, end: 2, categories: ["any_dr", "any_heal", "mana"] }
+                    ]
+                },
+                {
+                    name: "Bloodlust / HT",
+                    spellId: 0,
+                    firstCast: 0,
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 40,
+                    requiredCDs: ["bloodlust"],
+                    icon: "⚡"
+                }
+            ],
 
-    triggerMap: {
-        "Unheil (Calamity)":                "FALLEN_CALAMITY",
-        "Zusammenstoß (Clash)":             "FALLEN_CLASH",
-        "Rook 66% (Misery/Sorrow/Gloom)":   "FALLEN_DESPERATE_MEASURES_ROOK",
-        "Rook 33% (Misery/Sorrow/Gloom)":   "FALLEN_DESPERATE_MEASURES_ROOK",
-        "He 66% (Mark of Anguish)":         "FALLEN_DESPERATE_MEASURES_HE",
-        "He 33% (Mark of Anguish)":         "FALLEN_DESPERATE_MEASURES_HE",
-        "Sun 66% (Dark Meditation)":        "FALLEN_DESPERATE_MEASURES_SUN",
-        "Sun 33% (Dark Meditation)":        "FALLEN_DESPERATE_MEASURES_SUN",
-        "Bloodlust / HT":                   "FALLEN_ENC_START"
-    }
-});
-</script>
+            triggerMap: {
+                "Unheil (Calamity)": "FALLEN_CALAMITY",
+                "Zusammenstoß (Clash)": "FALLEN_CLASH",
+                "Rook (Misery/Sorrow/Gloom)": "FALLEN_DESPERATE_MEASURES_ROOK",
+                "He (Mark of Anguish)": "FALLEN_DESPERATE_MEASURES_HE",
+                "Sun (Dark Meditation)": "FALLEN_DESPERATE_MEASURES_SUN",
+                "Bloodlust / HT": "FALLEN_ENC_START"
+            }
+        });
+    </script>
 
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globale WA Exportieren
         </button>
         <div class="mt-4 text-xs text-gray-500 italic">
@@ -300,125 +330,166 @@ CD_AUTO_PLANNER.init({
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
-<div class="mb-6">
-    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> CD-Einteilung Übersicht
-    </h3>
-    
-    <div id="protectors-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Warte auf Eingaben... <br>
-            <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-        </p>
-    </div>
-</div>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> CD-Einteilung Übersicht
+            </h3>
+
+            <div id="protectors-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+                    Warte auf Eingaben... <br>
+                    <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
+                </p>
+            </div>
+        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    <strong>% / #:</strong> Gebt entweder die HP in Prozent an oder die fortlaufende Cast-Reihenfolge (1, 2, 3...).
+                    <strong>% / #:</strong> Gebt entweder die HP in Prozent an oder die fortlaufende Cast-Reihenfolge
+                    (1, 2, 3...).
                 </div>
 
                 <div id="protectors-planner-container" class="space-y-2 planner-scroll-container"></div>
-                
+
                 <div class="mt-4 text-xs text-gray-500 italic">
                     * <strong>Zielvorgabe:</strong> Wählt hier das entsprechende Target, wenn ihr prozentuale HP nutzt.
                 </div>
             </div>
         </div>
-</section>
+    </section>
 
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Die Bosse</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143691" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Vergeltende Stöße</a> (Rook):</strong> Frontaler Cleave, der schweren Schaden anrichtet. Niemals davor stehen. Der fixierte Tank muss hier Def-CDs ziehen.</li>
-                    <li><strong class="text-purple-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143358" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Erdrosseln</a> (He):</strong> Ein stetig tickender Bleed-Debuff, der erst in seiner DM-Phase resettet wird. Erzeugt massiven Heal-Druck im Raid!</li>
-                    <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143491" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Unheil</a> (Sun):</strong> Zieht dem kompletten Raid exakt 30% der momentanen Max-HP ab.</li>
-                </ul>
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Die Bosse</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143691"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-red-400 hover:underline">Vergeltende Stöße</a> (Rook):</strong>
+                            Frontaler Cleave, der schweren Schaden anrichtet. Niemals davor stehen. Der fixierte Tank
+                            muss hier Def-CDs ziehen.</li>
+                        <li><strong class="text-purple-400"><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143358" target="_blank"
+                                    rel="noopener noreferrer" class="text-purple-400 hover:underline">Erdrosseln</a>
+                                (He):</strong> Ein stetig tickender Bleed-Debuff, der erst in seiner DM-Phase resettet
+                            wird. Erzeugt massiven Heal-Druck im Raid!</li>
+                        <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143491"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-cyan-400 hover:underline">Unheil</a> (Sun):</strong> Zieht dem
+                            kompletten Raid exakt 30% der momentanen Max-HP ab.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Desperate Measures (66%
+                        / 33%)</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-gray-400">Rook:</strong> Spawnt drei Adds (<a
+                                href="https://www.wowhead.com/mop-classic/de/npc=71408" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-400 hover:underline">Kummer</a>, <a
+                                href="https://www.wowhead.com/mop-classic/de/npc=71409" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-400 hover:underline">Düsternis</a>, <a
+                                href="https://www.wowhead.com/mop-classic/de/npc=71411" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-400 hover:underline">Pein</a>). Diese müssen
+                            von den Tanks sofort gepullt und vom Raid im Cleave getötet werden. Kummer hinterlässt
+                            <em><a href="https://www.wowhead.com/mop-classic/de/spell=143920" target="_blank"
+                                    rel="noopener noreferrer" class="text-gray-400 hover:underline">Geschändeter
+                                    Boden</a></em> (Voidzone mit Knockback).
+                        </li>
+                        <li><strong class="text-green-400">He:</strong> Spawnt das "<em><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143812" target="_blank"
+                                    rel="noopener noreferrer" class="text-green-400 hover:underline">Zeichen der
+                                    Qual</a></em>". Der Träger wird gewurzelt, kassiert massiven Schaden und muss den
+                            Debuff rechtzeitig per Klick an den nächsten Spieler innerhalb von 40 Metern passen, bevor
+                            er stirbt.</li>
+                        <li><strong class="text-yellow-400">Sun:</strong> "<em><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143546" target="_blank"
+                                    rel="noopener noreferrer" class="text-yellow-400 hover:underline">Dunkle
+                                    Meditation</a></em>". Der Raid kassiert extremen AoE-Schaden (Schatten) und muss
+                            zwingend in der Bubble stacken, um 35% weniger Schaden zu erleiden! Ranged-DPS nuken die
+                            großen Adds draußen, Melees cleaven die kleinen Adds drinnen.</li>
+                    </ul>
+                </div>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Desperate Measures (66% / 33%)</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-gray-400">Rook:</strong> Spawnt drei Adds (<a href="https://www.wowhead.com/mop-classic/de/npc=71408" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:underline">Kummer</a>, <a href="https://www.wowhead.com/mop-classic/de/npc=71409" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:underline">Düsternis</a>, <a href="https://www.wowhead.com/mop-classic/de/npc=71411" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:underline">Pein</a>). Diese müssen von den Tanks sofort gepullt und vom Raid im Cleave getötet werden. Kummer hinterlässt <em><a href="https://www.wowhead.com/mop-classic/de/spell=143920" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:underline">Geschändeter Boden</a></em> (Voidzone mit Knockback).</li>
-                    <li><strong class="text-green-400">He:</strong> Spawnt das "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143812" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">Zeichen der Qual</a></em>". Der Träger wird gewurzelt, kassiert massiven Schaden und muss den Debuff rechtzeitig per Klick an den nächsten Spieler innerhalb von 40 Metern passen, bevor er stirbt.</li>
-                    <li><strong class="text-yellow-400">Sun:</strong> "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143546" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:underline">Dunkle Meditation</a></em>". Der Raid kassiert extremen AoE-Schaden (Schatten) und muss zwingend in der Bubble stacken, um 35% weniger Schaden zu erleiden! Ranged-DPS nuken die großen Adds draußen, Melees cleaven die kleinen Adds drinnen.</li>
+
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen (HC)</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li>Alle Fähigkeiten skalieren härter und verzeihen keine Fehler. Das "<em><a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143491" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-300 hover:underline">Unheil</a></em>"
+                        (Calamity) stackt pro Cast um 10% mehr Schaden, bis Sun in die DM-Phase geht.</li>
+                    <li>Die Überschneidungen von "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143491"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-gray-300 hover:underline">Unheil</a></em>" mit anderen Fähigkeiten erfordern
+                        perfektes Timing eurer Raid-CDs.</li>
                 </ul>
             </div>
         </div>
-        
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen (HC)</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li>Alle Fähigkeiten skalieren härter und verzeihen keine Fehler. Das "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143491" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Unheil</a></em>" (Calamity) stackt pro Cast um 10% mehr Schaden, bis Sun in die DM-Phase geht.</li>
-                <li>Die Überschneidungen von "<em><a href="https://www.wowhead.com/mop-classic/de/spell=143491" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Unheil</a></em>" mit anderen Fähigkeiten erfordern perfektes Timing eurer Raid-CDs.</li>
-            </ul>
-        </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "FALLEN_ENC_START",                text: "Kampfbeginn" },
-            { val: "FALLEN_HEALTH",                   text: "HP % (Wähle NPC)" },
-            { val: "FALLEN_VENGEFUL_STRIKES",         text: "Vergeltende Stöße (Cleave)" },
-            { val: "FALLEN_CORRUPTED_BREW",           text: "Korrumpiertes Gebräu" },
-            { val: "FALLEN_CLASH",                    text: "Zusammenstoß" },
-            { val: "FALLEN_DEFILED_GROUND",           text: "Geschändeter Boden (Voidzone)" },
-            { val: "FALLEN_INFERNO_STRIKE",           text: "Infernoschlag" },
-            { val: "FALLEN_GOUGE",                    text: "Stechen (Tank-Stun)" },
-            { val: "FALLEN_GARROTE",                  text: "Erdrosseln (Bleed)" },
-            { val: "FALLEN_BANE",                     text: "Schattenwort: Fluch (Dispel)" },
-            { val: "FALLEN_CALAMITY",                 text: "Unheil (Sun Raid-AoE)" },
-            { val: "FALLEN_DESPERATE_MEASURES_ROOK",  text: "DM-Phase: Rook (Adds)" },
-            { val: "FALLEN_DESPERATE_MEASURES_HE",    text: "DM-Phase: He (Qual)" },
-            { val: "FALLEN_DESPERATE_MEASURES_SUN",   text: "DM-Phase: Sun (Bubble)" },
-            { val: "FALLEN_MARK",                     text: "Zeichen der Qual" }
-        ];
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
 
-        const NPC_OPTIONS = [
-            "Rook Steinzeh",
-            "He Samtfuß",
-            "Sun Zartherz",
-            "Verkörperung der Qual"
-        ];
-        
-        const container = document.getElementById('protectors-planner-container');
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
-            }
-            return html;
-        };
+            const TRIGGER_OPTIONS = [
+                { val: "FALLEN_ENC_START", text: "Kampfbeginn" },
+                { val: "FALLEN_HEALTH", text: "HP % (Wähle NPC)" },
+                { val: "FALLEN_VENGEFUL_STRIKES", text: "Vergeltende Stöße (Cleave)" },
+                { val: "FALLEN_CORRUPTED_BREW", text: "Korrumpiertes Gebräu" },
+                { val: "FALLEN_CLASH", text: "Zusammenstoß" },
+                { val: "FALLEN_DEFILED_GROUND", text: "Geschändeter Boden (Voidzone)" },
+                { val: "FALLEN_INFERNO_STRIKE", text: "Infernoschlag" },
+                { val: "FALLEN_GOUGE", text: "Stechen (Tank-Stun)" },
+                { val: "FALLEN_GARROTE", text: "Erdrosseln (Bleed)" },
+                { val: "FALLEN_BANE", text: "Schattenwort: Fluch (Dispel)" },
+                { val: "FALLEN_CALAMITY", text: "Unheil (Sun Raid-AoE)" },
+                { val: "FALLEN_DESPERATE_MEASURES_ROOK", text: "DM-Phase: Rook (Adds)" },
+                { val: "FALLEN_DESPERATE_MEASURES_HE", text: "DM-Phase: He (Qual)" },
+                { val: "FALLEN_DESPERATE_MEASURES_SUN", text: "DM-Phase: Sun (Bubble)" },
+                { val: "FALLEN_MARK", text: "Zeichen der Qual" }
+            ];
 
-        if (container && container.innerHTML.trim() === "") {
-            
-            const p = container.id.replace('-planner-container', '');
+            const NPC_OPTIONS = [
+                "Rook Steinzeh",
+                "He Samtfuß",
+                "Sun Zartherz",
+                "Verkörperung der Qual"
+            ];
 
-            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
-            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
-            
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+            const container = document.getElementById('protectors-planner-container');
 
-            const headerHtml = `
+            const getCooldownOptions = () => {
+                let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+
+                const p = container.id.replace('-planner-container', '');
+
+                const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+                const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+
+                const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -441,9 +512,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 200; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 200; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
 
@@ -478,76 +549,76 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
-            }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
-
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
-
-        if (window.LaneGroups) {
-            try {
-                window.LaneGroups.init({
-                    containerId: 'protectors-lane-groups',
-                    bossId: 'fallen-protectors',
-                    assignmentId: 'protectors-lane-assignments',
-                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
-                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
-                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
-                    defaultBlocks: [
-                        {
-                            title: 'Interrupts (Kicks)',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            lanes: [
-                                { marker: 'square',  slots: ['', '', '', ''] },
-                                { marker: 'diamond', slots: ['', '', '', ''] }
-                            ]
-                        },
-                        {
-                            title: 'Anguish Soak Rotation (Qual)',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            lanes: [
-                                { marker: 'star',   slots: ['', '', ''] },
-                                { marker: 'circle', slots: ['', '', ''] },
-                                { marker: 'cross',  slots: ['', '', ''] }
-                            ]
-                        },
-                        {
-                            title: 'Gloom Grips (Düsternis)',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            lanes: [
-                                { marker: 'diamond', slots: ['', ''] }
-                            ]
-                        },
-                        {
-                            title: 'Bane Dispels (Qual Dispel)',
-                            type: 'single-list',
-                            autoFill: true,
-                            slots: ['', '', '', '', '']
-                        }
-                    ]
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
                 });
-            } catch (e) {
-                console.error('[fallen-protectors] LaneGroups.init Fehler:', e);
+                setTimeout(window.updatePlannerSummary, 500);
             }
-        } else {
-            console.warn('[fallen-protectors] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
-        }
-    };
-</script>
+
+            if (window.LaneGroups) {
+                try {
+                    window.LaneGroups.init({
+                        containerId: 'protectors-lane-groups',
+                        bossId: 'fallen-protectors',
+                        assignmentId: 'protectors-lane-assignments',
+                        roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                        firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                        assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                        defaultBlocks: [
+                            {
+                                title: 'Interrupts (Kicks)',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                lanes: [
+                                    { marker: 'square', slots: ['', '', '', ''] },
+                                    { marker: 'diamond', slots: ['', '', '', ''] }
+                                ]
+                            },
+                            {
+                                title: 'Anguish Soak Rotation (Qual)',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                lanes: [
+                                    { marker: 'star', slots: ['', '', ''] },
+                                    { marker: 'circle', slots: ['', '', ''] },
+                                    { marker: 'cross', slots: ['', '', ''] }
+                                ]
+                            },
+                            {
+                                title: 'Gloom Grips (Düsternis)',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                lanes: [
+                                    { marker: 'diamond', slots: ['', ''] }
+                                ]
+                            },
+                            {
+                                title: 'Bane Dispels (Qual Dispel)',
+                                type: 'single-list',
+                                autoFill: true,
+                                slots: ['', '', '', '', '']
+                            }
+                        ]
+                    });
+                } catch (e) {
+                    console.error('[fallen-protectors] LaneGroups.init Fehler:', e);
+                }
+            } else {
+                console.warn('[fallen-protectors] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
+            }
+        };
+    </script>
 </main>

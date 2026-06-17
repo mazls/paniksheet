@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,10 +17,12 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
@@ -33,331 +37,401 @@
         <a href="#planner">Fähigkeiten-Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            Der Kampf gliedert sich in zwei Hauptphasen. In <strong>Phase 1</strong> greifen stetig Wellen zusätzlicher Gegner (Kor'kron) an. Ein separates Turm-Team muss die beiden Flaktürme links und rechts erobern, um Galakras mit den Flugabwehrkanonen vom Himmel zu holen. In <strong>Phase 2</strong> wird der Hauptgegner selbst auf dem Boden bekämpft.
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Phase 1:</strong> Zusätzliche Gegner schnell an sich binden. Der <a href="https://www.wowhead.com/mop-classic/de/npc=72240" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Knochenbrecher der Kor'kron</a> muss zwingend mit dem Rücken zur Gruppe platziert werden (frontaler Flächenangriff). Ein Tank geht mit dem Turm-Team.</li>
-                    <li><strong class="text-purple-400">Phase 2 (Galakras):</strong> Bei 3 bis 4 Stapeln von <a href="https://www.wowhead.com/mop-classic/de/spell=147029" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Flammen von Galakrond</a> die Aufmerksamkeit des Gegners übernehmen.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-blue-400">Unterbrechungen (Phase 1):</strong> Die Fähigkeiten der Schamanen (Heiltotems, Kettenblitz) zwingend unterbrechen.</li>
-                    <li><strong class="text-orange-400">Mechanik (Phase 2):</strong> Der Gegner visiert einen Spieler mit einem Feuerball an. Die Gruppe muss in einer Linie zwischen Galakras und dem Ziel stehen, um den Schaden aufzuteilen.</li>
-                    <li><strong class="text-green-400">Heiler:</strong> Der flächendeckende Schaden durch <a href="https://www.wowhead.com/mop-classic/de/spell=147042" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Pulsierende Flammen</a> in Phase 2 steigt stetig an. Gruppenweite Schutzfähigkeiten für die späten Prozente aufheben.</li>
-                </ul>
-            </div>
-        </div>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                Der Kampf gliedert sich in zwei Hauptphasen. In <strong>Phase 1</strong> greifen stetig Wellen
+                zusätzlicher Gegner (Kor'kron) an. Ein separates Turm-Team muss die beiden Flaktürme links und rechts
+                erobern, um Galakras mit den Flugabwehrkanonen vom Himmel zu holen. In <strong>Phase 2</strong> wird der
+                Hauptgegner selbst auf dem Boden bekämpft.
+            </p>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische Tipps & Prioritäten</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200">Zerstörungspriorität (Gegner):</strong><br>
-                    Heiltotem > Schamane > Knochenbrecher > Drachenreiter > Rest. 
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Turm-Team (Phase 1):</strong><br>
-                    Das Team (1 Tank, 1 Heiler, starker Flächenschaden) muss den Turm schnell säubern und die Kanone besetzen. Sobald beide Türme besetzt sind, Galakras durch gleichzeitigen Beschuss abschießen.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Turm-Türen aufbrechen:</strong><br>
-                    Die Ingenieure der Sprengtrupps müssen beschützt werden, damit sie die Turmtore aufsprengen können. Wenn sie sterben, verzögert sich der Kampf extrem.
-                </div>
-                <div>
-                    <strong class="text-emerald-200">Sammeln (Phase 2):</strong><br>
-                    Dicht beieinander zu stehen ist in Phase 2 absolute Pflicht, andernfalls schlägt der Feuerball ungebremst in einzelne Spieler ein und tötet sie sofort.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 1: Adds & Türme</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/npc=72240" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:underline">Knochenbrecher der Kor'kron</a>:</strong> <a href="https://www.wowhead.com/mop-classic/de/spell=146849" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Zermalmender Schwung</a> trifft Spieler vor dem Add massiv. Er stürmt ab und zu Fraktionsanführer an (<a href="https://www.wowhead.com/mop-classic/de/spell=146765" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Fraktur</a>), was enormen Schaden an diesen verursacht. Stunt ihn!</li>
-                    <li><strong class="text-green-400"><a href="https://www.wowhead.com/mop-classic/de/npc=72244" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">Gezeitenschamane</a>:</strong> Heilt Verbündete und stellt das <a href="https://www.wowhead.com/mop-classic/de/npc=72306" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">Totem der Heilungsflut</a> auf, das Gegner um 20% heilt. Das Totem muss absolute Priorität haben, gefolgt von Kicks für den Schamanen.</li>
-                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/npc=72311" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Sprengwagen</a>:</strong> Greift die Flaktürme an. Wenn er durchkommt, zerstört er den Turm und der Raid wiped! Schnellstmöglich fokussen.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Phase 2: Galakras</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-purple-400"><a href="https://www.wowhead.com/mop-classic/de/spell=147068" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Flammen von Galakrond</a>:</strong> Zielt auf einen zufälligen Spieler. Der Feuerball zieht in einer geraden Linie auf diesen zu. Jeder Spieler auf dem Weg fängt einen Teil des Schadens ab und verringert so die finale Explosion.</li>
-                    <li><strong class="text-orange-400"><a href="https://www.wowhead.com/mop-classic/de/spell=147042" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Pulsierende Flammen</a>:</strong> Konstanter Raid-AoE, der mit jedem Tick 5% mehr Schaden verursacht (Soft Enrage). Zieht HT/Kampfrausch und hebt Raid-Cooldowns für die hohen Stacks am Ende auf.</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Mechaniken (HC)</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong class="text-purple-400">Turm-Grunzer:</strong> In HC kommen in Phase 1 mehr Gegnerwellen aus den Türmen, während das Tor noch geschlossen ist. Das Turm-Team muss diese erledigen, bevor sie die NPCs töten.</li>
-                <li><strong class="text-orange-400">Zusätzliche Adds in Phase 2:</strong> Auf HC können in Phase 2 weiterhin vereinzelt Adds spawnen oder Adds aus Phase 1 überleben. Priorisiert saubere Adds-Kills, bevor Galakras landet.</li>
-                <li><strong class="text-red-400">Heftigerer Schaden:</strong> Die NPCs sterben sehr schnell, CC auf Knochenbrecher und Schamanen ist noch wichtiger als in NHC!</li>
-            </ul>
-        </div>
-    </div>
-</section>
-
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold">🛡️ Zuteilung der Tanks</h4>
-                    <ul class="assignment-list">
-                        <li><span>Hauptgruppe (Boden):</span><select class="assignment-select" data-assignment-id="galakras-tank-main"></select></li>
-                        <li><span>Turm-Team:</span><select class="assignment-select" data-assignment-id="galakras-tank-tower"></select></li>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-red-400">Phase 1:</strong> Zusätzliche Gegner schnell an sich binden.
+                            Der <a href="https://www.wowhead.com/mop-classic/de/npc=72240" target="_blank"
+                                rel="noopener noreferrer" class="text-red-400 hover:underline">Knochenbrecher der
+                                Kor'kron</a> muss zwingend mit dem Rücken zur Gruppe platziert werden (frontaler
+                            Flächenangriff). Ein Tank geht mit dem Turm-Team.</li>
+                        <li><strong class="text-purple-400">Phase 2 (Galakras):</strong> Bei 3 bis 4 Stapeln von <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=147029" target="_blank"
+                                rel="noopener noreferrer" class="text-purple-400 hover:underline">Flammen von
+                                Galakrond</a> die Aufmerksamkeit des Gegners übernehmen.</li>
                     </ul>
                 </div>
-                
-                <!-- ═══════════ LANE GROUPS ═══════════ -->
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-orange-400">🗼 Turm Teams</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Einteilung der Teams für den linken und rechten Turm.</p>
-                    <div id="galakras-lane-groups"></div>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & 💚 Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-blue-400">Unterbrechungen (Phase 1):</strong> Die Fähigkeiten der
+                            Schamanen (Heiltotems, Kettenblitz) zwingend unterbrechen.</li>
+                        <li><strong class="text-orange-400">Mechanik (Phase 2):</strong> Der Gegner visiert einen
+                            Spieler mit einem Feuerball an. Die Gruppe muss in einer Linie zwischen Galakras und dem
+                            Ziel stehen, um den Schaden aufzuteilen.</li>
+                        <li><strong class="text-green-400">Heiler:</strong> Der flächendeckende Schaden durch <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=147042" target="_blank"
+                                rel="noopener noreferrer" class="text-orange-400 hover:underline">Pulsierende
+                                Flammen</a> in Phase 2 steigt stetig an. Gruppenweite Schutzfähigkeiten für die späten
+                            Prozente aufheben.</li>
+                    </ul>
                 </div>
             </div>
 
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+            <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+                <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische
+                    Tipps & Prioritäten</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+                    <div>
+                        <strong class="text-emerald-200">Zerstörungspriorität (Gegner):</strong><br>
+                        Heiltotem > Schamane > Knochenbrecher > Drachenreiter > Rest.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Turm-Team (Phase 1):</strong><br>
+                        Das Team (1 Tank, 1 Heiler, starker Flächenschaden) muss den Turm schnell säubern und die Kanone
+                        besetzen. Sobald beide Türme besetzt sind, Galakras durch gleichzeitigen Beschuss abschießen.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Turm-Türen aufbrechen:</strong><br>
+                        Die Ingenieure der Sprengtrupps müssen beschützt werden, damit sie die Turmtore aufsprengen
+                        können. Wenn sie sterben, verzögert sich der Kampf extrem.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200">Sammeln (Phase 2):</strong><br>
+                        Dicht beieinander zu stehen ist in Phase 2 absolute Pflicht, andernfalls schlägt der Feuerball
+                        ungebremst in einzelne Spieler ein und tötet sie sofort.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Phase 1: Adds & Türme
+                    </h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-cyan-400"><a href="https://www.wowhead.com/mop-classic/de/npc=72240"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-cyan-400 hover:underline">Knochenbrecher der Kor'kron</a>:</strong> <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=146849" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-300 hover:underline">Zermalmender Schwung</a>
+                            trifft Spieler vor dem Add massiv. Er stürmt ab und zu Fraktionsanführer an (<a
+                                href="https://www.wowhead.com/mop-classic/de/spell=146765" target="_blank"
+                                rel="noopener noreferrer" class="text-gray-300 hover:underline">Fraktur</a>), was
+                            enormen Schaden an diesen verursacht. Stunt ihn!</li>
+                        <li><strong class="text-green-400"><a href="https://www.wowhead.com/mop-classic/de/npc=72244"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-green-400 hover:underline">Gezeitenschamane</a>:</strong> Heilt
+                            Verbündete und stellt das <a href="https://www.wowhead.com/mop-classic/de/npc=72306"
+                                target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">Totem
+                                der Heilungsflut</a> auf, das Gegner um 20% heilt. Das Totem muss absolute Priorität
+                            haben, gefolgt von Kicks für den Schamanen.</li>
+                        <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/npc=72311"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-red-400 hover:underline">Sprengwagen</a>:</strong> Greift die Flaktürme
+                            an. Wenn er durchkommt, zerstört er den Turm und der Raid wiped! Schnellstmöglich fokussen.
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Phase 2: Galakras</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-purple-400"><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=147068" target="_blank"
+                                    rel="noopener noreferrer" class="text-purple-400 hover:underline">Flammen von
+                                    Galakrond</a>:</strong> Zielt auf einen zufälligen Spieler. Der Feuerball zieht in
+                            einer geraden Linie auf diesen zu. Jeder Spieler auf dem Weg fängt einen Teil des Schadens
+                            ab und verringert so die finale Explosion.</li>
+                        <li><strong class="text-orange-400"><a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=147042" target="_blank"
+                                    rel="noopener noreferrer" class="text-orange-400 hover:underline">Pulsierende
+                                    Flammen</a>:</strong> Konstanter Raid-AoE, der mit jedem Tick 5% mehr Schaden
+                            verursacht (Soft Enrage). Zieht HT/Kampfrausch und hebt Raid-Cooldowns für die hohen Stacks
+                            am Ende auf.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Mechaniken (HC)</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong class="text-purple-400">Turm-Grunzer:</strong> In HC kommen in Phase 1 mehr Gegnerwellen
+                        aus den Türmen, während das Tor noch geschlossen ist. Das Turm-Team muss diese erledigen, bevor
+                        sie die NPCs töten.</li>
+                    <li><strong class="text-orange-400">Zusätzliche Adds in Phase 2:</strong> Auf HC können in Phase 2
+                        weiterhin vereinzelt Adds spawnen oder Adds aus Phase 1 überleben. Priorisiert saubere
+                        Adds-Kills, bevor Galakras landet.</li>
+                    <li><strong class="text-red-400">Heftigerer Schaden:</strong> Die NPCs sterben sehr schnell, CC auf
+                        Knochenbrecher und Schamanen ist noch wichtiger als in NHC!</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
                 <div class="space-y-6">
-                    <div class="mt-2">
-                        <img src="siegeoforgrimmar/galakras.png" alt="Aufstellung Galakras"
-                            class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild noch nicht verfügbar.</div>'">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold">🛡️ Zuteilung der Tanks</h4>
+                        <ul class="assignment-list">
+                            <li><span>Hauptgruppe (Boden):</span><select class="assignment-select"
+                                    data-assignment-id="galakras-tank-main"></select></li>
+                            <li><span>Turm-Team:</span><select class="assignment-select"
+                                    data-assignment-id="galakras-tank-tower"></select></li>
+                        </ul>
                     </div>
 
-                    <!-- ─── General Kill Priority ─── -->
+                    <!-- ═══════════ LANE GROUPS ═══════════ -->
                     <div class="assignment-block">
-                        <h4 class="text-lg font-bold text-red-400">🎯 Zerstörungspriorität</h4>
-                        <p class="text-sm text-gray-400 mb-2 px-3">Standard-Reihenfolge der wichtigen Ziele.</p>
-                        <div class="grid grid-cols-4 gap-2 px-3">
-                            <div class="bg-slate-800/60 border border-slate-700 rounded p-2 text-center">
-                                <div class="text-xs font-bold text-gold mb-1">1</div>
-                                <img src="raidicons/totem.png" alt="Totem"
-                                     class="w-10 h-10 mx-auto rounded border border-slate-600"
-                                     onerror="this.outerHTML='<div class=&quot;w-10 h-10 mx-auto rounded border border-slate-600 bg-slate-900 flex items-center justify-center text-lg&quot;>🪵</div>'">
-                                <div class="text-[11px] text-gray-300 mt-1">Totem</div>
-                            </div>
-                            <div class="bg-slate-800/60 border border-slate-700 rounded p-2 text-center">
-                                <div class="text-xs font-bold text-gold mb-1">2</div>
-                                <img src="raidicons/banner.png" alt="Banner"
-                                     class="w-10 h-10 mx-auto rounded border border-slate-600"
-                                     onerror="this.outerHTML='<div class=&quot;w-10 h-10 mx-auto rounded border border-slate-600 bg-slate-900 flex items-center justify-center text-lg&quot;>🚩</div>'">
-                                <div class="text-[11px] text-gray-300 mt-1">Banner</div>
-                            </div>
-                            <div class="bg-slate-800/60 border border-slate-700 rounded p-2 text-center">
-                                <div class="text-xs font-bold text-gold mb-1">3</div>
-                                <img src="raidicons/shaman.png" alt="Schamane"
-                                     class="w-10 h-10 mx-auto rounded border border-slate-600"
-                                     onerror="this.outerHTML='<div class=&quot;w-10 h-10 mx-auto rounded border border-slate-600 bg-slate-900 flex items-center justify-center text-lg&quot;>⚡</div>'">
-                                <div class="text-[11px] text-gray-300 mt-1">Schamane</div>
-                            </div>
-                            <div class="bg-slate-800/60 border border-slate-700 rounded p-2 text-center">
-                                <div class="text-xs font-bold text-gold mb-1">4</div>
-                                <img src="raidicons/bonecrusher.png" alt="Knochenbrecher"
-                                     class="w-10 h-10 mx-auto rounded border border-slate-600"
-                                     onerror="this.outerHTML='<div class=&quot;w-10 h-10 mx-auto rounded border border-slate-600 bg-slate-900 flex items-center justify-center text-lg&quot;>💀</div>'">
-                                <div class="text-[11px] text-gray-300 mt-1">Knochenbrecher</div>
+                        <h4 class="text-lg font-bold text-orange-400">🗼 Turm Teams</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Einteilung der Teams für den linken und rechten Turm.
+                        </p>
+                        <div id="galakras-lane-groups"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+
+                    <div class="space-y-6">
+                        <div class="mt-2">
+                            <img src="siegeoforgrimmar/galakras.png" alt="Aufstellung Galakras"
+                                class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                                onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild noch nicht verfügbar.</div>'">
+                        </div>
+
+                        <!-- ─── General Kill Priority ─── -->
+                        <div class="assignment-block">
+                            <h4 class="text-lg font-bold text-red-400">🎯 Zerstörungspriorität</h4>
+                            <p class="text-sm text-gray-400 mb-2 px-3">Standard-Reihenfolge der wichtigen Ziele.</p>
+                            <div class="grid grid-cols-4 gap-2 px-3">
+                                <div class="bg-slate-800/60 border border-slate-700 rounded p-2 text-center">
+                                    <div class="text-xs font-bold text-gold mb-1">1</div>
+                                    <img src="raidicons/totem.png" alt="Totem"
+                                        class="w-10 h-10 mx-auto rounded border border-slate-600"
+                                        onerror="this.outerHTML='<div class=&quot;w-10 h-10 mx-auto rounded border border-slate-600 bg-slate-900 flex items-center justify-center text-lg&quot;>🪵</div>'">
+                                    <div class="text-[11px] text-gray-300 mt-1">Totem</div>
+                                </div>
+                                <div class="bg-slate-800/60 border border-slate-700 rounded p-2 text-center">
+                                    <div class="text-xs font-bold text-gold mb-1">2</div>
+                                    <img src="raidicons/banner.png" alt="Banner"
+                                        class="w-10 h-10 mx-auto rounded border border-slate-600"
+                                        onerror="this.outerHTML='<div class=&quot;w-10 h-10 mx-auto rounded border border-slate-600 bg-slate-900 flex items-center justify-center text-lg&quot;>🚩</div>'">
+                                    <div class="text-[11px] text-gray-300 mt-1">Banner</div>
+                                </div>
+                                <div class="bg-slate-800/60 border border-slate-700 rounded p-2 text-center">
+                                    <div class="text-xs font-bold text-gold mb-1">3</div>
+                                    <img src="raidicons/shaman.png" alt="Schamane"
+                                        class="w-10 h-10 mx-auto rounded border border-slate-600"
+                                        onerror="this.outerHTML='<div class=&quot;w-10 h-10 mx-auto rounded border border-slate-600 bg-slate-900 flex items-center justify-center text-lg&quot;>⚡</div>'">
+                                    <div class="text-[11px] text-gray-300 mt-1">Schamane</div>
+                                </div>
+                                <div class="bg-slate-800/60 border border-slate-700 rounded p-2 text-center">
+                                    <div class="text-xs font-bold text-gold mb-1">4</div>
+                                    <img src="raidicons/bonecrusher.png" alt="Knochenbrecher"
+                                        class="w-10 h-10 mx-auto rounded border border-slate-600"
+                                        onerror="this.outerHTML='<div class=&quot;w-10 h-10 mx-auto rounded border border-slate-600 bg-slate-900 flex items-center justify-center text-lg&quot;>💀</div>'">
+                                    <div class="text-[11px] text-gray-300 mt-1">Knochenbrecher</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- AUTO-PLANNER -->
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Automatischer Planer für Fähigkeiten
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Automatisch zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In den Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
-        </div>
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="min-w-full text-xs border-collapse">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
-        </div>
-        
-        <!-- Kategorien-Editor (nur Manager) -->
-        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
-            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
-        </details>
-    </div>
-</section>
+    <!-- AUTO-PLANNER -->
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Automatischer Planer für Fähigkeiten
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div id="auto-planner-status" class="mb-4 text-xs text-gray-400 italic"></div>
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Automatisch zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In den Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+                <button id="btn-save-categories"
+                    class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500"
+                    style="display:none;">📂 Kategorien speichern</button>
+            </div>
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="min-w-full text-xs border-collapse">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
 
-<script src="static/cd-auto-planner.js"></script>
-<script>
-CD_AUTO_PLANNER.init({
-    id: 'galakras',
-    name: 'Galakras',
-    prefix: 'galakras',
-    
-    events: [
-        
-                { name: "Gegner Welle 1", spellId: 0, firstCast: 10, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
-        { name: "Gegner Welle 2", spellId: 0, firstCast: 59, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
-        { name: "Gegner Welle 3", spellId: 0, firstCast: 114, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
-        { name: "Gegner Welle 4 (mit Protodrache)", spellId: 0, firstCast: 169, cooldown: 0, maxCasts: 1, delay: -3, eventDuration: 30, requiredCDs: ["any_dr", "aoe_stun", "additional_surv"], icon: "🐉" },
-        { name: "Gegner Welle 5", spellId: 0, firstCast: 224, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
-        { name: "Gegner Welle 6", spellId: 0, firstCast: 279, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
-        { name: "Gegner Welle 7", spellId: 0, firstCast: 334, cooldown: 0, maxCasts: 1, delay: -2, eventDuration: 20, requiredCDs: ["aoe_stun", "any_dr"], icon: "⚔️" },
-        { name: "Gegner Welle 8 (mit Protodrache)", spellId: 0, firstCast: 389, cooldown: 0, maxCasts: 1, delay: -3, eventDuration: 30, requiredCDs: ["any_dr", "aoe_stun", "additional_surv"], icon: "🐉" },
-        { name: "Turm öffnet #1", spellId: 0, firstCast: 116, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 15, requiredCDs: ["any_dr"], icon: "🗼" },
-        { name: "Turm öffnet #2", spellId: 0, firstCast: 240, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 15, requiredCDs: ["any_dr"], icon: "🗼" },
-        { name: "Sprengwagen Erscheinen", spellId: 116040, firstCast: 130, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 10, requiredCDs: ["any_dr"], icon: "💣" },
-        { name: "Turmwächter Erscheinen", spellId: 0, firstCast: 75, cooldown: 60, maxCasts: 5, delay: 0, eventDuration: 10, requiredCDs: [], icon: "👤" },
-        { name: "Ruf des Zermalmers (Heranziehen)", spellId: 146769, firstCast: 25, cooldown: 30, maxCasts: 4, delay: 0, eventDuration: 5, requiredCDs: ["movement"], icon: "🪝" },
-        { name: "Zermalmender Schwung (Tanks)", spellId: 146849, firstCast: 15, cooldown: 7, maxCasts: 8, delay: 0, eventDuration: 3, requiredCDs: ["tank_external"], icon: "🛡️" },
-        { name: "Phase 2 Start (Galakras landet)", spellId: 50630, firstCast: 280, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 30, requiredCDs: ["bloodlust", "any_dr", "any_heal"], icon: "⚡", forceTriggerCondition: "1", timeOffsetBase: 280 },
-        { name: "Pulsierende Flammen #1", spellId: 147042, firstCast: 306, cooldown: 25, maxCasts: 5, delay: -2, eventDuration: 7, requiredCDs: ["any_heal"], icon: "🔥", forceTriggerCondition: "1", timeOffsetBase: 280 },
-        { name: "Flammen Galakronds (Zielerfassung)", spellId: 147068, firstCast: 292, cooldown: 6, maxCasts: 10, delay: 0, eventDuration: 5, requiredCDs: [], icon: "🎯", forceTriggerCondition: "1", timeOffsetBase: 280 }
-    ],
-    
-    triggerMap: {
-                "Gegner Welle 1":                       "GALAKRAS_ADDS",
-        "Gegner Welle 2":                       "GALAKRAS_ADDS",
-        "Gegner Welle 3":                       "GALAKRAS_ADDS",
-        "Gegner Welle 4 (Protodrache)":     "GALAKRAS_ADDS",
-        "Gegner Welle 5":                       "GALAKRAS_ADDS",
-        "Gegner Welle 6":                       "GALAKRAS_ADDS",
-        "Gegner Welle 7":                       "GALAKRAS_ADDS",
-        "Gegner Welle 8 (Protodrache)":     "GALAKRAS_ADDS",
-                "Turm öffnet #1":                       "GALAKRAS_TOWER_GRUNT",
-        "Turm öffnet #2":                       "GALAKRAS_TOWER_GRUNT",
-        "Sprengwagen Erscheinen":               "GALAKRAS_DEMOLISHER",
-        "Turmwächter Erscheinen":               "GALAKRAS_TOWER_GRUNT",
-        "Ruf des Zermalmers (Heranziehen)":     "GALAKRAS_CRUSHERS_CALL",
-        "Zermalmender Schwung (Tanks)":   "GALAKRAS_SHATTERING_CLEAVE",
-        "Phase 2 Start (Galakras landet)":      "GALAKRAS_P2",
-        "Pulsierende Flammen #1":               "GALAKRAS_P2",
-        "Flammen Galakronds (Zielerfassung)":   "GALAKRAS_P2"
-    }
-});
-</script>
-
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
-        Globale WeakAura exportieren
-    </button>
-    <div class="mt-4 text-xs text-gray-500 italic">
-        <strong>Leere Spalten:</strong> Seite neuladen, falls eine Spalte leer ist
-    </div>
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Erweiterter Fähigkeiten-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="mb-6">
-        <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-            <span class="text-xl">📜</span> Planungsübersicht
-        </h3>
-        <div id="galakras-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-            <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">Warte auf Eingabe...</p>
+            <!-- Kategorien-Editor (nur Manager) -->
+            <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700"
+                style="display:none;">
+                <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️
+                    CD-Kategorien bearbeiten (Manager)</summary>
+                <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+            </details>
         </div>
-    </div>
-    <div class="collapsible-content">
-        <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
-            <div id="galakras-planner-container" class="space-y-2 planner-scroll-container"></div>
-        </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "GALAKRAS_ENC_START",         text: "Kampfbeginn" },
-            { val: "GALAKRAS_HEALTH",            text: "Gesundheit % (Wähle NPC)" },
-            { val: "GALAKRAS_SHATTERING_CLEAVE", text: "Zermalmender Schwung (Thranok)" },
-            { val: "GALAKRAS_CRUSHERS_CALL",     text: "Ruf des Knochenbrechers (Heranziehen)" },
-            { val: "GALAKRAS_P2",                text: "Phase 2 Start (Drache landet)" },
-            { val: "GALAKRAS_FLAMES",            text: "Flammen Galakronds" },
-            { val: "GALAKRAS_PULSING",           text: "Pulsierende Flammen" },
-            { val: "GALAKRAS_ADDS",              text: "Gegner Welle" },
-            { val: "GALAKRAS_TOWER_GRUNT",       text: "Turmwächter / Turm öffnet" },
-            { val: "GALAKRAS_DEMOLISHER",        text: "Sprengwagen Erscheinen" }
-        ];
-        
-        const NPC_OPTIONS = [
-            "Galakras",
-            "Hochaufseher Thranok",
-            "Kor'kron Sturmtruppe",
-            "Drachenmaul Gezeitenschamane",
-            "Kor'kron Sprengwagen",
-            "Generalleutnant Krugruk"
-        ];
-        
-        const container = document.getElementById('galakras-planner-container');
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        CD_AUTO_PLANNER.init({
+            id: 'galakras',
+            name: 'Galakras',
+            prefix: 'galakras',
+
+            events: [
+
+                {
+                    name: "Gegner Welle",
+                    spellId: 0,
+                    firstCast: 4,
+                    cooldown: 55,
+                    maxCasts: 8,
+                    delay: -2,
+                    eventDuration: 20,
+                    requiredCDs: ["aoe_stun", "any_dr"],
+                    icon: "⚔️",
+                    escalationRanges: [
+                        { start: 4, end: 4, categories: ["any_dr", "aoe_stun", "additional_surv"] },
+                        { start: 8, end: 8, categories: ["any_dr", "aoe_stun", "additional_surv"] }
+                    ]
+                },
+                { name: "Turm öffnet", spellId: 0, firstCast: 116, cooldown: 124, maxCasts: 2, delay: 0, eventDuration: 15, requiredCDs: ["any_dr"], icon: "🗼" },
+                { name: "Sprengwagen Erscheinen", spellId: 116040, firstCast: 130, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 10, requiredCDs: ["any_dr"], icon: "💣" },
+                { name: "Turmwächter Erscheinen", spellId: 0, firstCast: 75, cooldown: 60, maxCasts: 5, delay: 0, eventDuration: 10, requiredCDs: [], icon: "👤" },
+                { name: "Ruf des Zermalmers (Heranziehen)", spellId: 146769, firstCast: 25, cooldown: 30, maxCasts: 4, delay: 0, eventDuration: 5, requiredCDs: ["movement"], icon: "🪝" },
+                { name: "Zermalmender Schwung (Tanks)", spellId: 146849, firstCast: 15, cooldown: 7, maxCasts: 8, delay: 0, eventDuration: 3, requiredCDs: ["tank_external"], icon: "🛡️" },
+                { name: "Phase 2 Start (Galakras landet)", spellId: 50630, firstCast: 280, cooldown: 0, maxCasts: 1, delay: 0, eventDuration: 30, requiredCDs: ["bloodlust", "any_dr", "any_heal"], icon: "⚡", forceTriggerCondition: "1", timeOffsetBase: 280 },
+                { name: "Pulsierende Flammen #1", spellId: 147042, firstCast: 306, cooldown: 25, maxCasts: 5, delay: -2, eventDuration: 7, requiredCDs: ["any_heal"], icon: "🔥", forceTriggerCondition: "1", timeOffsetBase: 280 },
+                { name: "Flammen Galakronds (Zielerfassung)", spellId: 147068, firstCast: 292, cooldown: 6, maxCasts: 10, delay: 0, eventDuration: 5, requiredCDs: [], icon: "🎯", forceTriggerCondition: "1", timeOffsetBase: 280 }
+            ],
+
+            triggerMap: {
+                "Gegner Welle": "GALAKRAS_ADDS",
+
+                "Turm öffnet": "GALAKRAS_TOWER_GRUNT",
+                "Sprengwagen Erscheinen": "GALAKRAS_DEMOLISHER",
+                "Turmwächter Erscheinen": "GALAKRAS_TOWER_GRUNT",
+                "Ruf des Zermalmers (Heranziehen)": "GALAKRAS_CRUSHERS_CALL",
+                "Zermalmender Schwung (Tanks)": "GALAKRAS_SHATTERING_CLEAVE",
+                "Phase 2 Start (Galakras landet)": "GALAKRAS_P2",
             }
-            return html;
-        };
+        });
+    </script>
 
-        if (container && container.innerHTML.trim() === "") {
-            const p = container.id.replace('-planner-container', '');
-            const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = getCooldownOptions();
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+            Globale WeakAura exportieren
+        </button>
+        <div class="mt-4 text-xs text-gray-500 italic">
+            <strong>Leere Spalten:</strong> Seite neuladen, falls eine Spalte leer ist
+        </div>
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Erweiterter Fähigkeiten-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> Planungsübersicht
+            </h3>
+            <div id="galakras-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">Warte auf Eingabe...</p>
+            </div>
+        </div>
+        <div class="collapsible-content">
+            <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
+                <div id="galakras-planner-container" class="space-y-2 planner-scroll-container"></div>
+            </div>
+        </div>
+    </section>
 
-            const headerHtml = `
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
+
+            const TRIGGER_OPTIONS = [
+                { val: "GALAKRAS_ENC_START", text: "Kampfbeginn" },
+                { val: "GALAKRAS_HEALTH", text: "Gesundheit % (Wähle NPC)" },
+                { val: "GALAKRAS_SHATTERING_CLEAVE", text: "Zermalmender Schwung (Thranok)" },
+                { val: "GALAKRAS_CRUSHERS_CALL", text: "Ruf des Knochenbrechers (Heranziehen)" },
+                { val: "GALAKRAS_P2", text: "Phase 2 Start (Drache landet)" },
+                { val: "GALAKRAS_FLAMES", text: "Flammen Galakronds" },
+                { val: "GALAKRAS_PULSING", text: "Pulsierende Flammen" },
+                { val: "GALAKRAS_ADDS", text: "Gegner Welle" },
+                { val: "GALAKRAS_TOWER_GRUNT", text: "Turmwächter / Turm öffnet" },
+                { val: "GALAKRAS_DEMOLISHER", text: "Sprengwagen Erscheinen" }
+            ];
+
+            const NPC_OPTIONS = [
+                "Galakras",
+                "Hochaufseher Thranok",
+                "Kor'kron Sturmtruppe",
+                "Drachenmaul Gezeitenschamane",
+                "Kor'kron Sprengwagen",
+                "Generalleutnant Krugruk"
+            ];
+
+            const container = document.getElementById('galakras-planner-container');
+
+            const getCooldownOptions = () => {
+                let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+                const p = container.id.replace('-planner-container', '');
+                const triggerOpts = TRIGGER_OPTIONS.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + NPC_OPTIONS.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = getCooldownOptions();
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -374,9 +448,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 200; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 200; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
                     <select class="assignment-select w-full" data-assignment-id="${p}-planner-row${i}-trigger" data-manual-options="true"><option value="">-- Nicht aktiv --</option>${triggerOpts}</select>
@@ -396,58 +470,58 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
-            }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
-
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // LANE GROUPS
-        // ═══════════════════════════════════════════════════════════════
-        if (window.LaneGroups) {
-            try {
-                window.LaneGroups.init({
-                    containerId: 'galakras-lane-groups',
-                    bossId: 'galakras',
-                    assignmentId: 'galakras-lanes',
-                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
-                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
-                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
-                    defaultBlocks: [
-                        {
-                            title: 'Turm Teams',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            waExport: true,
-                            isolatedBlock: true,
-                            sharedLanes: false,
-                            lanes: [
-                                { title: 'Linker Turm', marker: '', slots: ['', '', '', '', ''] },
-                                { title: 'Rechter Turm', marker: '', slots: ['', '', '', '', ''] }
-                            ]
-                        }
-                    ]
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
                 });
-            } catch (e) {
-                console.error('[Galakras] LaneGroups.init Fehler:', e);
+                setTimeout(window.updatePlannerSummary, 500);
             }
-        } else {
-            console.warn('[Galakras] LaneGroups-Modul nicht geladen.');
-        }
-    };
-</script>
+
+            // ═══════════════════════════════════════════════════════════════
+            // LANE GROUPS
+            // ═══════════════════════════════════════════════════════════════
+            if (window.LaneGroups) {
+                try {
+                    window.LaneGroups.init({
+                        containerId: 'galakras-lane-groups',
+                        bossId: 'galakras',
+                        assignmentId: 'galakras-lanes',
+                        roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                        firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                        assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                        defaultBlocks: [
+                            {
+                                title: 'Turm Teams',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                waExport: true,
+                                isolatedBlock: true,
+                                sharedLanes: false,
+                                lanes: [
+                                    { title: 'Linker Turm', marker: '', slots: ['', '', '', '', ''] },
+                                    { title: 'Rechter Turm', marker: '', slots: ['', '', '', '', ''] }
+                                ]
+                            }
+                        ]
+                    });
+                } catch (e) {
+                    console.error('[Galakras] LaneGroups.init Fehler:', e);
+                }
+            } else {
+                console.warn('[Galakras] LaneGroups-Modul nicht geladen.');
+            }
+        };
+    </script>
 </main>

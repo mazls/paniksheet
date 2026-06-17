@@ -177,7 +177,7 @@ CD_AUTO_PLANNER.init({
     
     events: [
         {
-            name: "HT / Rüstung entzünden (Tank #1)",
+            name: "Rüstung entzünden (Tank)",
             spellId: 144467,
             firstCast: 9,         
             cooldown: 8.5,        
@@ -188,7 +188,7 @@ CD_AUTO_PLANNER.init({
             icon: "🔥"
         },
         {
-            name: "Bohrer #1 (Movement)",
+            name: "Bohrer (Movement)",
             spellId: 144218,
             firstCast: 15,        
             cooldown: 19,         
@@ -199,7 +199,7 @@ CD_AUTO_PLANNER.init({
             icon: "🪛"
         },
         {
-            name: "Krabblermine #1 (Soak)",
+            name: "Krabblermine (Soak)",
             spellId: 144673,
             firstCast: 20,        
             cooldown: 30,         
@@ -211,7 +211,7 @@ CD_AUTO_PLANNER.init({
         },
         
         {
-            name: "Belagerungsmodus #1 Start",
+            name: "Belagerungsmodus Start",
             spellId: 144483,
             firstCast: 120,       
             cooldown: 0,
@@ -222,7 +222,7 @@ CD_AUTO_PLANNER.init({
             icon: "⚙️"
         },
         {
-            name: "Explosivteer #1 (Raid AoE)",
+            name: "Explosivteer (Raid AoE)",
             spellId: 144492,
             firstCast: 125,       
             cooldown: 30,         
@@ -233,18 +233,18 @@ CD_AUTO_PLANNER.init({
             icon: "💥"
         },
         {
-            name: "Schockimpuls #1 (3x Knockback)",
+            name: "Schockimpuls (3x Knockback)",
             spellId: 144485,
             firstCast: 135,       
-            cooldown: 16,         
-            maxCasts: 3,          
+            cooldown: 0,         
+            maxCasts: 1,          
             delay: -2,
-            eventDuration: 5,
+            eventDuration: 35,
             requiredCDs: ["any_dr", "any_heal"],
             icon: "⚡"
         },
         {
-            name: "Schneidelaser #1 (Kiten!)",
+            name: "Schneidelaser (Kiten!)",
             spellId: 146325,
             firstCast: 140,       
             cooldown: 0,
@@ -256,7 +256,7 @@ CD_AUTO_PLANNER.init({
         },
         
         {
-            name: "Sturmmodus #2 Start",
+            name: "Sturmmodus Start",
             spellId: 146359,      
             firstCast: 184,
             cooldown: 0,
@@ -267,7 +267,7 @@ CD_AUTO_PLANNER.init({
             icon: "🔋"
         },
         {
-            name: "Rüstung entzünden (Tank #2)",
+            name: "Rüstung entzünden (Tank)",
             spellId: 144467,
             firstCast: 193,       
             cooldown: 8.5,
@@ -279,7 +279,7 @@ CD_AUTO_PLANNER.init({
         },
         
         {
-            name: "Belagerungsmodus #2 Start",
+            name: "Belagerungsmodus Start",
             spellId: 144483,
             firstCast: 246,
             cooldown: 0,
@@ -290,7 +290,7 @@ CD_AUTO_PLANNER.init({
             icon: "⚙️"
         },
         {
-            name: "Explosivteer #2 (Raid AoE)",
+            name: "Explosivteer (Raid AoE)",
             spellId: 144492,
             firstCast: 251,
             cooldown: 30,
@@ -301,19 +301,19 @@ CD_AUTO_PLANNER.init({
             icon: "💥"
         },
         {
-            name: "Schockimpuls #2 (3x Knockback)",
+            name: "Schockimpuls (3x Knockback)",
             spellId: 144485,
             firstCast: 261,       
-            cooldown: 16,
-            maxCasts: 3,
+            cooldown: 0,
+            maxCasts: 1,
             delay: -2,
-            eventDuration: 5,
+            eventDuration: 35,
             requiredCDs: ["any_dr", "any_heal"],
             icon: "⚡"
         },
         
         {
-            name: "Sturmmodus #3 (Execute)",
+            name: "Sturmmodus Start",
             spellId: 146359,
             firstCast: 310,
             cooldown: 0,
@@ -326,19 +326,14 @@ CD_AUTO_PLANNER.init({
     ],
     
     triggerMap: {
-        "HT / Rüstung entzünden (Tank #1)":  "JUGGERNAUT_IGNITE_ARMOR",
-        "Rüstung entzünden (Tank #2)":       "JUGGERNAUT_IGNITE_ARMOR",
-        "Bohrer #1 (Movement)":              "JUGGERNAUT_BORER_DRILL",
-        "Krabblermine #1 (Soak)":            "JUGGERNAUT_CRAWLER_MINE",
-        "Belagerungsmodus #1 Start":         "JUGGERNAUT_SIEGE_MODE",
-        "Belagerungsmodus #2 Start":         "JUGGERNAUT_SIEGE_MODE",
-        "Explosivteer #1 (Raid AoE)":        "JUGGERNAUT_EXPLOSIVE_TAR",
-        "Explosivteer #2 (Raid AoE)":        "JUGGERNAUT_EXPLOSIVE_TAR",
-        "Schockimpuls #1 (3x Knockback)":    "JUGGERNAUT_SHOCK_PULSE",
-        "Schockimpuls #2 (3x Knockback)":    "JUGGERNAUT_SHOCK_PULSE",
-        "Schneidelaser #1 (Kiten!)":         "JUGGERNAUT_CUTTER_LASER",
-        "Sturmmodus #2 Start":               "JUGGERNAUT_ASSAULT_MODE",
-        "Sturmmodus #3 (Execute)":           "JUGGERNAUT_ASSAULT_MODE"
+        "Rüstung entzünden (Tank)":          "JUGGERNAUT_IGNITE_ARMOR",
+        "Bohrer (Movement)":                 "JUGGERNAUT_BORER_DRILL",
+        "Krabblermine (Soak)":               "JUGGERNAUT_CRAWLER_MINE",
+        "Belagerungsmodus Start":            "JUGGERNAUT_SIEGE_MODE",
+        "Explosivteer (Raid AoE)":           "JUGGERNAUT_EXPLOSIVE_TAR",
+        "Schockimpuls (3x Knockback)":       "JUGGERNAUT_SHOCK_PULSE",
+        "Schneidelaser (Kiten!)":            "JUGGERNAUT_CUTTER_LASER",
+        "Sturmmodus Start":                  "JUGGERNAUT_ASSAULT_MODE"
     }
 });
 </script>
@@ -428,9 +423,9 @@ CD_AUTO_PLANNER.init({
             { val: "JUGGERNAUT_CRAWLER_MINE",   text: "Krabblermine (Soak)" },
             { val: "JUGGERNAUT_RICOCHET",       text: "Querschläger (Sägeblatt)" },
             { val: "JUGGERNAUT_SIEGE_MODE",     text: "Belagerungsmodus Start" },
-            { val: "JUGGERNAUT_CUTTER_LASER",   text: "Schneidelaser (Kiten)" },
-            { val: "JUGGERNAUT_SHOCK_PULSE",    text: "Schockimpuls (Knockback)" },
-            { val: "JUGGERNAUT_EXPLOSIVE_TAR",  text: "Explosivteer" }
+            { val: "JUGGERNAUT_CUTTER_LASER",   text: "Schneidelaser (Kiten!)" },
+            { val: "JUGGERNAUT_SHOCK_PULSE",    text: "Schockimpuls (3x Knockback)" },
+            { val: "JUGGERNAUT_EXPLOSIVE_TAR",  text: "Explosivteer (Raid AoE)" }
         ];
         
         const NPC_OPTIONS = [
