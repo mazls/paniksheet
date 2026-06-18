@@ -313,7 +313,21 @@ mainNav.innerHTML = mainNavHTML;
                             return;
                         }
                         const previousValue = select.value;
-                        window.populateDropdownOptions(select, fullRoster, bossId);
+                        
+                        if (select.getAttribute('data-manual-options') === 'true') return;
+                        const assignmentIdLower = (select.dataset.assignmentId || '').toLowerCase();
+                        if (assignmentIdLower.includes('cooldown')) return;
+
+                        let playersForDropdown = fullRoster;
+                        if (assignmentIdLower.includes('tank')) {
+                            playersForDropdown = fullRoster.filter(p => p.roles && p.roles.includes('TANK'));
+                        } else if (assignmentIdLower.includes('healer')) {
+                            playersForDropdown = fullRoster.filter(p => p.roles && p.roles.includes('HEALER'));
+                        } else if (assignmentIdLower.includes('dps') || assignmentIdLower.includes('dd')) {
+                            playersForDropdown = fullRoster.filter(p => p.roles && p.roles.includes('DPS'));
+                        }
+
+                        window.populateDropdownOptions(select, playersForDropdown, bossId);
                         // Auswahl wiederherstellen — falls Spieler noch im Roster
                         const stillExists = Array.from(select.options).some(o => o.value === previousValue);
                         if (stillExists) {
