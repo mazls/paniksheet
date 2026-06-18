@@ -540,7 +540,7 @@ CD_AUTO_PLANNER.init({
                      if (cd.name.startsWith('---')) {
                          html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
                      } else {
-                         const color = window.classColors?.[cd.class] || '#FFFFFF';
+                         const color = window.classColors?.[cd.class] || window.classColors?.[cd.class?.toUpperCase()] || '#FFFFFF';
                          html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
                      }
                 });

@@ -3639,6 +3639,12 @@ document.querySelectorAll('.video-wrapper').forEach(wrapper => {
             dataToSave = { player: valueToSave, editor: currentManager, timestamp: serverTimestamp() };
         }
         await setDoc(assignmentsDocRef, { [assignmentId]: dataToSave }, { merge: true });
+        
+        // Farbe direkt aktualisieren
+        const selectedOption = select.options[select.selectedIndex];
+        select.style.color = selectedOption?.dataset?.color || '#FFFFFF';
+        select.style.fontStyle = (selectedOption?.dataset?.bench === '1') ? 'italic' : 'normal';
+
         const playerForLog = valueToSave || "Niemand";
         const bossName = pageId.charAt(0).toUpperCase() + pageId.slice(1);
         const assignmentName = assignmentId.replace(pageId + '-', '').replace(/([A-Z])/g, ' $1').trim();
@@ -3859,7 +3865,7 @@ if (select.getAttribute('data-manual-options') === "true") {
         option.style.color = 'var(--color-gold)';
         option.style.backgroundColor = 'var(--color-dark-green-bg)';
       } else {
-        const color = window.classColors[cd.class] || '#FFFFFF';
+        const color = window.classColors[cd.class] || window.classColors[cd.class?.toUpperCase()] || '#FFFFFF';
         option.value = cd.name;
         option.textContent = cd.name;
         option.dataset.color = color;

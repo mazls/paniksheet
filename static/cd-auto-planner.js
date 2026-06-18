@@ -2597,6 +2597,39 @@ async function loadPlan() {
                 assignStrategy.prioritizeCategories = !!data.assignStrategy.prioritizeCategories;
                 assignStrategy.roundRobin = !!data.assignStrategy.roundRobin;
             }
+            if (data.assignments && Array.isArray(data.assignments)) {
+                var roster = window.effectiveRoster || window.rosterData || [];
+                assignments = data.assignments.map(function(r) {
+                    var evtObj = null;
+                    if (r.eventKey && r.eventKey.startsWith('cfg_')) {
+                        var idx = parseInt(r.eventKey.replace('cfg_', ''));
+                        evtObj = config.events[idx] || {};
+                    } else {
+                        evtObj = customEvents.find(function(e) { return e._key === r.eventKey; }) || {};
+                    }
+                    var ov = eventOverrides[r.eventKey] || {};
+                    r.icon = ov.icon !== undefined ? ov.icon : (evtObj.icon || '');
+                    r.requiredCDs = ov.requiredCDs !== undefined ? ov.requiredCDs : (evtObj.requiredCDs || []);
+                    
+                    if (r.slots) {
+                        Object.keys(r.slots).forEach(function(catKey) {
+                            var slot = r.slots[catKey];
+                            if (slot && slot.player && slot.player !== '__SKIP__') {
+                                var cd = cooldownsDB.find(function(c) { return c.name === slot.dbName; });
+                                if (cd) {
+                                    slot.dbClass = cd.class;
+                                    slot.durationSec = cd.durationSec || '';
+                                    slot.cooldownSec = cd.cooldownSec || '';
+                                }
+                                var p = roster.find(function(x) { return x.name === slot.player; });
+                                if (p && p.class) slot.dbClass = p.class;
+                            }
+                        });
+                    }
+
+                    return r;
+                });
+            }
             return true;
         }
     } catch (e) { console.error("[Auto-Planner]", e); }
@@ -2656,7 +2689,7 @@ function renderCategoriesAdmin() {
         document.head.appendChild(styleTag);
     }
 
-    var addCatBtn = '<div class="mb-3"><button id="btn-add-category" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Neue Kategorie</button></div>';
+    var addCatBtn = '<div class="mb-3 flex items-center gap-2"><button id="btn-add-category" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Neue Kategorie</button></div>';
 
     var catsHtml = Object.entries(categories).map(function (entry) {
         var key = entry[0], cat = entry[1];
@@ -2772,6 +2805,12 @@ function attachEditorListeners() {
     // Add category
     var addBtn = document.getElementById('btn-add-category');
     if (addBtn) {
+        var saveCatBtn = document.getElementById('btn-save-categories');
+        if (saveCatBtn) {
+            saveCatBtn.classList.remove('hidden');
+            saveCatBtn.classList.remove('lg:block');
+            addBtn.parentNode.appendChild(saveCatBtn);
+        }
         addBtn.addEventListener('click', function () {
             var isVirt = confirm('Soll dies eine Virtuelle TTS-Kategorie (ohne Spieler-Zuordnung) werden? OK = Ja, Abbrechen = Nein (Normale Kategorie)');
             var key = prompt('Eindeutiger Key für neue Kategorie (z.B. "dispel_magic" oder "gesundheitssteine"):');
@@ -3326,9 +3365,12 @@ async function doInit(bossConfig) {
     // ── DB-Wipe Button dynamisch einfügen (nur für Manager) ──
     injectWipeButton();
 
-    // Wenn ein gespeicherter Plan existiert, direkt anzeigen
+    // Wenn ein gespeicherter Plan existiert, geladene Assignments direkt anzeigen
     if (hasSavedPlan) {
-        runAutoAssign();
+        if (assignments && assignments.length > 0) {
+            renderTimeline(assignments);
+        }
+        updateStatus('Gespeicherter Plan geladen. Klicke auf "Auto-Zuweisen", um bei Roster-Änderungen neu zu berechnen.');
     } else {
         updateStatus('Bereit. ' + found + '/' + total + ' Spells in DB. Roster: ' + rosterRef.length + ' Spieler.');
     }
@@ -3418,16 +3460,38 @@ function injectResetEventsButton() {
     if (!window.isManager) return;
     if (document.getElementById('btn-reset-events')) return;
 
-    var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
-    if (!btnContainer) return;
+    var eventsArea = document.getElementById('auto-planner-events');
+    if (!eventsArea) return;
+
+    var dangerZone = document.getElementById('planner-danger-zone');
+    if (!dangerZone) {
+        dangerZone = document.createElement('div');
+        dangerZone.id = 'planner-danger-zone';
+        dangerZone.className = "mt-4 pt-4 border-t border-slate-700 flex flex-wrap items-center gap-2";
+        
+        var title = document.createElement('div');
+        title.className = 'w-full text-xs font-bold text-slate-300 mb-1 uppercase tracking-wide';
+        title.innerHTML = '⚙️ Daten verwalten & Zurücksetzen';
+        dangerZone.appendChild(title);
+        
+        var clearAutoBtn = document.getElementById('btn-clear-auto');
+        if (clearAutoBtn) {
+            clearAutoBtn.classList.replace('bg-slate-700', 'bg-red-800');
+            clearAutoBtn.classList.replace('hover:bg-slate-800', 'hover:bg-red-900');
+            clearAutoBtn.innerHTML = '🗑️ Auto-CD Plan leeren';
+            dangerZone.appendChild(clearAutoBtn);
+        }
+        
+        eventsArea.appendChild(dangerZone);
+    }
 
     var resetBtn = document.createElement('button');
     resetBtn.id = 'btn-reset-events';
-    resetBtn.className = 'bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500 mr-2';
+    resetBtn.className = 'bg-orange-700 hover:bg-orange-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-orange-500 mr-2';
     resetBtn.innerHTML = '🔄 Events Reset';
     resetBtn.title = 'Setzt alle Event-Anpassungen (Häkchen und eigene Events) auf Standard zurück';
 
-    btnContainer.insertBefore(resetBtn, document.getElementById('btn-clear-auto'));
+    dangerZone.appendChild(resetBtn);
 
     resetBtn.addEventListener('click', function () {
         if (!window.isManager) {
@@ -3466,15 +3530,17 @@ function injectClearPlannerButton() {
     if (!window.isManager) return;
     if (document.getElementById('btn-clear-planner')) return;  // Schon da
 
-    var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
-    if (!btnContainer) return;
+    var exportBtn = document.getElementById('btn-export-to-planner');
+    if (!exportBtn || !exportBtn.parentNode) return;
 
     var clearBtn = document.createElement('button');
     clearBtn.id = 'btn-clear-planner';
-    clearBtn.className = 'bg-orange-700 hover:bg-orange-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-orange-600';
-    clearBtn.innerHTML = '🧹 CD-Plan leeren';
+    clearBtn.className = 'bg-slate-700 hover:bg-slate-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-slate-500';
+    clearBtn.innerHTML = '🧹 Advanced CD-Plan leeren';
     clearBtn.title = 'Leert ALLE 200 Zeilen des Advanced CD-Plans dieses Bosses (Auto-Plan bleibt unangetastet)';
-    btnContainer.appendChild(clearBtn);
+    
+    exportBtn.parentNode.insertBefore(clearBtn, exportBtn.nextSibling);
+    clearBtn.style.marginLeft = '0.5rem';
 
     clearBtn.addEventListener('click', function () {
         if (!window.isManager) {
@@ -3602,15 +3668,15 @@ function injectWipeButton() {
     if (!window.isManager) return;
     if (document.getElementById('btn-wipe-db')) return;  // Schon da
 
-    var btnContainer = document.getElementById('btn-clear-auto')?.parentNode;
-    if (!btnContainer) return;
+    var dangerZone = document.getElementById('planner-danger-zone');
+    if (!dangerZone) return;
 
     var wipeBtn = document.createElement('button');
     wipeBtn.id = 'btn-wipe-db';
     wipeBtn.className = 'bg-red-900 hover:bg-red-950 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-700';
     wipeBtn.innerHTML = '☢️ DB-Einträge löschen';
     wipeBtn.title = 'Löscht ALLE Datenbank-Einträge für diesen Boss (CD-Planer + Auto-Planer)';
-    btnContainer.appendChild(wipeBtn);
+    dangerZone.appendChild(wipeBtn);
 
     wipeBtn.addEventListener('click', wipeBossFromDb);
 }
