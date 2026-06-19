@@ -1811,7 +1811,7 @@ window.CD_AUTO_PLANNER = (function () {
         }
     }
 
-    function setOverride(key, field, value) {
+    function setOverride(key, field, value, silent) {
         // Bei Custom-Events direkt in customEvents schreiben statt in eventOverrides
         var custom = customEvents.find(function (e) { return e._key === key; });
         if (custom) {
@@ -1820,10 +1820,13 @@ window.CD_AUTO_PLANNER = (function () {
             if (!eventOverrides[key]) eventOverrides[key] = {};
             eventOverrides[key][field] = value;
         }
-        // Event-Änderungen NICHT mehr sofort in die Vorschau verteilen — erst auf
-        // "Auto-Assign". Nur den Event-Manager neu zeichnen und Vorschau als veraltet markieren.
-        renderEventManager();
-        markPreviewStale();
+        
+        if (!silent) {
+            // Event-Änderungen NICHT mehr sofort in die Vorschau verteilen — erst auf
+            // "Auto-Assign". Nur den Event-Manager neu zeichnen und Vorschau als veraltet markieren.
+            renderEventManager();
+            markPreviewStale();
+        }
     }
 
     // ── Trigger-Picker pro Event ──
@@ -2000,7 +2003,8 @@ window.CD_AUTO_PLANNER = (function () {
         var resEsc = ov.resetEscalation !== undefined ? ov.resetEscalation : (evtObj.resetEscalation || 0);
         var contCov = ov.continuousCoverage !== undefined ? ov.continuousCoverage : (evtObj.continuousCoverage || false);
         
-        var escRanges = ov.escalationRanges !== undefined ? ov.escalationRanges : (evtObj.escalationRanges || []);
+        var rawRanges = ov.escalationRanges !== undefined ? ov.escalationRanges : (evtObj.escalationRanges || []);
+        var escRanges = JSON.parse(JSON.stringify(rawRanges));
 
         var html = '<div class="mb-4 space-y-3">'
             + '<div class="flex gap-4">'
@@ -2022,56 +2026,70 @@ window.CD_AUTO_PLANNER = (function () {
         var rCont = content.querySelector('#es-ranges-container');
         
         function renderRanges() {
-            rCont.innerHTML = '';
+            var htmlStr = '';
+            var allCats = Object.keys(categories);
             escRanges.forEach(function(r, idx) {
-                var d = document.createElement('div');
-                d.className = "flex flex-col gap-2 bg-slate-900 p-2 border border-slate-700 rounded";
-                
-                var topRow = document.createElement('div');
-                topRow.className = "flex gap-2 items-center";
-                
-                topRow.innerHTML = '<span class="text-[10px] text-gray-400">Cast</span>'
-                    + '<input type="number" class="w-12 bg-slate-800 border border-slate-600 text-[10px] px-1 py-1 rounded text-center es-r-start" value="' + r.start + '" title="Start-Cast (Nummer)">'
-                    + '<span class="text-[10px] text-gray-500">bis</span>'
-                    + '<input type="number" class="w-12 bg-slate-800 border border-slate-600 text-[10px] px-1 py-1 rounded text-center es-r-end" value="' + r.end + '" title="End-Cast (Nummer)">'
-                    + '<div class="flex-1"></div>'
-                    + '<button class="text-red-400 hover:text-red-300 px-1 es-r-del" title="Phase löschen">✕</button>';
-                
-                var catSelectBox = document.createElement('div');
-                catSelectBox.className = "bg-slate-800 border border-slate-600 rounded p-1 max-h-32 overflow-y-auto";
-                
                 var rCats = r.categories || [];
-                Object.keys(categories).forEach(function(catKey) {
+                var catHtml = '';
+                allCats.forEach(function(catKey) {
                     var cat = categories[catKey];
                     var isChecked = rCats.indexOf(catKey) !== -1;
-                    var lbl = document.createElement('label');
-                    lbl.className = "flex items-center gap-2 p-1 hover:bg-slate-700/50 rounded cursor-pointer text-[10px]";
-                    lbl.innerHTML = '<input type="checkbox" value="' + catKey + '" ' + (isChecked ? 'checked' : '') + ' style="accent-color:' + cat.color + ';">'
-                        + '<span style="color:' + cat.color + '">' + cat.name + '</span>';
-                    
-                    lbl.querySelector('input').addEventListener('change', function(e) {
-                        if (e.target.checked) {
-                            if (r.categories.indexOf(catKey) === -1) r.categories.push(catKey);
-                        } else {
-                            var i = r.categories.indexOf(catKey);
-                            if (i !== -1) r.categories.splice(i, 1);
-                        }
-                    });
-                    catSelectBox.appendChild(lbl);
+                    catHtml += '<label class="flex items-center gap-2 p-1 hover:bg-slate-700/50 rounded cursor-pointer text-[10px]">'
+                        + '<input type="checkbox" data-idx="' + idx + '" value="' + catKey + '" ' + (isChecked ? 'checked' : '') + ' style="accent-color:' + cat.color + ';">'
+                        + '<span style="color:' + cat.color + '">' + cat.name + '</span>'
+                        + '</label>';
                 });
 
-                topRow.querySelector('.es-r-del').addEventListener('click', function() {
+                htmlStr += '<div class="flex flex-col gap-2 bg-slate-900 p-2 border border-slate-700 rounded" data-idx="' + idx + '">'
+                    + '<div class="flex gap-2 items-center">'
+                    + '<span class="text-[10px] text-gray-400">Cast</span>'
+                    + '<input type="number" class="w-12 bg-slate-800 border border-slate-600 text-[10px] px-1 py-1 rounded text-center es-r-start" data-idx="' + idx + '" value="' + r.start + '" title="Start-Cast (Nummer)">'
+                    + '<span class="text-[10px] text-gray-500">bis</span>'
+                    + '<input type="number" class="w-12 bg-slate-800 border border-slate-600 text-[10px] px-1 py-1 rounded text-center es-r-end" data-idx="' + idx + '" value="' + r.end + '" title="End-Cast (Nummer)">'
+                    + '<div class="flex-1"></div>'
+                    + '<button class="text-red-400 hover:text-red-300 px-1 es-r-del" data-idx="' + idx + '" title="Phase löschen">✕</button>'
+                    + '</div>'
+                    + '<div class="bg-slate-800 border border-slate-600 rounded p-1 max-h-32 overflow-y-auto">'
+                    + catHtml
+                    + '</div>'
+                    + '</div>';
+            });
+            rCont.innerHTML = htmlStr;
+        }
+
+        rCont.addEventListener('change', function(e) {
+            var target = e.target;
+            var idx = parseInt(target.getAttribute('data-idx'));
+            if (isNaN(idx)) return;
+            var r = escRanges[idx];
+            if (!r) return;
+
+            if (target.type === 'checkbox') {
+                var catKey = target.value;
+                if (target.checked) {
+                    if (r.categories.indexOf(catKey) === -1) r.categories.push(catKey);
+                } else {
+                    var i = r.categories.indexOf(catKey);
+                    if (i !== -1) r.categories.splice(i, 1);
+                }
+            } else if (target.classList.contains('es-r-start')) {
+                r.start = parseInt(target.value) || 1;
+            } else if (target.classList.contains('es-r-end')) {
+                r.end = parseInt(target.value) || 99;
+            }
+        });
+
+        rCont.addEventListener('click', function(e) {
+            var target = e.target.closest('.es-r-del');
+            if (target) {
+                var idx = parseInt(target.getAttribute('data-idx'));
+                if (!isNaN(idx)) {
                     escRanges.splice(idx, 1);
                     renderRanges();
-                });
-                topRow.querySelector('.es-r-start').addEventListener('change', function(e) { r.start = parseInt(e.target.value)||1; });
-                topRow.querySelector('.es-r-end').addEventListener('change', function(e) { r.end = parseInt(e.target.value)||99; });
-                
-                d.appendChild(topRow);
-                d.appendChild(catSelectBox);
-                rCont.appendChild(d);
-            });
-        }
+                }
+            }
+        });
+
         renderRanges();
 
         content.querySelector('#es-add-range').addEventListener('click', function() {
@@ -2105,13 +2123,13 @@ window.CD_AUTO_PLANNER = (function () {
         btnSave.className = 'px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded font-bold';
         btnSave.textContent = 'Speichern';
         btnSave.onclick = function() {
-            setOverride(eventKey, 'eventDuration', parseFloat(content.querySelector('#es-dur').value) || 0);
-            setOverride(eventKey, 'overlapSec', parseFloat(content.querySelector('#es-overlap').value) || 0);
-            setOverride(eventKey, 'resetEscalation', parseInt(content.querySelector('#es-res').value) || 0);
-            setOverride(eventKey, 'continuousCoverage', content.querySelector('#es-cont-cov').checked);
+            setOverride(eventKey, 'eventDuration', parseFloat(content.querySelector('#es-dur').value) || 0, true);
+            setOverride(eventKey, 'overlapSec', parseFloat(content.querySelector('#es-overlap').value) || 0, true);
+            setOverride(eventKey, 'resetEscalation', parseInt(content.querySelector('#es-res').value) || 0, true);
+            setOverride(eventKey, 'continuousCoverage', content.querySelector('#es-cont-cov').checked, true);
             // Deep copy der Ranges um Proxy-Probleme zu vermeiden
             var cleanRanges = JSON.parse(JSON.stringify(escRanges));
-            setOverride(eventKey, 'escalationRanges', cleanRanges);
+            setOverride(eventKey, 'escalationRanges', cleanRanges); // Last call triggers the UI rebuild
             overlay.remove();
         };
 
@@ -2629,6 +2647,88 @@ async function loadPlan() {
 
                     return r;
                 });
+
+                // Migration: Reconstruct lost escalationRanges from saved assignments
+                var reconstructed = {};
+                assignments.forEach(function(r) {
+                    if (!r.eventKey || !r.requiredCDs || !r.castNum) return;
+                    if (!reconstructed[r.eventKey]) reconstructed[r.eventKey] = {};
+                    // Deduplicate by castNum since assignments contains one row per slot
+                    reconstructed[r.eventKey][r.castNum] = r.requiredCDs;
+                });
+
+                var recoveredCount = 0;
+                
+                // Cleanup buggy duplicated ranges that might have been saved previously
+                Object.keys(eventOverrides).forEach(function(k) {
+                    var ov = eventOverrides[k];
+                    if (ov && ov.escalationRanges && ov.escalationRanges.length > 0) {
+                        var unique = [];
+                        var seen = {};
+                        ov.escalationRanges.forEach(function(r) {
+                            var sig = r.start + '-' + r.end + '-' + JSON.stringify(r.categories || []);
+                            if (!seen[sig]) {
+                                seen[sig] = true;
+                                unique.push(r);
+                            }
+                        });
+                        ov.escalationRanges = unique;
+                    }
+                });
+
+                Object.keys(reconstructed).forEach(function(key) {
+                    var evtObj = null;
+                    if (key.startsWith('cfg_')) {
+                        evtObj = config.events[parseInt(key.replace('cfg_', ''))] || {};
+                    } else {
+                        evtObj = customEvents.find(function(e) { return e._key === key; }) || {};
+                    }
+                    var baseCatsStr = JSON.stringify(evtObj.requiredCDs || []);
+
+                    var castMap = reconstructed[key];
+                    var casts = Object.keys(castMap).map(function(num) {
+                        return { castNum: parseInt(num), categories: castMap[num] };
+                    });
+                    casts.sort(function(a,b) { return a.castNum - b.castNum; });
+                    
+                    var ranges = [];
+                    var currentRange = null;
+                    casts.forEach(function(c) {
+                        var catStr = JSON.stringify(c.categories);
+                        if (!currentRange) {
+                            currentRange = { start: c.castNum, end: c.castNum, categories: c.categories, catStr: catStr };
+                        } else {
+                            if (currentRange.catStr === catStr && c.castNum === currentRange.end + 1) {
+                                currentRange.end = c.castNum;
+                            } else {
+                                ranges.push({ start: currentRange.start, end: currentRange.end, categories: currentRange.categories });
+                                currentRange = { start: c.castNum, end: c.castNum, categories: c.categories, catStr: catStr };
+                            }
+                        }
+                    });
+                    if (currentRange) ranges.push({ start: currentRange.start, end: currentRange.end, categories: currentRange.categories });
+
+                    var isTrivial = ranges.length === 1 && JSON.stringify(ranges[0].categories) === baseCatsStr;
+                    var isBaseEscalation = evtObj.escalationRanges && JSON.stringify(ranges) === JSON.stringify(evtObj.escalationRanges);
+                    
+                    if (!isTrivial && !isBaseEscalation) {
+                        var ov = eventOverrides[key] || {};
+                        if (!ov.escalationRanges || ov.escalationRanges.length === 0) {
+                            if (!eventOverrides[key]) eventOverrides[key] = {};
+                            eventOverrides[key].escalationRanges = ranges;
+                            recoveredCount++;
+                        }
+                    }
+                });
+                
+                if (recoveredCount > 0) {
+                    console.log("[Auto-Planner] Recovered " + recoveredCount + " lost escalation ranges.");
+                    setTimeout(function() {
+                        if (typeof updateStatus === 'function') {
+                            updateStatus("✨ " + recoveredCount + " verlorene Phasen-Einstellungen automatisch aus alten Einteilungen wiederhergestellt!", "text-emerald-400");
+                        }
+                    }, 1000);
+                }
             }
             return true;
         }
