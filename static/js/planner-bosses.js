@@ -1288,7 +1288,7 @@ async function handleAssignmentChange(event) {
                     console.error("Fehler beim debounced Speichern:", e);
                 }
             }
-        }, 1500);
+        }, 250);
     }
 
 // Event Listener für Änderungen global registrieren (falls noch nicht geschehen)
@@ -3670,7 +3670,7 @@ async function handleTextInputChange(event) {
 function handleTextInputChangeDebounced(event) {
     const id = event.target.dataset.assignmentId;
     clearTimeout(window._textSaveTimers[id]);
-    window._textSaveTimers[id] = setTimeout(() => handleTextInputChange(event), 500);
+    window._textSaveTimers[id] = setTimeout(() => handleTextInputChange(event), 300);
 }
     // Globale Sperre, um Change-Handler während Bulk-Updates zu pausieren
 window._suspendAssignListeners = false;

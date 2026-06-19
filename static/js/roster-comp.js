@@ -973,6 +973,7 @@ window.setupBossListener = function(bossId) {
                 const assignmentId = select.dataset.assignmentId;
                 if(!assignmentId) return;
                 if (window.pendingAssignmentUpdates && window.pendingAssignmentUpdates[assignmentId]) return;
+                if (document.activeElement === select) return;
 
                 const isCooldown = assignmentId.toLowerCase().includes('cooldown');
                 const isManual = select.getAttribute('data-manual-options') === "true";
@@ -1096,6 +1097,8 @@ window.setupBossListener = function(bossId) {
                     document.querySelectorAll('.assignment-select').forEach(select => {
                         const assignmentId = select.dataset.assignmentId;
                         if(!assignmentId) return;
+                        if (window.pendingAssignmentUpdates && window.pendingAssignmentUpdates[assignmentId]) return;
+                        if (document.activeElement === select) return;
                         const val = assignments[assignmentId] ? (assignments[assignmentId].cooldown || assignments[assignmentId].player) : "";
                         if (select.value !== val) select.value = val;
                         const selectedOption = Array.from(select.options).find(o => o.value === val);
@@ -1104,6 +1107,8 @@ window.setupBossListener = function(bossId) {
                     document.querySelectorAll('.assignment-text-input').forEach(input => {
                         const assignmentId = input.dataset.assignmentId;
                         if(!assignmentId) return;
+                        if (window.pendingAssignmentUpdates && window.pendingAssignmentUpdates[assignmentId]) return;
+                        if (document.activeElement === input) return;
                         const val = assignments[assignmentId]?.text || assignments[assignmentId]?.player || '';
                         if (input.value !== val) input.value = val;
                     });
