@@ -1077,7 +1077,17 @@ window.CD_AUTO_PLANNER = (function () {
             // aus requiredCDs verwenden, sonst die globale Liste.
             var iterCats = assignStrategy.prioritizeCategories
                 ? (row.requiredCDs || []).slice()
-                : allCatKeys;
+                : allCatKeys.slice();
+
+            Object.keys(manualOverrides).forEach(function(oKey) {
+                var prefix = row.eventIdx + '-' + row.castNum + '-';
+                if (oKey.startsWith(prefix)) {
+                    var ck = oKey.substring(prefix.length);
+                    if (ck.startsWith('extra_') && iterCats.indexOf(ck) === -1) {
+                        iterCats.push(ck);
+                    }
+                }
+            });
 
             iterCats.forEach(function (catKey) {
                 var isRequired = (row.requiredCDs || []).indexOf(catKey) !== -1;
@@ -1090,6 +1100,11 @@ window.CD_AUTO_PLANNER = (function () {
                     var ov = manualOverrides[oKey];
                     if (ov.skip) {
                         row.slots[catKey] = { player: null, dbName: null, auto: false, skipped: true };
+                        return;
+                    }
+
+                    if (ov.isExtraPlaceholder) {
+                        row.slots[catKey] = { isExtraPlaceholder: true };
                         return;
                     }
 
@@ -1251,8 +1266,8 @@ window.CD_AUTO_PLANNER = (function () {
             + '<th class="py-2 px-2 w-16">ETA</th>'
             + '<th class="py-2 px-2 min-w-[130px]">Event</th>'
             + '<th class="py-2 px-1 w-8 text-center">#</th>'
-            + '<th class="py-2 px-1 w-14 text-center" title="Verzögerung zum Trigger (für Export)">Delay</th>'
-            + thCols + '</tr>';
+            + '<th class="py-2 px-1 w-10 text-center" title="Verzögerung zum Trigger (für Export)">Delay</th>'
+            + thCols + '<th class="py-2 px-2 min-w-[150px]" style="border-bottom:2px solid #64748b;"><span style="color:#94a3b8;">Zusatz-CDs</span></th></tr>';
 
         // Tbody
         var lastEvt = '';
@@ -1260,6 +1275,7 @@ window.CD_AUTO_PLANNER = (function () {
         catKeys.forEach(function (catKey) {
             cachedOptions[catKey] = buildDropdownOptions(catKey);
         });
+        cachedOptions['__EXTRA__'] = buildDropdownOptions('__EXTRA__');
 
         var rows = timeline.map(function (row, rowIdx) {
             var isNew = row.eventName !== lastEvt;
@@ -1272,48 +1288,58 @@ window.CD_AUTO_PLANNER = (function () {
 
                 // Skipped
                 if (slot && slot.skipped) {
-                    return '<td class="py-1 px-1 bg-slate-900/40 border border-red-900/20">'
-                        + '<select class="auto-plan-select w-full bg-transparent text-[11px] border-none outline-none cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '" style="color:#ef4444;">'
+                    return '<td class="relative py-1 px-1 align-middle bg-slate-900/40 border border-slate-700/50" style="max-width:105px; height:34px;">'
+                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-red-500">✖ Skipped</span></div>'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
                         + '<option value="">-- Cooldown --</option>'
-                        + '<option value="__SKIP__" selected style="color:#ef4444;">✖ Kein CD nötig</option>'
+                        + '<option value="__SKIP__" selected>✖ Kein CD nötig</option>'
                         + options + '</select></td>';
                 }
 
                 // Nicht required, kein Override
                 if (!isReq && (!slot || !slot.player)) {
-                    return '<td class="py-1 px-1 bg-slate-900/30 border border-slate-800/40">'
-                        + '<select class="auto-plan-select w-full bg-transparent text-[11px] border-none outline-none cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '" style="color:#4b5563;">'
+                    return '<td class="relative py-1 px-1 opacity-50 hover:opacity-100 transition-opacity align-middle bg-slate-900/20 border border-slate-700/50" style="max-width:105px; height:34px;">'
+                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[11px] text-gray-500">—</span></div>'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
                         + '<option value="" selected>—</option>' + options + '</select></td>';
                 }
 
                 // Spread-Gap: geplante Lücke durch Strategie A (Spread)
                 if (slot && slot.spreadGap) {
-                    return '<td class="py-1 px-1 bg-cyan-900/15 border border-cyan-700/30" title="Geplante Lücke (Spread-Strategie): hier wurde absichtlich kein Spieler eingeplant, um die verfügbaren CDs über die Zeit zu strecken.">'
-                        + '<select class="auto-plan-select w-full bg-transparent text-[11px] border-none outline-none cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '" style="color:#67e8f9;">'
+                    return '<td class="relative py-1 px-1 align-middle bg-cyan-900/20 border border-cyan-800/50" style="max-width:105px; height:34px;" title="Geplante Lücke (Spread-Strategie): hier wurde absichtlich kein Spieler eingeplant, um die verfügbaren CDs über die Zeit zu strecken.">'
+                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-cyan-300">~ Spread</span></div>'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
                         + '<option value="" selected>~ Spread-Lücke</option>'
-                        + '<option value="__SKIP__" style="color:#ef4444;">✖ Kein CD nötig</option>'
+                        + '<option value="__SKIP__">✖ Kein CD nötig</option>'
                         + options + '</select></td>';
                 }
 
                 // Unavailable
                 if (!slot || slot.unavailable) {
-                    return '<td class="py-1 px-1 bg-red-900/15 border border-red-900/25">'
-                        + '<select class="auto-plan-select w-full bg-transparent text-[11px] border-none outline-none cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '" style="color:#f87171;">'
+                    return '<td class="relative py-1 px-1 align-middle bg-red-900/20 border border-red-800/50" style="max-width:105px; height:34px;">'
+                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-red-400">⚠ Fehlt</span></div>'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
                         + '<option value="" selected>⚠ kein CD</option>'
-                        + '<option value="__SKIP__" style="color:#ef4444;">✖ Kein CD nötig</option>'
+                        + '<option value="__SKIP__">✖ Kein CD nötig</option>'
                         + options + '</select></td>';
                 }
 
                 // Zugewiesen
                 var color = getClassColor(slot.dbClass);
-                var bg = slot.auto ? 'bg-slate-800/50' : 'bg-yellow-900/20';
-                var brd = slot.auto ? 'border-slate-700/60' : 'border-yellow-500/40';
+                var bg = slot.auto ? 'bg-slate-800/50' : 'bg-yellow-900/30';
+                var brd = slot.auto ? 'border-slate-700/50' : 'border-yellow-600/50';
                 var title = 'Dauer: ' + (slot.durationSec || '?') + 's | CD: ' + (slot.cooldownSec || '?') + 's';
+                var pStr = slot.player || '';
+                var dStr = slot.dbName || (slot.isVirtual ? (categories[slot.isVirtualCategoryKey||catKey] ? categories[slot.isVirtualCategoryKey||catKey].name : 'Virtuell') : '');
 
-                return '<td class="py-1 px-1 ' + bg + ' border ' + brd + '" title="' + title + '">'
-                    + '<select class="auto-plan-select w-full bg-transparent text-[11px] border-none outline-none cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '" style="color:' + color + ';">'
+                return '<td class="relative py-1 px-1 align-middle ' + bg + ' border ' + brd + '" style="max-width:105px; height:34px;" title="' + title + '">'
+                    + '<div class="pointer-events-none w-full flex flex-col items-center justify-center h-full">'
+                    + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center" style="color:' + color + ';">' + pStr + '</div>'
+                    + '<div class="text-[9px] leading-[11px] truncate w-full text-center opacity-80" style="color:' + color + ';">' + dStr + '</div>'
+                    + '</div>'
+                    + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
                     + '<option value="">-- Cooldown --</option>'
-                    + '<option value="__SKIP__" style="color:#ef4444;">✖ Kein CD nötig</option>'
+                    + '<option value="__SKIP__">✖ Kein CD nötig</option>'
                     + options + '</select></td>';
             }).join('');
 
@@ -1323,22 +1349,47 @@ window.CD_AUTO_PLANNER = (function () {
             if (typeof mapEntry === 'string') tooltipStr = mapEntry;
             else if (mapEntry && mapEntry.trigger) tooltipStr = mapEntry.trigger;
 
-            return '<tr class="hover:bg-slate-800/30 transition-colors ' + (isNew ? 'border-t border-slate-600' : 'border-t border-slate-800/40') + '">'
+            var extraSlotsHtml = '';
+            Object.keys(row.slots).forEach(function (slotKey) {
+                if (slotKey.startsWith('extra_')) {
+                    var slot = row.slots[slotKey];
+                    var color = slot.dbClass ? getClassColor(slot.dbClass) : '#94a3b8';
+                    var pStr = slot.player || '';
+                    var dStr = slot.dbName || (slot.isVirtual ? (categories[slot.isVirtualCategoryKey||slotKey] ? categories[slot.isVirtualCategoryKey||slotKey].name : 'Virtuell') : '');
+
+                    extraSlotsHtml += '<div class="mb-1 relative w-full bg-slate-800/40 border border-slate-700/60" style="height:34px;">'
+                        + '<div class="pointer-events-none w-full flex flex-col items-center justify-center h-full">'
+                        + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center" style="color:' + color + ';">' + pStr + '</div>'
+                        + '<div class="text-[9px] leading-[11px] truncate w-full text-center opacity-80" style="color:' + color + ';">' + dStr + '</div>'
+                        + '</div>'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
+                        + '<option value="">-- Entfernen --</option>'
+                        + cachedOptions['__EXTRA__']
+                        + '</select></div>';
+                }
+            });
+            var extraCell = '<td class="py-1 px-1 align-top border border-slate-700/50 bg-slate-900/20" style="max-width:105px;">'
+                + extraSlotsHtml
+                + '<button class="add-extra-btn w-full bg-slate-800/40 hover:bg-slate-700/60 border border-slate-700/60 rounded-sm text-[10px] text-gray-400 py-0.5" data-row="' + rowIdx + '" title="Weiteren CD hinzufügen">+</button>'
+                + '</td>';
+
+            return '<tr class="hover:bg-slate-800/30 transition-colors ' + (isNew ? 'border-t border-slate-600/80' : 'border-t border-slate-800/30') + '">'
                 + '<td class="py-1 px-1 text-center text-sm">' + row.icon + '</td>'
                 + '<td class="py-1 px-2 font-mono text-gray-300" title="Absolute Kampfzeit">' + fmt(row.absTime) + '</td>'
                 + '<td class="py-1 px-2 ' + (isNew ? 'text-gray-200 font-medium' : 'text-gray-500') + '" title="' + tooltipStr + '">' + (isNew ? row.eventName : '↳') + durLabel + '</td>'
                 + '<td class="py-1 px-1 text-center text-gray-500">' + row.castNum + '</td>'
-                + '<td class="py-1 px-1 text-center"><input type="number" class="auto-plan-delay w-14 bg-transparent text-[11px] text-center text-gray-400 border border-slate-700 rounded" data-row="' + rowIdx + '" value="' + (row.delay || 0) + '" title="Verzögerung (neg=vorher)"></td>'
-                + cells + '</tr>';
+                + '<td class="py-1 px-1 text-center"><input type="number" class="auto-plan-delay w-10 bg-slate-800/40 text-[11px] text-center text-gray-400 border border-slate-700/60 rounded px-1 py-0.5" data-row="' + rowIdx + '" value="' + (row.delay || 0) + '" title="Verzögerung (neg=vorher)"></td>'
+                + cells + extraCell + '</tr>';
         }).join('');
 
         tbody.innerHTML = rows;
 
         // Set dropdown values
         timeline.forEach(function (row, rowIdx) {
-            catKeys.forEach(function (catKey) {
+            var allSlotKeys = Object.keys(row.slots);
+            allSlotKeys.forEach(function (catKey) {
                 var slot = row.slots[catKey];
-                if (!slot || !slot.player || (!slot.dbName && !slot.isVirtual)) return;
+                if (!slot || (!slot.player && !slot.isVirtual)) return;
                 var sel = tbody.querySelector('select[data-row="' + rowIdx + '"][data-cat="' + catKey + '"]');
                 if (!sel) return;
 
@@ -1364,9 +1415,12 @@ window.CD_AUTO_PLANNER = (function () {
             });
         });
 
-        // Listeners: Dropdown
-        tbody.querySelectorAll('.auto-plan-select').forEach(function (sel) {
-            sel.addEventListener('change', function (e) {
+        // Listeners: Dropdown (Event Delegation)
+        if (!tbody._hasAutoPlanListener) {
+            tbody._hasAutoPlanListener = true;
+            tbody.addEventListener('change', function (e) {
+                if (!e.target || !e.target.classList.contains('auto-plan-select')) return;
+                
                 var ri = parseInt(e.target.dataset.row);
                 var ck = e.target.dataset.cat;
                 var row = assignments[ri];
@@ -1375,6 +1429,11 @@ window.CD_AUTO_PLANNER = (function () {
 
                 if (!e.target.value) {
                     delete manualOverrides[oKey];
+                    // If it's an extra slot, remove it from DOM immediately to avoid flicker before auto-assign
+                    if (ck.startsWith('extra_')) {
+                        var wrap = e.target.closest('div.mb-1');
+                        if (wrap) wrap.remove();
+                    }
                 } else if (e.target.value === '__SKIP__') {
                     manualOverrides[oKey] = { player: '__SKIP__', dbName: '__SKIP__', skip: true };
                 } else {
@@ -1400,6 +1459,36 @@ window.CD_AUTO_PLANNER = (function () {
                     }
                 }
                 runAutoAssign();
+            });
+        }
+
+        // Listeners: Zusatz-CD Button
+        tbody.querySelectorAll('.add-extra-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                var ri = parseInt(e.target.dataset.row);
+                var row = assignments[ri];
+                if (!row) return;
+
+                var count = 1;
+                while (manualOverrides[row.eventIdx + '-' + row.castNum + '-extra_' + count]) count++;
+                var ck = 'extra_' + count;
+                var oKey = row.eventIdx + '-' + row.castNum + '-' + ck;
+
+                manualOverrides[oKey] = { player: null, dbName: null, isExtraPlaceholder: true };
+                
+                // Statt runAutoAssign() injecten wir das HTML direkt ins DOM:
+                var td = btn.closest('td');
+                var html = '<div class="mb-1 relative w-full bg-slate-800/40 border border-slate-700/60" style="height:34px;">'
+                         + '<div class="pointer-events-none w-full flex flex-col items-center justify-center h-full">'
+                         + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center" style="color:#94a3b8;"></div>'
+                         + '<div class="text-[9px] leading-[11px] truncate w-full text-center opacity-80" style="color:#94a3b8;"></div>'
+                         + '</div>'
+                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + ri + '" data-cat="' + ck + '">'
+                         + '<option value="">-- Entfernen --</option>'
+                         + cachedOptions['__EXTRA__']
+                         + '</select></div>';
+                
+                btn.insertAdjacentHTML('beforebegin', html);
             });
         });
 
@@ -2372,6 +2461,16 @@ async function exportToPlanner() {
                 validSlots.push(slot);
             });
 
+            // Also export extra_ slots (added via "+")
+            Object.keys(row.slots).forEach(function (slotKey) {
+                if (!slotKey.startsWith('extra_')) return;
+                var slot = row.slots[slotKey];
+                if (!slot || slot.skipped || slot.isExtraPlaceholder) return;
+                if (!slot.isVirtual && (!slot.player || !slot.dbName || slot.player === '__SKIP__')) return;
+                slot._catKey = slotKey;
+                validSlots.push(slot);
+            });
+
             if (validSlots.length === 0) return;
 
             // triggerMap kann String (nur Trigger) oder Object ({ trigger, npc, percent }) sein
@@ -2587,6 +2686,7 @@ async function savePlan() {
                     return { 
                         eventName: r.eventName, 
                         eventKey: r.eventKey,
+                        eventIdx: r.eventIdx,
                         castNum: r.castNum, 
                         absTime: r.absTime, 
                         delay: r.delay || 0, 
@@ -2621,6 +2721,12 @@ async function loadPlan() {
             }
             if (data.assignments && Array.isArray(data.assignments)) {
                 var roster = window.effectiveRoster || window.rosterData || [];
+                // Build eventKey→eventIdx lookup for reconstructing eventIdx from saved data
+                var effectiveEvts = getEffectiveEvents();
+                var eventKeyToIdx = {};
+                effectiveEvts.forEach(function(evt, idx) {
+                    if (evt._key) eventKeyToIdx[evt._key] = idx;
+                });
                 assignments = data.assignments.map(function(r) {
                     var evtObj = null;
                     if (r.eventKey && r.eventKey.startsWith('cfg_')) {
@@ -2633,6 +2739,13 @@ async function loadPlan() {
                     r.icon = ov.icon !== undefined ? ov.icon : (evtObj.icon || '');
                     r.requiredCDs = ov.requiredCDs !== undefined ? ov.requiredCDs : (evtObj.requiredCDs || []);
                     
+                    // Reconstruct eventIdx if missing (not saved in older plans)
+                    if (r.eventIdx === undefined || r.eventIdx === null) {
+                        r.eventIdx = (r.eventKey && eventKeyToIdx[r.eventKey] !== undefined)
+                            ? eventKeyToIdx[r.eventKey]
+                            : 0;
+                    }
+
                     if (r.slots) {
                         Object.keys(r.slots).forEach(function(catKey) {
                             var slot = r.slots[catKey];
