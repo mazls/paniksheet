@@ -1415,6 +1415,10 @@ window.CD_AUTO_PLANNER = (function () {
             return Object.values(r.slots).some(function (s) { return s.unavailable; });
         }).length;
         updateStatus(timeline.length + ' Events, ' + missing + ' ohne CD');
+
+        if (typeof window._autoPlannerApplyProtection === 'function') {
+            window._autoPlannerApplyProtection();
+        }
     }
 
     // ── Dropdown: Empfohlen + Alle CDs + Virtuell ──
