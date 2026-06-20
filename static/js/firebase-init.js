@@ -8,8 +8,8 @@
    EXPORTIERT (window.*):
    - db, auth, app, rtdb (über Imports)
    - rosterDocRef, historyCollectionRef, userProfilesCollectionRef,
-   - lootCollectionRef, denylistCollectionRef, aliasDocRef, snapshotsCollectionRef
-   - Konstanten: DATA_COLLECTION, HISTORY_COLLECTION, USER_PROFILES_COLLECTION, LOOT_COLLECTION, SNAPSHOTS_COLLECTION
+   - lootCollectionRef, denylistCollectionRef, aliasDocRef
+   - Konstanten: DATA_COLLECTION, HISTORY_COLLECTION, USER_PROFILES_COLLECTION, LOOT_COLLECTION
    - Firestore-Funktionen (re-exportiert): doc, setDoc, onSnapshot, collection, etc.
    - RTDB-Funktionen: rtdbRef, rtdbSet, rtdbOnValue, rtdbOnDisconnect, rtdbServerTimestamp, rtdbOff
    - Auth-Funktionen: onAuthStateChanged, signInWithEmailAndPassword, signOut, signInAnonymously
@@ -83,7 +83,6 @@ export const DATA_COLLECTION = "raid-tool-data";
 export const HISTORY_COLLECTION = "raid-tool-history";
 export const USER_PROFILES_COLLECTION = "user_profiles";
 export const LOOT_COLLECTION = "raid-tool-loot";
-export const SNAPSHOTS_COLLECTION = "raid-tool-snapshots";
 
 
 // =============================================================================
@@ -96,7 +95,6 @@ export const userProfilesCollectionRef = collection(db, USER_PROFILES_COLLECTION
 export const lootCollectionRef = collection(db, LOOT_COLLECTION);
 export const denylistCollectionRef = collection(db, "snapshot_player_denylist");
 export const aliasDocRef = doc(db, DATA_COLLECTION, "nameAliasMap");
-export const snapshotsCollectionRef = collection(db, SNAPSHOTS_COLLECTION);
 
 
 // =============================================================================

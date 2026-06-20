@@ -19,9 +19,9 @@
 import {
     db, auth,
     DATA_COLLECTION, HISTORY_COLLECTION, USER_PROFILES_COLLECTION,
-    LOOT_COLLECTION, SNAPSHOTS_COLLECTION,
+    LOOT_COLLECTION,
     rosterDocRef, historyCollectionRef, userProfilesCollectionRef,
-    lootCollectionRef, denylistCollectionRef, aliasDocRef, snapshotsCollectionRef,
+    lootCollectionRef, denylistCollectionRef, aliasDocRef,
     doc, setDoc, onSnapshot, collection, deleteDoc, getDoc,
     serverTimestamp, query, orderBy, addDoc, updateDoc, where,
     getDocs, limit
@@ -569,16 +569,27 @@ window.applyThemeForRaid = function(raidId) {
             document.getElementById('clear-roster-btn')?.addEventListener('click', window.handleClearRoster);
 			document.getElementById('import-url-btn')?.addEventListener('click', window.handleImportFromUrl);
 			if (window.loadSetupLabels) window.loadSetupLabels();
-			const snapshotSection = document.getElementById('snapshot-section');
-			if (window.isManager && snapshotSection) {
-				snapshotSection.style.display = 'block'; // Snapshot-Bereich nur für Manager anzeigen
-				document.getElementById('save-snapshot-btn')?.addEventListener('click', window.saveSnapshot);
-				document.getElementById('load-snapshot-btn')?.addEventListener('click', window.loadSnapshot);
-				document.getElementById('delete-snapshot-btn')?.addEventListener('click', window.deleteSnapshot);
-				
-				// Füllt die Snapshot-Liste beim Laden der Seite
-				window.populateSnapshotSelector();
-                
+			const rhConfigSection = document.getElementById('rh-config-section');
+			const rhAddSection = document.getElementById('raidhelper-add-section');
+			if (window.isManager) {
+				if (rhConfigSection) {
+					rhConfigSection.style.display = 'block';
+					document.getElementById('save-rh-config-btn')?.addEventListener('click', window.saveRaidhelperConfig);
+					const toggleBtn = document.getElementById('rh-config-toggle-btn');
+					const configContainer = document.getElementById('rh-config-container');
+					if (toggleBtn && configContainer) {
+						toggleBtn.addEventListener('click', () => {
+							configContainer.style.display = configContainer.style.display === 'none' ? 'block' : 'none';
+						});
+					}
+					// Config beim Laden abrufen und Input-Felder ggf. füllen
+					if (window.loadRaidhelperConfig) window.loadRaidhelperConfig();
+				}
+				if (rhAddSection) {
+					rhAddSection.style.display = 'block';
+					document.getElementById('load-rh-event-btn')?.addEventListener('click', window.fetchRaidhelperSignupsForEvent);
+					document.getElementById('add-from-rh-btn')?.addEventListener('click', window.addPlayerFromRaidhelper);
+				}
 			}
             const aliasSection = document.getElementById('name-alias-section');
             if (window.isManager && aliasSection) {
@@ -598,7 +609,6 @@ window.applyThemeForRaid = function(raidId) {
             editorSection.style.display = 'block';
             window.initCooldownEditor();
         }
-        window.initSnapshotPlayerAdder();
     }
     
     // Roster-Patches Verwaltungs-UI initialisieren

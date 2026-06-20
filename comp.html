@@ -67,42 +67,57 @@
     </div>
     </div>
 </section>
-        <div id="snapshot-section" class="mt-6 pt-6 border-t border-slate-650" style="display: none;">
-            <h3 class="text-xl font-semibold mb-3 text-gold">Setup-Snapshots</h3>
-            <p class="text-gray-400 mb-4">Hier kannst du die komplette Konfiguration (Roster & alle Boss-Einteilungen) speichern, laden oder löschen.</p>
-            <div class="flex flex-wrap items-center gap-4">
-                <button id="save-snapshot-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">
-                    Aktuelles Setup speichern
+        <!-- NEU: Raidhelper API Config (nur für Manager) -->
+        <div id="rh-config-section" class="mt-6 pt-6 border-t border-slate-650" style="display: none;">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-xl font-semibold text-gold">⚙️ Raidhelper API Konfiguration</h3>
+                <button id="rh-config-toggle-btn" class="bg-slate-700 hover:bg-slate-600 text-gray-200 font-medium py-1 px-3 rounded-md transition-colors text-xs">
+                    Ein-/Ausblenden
                 </button>
-                <div class="flex items-center gap-2">
-                    <label for="snapshot-selector" class="sr-only">Snapshot auswählen</label>
-                    <select id="snapshot-selector" class="bg-slate-850 text-gray-200 p-2 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Snapshot zum Laden auswählen --</option>
-                    </select>
-                    <button id="load-snapshot-btn" class="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md">
-                        Laden
-                    </button>
-                    <button id="delete-snapshot-btn" class="bg-red-800 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md">
-                        Löschen
-                    </button>
-                </div>
-                <div class="mt-6 pt-6 border-t border-slate-650">
-                    <h4 class="text-lg font-semibold mb-2 text-blue-450">Spieler aus Snapshot hinzufügen</h4>
-                    <p class="text-gray-400 mb-2 text-sm">
-                        Wähle einen Spieler aus einem beliebigen, gespeicherten Snapshot aus, um ihn zum aktuellen Roster hinzuzufügen.
-                    </p>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <select id="snapshot-player-selector" class="flex-grow bg-slate-900 text-gray-300 p-2 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">-- Lade Spieler aus Snapshots... --</option>
-                        </select>
-                        <button id="add-from-snapshot-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                            Hinzufügen
-                        </button>
-                        <button id="delete-from-snapshot-btn" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                            Löschen
-                        </button>
+            </div>
+            <div id="rh-config-container" style="display:none;" class="bg-slate-900/50 p-4 rounded-md border border-slate-700">
+                <p class="text-gray-400 mb-3 text-sm">Diese Zugangsdaten werden in der Datenbank gespeichert und für den automatischen Import genutzt.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Discord Server ID</label>
+                        <input type="password" id="rh-config-serverid" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650" placeholder="1066683639456346123">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Raidhelper API Key</label>
+                        <input type="password" id="rh-config-apikey" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650" placeholder="API Key">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Proxy URL <span class="text-gray-500">(für die Event-Liste, z.B. eigener Cloudflare Worker)</span></label>
+                        <input type="password" id="rh-config-proxyurl" class="w-full bg-slate-900 p-2 rounded-md border border-slate-650" placeholder="https://dein-worker.workers.dev/">
+                        <p class="text-gray-500 text-xs mt-1">Nötig, weil Raid-Helper die Event-Liste nur mit Auth-Header und ohne offenes CORS ausliefert. Einzel-Events werden ohne Proxy direkt geladen.</p>
                     </div>
                 </div>
+                <button id="save-rh-config-btn" class="mt-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors text-sm">
+                    Speichern
+                </button>
+            </div>
+        </div>
+
+        <div id="raidhelper-add-section" class="mt-6 pt-6 border-t border-slate-650" style="display: none;">
+            <h3 class="text-xl font-semibold mb-3 text-gold">Spieler aus Raidhelper hinzufügen</h3>
+            <p class="text-gray-400 mb-4 text-sm">Wähle einen Raid aus, um einzelne Spieler zur aktuellen Comp hinzuzufügen.</p>
+            
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <select id="rh-event-selector" class="flex-grow bg-slate-900 text-gray-300 p-2 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- Events werden geladen... --</option>
+                </select>
+                <button id="load-rh-event-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-download mr-1"></i> Anmeldungen laden
+                </button>
+            </div>
+            
+            <div id="rh-player-select-container" style="display:none;" class="flex flex-wrap items-center gap-2">
+                <select id="rh-player-selector" class="flex-grow bg-slate-900 text-gray-300 p-2 rounded-md border border-slate-650 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- Zuerst Event laden --</option>
+                </select>
+                <button id="add-from-rh-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Spieler Hinzufügen
+                </button>
             </div>
         </div>
     </section>

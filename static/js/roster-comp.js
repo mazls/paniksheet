@@ -26,9 +26,9 @@
 import {
     db, auth,
     DATA_COLLECTION, HISTORY_COLLECTION, USER_PROFILES_COLLECTION,
-    LOOT_COLLECTION, SNAPSHOTS_COLLECTION,
+    LOOT_COLLECTION,
     rosterDocRef, historyCollectionRef, userProfilesCollectionRef,
-    lootCollectionRef, denylistCollectionRef, aliasDocRef, snapshotsCollectionRef,
+    lootCollectionRef, denylistCollectionRef, aliasDocRef,
     doc, setDoc, onSnapshot, collection, deleteDoc, getDoc,
     serverTimestamp, query, orderBy, addDoc, updateDoc, where,
     getDocs, limit

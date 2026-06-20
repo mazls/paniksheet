@@ -20,9 +20,9 @@
 import {
     db, auth,
     DATA_COLLECTION, HISTORY_COLLECTION, USER_PROFILES_COLLECTION,
-    LOOT_COLLECTION, SNAPSHOTS_COLLECTION,
+    LOOT_COLLECTION,
     rosterDocRef, historyCollectionRef, userProfilesCollectionRef,
-    lootCollectionRef, denylistCollectionRef, aliasDocRef, snapshotsCollectionRef,
+    lootCollectionRef, denylistCollectionRef, aliasDocRef,
     doc, setDoc, onSnapshot, collection, deleteDoc, getDoc,
     serverTimestamp, query, orderBy, addDoc, updateDoc, where,
     getDocs, limit
@@ -1328,12 +1328,13 @@ window.handleAssignmentChange = handleAssignmentChange;
             let apiType = 'events'; 
 
 
-            const targetApiUrl = `https://raid-helper.dev/api/raidplan/${raidId}`;
+            const targetApiUrl = `https://raid-helper.xyz/api/raidplan/${raidId}`;
 
-            // 3. Backup Proxies
+            // 3. Direkt zuerst (raid-helper.xyz/api/raidplan/* liefert offenes CORS),
+            //    danach Proxies als Fallback.
             const proxies = [
-                'https://corsproxy.io/?',              // Favorit 1: Schnell & zuverlässig
-                'https://api.allorigins.win/raw?url='  // Favorit 2: Guter Fallback
+                '',                                    // Direkt (kein Proxy)
+                'https://api.allorigins.win/raw?url='  // Fallback
             ];
 
             const loadingModal = window.showModal("Lade Daten über Proxy...", false);
@@ -1344,8 +1345,8 @@ window.handleAssignmentChange = handleAssignmentChange;
                 if (success) break;
 
                 try {
-                    console.log(`Versuche Proxy: ${proxy}`);
-                    const fetchUrl = proxy + encodeURIComponent(targetApiUrl);
+                    console.log(`Versuche Proxy: ${proxy || '(direkt)'}`);
+                    const fetchUrl = proxy ? proxy + encodeURIComponent(targetApiUrl) : targetApiUrl;
                     
                     const response = await fetch(fetchUrl);
                     if (!response.ok) throw new Error(`Status ${response.status}`);
@@ -1649,155 +1650,226 @@ async function fetchAllCooldowns() {
 window.fetchAllCooldowns = fetchAllCooldowns;
 
 // =============================================================================
-// SNAPSHOTS (Save / Load / Delete / Populate Selector)
+// RAIDHELPER API INTEGRATION
 // =============================================================================
 
-		// ============== NEUE SNAPSHOT FUNKTIONEN ==============
-		
-		async function saveSnapshot() {
-			if (!window.isManager) return;
-			const snapshotName = await window.showPrompt("Bitte gib einen Namen für den Snapshot ein (z.B. 'Progress-Setup KW25'):");
-			if (!snapshotName || snapshotName.trim() === '') {
-				window.showModal("Speichern abgebrochen. Kein Name angegeben.");
-				return;
-			}
-		
+		async function loadRaidhelperConfig() {
 			try {
-				// 1. Aktuelles Roster holen
-				const rosterSnap = await getDoc(rosterDocRef);
-				const rosterData = rosterSnap.exists() ? rosterSnap.data() : {};
-		
-				// 2. Alle Boss-Einteilungen holen
-				const bossAssignments = {};
-				for (const raidId in window.raidData) {
-					for (const boss of window.raidData[raidId].bosses) {
-						const bossDocRef = doc(db, DATA_COLLECTION, `boss-${boss.id}`);
-						const bossSnap = await getDoc(bossDocRef);
-						if (bossSnap.exists()) {
-							bossAssignments[`boss-${boss.id}`] = bossSnap.data();
-						}
+				const configSnap = await getDoc(doc(db, DATA_COLLECTION, "raidhelper-config"));
+				if (configSnap.exists()) {
+					const config = configSnap.data();
+					const sidInput = document.getElementById('rh-config-serverid');
+					const keyInput = document.getElementById('rh-config-apikey');
+					if (sidInput) sidInput.value = config.serverId || '';
+					if (keyInput) keyInput.value = config.apiKey || '';
+					const proxyInput = document.getElementById('rh-config-proxyurl');
+					if (proxyInput) proxyInput.value = config.proxyUrl || '';
+					
+					// Wenn Config vorhanden, direkt Events laden
+					if (config.serverId && config.apiKey) {
+						fetchRaidhelperEvents(config.serverId, config.apiKey, config.proxyUrl || '');
 					}
 				}
-		
-				// 3. Snapshot-Dokument erstellen
-				const snapshotDoc = {
-					name: snapshotName,
-					createdAt: serverTimestamp(),
-					editor: sessionStorage.getItem('currentManager') || 'Unbekannt',
-					roster: rosterData,
-					assignments: bossAssignments
-				};
-		
-				// 4. In der neuen Collection speichern
-				await addDoc(snapshotsCollectionRef, snapshotDoc);
-				window.showModal(`Snapshot '${snapshotName}' wurde erfolgreich gespeichert!`);
-				populateSnapshotSelector(); // Liste aktualisieren
-			} catch (error) {
-				console.error("Fehler beim Speichern des Snapshots:", error);
-				window.showModal("Ein Fehler ist aufgetreten. Der Snapshot konnte nicht gespeichert werden.");
+			} catch (e) {
+				console.error("Fehler beim Laden der Raidhelper Config", e);
 			}
 		}
 
-		async function loadSnapshot() {
-			if (!window.isManager) return;
-			const snapshotId = document.getElementById('snapshot-selector').value;
-			if (!snapshotId) {
-				window.showModal("Bitte wähle zuerst einen Snapshot aus der Liste aus.");
+		async function saveRaidhelperConfig() {
+			const serverId = document.getElementById('rh-config-serverid').value.trim();
+			const apiKey = document.getElementById('rh-config-apikey').value.trim();
+			const proxyUrl = document.getElementById('rh-config-proxyurl')?.value.trim() || '';
+			if (!serverId || !apiKey) {
+				window.showModal("Bitte Server ID und API Key eingeben.");
 				return;
 			}
-		
-			const confirmed = await window.showModal(
-				"Achtung! Das Laden dieses Snapshots überschreibt die aktuelle Aufstellung und alle Boss-Einteilungen. Fortfahren?",
-				true // Bestätigungsdialog anzeigen
-			);
-		
-			if (!confirmed) return;
-		
 			try {
-				// 1. Ausgewählten Snapshot holen
-				const snapshotDocRef = doc(db, SNAPSHOTS_COLLECTION, snapshotId);
-				const snapshotSnap = await getDoc(snapshotDocRef);
-		
-				if (!snapshotSnap.exists()) {
-					throw new Error("Snapshot nicht gefunden.");
-				}
-				const snapshotData = snapshotSnap.data();
-		
-				// 2. Live-Roster überschreiben
-				if (snapshotData.roster) {
-					await setDoc(rosterDocRef, snapshotData.roster);
-				}
-		
-				// 3. Alle Live-Boss-Einteilungen überschreiben
-				if (snapshotData.assignments) {
-					for (const docId in snapshotData.assignments) {
-						const liveDocRef = doc(db, DATA_COLLECTION, docId);
-						await setDoc(liveDocRef, snapshotData.assignments[docId]);
-					}
-				}
-				
-				window.showModal(`Snapshot '${snapshotData.name}' wurde erfolgreich geladen.`);
-				// Ein Neuladen der Seite stellt sicher, dass alle Listener die neuen Daten korrekt anzeigen
-				location.reload();
-		
-			} catch (error) {
-				console.error("Fehler beim Laden des Snapshots:", error);
-				window.showModal("Ein Fehler ist aufgetreten. Der Snapshot konnte nicht geladen werden.");
+				await setDoc(doc(db, DATA_COLLECTION, "raidhelper-config"), {
+					serverId: serverId,
+					apiKey: apiKey,
+					proxyUrl: proxyUrl
+				}, { merge: true });
+				window.showModal("Raidhelper Konfiguration erfolgreich gespeichert.");
+				fetchRaidhelperEvents(serverId, apiKey, proxyUrl);
+			} catch (e) {
+				console.error("Fehler beim Speichern der Raidhelper Config", e);
+				window.showModal("Fehler beim Speichern der Config.");
 			}
 		}
-		
-		async function deleteSnapshot() {
-			if (!window.isManager) return;
-			const selector = document.getElementById('snapshot-selector');
-			const snapshotId = selector.value;
-			if (!snapshotId) {
-				window.showModal("Bitte wähle zuerst einen Snapshot aus, der gelöscht werden soll.");
-				return;
-			}
-		
-			const snapshotName = selector.options[selector.selectedIndex].text;
-			const confirmed = await window.showModal(
-				`Soll der Snapshot '${snapshotName}' wirklich endgültig gelöscht werden?`,
-				true // Bestätigungsdialog anzeigen
-			);
-		
-			if (!confirmed) return;
-		
-			try {
-				await deleteDoc(doc(db, SNAPSHOTS_COLLECTION, snapshotId));
-				window.showModal(`Snapshot '${snapshotName}' wurde gelöscht.`);
-				populateSnapshotSelector(); // Liste aktualisieren
-			} catch (error) {
-				console.error("Fehler beim Löschen des Snapshots:", error);
-				window.showModal("Ein Fehler ist aufgetreten. Der Snapshot konnte nicht gelöscht werden.");
-			}
-		}
-		
-		async function populateSnapshotSelector() {
-			const selector = document.getElementById('snapshot-selector');
+
+		async function fetchRaidhelperEvents(serverId, apiKey, proxyUrl) {
+			const selector = document.getElementById('rh-event-selector');
 			if (!selector) return;
-		
+
+			const loadBtn = document.getElementById('load-rh-event-btn');
+			selector.innerHTML = '<option value="">-- Lade Events... --</option>';
+			if (loadBtn) loadBtn.disabled = true;
+
 			try {
-				const q = query(snapshotsCollectionRef, orderBy("createdAt", "desc"));
-				const snapshotSnaps = await getDocs(q);
-		
-				selector.innerHTML = '<option value="">-- Snapshot auswählen --</option>'; // Zurücksetzen
-				snapshotSnaps.forEach(snap => {
-					const data = snap.data();
+				// v4-API: Events-Liste eines Servers. Benoetigt den Authorization-Header,
+				// der einen CORS-Preflight ausloest. Raid-Helper erlaubt diesen Preflight nur
+				// fuer raid-helper.xyz, daher muss die Anfrage ueber einen eigenen Proxy laufen
+				// (z.B. Cloudflare Worker), der den Authorization-Header weiterreicht.
+				const targetApiUrl = `https://raid-helper.xyz/api/v4/servers/${serverId}/events`;
+
+				if (!proxyUrl) {
+					selector.innerHTML = '<option value="">-- Proxy-URL fehlt --</option>';
+					window.showModal("Zum Laden der Event-Liste wird eine Proxy-URL benoetigt (siehe Raidhelper-Konfiguration / Cloudflare Worker).");
+					if (loadBtn) loadBtn.disabled = true;
+					return;
+				}
+
+				const fetchUrl = proxyUrl.replace(/\/+$/, '') + '?url=' + encodeURIComponent(targetApiUrl);
+				const response = await fetch(fetchUrl, {
+					method: 'GET',
+					headers: { 'Authorization': apiKey, 'Accept': 'application/json' }
+				});
+
+				if (!response.ok) {
+					if (response.status === 401) throw new Error('Ungueltiger API Key (401). Bitte Key pruefen.');
+					if (response.status === 404) throw new Error('Server nicht gefunden - bitte Server ID pruefen (404).');
+					throw new Error(`Konnte Events nicht abrufen (HTTP ${response.status}). Proxy/Config pruefen.`);
+				}
+
+				const data = await response.json();
+				const events = data.postedEvents || [];
+
+				// Bevorzugt anstehende Events (aufsteigend), sonst die letzten vergangenen.
+				const nowSec = Date.now() / 1000;
+				events.sort((a, b) => (a.startTime || 0) - (b.startTime || 0));
+				const upcoming = events.filter(ev => (ev.startTime || 0) >= nowSec - 6 * 3600);
+				const list = upcoming.length ? upcoming : events.slice(-40).reverse();
+
+				selector.innerHTML = '<option value="">-- Event auswaehlen --</option>';
+				list.forEach(ev => {
 					const option = document.createElement('option');
-					option.value = snap.id;
-					option.textContent = data.name;
+					option.value = ev.id;
+					const dateStr = new Date((ev.startTime || 0) * 1000).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+					option.textContent = `${dateStr} - ${ev.title || 'Event'}`;
 					selector.appendChild(option);
 				});
-			} catch (error) {
-				console.error("Fehler beim Laden der Snapshot-Liste:", error);
-			}
-}
 
-window.saveSnapshot = saveSnapshot;
-window.loadSnapshot = loadSnapshot;
-window.deleteSnapshot = deleteSnapshot;
-window.populateSnapshotSelector = populateSnapshotSelector;
+				if (!list.length) {
+					selector.innerHTML = '<option value="">-- Keine Events gefunden --</option>';
+				} else if (loadBtn) {
+					loadBtn.disabled = false;
+				}
+
+			} catch (error) {
+				console.error('[Raidhelper] Events laden fehlgeschlagen:', error);
+				selector.innerHTML = '<option value="">-- Fehler beim Laden --</option>';
+				window.showModal(error.message || 'Fehler beim Laden der Events.');
+			}
+		}
+
+		async function fetchRaidhelperSignupsForEvent() {
+			const eventSelector = document.getElementById('rh-event-selector');
+			const eventId = (eventSelector && eventSelector.value || '').trim();
+			if (!eventId) {
+				window.showModal("Bitte waehle zuerst ein Event aus.");
+				return;
+			}
+
+			const playerSelector = document.getElementById('rh-player-selector');
+			const playerContainer = document.getElementById('rh-player-select-container');
+			const addBtn = document.getElementById('add-from-rh-btn');
+			if (playerContainer) playerContainer.style.display = 'flex';
+			playerSelector.innerHTML = '<option value="">-- Lade Spieler... --</option>';
+			if (addBtn) addBtn.disabled = true;
+
+			try {
+				// v4-Einzelevent: keine Authorization noetig und CORS offen (*) -> direkter Fetch.
+				const targetApiUrl = `https://raid-helper.xyz/api/v4/events/${encodeURIComponent(eventId)}`;
+				const response = await fetch(targetApiUrl, { headers: { 'Accept': 'application/json' } });
+
+				if (!response.ok) {
+					throw new Error(`Fehler beim Abrufen der Event-Details (HTTP ${response.status}).`);
+				}
+
+				const data = await response.json();
+				if (data.status === 'failed') {
+					throw new Error(`Raid-Helper: ${data.reason || 'Event nicht gefunden'}.`);
+				}
+				const signups = data.signUps || [];
+
+				// className kann auch ein Nicht-Teilnahme-Status sein -> herausfiltern.
+				const NON_ATTENDING = new Set(['Absence', 'Late', 'Tentative', 'Bench', 'Declined']);
+
+				playerSelector.innerHTML = '<option value="">-- Spieler auswaehlen --</option>';
+				window.lastFetchedRhEventPlayers = [];
+
+				signups.forEach(slot => {
+					if (!slot.name || NON_ATTENDING.has(slot.className)) return;
+					const pInfo = window.getPlayerInfoFromEntry({
+						name: slot.name,
+						class: slot.className || slot.class,
+						spec: slot.specName || slot.spec
+					});
+					if (!pInfo) return;
+					window.lastFetchedRhEventPlayers.push(pInfo);
+					const option = document.createElement('option');
+					option.value = pInfo.name;
+					option.textContent = `${pInfo.name} (${pInfo.class})`;
+					const classColor = (window.classColors && window.classColors[pInfo.class]) || '#FFFFFF';
+					option.style.color = classColor;
+					option.style.backgroundColor = '#0f172a';
+					playerSelector.appendChild(option);
+				});
+
+				if (window.lastFetchedRhEventPlayers.length > 0) {
+					if (addBtn) addBtn.disabled = false;
+				} else {
+					playerSelector.innerHTML = '<option value="">-- Keine Spieler gefunden --</option>';
+				}
+
+			} catch (error) {
+				console.error('[Raidhelper] Signups laden fehlgeschlagen:', error);
+				playerSelector.innerHTML = '<option value="">-- Fehler beim Laden --</option>';
+				window.showModal(error.message);
+			}
+		}
+
+		async function addPlayerFromRaidhelper() {
+			if (!window.isManager) return;
+			
+			const playerSelector = document.getElementById('rh-player-selector');
+			const selectedName = playerSelector.value;
+			
+			if (!selectedName || !window.lastFetchedRhEventPlayers) return;
+
+			const playerData = window.lastFetchedRhEventPlayers.find(p => p.name === selectedName);
+			if (!playerData) return;
+
+			const docSnap = await getDoc(rosterDocRef);
+			const roster = docSnap.exists() ? docSnap.data().roster || [] : [];
+
+			if (roster.some(p => p.name === playerData.name)) {
+				window.showModal(`Spieler '${playerData.name}' ist bereits in der aktuellen Aufstellung.`);
+				return;
+			}
+
+			const newPlayer = {
+				id: crypto.randomUUID(),
+				name: playerData.name,
+				class: playerData.class,
+				roles: playerData.roles || ['DPS']
+			};
+
+			roster.push(newPlayer);
+			await setDoc(rosterDocRef, { roster: roster }, { merge: true });
+
+			const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
+			window.logHistory('Roster', `Spieler aus Raidhelper hinzugefügt`, newPlayer.name, currentManager);
+			window.showModal(`Spieler '${newPlayer.name}' wurde zum Roster hinzugefügt.`);
+
+			playerSelector.value = '';
+			document.getElementById('add-from-rh-btn').disabled = true;
+		}
+
+window.loadRaidhelperConfig = loadRaidhelperConfig;
+window.saveRaidhelperConfig = saveRaidhelperConfig;
+window.fetchRaidhelperSignupsForEvent = fetchRaidhelperSignupsForEvent;
+window.addPlayerFromRaidhelper = addPlayerFromRaidhelper;
 
 // =============================================================================
 // MASTER-VIEW & DISCORD-WEBHOOK
@@ -3168,141 +3240,8 @@ window.initHistoryPage = initHistoryPage;
 		}
 
 
-async function initSnapshotPlayerAdder() {
-    const playerSelector = document.getElementById('snapshot-player-selector');
-    const addButton = document.getElementById('add-from-snapshot-btn');
-    const deleteButton = document.getElementById('delete-from-snapshot-btn'); // Neuer Button
-    if (!playerSelector || !addButton || !deleteButton) return;
-
-    try {
-        // 1. Lade die Deny-List
-        const denylistSnapshot = await getDocs(denylistCollectionRef);
-        const denylist = new Set(denylistSnapshot.docs.map(doc => doc.id));
-
-        // 2. Lade alle Snapshots
-        const querySnapshot = await getDocs(snapshotsCollectionRef);
-        const uniquePlayers = new Map();
-
-        // 3. Sammle Spieler und filtere sie gegen die Deny-List
-        querySnapshot.forEach(doc => {
-            const rosterData = doc.data().roster?.roster;
-            if (rosterData && Array.isArray(rosterData)) {
-                rosterData.forEach(player => {
-                    // Füge den Spieler nur hinzu, wenn er NICHT auf der Deny-List steht
-                    if (!denylist.has(player.name) && !uniquePlayers.has(player.name)) {
-                        uniquePlayers.set(player.name, player);
-                    }
-                });
-            }
-        });
-
-        const sortedPlayers = Array.from(uniquePlayers.values()).sort((a, b) => a.name.localeCompare(b.name));
-
-        // 4. Dropdown füllen
-        playerSelector.innerHTML = '<option value="">-- Spieler aus Snapshot wählen --</option>';
-        sortedPlayers.forEach(player => {
-            const option = document.createElement('option');
-            option.value = player.name;
-            option.textContent = player.name;
-            option.dataset.playerInfo = JSON.stringify(player);
-            playerSelector.appendChild(option);
-        });
-
-        // 5. Event Listener anpassen
-        playerSelector.addEventListener('change', () => {
-            const hasSelection = !!playerSelector.value;
-            addButton.disabled = !hasSelection;
-            deleteButton.disabled = !hasSelection; // Auch den Löschen-Button steuern
-        });
-
-        addButton.addEventListener('click', handleAddPlayerFromSnapshot);
-        deleteButton.addEventListener('click', handleDeletePlayerFromSnapshotList); // Listener für den neuen Button
-
-    } catch (error) {
-        console.error("Fehler beim Laden der Spieler aus Snapshots:", error);
-        playerSelector.innerHTML = '<option value="">Fehler beim Laden</option>';
-    }
-}
-
-
-async function handleDeletePlayerFromSnapshotList() {
-    if (!window.isManager) return;
-    
-    const playerSelector = document.getElementById('snapshot-player-selector');
-    const playerName = playerSelector.value;
-    
-    if (!playerName) return;
-
-    const confirmed = await window.showModal(
-        `Soll der Spieler '${playerName}' wirklich permanent aus allen zukünftigen Snapshot-Importlisten entfernt werden? Die originalen Snapshots bleiben unberührt.`,
-        true // Bestätigungsdialog
-    );
-
-    if (!confirmed) return;
-
-    try {
-        // Füge den Spielernamen zur Deny-List hinzu. Wir benutzen den Namen als ID des Dokuments.
-        const playerDocRef = doc(denylistCollectionRef, playerName);
-        await setDoc(playerDocRef, { 
-            deletedBy: sessionStorage.getItem('currentManager') || 'Unbekannt',
-            deletedAt: serverTimestamp() 
-        });
-
-        window.showModal(`'${playerName}' wird in Zukunft nicht mehr in der Liste angezeigt.`);
-
-        // Lade die Liste neu, um den entfernten Spieler sofort auszublenden
-        initSnapshotPlayerAdder();
-
-    } catch (error) {
-        console.error("Fehler beim Hinzufügen zur Deny-List:", error);
-        window.showModal("Ein Fehler ist aufgetreten. Der Spieler konnte nicht gelöscht werden.");
-    }
-}
-
-async function handleAddPlayerFromSnapshot() {
-    if (!window.isManager) return;
-    
-    const playerSelector = document.getElementById('snapshot-player-selector');
-    const selectedOption = playerSelector.options[playerSelector.selectedIndex];
-    
-    if (!selectedOption || !selectedOption.value) return;
-
-    const playerData = JSON.parse(selectedOption.dataset.playerInfo);
-
-    const docSnap = await getDoc(rosterDocRef);
-    const roster = docSnap.exists() ? docSnap.data().roster || [] : [];
-
-    // Prüfen, ob der Spieler bereits im aktuellen Roster ist
-    if (roster.some(p => p.name === playerData.name)) {
-        window.showModal(`Spieler '${playerData.name}' ist bereits in der aktuellen Aufstellung.`);
-        return;
-    }
-
-    // Einen neuen Spieler erstellen, aber mit einer NEUEN, einzigartigen ID
-    const newPlayer = {
-        id: crypto.randomUUID(),
-        name: playerData.name,
-        class: playerData.class,
-        roles: playerData.roles || ['DPS'] // Fallback, falls Rollen fehlen
-    };
-
-    roster.push(newPlayer);
-    await setDoc(rosterDocRef, { roster: roster }, { merge: true });
-
-    const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
-    window.logHistory('Roster', `Spieler aus Snapshot hinzugefügt`, newPlayer.name, currentManager);
-    window.showModal(`Spieler '${newPlayer.name}' wurde zum Roster hinzugefügt.`);
-
-    // Auswahl zurücksetzen
-    playerSelector.value = '';
-    document.getElementById('add-from-snapshot-btn').disabled = true;
-}
-
 window.initLootPage = initLootPage;
 window.handleLootImport = handleLootImport;
-window.initSnapshotPlayerAdder = initSnapshotPlayerAdder;
-window.handleDeletePlayerFromSnapshotList = handleDeletePlayerFromSnapshotList;
-window.handleAddPlayerFromSnapshot = handleAddPlayerFromSnapshot;
 
 // =============================================================================
 // LOOT-DETAIL-ANZEIGE
