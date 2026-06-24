@@ -578,6 +578,13 @@ window.CD_AUTO_PLANNER = (function () {
         }).map(function (p) { return p.name; });
     }
 
+    // Ist <spellId> für <player> beim aktuellen Boss deaktiviert (Roster-Patch)?
+    // Slot-Keys (z.B. 'HPALA1') matchen keine Spielernamen → werden nicht gefiltert.
+    function isSpellDisabledForPlayer(player, spellId) {
+        return !!(window.RosterPatches && typeof window.RosterPatches.isAbilityDisabled === 'function' &&
+            window.RosterPatches.isAbilityDisabled(window.currentBossIdForPatches, player, spellId));
+    }
+
     // ── SpellID → DB-Eintrag ──
     function resolveSpell(spellId) {
         var sid = String(spellId);
@@ -1022,6 +1029,9 @@ window.CD_AUTO_PLANNER = (function () {
         function pickPlayer(players, spell, atTime) {
             // Liefert ersten verfügbaren Spieler aus der Liste,
             // unter Berücksichtigung von Round-Robin wenn aktiv.
+            if (!players.length) return null;
+            // Spieler ausschließen, für die diese Fähigkeit deaktiviert ist (nicht geskillt).
+            players = players.filter(function (p) { return !isSpellDisabledForPlayer(p, spell.spellId); });
             if (!players.length) return null;
             var cdSec = spell.cooldownSec || 180;
 
@@ -1537,8 +1547,14 @@ window.CD_AUTO_PLANNER = (function () {
         var rosterPart = roster.map(function (p) {
             return (p.name || '') + (p.class || '') + (p.spec || p.specName || p.specialization || '');
         }).join(',');
+        // Deaktivierte Fähigkeiten mit in die Signatur, damit Änderungen die
+        // gecachten Optionsfragmente neu bauen.
+        var disabledPart = '';
+        if (window.RosterPatches && typeof window.RosterPatches.getBossDisabledAbilities === 'function') {
+            disabledPart = JSON.stringify(window.RosterPatches.getBossDisabledAbilities(window.currentBossIdForPatches) || {});
+        }
         return (cooldownsDB ? cooldownsDB.length : 0) + '|' + roster.length + '|' + rosterPart
-            + '|' + Object.keys(categories).length;
+            + '|' + Object.keys(categories).length + '|' + disabledPart;
     }
 
     function getDropdownFragment(catKey) {
@@ -1617,6 +1633,7 @@ window.CD_AUTO_PLANNER = (function () {
                             specMark = ' (' + s.requiredRole + ')';
                         }
                         players.forEach(function (p) {
+                            if (isSpellDisabledForPlayer(p, s.spellId)) return; // deaktiviert (nicht geskillt)
                             recHtml += '<option value="' + p + '::' + s.dbName + '" style="color:' + color + ';">★ ' + p + ' → ' + s.dbName + dur + specMark + '</option>';
                         });
                     });
@@ -1646,6 +1663,7 @@ window.CD_AUTO_PLANNER = (function () {
                     allHtml += '<option disabled style="font-weight:bold; color:' + color + '; background:#1a202c; opacity:0.7;">── ' + cls + ' ──</option>';
                     players.forEach(function (p) {
                         cds.forEach(function (cd) {
+                            if (isSpellDisabledForPlayer(p, cd.spellId)) return; // deaktiviert (nicht geskillt)
                             allHtml += '<option value="' + p + '::' + cd.name + '" style="color:' + color + '; opacity:0.8;">' + p + ' → ' + cd.name + '</option>';
                         });
                     });

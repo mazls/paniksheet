@@ -45,6 +45,7 @@ import { state, offensiveBuffsForAssignment, getCurrentRaidId, debounce, debounc
 window.RosterPatches = (function() {
     let bossPatchesById = {};        // bossId → patches-object
     let bossSlotOverridesById = {};  // bossId → slotOverrides-object { SlotKey: PlayerName | null }
+    let bossDisabledAbilitiesById = {}; // bossId → { PlayerName: [spellId, ...] } (deaktivierte Fähigkeiten)
 
     function applyPatchObject(player, patch) {
         if (!patch) return player;
@@ -138,17 +139,42 @@ window.RosterPatches = (function() {
         return { ...(bossSlotOverridesById[bossId] || {}) };
     }
 
+    // ── Deaktivierte Fähigkeiten (pro Boss, pro Spieler) ──────────────────
+    function setBossDisabledAbilities(bossId, map) {
+        bossDisabledAbilitiesById[bossId] = map || {};
+    }
+
+    function getBossDisabledAbilities(bossId) {
+        // Tiefe Kopie, damit Aufrufer die internen Arrays nicht versehentlich mutieren
+        const src = bossDisabledAbilitiesById[bossId] || {};
+        const out = {};
+        Object.keys(src).forEach(name => { out[name] = Array.isArray(src[name]) ? src[name].slice() : []; });
+        return out;
+    }
+
+    // Zentrale Abfrage für Auto-Planer & Dropdowns:
+    // Ist <spellId> für <playerName> bei <bossId> deaktiviert?
+    function isAbilityDisabled(bossId, playerName, spellId) {
+        if (!bossId || !playerName || spellId === undefined || spellId === null) return false;
+        const list = (bossDisabledAbilitiesById[bossId] || {})[playerName];
+        if (!Array.isArray(list) || list.length === 0) return false;
+        const sid = String(spellId);
+        return list.some(s => String(s) === sid);
+    }
+
     function hasAnyPatches(bossId) {
         const p = bossPatchesById[bossId] || {};
         const o = bossSlotOverridesById[bossId] || {};
-        return Object.keys(p).length > 0 || Object.keys(o).length > 0;
+        const d = bossDisabledAbilitiesById[bossId] || {};
+        return Object.keys(p).length > 0 || Object.keys(o).length > 0 || Object.keys(d).length > 0;
     }
 
     /**
-     * Speichert Patches (und optional Slot-Overrides) für einen Boss.
-     * Wenn slotOverrides nicht übergeben wird, wird der existing Stand beibehalten.
+     * Speichert Patches (und optional Slot-Overrides + deaktivierte Fähigkeiten)
+     * für einen Boss. Wird ein optionales Feld nicht übergeben (undefined), bleibt
+     * der bestehende Stand erhalten.
      */
-    async function saveBossPatches(bossId, patches, firebaseTools, editorName, slotOverrides) {
+    async function saveBossPatches(bossId, patches, firebaseTools, editorName, slotOverrides, disabledAbilities) {
         if (!firebaseTools) return;
         const ref = firebaseTools.doc(firebaseTools.db, "raid-tool-data", bossId);
 
@@ -162,9 +188,13 @@ window.RosterPatches = (function() {
         const effectiveSlotOverrides = (slotOverrides !== undefined)
             ? slotOverrides
             : (bossSlotOverridesById[bossId] || {});
+        const effectiveDisabledAbilities = (disabledAbilities !== undefined)
+            ? disabledAbilities
+            : (bossDisabledAbilitiesById[bossId] || {});
         const newValue = {
             patches: patches,
             slotOverrides: effectiveSlotOverrides,
+            disabledAbilities: effectiveDisabledAbilities,
             editor: editorName || 'Unbekannt',
             timestamp: new Date().toISOString()
         };
@@ -186,6 +216,9 @@ window.RosterPatches = (function() {
         setBossPatches,
         setBossSlotOverrides,
         getBossSlotOverrides,
+        setBossDisabledAbilities,
+        getBossDisabledAbilities,
+        isAbilityDisabled,
         getEffectiveSlotMapping,
         hasAnyPatches,
         buildEffectiveRoster,
@@ -249,9 +282,13 @@ window.updateRosterPatchBanner = function(bossId) {
     
     const bossPatches = window.RosterPatches.getBossPatches(bossId);
     const slotOverrides = window.RosterPatches.getBossSlotOverrides(bossId);
+    const disabledAbilities = window.RosterPatches.getBossDisabledAbilities(bossId);
     const patchCount = Object.keys(bossPatches).length;
     const slotOverrideCount = Object.keys(slotOverrides).length;
-    const totalCount = patchCount + slotOverrideCount;
+    const disabledEntries = Object.entries(disabledAbilities).filter(([, list]) => Array.isArray(list) && list.length > 0);
+    const totalCount = patchCount + slotOverrideCount + disabledEntries.length;
+    const cdsForName = window.allCooldowns || [];
+    const spellName = (sid) => { const cd = cdsForName.find(c => String(c.spellId) === String(sid)); return cd ? cd.name : ('Spell ' + sid); };
     
     let html = `
         <div class="flex items-center gap-2 flex-wrap">
@@ -278,6 +315,14 @@ window.updateRosterPatchBanner = function(bossId) {
             html += `<span class="inline-flex items-center gap-1 text-xs bg-yellow-900/40 border border-yellow-700 rounded px-2 py-0.5">
                 <span class="text-yellow-200 font-mono">${slotKey}</span>
                 <span class="text-yellow-100">→ ${display}</span>
+            </span>`;
+        });
+        // Deaktivierte Fähigkeiten als rote Chips
+        disabledEntries.forEach(([name, list]) => {
+            const abilities = list.map(spellName).join(', ');
+            html += `<span class="inline-flex items-center gap-1 text-xs bg-red-900/40 border border-red-800 rounded px-2 py-0.5">
+                <span class="text-white">${name}</span>
+                <span class="text-red-200">⊘ ${abilities}</span>
             </span>`;
         });
     }
@@ -351,6 +396,19 @@ window.openRosterPatchModal = function(bossId) {
                 <ul id="rp-slot-list" class="space-y-1 mb-2"></ul>
                 <button id="rp-add-slot" class="text-xs bg-yellow-700 hover:bg-yellow-600 text-white py-1.5 px-3 rounded">+ Slot-Override hinzufügen</button>
             </div>
+
+            <!-- DEAKTIVIERTE FÄHIGKEITEN -->
+            <div class="pt-3 border-t border-slate-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-sm font-bold text-red-300">🚫 Deaktivierte Fähigkeiten</h4>
+                </div>
+                <p class="text-xs text-gray-400 mb-2">
+                    Fähigkeiten, die ein Spieler bei diesem Boss <em>nicht</em> hat (z.&nbsp;B. nicht geskillt).
+                    Der Auto-Planer weist sie ihm nicht zu und sie verschwinden aus den manuellen Dropdowns.
+                </p>
+                <ul id="rp-disabled-list" class="space-y-1 mb-2"></ul>
+                <button id="rp-add-disabled" class="text-xs bg-red-800 hover:bg-red-700 text-white py-1.5 px-3 rounded">+ Fähigkeit deaktivieren</button>
+            </div>
         </div>
     `;
     document.body.appendChild(modal);
@@ -372,6 +430,49 @@ window.openRosterPatchModal = function(bossId) {
 
         // Slot-Overrides rendern
         renderSlotList();
+        // Deaktivierte Fähigkeiten rendern
+        renderDisabledList();
+    }
+
+    function renderDisabledList() {
+        const disabled = window.RosterPatches.getBossDisabledAbilities(bossId);
+        const list = document.getElementById('rp-disabled-list');
+        if (!list) return;
+        const names = Object.keys(disabled).filter(n => Array.isArray(disabled[n]) && disabled[n].length > 0);
+        if (names.length === 0) {
+            list.innerHTML = '<li class="text-xs text-gray-500 italic px-2">Keine deaktivierten Fähigkeiten.</li>';
+            return;
+        }
+        // spellId → Name aus der Cooldown-DB
+        const cds = window.allCooldowns || [];
+        const nameForSpell = (sid) => {
+            const cd = cds.find(c => String(c.spellId) === String(sid));
+            return cd ? cd.name : ('Spell ' + sid);
+        };
+        list.innerHTML = names.sort().map(name => {
+            const chips = disabled[name].map(sid =>
+                `<span class="inline-flex items-center gap-1 bg-red-900/30 border border-red-800/50 rounded px-1.5 py-0.5">
+                    <span class="text-red-100">${nameForSpell(sid)}</span>
+                    <button class="rp-dis-remove text-red-400 hover:text-red-200" data-name="${name}" data-spell="${sid}" title="Wieder aktivieren">✕</button>
+                </span>`).join(' ');
+            return `
+                <li class="flex items-start gap-2 bg-slate-900 border border-red-900/40 rounded px-2 py-1.5 text-xs">
+                    <span class="font-bold text-white whitespace-nowrap">${name}</span>
+                    <span class="text-gray-400">⊘</span>
+                    <span class="flex flex-wrap gap-1 flex-1">${chips}</span>
+                    <button class="rp-dis-edit text-blue-400 hover:text-blue-300 px-1" data-name="${name}" title="Bearbeiten">✎</button>
+                </li>
+            `;
+        }).join('');
+
+        modal.querySelectorAll('.rp-dis-edit').forEach(b => b.addEventListener('click', () => {
+            window.openDisabledAbilityEditor(bossId, b.dataset.name, () => renderDisabledList());
+        }));
+        modal.querySelectorAll('.rp-dis-remove').forEach(b => b.addEventListener('click', async () => {
+            await removeDisabledAbility(bossId, b.dataset.name, b.dataset.spell);
+            renderDisabledList();
+            if (window.updateRosterPatchBanner) window.updateRosterPatchBanner(bossId);
+        }));
     }
 
     function renderSlotList() {
@@ -441,9 +542,25 @@ window.openRosterPatchModal = function(bossId) {
     document.getElementById('rp-add-slot').addEventListener('click', () => {
         window.openSlotOverrideEditor(bossId, null, () => renderSlotList());
     });
-    
+    document.getElementById('rp-add-disabled').addEventListener('click', () => {
+        window.openDisabledAbilityEditor(bossId, null, () => renderDisabledList());
+    });
+
     renderList();
 };
+
+// Entfernt eine einzelne deaktivierte Fähigkeit (spellId) eines Spielers.
+async function removeDisabledAbility(bossId, playerName, spellId) {
+    const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+    const map = window.RosterPatches.getBossDisabledAbilities(bossId);
+    if (map[playerName]) {
+        map[playerName] = map[playerName].filter(s => String(s) !== String(spellId));
+        if (map[playerName].length === 0) delete map[playerName];
+    }
+    window.RosterPatches.setBossDisabledAbilities(bossId, map);
+    const patches = window.RosterPatches.getBossPatches(bossId);
+    await window.RosterPatches.saveBossPatches(bossId, patches, window.firebaseTools, editorName, undefined, map);
+}
 
 async function deleteSlotOverride(bossId, slotKey) {
     const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
@@ -584,6 +701,117 @@ window.openSlotOverrideEditor = function(bossId, existingKey, onSaved) {
 
         await window.RosterPatches.saveBossPatches(bossId, patches, window.firebaseTools, editorName, allOverrides);
         window.RosterPatches.setBossSlotOverrides(bossId, allOverrides);
+        if (window.updateRosterPatchBanner) window.updateRosterPatchBanner(bossId);
+        if (typeof onSaved === 'function') onSaved();
+        close();
+    });
+};
+
+// Editor-Modal: Fähigkeiten eines Spielers für diesen Boss deaktivieren.
+window.openDisabledAbilityEditor = function(bossId, existingName, onSaved) {
+    if (!bossId) { alert('Kein Boss ausgewählt'); return; }
+
+    // Vollständiger Roster (inkl. Bank), damit man für jeden Spieler konfigurieren kann.
+    const roster = (window.rosterData && window.rosterData.length)
+        ? window.rosterData
+        : (window.effectiveRoster || []);
+    const disabledMap = window.RosterPatches.getBossDisabledAbilities(bossId);
+    const isEdit = !!existingName;
+
+    const editorEl = document.createElement('div');
+    editorEl.id = 'disabled-ability-editor';
+    editorEl.className = 'fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4';
+
+    const playerOptionsHtml = roster
+        .map(p => p.name)
+        .filter((n, i, arr) => n && arr.indexOf(n) === i)
+        .sort()
+        .map(n => {
+            const pl = roster.find(p => p.name === n);
+            const color = (window.classColors && window.classColors[(pl && pl.class || '').toUpperCase()]) || '#FFFFFF';
+            return `<option value="${n}" style="color:${color};" ${n === existingName ? 'selected' : ''}>${n}</option>`;
+        }).join('');
+
+    editorEl.innerHTML = `
+        <div class="bg-slate-800 border border-red-800 rounded-lg p-4 max-w-md w-full max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-700">
+                <h3 class="text-lg font-bold text-red-300">${isEdit ? 'Deaktivierte Fähigkeiten bearbeiten' : 'Fähigkeit deaktivieren'}</h3>
+                <button id="da-close" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs text-gray-300 mb-1">Spieler</label>
+                    <select id="da-player" class="w-full bg-slate-900 border border-slate-600 text-gray-200 text-sm rounded px-2 py-1" ${isEdit ? 'disabled' : ''}>
+                        <option value="">— Spieler wählen —</option>
+                        ${playerOptionsHtml}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-300 mb-1">Fähigkeiten (angehakt = deaktiviert)</label>
+                    <div id="da-abilities" class="space-y-1 max-h-[45vh] overflow-y-auto bg-slate-900 border border-slate-700 rounded p-2 text-sm text-gray-400">
+                        <span class="text-xs italic text-gray-500">Zuerst einen Spieler wählen.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-2 justify-end mt-4 pt-3 border-t border-slate-700">
+                <button id="da-cancel" class="text-xs bg-slate-700 hover:bg-slate-600 text-gray-200 py-1.5 px-3 rounded">Abbrechen</button>
+                <button id="da-save" class="text-xs bg-red-800 hover:bg-red-700 text-white py-1.5 px-3 rounded">Speichern</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(editorEl);
+
+    const close = () => editorEl.remove();
+    document.getElementById('da-close').addEventListener('click', close);
+    document.getElementById('da-cancel').addEventListener('click', close);
+    editorEl.addEventListener('click', e => { if (e.target === editorEl) close(); });
+
+    const playerSel = document.getElementById('da-player');
+    const abilitiesEl = document.getElementById('da-abilities');
+
+    function renderAbilities() {
+        const name = playerSel.value;
+        if (!name) { abilitiesEl.innerHTML = '<span class="text-xs italic text-gray-500">Zuerst einen Spieler wählen.</span>'; return; }
+        const player = roster.find(p => p.name === name);
+        const cls = (player && player.class || '').toUpperCase();
+        const already = new Set((disabledMap[name] || []).map(String));
+        const cds = (window.allCooldowns || []).filter(cd =>
+            cd && cd.name && cd.spellId && cd.spellId !== 'nil' &&
+            cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0 &&
+            String(cd.class || '').toUpperCase() === cls
+        );
+        // Duplikate (gleiche spellId) entfernen
+        const seen = new Set();
+        const uniqueCds = cds.filter(cd => { const k = String(cd.spellId); if (seen.has(k)) return false; seen.add(k); return true; });
+        if (uniqueCds.length === 0) {
+            abilitiesEl.innerHTML = `<span class="text-xs italic text-gray-500">Keine Fähigkeiten für Klasse „${player && player.class || '?'}" in der DB gefunden.</span>`;
+            return;
+        }
+        abilitiesEl.innerHTML = uniqueCds.map(cd => `
+            <label class="flex items-center gap-2 cursor-pointer hover:bg-slate-800/60 rounded px-1 py-0.5">
+                <input type="checkbox" class="da-cb accent-red-600" value="${cd.spellId}" ${already.has(String(cd.spellId)) ? 'checked' : ''}>
+                <span class="text-gray-200">${cd.name}</span>
+            </label>
+        `).join('');
+    }
+
+    playerSel.addEventListener('change', renderAbilities);
+    if (existingName) renderAbilities();
+
+    document.getElementById('da-save').addEventListener('click', async () => {
+        const name = playerSel.value || existingName;
+        if (!name) { alert('Bitte einen Spieler auswählen.'); return; }
+        const checked = Array.from(editorEl.querySelectorAll('.da-cb:checked')).map(cb => cb.value);
+
+        const map = window.RosterPatches.getBossDisabledAbilities(bossId);
+        if (checked.length > 0) map[name] = checked;
+        else delete map[name];
+
+        const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
+        const patches = window.RosterPatches.getBossPatches(bossId);
+        window.RosterPatches.setBossDisabledAbilities(bossId, map);
+        await window.RosterPatches.saveBossPatches(bossId, patches, window.firebaseTools, editorName, undefined, map);
+
         if (window.updateRosterPatchBanner) window.updateRosterPatchBanner(bossId);
         if (typeof onSaved === 'function') onSaved();
         close();
@@ -779,7 +1007,14 @@ window.initRosterPatchesCompUI = function(bosses) {
                 if (snap.exists()) {
                     const data = snap.data();
                     if (data._rosterPatches && data._rosterPatches.patches && Object.keys(data._rosterPatches.patches).length > 0) {
-                        bossPatchesCache[bossId] = { name: boss.name, patches: data._rosterPatches.patches };
+                        bossPatchesCache[bossId] = {
+                            name: boss.name,
+                            patches: data._rosterPatches.patches,
+                            // Mitführen, damit ein Patch-Delete in dieser Übersicht die anderen
+                            // _rosterPatches-Felder nicht versehentlich überschreibt.
+                            slotOverrides: data._rosterPatches.slotOverrides || {},
+                            disabledAbilities: data._rosterPatches.disabledAbilities || {}
+                        };
                     }
                 }
             } catch (err) {
@@ -851,24 +1086,26 @@ window.initRosterPatchesCompUI = function(bosses) {
         html += `<button class="rpc-add-boss text-xs bg-purple-700 hover:bg-purple-800 disabled:opacity-50 text-white py-1 px-3 rounded" data-boss-id="${selectedBossTab}" ${window.isManager ? '' : 'disabled'}>+ Patch für ${bossName}</button>`;
         contentEl.innerHTML = html;
         
+        // Modul-State aus dem Cache befüllen, damit ein Save im Editor die anderen
+        // _rosterPatches-Felder (Slot-Overrides, deaktivierte Fähigkeiten) erhält.
+        function primeModuleFromCache(bid) {
+            const c = bossPatchesCache[bid];
+            window.RosterPatches.setBossPatches(bid, c ? c.patches : {});
+            window.RosterPatches.setBossSlotOverrides(bid, (c && c.slotOverrides) || {});
+            window.RosterPatches.setBossDisabledAbilities(bid, (c && c.disabledAbilities) || {});
+        }
+
         contentEl.querySelector('.rpc-add-boss')?.addEventListener('click', (e) => {
             const bid = e.currentTarget.dataset.bossId;
-            // RosterPatches lokal befüllen damit der Editor existierende Daten findet
-            if (bossPatchesCache[bid]) {
-                window.RosterPatches.setBossPatches(bid, bossPatchesCache[bid].patches);
-            } else {
-                window.RosterPatches.setBossPatches(bid, {});
-            }
+            primeModuleFromCache(bid);
             window.openRosterPatchEditor(bid, null, () => loadAllBossPatches());
         });
-        
+
         contentEl.querySelectorAll('.rpc-edit').forEach(b => {
             b.onclick = () => {
                 const bid = b.dataset.bossId;
                 const name = b.dataset.name;
-                if (bossPatchesCache[bid]) {
-                    window.RosterPatches.setBossPatches(bid, bossPatchesCache[bid].patches);
-                }
+                primeModuleFromCache(bid);
                 window.openRosterPatchEditor(bid, name, () => loadAllBossPatches());
             };
         });
@@ -880,7 +1117,12 @@ window.initRosterPatchesCompUI = function(bosses) {
                 const editorName = sessionStorage.getItem('currentManager') || 'Unbekannt';
                 const all = { ...(bossPatchesCache[bid]?.patches || {}) };
                 delete all[name];
-                await window.RosterPatches.saveBossPatches(bid, all, window.firebaseTools, editorName);
+                // Andere _rosterPatches-Felder erhalten (sonst würden sie beim Speichern geleert)
+                const keepSlots = bossPatchesCache[bid]?.slotOverrides || {};
+                const keepDisabled = bossPatchesCache[bid]?.disabledAbilities || {};
+                window.RosterPatches.setBossSlotOverrides(bid, keepSlots);
+                window.RosterPatches.setBossDisabledAbilities(bid, keepDisabled);
+                await window.RosterPatches.saveBossPatches(bid, all, window.firebaseTools, editorName, keepSlots, keepDisabled);
                 window.RosterPatches.setBossPatches(bid, all);
                 if (Object.keys(all).length > 0) {
                     bossPatchesCache[bid] = { name: bosses.find(b2 => 'boss-' + b2.id === bid)?.name || bid, patches: all };
@@ -956,6 +1198,7 @@ window.setupBossListener = function(bossId) {
         const bossPatchesPayload = rawData._rosterPatches;
         const bossPatches = (bossPatchesPayload && bossPatchesPayload.patches) ? bossPatchesPayload.patches : {};
         const bossSlotOverrides = (bossPatchesPayload && bossPatchesPayload.slotOverrides) ? bossPatchesPayload.slotOverrides : {};
+        const bossDisabledAbilities = (bossPatchesPayload && bossPatchesPayload.disabledAbilities) ? bossPatchesPayload.disabledAbilities : {};
 
         // Vorherigen Stand merken — wenn Slot-Overrides sich geändert haben, müssen
         // die Dropdowns auf der Boss-Seite frisch befüllt werden.
@@ -964,6 +1207,7 @@ window.setupBossListener = function(bossId) {
 
         window.RosterPatches.setBossPatches(bossId, bossPatches);
         window.RosterPatches.setBossSlotOverrides(bossId, bossSlotOverrides);
+        window.RosterPatches.setBossDisabledAbilities(bossId, bossDisabledAbilities);
         
         // 'assignments' = alles außer den Meta-Feldern
         const assignments = { ...rawData };
@@ -1103,7 +1347,9 @@ window.setupBossListener = function(bossId) {
                     const bossPatchesPayload = rawData._rosterPatches;
                     const bossPatches = (bossPatchesPayload && bossPatchesPayload.patches) ? bossPatchesPayload.patches : {};
                     window.RosterPatches.setBossPatches(bossId, bossPatches);
-                    
+                    window.RosterPatches.setBossSlotOverrides(bossId, (bossPatchesPayload && bossPatchesPayload.slotOverrides) ? bossPatchesPayload.slotOverrides : {});
+                    window.RosterPatches.setBossDisabledAbilities(bossId, (bossPatchesPayload && bossPatchesPayload.disabledAbilities) ? bossPatchesPayload.disabledAbilities : {});
+
                     const assignments = { ...rawData };
                     delete assignments._rosterPatches;
                     
