@@ -1546,6 +1546,49 @@ window.LaneGroups = (function () {
         return true;
     }
 
+    // Stabile Signatur der Blöcke OHNE volatile IDs — für Änderungs-Erkennung,
+    // damit wir nur dann neu rendern, wenn sich inhaltlich etwas geändert hat.
+    function blocksSignature(blocks) {
+        return JSON.stringify((blocks || []).map(b => ({
+            title: b.title, type: b.type, autoFill: b.autoFill, waExport: b.waExport,
+            isolatedBlock: b.isolatedBlock, sharedLanes: b.sharedLanes, onlyKicks: b.onlyKicks,
+            customPrio: b.customPrio,
+            lanes: (b.lanes || []).map(l => ({
+                title: l.title, marker: l.marker, slots: l.slots,
+                slotMarkers: l.slotMarkers, slotTitles: l.slotTitles, allowedCats: l.allowedCats
+            }))
+        })));
+    }
+
+    // Live-Sync: Wird vom globalen Boss-Listener bei JEDER Firestore-Änderung
+    // aufgerufen (nicht nur beim ersten Laden), damit alle Betrachter die
+    // Lane-Einteilungen sofort sehen — ohne die Seite neu zu laden.
+    // Aktualisiert alle Instanzen, deren Daten sich geändert haben.
+    function syncAssignments(assignments) {
+        if (!assignments) return;
+        const modalOpen = !!document.getElementById('lg-prio-overlay');
+        _instances.forEach(inst => {
+            // Editor/aktiv interagierende Nutzer nicht stören:
+            if (inst.editMode) return;                                   // Bearbeitungsmodus aktiv
+            if (modalOpen) return;                                       // Prio-/Kategorie-Modal offen
+            if (inst.container && inst.container.contains(document.activeElement)) return; // gerade fokussiert
+
+            const saved = assignments[inst.assignmentId];
+            const incoming = (saved && Array.isArray(saved.blocks) && saved.blocks.length > 0)
+                ? saved.blocks.map(normalizeBlock)
+                : (inst.defaultBlocks || []).map(normalizeBlock);
+
+            // Nur neu rendern, wenn sich tatsächlich etwas geändert hat
+            // (verhindert Flackern und das Zurücksetzen beim eigenen Save-Echo).
+            if (blocksSignature(inst.blocks) === blocksSignature(incoming)) return;
+
+            inst.blocks = incoming;
+            // assignmentsRef aktuell halten, damit spätere Saves auf frischem Stand mergen.
+            if (inst.assignmentsRef && saved) inst.assignmentsRef[inst.assignmentId] = saved;
+            render(inst);
+        });
+    }
+
     // Liefert eine lesbare Text-Summary einer Instanz (für WeakAura-Export):
     //   Boss Name — Block-Title
     //     ⭐ Star: Marcel, Sarah
@@ -1597,6 +1640,7 @@ window.LaneGroups = (function () {
         // Public API für Integrationen
         getInstance,
         reloadAssignments,
+        syncAssignments,
         getSummary
     };
 

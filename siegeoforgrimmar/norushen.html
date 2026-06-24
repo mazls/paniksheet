@@ -920,9 +920,10 @@
                     }
                 }
 
-                function loadFromAssignments() {
-                    if (!assignments) return;
-                    const saved = assignments[ASSIGNMENT_ID];
+                function loadFromAssignments(data) {
+                    const src = data || assignments;
+                    if (!src) return;
+                    const saved = src[ASSIGNMENT_ID];
                     if (saved && Array.isArray(saved.orderData)) {
                         orderData = saved.orderData.slice();
                         renderRows();
@@ -1738,6 +1739,22 @@
 
                 loadFromAssignments();
                 if (orderData.length === 0) renderRows();
+
+                // Live-Sync: Orb-Reihenfolge bei Firestore-Änderungen ohne
+                // Reload aktualisieren (für alle Betrachter).
+                if (window.registerBossLiveSync) {
+                    window.registerBossLiveSync(function (fresh) {
+                        if (!fresh) return;
+                        // Nutzer nicht stören, der gerade im Widget ein Feld bearbeitet
+                        if (tbody.contains(document.activeElement)) return;
+                        const saved = fresh[ASSIGNMENT_ID];
+                        const incoming = (saved && Array.isArray(saved.orderData)) ? saved.orderData : null;
+                        // Nur neu rendern, wenn sich gegenüber dem aktuellen Stand etwas
+                        // geändert hat (verhindert Flackern und Save-Echo des Editors).
+                        if (JSON.stringify(incoming) === JSON.stringify(orderData)) return;
+                        loadFromAssignments(fresh);
+                    });
+                }
             })();
         };
     </script>

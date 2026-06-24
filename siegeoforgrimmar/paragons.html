@@ -503,20 +503,37 @@ CD_AUTO_PLANNER.init({
                 } catch (e) {}
             }
             
-            if (assignments && assignments[ASSIGNMENT_ID] && Array.isArray(assignments[ASSIGNMENT_ID].killOrder)) {
-                const saved = assignments[ASSIGNMENT_ID].killOrder;
-                killOrder = saved.slice(0, NUM_SLOTS).concat(Array(NUM_SLOTS).fill(OPTIONS[0])).slice(0, NUM_SLOTS);
+            function loadFromAssignments(data) {
+                const src = data || assignments;
+                if (src && src[ASSIGNMENT_ID] && Array.isArray(src[ASSIGNMENT_ID].killOrder)) {
+                    const saved = src[ASSIGNMENT_ID].killOrder;
+                    killOrder = saved.slice(0, NUM_SLOTS).concat(Array(NUM_SLOTS).fill(OPTIONS[0])).slice(0, NUM_SLOTS);
+                    return true;
+                }
+                return false;
             }
-            
+            loadFromAssignments();
+
             function applyKoProtection() {
                 const isM = !!window.isManager;
                 gridEl.querySelectorAll('select, button').forEach(el => el.disabled = !isM);
                 if (resetBtn) resetBtn.disabled = !isM;
             }
-            
+
             render();
             applyKoProtection();
             setInterval(applyKoProtection, 1500);
+
+            // Live-Sync: Killorder bei Firestore-Änderungen ohne Reload aktualisieren.
+            if (window.registerBossLiveSync) {
+                window.registerBossLiveSync(function (fresh) {
+                    if (!fresh) return;
+                    if (gridEl.contains(document.activeElement)) return;
+                    const incoming = (fresh[ASSIGNMENT_ID] && Array.isArray(fresh[ASSIGNMENT_ID].killOrder)) ? fresh[ASSIGNMENT_ID].killOrder : null;
+                    if (JSON.stringify(incoming) === JSON.stringify(killOrder)) return;
+                    if (loadFromAssignments(fresh)) render();
+                });
+            }
         })();
 
         // ════════════════════════════════════════════════════════════════

@@ -990,11 +990,17 @@
                     }
                 }
 
-                if (assignments && assignments[ASSIGNMENT_ID] && Array.isArray(assignments[ASSIGNMENT_ID].killOrder)) {
-                    const saved = assignments[ASSIGNMENT_ID].killOrder;
-                    killOrder = saved.slice(0, NUM_SLOTS).concat(Array(NUM_SLOTS).fill(DEFAULT_VALUE)).slice(0, NUM_SLOTS);
-                    killOrder = killOrder.map(v => OPTIONS.includes(v) ? v : DEFAULT_VALUE);
+                function loadFromAssignments(data) {
+                    const src = data || assignments;
+                    if (src && src[ASSIGNMENT_ID] && Array.isArray(src[ASSIGNMENT_ID].killOrder)) {
+                        const saved = src[ASSIGNMENT_ID].killOrder;
+                        killOrder = saved.slice(0, NUM_SLOTS).concat(Array(NUM_SLOTS).fill(DEFAULT_VALUE)).slice(0, NUM_SLOTS);
+                        killOrder = killOrder.map(v => OPTIONS.includes(v) ? v : DEFAULT_VALUE);
+                        return true;
+                    }
+                    return false;
                 }
+                loadFromAssignments();
 
                 function applyKoProtection() {
                     const isM = !!window.isManager;
@@ -1005,6 +1011,17 @@
                 render();
                 applyKoProtection();
                 setInterval(applyKoProtection, 1500);
+
+                // Live-Sync: Killorder bei Firestore-Änderungen ohne Reload aktualisieren.
+                if (window.registerBossLiveSync) {
+                    window.registerBossLiveSync(function (fresh) {
+                        if (!fresh) return;
+                        if (gridEl.contains(document.activeElement)) return;
+                        const incoming = (fresh[ASSIGNMENT_ID] && Array.isArray(fresh[ASSIGNMENT_ID].killOrder)) ? fresh[ASSIGNMENT_ID].killOrder : null;
+                        if (JSON.stringify(incoming) === JSON.stringify(killOrder)) return;
+                        if (loadFromAssignments(fresh)) render();
+                    });
+                }
             })();
 
             // ════════════════════════════════════════════════════════════════
@@ -1318,27 +1335,43 @@
                     }
                 }
 
-                if (assignments && assignments[ASSIGNMENT_ID]) {
-                    const savedTeams = assignments[ASSIGNMENT_ID].teamsData;
-                    const savedLines = assignments[ASSIGNMENT_ID].lineTeams;
-
+                // Normalisiert die gespeicherten Team-Slots (Save-Format {slots:[]},
+                // Legacy-Array und Object-Form) in ein flaches Slot-Array pro Team.
+                function normalizeTeamSlots(rawTeam) {
+                    let slots = [];
+                    if (rawTeam && Array.isArray(rawTeam.slots)) slots = rawTeam.slots;
+                    else if (Array.isArray(rawTeam)) slots = rawTeam;
+                    else if (rawTeam && typeof rawTeam === 'object') slots = Object.values(rawTeam);
+                    return slots.slice(0, SLOTS_PER_TEAM).concat(Array(SLOTS_PER_TEAM).fill('')).slice(0, SLOTS_PER_TEAM);
+                }
+                function loadFromAssignments(data) {
+                    const src = data || assignments;
+                    if (!src || !src[ASSIGNMENT_ID]) return false;
+                    const savedTeams = src[ASSIGNMENT_ID].teamsData;
+                    const savedLines = src[ASSIGNMENT_ID].lineTeams;
                     if (savedTeams) {
-                        for (let t = 0; t < NUM_TEAMS; t++) {
-                            let slotsToLoad = [];
-                            if (savedTeams[t] && Array.isArray(savedTeams[t].slots)) {
-                                slotsToLoad = savedTeams[t].slots;
-                            } else if (Array.isArray(savedTeams[t])) {
-                                slotsToLoad = savedTeams[t];
-                            } else if (typeof savedTeams[t] === 'object') {
-                                slotsToLoad = Object.values(savedTeams[t]);
-                            }
-                            teamsData[t] = slotsToLoad.slice(0, SLOTS_PER_TEAM).concat(Array(SLOTS_PER_TEAM).fill('')).slice(0, SLOTS_PER_TEAM);
-                        }
+                        for (let t = 0; t < NUM_TEAMS; t++) teamsData[t] = normalizeTeamSlots(savedTeams[t]);
                     }
                     if (Array.isArray(savedLines) && savedLines.length === NUM_LINES) {
                         lineTeams = savedLines.map(v => (v === '0' || v === '1') ? String(v) : '');
                     }
+                    return true;
                 }
+                // Kanonische Signatur (gleiche Form für In-Memory- und Firestore-Stand),
+                // damit wir nur bei echten Änderungen neu rendern.
+                function teamsLinesSig(teams, lines) {
+                    return JSON.stringify({ teams: teams, lines: lines });
+                }
+                function incomingSig(src) {
+                    const blk = src && src[ASSIGNMENT_ID];
+                    if (!blk) return null;
+                    const teams = [];
+                    for (let t = 0; t < NUM_TEAMS; t++) teams.push(normalizeTeamSlots(blk.teamsData && blk.teamsData[t]));
+                    const lines = (Array.isArray(blk.lineTeams) && blk.lineTeams.length === NUM_LINES)
+                        ? blk.lineTeams.map(v => (v === '0' || v === '1') ? String(v) : '') : lineTeams;
+                    return teamsLinesSig(teams, lines);
+                }
+                loadFromAssignments();
 
                 const copyBtn = document.getElementById('blackfuse-lines-copy');
                 const clearBtn = document.getElementById('blackfuse-lines-clear');
@@ -1752,6 +1785,18 @@
                 render();
                 applyLinesProtection();
                 setInterval(applyLinesProtection, 1500);
+
+                // Live-Sync: Team-/Line-Einteilung bei Firestore-Änderungen ohne Reload.
+                if (window.registerBossLiveSync) {
+                    window.registerBossLiveSync(function (fresh) {
+                        if (!fresh) return;
+                        if ((teamsGrid && teamsGrid.contains(document.activeElement)) ||
+                            (beltGrid && beltGrid.contains(document.activeElement))) return;
+                        const inc = incomingSig(fresh);
+                        if (inc === null || inc === teamsLinesSig(teamsData, lineTeams)) return;
+                        if (loadFromAssignments(fresh)) render();
+                    });
+                }
             })();
         };
     </script>

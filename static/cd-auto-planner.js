@@ -1271,11 +1271,10 @@ window.CD_AUTO_PLANNER = (function () {
 
         // Tbody
         var lastEvt = '';
-        var cachedOptions = {};
-        catKeys.forEach(function (catKey) {
-            cachedOptions[catKey] = buildDropdownOptions(catKey);
-        });
-        cachedOptions['__EXTRA__'] = buildDropdownOptions('__EXTRA__');
+        // Dropdown-Optionen werden NICHT mehr eager in jede Zelle eingebettet.
+        // Signatur aktualisieren → gecachte Fragmente werden nur dann neu gebaut,
+        // wenn sich Roster/CDs/Kategorien geändert haben (siehe getDropdownFragment).
+        _dropdownSig = computeDropdownSig();
 
         var rows = timeline.map(function (row, rowIdx) {
             var isNew = row.eventName !== lastEvt;
@@ -1284,7 +1283,6 @@ window.CD_AUTO_PLANNER = (function () {
             var cells = catKeys.map(function (catKey) {
                 var slot = row.slots[catKey];
                 var isReq = row.requiredCDs.indexOf(catKey) !== -1;
-                var options = cachedOptions[catKey];
 
                 // Skipped
                 if (slot && slot.skipped) {
@@ -1293,7 +1291,7 @@ window.CD_AUTO_PLANNER = (function () {
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
                         + '<option value="">-- Cooldown --</option>'
                         + '<option value="__SKIP__" selected>✖ Kein CD nötig</option>'
-                        + options + '</select></td>';
+                        + '</select></td>';
                 }
 
                 // Nicht required, kein Override
@@ -1301,7 +1299,7 @@ window.CD_AUTO_PLANNER = (function () {
                     return '<td class="relative py-1 px-1 opacity-50 hover:opacity-100 transition-opacity align-middle bg-slate-900/20 border border-slate-700/50" style="max-width:105px; height:34px;">'
                         + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[11px] text-gray-500">—</span></div>'
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
-                        + '<option value="" selected>—</option>' + options + '</select></td>';
+                        + '<option value="" selected>—</option></select></td>';
                 }
 
                 // Spread-Gap: geplante Lücke durch Strategie A (Spread)
@@ -1311,7 +1309,7 @@ window.CD_AUTO_PLANNER = (function () {
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
                         + '<option value="" selected>~ Spread-Lücke</option>'
                         + '<option value="__SKIP__">✖ Kein CD nötig</option>'
-                        + options + '</select></td>';
+                        + '</select></td>';
                 }
 
                 // Unavailable
@@ -1321,7 +1319,7 @@ window.CD_AUTO_PLANNER = (function () {
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
                         + '<option value="" selected>⚠ kein CD</option>'
                         + '<option value="__SKIP__">✖ Kein CD nötig</option>'
-                        + options + '</select></td>';
+                        + '</select></td>';
                 }
 
                 // Zugewiesen
@@ -1340,7 +1338,7 @@ window.CD_AUTO_PLANNER = (function () {
                     + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
                     + '<option value="">-- Cooldown --</option>'
                     + '<option value="__SKIP__">✖ Kein CD nötig</option>'
-                    + options + '</select></td>';
+                    + '</select></td>';
             }).join('');
 
             var durLabel = row.eventDuration ? ' <span class="text-gray-600 text-[9px]">(' + row.eventDuration + 's)</span>' : '';
@@ -1364,7 +1362,6 @@ window.CD_AUTO_PLANNER = (function () {
                         + '</div>'
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="">-- Entfernen --</option>'
-                        + cachedOptions['__EXTRA__']
                         + '</select></div>';
                 }
             });
@@ -1408,6 +1405,7 @@ window.CD_AUTO_PLANNER = (function () {
                     var displayCatName = slot.isVirtual ? (categories[slot.isVirtualCategoryKey || catKey].name) : slot.dbName;
                     var opt = new Option(slot.player + ' → ' + displayCatName, val);
                     opt.style.color = getClassColor(slot.dbClass || 'General');
+                    opt.dataset.tmp = '1';
                     sel.appendChild(opt);
                 }
                 sel.value = val;
@@ -1418,6 +1416,12 @@ window.CD_AUTO_PLANNER = (function () {
         // Listeners: Dropdown (Event Delegation)
         if (!tbody._hasAutoPlanListener) {
             tbody._hasAutoPlanListener = true;
+            // Optionen erst beim Fokussieren/Öffnen eines Selects befüllen (lazy).
+            tbody.addEventListener('focusin', function (e) {
+                if (e.target && e.target.classList && e.target.classList.contains('auto-plan-select')) {
+                    fillSelectOptions(e.target);
+                }
+            });
             tbody.addEventListener('change', function (e) {
                 if (!e.target || !e.target.classList.contains('auto-plan-select')) return;
                 
@@ -1476,8 +1480,8 @@ window.CD_AUTO_PLANNER = (function () {
 
                 manualOverrides[oKey] = { player: null, dbName: null, isExtraPlaceholder: true };
                 
-                // Statt runAutoAssign() injecten wir das HTML direkt ins DOM:
-                var td = btn.closest('td');
+                // Statt runAutoAssign() injecten wir das HTML direkt ins DOM.
+                // Die Optionen werden lazy beim Öffnen des Selects befüllt (focusin).
                 var html = '<div class="mb-1 relative w-full bg-slate-800/40 border border-slate-700/60" style="height:34px;">'
                          + '<div class="pointer-events-none w-full flex flex-col items-center justify-center h-full">'
                          + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center" style="color:#94a3b8;"></div>'
@@ -1485,9 +1489,8 @@ window.CD_AUTO_PLANNER = (function () {
                          + '</div>'
                          + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + ri + '" data-cat="' + ck + '">'
                          + '<option value="">-- Entfernen --</option>'
-                         + cachedOptions['__EXTRA__']
                          + '</select></div>';
-                
+
                 btn.insertAdjacentHTML('beforebegin', html);
             });
         });
@@ -1508,6 +1511,74 @@ window.CD_AUTO_PLANNER = (function () {
         if (typeof window._autoPlannerApplyProtection === 'function') {
             window._autoPlannerApplyProtection();
         }
+
+        // Optionsfragmente im Leerlauf vorbauen, damit das erste Öffnen instant ist.
+        prewarmDropdowns(catKeys.concat(['__EXTRA__']));
+    }
+
+    // ── Lazy-Dropdown-Cache ──────────────────────────────────────────
+    // Die vollständigen Optionslisten (CD × Spieler) sind riesig. Sie werden
+    // NICHT mehr in jede Tabellenzelle eingebettet (das erzeugte hunderttausende
+    // <option>-Knoten und ließ die Seite 10-20s hängen), sondern erst beim
+    // Öffnen eines konkreten Selects per fillSelectOptions() injiziert.
+    //
+    // Performance: Die Optionen werden EINMAL in ein <template> geparst und als
+    // DocumentFragment gecacht. Beim Öffnen wird nur noch geklont (cloneNode) —
+    // das spart das teure erneute HTML-Parsing pro Select. Der Cache überlebt
+    // re-renders und wird nur neu gebaut, wenn sich Roster/CDs/Kategorien ändern
+    // (erkannt über eine Signatur). Zusätzlich werden die Fragmente nach jedem
+    // Render im Browser-Leerlauf (requestIdleCallback) vorgebaut, damit das erste
+    // Öffnen sofort ist.
+    var _dropdownFragCache = {};   // key -> { sig, frag }
+    var _dropdownSig = '';
+
+    function computeDropdownSig() {
+        var roster = window.effectiveRoster || window.rosterData || [];
+        var rosterPart = roster.map(function (p) {
+            return (p.name || '') + (p.class || '') + (p.spec || p.specName || p.specialization || '');
+        }).join(',');
+        return (cooldownsDB ? cooldownsDB.length : 0) + '|' + roster.length + '|' + rosterPart
+            + '|' + Object.keys(categories).length;
+    }
+
+    function getDropdownFragment(catKey) {
+        var key = (catKey && catKey.indexOf('extra_') === 0) ? '__EXTRA__' : catKey;
+        var entry = _dropdownFragCache[key];
+        if (!entry || entry.sig !== _dropdownSig) {
+            var tpl = document.createElement('template');
+            tpl.innerHTML = buildDropdownOptions(key);
+            entry = { sig: _dropdownSig, frag: tpl.content };
+            _dropdownFragCache[key] = entry;
+        }
+        return entry.frag;
+    }
+
+    function fillSelectOptions(sel) {
+        if (!sel || sel._optionsFilled) return;
+        sel._optionsFilled = true;
+        var frag = getDropdownFragment(sel.dataset.cat);
+        if (!frag) return;
+        var current = sel.value;
+        sel.appendChild(frag.cloneNode(true));
+        // Falls der aktuell gewählte Wert sowohl als temporär angehängte Option
+        // (data-tmp) als auch im Katalog vorkommt → das Duplikat entfernen.
+        if (current) {
+            var dupes = Array.prototype.filter.call(sel.options, function (o) { return o.value === current; });
+            if (dupes.length > 1) {
+                dupes.forEach(function (o) { if (o.dataset && o.dataset.tmp === '1') o.remove(); });
+            }
+            sel.value = current;
+        }
+    }
+
+    // Baut die Optionsfragmente im Leerlauf vor, damit das erste Öffnen instant ist.
+    function prewarmDropdowns(keys, i) {
+        i = i || 0;
+        if (i >= keys.length) return;
+        try { getDropdownFragment(keys[i]); } catch (e) { /* ignore */ }
+        var next = function () { prewarmDropdowns(keys, i + 1); };
+        if (window.requestIdleCallback) window.requestIdleCallback(next, { timeout: 500 });
+        else setTimeout(next, 30);
     }
 
     // ── Dropdown: Empfohlen + Alle CDs + Virtuell ──

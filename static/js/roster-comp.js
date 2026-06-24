@@ -912,12 +912,30 @@ window.initRosterPatchesCompUI = function(bosses) {
     loadAllBossPatches();
 };
 
+// ─────────────────────────────────────────────────────────────────────────
+// LIVE-SYNC-REGISTRY für boss-spezifische Einteilungs-Widgets
+//
+// Boss-Seiten mit eigenen Einteilungs-Widgets (z.B. Sha-of-Pride-Platten,
+// Norushen-Orb-Reihenfolge) laden ihre Daten in initializePageSpecificCode
+// nur EINMAL aus dem übergebenen `assignments`-Objekt. Damit Betrachter
+// Änderungen ohne Reload sehen, registriert jedes Widget hier eine Funktion,
+// die bei JEDEM Firestore-Snapshot mit den frischen Daten aufgerufen wird.
+// ─────────────────────────────────────────────────────────────────────────
+window.bossLiveSyncHandlers = window.bossLiveSyncHandlers || [];
+window.registerBossLiveSync = function(fn) {
+    if (typeof fn === 'function') window.bossLiveSyncHandlers.push(fn);
+};
+
 window.setupBossListener = function(bossId) {
     if (window.assignmentUnsubscribe) {
         window.assignmentUnsubscribe();
         window.assignmentUnsubscribe = null;
     }
-    
+
+    // Bei Boss-Wechsel: alte Widget-Sync-Handler verwerfen (die neue Seite
+    // registriert ihre eigenen in initializePageSpecificCode).
+    window.bossLiveSyncHandlers = [];
+
     if (window._snapshotTimer) {
         clearTimeout(window._snapshotTimer);
         window._snapshotTimer = null;
@@ -1060,6 +1078,15 @@ window.setupBossListener = function(bossId) {
             applyValues();
             if(typeof window.updateAssignmentPools === 'function') window.updateAssignmentPools();
             if(window.updatePlannerSummary) window.updatePlannerSummary();
+            // Lane-Group-Blöcke live aktualisieren (sonst sehen Betrachter
+            // Einteilungsänderungen erst nach einem Reload).
+            if (window.LaneGroups && typeof window.LaneGroups.syncAssignments === 'function') {
+                window.LaneGroups.syncAssignments(assignments);
+            }
+            // Boss-spezifische Widgets (Sha-Platten, Norushen-Orbs, …) live syncen.
+            (window.bossLiveSyncHandlers || []).forEach(fn => {
+                try { fn(assignments); } catch (e) { console.error('[BossLiveSync] Handler-Fehler:', e); }
+            });
         }, 250);
     });
     
