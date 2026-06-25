@@ -618,6 +618,15 @@ window.applyThemeForRaid = function(raidId) {
         window.initRosterPatchesCompUI(bosses);
     }
 
+    // Ji-Kun-Teams-Button nur außerhalb von Schlacht um Orgrimmar anzeigen
+    // (Ji-Kun ist ein Thron-des-Donners-Boss). Raid-Wechsel lädt die Comp neu,
+    // daher greift dieser Toggle auch beim Umschalten.
+    const jikunBtn = document.getElementById('btn-jikun-teams');
+    if (jikunBtn) {
+        const raidNow = document.getElementById('raid-selector')?.value;
+        jikunBtn.classList.toggle('hidden', raidNow === 'siegeoforgrimmar');
+    }
+
     // 🎯 Spec-Slots: Toggle-Button + initiales Render
     // (Im Original waren button und container im HTML angelegt, aber nie verdrahtet — das holen wir hier nach.)
     const slotToggleBtn = document.getElementById('btn-slot-toggle');

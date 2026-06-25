@@ -3056,14 +3056,34 @@ window.replacePlayerRaidWide = async function() {
             Object.keys(data).forEach(key => {
                 if (key.includes('-planner-row')) return; // CD-Planer überspringen
                 const val = data[key];
-                if (val && typeof val === 'object') {
-                    if (val.player === fromPlayer || val.cooldown === fromPlayer) {
+                if (!val || typeof val !== 'object') return;
+
+                // 1. Einfache Einteilungsfelder (player/cooldown)
+                if (val.player === fromPlayer || val.cooldown === fromPlayer) {
+                    previewData.push({
+                        type: 'field',
+                        bossDocId: boss.docId,
+                        bossName: boss.name,
+                        key: key,
+                        field: val.player === fromPlayer ? 'player' : 'cooldown',
+                        label: formatReplaceLabel(key, boss.id)
+                    });
+                }
+
+                // 2. Strukturierte Blöcke (Lane-Groups, Sha-Platten, Norushen-Orbs,
+                //    Siegecrafter-Teams): Spielernamen stecken verschachtelt drin.
+                const kind = detectStructuredKind(val);
+                if (kind) {
+                    const count = countStructuredPlayers(kind, val, fromPlayer);
+                    if (count > 0) {
                         previewData.push({
+                            type: 'structured',
+                            kind: kind,
                             bossDocId: boss.docId,
                             bossName: boss.name,
                             key: key,
-                            field: val.player === fromPlayer ? 'player' : 'cooldown',
-                            label: formatReplaceLabel(key, boss.id)
+                            count: count,
+                            label: formatReplaceLabel(key, boss.id) + ` (${count}× ${STRUCTURED_LABELS[kind]})`
                         });
                     }
                 }
@@ -3107,7 +3127,9 @@ window.replacePlayerRaidWide = async function() {
         try {
             // Gruppiere Updates nach Boss-Dokument
             const updatesByDoc = {};
-            previewData.forEach(entry => {
+
+            // 1. Einfache Felder (player/cooldown)
+            previewData.filter(e => e.type === 'field').forEach(entry => {
                 if (!updatesByDoc[entry.bossDocId]) updatesByDoc[entry.bossDocId] = {};
                 updatesByDoc[entry.bossDocId][entry.key] = {
                     [entry.field]: toPlayer,
@@ -3115,6 +3137,30 @@ window.replacePlayerRaidWide = async function() {
                     timestamp: serverTimestamp()
                 };
             });
+
+            // 2. Strukturierte Blöcke (Lane-Groups, Platten, Orb-Reihenfolge, Teams):
+            //    Doks frisch laden und Spielernamen in der jeweiligen Struktur ersetzen.
+            //    Da diese Werte Arrays enthalten (bei merge:true ersetzt Firestore das
+            //    ganze Feld), schreiben wir die komplette neue Struktur zurück.
+            const structEntries = previewData.filter(e => e.type === 'structured');
+            if (structEntries.length > 0) {
+                const structDocIds = [...new Set(structEntries.map(e => e.bossDocId))];
+                const structSnaps = await Promise.all(
+                    structDocIds.map(d => getDoc(doc(db, 'raid-tool-data', d)))
+                );
+                const structDataByDoc = {};
+                structSnaps.forEach((snap, i) => { structDataByDoc[structDocIds[i]] = snap.exists() ? snap.data() : {}; });
+
+                structEntries.forEach(entry => {
+                    const val = (structDataByDoc[entry.bossDocId] || {})[entry.key];
+                    const rebuilt = rebuildStructuredField(entry.kind, val, fromPlayer, toPlayer);
+                    if (!rebuilt) return;
+                    rebuilt.editor = currentManager;
+                    rebuilt.timestamp = serverTimestamp();
+                    if (!updatesByDoc[entry.bossDocId]) updatesByDoc[entry.bossDocId] = {};
+                    updatesByDoc[entry.bossDocId][entry.key] = rebuilt;
+                });
+            }
 
             // Batch-Schreiben pro Boss
             const promises = Object.entries(updatesByDoc).map(([docId, updates]) => {
@@ -3136,6 +3182,92 @@ window.replacePlayerRaidWide = async function() {
         }
     });
 };
+
+// ── Strukturierte Einteilungs-Blöcke für "Spieler ersetzen" ──────────────────
+// Spielernamen stecken bei einigen Bossen verschachtelt in eigenen Strukturen:
+//   - laneGroup : <id>.blocks[].lanes[].slots[]              (Lane-Groups)
+//   - plates    : sha-plates.platesData[].slots[]            (Sha-of-Pride)
+//   - orderData : norushen-orb-order.orderData[].player      (Norushen)
+//   - teams     : blackfuse-lines.teamsData[].slots[]        (Siegecrafter)
+// killOrder (Siegecrafter/Paragons) enthält Boss-/Ability-Namen, keine Spieler.
+const STRUCTURED_LABELS = {
+    laneGroup: 'in Einteilung',
+    plates: 'in Platten',
+    orderData: 'in Reihenfolge',
+    teams: 'in Teams'
+};
+
+function detectStructuredKind(val) {
+    if (!val || typeof val !== 'object') return null;
+    if (Array.isArray(val.blocks)) return 'laneGroup';
+    if (Array.isArray(val.platesData)) return 'plates';
+    if (Array.isArray(val.orderData)) return 'orderData';
+    if (Array.isArray(val.teamsData)) return 'teams';
+    return null;
+}
+
+// Team-Slots robust extrahieren ({slots:[]}, Legacy-Array, Object-Form).
+function _teamSlots(team) {
+    if (Array.isArray(team)) return team;
+    if (team && Array.isArray(team.slots)) return team.slots;
+    if (team && typeof team === 'object') return Object.values(team);
+    return [];
+}
+
+function countStructuredPlayers(kind, val, name) {
+    if (kind === 'laneGroup') {
+        return (val.blocks || []).reduce((n, b) =>
+            n + (b.lanes || []).reduce((m, l) =>
+                m + (l.slots || []).filter(s => s === name).length, 0), 0);
+    }
+    if (kind === 'plates') {
+        return (val.platesData || []).reduce((n, p) =>
+            n + (p.slots || []).filter(s => s === name).length, 0);
+    }
+    if (kind === 'orderData') {
+        return (val.orderData || []).filter(r => r && r.player === name).length;
+    }
+    if (kind === 'teams') {
+        return (val.teamsData || []).reduce((n, t) =>
+            n + _teamSlots(t).filter(s => s === name).length, 0);
+    }
+    return 0;
+}
+
+// Baut den kompletten neuen Feldwert (ohne editor/timestamp – die setzt der Aufrufer).
+// Original wird nicht mutiert; nicht betroffene Felder bleiben erhalten.
+function rebuildStructuredField(kind, val, fromName, toName) {
+    if (!val) return null;
+    const sw = s => (s === fromName ? toName : s);
+    if (kind === 'laneGroup') {
+        return {
+            blocks: (val.blocks || []).map(b => Object.assign({}, b, {
+                lanes: (b.lanes || []).map(l => Object.assign({}, l,
+                    Array.isArray(l.slots) ? { slots: l.slots.map(sw) } : {}))
+            }))
+        };
+    }
+    if (kind === 'plates') {
+        return {
+            platesData: (val.platesData || []).map(p => Object.assign({}, p,
+                Array.isArray(p.slots) ? { slots: p.slots.map(sw) } : {}))
+        };
+    }
+    if (kind === 'orderData') {
+        return {
+            orderData: (val.orderData || []).map(r =>
+                (r && r.player === fromName) ? Object.assign({}, r, { player: toName }) : r)
+        };
+    }
+    if (kind === 'teams') {
+        // Auf das aktuelle Save-Format {slots:[...]} normalisieren; lineTeams bleibt
+        // durch merge:true erhalten (nicht mitgeschrieben).
+        return {
+            teamsData: (val.teamsData || []).map(t => ({ slots: _teamSlots(t).map(sw) }))
+        };
+    }
+    return null;
+}
 
 function formatReplaceLabel(key, bossId) {
     let label = key;

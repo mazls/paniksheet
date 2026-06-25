@@ -2529,6 +2529,10 @@ async function exportToPlanner() {
 
     // Alle Änderungen sammeln für EINEN einzigen setDoc
     var batchPayload = {};
+    // Logische Zeilen zuerst sammeln (vor dem Schreiben), damit identische
+    // Einträge (gleicher Trigger/Key, Spieler, CD, Delay) zusammengefasst und
+    // ihre #-Conditions zu z.B. "1,3" gemerged werden können.
+    var entries = [];
     var currentManager = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('currentManager')) || 'Unbekannt';
     var serverTs = null;
     if (window.firebaseTools && window.firebaseTools.serverTimestamp) {
@@ -2633,75 +2637,158 @@ async function exportToPlanner() {
             }
 
             validSlots.forEach(function (slot) {
-                if (rowNum > 300) return;
-                var rowPrefix = prefix + '-planner-row' + rowNum;
-
-                // DOM aktualisieren (für sofortige Anzeige, aber OHNE change-Events)
-                setPlannerSelect(rowPrefix + '-trigger', triggerVal, true);
-                addToBatch(rowPrefix + '-trigger', { player: triggerVal, editor: currentManager, timestamp: serverTs });
-
-                if (isHealthTrigger && npcVal) {
-                    setPlannerInput(rowPrefix + '-npc', npcVal, true);
-                    addToBatch(rowPrefix + '-npc', { player: npcVal, editor: currentManager, timestamp: serverTs });
-                }
-
-                setPlannerInput(rowPrefix + '-condition', conditionVal, true);
-                addToBatch(rowPrefix + '-condition', { text: conditionVal, editor: currentManager, timestamp: serverTs });
-
-                setPlannerInput(rowPrefix + '-time', timeVal, true);
-                addToBatch(rowPrefix + '-time', { text: timeVal, editor: currentManager, timestamp: serverTs });
-
+                // Logische Zeile sammeln (noch nicht schreiben → Merge erfolgt danach)
+                var entry = {
+                    trigger: triggerVal,
+                    npc: (isHealthTrigger && npcVal) ? npcVal : '',
+                    isHealthTrigger: isHealthTrigger,
+                    condition: conditionVal,
+                    time: timeVal,
+                    isVirtual: !!slot.isVirtual,
+                    player: slot.player
+                };
                 if (slot.isVirtual) {
-                    setPlannerSelect(rowPrefix + '-player', slot.player, true);
-                    addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
-
                     var virtCat = categories[slot.isVirtualCategoryKey] || categories[slot._catKey];
-                    var catName = virtCat ? virtCat.name : 'Virtuell';
-
-                    // Stelle sicher, dass die Option im Select existiert, sonst wird es leer angezeigt
-                    var sel = document.querySelector('[data-assignment-id="' + rowPrefix + '-cooldown"]');
-                    if (sel) {
-                        var exists = Array.from(sel.options).some(function (o) { return o.value === catName; });
-                        if (!exists) {
-                            var opt = document.createElement('option');
-                            opt.value = catName;
-                            opt.textContent = catName;
-                            opt.dataset.color = virtCat ? virtCat.color : '#fff';
-                            sel.appendChild(opt);
-                        }
-                    }
-
-                    setPlannerSelect(rowPrefix + '-cooldown', catName, true);
-                    addToBatch(rowPrefix + '-cooldown', { cooldown: catName, editor: currentManager, timestamp: serverTs });
-
-                    setPlannerInput(rowPrefix + '-note', slot.note || "", true);
-                    addToBatch(rowPrefix + '-note', { text: slot.note || "", editor: currentManager, timestamp: serverTs });
-
-                    setPlannerInput(rowPrefix + '-tts', slot.tts || "", true);
-                    addToBatch(rowPrefix + '-tts', { text: slot.tts || "", editor: currentManager, timestamp: serverTs });
-
-                    setPlannerInput(rowPrefix + '-varname', slot.varname || "", true);
-                    addToBatch(rowPrefix + '-varname', { text: slot.varname || "", editor: currentManager, timestamp: serverTs });
-
-                    setPlannerInput(rowPrefix + '-icon', slot.icon || "", true);
-                    addToBatch(rowPrefix + '-icon', { text: slot.icon || "", editor: currentManager, timestamp: serverTs });
-
-                    exported++;
+                    entry.cooldown = virtCat ? virtCat.name : 'Virtuell';
+                    entry.virtColor = virtCat ? virtCat.color : '#fff';
+                    entry.note = slot.note || '';
+                    entry.tts = slot.tts || '';
+                    entry.varname = slot.varname || '';
+                    entry.icon = slot.icon || '';
                 } else {
-                    setPlannerSelect(rowPrefix + '-player', slot.player, true);
-                    addToBatch(rowPrefix + '-player', { player: slot.player, editor: currentManager, timestamp: serverTs });
-
-                    var ok = setPlannerSelect(rowPrefix + '-cooldown', slot.dbName, true);
-                    addToBatch(rowPrefix + '-cooldown', { cooldown: slot.dbName, editor: currentManager, timestamp: serverTs });
-
-                    if (ok) exported++; else {
-                        skipped++;
-                        console.warn('[Auto-Planner] CD nicht gefunden: "' + slot.dbName + '" (' + slot.spellId + ')');
-                    }
+                    entry.cooldown = slot.dbName;
+                    entry.spellId = slot.spellId;
                 }
-                rowNum++;
+                entries.push(entry);
             });
         });
+
+        // ── MERGE: identische Zeilen (gleicher Trigger/Key, NPC, Spieler, CD,
+        //    Delay) zusammenfassen und ihre #-Conditions zu "1,3" verbinden.
+        //    Die WeakAura interpretiert mehrere Conditions korrekt. ──
+        var mergedMap = {};
+        var mergedOrder = [];
+        entries.forEach(function (e) {
+            var key = [
+                e.trigger, e.npc, e.player, e.cooldown, e.time,
+                e.isVirtual ? 'V' : 'R',
+                e.note || '', e.tts || '', e.varname || '', e.icon || ''
+            ].join('||');
+            if (!mergedMap[key]) {
+                var copy = {};
+                for (var k in e) { if (e.hasOwnProperty(k)) copy[k] = e[k]; }
+                copy._conds = [];
+                mergedMap[key] = copy;
+                mergedOrder.push(key);
+            }
+            var m = mergedMap[key];
+            if (m._conds.indexOf(e.condition) === -1) m._conds.push(e.condition);
+        });
+        mergedOrder.forEach(function (key) {
+            var m = mergedMap[key];
+            var conds = m._conds.slice();
+            // Numerisch sortieren, wenn alle Werte Ganzzahlen sind → "1,3" statt "3,1"
+            if (conds.every(function (c) { return /^-?\d+$/.test(c); })) {
+                conds.sort(function (a, b) { return parseInt(a, 10) - parseInt(b, 10); });
+            }
+            m.condition = conds.join(',');
+        });
+
+        // ── SCHREIBEN der gemergten Zeilen ──
+        mergedOrder.forEach(function (key) {
+            var e = mergedMap[key];
+            if (rowNum > 300) return;
+            var rowPrefix = prefix + '-planner-row' + rowNum;
+
+            // DOM aktualisieren (für sofortige Anzeige, aber OHNE change-Events)
+            setPlannerSelect(rowPrefix + '-trigger', e.trigger, true);
+            addToBatch(rowPrefix + '-trigger', { player: e.trigger, editor: currentManager, timestamp: serverTs });
+
+            if (e.isHealthTrigger && e.npc) {
+                setPlannerInput(rowPrefix + '-npc', e.npc, true);
+                addToBatch(rowPrefix + '-npc', { player: e.npc, editor: currentManager, timestamp: serverTs });
+            }
+
+            setPlannerInput(rowPrefix + '-condition', e.condition, true);
+            addToBatch(rowPrefix + '-condition', { text: e.condition, editor: currentManager, timestamp: serverTs });
+
+            setPlannerInput(rowPrefix + '-time', e.time, true);
+            addToBatch(rowPrefix + '-time', { text: e.time, editor: currentManager, timestamp: serverTs });
+
+            if (e.isVirtual) {
+                setPlannerSelect(rowPrefix + '-player', e.player, true);
+                addToBatch(rowPrefix + '-player', { player: e.player, editor: currentManager, timestamp: serverTs });
+
+                // Stelle sicher, dass die Option im Select existiert, sonst wird es leer angezeigt
+                var sel = document.querySelector('[data-assignment-id="' + rowPrefix + '-cooldown"]');
+                if (sel) {
+                    var exists = Array.from(sel.options).some(function (o) { return o.value === e.cooldown; });
+                    if (!exists) {
+                        var opt = document.createElement('option');
+                        opt.value = e.cooldown;
+                        opt.textContent = e.cooldown;
+                        opt.dataset.color = e.virtColor || '#fff';
+                        sel.appendChild(opt);
+                    }
+                }
+
+                setPlannerSelect(rowPrefix + '-cooldown', e.cooldown, true);
+                addToBatch(rowPrefix + '-cooldown', { cooldown: e.cooldown, editor: currentManager, timestamp: serverTs });
+
+                setPlannerInput(rowPrefix + '-note', e.note || "", true);
+                addToBatch(rowPrefix + '-note', { text: e.note || "", editor: currentManager, timestamp: serverTs });
+
+                setPlannerInput(rowPrefix + '-tts', e.tts || "", true);
+                addToBatch(rowPrefix + '-tts', { text: e.tts || "", editor: currentManager, timestamp: serverTs });
+
+                setPlannerInput(rowPrefix + '-varname', e.varname || "", true);
+                addToBatch(rowPrefix + '-varname', { text: e.varname || "", editor: currentManager, timestamp: serverTs });
+
+                setPlannerInput(rowPrefix + '-icon', e.icon || "", true);
+                addToBatch(rowPrefix + '-icon', { text: e.icon || "", editor: currentManager, timestamp: serverTs });
+
+                exported++;
+            } else {
+                setPlannerSelect(rowPrefix + '-player', e.player, true);
+                addToBatch(rowPrefix + '-player', { player: e.player, editor: currentManager, timestamp: serverTs });
+
+                var ok = setPlannerSelect(rowPrefix + '-cooldown', e.cooldown, true);
+                addToBatch(rowPrefix + '-cooldown', { cooldown: e.cooldown, editor: currentManager, timestamp: serverTs });
+
+                if (ok) exported++; else {
+                    skipped++;
+                    console.warn('[Auto-Planner] CD nicht gefunden: "' + e.cooldown + '" (' + e.spellId + ')');
+                }
+            }
+            rowNum++;
+        });
+
+        // ── Durch das Mergen freigewordene Zeilen leeren ──
+        // Ohne Merge hätte dieser Export entries.length Zeilen belegt; durch das
+        // Zusammenfassen sind es weniger. Den nicht mehr benötigten Rest dieses
+        // Auto-Export-Blocks leeren, damit keine alten Duplikat-Zeilen stehen
+        // bleiben (analog clearPlannerOnly). Zeilen jenseits von entries.length
+        // bleiben unangetastet (mögliche manuell gepflegte Zeilen).
+        var unmergedCount = Math.min(entries.length, 300);
+        var clearFields = ['trigger', 'npc', 'condition', 'time', 'player', 'cooldown', 'note', 'tts', 'varname', 'icon'];
+        for (var clr = rowNum; clr <= unmergedCount; clr++) {
+            var clrPrefix = prefix + '-planner-row' + clr;
+            clearFields.forEach(function (f) {
+                var fieldId = clrPrefix + '-' + f;
+                var el = document.querySelector('[data-assignment-id="' + fieldId + '"]');
+                if (el) {
+                    if (el.tagName === 'SELECT') {
+                        el.value = '';
+                        var opt = el.options[el.selectedIndex];
+                        if (opt) el.style.color = (opt.dataset && opt.dataset.color) || '#FFFFFF';
+                    } else {
+                        el.value = '';
+                    }
+                }
+                // Alle potenziellen Keys leeren, um Rückstände zu vermeiden (wie clearPlannerOnly)
+                addToBatch(fieldId, { player: '', text: '', cooldown: '', editor: currentManager, timestamp: serverTs });
+            });
+        }
 
         // EIN einziger Firestore-Write für alle Felder
         if (firebaseRef && firebaseRef.setDoc && Object.keys(batchPayload).length > 0) {
