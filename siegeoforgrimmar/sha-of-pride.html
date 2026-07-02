@@ -965,10 +965,10 @@
                 }
 
                 function isPlayerOnBench(name) {
-                    if (!Array.isArray(roster)) return false;
-                    const p = roster.find(x => (x.name || x) === name);
-                    if (!p) return false;
-                    return (p.status === 'bench' || p.status === 'tentative' || p.status === 'absent');
+                    if (typeof window.isPlayerOnBench === 'function') {
+                        return window.isPlayerOnBench(name);
+                    }
+                    return false;
                 }
 
                 function getPlayerOptions(selectedName, pIdx) {
