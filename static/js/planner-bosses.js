@@ -3415,6 +3415,15 @@ window.handleEditLootWinner = handleEditLootWinner;
 // =============================================================================
 
 function initBossPage(pageId, sectionId = null) {
+    // Observer einer früher besuchten Boss-Seite abmelden, sonst feuern beim
+    // Navigieren mehrere Observer parallel (jeder mit altem pageId im Closure)
+    // und verdrahten neue Felder mit dem falschen Boss → Speichern ins falsche
+    // Dokument + falscher Boss-Name im Änderungsverlauf.
+    if (window.assignmentObserver) {
+        window.assignmentObserver.disconnect();
+        window.assignmentObserver = null;
+    }
+
     // --- Logik für Sprungmarken und einklappbare Sektionen ---
     const quickNavLinks = document.querySelectorAll('.quick-nav-bar a');
     const sections = document.querySelectorAll('.collapsible-section');
@@ -3597,11 +3606,17 @@ async function handleTextInputChange(event) {
     const textToSave = input.value;
     const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
     
+    // Boss zur Laufzeit aus dem Hash bestimmen statt aus dem Closure — falls
+    // doch mal ein Handler einer früheren Boss-Seite feuert, landet das Speichern
+    // trotzdem im richtigen Dokument und im Log steht der richtige Boss.
+    const currentPageId = location.hash.split('/')[1] || pageId;
+    const docRef = doc(db, DATA_COLLECTION, "boss-" + currentPageId);
+
     const dataToSave = { text: textToSave, editor: currentManager, timestamp: serverTimestamp() };
-    await setDoc(assignmentsDocRef, { [assignmentId]: dataToSave }, { merge: true });
-    
-    const bossName = pageId.charAt(0).toUpperCase() + pageId.slice(1);
-    const assignmentName = `Header: ${assignmentId.replace(pageId + '-', '')}`;
+    await setDoc(docRef, { [assignmentId]: dataToSave }, { merge: true });
+
+    const bossName = currentPageId.charAt(0).toUpperCase() + currentPageId.slice(1);
+    const assignmentName = `Header: ${assignmentId.replace(currentPageId + '-', '')}`;
     window.logHistory(bossName, assignmentName, textToSave || "Leer", currentManager);
 }
 
@@ -3888,7 +3903,7 @@ const wireTextInput = (input) => {
 // --- B) Observer: wenn deine Boss-Seite später dynamisch Selects hinzufügt,
 //           werden diese automatisch nachverdrahtet und speichern dann einzeln.
 // MutationObserver, um dynamisch hinzugefügte Elemente zu "verdrahten"
-const assignmentObserver = new MutationObserver(mutations => {
+const assignmentObserver = window.assignmentObserver = new MutationObserver(mutations => {
     mutations.forEach(m => {
         m.addedNodes.forEach(node => {
             if (node.nodeType !== 1) return; // nur Elemente
