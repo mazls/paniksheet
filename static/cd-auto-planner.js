@@ -3067,6 +3067,15 @@ function renderCategoriesAdmin() {
     var el = document.getElementById('cd-categories-container');
     if (!el) return;
 
+    // Der Speichern-Button wird in attachEditorListeners() in den Container
+    // verschoben (neben "+ Neue Kategorie"). Vor dem innerHTML-Reset müssen wir
+    // ihn rausretten, sonst wird er hier zerstört und verschwindet dauerhaft
+    // (z.B. nach dem Entfernen eines Spells aus einer Kategorie).
+    var saveCatBtn = document.getElementById('btn-save-categories');
+    if (saveCatBtn && el.contains(saveCatBtn) && el.parentNode) {
+        el.parentNode.appendChild(saveCatBtn);
+    }
+
     // Einmalig Styles injizieren, damit der Editor korrekt scrollt und Zeilen nicht clippen
     if (!document.getElementById('cd-admin-styles')) {
         var styleTag = document.createElement('style');
