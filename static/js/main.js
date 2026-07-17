@@ -147,6 +147,7 @@ mainNav.innerHTML = mainNavHTML;
 			if (window.assignmentUnsubscribe) { window.assignmentUnsubscribe(); window.assignmentUnsubscribe = null; }
 			if (window.lootDatesUnsubscribe) { window.lootDatesUnsubscribe(); window.lootDatesUnsubscribe = null; }
 			if (window.selectedLootDateUnsubscribe) { window.selectedLootDateUnsubscribe(); window.selectedLootDateUnsubscribe = null; }
+			if (window.ImageMarkers) { window.ImageMarkers.teardown(); }
             const hash = window.location.hash.substring(1);
 			const filePath = pageId.includes('/') ? `${pageId}.html` : `${pageId}.html`;
 		
@@ -204,6 +205,11 @@ mainNav.innerHTML = mainNavHTML;
 
                 // RUFE DIE NEUE FUNKTION AUF:
                 window.setupBossListener(currentBossId);
+
+                // Bild-Marker auf den Taktik-Bildern initialisieren
+                if (window.ImageMarkers) {
+                    window.ImageMarkers.initForBoss(bossSlug);
+                }
                 
                 // Banner für Roster-Patches einfügen (oben in der Boss-Page)
                 if (typeof window.injectRosterPatchBanner === 'function') {
@@ -508,6 +514,10 @@ window.applyThemeForRaid = function(raidId) {
             if (lightbox && lightboxImage) {
                 lightboxImage.src = src;
                 lightbox.style.display = 'flex';
+                // Bild-Marker auch auf dem vergrößerten Bild anzeigen
+                if (window.ImageMarkers) {
+                    window.ImageMarkers.syncLightbox(src);
+                }
             }
         }
 

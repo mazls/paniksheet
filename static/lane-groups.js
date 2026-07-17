@@ -1598,6 +1598,39 @@ window.LaneGroups = (function () {
         });
     }
 
+    // Liefert Anzeige-Infos einer Lane für externe Module (z.B. Bild-Marker):
+    // Die Lane wird primär über (blockIdx, laneIdx) gefunden; passt der dort
+    // gespeicherte Marker nicht mehr (Layout wurde umgebaut), wird stattdessen
+    // über die Marker-ID gesucht. Spieler kommen fertig aufgelöst zurück
+    // (Spec-Slots → Namen, Klassenfarbe, Bench-/Missing-Status).
+    function getLaneInfo(assignmentId, ref) {
+        ref = ref || {};
+        let inst = null;
+        _instances.forEach(i => { if (!inst && i.assignmentId === assignmentId) inst = i; });
+        if (!inst) return null;
+
+        const byIdx = (inst.blocks[ref.blockIdx] && inst.blocks[ref.blockIdx].lanes)
+            ? inst.blocks[ref.blockIdx].lanes[ref.laneIdx] || null
+            : null;
+        let lane = (byIdx && (!ref.marker || byIdx.marker === ref.marker)) ? byIdx : null;
+        if (!lane && ref.marker) {
+            for (const b of inst.blocks) {
+                const hit = (b.lanes || []).find(l => l.marker === ref.marker);
+                if (hit) { lane = hit; break; }
+            }
+        }
+        if (!lane) lane = byIdx;
+        if (!lane) return null;
+
+        const markerMeta = getMarker(lane.marker);
+        const players = (lane.slots || []).map(v => {
+            if (!v) return null;
+            const d = resolveValueDisplay(inst, v);
+            return { name: d.displayName || v, color: d.color, isBench: d.isBench, missing: d.missing };
+        }).filter(Boolean);
+        return { title: lane.title || '', markerId: lane.marker, markerMeta: markerMeta, players: players };
+    }
+
     // Liefert eine lesbare Text-Summary einer Instanz (für WeakAura-Export):
     //   Boss Name — Block-Title
     //     ⭐ Star: Marcel, Sarah
@@ -1650,7 +1683,9 @@ window.LaneGroups = (function () {
         getInstance,
         reloadAssignments,
         syncAssignments,
-        getSummary
+        getSummary,
+        getLaneInfo,
+        getMarkerMeta: getMarker
     };
 
 })();

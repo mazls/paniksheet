@@ -1186,8 +1186,13 @@ window.cleanUpInvalidRosterEntries = async function() {
     // Initial Cooldowns laden
     //fetchAllCooldowns();
     
-    // Hilfsobjekt global verfügbar machen, falls noch nicht geschehen
-    window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc, setDoc };
+    // Hilfsobjekt global verfügbar machen, falls noch nicht geschehen.
+    // firebase-init.js setzt bereits die VOLLE Version (inkl. onSnapshot,
+    // serverTimestamp, rtdb*) — die darf hier nicht durch eine reduzierte
+    // Variante ersetzt werden, sonst fehlen anderen Modulen Funktionen.
+    if (!window.firebaseTools) {
+        window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc, setDoc };
+    }
 
 window.assignmentUnsubscribe = window.assignmentUnsubscribe || null;
 // NEU: Setup umbenennen
@@ -3521,13 +3526,15 @@ function initBossPage(pageId, sectionId = null) {
         if (defaultPhaseButton) {
             defaultPhaseButton.click();
         }
-        document.querySelectorAll('.lightbox-trigger').forEach(img => {
-            img.addEventListener('click', (event) => {
-                event.stopPropagation();
-                window.openLightbox(img.src);
-            });
-        });
     }
+    // Lightbox für ALLE Taktik-Bilder verdrahten — auch auf Seiten ohne
+    // Phasen-Umschalter (z.B. Immerseus), sonst öffnet der Klick nichts.
+    document.querySelectorAll('.lightbox-trigger').forEach(img => {
+        img.addEventListener('click', (event) => {
+            event.stopPropagation();
+            window.openLightbox(img.src);
+        });
+    });
          if (sectionId) {
          setTimeout(() => {
              const targetElement = document.getElementById(sectionId);

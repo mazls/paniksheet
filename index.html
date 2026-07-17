@@ -19,6 +19,7 @@
     <script src="static/slot-system.js"></script>
     <script src="static/lane-groups.js"></script>
     <script src="static/lane-groups-integration.js"></script>
+    <script src="static/image-markers.js"></script>
 </head>
 
 <body class="pt-4">
@@ -76,7 +77,10 @@
         <!-- Lightbox -->
         <div id="image-lightbox" class="lightbox-overlay">
             <span id="lightbox-close-btn" class="lightbox-close-btn">&times;</span>
-            <img id="lightbox-image" src="" alt="Vergrößerte Ansicht" class="lightbox-content">
+            <!-- Wrapper: positionierter Anker für die Bild-Marker-Overlay-Ebene -->
+            <div id="lightbox-image-wrap">
+                <img id="lightbox-image" src="" alt="Vergrößerte Ansicht" class="lightbox-content">
+            </div>
         </div>
 
         <!-- Login-Modal -->
@@ -155,7 +159,10 @@
         <i class="fas fa-video"></i>
     </button>
 
-    <div id="global-custom-tooltip"
+    <!-- style-Attribut nötig: .buff-tooltip (styles.css) überschreibt sonst die
+         fixed-Positionierung — der Tooltip landet bei gescrollter Seite außerhalb
+         des Viewports (JS setzt left/top aus Viewport-Koordinaten). -->
+    <div id="global-custom-tooltip" style="position:fixed; z-index:9999;"
         class="buff-tooltip fixed hidden pointer-events-none z-[9999] max-w-xs bg-slate-800 border border-slate-500 p-2 rounded shadow-xl text-xs text-white">
     </div>
 
