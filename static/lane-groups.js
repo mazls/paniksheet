@@ -673,7 +673,7 @@ window.LaneGroups = (function () {
                     html += `</select>`;
                 } else {
                     const mId = (lane.slotMarkers && lane.slotMarkers[s]) || '';
-                    html += `<div style="display:flex; justify-content:center; align-items:center; height:22px;">${markerIconHtml(mId)}</div>`;
+                    html += `<div class="lg-slot-marker-display" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}" style="display:flex; justify-content:center; align-items:center; height:22px;">${markerIconHtml(mId)}</div>`;
                 }
                 html += `</td>`;
             } else if (block.type === 'key-value-list') {
@@ -694,7 +694,7 @@ window.LaneGroups = (function () {
                     html += `</select>`;
                 } else {
                     const mId = (lane.slotMarkers && lane.slotMarkers[s]) || '';
-                    html += `<div style="display:flex; justify-content:center; align-items:center; height:22px;">${markerIconHtml(mId)}</div>`;
+                    html += `<div class="lg-slot-marker-display" data-block-idx="${blockIdx}" data-lane-idx="${laneIdx}" data-slot-idx="${s}" style="display:flex; justify-content:center; align-items:center; height:22px;">${markerIconHtml(mId)}</div>`;
                 }
                 html += `</td>`;
             } else {
@@ -1612,6 +1612,35 @@ window.LaneGroups = (function () {
         const byIdx = (inst.blocks[ref.blockIdx] && inst.blocks[ref.blockIdx].lanes)
             ? inst.blocks[ref.blockIdx].lanes[ref.laneIdx] || null
             : null;
+        const isSlotRef = (ref.slotIdx !== undefined && ref.slotIdx !== null);
+
+        // ── Zeilen-Marker (marked-list / key-value-list): einzelnen Slot auflösen ──
+        if (isSlotRef) {
+            const lane = byIdx;
+            if (!lane) return null;
+            let si = ref.slotIdx;
+            // Zeile wurde ggf. verschoben → über die Marker-ID wiederfinden
+            if (ref.marker && ((lane.slotMarkers && lane.slotMarkers[si]) || '') !== ref.marker) {
+                const found = (lane.slotMarkers || []).indexOf(ref.marker);
+                if (found >= 0) si = found;
+            }
+            const slotMarkerId = (lane.slotMarkers && lane.slotMarkers[si]) || ref.marker || '';
+            const meta = getMarker(slotMarkerId);
+            const players = [];
+            const val = (lane.slots || [])[si] || '';
+            if (val) {
+                const d = resolveValueDisplay(inst, val);
+                players.push({ name: d.displayName || val, color: d.color, isBench: d.isBench, missing: d.missing });
+            }
+            return {
+                title: (lane.slotTitles && lane.slotTitles[si]) || '',
+                markerId: slotMarkerId,
+                markerMeta: meta,
+                players: players
+            };
+        }
+
+        // ── Spalten-Marker (multi-lane): ganze Lane auflösen ──
         let lane = (byIdx && (!ref.marker || byIdx.marker === ref.marker)) ? byIdx : null;
         if (!lane && ref.marker) {
             for (const b of inst.blocks) {
@@ -1685,7 +1714,8 @@ window.LaneGroups = (function () {
         syncAssignments,
         getSummary,
         getLaneInfo,
-        getMarkerMeta: getMarker
+        getMarkerMeta: getMarker,
+        getMarkerList: function () { return MARKERS.map(m => ({ ...m })); }
     };
 
 })();

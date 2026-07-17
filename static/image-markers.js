@@ -32,6 +32,11 @@ window.ImageMarkers = (function () {
     let lastSavedTs = null;   // eigenes Save-Echo vom Snapshot unterscheiden
     let lastDragEnd = 0;      // Klick direkt nach Drag nicht als Platzierung werten
 
+    // Externe Marker-Quellen (z.B. Sha-Platten): Widgets mit eigener Einteilungs-
+    // Logik registrieren sich hier und liefern Arm-/Tooltip-Daten selbst.
+    // { id: { getArmInfo(ref) -> {marker, title}|null, getInfo(ref) -> {title, players}|null } }
+    let _sources = {};
+
     // ── Helpers ──────────────────────────────────────────────────────────
 
     function esc(s) {
@@ -111,10 +116,20 @@ window.ImageMarkers = (function () {
                 border-radius:4px; padding:2px 8px; cursor:pointer; font-size:0.75rem;
             }
             .im-banner button:hover { filter:brightness(1.2); }
-            /* Klick-Affordanz auf den Lane-Markern (nur Manager, per JS gesetzt) */
-            .lg-marker-display.im-clickable { cursor:pointer; }
-            .lg-marker-display.im-clickable:hover { filter:brightness(1.4) drop-shadow(0 0 3px rgba(250,204,21,0.8)); }
-            .lg-marker-display.im-armed { outline:2px solid #f59e0b; outline-offset:2px; border-radius:4px; }
+            /* Klick-Affordanz auf platzierbaren Markern (nur Manager, per JS gesetzt) */
+            .im-clickable { cursor:pointer; }
+            .im-clickable:hover { filter:brightness(1.4) drop-shadow(0 0 3px rgba(250,204,21,0.8)); }
+            .im-armed { outline:2px solid #f59e0b; outline-offset:2px; border-radius:4px; }
+            /* "Text-Marker"-Button auf dem Bild (nur Manager, per Hover eingeblendet) */
+            .im-add-btn {
+                position:absolute; top:6px; right:6px; z-index:6;
+                display:none;
+                background:rgba(15,23,42,0.85); color:#fcd34d;
+                border:1px solid #f59e0b; border-radius:6px;
+                padding:2px 8px; font-size:0.7rem; cursor:pointer;
+                pointer-events:auto;
+            }
+            .im-add-btn:hover { background:rgba(30,41,59,0.95); }
         `;
         const styleEl = document.createElement('style');
         styleEl.id = 'im-styles';
@@ -140,6 +155,7 @@ window.ImageMarkers = (function () {
             overlay.className = 'im-overlay';
             overlay.dataset.img = imageKeyFromSrc(img.getAttribute('src') || img.src);
             wrap.appendChild(overlay);
+            addFreeMarkerButton(wrap);
             // Bild lädt nicht (onerror ersetzt es ggf. durch einen Platzhalter):
             // keine Punkte auf dem Platzhalter zeichnen.
             img.addEventListener('error', () => { overlay.innerHTML = ''; overlay.dataset.dead = '1'; });
@@ -208,16 +224,30 @@ window.ImageMarkers = (function () {
 
     function buildTooltipHtml(mk) {
         const meta = markerMeta(mk.marker);
-        const info = (window.LaneGroups && typeof window.LaneGroups.getLaneInfo === 'function')
-            ? window.LaneGroups.getLaneInfo(mk.assignmentId, { blockIdx: mk.blockIdx, laneIdx: mk.laneIdx, marker: mk.marker })
-            : null;
+
+        // Anzeige-Infos je nach Marker-Art auflösen
+        let info = null;
+        if (mk.free) {
+            info = null; // Freier Text-Marker: nur der gespeicherte Text
+        } else if (mk.source) {
+            const src = _sources[mk.source];
+            if (src && typeof src.getInfo === 'function') {
+                try { info = src.getInfo(mk.ref || {}); } catch (e) { info = null; }
+            }
+        } else if (window.LaneGroups && typeof window.LaneGroups.getLaneInfo === 'function') {
+            info = window.LaneGroups.getLaneInfo(mk.assignmentId, {
+                blockIdx: mk.blockIdx, laneIdx: mk.laneIdx, slotIdx: mk.slotIdx, marker: mk.marker
+            });
+        }
 
         const title = (info && (info.title || (info.markerMeta && info.markerMeta.label))) || mk.laneTitle || meta.label;
         let html = `<div style="display:flex; align-items:center; gap:6px; border-bottom:1px solid #475569; padding-bottom:4px; margin-bottom:4px;">`;
         html += markerIconHtml(meta).replace('<img ', '<img style="width:18px;height:18px;" ');
         html += `<strong style="color:${meta.color};">${esc(title)}</strong></div>`;
 
-        if (info && info.players && info.players.length > 0) {
+        if (mk.free) {
+            // kein Spieler-Block bei freien Text-Markern
+        } else if (info && info.players && info.players.length > 0) {
             info.players.forEach(p => {
                 const flags = (p.isBench ? '⚠ ' : '') + (p.missing ? '❌ ' : '');
                 html += `<div style="color:${p.color}; line-height:1.5;">${flags}${esc(p.name)}</div>`;
@@ -295,6 +325,72 @@ window.ImageMarkers = (function () {
         if (b) b.remove();
     }
 
+    // ── Freie Text-Marker (Marker-Symbol + eigener Text, ohne Gruppenbindung) ─
+
+    function closeFreeMarkerDialog() {
+        const d = document.getElementById('im-free-dialog');
+        if (d) d.remove();
+    }
+
+    function openFreeMarkerDialog() {
+        if (!window.isManager || !bossSlug) return;
+        closeFreeMarkerDialog();
+        const list = (window.LaneGroups && typeof window.LaneGroups.getMarkerList === 'function')
+            ? window.LaneGroups.getMarkerList()
+            : [];
+        const usable = list.filter(m => m.id);
+        if (usable.length === 0) return;
+
+        const overlay = document.createElement('div');
+        overlay.id = 'im-free-dialog';
+        overlay.style.cssText = 'position:fixed; inset:0; z-index:100000; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; padding:16px;';
+        const optionsHtml = usable.map(m => `<option value="${esc(m.id)}">${m.emoji} ${esc(m.label)}</option>`).join('');
+        overlay.innerHTML = `
+            <div style="background:#1e293b; border:1px solid #64748b; border-radius:8px; padding:16px; width:100%; max-width:360px;">
+                <h3 style="color:#fcd34d; font-size:1rem; font-weight:600; margin:0 0 12px 0;">📍 Text-Marker platzieren</h3>
+                <label style="display:block; color:#94a3b8; font-size:0.75rem; margin-bottom:4px;">Marker</label>
+                <select id="im-free-marker" style="width:100%; background:#0f172a; border:1px solid #475569; color:#fff; border-radius:4px; padding:6px; margin-bottom:10px;">${optionsHtml}</select>
+                <label style="display:block; color:#94a3b8; font-size:0.75rem; margin-bottom:4px;">Text</label>
+                <input id="im-free-text" type="text" maxlength="80" placeholder="z.B. Tank-Position, Add-Spawn, Camp..." style="width:100%; box-sizing:border-box; background:#0f172a; border:1px solid #475569; color:#fff; border-radius:4px; padding:6px; margin-bottom:14px;">
+                <div style="display:flex; gap:8px; justify-content:flex-end;">
+                    <button type="button" id="im-free-cancel" style="background:#334155; border:1px solid #64748b; color:#e2e8f0; border-radius:4px; padding:5px 12px; cursor:pointer;">Abbrechen</button>
+                    <button type="button" id="im-free-ok" style="background:#065f46; border:1px solid #10b981; color:#d1fae5; border-radius:4px; padding:5px 12px; cursor:pointer;">Weiter: Position anklicken</button>
+                </div>
+            </div>`;
+        document.body.appendChild(overlay);
+
+        const confirm = () => {
+            const marker = overlay.querySelector('#im-free-marker').value;
+            const text = overlay.querySelector('#im-free-text').value.trim();
+            closeFreeMarkerDialog();
+            arm({ free: true, marker: marker, laneTitle: text }, null);
+        };
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) closeFreeMarkerDialog(); });
+        overlay.querySelector('#im-free-cancel').addEventListener('click', closeFreeMarkerDialog);
+        overlay.querySelector('#im-free-ok').addEventListener('click', confirm);
+        overlay.querySelector('#im-free-text').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); confirm(); }
+        });
+        overlay.querySelector('#im-free-text').focus();
+    }
+
+    // "Text-Marker"-Button in einen Bild-Wrapper einhängen (per Hover sichtbar,
+    // nur für Manager — siehe mouseover-Delegation unten).
+    function addFreeMarkerButton(wrap) {
+        if (!wrap || wrap.querySelector('.im-add-btn')) return;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'im-add-btn';
+        btn.textContent = '📍 Text-Marker';
+        btn.title = 'Eigenen Marker mit Text auf diesem Bild platzieren';
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openFreeMarkerDialog();
+        });
+        wrap.appendChild(btn);
+    }
+
     // ── Datenoperationen ─────────────────────────────────────────────────
 
     async function save(logText) {
@@ -325,16 +421,24 @@ window.ImageMarkers = (function () {
         }
     }
 
+    // Identität eines Markers für den Upsert: pro Gruppe/Zeile/Quelle und Bild
+    // existiert genau ein Marker — erneutes Platzieren verschiebt ihn.
+    // Freie Text-Marker haben keine Gruppen-Identität (jede Platzierung = neu).
+    function markerIdentity(m) {
+        if (m.free) return 'free:' + (m.id || '');
+        if (m.source) return 'src:' + m.source + ':' + JSON.stringify(m.ref || {});
+        const base = 'lg:' + m.assignmentId + ':' + m.blockIdx + ':' + m.laneIdx;
+        return (m.slotIdx === undefined || m.slotIdx === null) ? base : base + ':' + m.slotIdx;
+    }
+
     async function placeMarker(imgKey, x, y) {
         if (!window.isManager || !armed || !bossSlug || !imgKey) return;
         const a = armed;
         disarm();
         const meta = markerMeta(a.marker);
-        // Pro Lane und Bild genau ein Marker: erneutes Platzieren verschiebt ihn.
-        let mk = markers.find(m =>
-            m.img === imgKey && m.assignmentId === a.assignmentId &&
-            m.blockIdx === a.blockIdx && m.laneIdx === a.laneIdx
-        );
+        let mk = a.free
+            ? null
+            : markers.find(m => m.img === imgKey && markerIdentity(m) === markerIdentity(a));
         let action;
         if (mk) {
             mk.x = x; mk.y = y; mk.marker = a.marker; mk.laneTitle = a.laneTitle;
@@ -343,9 +447,19 @@ window.ImageMarkers = (function () {
             mk = {
                 id: 'im-' + Math.random().toString(36).slice(2, 10),
                 img: imgKey, x: x, y: y,
-                marker: a.marker, laneTitle: a.laneTitle,
-                assignmentId: a.assignmentId, blockIdx: a.blockIdx, laneIdx: a.laneIdx
+                marker: a.marker, laneTitle: a.laneTitle || ''
             };
+            if (a.free) {
+                mk.free = true;
+            } else if (a.source) {
+                mk.source = a.source;
+                mk.ref = a.ref || {};
+            } else {
+                mk.assignmentId = a.assignmentId;
+                mk.blockIdx = a.blockIdx;
+                mk.laneIdx = a.laneIdx;
+                if (a.slotIdx !== undefined && a.slotIdx !== null) mk.slotIdx = a.slotIdx;
+            }
             markers.push(mk);
             action = 'platziert';
         }
@@ -371,9 +485,11 @@ window.ImageMarkers = (function () {
 
     // ── Globale Event-Verdrahtung (einmalig) ─────────────────────────────
 
-    // 1) Klick auf einen Lane-Marker im Einteilungsblock → Platzierungs-Modus.
+    // 1) Klick auf einen Marker im Einteilungsblock → Platzierungs-Modus.
+    //    .lg-marker-display      = Spalten-Marker (multi-lane Blöcke)
+    //    .lg-slot-marker-display = Zeilen-Marker (marked-list / key-value-list)
     document.addEventListener('click', (e) => {
-        const disp = e.target.closest('.lg-marker-display');
+        const disp = e.target.closest('.lg-marker-display, .lg-slot-marker-display');
         if (!disp || !window.isManager || !bossSlug || !window.LaneGroups) return;
         const laneEl = disp.closest('.lg-lane');
         if (!laneEl) return;
@@ -389,15 +505,37 @@ window.ImageMarkers = (function () {
         const li = +laneEl.dataset.laneIdx;
         const lane = inst.blocks[bi] && inst.blocks[bi].lanes && inst.blocks[bi].lanes[li];
         if (!lane) return;
+
+        // Erneuter Klick auf denselben Marker → Modus beenden
+        if (armed && armedEl === disp) { disarm(); return; }
+
+        if (disp.classList.contains('lg-slot-marker-display')) {
+            // Zeilen-Marker: einzelner Slot mit eigenem Marker (+ optionalem Titel)
+            const si = +disp.dataset.slotIdx;
+            const slotMarker = (lane.slotMarkers && lane.slotMarkers[si]) || '';
+            if (!slotMarker) {
+                if (typeof window.showModal === 'function') {
+                    window.showModal('Diese Zeile hat keinen Marker — bitte zuerst im Layout einen Marker wählen.');
+                }
+                return;
+            }
+            arm({
+                assignmentId: inst.assignmentId,
+                blockIdx: bi,
+                laneIdx: li,
+                slotIdx: si,
+                marker: slotMarker,
+                laneTitle: (lane.slotTitles && lane.slotTitles[si]) || ''
+            }, disp);
+            return;
+        }
+
         if (!lane.marker) {
             if (typeof window.showModal === 'function') {
                 window.showModal('Diese Spalte hat keinen Marker — bitte zuerst im Layout einen Marker wählen.');
             }
             return;
         }
-
-        // Erneuter Klick auf denselben Marker → Modus beenden
-        if (armed && armedEl === disp) { disarm(); return; }
 
         arm({
             assignmentId: inst.assignmentId,
@@ -414,7 +552,9 @@ window.ImageMarkers = (function () {
         if (!armed || e.shiftKey || e.button !== 0) return;              // Shift = Ping-System
         if (Date.now() - lastDragEnd < 300) return;                      // Klick-Echo nach Drag
         if (e.target.closest('#im-banner')) return;                      // Banner-Buttons
-        if (e.target.closest('.lg-marker-display')) return;              // erneute Marker-Wahl
+        if (e.target.closest('#im-free-dialog')) return;                 // Text-Marker-Dialog
+        if (e.target.closest('.im-add-btn')) return;                     // Text-Marker-Button
+        if (e.target.closest('.lg-marker-display, .lg-slot-marker-display')) return; // erneute Marker-Wahl
 
         const wrap = e.target.closest('.im-wrap, #lightbox-image-wrap');
         if (!wrap) return;
@@ -484,14 +624,67 @@ window.ImageMarkers = (function () {
         }
     });
 
-    // 5) Klick-Affordanz: Lane-Marker bekommen für Manager Cursor + Tooltip.
+    // 5) Klick-Affordanz: Marker bekommen für Manager Cursor + Tooltip;
+    //    der "Text-Marker"-Button wird beim Hover über das Bild eingeblendet.
     document.addEventListener('mouseover', (e) => {
-        const disp = e.target.closest('.lg-marker-display');
-        if (!disp || disp.classList.contains('im-clickable')) return;
-        if (!window.isManager || !bossSlug) return;
-        disp.classList.add('im-clickable');
-        disp.title = 'Klicken: Marker auf dem Taktik-Bild platzieren';
+        if (!window.isManager || !bossSlug || !e.target.closest) return;
+
+        const disp = e.target.closest('.lg-marker-display, .lg-slot-marker-display');
+        if (disp && !disp.classList.contains('im-clickable')) {
+            disp.classList.add('im-clickable');
+            disp.title = 'Klicken: Marker auf dem Taktik-Bild platzieren';
+        }
+
+        const wrap = e.target.closest('.im-wrap, #lightbox-image-wrap');
+        if (wrap) {
+            const btn = wrap.querySelector('.im-add-btn');
+            if (btn) btn.style.display = 'block';
+        }
     });
+
+    // ── Externe Marker-Quellen (Public API für Boss-Widgets) ─────────────
+    // Widgets mit eigener Einteilungs-Logik (z.B. Sha-Platten) registrieren
+    // eine Quelle und rufen bei Klick auf ihren Marker armSource() auf:
+    //   registerSource({ id, getArmInfo(ref) -> {marker, title}|null,
+    //                        getInfo(ref)    -> {title, players:[{name,color,isBench,missing}]}|null })
+    //   armSource('sha-plates', { plateIdx: 0 }, { element: klickZiel })
+    // `marker` ist eine Marker-ID aus LaneGroups (star, circle, ..., skull).
+
+    function registerSource(def) {
+        if (!def || !def.id) return;
+        _sources[def.id] = def;
+    }
+
+    function armSource(sourceId, ref, opts) {
+        opts = opts || {};
+        if (!window.isManager || !bossSlug) return false;
+        const src = _sources[sourceId];
+        if (!src) return false;
+
+        // Erneuter Klick auf denselben Marker → Modus beenden
+        if (armed && opts.element && armedEl === opts.element) { disarm(); return true; }
+
+        let armInfo = { marker: opts.marker || '', title: opts.title || '' };
+        if (typeof src.getArmInfo === 'function') {
+            const gi = src.getArmInfo(ref || {});
+            if (!gi) return false; // Quelle lehnt ab (zeigt ggf. eigenen Hinweis)
+            armInfo = gi;
+        }
+        if (!armInfo.marker) {
+            if (typeof window.showModal === 'function') {
+                window.showModal('Kein Marker gewählt — bitte zuerst einen Marker zuweisen.');
+            }
+            return false;
+        }
+
+        arm({
+            source: sourceId,
+            ref: ref || {},
+            marker: armInfo.marker,
+            laneTitle: armInfo.title || ''
+        }, opts.element || null);
+        return true;
+    }
 
     // ── Lifecycle ────────────────────────────────────────────────────────
 
@@ -537,10 +730,13 @@ window.ImageMarkers = (function () {
         if (unsubscribe) { try { unsubscribe(); } catch (e) { /* egal */ } unsubscribe = null; }
         disarm();
         hideTooltip();
+        closeFreeMarkerDialog();
         dragging = null;
         markers = [];
         lastSavedTs = null;
         bossSlug = null;
+        // Quellen sind seiten-spezifisch (registrieren sich pro Boss-Seite neu)
+        _sources = {};
         // Lightbox-Overlay entfernen (Content-Overlays verschwinden mit dem Seitenwechsel)
         const lbOverlay = document.querySelector('#lightbox-image-wrap .im-overlay');
         if (lbOverlay) lbOverlay.remove();
@@ -558,6 +754,7 @@ window.ImageMarkers = (function () {
             wrap.appendChild(overlay);
         }
         overlay.dataset.img = imageKeyFromSrc(src);
+        addFreeMarkerButton(wrap);
         renderOverlay(overlay);
     }
 
@@ -565,7 +762,9 @@ window.ImageMarkers = (function () {
         initForBoss,
         teardown,
         syncLightbox,
-        renderAll
+        renderAll,
+        registerSource,
+        armSource
     };
 
 })();

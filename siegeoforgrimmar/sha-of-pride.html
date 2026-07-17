@@ -1823,6 +1823,72 @@
                 setInterval(applyProtection, 1500);
                 loadFromAssignments();
 
+                // ══════════════════════════════════════════════════════
+                // BILD-MARKER-INTEGRATION: RT-Icon einer Platte anklicken
+                // → Punkt auf dem Taktik-Bild platzieren (Hover zeigt die
+                // eingeteilten Spieler der Platte, live aus platesData).
+                // ══════════════════════════════════════════════════════
+                if (window.ImageMarkers && typeof window.ImageMarkers.registerSource === 'function') {
+                    // Sha-RT-Werte (rt1..rt8) auf die Standard-Marker-IDs mappen
+                    const RT_TO_MARKER = {
+                        rt1: 'star', rt2: 'circle', rt3: 'diamond', rt4: 'triangle',
+                        rt5: 'moon', rt6: 'square', rt7: 'cross', rt8: 'skull'
+                    };
+
+                    // Quelle bei jedem (Re-)Init frisch registrieren, damit die
+                    // Closures immer auf das aktuelle platesData zeigen.
+                    window.ImageMarkers.registerSource({
+                        id: 'sha-plates',
+                        getArmInfo: function (ref) {
+                            const plate = platesData[ref.plateIdx];
+                            if (!plate) return null;
+                            if (!plate.rt) {
+                                if (window.showModal) window.showModal('Diese Platte hat keinen RT-Marker — bitte zuerst einen Marker wählen.');
+                                return null;
+                            }
+                            return { marker: RT_TO_MARKER[plate.rt] || '', title: 'Platte ' + (ref.plateIdx + 1) };
+                        },
+                        getInfo: function (ref) {
+                            const plate = platesData[ref.plateIdx];
+                            if (!plate) return null;
+                            const cc = window.classColors || {};
+                            const players = plate.slots.filter(Boolean).map(function (name) {
+                                const isClassKey = Object.prototype.hasOwnProperty.call(CLASS_DISPLAY, name);
+                                const p = findRosterPlayer(name);
+                                const cls = p && p.class ? String(p.class).toUpperCase() : '';
+                                return {
+                                    name: isClassKey ? CLASS_DISPLAY[name] : name,
+                                    color: (isClassKey ? cc[name] : cc[cls]) || '#FFFFFF',
+                                    isBench: !isClassKey && isPlayerOnBench(name),
+                                    missing: !isClassKey && !p
+                                };
+                            });
+                            return { title: 'Platte ' + (ref.plateIdx + 1), players: players };
+                        }
+                    });
+
+                    // Klick/Hover-Verdrahtung nur einmal pro DOM (Re-Inits durch
+                    // Roster-Änderungen dürfen keine doppelten Listener anlegen —
+                    // die Daten kommen über die frisch registrierte Quelle).
+                    if (!gridEl.dataset.imWired) {
+                        gridEl.dataset.imWired = '1';
+                        gridEl.addEventListener('click', function (e) {
+                            const disp = e.target.closest('.sha-plate-rt-display');
+                            if (!disp || !window.isManager || !window.ImageMarkers) return;
+                            const pIdx = parseInt(disp.dataset.plateIdx);
+                            if (isNaN(pIdx)) return;
+                            window.ImageMarkers.armSource('sha-plates', { plateIdx: pIdx }, { element: disp });
+                        });
+                        gridEl.addEventListener('mouseover', function (e) {
+                            const disp = e.target.closest('.sha-plate-rt-display');
+                            if (!disp || !window.isManager || disp.dataset.imDecorated) return;
+                            disp.dataset.imDecorated = '1';
+                            disp.style.cursor = 'pointer';
+                            disp.title = 'Klicken: Marker auf dem Taktik-Bild platzieren';
+                        });
+                    }
+                }
+
                 // Live-Sync: Platten-Einteilung bei Firestore-Änderungen ohne
                 // Reload aktualisieren (für alle Betrachter).
                 if (window.registerBossLiveSync) {
