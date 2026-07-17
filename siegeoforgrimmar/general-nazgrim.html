@@ -2,11 +2,13 @@
     .size-toggle-btn {
         transition: background-color 0.3s, color 0.3s;
     }
+
     .active-size-btn {
         background-color: #16a34a !important;
         color: #ffffff !important;
         font-weight: 600;
     }
+
     .assignment-select {
         background-color: #2d3748;
         border: 1px solid #4a5568;
@@ -15,10 +17,12 @@
         width: 100%;
         color: white;
     }
+
     .assignment-select:disabled {
         opacity: 0.9;
         cursor: not-allowed;
     }
+
     .editor-info {
         font-size: 0.75rem;
         color: #a0aec0;
@@ -33,151 +37,202 @@
         <a href="#planner">CD Planer</a>
         <a href="#details">Details</a>
     </nav>
-    
+
     <div id="size-toggle" class="flex justify-center mb-6 bg-slate-850 p-1 rounded-lg w-max mx-auto">
         <button data-size="10" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md">10-Spieler</button>
-        <button data-size="25" class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
+        <button data-size="25"
+            class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-<section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Kampfübersicht & Kernmechaniken
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="mb-4">
-            Der Kampf gegen General Nazgrim dreht sich um seine Wut-Ressource und seine Haltungen. Je mehr Wut er hat, desto gefährlichere Fähigkeiten setzt er ein. Zusätzlich ruft er regelmäßig Wellen von Kor'kron-Adds herbei, die absolute Priorität haben.
-        </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-red-400">Tank-Swap:</strong> Nazgrim wirkt <a href="https://www.wowhead.com/mop-classic/de/spell=143494" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Rüstung zerreißen</a>. Ein Wechsel ist bei 3 bis 4 Stacks erforderlich.</li>
-                    <li><strong class="text-purple-400">Add-Management:</strong> Die erscheinenden Adds (besonders <a href="https://www.wowhead.com/mop-classic/de/npc=71519" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Eisenklinge</a> und <a href="https://www.wowhead.com/mop-classic/de/npc=71517" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Arkanweber</a>) müssen schnell von den Tanks an sich gebunden werden, ohne dass Nazgrim zu viel Cleave-Schaden durch unkontrollierte Angriffe abbekommt.</li>
-                </ul>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
-                <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
-                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                    <li><strong class="text-blue-400">Verteidigungshaltung (Defensive Stance):</strong> Wenn Nazgrim die <a href="https://www.wowhead.com/mop-classic/de/spell=143593" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">Verteidigungshaltung</a> einnimmt, gewährt ihm jeder Treffer Wut. <strong class="text-red-400">DPS-Stop auf den Boss!</strong> Greift ausschließlich Adds an.</li>
-                    <li><strong class="text-orange-400">Dispels & Purge:</strong> Der Kriegsschamane bufft Verbündete mit <a href="https://www.wowhead.com/mop-classic/de/spell=143475" target="_blank" rel="noopener noreferrer" class="text-orange-300 hover:underline">Erdschild</a>. Dieser Buff muss sofort entfernt (gepurged) werden.</li>
-                    <li><strong class="text-green-400">Ausweichen:</strong> Nazgrims <a href="https://www.wowhead.com/mop-classic/de/spell=143500" target="_blank" rel="noopener noreferrer" class="hover:underline">Heroische Schockwelle</a> (Kegelangriff) und dem kreisenden <a href="https://www.wowhead.com/mop-classic/de/spell=143872" target="_blank" rel="noopener noreferrer" class="hover:underline">Verheerer</a> zwingend ausweichen.</li>
-                </ul>
-            </div>
-        </div>
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Kampfübersicht & Kernmechaniken
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="mb-4">
+                Der Kampf gegen General Nazgrim dreht sich um seine Wut-Ressource und seine Haltungen. Je mehr Wut er
+                hat, desto gefährlichere Fähigkeiten setzt er ein. Zusätzlich ruft er regelmäßig Wellen von
+                Kor'kron-Adds herbei, die absolute Priorität haben.
+            </p>
 
-        <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
-            <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische Tipps & Kill-Priorität</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div>
-                    <strong class="text-emerald-200">Kill-Priorität:</strong><br>
-                    <a href="https://www.wowhead.com/mop-classic/de/npc=71596" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Banner der Kor'kron</a> > <a href="https://www.wowhead.com/mop-classic/de/npc=71516" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Kriegsschamane</a> > <a href="https://www.wowhead.com/mop-classic/de/npc=71517" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Arkanweber</a> > <a href="https://www.wowhead.com/mop-classic/de/npc=71518" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Attentäter</a> > <a href="https://www.wowhead.com/mop-classic/de/npc=71519" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Eisenklinge</a> > Boss.
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">🛡️ Tanks</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-red-400">Tank-Swap:</strong> Nazgrim wirkt <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143494" target="_blank"
+                                rel="noopener noreferrer" class="text-red-400 hover:underline">Rüstung zerreißen</a>.
+                            Ein Wechsel ist bei 3 bis 4 Stacks erforderlich.</li>
+                        <li><strong class="text-purple-400">Add-Management:</strong> Die erscheinenden Adds (besonders
+                            <a href="https://www.wowhead.com/mop-classic/de/npc=71519" target="_blank"
+                                rel="noopener noreferrer" class="text-purple-400 hover:underline">Eisenklinge</a> und <a
+                                href="https://www.wowhead.com/mop-classic/de/npc=71517" target="_blank"
+                                rel="noopener noreferrer" class="text-purple-400 hover:underline">Arkanweber</a>) müssen
+                            schnell von den Tanks an sich gebunden werden, ohne dass Nazgrim zu viel Cleave-Schaden
+                            durch unkontrollierte Angriffe abbekommt.</li>
+                    </ul>
                 </div>
-                <div>
-                    <strong class="text-emerald-200"><a href="https://www.wowhead.com/mop-classic/de/npc=71596" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Banner der Kor'kron</a>:</strong><br>
-                    Spawnt bei 70 Wut. Es reduziert den erlittenen Schaden aller Gegner stark. Ranged-DPS müssen sofort darauf wechseln.
-                </div>
-                <div>
-                    <strong class="text-emerald-200"><a href="https://www.wowhead.com/mop-classic/de/npc=71518" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Attentäter</a> Kiten:</strong><br>
-                    Der <a href="https://www.wowhead.com/mop-classic/de/npc=71518" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Attentäter</a> fixiert Spieler und greift aus dem Hinterhalt an. Fixierte Spieler müssen ihn kiten (weglaufen) und den Rücken schützen.
-                </div>
-                <div>
-                    <strong class="text-emerald-200"><a href="https://www.wowhead.com/mop-classic/de/npc=71603" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Heilungsfluttotem</a>:</strong><br>
-                    Der <a href="https://www.wowhead.com/mop-classic/de/npc=71516" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:underline">Kriegsschamane</a> stellt dieses Totem. Es heilt die Gegner extrem schnell. Sofortiger Zielwechsel ist Pflicht.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Einteilungen & Taktische Hilfen
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <!-- LINKE SPALTE: LaneGroups-Einteilung -->
-            <div class="space-y-6">
-                <div class="assignment-block">
-                    <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
-                    <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
-                    <div id="nazgrim-lane-groups"></div>
+                <div class="bg-slate-800/60 p-3 rounded border border-yellow-600/30">
+                    <h4 class="text-gold font-bold mb-2 uppercase text-xs tracking-wider">⚔️ DPS & Heiler</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                        <li><strong class="text-blue-400">Verteidigungshaltung (Defensive Stance):</strong> Wenn Nazgrim
+                            die <a href="https://www.wowhead.com/mop-classic/de/spell=143593" target="_blank"
+                                rel="noopener noreferrer" class="text-blue-300 hover:underline">Verteidigungshaltung</a>
+                            einnimmt, gewährt ihm jeder Treffer Wut. <strong class="text-red-400">DPS-Stop auf den
+                                Boss!</strong> Greift ausschließlich Adds an.</li>
+                        <li><strong class="text-orange-400">Dispels & Purge:</strong> Der Kriegsschamane bufft
+                            Verbündete mit <a href="https://www.wowhead.com/mop-classic/de/spell=143475" target="_blank"
+                                rel="noopener noreferrer" class="text-orange-300 hover:underline">Erdschild</a>. Dieser
+                            Buff muss sofort entfernt (gepurged) werden.</li>
+                        <li><strong class="text-green-400">Ausweichen:</strong> Nazgrims <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143500" target="_blank"
+                                rel="noopener noreferrer" class="hover:underline">Heroische Schockwelle</a>
+                            (Kegelangriff) und dem kreisenden <a
+                                href="https://www.wowhead.com/mop-classic/de/spell=143872" target="_blank"
+                                rel="noopener noreferrer" class="hover:underline">Verheerer</a> zwingend ausweichen.
+                        </li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- RECHTE SPALTE: Visuelle Hilfen -->
-            <div>
-                <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
-
-                <div class="space-y-4">
-                    <!-- Aufstellungsbild -->
+            <div class="assignment-block border-l-4 border-emerald-500 bg-slate-800/40 mt-4">
+                <h4 class="text-lg font-bold text-emerald-400 border-b border-emerald-900/50 mb-2 pb-1">💡 Taktische
+                    Tipps & Kill-Priorität</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                     <div>
-                        <img src="siegeoforgrimmar/nazgrim.png" alt="Aufstellung Nazgrim"
-                            class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
-                            onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
+                        <strong class="text-emerald-200">Kill-Priorität:</strong><br>
+                        <a href="https://www.wowhead.com/mop-classic/de/npc=71596" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-200 hover:underline">Banner der Kor'kron</a> >
+                        <a href="https://www.wowhead.com/mop-classic/de/npc=71516" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-200 hover:underline">Kriegsschamane</a> > <a
+                            href="https://www.wowhead.com/mop-classic/de/npc=71517" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-200 hover:underline">Arkanweber</a> > <a
+                            href="https://www.wowhead.com/mop-classic/de/npc=71518" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-200 hover:underline">Attentäter</a> > <a
+                            href="https://www.wowhead.com/mop-classic/de/npc=71519" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-200 hover:underline">Eisenklinge</a> > Boss.
                     </div>
+                    <div>
+                        <strong class="text-emerald-200"><a href="https://www.wowhead.com/mop-classic/de/npc=71596"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-emerald-200 hover:underline">Banner der Kor'kron</a>:</strong><br>
+                        Spawnt bei 70 Wut. Es reduziert den erlittenen Schaden aller Gegner stark. Ranged-DPS müssen
+                        sofort darauf wechseln.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200"><a href="https://www.wowhead.com/mop-classic/de/npc=71518"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-emerald-200 hover:underline">Attentäter</a> Kiten:</strong><br>
+                        Der <a href="https://www.wowhead.com/mop-classic/de/npc=71518" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-200 hover:underline">Attentäter</a> fixiert
+                        Spieler und greift aus dem Hinterhalt an. Fixierte Spieler müssen ihn kiten (weglaufen) und den
+                        Rücken schützen.
+                    </div>
+                    <div>
+                        <strong class="text-emerald-200"><a href="https://www.wowhead.com/mop-classic/de/npc=71603"
+                                target="_blank" rel="noopener noreferrer"
+                                class="text-emerald-200 hover:underline">Heilungsfluttotem</a>:</strong><br>
+                        Der <a href="https://www.wowhead.com/mop-classic/de/npc=71516" target="_blank"
+                            rel="noopener noreferrer" class="text-emerald-200 hover:underline">Kriegsschamane</a> stellt
+                        dieses Totem. Es heilt die Gegner extrem schnell. Sofortiger Zielwechsel ist Pflicht.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <!-- KILL PRIORITY -->
-                    <div class="rounded-lg overflow-hidden border border-slate-700">
-                        <div class="bg-red-900/40 border-b border-red-600/40 px-3 py-2 flex items-center gap-2">
-                            <span class="text-base">🎯</span>
-                            <h4 class="text-base font-bold text-red-300">Kill-Priorität</h4>
+    <section id="assignments" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Einteilungen & Taktische Hilfen
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <!-- LINKE SPALTE: LaneGroups-Einteilung -->
+                <div class="space-y-6">
+                    <div class="assignment-block">
+                        <h4 class="text-lg font-bold text-orange-400">📋 Einteilungs-Blöcke</h4>
+                        <p class="text-sm text-gray-400 mb-2 px-3">Komplett konfigurierbar: Layout per „Layout
+                            bearbeiten", Spieler per Klick zuweisen, Auto-Fill nach Spec-Priorität.</p>
+                        <div id="nazgrim-lane-groups"></div>
+                    </div>
+                </div>
+
+                <!-- RECHTE SPALTE: Visuelle Hilfen -->
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-450 mb-4">Visuelle Hilfen</h3>
+
+                    <div class="space-y-4">
+                        <!-- Aufstellungsbild -->
+                        <div>
+                            <img src="siegeoforgrimmar/nazgrim.png" alt="Aufstellung Nazgrim"
+                                class="lightbox-trigger cursor-pointer w-full h-auto rounded-lg border border-slate-600"
+                                onerror="this.outerHTML='<div class=&quot;p-10 text-center text-gray-500 italic border border-slate-700 rounded-lg bg-slate-800&quot;>Bild für die Aufstellung noch nicht verfügbar.</div>'">
                         </div>
-                        <div class="grid grid-cols-7 bg-slate-800 text-center">
-                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
-                                <span class="text-[10px] text-gray-500 font-bold">1</span>
-                                <img src="raidicons/banner.png" alt="Banner" class="w-8 h-8 my-1 object-contain"
-                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🚩</span>'">
-                                <span class="text-[11px] text-gray-200 font-semibold">Banner</span>
+
+                        <!-- KILL PRIORITY -->
+                        <div class="rounded-lg overflow-hidden border border-slate-700">
+                            <div class="bg-red-900/40 border-b border-red-600/40 px-3 py-2 flex items-center gap-2">
+                                <span class="text-base">🎯</span>
+                                <h4 class="text-base font-bold text-red-300">Kill-Priorität</h4>
                             </div>
-                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
-                                <span class="text-[10px] text-gray-500 font-bold">2</span>
-                                <img src="raidicons/totem.png" alt="Totem" class="w-8 h-8 my-1 object-contain"
-                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🪵</span>'">
-                                <span class="text-[11px] text-gray-200 font-semibold">Totem</span>
-                            </div>
-                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
-                                <span class="text-[10px] text-gray-500 font-bold">3</span>
-                                <img src="raidicons/arcweaver.png" alt="Arkanweber" class="w-8 h-8 my-1 object-contain"
-                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>✨</span>'">
-                                <span class="text-[11px] text-gray-200 font-semibold">Arkanweber</span>
-                            </div>
-                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
-                                <span class="text-[10px] text-gray-500 font-bold">4</span>
-                                <img src="raidicons/shaman.png" alt="Schamane" class="w-8 h-8 my-1 object-contain"
-                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>⚡</span>'">
-                                <span class="text-[11px] text-gray-200 font-semibold">Schamane</span>
-                            </div>
-                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
-                                <span class="text-[10px] text-gray-500 font-bold">5</span>
-                                <img src="raidicons/assassin.png" alt="Assassine" class="w-8 h-8 my-1 object-contain"
-                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🗡️</span>'">
-                                <span class="text-[11px] text-gray-200 font-semibold">Assassine</span>
-                            </div>
-                            <div class="flex flex-col items-center p-2 border-r border-slate-700">
-                                <span class="text-[10px] text-gray-500 font-bold">6</span>
-                                <img src="raidicons/sniper.png" alt="Schütze" class="w-8 h-8 my-1 object-contain"
-                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🏹</span>'">
-                                <span class="text-[11px] text-gray-200 font-semibold">Schütze</span>
-                            </div>
-                            <div class="flex flex-col items-center p-2">
-                                <span class="text-[10px] text-gray-500 font-bold">7</span>
-                                <img src="raidicons/ironblade.png" alt="Eisenklinge" class="w-8 h-8 my-1 object-contain"
-                                     onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>⚔️</span>'">
-                                <span class="text-[11px] text-gray-200 font-semibold">Eisenklinge</span>
+                            <div class="grid grid-cols-7 bg-slate-800 text-center">
+                                <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                    <span class="text-[10px] text-gray-500 font-bold">1</span>
+                                    <img src="raidicons/banner.png" alt="Banner" class="w-8 h-8 my-1 object-contain"
+                                        onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🚩</span>'">
+                                    <span class="text-[11px] text-gray-200 font-semibold">Banner</span>
+                                </div>
+                                <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                    <span class="text-[10px] text-gray-500 font-bold">2</span>
+                                    <img src="raidicons/totem.png" alt="Totem" class="w-8 h-8 my-1 object-contain"
+                                        onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🪵</span>'">
+                                    <span class="text-[11px] text-gray-200 font-semibold">Totem</span>
+                                </div>
+                                <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                    <span class="text-[10px] text-gray-500 font-bold">3</span>
+                                    <img src="raidicons/arcweaver.png" alt="Arkanweber"
+                                        class="w-8 h-8 my-1 object-contain"
+                                        onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>✨</span>'">
+                                    <span class="text-[11px] text-gray-200 font-semibold">Arkanweber</span>
+                                </div>
+                                <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                    <span class="text-[10px] text-gray-500 font-bold">4</span>
+                                    <img src="raidicons/shaman.png" alt="Schamane" class="w-8 h-8 my-1 object-contain"
+                                        onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>⚡</span>'">
+                                    <span class="text-[11px] text-gray-200 font-semibold">Schamane</span>
+                                </div>
+                                <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                    <span class="text-[10px] text-gray-500 font-bold">5</span>
+                                    <img src="raidicons/assassin.png" alt="Assassine"
+                                        class="w-8 h-8 my-1 object-contain"
+                                        onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🗡️</span>'">
+                                    <span class="text-[11px] text-gray-200 font-semibold">Assassine</span>
+                                </div>
+                                <div class="flex flex-col items-center p-2 border-r border-slate-700">
+                                    <span class="text-[10px] text-gray-500 font-bold">6</span>
+                                    <img src="raidicons/sniper.png" alt="Schütze" class="w-8 h-8 my-1 object-contain"
+                                        onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>🏹</span>'">
+                                    <span class="text-[11px] text-gray-200 font-semibold">Schütze</span>
+                                </div>
+                                <div class="flex flex-col items-center p-2">
+                                    <span class="text-[10px] text-gray-500 font-bold">7</span>
+                                    <img src="raidicons/ironblade.png" alt="Eisenklinge"
+                                        class="w-8 h-8 my-1 object-contain"
+                                        onerror="this.outerHTML='<span class=&quot;text-2xl my-1&quot;>⚔️</span>'">
+                                    <span class="text-[11px] text-gray-200 font-semibold">Eisenklinge</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ════════════════════════════════════════════════════════════════════
+    <!-- ════════════════════════════════════════════════════════════════════
      GENERAL NAZGRIM AUTO-PLANNER
      ════════════════════════════════════════════════════════════════════
      
@@ -204,173 +259,186 @@
      - BigWigs GeneralNazgrim.lua (Stance-Cycling, Add-Wellen, Sundering Blow)
      ════════════════════════════════════════════════════════════════════ -->
 
-<!-- HTML-Block für nazgrim.html -->
-<section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <p class="text-sm text-gray-400 mb-4 italic">
-            Plant automatisch Cooldown-Zuteilungen. Boss alterniert zwischen Battle/Berserker/Defensive Stance (alle 60s).
-            Hauptfokus: War Song (Raid-Damage), Ravager (Tornado), Add-Wellen.
-        </p>
-        
-        <!-- Steuerung -->
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <button id="btn-auto-assign" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡ Auto-Zuweisen</button>
-            <button id="btn-export-to-planner" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️ In CD-Planer exportieren</button>
-            <button id="btn-save-auto-plan" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾 Plan speichern</button>
-            <button id="btn-clear-auto" class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑 Leeren</button>
-            <button id="btn-save-categories" class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500" style="display:none;">📂 Kategorien speichern</button>
-        </div>
-        
-        <!-- Status -->
-        <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
-        
-        <!-- Timeline mit Tabelle -->
-        <div id="auto-planner-timeline" class="overflow-x-auto">
-            <table class="w-full text-xs">
-                <thead id="auto-planner-thead"></thead>
-                <tbody id="auto-planner-tbody"></tbody>
-            </table>
-        </div>
-        
-        <!-- Kategorien-Editor (nur Manager) -->
-        <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700" style="display:none;">
-            <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️ CD-Kategorien bearbeiten (Manager)</summary>
-            <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
-        </details>
-    </div>
-</section>
+    <!-- HTML-Block für nazgrim.html -->
+    <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            🤖 Auto-CD-Planer
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <p class="text-sm text-gray-400 mb-4 italic">
+                Plant automatisch Cooldown-Zuteilungen. Boss alterniert zwischen Battle/Berserker/Defensive Stance (alle
+                60s).
+                Hauptfokus: War Song (Raid-Damage), Ravager (Tornado), Add-Wellen.
+            </p>
 
-<script src="static/cd-auto-planner.js"></script>
-<script>
-// ══ General Nazgrim Auto-Planner Config ════════════════════════════
-CD_AUTO_PLANNER.init({
-    id: 'general-nazgrim',
-    name: 'General Nazgrim',
-    prefix: 'general-nazgrim',  // Container-Prefix in der Boss-HTML (general-nazgrim-planner-container)
-    
-    events: [
-        // ═══════════════════════════════════════════════════════
-        // KONTINUIERLICHE MECHANIKEN
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Sundering Blow (Tank Stack)",
-            spellId: 143494,
-            firstCast: 10,        // 10s nach Pull (BigWigs)
-            cooldown: 8,          // 8s CD
-            maxCasts: 30,         // sehr häufig (~30 in 4 Min)
-            delay: -1,
-            eventDuration: 30,
-            requiredCDs: ["tank_external"],  // Tank-Externals bei hohen Stacks
-            icon: "⚔️"
-        },
-        {
-            name: "Bonecracker (HP-Halbierung)",
-            spellId: 143638,
-            firstCast: 15.5,      // 15.5s nach Pull
-            cooldown: 32,         // 32s CD
-            maxCasts: 8,          // ~8 Casts in 4 Min
-            delay: -1,
-            eventDuration: 12,
-            requiredCDs: ["any_heal"],  // betroffene Spieler haben halbe HP
-            icon: "🦴"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // ADDS-WELLEN (alle 46s, max 10 Wellen)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Adds-Welle",
-            spellId: 0,
-            firstCast: 46,        // erste Welle bei 46s
-            cooldown: 46,
-            maxCasts: 10,
-            delay: -2,
-            eventDuration: 20,
-            requiredCDs: ["aoe_stun"],
-            icon: "⚔️",
-            escalationRanges: [
-                { start: 3, end: 10, categories: ["aoe_stun", "any_dr"] }
-            ]
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // STANCE-WECHSEL (alle 60s - Boss-Mechaniken)
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Battle Stance (War Song)",
-            spellId: 143503,      // War Song
-            firstCast: 30,        // erste Battle-Stance ~30s nach Pull
-            cooldown: 180,        // 180s = 3x60s (alle 3 Stance-Wechsel)
-            maxCasts: 3,          // 3x in 4 Min
-            delay: -3,
-            eventDuration: 8,     // War Song dauert ~8s
-            requiredCDs: ["any_dr", "any_heal"],  // Raid-Damage
-            icon: "⚔️"
-        },
-        {
-            name: "Berserker Stance (Ravager)",
-            spellId: 143872,      // Ravager
-            firstCast: 90,        // 60s nach Battle Stance
-            cooldown: 180,        // 180s = 3x60s
-            maxCasts: 3,
-            delay: -3,
-            eventDuration: 15,    // Ravager-Phase
-            requiredCDs: ["movement", "any_dr"],  // Ravager-Soak + Raid-DR
-            icon: "🌪️"
-        },
-        {
-            name: "Defensive Stance (Banner+Shockwave)",
-            spellId: 143716,      // Heroic Shockwave
-            firstCast: 150,       // 60s nach Berserker Stance
-            cooldown: 180,        // 180s = 3x60s
-            maxCasts: 3,
-            delay: -3,
-            eventDuration: 15,
-            requiredCDs: ["tank_external", "any_dr"],  // Tank-Defensives + Raid-DR
-            icon: "🛡️"
-        },
-        
-        // ═══════════════════════════════════════════════════════
-        // FINAL WAVE - Bei 10% HP
-        // ═══════════════════════════════════════════════════════
-        
-        {
-            name: "Final Wave (10% HP - Extra Adds)",
-            spellId: 0,
-            firstCast: 350,       // ~5-6 Min DPS-abhängig
-            cooldown: 0,
-            maxCasts: 1,
-            delay: 0,
-            eventDuration: 60,    // Execute-Phase
-            requiredCDs: ["bloodlust", "any_dr", "any_heal", "additional_surv"],
-            icon: "🚨"
-        }
-    ],
-    
-    // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: NAZGRIM_*)
-    // - Final Wave wird auf HEALTH-Trigger (10%) gemappt
-    // - Stance-Wechsel haben eigene Trigger
-    // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
-    triggerMap: {
-        "Sundering Blow (Tank Stack)":             "NAZGRIM_SUNDERING_BLOW",
-        "Bonecracker (HP-Halbierung)":             "NAZGRIM_BONECRACKER",
-        "Adds-Welle":                               "NAZGRIM_ADDS",
-        "Battle Stance (War Song)":                 "NAZGRIM_WAR_SONG",
-        "Berserker Stance (Ravager)":               "NAZGRIM_RAVAGER",
-        "Defensive Stance (Banner+Shockwave)":      "NAZGRIM_HEROIC_SHOCKWAVE",
-        "Final Wave (10% HP - Extra Adds)":         { trigger: "NAZGRIM_HEALTH", npc: "General Nazgrim", percent: 10 }
-    }
-});
-</script>
+            <!-- Steuerung -->
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <button id="btn-auto-assign"
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-xs border border-blue-400">⚡
+                    Auto-Zuweisen</button>
+                <button id="btn-export-to-planner"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-emerald-400">⬇️
+                    In CD-Planer exportieren</button>
+                <button id="btn-save-auto-plan"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-purple-400">💾
+                    Plan speichern</button>
+                <button id="btn-clear-auto"
+                    class="bg-slate-700 hover:bg-slate-800 text-white py-1.5 px-3 rounded text-xs border border-slate-500">🗑
+                    Leeren</button>
+                <button id="btn-save-categories"
+                    class="bg-amber-700 hover:bg-amber-800 text-white py-1.5 px-3 rounded text-xs border border-amber-500"
+                    style="display:none;">📂 Kategorien speichern</button>
+            </div>
 
-<!-- ════════════════════════════════════════════════════════════════════
+            <!-- Status -->
+            <div id="auto-planner-status" class="text-xs text-gray-400 mb-3 italic"></div>
+
+            <!-- Timeline mit Tabelle -->
+            <div id="auto-planner-timeline" class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead id="auto-planner-thead"></thead>
+                    <tbody id="auto-planner-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- Kategorien-Editor (nur Manager) -->
+            <details id="cd-categories-admin" class="mt-6 bg-slate-900 rounded-lg border border-slate-700"
+                style="display:none;">
+                <summary class="cursor-pointer p-3 text-sm font-bold text-amber-400 hover:bg-slate-800 rounded-t-lg">⚙️
+                    CD-Kategorien bearbeiten (Manager)</summary>
+                <div id="cd-categories-container" class="p-3" style="max-height:70vh; overflow-y:auto;"></div>
+            </details>
+        </div>
+    </section>
+
+    <script src="static/cd-auto-planner.js"></script>
+    <script>
+        // ══ General Nazgrim Auto-Planner Config ════════════════════════════
+        CD_AUTO_PLANNER.init({
+            id: 'general-nazgrim',
+            name: 'General Nazgrim',
+            prefix: 'general-nazgrim',  // Container-Prefix in der Boss-HTML (general-nazgrim-planner-container)
+
+            events: [
+                // ═══════════════════════════════════════════════════════
+                // KONTINUIERLICHE MECHANIKEN
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Sundering Blow (Tank Stack)",
+                    spellId: 143494,
+                    firstCast: 10,        // 10s nach Pull (BigWigs)
+                    cooldown: 8,          // 8s CD
+                    maxCasts: 30,         // sehr häufig (~30 in 4 Min)
+                    delay: -1,
+                    eventDuration: 30,
+                    requiredCDs: ["tank_external"],  // Tank-Externals bei hohen Stacks
+                    icon: "⚔️"
+                },
+                {
+                    name: "Bonecracker (HP-Halbierung)",
+                    spellId: 143638,
+                    firstCast: 15.5,      // 15.5s nach Pull
+                    cooldown: 32,         // 32s CD
+                    maxCasts: 8,          // ~8 Casts in 4 Min
+                    delay: -1,
+                    eventDuration: 12,
+                    requiredCDs: ["any_heal"],  // betroffene Spieler haben halbe HP
+                    icon: "🦴"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // ADDS-WELLEN (alle 46s, max 10 Wellen)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Adds-Welle",
+                    spellId: 0,
+                    firstCast: 46,        // erste Welle bei 46s
+                    cooldown: 46,
+                    maxCasts: 10,
+                    delay: -2,
+                    eventDuration: 20,
+                    requiredCDs: ["aoe_stun"],
+                    icon: "⚔️",
+                    escalationRanges: [
+                        { start: 3, end: 10, categories: ["aoe_stun", "any_dr"] }
+                    ]
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // STANCE-WECHSEL (alle 60s - Boss-Mechaniken)
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Battle Stance (War Song)",
+                    spellId: 143503,      // War Song
+                    firstCast: 30,        // erste Battle-Stance ~30s nach Pull
+                    cooldown: 180,        // 180s = 3x60s (alle 3 Stance-Wechsel)
+                    maxCasts: 3,          // 3x in 4 Min
+                    delay: -3,
+                    eventDuration: 8,     // War Song dauert ~8s
+                    requiredCDs: ["any_dr", "any_heal"],  // Raid-Damage
+                    icon: "⚔️"
+                },
+                {
+                    name: "Berserker Stance (Ravager)",
+                    spellId: 143872,      // Ravager
+                    firstCast: 90,        // 60s nach Battle Stance
+                    cooldown: 180,        // 180s = 3x60s
+                    maxCasts: 3,
+                    delay: -3,
+                    eventDuration: 15,    // Ravager-Phase
+                    requiredCDs: ["movement", "any_dr"],  // Ravager-Soak + Raid-DR
+                    icon: "🌪️"
+                },
+                {
+                    name: "Defensive Stance (Banner+Shockwave)",
+                    spellId: 143716,      // Heroic Shockwave
+                    firstCast: 150,       // 60s nach Berserker Stance
+                    cooldown: 180,        // 180s = 3x60s
+                    maxCasts: 3,
+                    delay: -3,
+                    eventDuration: 15,
+                    requiredCDs: ["tank_external", "any_dr"],  // Tank-Defensives + Raid-DR
+                    icon: "🛡️"
+                },
+
+                // ═══════════════════════════════════════════════════════
+                // FINAL WAVE - Bei 10% HP
+                // ═══════════════════════════════════════════════════════
+
+                {
+                    name: "Final Wave (10% HP - Extra Adds)",
+                    spellId: 0,
+                    firstCast: 350,       // ~5-6 Min DPS-abhängig
+                    cooldown: 0,
+                    maxCasts: 1,
+                    delay: 0,
+                    eventDuration: 60,    // Execute-Phase
+                    requiredCDs: ["bloodlust", "any_dr", "any_heal", "additional_surv"],
+                    icon: "🚨"
+                }
+            ],
+
+            // Mapping auf TRIGGER_OPTIONS (offizielle WeakAura-Keys: NAZGRIM_*)
+            // - Final Wave wird auf HEALTH-Trigger (10%) gemappt
+            // - Stance-Wechsel haben eigene Trigger
+            // Format: String = nur Trigger; Object = { trigger, npc, percent } für HEALTH
+            triggerMap: {
+                "Sundering Blow (Tank Stack)": "NAZGRIM_SUNDERING_BLOW",
+                "Bonecracker (HP-Halbierung)": "NAZGRIM_BONECRACKER",
+                "Adds-Welle": "NAZGRIM_ADDS",
+                "Battle Stance (War Song)": "NAZGRIM_WAR_SONG",
+                "Berserker Stance (Ravager)": "NAZGRIM_RAVAGER",
+                "Defensive Stance (Banner+Shockwave)": "NAZGRIM_HEROIC_SHOCKWAVE",
+                "Final Wave (10% HP - Extra Adds)": { trigger: "NAZGRIM_HEALTH", npc: "General Nazgrim", percent: 10 }
+            }
+        });
+    </script>
+
+    <!-- ════════════════════════════════════════════════════════════════════
      EVENT-MANAGER HINWEISE
      ════════════════════════════════════════════════════════════════════
      
@@ -416,19 +484,20 @@ CD_AUTO_PLANNER.init({
      ════════════════════════════════════════════════════════════════════ -->
 
 
-<!-- ════════════════════════════════════════════════════════════════════
+    <!-- ════════════════════════════════════════════════════════════════════
      ZUSÄTZLICH: TRIGGER_OPTIONS für nazgrim.html
      
      Falls die Boss-HTML die TRIGGER_OPTIONS noch nicht definiert hat,
      hier die offiziellen Keys aus deiner WeakAura-Liste:
      ════════════════════════════════════════════════════════════════════ -->
 
-<!--
+    <!--
 
 -->
 
-<section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-        <button onclick="window.generateGlobalWaString()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
+    <section id="planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <button onclick="window.generateGlobalWaString()"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm border border-purple-400 mb-4">
             Globalen Export erzeugen
         </button>
         <div class="mt-4 text-xs text-gray-500 italic">
@@ -438,128 +507,167 @@ CD_AUTO_PLANNER.init({
             CD Planer
             <span class="toggle-icon">▼</span>
         </h2>
-<div class="mb-6">
-    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> Planungsübersicht
-    </h3>
-    
-    <div id="general-nazgrim-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Warte auf Eingaben... <br>
-            <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-        </p>
-    </div>
-</div>
+        <div class="mb-6">
+            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <span class="text-xl">📜</span> Planungsübersicht
+            </h3>
+
+            <div id="general-nazgrim-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
+                    Warte auf Eingaben... <br>
+                    <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu
+                        aktualisieren)</span>
+                </p>
+            </div>
+        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende Reihenfolge (1, 2, 3...).
+                    <strong>% / #:</strong> Geben Sie entweder die prozentuale Gesundheit an oder die fortlaufende
+                    Reihenfolge (1, 2, 3...).
                 </div>
 
                 <div id="general-nazgrim-planner-container" class="space-y-2 planner-scroll-container"></div>
-                
+
                 <div class="mt-4 text-xs text-gray-500 italic">
-                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale Gesundheit nutzen.
+                    * <strong>Zielvorgabe:</strong> Wählen Sie hier die entsprechende Einheit, wenn Sie prozentuale
+                    Gesundheit nutzen.
                 </div>
             </div>
         </div>
     </section>
 
-<section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
-    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        Fähigkeiten im Detail
-        <span class="toggle-icon">▼</span>
-    </h2>
-    <div class="collapsible-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
-                <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Nazgrims Haltungen</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-gray-300"><a href="https://www.wowhead.com/mop-classic/de/spell=143503" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">Kampfhaltung</a>:</strong> Standardhaltung. Generiert langsam Wut. Normaler Schaden.</li>
-                    <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143502" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Berserkerhaltung</a>:</strong> Nazgrim verursacht 25% mehr Schaden und erleidet 25% mehr Schaden. Heiler müssen Tanks im Auge behalten, DPS nutzen ihre CDs auf den Boss.</li>
-                    <li><strong class="text-blue-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143593" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Verteidigungshaltung</a>:</strong> Erleidet 10% weniger Schaden. Angriffe gegen ihn generieren Wut. <strong>Jeder</strong> unnötige Angriff ist fatal, da hohe Wut-Fähigkeiten den Raid zerstören.</li>
-                </ul>
+    <section id="details" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            Fähigkeiten im Detail
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-750 p-4 rounded-lg border border-blue-900/30">
+                    <h4 class="text-lg font-bold text-blue-400 border-b border-blue-900/50 mb-2">Nazgrims Haltungen</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-gray-300"><a href="https://www.wowhead.com/mop-classic/de/spell=143503"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-gray-300 hover:underline">Kampfhaltung</a>:</strong> Standardhaltung.
+                            Generiert langsam Wut. Normaler Schaden.</li>
+                        <li><strong class="text-red-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143502"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-red-400 hover:underline">Berserkerhaltung</a>:</strong> Nazgrim
+                            verursacht 25% mehr Schaden und erleidet 25% mehr Schaden. Heiler müssen Tanks im Auge
+                            behalten, DPS nutzen ihre CDs auf den Boss.</li>
+                        <li><strong class="text-blue-400"><a href="https://www.wowhead.com/mop-classic/de/spell=143593"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-blue-400 hover:underline">Verteidigungshaltung</a>:</strong> Erleidet
+                            10% weniger Schaden. Angriffe gegen ihn generieren Wut. <strong>Jeder</strong> unnötige
+                            Angriff ist fatal, da hohe Wut-Fähigkeiten den Raid zerstören.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
+                    <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Nazgrims
+                        Wut-Fähigkeiten</h4>
+                    <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        <li><strong class="text-yellow-400">30 Wut (<a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143500" target="_blank"
+                                    rel="noopener noreferrer" class="text-yellow-400 hover:underline">Heroische
+                                    Schockwelle</a>):</strong> Kegelförmiger Angriff nach vorne auf einen zufälligen
+                            Spieler.</li>
+                        <li><strong class="text-orange-400">50 Wut (<a
+                                    href="https://www.wowhead.com/mop-classic/de/npc=71596" target="_blank"
+                                    rel="noopener noreferrer" class="text-orange-400 hover:underline">Banner der
+                                    Kor'kron</a>):</strong> Verringert erlittenen Schaden von Nazgrim und den Adds.
+                            Unbedingt sofort zerstören!</li>
+                        <li><strong class="text-red-400">70 Wut (<a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143503" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-red-400 hover:underline">Kriegsgesang</a>):</strong> Fügt allen Spielern
+                            enormen physischen Schaden zu (ca. 65% der max. HP).</li>
+                        <li><strong class="text-red-500">100 Wut (<a
+                                    href="https://www.wowhead.com/mop-classic/de/spell=143872" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-red-500 hover:underline">Verheerer</a>):</strong> Eine wirbelnde Klinge
+                            springt durch den Raum und verursacht enormen Flächenschaden. Versucht zu verhindern, dass
+                            er jemals 100 Wut erreicht!</li>
+                    </ul>
+                </div>
             </div>
-            <div class="bg-slate-750 p-4 rounded-lg border border-gray-700/50">
-                <h4 class="text-lg font-bold text-gray-300 border-b border-gray-600/50 mb-2">Nazgrims Wut-Fähigkeiten</h4>
-                <ul class="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    <li><strong class="text-yellow-400">30 Wut (<a href="https://www.wowhead.com/mop-classic/de/spell=143500" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:underline">Heroische Schockwelle</a>):</strong> Kegelförmiger Angriff nach vorne auf einen zufälligen Spieler.</li>
-                    <li><strong class="text-orange-400">50 Wut (<a href="https://www.wowhead.com/mop-classic/de/npc=71596" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:underline">Banner der Kor'kron</a>):</strong> Verringert erlittenen Schaden von Nazgrim und den Adds. Unbedingt sofort zerstören!</li>
-                    <li><strong class="text-red-400">70 Wut (<a href="https://www.wowhead.com/mop-classic/de/spell=143503" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:underline">Kriegsgesang</a>):</strong> Fügt allen Spielern enormen physischen Schaden zu (ca. 65% der max. HP).</li>
-                    <li><strong class="text-red-500">100 Wut (<a href="https://www.wowhead.com/mop-classic/de/spell=143872" target="_blank" rel="noopener noreferrer" class="text-red-500 hover:underline">Verheerer</a>):</strong> Eine wirbelnde Klinge springt durch den Raum und verursacht enormen Flächenschaden. Versucht zu verhindern, dass er jemals 100 Wut erreicht!</li>
+
+            <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
+                <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
+                <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                    <li><strong class="text-purple-400">Zusätzliches Add (Scharfschütze):</strong> In heroisch spawnt
+                        zusätzlich der <a href="https://www.wowhead.com/mop-classic/de/npc=71520" target="_blank"
+                            rel="noopener noreferrer" class="text-purple-400 hover:underline">Scharfschütze der
+                            Kor'kron</a>. Er schießt auf zufällige Spieler. Steht man nah an ihm, wird der Schaden
+                        drastisch verringert.</li>
+                    <li><strong class="text-red-400">Hinrichten:</strong> Fügt dem anvisierten Tank 3 Millionen
+                        körperlichen Schaden zu. Zwingend starke Tank-Def-CDs bereithalten!</li>
+                    <li>Die Adds haben extrem viel Gesundheit und verursachen tödlichen Schaden, was perfekte Kontrolle
+                        (CC, Stuns, Interrupts) und Priorisierung unumgänglich macht.</li>
                 </ul>
             </div>
         </div>
-        
-        <div class="bg-slate-750 p-4 rounded-lg mt-4 border-l-4 border-red-500 shadow-lg">
-            <h3 class="text-xl font-bold text-red-500">Heroische Anforderungen</h3>
-            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
-                <li><strong class="text-purple-400">Zusätzliches Add (Scharfschütze):</strong> In heroisch spawnt zusätzlich der <a href="https://www.wowhead.com/mop-classic/de/npc=71520" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">Scharfschütze der Kor'kron</a>. Er schießt auf zufällige Spieler. Steht man nah an ihm, wird der Schaden drastisch verringert.</li>
-                <li><strong class="text-red-400">Hinrichten:</strong> Fügt dem anvisierten Tank 3 Millionen körperlichen Schaden zu. Zwingend starke Tank-Def-CDs bereithalten!</li>
-                <li>Die Adds haben extrem viel Gesundheit und verursachen tödlichen Schaden, was perfekte Kontrolle (CC, Stuns, Interrupts) und Priorisierung unumgänglich macht.</li>
-            </ul>
-        </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    window.initializePageSpecificCode = function(assignments, roster, firebaseTools, allCooldowns) {
-        
-        const TRIGGER_OPTIONS = [
-            { val: "NAZGRIM_ENC_START",         text: "Kampfbeginn" },
-            { val: "NAZGRIM_HEALTH",            text: "Gesundheit % (Wähle NPC)" },
-            { val: "NAZGRIM_SUNDERING_BLOW",    text: "Rüstung zerreißen (Tank Stack)" },
-            { val: "NAZGRIM_EXECUTE",           text: "Hinrichtung (Mythic)" },
-            { val: "NAZGRIM_BONECRACKER",       text: "Knochenknacker (HP-Halbierung)" },
-            { val: "NAZGRIM_BATTLE_STANCE",     text: "Kampfhaltung" },
-            { val: "NAZGRIM_BERSERKER_STANCE",  text: "Berserkerhaltung" },
-            { val: "NAZGRIM_DEFENSIVE_STANCE",  text: "Verteidigungshaltung" },
-            { val: "NAZGRIM_HEROIC_SHOCKWAVE",  text: "Heroische Schockwelle" },
-            { val: "NAZGRIM_WAR_SONG",          text: "Schlachtgesang (Raid-Damage)" },
-            { val: "NAZGRIM_RAVAGER",           text: "Verheerer (Tornado)" },
-            { val: "NAZGRIM_BANNER",            text: "Banner" },
-            { val: "NAZGRIM_RAGE_ABILITY",      text: "Wut-Fähigkeit" },
-            { val: "NAZGRIM_ADDS",              text: "Adds-Welle" }
-        ];
-        
-        const NPC_OPTIONS = [
-            "General Nazgrim",
-            "Kor'kron Eisenklinge",
-            "Kor'kron Bogenschütze",
-            "Kor'kron Meuchler",
-            "Kor'kron Kriegsschamane",
-            "Orgrimmar Glaubenstreuer"
-        ];
-        
-        const container = document.getElementById('general-nazgrim-planner-container');
-        
-        const getCooldownOptions = () => {
-            let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
-            if (allCooldowns) {
-                allCooldowns.forEach(cd => {
-                     if (cd.name.startsWith('---')) {
-                         html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
-                     } else {
-                         const color = window.classColors?.[cd.class] || window.classColors?.[cd.class?.toUpperCase()] || '#FFFFFF';
-                         html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
-                     }
-                });
-            }
-            return html;
-        };
+    <script>
+        window.initializePageSpecificCode = function (assignments, roster, firebaseTools, allCooldowns) {
 
-        if (container && container.innerHTML.trim() === "") {
-            
-            const p = container.id.replace('-planner-container', '');
+            const TRIGGER_OPTIONS = [
+                { val: "NAZGRIM_ENC_START", text: "Kampfbeginn" },
+                { val: "NAZGRIM_HEALTH", text: "Gesundheit % (Wähle NPC)" },
+                { val: "NAZGRIM_SUNDERING_BLOW", text: "Rüstung zerreißen (Tank Stack)" },
+                { val: "NAZGRIM_EXECUTE", text: "Hinrichtung (HC)" },
+                { val: "NAZGRIM_BONECRACKER", text: "Knochenknacker (HP-Halbierung)" },
+                { val: "NAZGRIM_BATTLE_STANCE", text: "Kampfhaltung" },
+                { val: "NAZGRIM_BERSERKER_STANCE", text: "Berserkerhaltung" },
+                { val: "NAZGRIM_DEFENSIVE_STANCE", text: "Verteidigungshaltung" },
+                { val: "NAZGRIM_HEROIC_SHOCKWAVE", text: "Heroische Schockwelle" },
+                { val: "NAZGRIM_WAR_SONG", text: "Schlachtgesang (Raid-Damage)" },
+                { val: "NAZGRIM_RAVAGER", text: "Verheerer (Tornado)" },
+                { val: "NAZGRIM_BANNER", text: "Banner" },
+                { val: "NAZGRIM_RAGE_ABILITY", text: "Wut-Fähigkeit" },
+                { val: "NAZGRIM_ADDS", text: "Adds-Welle" }
+            ];
 
-            const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
-            const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
-            
-            const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
-            const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
-            const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+            const NPC_OPTIONS = [
+                "General Nazgrim",
+                "Kor'kron Eisenklinge",
+                "Kor'kron Bogenschütze",
+                "Kor'kron Meuchler",
+                "Kor'kron Kriegsschamane",
+                "Orgrimmar Glaubenstreuer"
+            ];
 
-            const headerHtml = `
+            const container = document.getElementById('general-nazgrim-planner-container');
+
+            const getCooldownOptions = () => {
+                let html = '<option value="" data-color="#FFFFFF">-- Cooldown --</option>';
+                if (allCooldowns) {
+                    allCooldowns.forEach(cd => {
+                        if (cd.name.startsWith('---')) {
+                            html += `<option disabled style="font-weight:bold; color:#fcd34d; background-color:#192a23;">${cd.name}</option>`;
+                        } else {
+                            const color = window.classColors?.[cd.class] || window.classColors?.[cd.class?.toUpperCase()] || '#FFFFFF';
+                            html += `<option value="${cd.name}" style="color: ${color};" data-color="${color}">${cd.name}</option>`;
+                        }
+                    });
+                }
+                return html;
+            };
+
+            if (container && container.innerHTML.trim() === "") {
+
+                const p = container.id.replace('-planner-container', '');
+
+                const tOpts = (typeof TRIGGER_OPTIONS !== 'undefined') ? TRIGGER_OPTIONS : [];
+                const nOpts = (typeof NPC_OPTIONS !== 'undefined') ? NPC_OPTIONS : [];
+
+                const triggerOpts = tOpts.map(o => `<option value="${o.val}" title="${o.val}">${o.text}</option>`).join('');
+                const npcOpts = `<option value="">-- Standard --</option>` + nOpts.map(n => `<option value="${n}">${n}</option>`).join('');
+                const cdOpts = (typeof getCooldownOptions === 'function') ? getCooldownOptions() : "";
+
+                const headerHtml = `
             <div class="planner-header">
                 <div></div> 
                 <div>Auslöser</div>
@@ -582,9 +690,9 @@ CD_AUTO_PLANNER.init({
                 <div></div> 
             </div>`;
 
-            let rowsHtml = "";
-            for (let i = 1; i <= 200; i++) {
-                rowsHtml += `
+                let rowsHtml = "";
+                for (let i = 1; i <= 200; i++) {
+                    rowsHtml += `
                 <div class="planner-row">
                     <div class="row-drag-handle" title="Position ändern"><i class="fas fa-grip-vertical"></i></div>
 
@@ -619,58 +727,58 @@ CD_AUTO_PLANNER.init({
                         <button class="icon-btn delete-row-btn text-red-400 hover:text-red-300" title="Entfernen"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>`;
+                }
+
+                container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
+
+                if (window.initPlannerRowFeatures) {
+                    setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
+                }
+                if (window.makePlannerSortable) {
+                    setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
+                }
             }
 
-            container.innerHTML = `<datalist id="${p}-npc-list">${npcOpts}</datalist><div id="${p}-planner-wrapper" class="planner-container">${headerHtml}<div id="${p}-rows-container">${rowsHtml}</div></div>`;
-            
-            if (window.initPlannerRowFeatures) {
-                setTimeout(() => window.initPlannerRowFeatures(`${p}-rows-container`), 100);
-            }
-            if (window.makePlannerSortable) {
-                setTimeout(() => window.makePlannerSortable(`${p}-planner-wrapper`), 100);
-            }
-        }
-
-        if (container) {
-            container.addEventListener('change', () => {
-                setTimeout(window.updatePlannerSummary, 100);
-            });
-            setTimeout(window.updatePlannerSummary, 500);
-        }
-                if (window.LaneGroups) {
-            try {
-                window.LaneGroups.init({
-                    containerId: 'nazgrim-lane-groups',
-                    bossId: 'general-nazgrim',
-                    assignmentId: 'nazgrim-lane-assignments',
-                    roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
-                    firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
-                    assignments: (typeof assignments !== 'undefined' ? assignments : null),
-                    defaultBlocks: [
-                        {
-                            title: 'Schamanen-Interrupts',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            lanes: [
-                                { marker: 'skull', slots: ['', '', ''] }
-                            ]
-                        },
-                        {
-                            title: 'Arkanweber-Interrupts',
-                            type: 'multi-lane',
-                            autoFill: true,
-                            lanes: [
-                                { marker: 'diamond', slots: ['', '', ''] }
-                            ]
-                        }
-                    ]
+            if (container) {
+                container.addEventListener('change', () => {
+                    setTimeout(window.updatePlannerSummary, 100);
                 });
-            } catch (e) {
-                console.error('[nazgrim] LaneGroups.init Fehler:', e);
+                setTimeout(window.updatePlannerSummary, 500);
             }
-        } else {
-            console.warn('[nazgrim] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
-        }
-    };
-</script>
+            if (window.LaneGroups) {
+                try {
+                    window.LaneGroups.init({
+                        containerId: 'nazgrim-lane-groups',
+                        bossId: 'general-nazgrim',
+                        assignmentId: 'nazgrim-lane-assignments',
+                        roster: (typeof roster !== 'undefined' ? roster : (window.effectiveRoster || window.rosterData || [])),
+                        firebaseTools: (typeof firebaseTools !== 'undefined' ? firebaseTools : window.firebaseTools),
+                        assignments: (typeof assignments !== 'undefined' ? assignments : null),
+                        defaultBlocks: [
+                            {
+                                title: 'Schamanen-Interrupts',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                lanes: [
+                                    { marker: 'skull', slots: ['', '', ''] }
+                                ]
+                            },
+                            {
+                                title: 'Arkanweber-Interrupts',
+                                type: 'multi-lane',
+                                autoFill: true,
+                                lanes: [
+                                    { marker: 'diamond', slots: ['', '', ''] }
+                                ]
+                            }
+                        ]
+                    });
+                } catch (e) {
+                    console.error('[nazgrim] LaneGroups.init Fehler:', e);
+                }
+            } else {
+                console.warn('[nazgrim] LaneGroups-Modul nicht geladen — bitte static/lane-groups.js prüfen.');
+            }
+        };
+    </script>
 </main>

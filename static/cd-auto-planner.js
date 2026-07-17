@@ -468,6 +468,13 @@ window.CD_AUTO_PLANNER = (function () {
     var categories = {};
     var assignments = [];
     var manualOverrides = {};
+
+    // Eindeutiger Override-Key-Präfix pro Zeile. Continuous-Coverage-Folgezeilen
+    // behalten eventIdx/castNum der Ursprungszeile — ohne den _contIdx-Suffix
+    // würde ein manueller Override auf ALLE Folgezeilen desselben Casts wirken.
+    function rowOverridePrefix(row) {
+        return row.eventIdx + '-' + row.castNum + (row._contIdx ? '-c' + row._contIdx : '');
+    }
     var eventOverrides = {};      // eventIdx (oder custom ID) → { disabled, firstCast, cooldown, maxCasts, name, requiredCDs, icon, delay }
     var customEvents = [];        // Komplett selbst angelegte Events (nicht aus config)
     var rosterRef = [];
@@ -918,7 +925,7 @@ window.CD_AUTO_PLANNER = (function () {
         var manualReservations = {};
         timeline.forEach(function (row) {
             allCatKeys.forEach(function(catKey) {
-                var oKey = row.eventIdx + '-' + row.castNum + '-' + catKey;
+                var oKey = rowOverridePrefix(row) + '-' + catKey;
                 var ov = manualOverrides[oKey];
                 if (ov && ov.player && ov.dbName && !ov.skip && !ov.isVirtualCategoryKey) {
                     var k = ov.player + '::' + ov.dbName;
@@ -1090,7 +1097,7 @@ window.CD_AUTO_PLANNER = (function () {
                 : allCatKeys.slice();
 
             Object.keys(manualOverrides).forEach(function(oKey) {
-                var prefix = row.eventIdx + '-' + row.castNum + '-';
+                var prefix = rowOverridePrefix(row) + '-';
                 if (oKey.startsWith(prefix)) {
                     var ck = oKey.substring(prefix.length);
                     if (ck.startsWith('extra_') && iterCats.indexOf(ck) === -1) {
@@ -1101,7 +1108,7 @@ window.CD_AUTO_PLANNER = (function () {
 
             iterCats.forEach(function (catKey) {
                 var isRequired = (row.requiredCDs || []).indexOf(catKey) !== -1;
-                var oKey = row.eventIdx + '-' + row.castNum + '-' + catKey;
+                var oKey = rowOverridePrefix(row) + '-' + catKey;
                 var hasOverride = !!manualOverrides[oKey];
 
                 if (!isRequired && !hasOverride) return;
@@ -1228,7 +1235,7 @@ window.CD_AUTO_PLANNER = (function () {
                         timeline.push({
                             eventIdx: row.eventIdx,
                             eventKey: row.eventKey,
-                            castNum: row.castNum, // keep same castNum or mark as subcast? Keep same so manual overrides can't easily target it without care, but we just want auto filler.
+                            castNum: row.castNum,
                             absTime: nextAbsTime,
                             delay: nextDelay,
                             eventName: row.eventName + ' (Forts. ' + catKey + ')',
@@ -1240,6 +1247,7 @@ window.CD_AUTO_PLANNER = (function () {
                             slots: {},
                             _sourceTriggerMap: row._sourceTriggerMap,
                             _isContinuous: true,
+                            _contIdx: (row._contIdx || 0) + 1,
                             _continuousOffset: (row._continuousOffset || 0) + dur + (row.overlapSec || 0),
                             soak: row.soak || null
                         });
@@ -1439,7 +1447,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var ck = e.target.dataset.cat;
                 var row = assignments[ri];
                 if (!row) return;
-                var oKey = row.eventIdx + '-' + row.castNum + '-' + ck;
+                var oKey = rowOverridePrefix(row) + '-' + ck;
 
                 if (!e.target.value) {
                     delete manualOverrides[oKey];
@@ -1484,9 +1492,9 @@ window.CD_AUTO_PLANNER = (function () {
                 if (!row) return;
 
                 var count = 1;
-                while (manualOverrides[row.eventIdx + '-' + row.castNum + '-extra_' + count]) count++;
+                while (manualOverrides[rowOverridePrefix(row) + '-extra_' + count]) count++;
                 var ck = 'extra_' + count;
-                var oKey = row.eventIdx + '-' + row.castNum + '-' + ck;
+                var oKey = rowOverridePrefix(row) + '-' + ck;
 
                 manualOverrides[oKey] = { player: null, dbName: null, isExtraPlaceholder: true };
                 
@@ -2870,6 +2878,7 @@ async function savePlan() {
                         eventDuration: r.eventDuration || 0,
                         overlapSec: r.overlapSec || 0,
                         _isContinuous: r._isContinuous || false,
+                        _contIdx: r._contIdx || 0,
                         _continuousOffset: r._continuousOffset || 0,
                         _sourceTriggerMap: r._sourceTriggerMap || null,
                         soak: r.soak || null

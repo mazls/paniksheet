@@ -241,27 +241,31 @@ window.LaneGroups = (function () {
 
     function scheduleSave(inst) {
         if (inst.saveTimer) clearTimeout(inst.saveTimer);
-        inst.saveTimer = setTimeout(() => saveToFirestore(inst), 600);
+        inst.saveTimer = setTimeout(() => { inst.saveTimer = null; saveToFirestore(inst); }, 600);
     }
     async function saveToFirestore(inst) {
         if (!window.isManager) return;
+        const timestamp = new Date().toISOString();
+        // Merken, was wir zuletzt geschrieben haben: das Firestore-Echo dieses
+        // Saves (und ältere Echos) darf den lokalen Stand nicht überschreiben.
+        inst._lastSavedTs = timestamp;
+        const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
         if (inst.assignmentsRef) {
             inst.assignmentsRef[inst.assignmentId] = {
                 blocks: JSON.parse(JSON.stringify(inst.blocks)),
-                editor: sessionStorage.getItem('currentManager') || 'Unbekannt',
-                timestamp: new Date().toISOString()
+                editor: currentManager,
+                timestamp: timestamp
             };
         }
         const fb = inst.firebaseTools;
         if (!fb || !fb.db || !fb.doc || !fb.setDoc) return;
         try {
-            const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
             const docRef = fb.doc(fb.db, 'raid-tool-data', 'boss-' + inst.bossId);
             await fb.setDoc(docRef, {
                 [inst.assignmentId]: {
                     blocks: inst.blocks,
                     editor: currentManager,
-                    timestamp: new Date().toISOString()
+                    timestamp: timestamp
                 }
             }, { merge: true });
         } catch (e) {
@@ -1572,8 +1576,13 @@ window.LaneGroups = (function () {
             if (inst.editMode) return;                                   // Bearbeitungsmodus aktiv
             if (modalOpen) return;                                       // Prio-/Kategorie-Modal offen
             if (inst.container && inst.container.contains(document.activeElement)) return; // gerade fokussiert
+            if (inst.saveTimer) return;                                  // lokale Änderung wartet noch auf Save
 
             const saved = assignments[inst.assignmentId];
+            // Eigenes Save-Echo bzw. älterer Stand: Änderungen, die wir selbst
+            // (oder früher) geschrieben haben, dürfen frischere lokale Edits
+            // nicht rückgängig machen ("entfernte Spieler ploppen wieder auf").
+            if (saved && saved.timestamp && inst._lastSavedTs && saved.timestamp <= inst._lastSavedTs) return;
             const incoming = (saved && Array.isArray(saved.blocks) && saved.blocks.length > 0)
                 ? saved.blocks.map(normalizeBlock)
                 : (inst.defaultBlocks || []).map(normalizeBlock);

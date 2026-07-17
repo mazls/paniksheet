@@ -971,6 +971,13 @@
                     return false;
                 }
 
+                // Ist der Spieler bereits auf irgendeiner Platte eingetragen?
+                // (inkl. der aktuellen — für die 🟡-Markierung im Dropdown)
+                function isPlayerAssignedAnywhere(name) {
+                    if (!name) return false;
+                    return platesData.some(p => p.slots.includes(name));
+                }
+
                 function getPlayerOptions(selectedName, pIdx) {
                     let html = '<option value="">—</option>';
                     if (!Array.isArray(roster)) return html;
@@ -1014,10 +1021,11 @@
                         const p = findRosterPlayer(name);
                         const color = (p && p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
                         let bench = isPlayerOnBench(name);
-                        let dup = findOtherPlatesWithPlayer(name, pIdx);
+                        let assigned = isPlayerAssignedAnywhere(name);
                         let prefix = bench ? '⚠ ' : '';
-                        prefix += (dup.length > 0) ? '⚠ ' : '';
-                        const suffix = bench ? ' (Ersatz)' : '';
+                        prefix += assigned ? '🟡 ' : '';
+                        let suffix = bench ? ' (Ersatz)' : '';
+                        if (assigned) suffix += ' (eingeteilt)';
                         htmlOk += `<option value="${name}" style="color:${color};" data-color="${color}">${prefix}${name}${suffix}</option>`;
                     });
                     htmlOk += '</optgroup>';
@@ -1032,10 +1040,11 @@
                             const p = findRosterPlayer(name);
                             const color = (p && p.class && window.classColors?.[p.class.toUpperCase()]) || '#FFFFFF';
                             let bench = isPlayerOnBench(name);
-                            let dup = findOtherPlatesWithPlayer(name, pIdx);
+                            let assigned = isPlayerAssignedAnywhere(name);
                             let prefix = bench ? '⚠ ' : '';
-                            prefix += (dup.length > 0) ? '⚠ ' : '';
-                            const suffix = bench ? ' (Ersatz)' : '';
+                            prefix += assigned ? '🟡 ' : '';
+                            let suffix = bench ? ' (Ersatz)' : '';
+                            if (assigned) suffix += ' (eingeteilt)';
                             html += `<option value="${name}" style="color:${color};" data-color="${color}">${prefix}${name}${suffix}</option>`;
                         });
                         html += '</optgroup>';
@@ -1162,9 +1171,10 @@
                     }
                 }
 
+                let lastSavedTs = null;
                 function scheduleSave() {
                     if (saveTimer) clearTimeout(saveTimer);
-                    saveTimer = setTimeout(saveData, 600);
+                    saveTimer = setTimeout(() => { saveTimer = null; saveData(); }, 600);
                 }
                 async function saveData() {
                     if (!window.isManager) return;
@@ -1174,11 +1184,13 @@
                         const hash = location.hash.substring(1);
                         const bossId = hash.split('/')[1] || 'sha-of-pride';
                         const docRef = firebaseTools.doc(firebaseTools.db, "raid-tool-data", 'boss-' + bossId);
+                        const timestamp = new Date().toISOString();
+                        lastSavedTs = timestamp;
                         await firebaseTools.setDoc(docRef, {
                             [ASSIGNMENT_ID]: {
                                 platesData: platesData,
                                 editor: currentManager,
-                                timestamp: new Date().toISOString()
+                                timestamp: timestamp
                             }
                         }, { merge: true });
                         if (window.logHistory) {
@@ -1668,6 +1680,7 @@
                         roster.forEach(p => {
                             const name = p.name || p;
                             if (used.has(name)) return;
+                            if (isPlayerOnBench(name)) return;
                             if (playerMatchesCategory(p, cat)) {
                                 out.push({ player: p, name: name, category: cat });
                                 used.add(name);
@@ -1676,6 +1689,7 @@
                     });
                     roster.forEach(p => {
                         const name = p.name || p;
+                        if (isPlayerOnBench(name)) return;
                         if (!used.has(name)) {
                             out.push({ player: p, name: name, category: null });
                             used.add(name);
@@ -1816,7 +1830,11 @@
                         if (!fresh) return;
                         // Nutzer nicht stören, der gerade im Widget ein Feld bearbeitet
                         if (gridEl.contains(document.activeElement)) return;
+                        // Lokale Änderung wartet noch auf Save → nicht überschreiben
+                        if (saveTimer) return;
                         const saved = fresh[ASSIGNMENT_ID];
+                        // Eigenes Save-Echo bzw. älterer Stand ignorieren
+                        if (saved && saved.timestamp && lastSavedTs && saved.timestamp <= lastSavedTs) return;
                         const incoming = (saved && Array.isArray(saved.platesData)) ? saved.platesData : null;
                         // Nur neu rendern, wenn sich gegenüber dem aktuellen Stand etwas
                         // geändert hat (verhindert Flackern und Save-Echo des Editors).
