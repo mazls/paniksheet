@@ -2798,14 +2798,22 @@ async function exportToPlanner() {
             });
         }
 
-        // EIN einziger Firestore-Write für alle Felder
+        // In Chunks schreiben, um das 500-Field-Transforms-Limit von Firestore zu umgehen
         if (firebaseRef && firebaseRef.setDoc && Object.keys(batchPayload).length > 0) {
             var bossDocId = "boss-" + (config.id || prefix.toLowerCase());
-            await firebaseRef.setDoc(
-                firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
-                batchPayload,
-                { merge: true }
-            );
+            var payloadKeys = Object.keys(batchPayload);
+            for (var c = 0; c < payloadKeys.length; c += 400) {
+                var chunk = {};
+                for (var j = 0; j < 400 && c + j < payloadKeys.length; j++) {
+                    var key = payloadKeys[c + j];
+                    chunk[key] = batchPayload[key];
+                }
+                await firebaseRef.setDoc(
+                    firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
+                    chunk,
+                    { merge: true }
+                );
+            }
         }
     } finally {
         window._suspendAssignListeners = false;
@@ -4042,15 +4050,23 @@ async function clearPlannerOnly() {
             });
         }
 
-        // Firestore-Write
-        if (firebaseRef && firebaseRef.setDoc) {
+        // Firestore-Write in Chunks (Firestore Limit: 500 Field-Transforms)
+        if (firebaseRef && firebaseRef.setDoc && Object.keys(batchPayload).length > 0) {
             var bossDocId = "boss-" + (config.id || prefix.toLowerCase());
             try {
-                await firebaseRef.setDoc(
-                    firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
-                    batchPayload,
-                    { merge: true }
-                );
+                var payloadKeys = Object.keys(batchPayload);
+                for (var c = 0; c < payloadKeys.length; c += 400) {
+                    var chunk = {};
+                    for (var j = 0; j < 400 && c + j < payloadKeys.length; j++) {
+                        var key = payloadKeys[c + j];
+                        chunk[key] = batchPayload[key];
+                    }
+                    await firebaseRef.setDoc(
+                        firebaseRef.doc(firebaseRef.db, "raid-tool-data", bossDocId),
+                        chunk,
+                        { merge: true }
+                    );
+                }
             } catch (e) {
                 console.error("[Auto-Planner] clearPlannerOnly DB-Error:", e);
                 if (window.showModal) window.showModal("CD-Plan lokal geleert, DB-Fehler: " + e.message);
