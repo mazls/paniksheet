@@ -532,6 +532,9 @@
             prefix: 'sha-of-pride',
 
             events: [
+                // ── KEY-FÄHIGKEIT: Schwellender Stolz — 2× DR + 1× Heal
+                // GLEICHZEITIG pro Cast. Früh benutzte CDs rotieren automatisch
+                // wieder rein, sobald sie bereit sind. ──
                 {
                     name: "Schwellender Stolz (Raid-AoE)",
                     spellId: 144400,
@@ -540,9 +543,11 @@
                     maxCasts: 4,
                     delay: -3,
                     eventDuration: 6,
-                    requiredCDs: ["any_dr", "any_heal"],
+                    requiredCDs: ["any_dr:2", "any_heal"],
                     icon: "💥"
                 },
+                // ── Nicht-Key-Events: standardmäßig AUS, im Event-Manager
+                // per Häkchen bei Bedarf wieder aktivierbar. ──
                 {
                     name: "Verletzter Stolz (Tank)",
                     spellId: 144358,
@@ -552,7 +557,8 @@
                     delay: -2,
                     eventDuration: 8,
                     requiredCDs: ["tank_external"],
-                    icon: "🛡️"
+                    icon: "🛡️",
+                    defaultDisabled: true
                 },
                 {
                     name: "Manifestation des Stolzes (Big Add)",
@@ -563,7 +569,8 @@
                     delay: 0,
                     eventDuration: 30,
                     requiredCDs: ["aoe_stun", "any_dr"],
-                    icon: "👹"
+                    icon: "👹",
+                    defaultDisabled: true
                 },
                 {
                     name: "Einsperren (Gefängnis)",
@@ -574,7 +581,8 @@
                     delay: -2,
                     eventDuration: 12,
                     requiredCDs: ["any_heal"],
-                    icon: "🔒"
+                    icon: "🔒",
+                    defaultDisabled: true
                 },
                 {
                     name: "Selbstreflexion (Kleine Adds)",
@@ -585,7 +593,8 @@
                     delay: 0,
                     eventDuration: 10,
                     requiredCDs: [],
-                    icon: "🐭"
+                    icon: "🐭",
+                    defaultDisabled: true
                 },
 
                 {
@@ -608,7 +617,7 @@
                     maxCasts: 3,
                     delay: -3,
                     eventDuration: 6,
-                    requiredCDs: ["any_dr", "any_heal"],
+                    requiredCDs: ["any_dr:2", "any_heal"],
                     icon: "💥"
                 },
                 {
@@ -620,7 +629,8 @@
                     delay: -2,
                     eventDuration: 12,
                     requiredCDs: ["any_heal"],
-                    icon: "🔒"
+                    icon: "🔒",
+                    defaultDisabled: true
                 }
             ],
 

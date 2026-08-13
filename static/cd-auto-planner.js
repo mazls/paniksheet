@@ -475,15 +475,76 @@ window.CD_AUTO_PLANNER = (function () {
     function rowOverridePrefix(row) {
         return row.eventIdx + '-' + row.castNum + (row._contIdx ? '-c' + row._contIdx : '');
     }
+
+    // ── Kategorie-Spezifikationen mit Anzahl ──
+    // requiredCDs-Einträge können "catKey" oder "catKey:N" sein.
+    // N = wie viele CDs dieser Kategorie GLEICHZEITIG bei einem Cast gebraucht
+    // werden (z.B. "any_dr:2" = zwei Schadensreduktionen zusammen, wie bei
+    // Beschützer-Unheil: 2× DR + 1× Heal).
+    // Die Slot-Instanzen heißen dann: catKey (1.), catKey@2 (2.), catKey@3 ...
+    // — so bleiben alte gespeicherte Pläne/Overrides (nur catKey) kompatibel.
+    function parseCatSpec(entry) {
+        if (!entry) return null;
+        if (typeof entry === 'object') {
+            var k = entry.cat || entry.key;
+            if (!k) return null;
+            return { key: k, count: Math.max(1, parseInt(entry.count) || 1) };
+        }
+        var s = String(entry);
+        var at = s.indexOf('@');
+        if (at !== -1) {
+            // Explizite Slot-Instanz (z.B. Continuous-Coverage-Folgezeile "any_dr@2")
+            return { key: s.slice(0, at), count: 1, instanceKey: s };
+        }
+        var i = s.indexOf(':');
+        if (i === -1) return { key: s, count: 1 };
+        return { key: s.slice(0, i), count: Math.max(1, parseInt(s.slice(i + 1)) || 1) };
+    }
+
+    // Slot-Instanz-Key ("any_dr@2") → Kategorie-Key ("any_dr")
+    function baseCatKey(slotKey) {
+        if (!slotKey) return slotKey;
+        var at = String(slotKey).indexOf('@');
+        return at === -1 ? slotKey : String(slotKey).slice(0, at);
+    }
+
+    // Instanz-Nummer eines Slot-Keys (1 für "any_dr", 2 für "any_dr@2", ...)
+    function slotInstanceNum(slotKey) {
+        var at = String(slotKey || '').indexOf('@');
+        return at === -1 ? 1 : (parseInt(String(slotKey).slice(at + 1)) || 1);
+    }
+
+    // Alle Slot-Instanz-Keys für eine requiredCDs-Liste, Reihenfolge = Priorität.
+    // ["any_dr:2", "any_heal"] → ["any_dr", "any_dr@2", "any_heal"]
+    function slotKeysForRequired(requiredCDs) {
+        var keys = [];
+        (requiredCDs || []).forEach(function (entry) {
+            var spec = parseCatSpec(entry);
+            if (!spec || !spec.key) return;
+            if (spec.instanceKey) {
+                if (keys.indexOf(spec.instanceKey) === -1) keys.push(spec.instanceKey);
+                return;
+            }
+            for (var n = 1; n <= spec.count; n++) {
+                var k = (n === 1) ? spec.key : spec.key + '@' + n;
+                if (keys.indexOf(k) === -1) keys.push(k);
+            }
+        });
+        return keys;
+    }
+
+    // Enthält eine requiredCDs-Liste (auch mit ":N"-Suffixen) diese Kategorie?
+    function requiredHasCat(requiredCDs, catKey) {
+        return (requiredCDs || []).some(function (entry) {
+            var spec = parseCatSpec(entry);
+            return spec && spec.key === catKey;
+        });
+    }
     var eventOverrides = {};      // eventIdx (oder custom ID) → { disabled, firstCast, cooldown, maxCasts, name, requiredCDs, icon, delay }
     var customEvents = [];        // Komplett selbst angelegte Events (nicht aus config)
     var rosterRef = [];
     var firebaseRef = null;
     var cooldownsDB = [];
-
-    // Wiederverwendbare Vorlagen für manuelle CD-Sets (pro Boss, in Firestore gespeichert).
-    // name → { slots: { <slotKey>: <overrideObj>, ... } }
-    var manualTemplates = {};
 
     // ── Dirty-Tracking: ungespeicherte Änderungen sichtbar machen ──
     var _isDirty = false;
@@ -518,151 +579,6 @@ window.CD_AUTO_PLANNER = (function () {
         }
         var roster = window.effectiveRoster || window.rosterData || [];
         return roster.some(function (p) { return (p.name || '').toUpperCase() === up; });
-    }
-
-    // ── Manuelle CD-Vorlagen ──
-    // Speichert die KOMPLETTE Zeile eines Casts — inklusive der automatisch
-    // zugewiesenen CDs — als benannte Vorlage. Vorlagen liegen GLOBAL (nicht am
-    // Boss), sodass sie sich für andere Bosse/Events wiederverwenden lassen.
-    // Beim Einfügen kann jeder CD einzeln abgewählt werden.
-    function snapshotRowTemplate(row) {
-        var slots = {};
-        var src = (row && row.slots) || {};
-        Object.keys(src).forEach(function (slotKey) {
-            var s = src[slotKey];
-            if (!s) return;
-            if (s.isExtraPlaceholder || s.unavailable || s.spreadGap || s.skipped || s.notInRoster) return;
-            if (s.isVirtual) {
-                slots[slotKey] = {
-                    player: s.player, dbName: '__VIRTUAL__',
-                    isVirtualCategoryKey: s.isVirtualCategoryKey || slotKey
-                };
-                return;
-            }
-            if (s.player && s.dbName && s.player !== '__SKIP__') {
-                slots[slotKey] = {
-                    player: s.player, dbName: s.dbName,
-                    dbClass: s.dbClass, spellId: s.spellId,
-                    cooldownSec: s.cooldownSec, durationSec: s.durationSec
-                };
-            }
-        });
-        return slots;
-    }
-
-    // Lesbare Beschreibung eines Vorlagen-Slots (für die Einfüge-Vorschau).
-    function templateSlotLabel(slotKey, slot) {
-        var catName = (slotKey.indexOf('extra_') === 0)
-            ? 'Zusatz-CD'
-            : ((categories[slotKey] && (categories[slotKey].shortName || categories[slotKey].name)) || slotKey);
-        if (slot.dbName === '__VIRTUAL__' || slot.isVirtualCategoryKey) {
-            var vc = categories[slot.isVirtualCategoryKey] || categories[slotKey];
-            return { cat: catName, who: slot.player || 'Alle', what: (vc && vc.name) || 'Virtuell', cls: null };
-        }
-        return { cat: catName, who: slot.player || '?', what: slot.dbName || '?', cls: slot.dbClass || null };
-    }
-
-    function saveRowAsTemplate(row) {
-        var slots = snapshotRowTemplate(row);
-        if (Object.keys(slots).length === 0) {
-            if (window.showModal) window.showModal('Dieser Cast hat keine zugewiesenen CDs, die man als Vorlage speichern könnte.');
-            return;
-        }
-        var name = (window.prompt('Name für die Vorlage:', '') || '').trim();
-        if (!name) return;
-        if (manualTemplates[name] && !confirm('Vorlage „' + name + '" existiert bereits — überschreiben?')) return;
-        manualTemplates[name] = { slots: slots };
-        saveTemplates();            // global sofort persistieren
-        if (assignments && assignments.length) renderTimeline(assignments); // Dropdowns auffrischen
-    }
-
-    function applyTemplateToRow(row, name, onlyKeys) {
-        var tpl = manualTemplates[name];
-        if (!tpl || !tpl.slots) return;
-        var prefix = rowOverridePrefix(row) + '-';
-        var keys = (onlyKeys && onlyKeys.length) ? onlyKeys : Object.keys(tpl.slots);
-        keys.forEach(function (slotKey) {
-            if (!tpl.slots[slotKey]) return;
-            manualOverrides[prefix + slotKey] = JSON.parse(JSON.stringify(tpl.slots[slotKey]));
-        });
-        markDirty();
-        runAutoAssign();
-    }
-
-    function deleteTemplate(name) {
-        if (!manualTemplates[name]) return;
-        if (!confirm('Vorlage „' + name + '" löschen?')) return;
-        delete manualTemplates[name];
-        saveTemplates();
-        if (assignments && assignments.length) renderTimeline(assignments);
-    }
-
-    // Einfüge-Vorschau: zeigt die CDs der Vorlage mit Häkchen zum Abwählen.
-    function openTemplateApplyPreview(row, name) {
-        var tpl = manualTemplates[name];
-        if (!tpl || !tpl.slots) return;
-        var slotKeys = Object.keys(tpl.slots);
-        if (!slotKeys.length) { applyTemplateToRow(row, name); return; }
-
-        var overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;';
-        var modal = document.createElement('div');
-        modal.style.cssText = 'background:#1e293b;padding:18px;border-radius:8px;border:1px solid #475569;max-width:460px;width:90%;max-height:80vh;overflow-y:auto;';
-
-        var listHtml = slotKeys.map(function (sk) {
-            var lbl = templateSlotLabel(sk, tpl.slots[sk]);
-            var color = lbl.cls ? getClassColor(lbl.cls) : '#94a3b8';
-            var safeCat = String(lbl.cat).replace(/</g, '&lt;');
-            return '<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid #334155;border-radius:5px;margin-bottom:5px;cursor:pointer;background:#0f172a;">'
-                + '<input type="checkbox" class="tpl-prev-cb" data-slot="' + sk + '" checked style="accent-color:#22d3ee;width:15px;height:15px;">'
-                + '<span style="flex:0 0 78px;font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.03em;">' + safeCat + '</span>'
-                + '<span style="font-weight:bold;font-size:12px;color:' + color + ';">' + lbl.who + '</span>'
-                + '<span style="font-size:11px;color:' + color + ';opacity:0.85;">→ ' + lbl.what + '</span>'
-                + '</label>';
-        }).join('');
-
-        modal.innerHTML = '<h4 style="font-size:15px;font-weight:bold;color:#fff;margin-bottom:4px;">Vorlage „' + name + '" einfügen</h4>'
-            + '<div style="font-size:11px;color:#94a3b8;margin-bottom:10px;">Häkchen entfernen, was du hier nicht brauchst — nur angehakte CDs werden in diese Zeile übernommen.</div>'
-            + listHtml
-            + '<div style="display:flex;justify-content:space-between;gap:8px;margin-top:12px;align-items:center;">'
-            + '<button id="tpl-prev-del" style="background:#7f1d1d;color:#fecaca;border:none;padding:6px 10px;border-radius:5px;font-size:11px;cursor:pointer;">🗑 Vorlage löschen</button>'
-            + '<div style="display:flex;gap:8px;">'
-            + '<button id="tpl-prev-cancel" style="background:#475569;color:#fff;border:none;padding:6px 12px;border-radius:5px;font-size:12px;cursor:pointer;">Abbrechen</button>'
-            + '<button id="tpl-prev-ok" style="background:#0891b2;color:#fff;border:none;padding:6px 14px;border-radius:5px;font-size:12px;font-weight:bold;cursor:pointer;">Einfügen</button>'
-            + '</div></div>';
-
-        overlay.appendChild(modal);
-        document.body.appendChild(overlay);
-
-        function close() { if (overlay.parentNode) document.body.removeChild(overlay); }
-        modal.querySelector('#tpl-prev-cancel').addEventListener('click', close);
-        overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
-        modal.querySelector('#tpl-prev-del').addEventListener('click', function () { close(); deleteTemplate(name); });
-        modal.querySelector('#tpl-prev-ok').addEventListener('click', function () {
-            var chosen = [];
-            modal.querySelectorAll('.tpl-prev-cb').forEach(function (cb) { if (cb.checked) chosen.push(cb.dataset.slot); });
-            close();
-            if (chosen.length) applyTemplateToRow(row, name, chosen);
-        });
-    }
-
-    // Globale Vorlagen aus Firestore laden / speichern (boss-übergreifend).
-    async function loadTemplates() {
-        if (!firebaseRef) return;
-        try {
-            var snap = await firebaseRef.getDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", "_cd-templates"));
-            if (snap.exists()) manualTemplates = snap.data().templates || {};
-        } catch (e) { console.error("[Auto-Planner] loadTemplates", e); }
-    }
-    async function saveTemplates() {
-        if (!firebaseRef) return;
-        if (!window.isManager) return;
-        try {
-            await firebaseRef.setDoc(
-                firebaseRef.doc(firebaseRef.db, "auto-planner", "_cd-templates"),
-                { templates: manualTemplates }, { merge: false }
-            );
-        } catch (e) { console.error("[Auto-Planner] saveTemplates", e); }
     }
 
     // ── Verteilungs-Strategien (pro Boss konfigurierbar, in Firestore gespeichert) ──
@@ -820,7 +736,10 @@ window.CD_AUTO_PLANNER = (function () {
             var key = 'cfg_' + idx;
             var ov = eventOverrides[key] || {};
             var isMythic = evt.name && (evt.name.indexOf('(HC)') !== -1 || evt.name.indexOf('(Mythisch)') !== -1 || evt.name.indexOf('(Mythic)') !== -1 || evt.name.indexOf('(M)') !== -1);
-            var disabled = ov.disabled !== undefined ? ov.disabled : isMythic;
+            // defaultDisabled: Event bleibt in der Config (Trigger, Zeiten), ist aber
+            // standardmäßig AUS — nur Key-Fähigkeiten sind an. Per Häkchen im
+            // Event-Manager reaktivierbar (Override gewinnt immer).
+            var disabled = ov.disabled !== undefined ? ov.disabled : (evt.defaultDisabled === true || isMythic);
             if (disabled) return;
             result.push({
                 _key: key,
@@ -875,7 +794,7 @@ window.CD_AUTO_PLANNER = (function () {
         var bloodlustEvts = [];
 
         result.forEach(function (evt) {
-            if (evt.requiredCDs && evt.requiredCDs.indexOf('bloodlust') !== -1) {
+            if (evt.requiredCDs && requiredHasCat(evt.requiredCDs, 'bloodlust')) {
                 bloodlustEventExists = true;
 
                 if (!evt._hasManualCDs) {
@@ -1074,17 +993,19 @@ window.CD_AUTO_PLANNER = (function () {
         return timeline;
     }
 
+    // Alle verwendeten Kategorie-BASIS-Keys ("any_dr:2" → "any_dr").
+    // Wird für das Vorwärmen der Dropdown-Fragmente genutzt.
     function getUniqueCategoryKeys() {
         var keys = [];
+        function add(entry) {
+            var spec = parseCatSpec(entry);
+            if (spec && spec.key && keys.indexOf(spec.key) === -1) keys.push(spec.key);
+        }
         var effectiveEvents = getEffectiveEvents();
         effectiveEvents.forEach(function (e) {
-            (e.requiredCDs || []).forEach(function (k) {
-                if (keys.indexOf(k) === -1) keys.push(k);
-            });
+            (e.requiredCDs || []).forEach(add);
             (e.escalationRanges || []).forEach(function (r) {
-                (r.categories || []).forEach(function (k) {
-                    if (keys.indexOf(k) === -1) keys.push(k);
-                });
+                (r.categories || []).forEach(add);
             });
         });
         return keys;
@@ -1105,13 +1026,22 @@ window.CD_AUTO_PLANNER = (function () {
             return cachedResolvedCats[catKey];
         }
 
-        var allCatKeys = getUniqueCategoryKeys();
+        // Alle manuellen Overrides der Timeline als Reservierungen vormerken,
+        // damit der Auto-Assign niemandem einen CD "wegnimmt", der später
+        // manuell fest verplant ist. (Prefix-Scan statt Kategorie-Schleife:
+        // deckt auch Slot-Instanzen wie "any_dr@2", Zusatz-CDs und per Vorlage
+        // eingefügte Kategorien ab.)
         var manualReservations = {};
         timeline.forEach(function (row) {
-            allCatKeys.forEach(function (catKey) {
-                var oKey = rowOverridePrefix(row) + '-' + catKey;
+            var prefix = rowOverridePrefix(row) + '-';
+            Object.keys(manualOverrides).forEach(function (oKey) {
+                if (oKey.indexOf(prefix) !== 0) return;
+                var rest = oKey.substring(prefix.length);
+                // Keys von Continuous-Coverage-Folgezeilen ("...-c1-cat") nicht
+                // der Basiszeile zuordnen — die Folgezeile matcht selbst.
+                if (/^c\d+-/.test(rest)) return;
                 var ov = manualOverrides[oKey];
-                if (ov && ov.player && ov.dbName && !ov.skip && !ov.isVirtualCategoryKey && isPlayerInRoster(ov.player)) {
+                if (ov && ov.player && ov.dbName && !ov.skip && !ov.isVirtualCategoryKey && !ov.isExtraPlaceholder && isPlayerInRoster(ov.player)) {
                     var k = ov.player + '::' + ov.dbName;
                     if (!manualReservations[k]) manualReservations[k] = [];
                     manualReservations[k].push({ time: row.absTime, cdSec: ov.cooldownSec || 180 });
@@ -1136,14 +1066,15 @@ window.CD_AUTO_PLANNER = (function () {
 
         var spreadAllow = {};
         if (assignStrategy.spread) {
+            // Gruppen: (Event, Kategorie) → Liste der Slot-INSTANZEN über alle Casts.
+            // Bei "any_dr:2" zählt jeder Cast doppelt — die Kapazität muss ja beide
+            // gleichzeitigen Slots aus demselben Spieler-Pool bedienen.
             var groups = {};
             timeline.forEach(function (row) {
-                allCatKeys.forEach(function (catKey) {
-                    var isReq = (row.requiredCDs || []).indexOf(catKey) !== -1;
-                    if (!isReq) return;
-                    var key = row.eventIdx + '||' + catKey;
+                slotKeysForRequired(row.requiredCDs).forEach(function (slotKey) {
+                    var key = row.eventIdx + '||' + baseCatKey(slotKey);
                     if (!groups[key]) groups[key] = [];
-                    groups[key].push(row);
+                    groups[key].push({ row: row, slotKey: slotKey });
                 });
             });
 
@@ -1153,8 +1084,8 @@ window.CD_AUTO_PLANNER = (function () {
                 var catKey = parts[1];
 
                 if (rows.length <= 1) {
-                    rows.forEach(function (r) {
-                        spreadAllow[r.eventIdx + '-' + r.castNum + '-' + catKey] = true;
+                    rows.forEach(function (e) {
+                        spreadAllow[e.row.eventIdx + '-' + e.row.castNum + '-' + e.slotKey] = true;
                     });
                     return;
                 }
@@ -1176,8 +1107,8 @@ window.CD_AUTO_PLANNER = (function () {
                 var distinctPlayers = Object.keys(playerBestCd);
                 if (distinctPlayers.length === 0) return;
 
-                var firstT = rows[0].absTime;
-                var lastT = rows[rows.length - 1].absTime;
+                var firstT = rows[0].row.absTime;
+                var lastT = rows[rows.length - 1].row.absTime;
                 var span = Math.max(0, lastT - firstT);
 
                 var capacity = 0;
@@ -1187,12 +1118,12 @@ window.CD_AUTO_PLANNER = (function () {
                 capacity = Math.max(1, capacity);
 
                 if (capacity >= rows.length) {
-                    // Pool kann realistisch alle Casts abdecken → jeder Cast erlaubt
-                    rows.forEach(function (r) {
-                        spreadAllow[r.eventIdx + '-' + r.castNum + '-' + catKey] = true;
+                    // Pool kann realistisch alle Slots abdecken → jeder erlaubt
+                    rows.forEach(function (e) {
+                        spreadAllow[e.row.eventIdx + '-' + e.row.castNum + '-' + e.slotKey] = true;
                     });
                 } else {
-                    // Knappheit → genau "capacity" Casts gleichmäßig über die Zeit verteilen
+                    // Knappheit → genau "capacity" Slots gleichmäßig über die Zeit verteilen
                     var step = rows.length / capacity;
                     var marked = {};
                     for (var i = 0; i < capacity; i++) {
@@ -1200,26 +1131,20 @@ window.CD_AUTO_PLANNER = (function () {
                         if (idx >= rows.length) idx = rows.length - 1;
                         marked[idx] = true;
                     }
-                    rows.forEach(function (r, ri) {
-                        spreadAllow[r.eventIdx + '-' + r.castNum + '-' + catKey] = !!marked[ri];
+                    rows.forEach(function (e, ri) {
+                        spreadAllow[e.row.eventIdx + '-' + e.row.castNum + '-' + e.slotKey] = !!marked[ri];
                     });
                 }
             });
         }
 
         // ──────────────────────────────────────────────────────────────
-        // STRATEGIE B — KATEGORIEN-PRIORISIERUNG
-        // Innerhalb eines Events werden Kategorien in der Reihenfolge
-        // ihres requiredCDs-Arrays abgearbeitet (Index 0 = höchste Prio).
-        // Wenn niedrigere Kategorien keine Slots mehr finden, bleiben
-        // sie leer — statt einen wichtigen Spell für eine unwichtigere
-        // Kategorie zu verbrennen.
-        //
-        // Greift implizit, weil wir die Kategorie-Schleife durch
-        // row.requiredCDs ersetzen (statt allCatKeys): die zuerst gelistete
-        // Kategorie greift beim gemeinsamen Spieler-Pool zuerst zu, spätere
-        // gehen ggf. leer aus. (Eine explizite Capacity-Budgetierung gibt es
-        // bewusst nicht — die Priorisierung entsteht allein aus der Reihenfolge.)
+        // KATEGORIEN-PRIORISIERUNG
+        // Innerhalb eines Events werden die Slots immer in der Reihenfolge
+        // des requiredCDs-Arrays abgearbeitet (Index 0 = höchste Prio,
+        // Mehrfach-Slots direkt hintereinander): die zuerst gelistete
+        // Kategorie greift beim gemeinsamen Spieler-Pool zuerst zu,
+        // spätere gehen bei Knappheit leer aus.
         // ──────────────────────────────────────────────────────────────
 
         // ──────────────────────────────────────────────────────────────
@@ -1280,33 +1205,26 @@ window.CD_AUTO_PLANNER = (function () {
                 await new Promise(function (r) { setTimeout(r, 0); });
             }
 
-            // Alle Kategorien initial mit leeren Slots vorbelegen,
-            // damit die UI-Spalten stimmen.
-            allCatKeys.forEach(function (catKey) {
-                if (!row.slots[catKey]) row.slots[catKey] = {};
-            });
+            // Slot-Instanzen dieser Zeile: erst die benötigten Kategorien
+            // (Reihenfolge = Priorität, inkl. Mehrfach-Slots wie "any_dr@2"),
+            // danach alle manuell überschriebenen Slots (Zusatz-CDs, Vorlagen).
+            var requiredSlotKeys = slotKeysForRequired(row.requiredCDs);
+            var iterSlots = requiredSlotKeys.slice();
 
-            // Reihenfolge: bei prioritizeCategories die Boss-Reihenfolge
-            // aus requiredCDs verwenden, sonst die globale Liste.
-            var iterCats = assignStrategy.prioritizeCategories
-                ? (row.requiredCDs || []).slice()
-                : allCatKeys.slice();
-
+            var rowPrefix = rowOverridePrefix(row) + '-';
             Object.keys(manualOverrides).forEach(function (oKey) {
-                var prefix = rowOverridePrefix(row) + '-';
-                if (oKey.startsWith(prefix)) {
-                    var ck = oKey.substring(prefix.length);
-                    // Jeden manuell überschriebenen Slot verarbeiten (Zusatz-CDs UND
-                    // per Vorlage eingefügte Kategorien, die hier nicht "required" sind).
-                    if (iterCats.indexOf(ck) === -1) {
-                        iterCats.push(ck);
-                    }
-                }
+                if (oKey.indexOf(rowPrefix) !== 0) return;
+                var ck = oKey.substring(rowPrefix.length);
+                // Overrides von Continuous-Coverage-Folgezeilen ("c1-...") gehören
+                // nicht zur Basiszeile.
+                if (/^c\d+-/.test(ck)) return;
+                if (iterSlots.indexOf(ck) === -1) iterSlots.push(ck);
             });
 
-            iterCats.forEach(function (catKey) {
-                var isRequired = (row.requiredCDs || []).indexOf(catKey) !== -1;
-                var oKey = rowOverridePrefix(row) + '-' + catKey;
+            iterSlots.forEach(function (slotKey) {
+                var catKey = baseCatKey(slotKey);
+                var isRequired = requiredSlotKeys.indexOf(slotKey) !== -1;
+                var oKey = rowPrefix + slotKey;
                 var hasOverride = !!manualOverrides[oKey];
 
                 if (!isRequired && !hasOverride) return;
@@ -1314,19 +1232,19 @@ window.CD_AUTO_PLANNER = (function () {
                 if (hasOverride) {
                     var ov = manualOverrides[oKey];
                     if (ov.skip) {
-                        row.slots[catKey] = { player: null, dbName: null, auto: false, skipped: true };
+                        row.slots[slotKey] = { player: null, dbName: null, auto: false, skipped: true };
                         return;
                     }
 
                     if (ov.isExtraPlaceholder) {
-                        row.slots[catKey] = { isExtraPlaceholder: true };
+                        row.slots[slotKey] = { isExtraPlaceholder: true };
                         return;
                     }
 
                     if (ov.isVirtualCategoryKey) {
                         var vCat = categories[ov.isVirtualCategoryKey];
                         if (vCat) {
-                            row.slots[catKey] = {
+                            row.slots[slotKey] = {
                                 isVirtual: true,
                                 player: normalizePlayerForPlanner(ov.player === 'Alle' || ov.player === 'ALL' ? vCat.defaultPlayer : ov.player),
                                 dbName: '',
@@ -1345,7 +1263,7 @@ window.CD_AUTO_PLANNER = (function () {
                     // Manuell zugewiesener Spieler, der nicht (mehr) im Roster ist →
                     // NICHT einplanen/exportieren, sondern sichtbar als Warnung markieren.
                     if (ov.player && ov.dbName && !isPlayerInRoster(ov.player)) {
-                        row.slots[catKey] = {
+                        row.slots[slotKey] = {
                             player: ov.player, dbName: ov.dbName,
                             dbClass: ov.dbClass, spellId: ov.spellId,
                             cooldownSec: ov.cooldownSec, durationSec: ov.durationSec,
@@ -1354,8 +1272,8 @@ window.CD_AUTO_PLANNER = (function () {
                         return;
                     }
 
-                    row.slots[catKey] = JSON.parse(JSON.stringify(ov));
-                    row.slots[catKey].auto = false;
+                    row.slots[slotKey] = JSON.parse(JSON.stringify(ov));
+                    row.slots[slotKey].auto = false;
                     if (ov.player && ov.dbName) {
                         markUsed(ov.player, ov.dbName, ov.cooldownSec || 180, row.absTime);
                     }
@@ -1366,7 +1284,7 @@ window.CD_AUTO_PLANNER = (function () {
 
                 var catConfig = categories[catKey];
                 if (catConfig && catConfig.isVirtual) {
-                    row.slots[catKey] = {
+                    row.slots[slotKey] = {
                         isVirtual: true,
                         player: normalizePlayerForPlanner(catConfig.defaultPlayer),
                         dbName: '',
@@ -1379,13 +1297,12 @@ window.CD_AUTO_PLANNER = (function () {
                     return;
                 }
 
-                // Spread-Check: wenn diese (Event, Kategorie, Cast) durch
-                // die Spread-Maske blockiert ist → leerer "geplante Lücke"-Slot
+                // Spread-Check: wenn diese Slot-Instanz durch die Spread-Maske
+                // blockiert ist → leerer "geplante Lücke"-Slot
                 if (assignStrategy.spread) {
-                    row._catKey = catKey;  // tmp für Spread-Lookup
-                    var allow = spreadAllow[row.eventIdx + '-' + row.castNum + '-' + catKey];
+                    var allow = spreadAllow[row.eventIdx + '-' + row.castNum + '-' + slotKey];
                     if (allow === false) {
-                        row.slots[catKey] = { player: null, dbName: null, auto: true, spreadGap: true };
+                        row.slots[slotKey] = { player: null, dbName: null, auto: true, spreadGap: true };
                         return;
                     }
                 }
@@ -1417,7 +1334,7 @@ window.CD_AUTO_PLANNER = (function () {
                     var players = getPlayersOfClass(spell.dbClass, spell.requiredRole, spell.requiredSpec, catKey === 'stormlash' || catKey === 'skull_banner');
                     var picked = pickPlayer(players, spell, row.absTime);
                     if (picked) {
-                        row.slots[catKey] = {
+                        row.slots[slotKey] = {
                             player: picked, dbName: spell.dbName,
                             dbClass: spell.dbClass, spellId: spell.spellId,
                             cooldownSec: spell.cooldownSec,
@@ -1430,18 +1347,21 @@ window.CD_AUTO_PLANNER = (function () {
                     }
                 }
                 if (!assigned) {
-                    row.slots[catKey] = { player: null, dbName: null, auto: true, unavailable: true };
+                    row.slots[slotKey] = { player: null, dbName: null, auto: true, unavailable: true };
                 }
 
                 // Continuous Coverage Logic
-                if (assigned && row.continuousCoverage && row.eventDuration > 0 && row.slots[catKey].durationSec) {
-                    var dur = row.slots[catKey].durationSec;
+                if (assigned && row.continuousCoverage && row.eventDuration > 0 && row.slots[slotKey].durationSec) {
+                    var dur = row.slots[slotKey].durationSec;
                     var remaining = row.eventDuration - dur;
                     if (remaining > 0) {
                         var nextAbsTime = row.absTime + dur + (row.overlapSec || 0);
                         var nextDelay = row.delay + dur + (row.overlapSec || 0);
 
-                        // Push a new timeline event specifically for this category
+                        // Folgezeile NUR für diese Slot-Instanz einreihen (der
+                        // Instanz-Key "any_dr@2" bleibt erhalten, damit zwei
+                        // parallele Slots derselben Kategorie getrennte
+                        // Folgezeilen-Overrides bekommen).
                         timeline.push({
                             eventIdx: row.eventIdx,
                             eventKey: row.eventKey,
@@ -1453,7 +1373,7 @@ window.CD_AUTO_PLANNER = (function () {
                             continuousCoverage: true,
                             overlapSec: row.overlapSec || 0,
                             icon: row.icon || '',
-                            requiredCDs: [catKey], // ONLY this category needs coverage now
+                            requiredCDs: [slotKey],
                             slots: {},
                             _sourceTriggerMap: row._sourceTriggerMap,
                             _isContinuous: true,
@@ -1475,18 +1395,140 @@ window.CD_AUTO_PLANNER = (function () {
     // UI RENDERING
     // ══════════════════════════════════════════════════════════════
 
+    // Auto-injizierte Lust&Banner-Hilfszeilen (SL/Banner Folge-Casts,
+    // 3-Minuten-Wiederholungen, Kampfbeginn-SL/Banner) — standardmäßig
+    // ausgeblendet, per Toggle unter der Tabelle einblendbar. Die Zuweisung
+    // und der Export laufen unabhängig davon ganz normal weiter.
+    var _showLustBanner = false;
+    function isLustBannerHelperRow(row) {
+        return typeof row.eventKey === 'string' && row.eventKey.indexOf('auto_') === 0;
+    }
+
+    // Eingeklappte Event-Blöcke (eventKey → true). Ein Event mit vielen Casts
+    // (z.B. Kreischen mit 28) lässt sich so zu einer Zeile zusammenfalten,
+    // damit die anderen Fähigkeiten übersichtlich bleiben. Reine Anzeige —
+    // Zuweisung, Speichern und Export bleiben unberührt.
+    var _collapsedEvents = {};
+
     function renderTimeline(timeline) {
         var thead = document.getElementById('auto-planner-thead');
         var tbody = document.getElementById('auto-planner-tbody');
         if (!thead || !tbody) return;
         var catKeys = getUniqueCategoryKeys();
 
+        // ── Anzeige-Reihenfolge: nach EVENT gruppiert ──
+        // Kampfbeginn (t=0) zuerst, danach jedes Event als Block mit seinen
+        // Casts #1, #2, #3... direkt untereinander (statt zeitlich mit anderen
+        // Events verschachtelt). Blöcke sortiert nach ihrem ersten Cast.
+        // WICHTIG: nur die DARSTELLUNG ist gruppiert — die Zuweisung selbst
+        // (autoAssign) bleibt chronologisch, sonst stimmt die CD-Verfügbarkeit
+        // nicht. data-row zeigt weiter auf den Original-Index in assignments.
+        var groupMin = {};
+        timeline.forEach(function (row) {
+            var g = row.eventKey || row.eventName;
+            if (groupMin[g] === undefined || row.absTime < groupMin[g]) groupMin[g] = row.absTime;
+        });
+        var displayIdx = timeline.map(function (_, i) { return i; });
+        displayIdx.sort(function (a, b) {
+            var ra = timeline[a], rb = timeline[b];
+            var ga = ra.eventKey || ra.eventName, gb = rb.eventKey || rb.eventName;
+            if (ga !== gb) {
+                var d = groupMin[ga] - groupMin[gb];
+                if (d !== 0) return d;
+                return ga < gb ? -1 : (ga > gb ? 1 : 0);
+            }
+            if (ra.absTime !== rb.absTime) return ra.absTime - rb.absTime;
+            return a - b;
+        });
+
+        // Lust&Banner-Hilfszeilen ausblenden (Standard) — Toggle unten
+        var lbRowCount = timeline.filter(isLustBannerHelperRow).length;
+        var hasLustBanner = lbRowCount > 0 || timeline.some(function (r) {
+            return requiredHasCat(r.requiredCDs, 'stormlash') || requiredHasCat(r.requiredCDs, 'skull_banner');
+        });
+        if (!_showLustBanner) {
+            displayIdx = displayIdx.filter(function (i) { return !isLustBannerHelperRow(timeline[i]); });
+        }
+
+        // ── Event-Gruppen (für das Ein-/Ausklappen einzelner Fähigkeiten) ──
+        var groups = [];
+        var groupOf = {};
+        displayIdx.forEach(function (i) {
+            var row = timeline[i];
+            var g = row.eventKey || row.eventName;
+            if (!groupOf[g]) {
+                groupOf[g] = { key: g, name: row.eventName, icon: row.icon || '', idxs: [] };
+                groups.push(groupOf[g]);
+            }
+            groupOf[g].idxs.push(i);
+        });
+        // Eingeklappte Gruppen fliegen komplett aus der Darstellung — dadurch
+        // verschwinden auch ihre Spalten und die restlichen CDs rücken zusammen.
+        var visibleIdx = [];
+        groups.forEach(function (g) {
+            g.collapsed = !!_collapsedEvents[g.key];
+            if (!g.collapsed) visibleIdx = visibleIdx.concat(g.idxs);
+        });
+
+        // ── Matrix mit Instanz-Spalten ──
+        // Eine Spalte pro Slot-Instanz: "any_dr:2" ergibt zwei nebeneinander-
+        // liegende Spalten (Any DR #1 / Any DR #2). Spalten kommen nur aus den
+        // SICHTBAREN Zeilen; eingeklappte Events und ausgeblendetes Lust&Banner
+        // nehmen ihre Spalten mit.
+        var colKeys = [];
+        visibleIdx.forEach(function (i) {
+            var row = timeline[i];
+            slotKeysForRequired(row.requiredCDs).forEach(function (k) {
+                if (colKeys.indexOf(k) === -1) colKeys.push(k);
+            });
+            // Auch manuell belegte Kategorien als Spalte zeigen. Die frühere
+            // "Zusatz-CDs"-Spalte gibt es nicht mehr; alte extra_-Zuweisungen
+            // aus gespeicherten Plänen bekommen trotzdem eine Spalte, damit sie
+            // sichtbar (und per Dropdown entfernbar) sind statt unsichtbar
+            // mitexportiert zu werden.
+            Object.keys(row.slots || {}).forEach(function (k) {
+                var s = row.slots[k];
+                if (s && s.isExtraPlaceholder) return;
+                if (k.indexOf('extra_') === 0 && !(s && s.player)) return;
+                if (colKeys.indexOf(k) === -1) colKeys.push(k);
+            });
+        });
+        if (!_showLustBanner) {
+            colKeys = colKeys.filter(function (k) {
+                var b = baseCatKey(k);
+                return b !== 'stormlash' && b !== 'skull_banner';
+            });
+        }
+        // Instanzen derselben Kategorie nebeneinander gruppieren,
+        // Reihenfolge der Basis-Kategorien = erste Erscheinung.
+        var baseOrder = [];
+        colKeys.forEach(function (k) {
+            var b = baseCatKey(k);
+            if (baseOrder.indexOf(b) === -1) baseOrder.push(b);
+        });
+        colKeys.sort(function (a, b) {
+            var da = baseOrder.indexOf(baseCatKey(a)) - baseOrder.indexOf(baseCatKey(b));
+            if (da !== 0) return da;
+            return slotInstanceNum(a) - slotInstanceNum(b);
+        });
+        // Hat eine Kategorie mehrere Instanz-Spalten? (für "#1"-Beschriftung)
+        var baseHasSiblings = {};
+        colKeys.forEach(function (k) {
+            var b = baseCatKey(k);
+            baseHasSiblings[b] = (baseHasSiblings[b] || 0) + 1;
+        });
+
         // Thead
-        var thCols = catKeys.map(function (k) {
-            var cat = categories[k];
-            var c = cat ? cat.color : '#888';
-            var n = cat ? cat.shortName : k;
-            return '<th class="py-2 px-2 min-w-[170px]" style="border-bottom:2px solid ' + c + ';"><span style="color:' + c + ';">' + n + '</span></th>';
+        var thCols = colKeys.map(function (k) {
+            var b = baseCatKey(k);
+            var isLegacyExtra = b.indexOf('extra_') === 0;
+            var cat = categories[b];
+            var c = isLegacyExtra ? '#64748b' : (cat ? cat.color : '#888');
+            var inst = slotInstanceNum(k);
+            var n = isLegacyExtra ? 'Zusatz (alt)' : (cat ? cat.shortName : b);
+            if (!isLegacyExtra && baseHasSiblings[b] > 1) n += ' #' + inst;
+            var t = isLegacyExtra ? ' title="Zusatz-CD aus einem älteren Plan. Über das Dropdown auf „—" setzen, um ihn zu entfernen."' : '';
+            return '<th class="py-2 px-2 min-w-[170px]"' + t + ' style="border-bottom:2px solid ' + c + ';"><span style="color:' + c + ';">' + n + '</span></th>';
         }).join('');
 
         thead.innerHTML = '<tr class="text-left text-gray-400 uppercase tracking-wider border-b border-slate-700 text-[10px]">'
@@ -1495,38 +1537,39 @@ window.CD_AUTO_PLANNER = (function () {
             + '<th class="py-2 px-2 min-w-[130px]">Event</th>'
             + '<th class="py-2 px-1 w-8 text-center">#</th>'
             + '<th class="py-2 px-1 w-10 text-center" title="Verzögerung zum Trigger (für Export)">Delay</th>'
-            + thCols + '<th class="py-2 px-2 min-w-[150px]" style="border-bottom:2px solid #64748b;"><span style="color:#94a3b8;">Zusatz-CDs</span></th></tr>';
+            + thCols + '</tr>';
 
         // Tbody
-        var lastEvt = '';
         // Dropdown-Optionen werden NICHT mehr eager in jede Zelle eingebettet.
         // Signatur aktualisieren → gecachte Fragmente werden nur dann neu gebaut,
         // wenn sich Roster/CDs/Kategorien geändert haben (siehe getDropdownFragment).
         _dropdownSig = computeDropdownSig();
 
-        var rows = timeline.map(function (row, rowIdx) {
-            var isNew = row.eventName !== lastEvt;
-            lastEvt = row.eventName;
+        function renderRow(rowIdx, isFirstOfGroup, group) {
+            var row = timeline[rowIdx];
+            var isNew = isFirstOfGroup;
 
-            var cells = catKeys.map(function (catKey) {
-                var slot = row.slots[catKey];
-                var isReq = row.requiredCDs.indexOf(catKey) !== -1;
+            var requiredKeys = slotKeysForRequired(row.requiredCDs);
+
+            var cells = colKeys.map(function (slotKey) {
+                var slot = row.slots[slotKey];
+                var isReq = requiredKeys.indexOf(slotKey) !== -1;
 
                 // Skipped
                 if (slot && slot.skipped) {
                     return '<td class="relative py-1 px-1 align-middle bg-slate-900/40 border border-slate-700/50" style="max-width:105px; height:34px;">'
                         + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-red-500">✖ Skipped</span></div>'
-                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="">-- Cooldown --</option>'
                         + '<option value="__SKIP__" selected>✖ Kein CD nötig</option>'
                         + '</select></td>';
                 }
 
-                // Nicht required, kein Override
+                // Nicht required, kein Override → dezenter Strich (klickbar)
                 if (!isReq && (!slot || !slot.player)) {
                     return '<td class="relative py-1 px-1 opacity-50 hover:opacity-100 transition-opacity align-middle bg-slate-900/20 border border-slate-700/50" style="max-width:105px; height:34px;">'
                         + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[11px] text-gray-500">—</span></div>'
-                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="" selected>—</option></select></td>';
                 }
 
@@ -1534,7 +1577,7 @@ window.CD_AUTO_PLANNER = (function () {
                 if (slot && slot.spreadGap) {
                     return '<td class="relative py-1 px-1 align-middle bg-cyan-900/20 border border-cyan-800/50" style="max-width:105px; height:34px;" title="Geplante Lücke (Spread-Strategie): hier wurde absichtlich kein Spieler eingeplant, um die verfügbaren CDs über die Zeit zu strecken.">'
                         + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-cyan-300">~ Spread</span></div>'
-                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="" selected>~ Spread-Lücke</option>'
                         + '<option value="__SKIP__">✖ Kein CD nötig</option>'
                         + '</select></td>';
@@ -1547,7 +1590,7 @@ window.CD_AUTO_PLANNER = (function () {
                         + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center text-orange-300" style="text-decoration:line-through;">' + (slot.player || '') + '</div>'
                         + '<div class="text-[8px] leading-[10px] truncate w-full text-center text-orange-400">⚠ nicht im Roster</div>'
                         + '</div>'
-                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="" selected>⚠ ' + (slot.player || '') + ' (nicht im Roster)</option>'
                         + '<option value="__SKIP__">✖ Kein CD nötig</option>'
                         + '</select></td>';
@@ -1557,7 +1600,7 @@ window.CD_AUTO_PLANNER = (function () {
                 if (!slot || slot.unavailable) {
                     return '<td class="relative py-1 px-1 align-middle bg-red-900/20 border border-red-800/50" style="max-width:105px; height:34px;">'
                         + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-red-400">⚠ Fehlt</span></div>'
-                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
+                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="" selected>⚠ kein CD</option>'
                         + '<option value="__SKIP__">✖ Kein CD nötig</option>'
                         + '</select></td>';
@@ -1569,14 +1612,14 @@ window.CD_AUTO_PLANNER = (function () {
                 var brd = slot.auto ? 'border-slate-700/50' : 'border-yellow-600/50';
                 var title = 'Dauer: ' + (slot.durationSec || '?') + 's | CD: ' + (slot.cooldownSec || '?') + 's';
                 var pStr = slot.player || '';
-                var dStr = slot.dbName || (slot.isVirtual ? (categories[slot.isVirtualCategoryKey || catKey] ? categories[slot.isVirtualCategoryKey || catKey].name : 'Virtuell') : '');
+                var dStr = slot.dbName || (slot.isVirtual ? (categories[slot.isVirtualCategoryKey || baseCatKey(slotKey)] ? categories[slot.isVirtualCategoryKey || baseCatKey(slotKey)].name : 'Virtuell') : '');
 
                 return '<td class="relative py-1 px-1 align-middle ' + bg + ' border ' + brd + '" style="max-width:105px; height:34px;" title="' + title + '">'
                     + '<div class="pointer-events-none w-full flex flex-col items-center justify-center h-full">'
                     + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center" style="color:' + color + ';">' + pStr + '</div>'
                     + '<div class="text-[9px] leading-[11px] truncate w-full text-center opacity-80" style="color:' + color + ';">' + dStr + '</div>'
                     + '</div>'
-                    + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + catKey + '">'
+                    + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                     + '<option value="">-- Cooldown --</option>'
                     + '<option value="__SKIP__">✖ Kein CD nötig</option>'
                     + '</select></td>';
@@ -1588,62 +1631,89 @@ window.CD_AUTO_PLANNER = (function () {
             if (typeof mapEntry === 'string') tooltipStr = mapEntry;
             else if (mapEntry && mapEntry.trigger) tooltipStr = mapEntry.trigger;
 
-            var extraSlotsHtml = '';
-            Object.keys(row.slots).forEach(function (slotKey) {
-                if (slotKey.startsWith('extra_')) {
-                    var slot = row.slots[slotKey];
-                    var nir = !!slot.notInRoster;
-                    var color = nir ? '#fdba74' : (slot.dbClass ? getClassColor(slot.dbClass) : '#94a3b8');
-                    var pStr = slot.player || '';
-                    var dStr = nir ? '⚠ nicht im Roster'
-                        : (slot.dbName || (slot.isVirtual ? (categories[slot.isVirtualCategoryKey || slotKey] ? categories[slot.isVirtualCategoryKey || slotKey].name : 'Virtuell') : ''));
-
-                    extraSlotsHtml += '<div class="mb-1 relative w-full ' + (nir ? 'bg-orange-900/25 border border-orange-600/60' : 'bg-slate-800/40 border border-slate-700/60') + '" style="height:34px;"' + (nir ? ' title="' + pStr + ' ist nicht im aktuellen Roster — wird nicht exportiert."' : '') + '>'
-                        + '<div class="pointer-events-none w-full flex flex-col items-center justify-center h-full">'
-                        + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center" style="color:' + color + ';' + (nir ? 'text-decoration:line-through;' : '') + '">' + pStr + '</div>'
-                        + '<div class="text-[9px] leading-[11px] truncate w-full text-center opacity-80" style="color:' + color + ';">' + dStr + '</div>'
-                        + '</div>'
-                        + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
-                        + '<option value="">-- Entfernen --</option>'
-                        + '</select></div>';
-                }
-            });
-            var tplNames = Object.keys(manualTemplates);
-            var tplOpts = '<option value="">⧉ Vorlage…</option>';
-            tplNames.forEach(function (n) {
-                var safe = String(n).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                tplOpts += '<option value="apply::' + encodeURIComponent(n) + '">▸ ' + safe + '</option>';
-            });
-            tplOpts += '<option value="__save__">＋ Diesen Cast als Vorlage</option>';
-            if (tplNames.length) tplOpts += '<option value="__delete__">🗑 Vorlage löschen…</option>';
-            var tplControl = '<select class="tpl-select w-full mt-1 bg-slate-900/60 border border-slate-700/60 rounded-sm text-[9px] text-gray-400 py-0.5 cursor-pointer" data-row="' + rowIdx + '" title="Manuelle CD-Vorlage auf diesen Cast anwenden oder diesen Cast als Vorlage speichern">' + tplOpts + '</select>';
-
-            var extraCell = '<td class="py-1 px-1 align-top border border-slate-700/50 bg-slate-900/20" style="max-width:105px;">'
-                + extraSlotsHtml
-                + '<button class="add-extra-btn w-full bg-slate-800/40 hover:bg-slate-700/60 border border-slate-700/60 rounded-sm text-[10px] text-gray-400 py-0.5" data-row="' + rowIdx + '" title="Weiteren CD hinzufügen">+</button>'
-                + tplControl
-                + '</td>';
+            // Erste Zeile eines Events: Name + Einklapp-Pfeil. Folgezeilen: „↳".
+            var nameCell = isNew
+                ? '<button class="evt-collapse-btn text-left w-full text-gray-200 font-medium hover:text-cyan-300" data-key="' + group.key + '" title="Diesen Event-Block einklappen">'
+                + '▾ ' + row.eventName + '</button>'
+                : '<span class="text-gray-500">↳</span>';
 
             return '<tr class="hover:bg-slate-800/30 transition-colors ' + (isNew ? 'border-t border-slate-600/80' : 'border-t border-slate-800/30') + '">'
                 + '<td class="py-1 px-1 text-center text-sm">' + row.icon + '</td>'
                 + '<td class="py-1 px-2 font-mono text-gray-300" title="Absolute Kampfzeit">' + fmt(row.absTime) + '</td>'
-                + '<td class="py-1 px-2 ' + (isNew ? 'text-gray-200 font-medium' : 'text-gray-500') + '" title="' + tooltipStr + '">' + (isNew ? row.eventName : '↳') + durLabel + '</td>'
+                + '<td class="py-1 px-2" title="' + tooltipStr + '">' + nameCell + durLabel + '</td>'
                 + '<td class="py-1 px-1 text-center text-gray-500">' + row.castNum + '</td>'
                 + '<td class="py-1 px-1 text-center"><input type="number" class="auto-plan-delay w-10 bg-slate-800/40 text-[11px] text-center text-gray-400 border border-slate-700/60 rounded px-1 py-0.5" data-row="' + rowIdx + '" value="' + (row.delay || 0) + '" title="Verzögerung (neg=vorher)"></td>'
-                + cells + extraCell + '</tr>';
-        }).join('');
+                + cells + '</tr>';
+        }
+
+        // Eingeklappter Event-Block: eine Zeile mit Kurzfassung
+        function renderCollapsedGroup(group) {
+            var casts = group.idxs.length;
+            var cdCount = group.idxs.reduce(function (n, i) {
+                return n + Object.keys(timeline[i].slots || {}).filter(function (k) {
+                    var s = timeline[i].slots[k];
+                    return s && s.player && s.player !== '__SKIP__';
+                }).length;
+            }, 0);
+            var firstT = Math.min.apply(null, group.idxs.map(function (i) { return timeline[i].absTime; }));
+            var lastT = Math.max.apply(null, group.idxs.map(function (i) { return timeline[i].absTime; }));
+            var span = (casts > 1) ? (fmt(firstT) + '–' + fmt(lastT)) : fmt(firstT);
+
+            return '<tr class="border-t border-slate-600/80 bg-slate-900/40">'
+                + '<td class="py-1 px-1 text-center text-sm">' + group.icon + '</td>'
+                + '<td class="py-1 px-2 font-mono text-gray-500 text-[10px]">' + span + '</td>'
+                + '<td class="py-1 px-2" colspan="' + (3 + colKeys.length) + '">'
+                + '<button class="evt-collapse-btn text-left text-gray-300 hover:text-cyan-300 font-medium" data-key="' + group.key + '" title="Diesen Event-Block wieder ausklappen">'
+                + '▸ ' + group.name
+                + ' <span class="text-gray-500 font-normal text-[10px]">(' + casts + ' Cast' + (casts === 1 ? '' : 's') + ', ' + cdCount + ' CDs eingeklappt)</span>'
+                + '</button></td></tr>';
+        }
+
+        var rows = '';
+
+        // Steuerzeile: alles ein-/ausklappen + Lust&Banner-Umschalter
+        var collapsedCount = groups.filter(function (g) { return g.collapsed; }).length;
+        var ctrl = '<button id="btn-collapse-all" class="bg-slate-900/40 hover:bg-slate-800/60 border border-slate-700/60 rounded text-[10px] text-gray-400 py-1 px-2" '
+            + 'title="Alle Event-Blöcke einklappen">⊟ Alle einklappen</button>'
+            + '<button id="btn-expand-all" class="bg-slate-900/40 hover:bg-slate-800/60 border border-slate-700/60 rounded text-[10px] text-gray-400 py-1 px-2" '
+            + 'title="Alle Event-Blöcke ausklappen">⊞ Alle ausklappen</button>';
+        if (hasLustBanner) {
+            ctrl += '<button id="btn-toggle-lustbanner" class="bg-slate-900/40 hover:bg-slate-800/60 border border-slate-700/60 rounded text-[10px] text-gray-400 py-1 px-2" '
+                + 'title="Die automatischen Stormlash/Banner-Folge-Casts werden auch ausgeblendet ganz normal zugewiesen und exportiert.">'
+                + (_showLustBanner
+                    ? '▾ ⚔️ Lust &amp; Banner ausblenden'
+                    : '▸ ⚔️ Lust &amp; Banner einblenden (' + lbRowCount + ')')
+                + '</button>';
+        }
+        if (collapsedCount > 0) {
+            ctrl += '<span class="text-[10px] text-cyan-400/80 self-center">'
+                + collapsedCount + (collapsedCount === 1 ? ' Block' : ' Blöcke') + ' eingeklappt</span>';
+        }
+        rows += '<tr><td colspan="' + (5 + colKeys.length) + '" class="py-1 px-1">'
+            + '<div class="flex flex-wrap gap-2">' + ctrl + '</div></td></tr>';
+
+        groups.forEach(function (g) {
+            if (g.collapsed) {
+                rows += renderCollapsedGroup(g);
+            } else {
+                g.idxs.forEach(function (rowIdx, n) {
+                    rows += renderRow(rowIdx, n === 0, g);
+                });
+            }
+        });
 
         tbody.innerHTML = rows;
 
         // Set dropdown values
         timeline.forEach(function (row, rowIdx) {
             var allSlotKeys = Object.keys(row.slots);
-            allSlotKeys.forEach(function (catKey) {
-                var slot = row.slots[catKey];
+            allSlotKeys.forEach(function (slotKey) {
+                var slot = row.slots[slotKey];
                 if (!slot || (!slot.player && !slot.isVirtual)) return;
-                var sel = tbody.querySelector('select[data-row="' + rowIdx + '"][data-cat="' + catKey + '"]');
+                var sel = tbody.querySelector('select[data-row="' + rowIdx + '"][data-cat="' + slotKey + '"]');
                 if (!sel) return;
 
+                var catKey = baseCatKey(slotKey);
                 var val;
                 if (slot.isVirtualCategoryKey) {
                     var playerStr = slot.player === 'Alle' ? 'ALL' : slot.player;
@@ -1656,7 +1726,8 @@ window.CD_AUTO_PLANNER = (function () {
                 }
 
                 if (!Array.from(sel.options).some(function (o) { return o.value === val; })) {
-                    var displayCatName = slot.isVirtual ? (categories[slot.isVirtualCategoryKey || catKey].name) : slot.dbName;
+                    var virtCat = categories[slot.isVirtualCategoryKey || catKey];
+                    var displayCatName = slot.isVirtual ? (virtCat ? virtCat.name : 'Virtuell') : slot.dbName;
                     var opt = new Option(slot.player + ' → ' + displayCatName, val);
                     opt.style.color = getClassColor(slot.dbClass || 'General');
                     opt.dataset.tmp = '1';
@@ -1676,6 +1747,36 @@ window.CD_AUTO_PLANNER = (function () {
                     fillSelectOptions(e.target);
                 }
             });
+            // Ein-/Ausklappen (Event-Blöcke, Lust&Banner) — reine Anzeige,
+            // deshalb kein markDirty() und kein Neuberechnen der Zuweisung.
+            tbody.addEventListener('click', function (e) {
+                if (!e.target || !e.target.closest) return;
+                var cb = e.target.closest('.evt-collapse-btn');
+                if (cb) {
+                    var k = cb.dataset.key;
+                    if (_collapsedEvents[k]) delete _collapsedEvents[k];
+                    else _collapsedEvents[k] = true;
+                    renderTimeline(assignments);
+                    return;
+                }
+                if (e.target.closest('#btn-collapse-all')) {
+                    (assignments || []).forEach(function (r) {
+                        _collapsedEvents[r.eventKey || r.eventName] = true;
+                    });
+                    renderTimeline(assignments);
+                    return;
+                }
+                if (e.target.closest('#btn-expand-all')) {
+                    _collapsedEvents = {};
+                    renderTimeline(assignments);
+                    return;
+                }
+                if (e.target.closest('#btn-toggle-lustbanner')) {
+                    _showLustBanner = !_showLustBanner;
+                    renderTimeline(assignments);
+                    return;
+                }
+            });
             tbody.addEventListener('change', function (e) {
                 if (!e.target || !e.target.classList.contains('auto-plan-select')) return;
 
@@ -1687,11 +1788,6 @@ window.CD_AUTO_PLANNER = (function () {
 
                 if (!e.target.value) {
                     delete manualOverrides[oKey];
-                    // If it's an extra slot, remove it from DOM immediately to avoid flicker before auto-assign
-                    if (ck.startsWith('extra_')) {
-                        var wrap = e.target.closest('div.mb-1');
-                        if (wrap) wrap.remove();
-                    }
                 } else if (e.target.value === '__SKIP__') {
                     manualOverrides[oKey] = { player: '__SKIP__', dbName: '__SKIP__', skip: true };
                 } else {
@@ -1706,7 +1802,7 @@ window.CD_AUTO_PLANNER = (function () {
                         };
                     } else {
                         var dbEntry = cooldownsDB.find(function (cd) { return cd.name === dbName; });
-                        var catSpell = resolveCategory(ck).find(function (s) { return s.dbName === dbName; });
+                        var catSpell = resolveCategory(baseCatKey(ck)).find(function (s) { return s.dbName === dbName; });
                         manualOverrides[oKey] = {
                             player: player, dbName: dbName,
                             dbClass: dbEntry ? dbEntry.class : 'UNKNOWN',
@@ -1721,58 +1817,6 @@ window.CD_AUTO_PLANNER = (function () {
             });
         }
 
-        // Listeners: Zusatz-CD Button
-        tbody.querySelectorAll('.add-extra-btn').forEach(function (btn) {
-            btn.addEventListener('click', function (e) {
-                var ri = parseInt(e.target.dataset.row);
-                var row = assignments[ri];
-                if (!row) return;
-
-                var count = 1;
-                while (manualOverrides[rowOverridePrefix(row) + '-extra_' + count]) count++;
-                var ck = 'extra_' + count;
-                var oKey = rowOverridePrefix(row) + '-' + ck;
-
-                manualOverrides[oKey] = { player: null, dbName: null, isExtraPlaceholder: true };
-                markDirty();
-
-                // Statt runAutoAssign() injecten wir das HTML direkt ins DOM.
-                // Die Optionen werden lazy beim Öffnen des Selects befüllt (focusin).
-                var html = '<div class="mb-1 relative w-full bg-slate-800/40 border border-slate-700/60" style="height:34px;">'
-                    + '<div class="pointer-events-none w-full flex flex-col items-center justify-center h-full">'
-                    + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center" style="color:#94a3b8;"></div>'
-                    + '<div class="text-[9px] leading-[11px] truncate w-full text-center opacity-80" style="color:#94a3b8;"></div>'
-                    + '</div>'
-                    + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + ri + '" data-cat="' + ck + '">'
-                    + '<option value="">-- Entfernen --</option>'
-                    + '</select></div>';
-
-                btn.insertAdjacentHTML('beforebegin', html);
-            });
-        });
-
-        // Listeners: CD-Vorlagen (anwenden / speichern / löschen)
-        tbody.querySelectorAll('.tpl-select').forEach(function (sel) {
-            sel.addEventListener('change', function (e) {
-                var ri = parseInt(e.target.dataset.row);
-                var row = assignments[ri];
-                var v = e.target.value;
-                e.target.value = ''; // Auswahl zurücksetzen (Menü-Charakter)
-                if (!row || !v) return;
-                if (v === '__save__') { saveRowAsTemplate(row); return; }
-                if (v === '__delete__') {
-                    var names = Object.keys(manualTemplates);
-                    if (!names.length) return;
-                    var pick = (window.prompt('Welche Vorlage löschen?\nVerfügbar: ' + names.join(', '), names[0]) || '').trim();
-                    if (pick && manualTemplates[pick]) deleteTemplate(pick);
-                    return;
-                }
-                if (v.indexOf('apply::') === 0) {
-                    openTemplateApplyPreview(row, decodeURIComponent(v.substring('apply::'.length)));
-                }
-            });
-        });
-
         // Listeners: Delay
         tbody.querySelectorAll('.auto-plan-delay').forEach(function (inp) {
             inp.addEventListener('change', function (e) {
@@ -1785,14 +1829,20 @@ window.CD_AUTO_PLANNER = (function () {
         var missing = timeline.filter(function (r) {
             return Object.values(r.slots).some(function (s) { return s.unavailable; });
         }).length;
-        updateStatus(timeline.length + ' Events, ' + missing + ' ohne CD');
+        var hidden = [];
+        var lbHidden = timeline.length - displayIdx.length;
+        if (lbHidden > 0) hidden.push(lbHidden + ' Lust/Banner-Zeilen ausgeblendet');
+        var collapsedRows = displayIdx.length - visibleIdx.length;
+        if (collapsedRows > 0) hidden.push(collapsedRows + ' Zeilen eingeklappt');
+        updateStatus(timeline.length + ' Events, ' + missing + ' ohne CD'
+            + (hidden.length ? ' — ' + hidden.join(', ') : ''));
 
         if (typeof window._autoPlannerApplyProtection === 'function') {
             window._autoPlannerApplyProtection();
         }
 
         // Optionsfragmente im Leerlauf vorbauen, damit das erste Öffnen instant ist.
-        prewarmDropdowns(catKeys.concat(['__EXTRA__']));
+        prewarmDropdowns(catKeys);
     }
 
     // ── Lazy-Dropdown-Cache ──────────────────────────────────────────
@@ -1827,7 +1877,9 @@ window.CD_AUTO_PLANNER = (function () {
     }
 
     function getDropdownFragment(catKey) {
-        var key = (catKey && catKey.indexOf('extra_') === 0) ? '__EXTRA__' : catKey;
+        // Zusatz-CDs teilen sich ein Fragment; Slot-Instanzen ("any_dr@2")
+        // nutzen das Fragment ihrer Basis-Kategorie.
+        var key = (catKey && catKey.indexOf('extra_') === 0) ? '__EXTRA__' : baseCatKey(catKey);
         var entry = _dropdownFragCache[key];
         if (!entry || entry.sig !== _dropdownSig) {
             var tpl = document.createElement('template');
@@ -2083,7 +2135,7 @@ window.CD_AUTO_PLANNER = (function () {
             var key = 'cfg_' + idx;
             var ov = eventOverrides[key] || {};
             var isMythic = evt.name && (evt.name.indexOf('(HC)') !== -1 || evt.name.indexOf('(Mythisch)') !== -1 || evt.name.indexOf('(Mythic)') !== -1 || evt.name.indexOf('(M)') !== -1);
-            var disabled = ov.disabled !== undefined ? ov.disabled : isMythic;
+            var disabled = ov.disabled !== undefined ? ov.disabled : (evt.defaultDisabled === true || isMythic);
             allRows.push({
                 _key: key, _isCustom: false,
                 disabled: !!disabled,
@@ -2124,9 +2176,12 @@ window.CD_AUTO_PLANNER = (function () {
         var header = '<div class="evt-row evt-header"><span></span><span>Ikon</span><span>Zeit</span><span>Name</span><span title="Cooldown zwischen Casts">CD</span><span title="Anzahl Casts">Casts</span><span title="Verzögerung">Delay</span><span>Kategorien</span><span title="Trigger-Modus für Export">Trigger</span><span></span></div>';
 
         var html = allRows.map(function (r) {
-            var catLabels = (r.requiredCDs || []).map(function (k) {
-                var c = categories[k];
-                return c ? c.shortName : k;
+            var catLabels = (r.requiredCDs || []).map(function (entry) {
+                var spec = parseCatSpec(entry);
+                if (!spec) return String(entry);
+                var c = categories[spec.key];
+                var label = c ? c.shortName : spec.key;
+                return spec.count > 1 ? label + ' ×' + spec.count : label;
             }).join(', ');
             if (!catLabels) catLabels = '—';
 
@@ -2169,11 +2224,12 @@ window.CD_AUTO_PLANNER = (function () {
                 + '<input type="number" class="evt-max" data-key="' + r._key + '" value="' + r.maxCasts + '" min="1" step="1" title="Anzahl Casts">'
                 + '<input type="number" class="evt-delay" data-key="' + r._key + '" value="' + ((eventOverrides[r._key] && eventOverrides[r._key].delay !== undefined) ? eventOverrides[r._key].delay : (r._isCustom ? (customEvents.find(function (c) { return c._key === r._key; }) || {}).delay || 0 : ((config.events[parseInt(r._key.replace("cfg_", ""))] || {}).delay || 0))) + '" step="1" title="Verzögerung (neg=vorher)">'
                 + (function () {
-                    var soakBtnVisible = (r.requiredCDs || []).indexOf('tank_soak_phys') !== -1;
+                    var soakBtnVisible = requiredHasCat(r.requiredCDs, 'tank_soak_phys');
                     return '<div style="display:flex;gap:4px;min-width:0;">'
                         + '<button class="evt-cat-btn' + (catsCustom ? ' custom' : '') + '" data-key="' + r._key + '" title="' + (catsCustom ? 'Kategorien angepasst — ' : '') + 'Klicken um Kategorien zu ändern" style="flex:1;min-width:0;">' + catLabels + ' ' + customBadge + (catsCustom ? ' ✎' : '') + '</button>'
                         + (soakBtnVisible ? '<button class="evt-soak-btn' + (soakConfigured ? ' active' : '') + '" data-key="' + r._key + '" title="Soak-Einstellungen' + (soakConfigured ? ' (konfiguriert)' : '') + '" style="flex:0 0 auto;background:#0f172a;border:1px solid #c8aa6e;color:#c8aa6e;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;">🛡</button>' : '')
                         + '<button class="evt-settings-btn' + (settingsActive ? ' active' : '') + '" data-key="' + r._key + '" title="' + settingsTitle.replace(/"/g, '&quot;') + '" style="flex:0 0 auto;background:#0f172a;border:1px solid #64748b;color:#94a3b8;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;">⚙️' + (settingsActive ? '<span style="color:#22d3ee;">•</span>' : '') + '</button>'
+                        + '<button class="evt-copy-btn" data-key="' + r._key + '" title="Komplette CD-Einteilung dieses Events auf ein anderes Event kopieren" style="flex:0 0 auto;background:#0f172a;border:1px solid #64748b;color:#94a3b8;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;">⧉</button>'
                         + '</div>';
                 })()
                 + '<button class="evt-trg-btn mode-' + tMode + '" data-key="' + r._key + '" title="Trigger-Modus für Export anpassen">' + tLabel + '</button>'
@@ -2263,6 +2319,13 @@ window.CD_AUTO_PLANNER = (function () {
         document.querySelectorAll('.evt-settings-btn').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 openEventSettingsPicker(e.currentTarget.dataset.key);
+            });
+        });
+
+        // CD-Einteilung auf ein anderes Event kopieren → Modal
+        document.querySelectorAll('.evt-copy-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                openEventCopyPicker(e.currentTarget.dataset.key);
             });
         });
 
@@ -2533,7 +2596,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var catHtml = '';
                 allCats.forEach(function (catKey) {
                     var cat = categories[catKey];
-                    var isChecked = rCats.indexOf(catKey) !== -1;
+                    var isChecked = requiredHasCat(rCats, catKey);
                     catHtml += '<label class="flex items-center gap-2 p-1 hover:bg-slate-700/50 rounded cursor-pointer text-[10px]">'
                         + '<input type="checkbox" data-idx="' + idx + '" value="' + catKey + '" ' + (isChecked ? 'checked' : '') + ' style="accent-color:' + cat.color + ';">'
                         + '<span style="color:' + cat.color + '">' + cat.name + '</span>'
@@ -2566,11 +2629,15 @@ window.CD_AUTO_PLANNER = (function () {
 
             if (target.type === 'checkbox') {
                 var catKey = target.value;
+                r.categories = r.categories || [];
                 if (target.checked) {
-                    if (r.categories.indexOf(catKey) === -1) r.categories.push(catKey);
+                    if (!requiredHasCat(r.categories, catKey)) r.categories.push(catKey);
                 } else {
-                    var i = r.categories.indexOf(catKey);
-                    if (i !== -1) r.categories.splice(i, 1);
+                    // Auch Einträge mit Anzahl ("any_dr:2") entfernen
+                    r.categories = r.categories.filter(function (e) {
+                        var spec = parseCatSpec(e);
+                        return !spec || spec.key !== catKey;
+                    });
                 }
             } else if (target.classList.contains('es-r-start')) {
                 r.start = parseInt(target.value) || 1;
@@ -2750,7 +2817,10 @@ window.CD_AUTO_PLANNER = (function () {
                 if (custom) return (custom.requiredCDs || []).slice();
                 if (ov.requiredCDs !== undefined) return ov.requiredCDs.slice();
                 var i = parseInt(eventKey.replace('cfg_', '')); return ((config.events[i] || {}).requiredCDs || []).slice();
-            })().filter(function (k) { return k !== 'tank_soak_phys'; });
+            })().filter(function (k) {
+                var spec = parseCatSpec(k);
+                return !spec || spec.key !== 'tank_soak_phys';
+            });
             setOverride(eventKey, 'requiredCDs', reqNow);
             document.body.removeChild(overlay);
         });
@@ -2760,6 +2830,193 @@ window.CD_AUTO_PLANNER = (function () {
 
 
     // ── Kategorie-Picker pro Event ──
+    // ══════════════════════════════════════════════════════════════
+    // EVENT-EINTEILUNG KOPIEREN
+    // Überträgt die komplette CD-Einteilung eines Events (alle Casts)
+    // auf ein anderes Event — z.B. „Kreischen P1" → „Kreischen P2".
+    // Cast #1 landet auf Cast #1, #2 auf #2 usw.; die kopierten CDs werden
+    // als manuelle Zuweisungen gesetzt (gelb), damit Auto-Assign sie nicht
+    // wieder überschreibt.
+    // ══════════════════════════════════════════════════════════════
+
+    // Zuweisungen eines Events einsammeln: castNum → { slotKey: overrideObj }
+    function collectEventSlots(eventKey) {
+        var byCast = {};
+        (assignments || []).forEach(function (r) {
+            // Continuous-Coverage-Folgezeilen werden beim Ziel automatisch neu
+            // erzeugt — die dürfen nicht mitkopiert werden.
+            if (r.eventKey !== eventKey || r._isContinuous) return;
+            var slots = {};
+            Object.keys(r.slots || {}).forEach(function (sk) {
+                var s = r.slots[sk];
+                if (!s || s.isExtraPlaceholder || s.unavailable || s.spreadGap || s.skipped || s.notInRoster) return;
+                if (s.isVirtual) {
+                    slots[sk] = {
+                        player: s.player, dbName: '__VIRTUAL__',
+                        isVirtualCategoryKey: s.isVirtualCategoryKey || baseCatKey(sk)
+                    };
+                    return;
+                }
+                if (s.player && s.dbName && s.player !== '__SKIP__') {
+                    slots[sk] = {
+                        player: s.player, dbName: s.dbName,
+                        dbClass: s.dbClass, spellId: s.spellId,
+                        cooldownSec: s.cooldownSec, durationSec: s.durationSec
+                    };
+                }
+            });
+            if (Object.keys(slots).length) byCast[r.castNum] = slots;
+        });
+        return byCast;
+    }
+
+    // Anzahl Casts eines Events in der aktuellen Vorschau
+    function countEventCasts(eventKey) {
+        return (assignments || []).filter(function (r) {
+            return r.eventKey === eventKey && !r._isContinuous;
+        }).length;
+    }
+
+    function eventDisplayName(eventKey) {
+        var evt = getEffectiveEvents().find(function (e) { return e._key === eventKey; });
+        if (evt) return (evt.icon ? evt.icon + ' ' : '') + evt.name;
+        return eventKey;
+    }
+
+    // requiredCDs eines Events (mit Overrides) auslesen
+    function eventRequiredCDs(eventKey) {
+        var custom = customEvents.find(function (e) { return e._key === eventKey; });
+        if (custom) return (custom.requiredCDs || []).slice();
+        var ov = eventOverrides[eventKey] || {};
+        if (ov.requiredCDs !== undefined) return ov.requiredCDs.slice();
+        var idx = parseInt(String(eventKey).replace('cfg_', ''));
+        return (((config.events || [])[idx] || {}).requiredCDs || []).slice();
+    }
+
+    // Kern der Kopier-Funktion (ohne UI, damit testbar).
+    // opts: { categories: bool, overwrite: bool }
+    // Rückgabe: { cds, casts, missingCasts }
+    function copyEventAssignments(srcKey, dstKey, opts) {
+        opts = opts || {};
+        var srcSlots = collectEventSlots(srcKey);
+        var dstRows = (assignments || []).filter(function (r) {
+            return r.eventKey === dstKey && !r._isContinuous;
+        });
+
+        var copiedCds = 0, copiedCasts = 0;
+        dstRows.forEach(function (r) {
+            var src = srcSlots[r.castNum];
+            if (!src) return;
+            var prefix = rowOverridePrefix(r) + '-';
+            var any = false;
+            Object.keys(src).forEach(function (sk) {
+                if (opts.overwrite === false && manualOverrides[prefix + sk]) return;
+                manualOverrides[prefix + sk] = JSON.parse(JSON.stringify(src[sk]));
+                copiedCds++;
+                any = true;
+            });
+            if (any) copiedCasts++;
+        });
+
+        if (opts.categories) {
+            var srcRequired = eventRequiredCDs(srcKey);
+            // silent=true: kein Zwischen-Rerender, der Aufrufer startet Auto-Assign
+            if (srcRequired.length) setOverride(dstKey, 'requiredCDs', srcRequired, true);
+        }
+
+        return {
+            cds: copiedCds,
+            casts: copiedCasts,
+            missingCasts: Object.keys(srcSlots).length - copiedCasts
+        };
+    }
+
+    function openEventCopyPicker(srcKey) {
+        var srcSlots = collectEventSlots(srcKey);
+        var srcCasts = Object.keys(srcSlots);
+        var srcCdCount = srcCasts.reduce(function (n, c) { return n + Object.keys(srcSlots[c]).length; }, 0);
+
+        if (!assignments || !assignments.length) {
+            if (window.showModal) window.showModal('Erst „Auto-Zuweisen" ausführen — es gibt noch keine Einteilung zum Kopieren.');
+            return;
+        }
+        if (srcCasts.length === 0) {
+            if (window.showModal) window.showModal('Dieses Event hat keine zugewiesenen CDs zum Kopieren.');
+            return;
+        }
+
+        var srcRequired = eventRequiredCDs(srcKey);
+
+        // Mögliche Ziele: alle aktiven Events außer der Quelle und den
+        // automatisch erzeugten Lust/Banner-Hilfsevents.
+        var targets = getEffectiveEvents().filter(function (e) {
+            return e._key !== srcKey && String(e._key).indexOf('auto_') !== 0;
+        });
+        if (!targets.length) {
+            if (window.showModal) window.showModal('Es gibt kein anderes aktives Event, auf das kopiert werden könnte.');
+            return;
+        }
+
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;';
+        var modal = document.createElement('div');
+        modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:520px;width:90%;max-height:80vh;overflow-y:auto;';
+
+        var optHtml = targets.map(function (e) {
+            var n = countEventCasts(e._key);
+            return '<option value="' + e._key + '">' + (e.icon ? e.icon + ' ' : '') + String(e.name).replace(/</g, '&lt;')
+                + ' (' + n + ' Cast' + (n === 1 ? '' : 's') + ')</option>';
+        }).join('');
+
+        modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">CD-Einteilung kopieren</h4>'
+            + '<div class="text-xs text-gray-400 mb-3">Von <span class="text-cyan-300 font-bold">' + String(eventDisplayName(srcKey)).replace(/</g, '&lt;') + '</span>'
+            + ' — <b>' + srcCasts.length + '</b> Casts mit insgesamt <b>' + srcCdCount + '</b> CDs.</div>'
+            + '<label class="block text-[10px] text-gray-400 mb-1 uppercase tracking-wide">Ziel-Event</label>'
+            + '<select id="cp-target" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1.5 rounded mb-3">' + optHtml + '</select>'
+            + '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
+            + '<input type="checkbox" id="cp-cats" checked style="accent-color:#22d3ee;">'
+            + '<span class="text-xs text-gray-300">Kategorien mit übernehmen <span class="text-gray-500">(' + (srcRequired.length ? srcRequired.join(', ') : '—') + ')</span></span></label>'
+            + '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
+            + '<input type="checkbox" id="cp-overwrite" checked style="accent-color:#22d3ee;">'
+            + '<span class="text-xs text-gray-300">Vorhandene Zuweisungen im Ziel überschreiben</span></label>'
+            + '<div class="text-[10px] text-gray-500 mt-2 mb-3 leading-relaxed">Cast #1 wird auf Cast #1 kopiert, #2 auf #2 usw. '
+            + 'Hat das Ziel weniger Casts, wird nur so weit kopiert, wie es reicht. '
+            + 'Die kopierten CDs gelten danach als <span class="text-yellow-400">manuell</span> (gelb) — Auto-Assign überschreibt sie nicht mehr. '
+            + 'Auf Cooldown-Konflikte zwischen den beiden Events wird dabei <b>nicht</b> geprüft.</div>'
+            + '<div class="flex justify-end gap-2">'
+            + '<button id="cp-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
+            + '<button id="cp-ok" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm font-bold">Kopieren</button>'
+            + '</div>';
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        function close() { if (overlay.parentNode) document.body.removeChild(overlay); }
+        modal.querySelector('#cp-cancel').addEventListener('click', close);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+
+        modal.querySelector('#cp-ok').addEventListener('click', function () {
+            var dstKey = modal.querySelector('#cp-target').value;
+            var takeCats = modal.querySelector('#cp-cats').checked;
+            var overwrite = modal.querySelector('#cp-overwrite').checked;
+            close();
+
+            var res = copyEventAssignments(srcKey, dstKey, { categories: takeCats, overwrite: overwrite });
+
+            markDirty();
+            runAutoAssign();
+
+            var msg = res.cds + ' CDs auf ' + res.casts + ' Casts von „' + eventDisplayName(srcKey)
+                + '" nach „' + eventDisplayName(dstKey) + '" kopiert.';
+            if (res.missingCasts > 0) {
+                msg += '\n\n⚠ ' + res.missingCasts + ' Cast(s) konnten nicht übertragen werden — das Ziel-Event hat weniger Casts.'
+                    + '\nErhöhe dort „Casts", wenn du die auch brauchst.';
+            }
+            msg += '\n\nNicht vergessen: „Plan speichern".';
+            if (window.showModal) window.showModal(msg);
+        });
+    }
+
     function openEventCategoryPicker(eventKey) {
         // aktuelle requiredCDs holen
         var current = [];
@@ -2781,18 +3038,32 @@ window.CD_AUTO_PLANNER = (function () {
         var modal = document.createElement('div');
         modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;';
 
+        // Aktuelle Auswahl inkl. Anzahl parsen ("any_dr:2" → any_dr, 2×)
+        var currentMap = {};
+        current.forEach(function (entry) {
+            var spec = parseCatSpec(entry);
+            if (spec && spec.key) currentMap[spec.key] = Math.max(currentMap[spec.key] || 0, spec.count);
+        });
+
         var rows = Object.entries(categories).map(function (entry) {
             var key = entry[0], cat = entry[1];
-            var checked = current.indexOf(key) !== -1;
-            return '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
+            var checked = currentMap[key] !== undefined;
+            var count = currentMap[key] || 1;
+            var countSel = '<select class="cat-pick-count" data-key="' + key + '" title="Wie viele CDs dieser Kategorie GLEICHZEITIG pro Cast? (z.B. 2× = zwei DR-CDs zusammen ziehen)" style="background:#0f172a;color:#cbd5e1;border:1px solid #334155;border-radius:3px;font-size:11px;padding:1px 3px;cursor:pointer;' + (checked ? '' : 'visibility:hidden;') + '">'
+                + [1, 2, 3].map(function (n) { return '<option value="' + n + '"' + (n === count ? ' selected' : '') + '>' + n + '×</option>'; }).join('')
+                + '</select>';
+            return '<div class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded">'
+                + '<label class="flex items-center gap-2 flex-1 cursor-pointer">'
                 + '<input type="checkbox" class="cat-pick-cb" value="' + key + '"' + (checked ? ' checked' : '') + ' style="accent-color:' + cat.color + ';">'
                 + '<span class="flex-1 text-sm" style="color:' + cat.color + ';">' + cat.name + '</span>'
+                + '</label>'
+                + countSel
                 + '<span class="text-[9px] text-gray-500 font-mono">' + (cat.spells ? cat.spells.length : 0) + ' Spells</span>'
-                + '</label>';
+                + '</div>';
         }).join('');
 
         modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-3">Kategorien für dieses Event</h4>'
-            + '<div class="text-xs text-gray-400 mb-3">Welche CD-Kategorien sollen bei diesem Event automatisch gesucht werden?</div>'
+            + '<div class="text-xs text-gray-400 mb-3">Welche CD-Kategorien sollen bei diesem Event automatisch gesucht werden? Mit dem Zähler rechts ziehst du mehrere CDs derselben Kategorie <b>gleichzeitig</b> (z.B. 2× Schadensreduktion pro Cast).</div>'
             + '<div class="space-y-1 mb-4">' + rows + '</div>'
             + '<div class="flex justify-end gap-2">'
             + '<button id="cat-pick-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
@@ -2802,10 +3073,21 @@ window.CD_AUTO_PLANNER = (function () {
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
 
+        // Zähler nur zeigen, wenn Kategorie angehakt ist
+        modal.querySelectorAll('.cat-pick-cb').forEach(function (cb) {
+            cb.addEventListener('change', function () {
+                var cnt = modal.querySelector('.cat-pick-count[data-key="' + cb.value + '"]');
+                if (cnt) cnt.style.visibility = cb.checked ? '' : 'hidden';
+            });
+        });
+
         modal.querySelector('#cat-pick-save').addEventListener('click', function () {
             var selected = [];
             modal.querySelectorAll('.cat-pick-cb').forEach(function (cb) {
-                if (cb.checked) selected.push(cb.value);
+                if (!cb.checked) return;
+                var cntSel = modal.querySelector('.cat-pick-count[data-key="' + cb.value + '"]');
+                var cnt = cntSel ? (parseInt(cntSel.value) || 1) : 1;
+                selected.push(cnt > 1 ? cb.value + ':' + cnt : cb.value);
             });
             setOverride(eventKey, 'requiredCDs', selected);
             document.body.removeChild(overlay);
@@ -2839,7 +3121,6 @@ window.CD_AUTO_PLANNER = (function () {
 
         var prefix = container.id.replace('-planner-container', '');
         var rowNum = 1, exported = 0, skipped = 0;
-        var catKeys = getUniqueCategoryKeys();
         var triggerCounts = {};
 
         // BATCH-MODE aktivieren: keine change-Events → keine setDoc-Calls aus handleAssignmentChange
@@ -2863,22 +3144,14 @@ window.CD_AUTO_PLANNER = (function () {
 
         try {
             assignments.forEach(function (row) {
+                // Alle Slots der Zeile einheitlich einsammeln: Kategorie-Slots,
+                // Mehrfach-Instanzen ("any_dr@2") und Zusatz-CDs ("extra_1").
                 var validSlots = [];
-                catKeys.forEach(function (catKey) {
-                    var slot = row.slots[catKey];
-                    if (!slot || slot.skipped || slot.notInRoster) return;
-                    if (!slot.isVirtual && (!slot.player || !slot.dbName || slot.player === '__SKIP__')) return;
-                    slot._catKey = catKey; // Store catKey for later use
-                    validSlots.push(slot);
-                });
-
-                // Also export extra_ slots (added via "+")
                 Object.keys(row.slots).forEach(function (slotKey) {
-                    if (!slotKey.startsWith('extra_')) return;
                     var slot = row.slots[slotKey];
-                    if (!slot || slot.skipped || slot.isExtraPlaceholder || slot.notInRoster) return;
+                    if (!slot || slot.skipped || slot.isExtraPlaceholder || slot.notInRoster || slot.spreadGap) return;
                     if (!slot.isVirtual && (!slot.player || !slot.dbName || slot.player === '__SKIP__')) return;
-                    slot._catKey = slotKey;
+                    slot._catKey = slotKey; // Store slotKey for later use
                     validSlots.push(slot);
                 });
 
@@ -2966,7 +3239,7 @@ window.CD_AUTO_PLANNER = (function () {
                         player: slot.player
                     };
                     if (slot.isVirtual) {
-                        var virtCat = categories[slot.isVirtualCategoryKey] || categories[slot._catKey];
+                        var virtCat = categories[slot.isVirtualCategoryKey] || categories[baseCatKey(slot._catKey)];
                         entry.cooldown = virtCat ? virtCat.name : 'Virtuell';
                         entry.virtColor = virtCat ? virtCat.color : '#fff';
                         entry.note = slot.note || '';
@@ -3081,15 +3354,19 @@ window.CD_AUTO_PLANNER = (function () {
                 rowNum++;
             });
 
-            // ── Durch das Mergen freigewordene Zeilen leeren ──
-            // Ohne Merge hätte dieser Export entries.length Zeilen belegt; durch das
-            // Zusammenfassen sind es weniger. Den nicht mehr benötigten Rest dieses
-            // Auto-Export-Blocks leeren, damit keine alten Duplikat-Zeilen stehen
-            // bleiben (analog clearPlannerOnly). Zeilen jenseits von entries.length
-            // bleiben unangetastet (mögliche manuell gepflegte Zeilen).
-            var unmergedCount = Math.min(entries.length, 300);
+            // ── Alle Zeilen NACH dem geschriebenen Block leeren ──
+            // Früher wurde nur bis entries.length dieses Exports geleert. War ein
+            // vorheriger Export länger (mehr Events aktiv, weniger Merges), blieben
+            // dessen Zeilen dahinter stehen und tauchten in der Übersicht als
+            // Geister-Einträge auf (z.B. ein zweites "Kampfbeginn" mit falscher #).
+            // Deshalb bis zur letzten tatsächlich befüllten Zeile aufräumen.
+            var lastUsedRow = 0;
+            for (var probe = 1; probe <= 300; probe++) {
+                var probeEl = document.querySelector('[data-assignment-id="' + prefix + '-planner-row' + probe + '-trigger"]');
+                if (probeEl && probeEl.value) lastUsedRow = probe;
+            }
             var clearFields = ['trigger', 'npc', 'condition', 'time', 'player', 'cooldown', 'note', 'tts', 'varname', 'icon'];
-            for (var clr = rowNum; clr <= unmergedCount; clr++) {
+            for (var clr = rowNum; clr <= lastUsedRow; clr++) {
                 var clrPrefix = prefix + '-planner-row' + clr;
                 clearFields.forEach(function (f) {
                     var fieldId = clrPrefix + '-' + f;
@@ -3306,8 +3583,6 @@ window.CD_AUTO_PLANNER = (function () {
                         } else {
                             evtObj = customEvents.find(function (e) { return e._key === key; }) || {};
                         }
-                        var baseCatsStr = JSON.stringify(evtObj.requiredCDs || []);
-
                         var castMap = reconstructed[key];
                         var casts = Object.keys(castMap).map(function (num) {
                             return { castNum: parseInt(num), categories: castMap[num] };
@@ -3331,7 +3606,13 @@ window.CD_AUTO_PLANNER = (function () {
                         });
                         if (currentRange) ranges.push({ start: currentRange.start, end: currentRange.end, categories: currentRange.categories });
 
-                        var isTrivial = ranges.length === 1 && JSON.stringify(ranges[0].categories) === baseCatsStr;
+                        // Nur EIN einheitlicher Bereich über alle Casts = kein
+                        // Eskalations-Muster, sondern schlicht die (damalige)
+                        // Basis-Konfiguration des Events. Daraus KEINEN Override
+                        // bauen — sonst würde eine spätere Config-Änderung (z.B.
+                        // "any_dr" → "any_dr:2") beim Laden alter Pläne wieder
+                        // zurückgedreht werden.
+                        var isTrivial = ranges.length === 1;
                         var isBaseEscalation = evtObj.escalationRanges && JSON.stringify(ranges) === JSON.stringify(evtObj.escalationRanges);
 
                         if (!isTrivial && !isBaseEscalation) {
@@ -3930,7 +4211,6 @@ window.CD_AUTO_PLANNER = (function () {
         if (!cooldownsDB.length) { updateStatus("⚠ Keine Cooldowns geladen."); return; }
 
         await loadCategories();
-        await loadTemplates();
         var hasSavedPlan = await loadPlan();
 
         var total = 0, found = 0;

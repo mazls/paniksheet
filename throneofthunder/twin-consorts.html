@@ -630,6 +630,8 @@ window.updatePlannerSummary = function() {
             
             let seqGroups = {};
             let healthGroups = {};
+            // Reihenfolge der Faehigkeiten: erste Planer-Zeile, in der sie vorkommt.
+            let triggerFirstRow = {};
 
             const parseTime = (str) => {
                 if (!str) return 0;
@@ -672,6 +674,8 @@ window.updatePlannerSummary = function() {
 
                 const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor };
                 const isHealth = triggerText.includes("Health") || triggerVal.includes("HEALTH");
+                const isEncStart = triggerVal.includes("ENC_START");
+                if (triggerFirstRow[triggerText] === undefined) triggerFirstRow[triggerText] = i;
 
                 // Komma-Trennung Logik (z.B. "7, 22")
                 const conditions = conditionRaw.split(',').map(s => s.trim()).filter(s => s !== "");
@@ -686,7 +690,7 @@ window.updatePlannerSummary = function() {
                         healthGroups[key].entries.push({ ...entry });
                     } else {
                         const key = `${cond}_${triggerText}`;
-                        if (!seqGroups[key]) seqGroups[key] = { title: `#${cond} ${triggerText}`, triggerName: triggerText, count: sortValue, entries: [] };
+                        if (!seqGroups[key]) seqGroups[key] = { title: `#${cond} ${triggerText}`, triggerName: triggerText, count: sortValue, isEncStart: isEncStart, entries: [] };
                         seqGroups[key].entries.push({ ...entry });
                     }
                 });
@@ -694,8 +698,13 @@ window.updatePlannerSummary = function() {
 
             // Sortieren & HTML bauen
             let seqArray = Object.values(seqGroups).sort((a, b) => {
-                if (a.count !== b.count) return a.count - b.count; 
-                return a.triggerName.localeCompare(b.triggerName);
+                if (a.isEncStart !== b.isEncStart) return a.isEncStart ? -1 : 1;
+                if (a.triggerName !== b.triggerName) {
+                    const fa = triggerFirstRow[a.triggerName], fb = triggerFirstRow[b.triggerName];
+                    if (fa !== fb) return fa - fb;
+                    return a.triggerName.localeCompare(b.triggerName);
+                }
+                return a.count - b.count;
             });
             let healthArray = Object.values(healthGroups).sort((a, b) => b.percent - a.percent);
 

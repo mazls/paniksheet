@@ -775,6 +775,10 @@ window.updatePlannerSummary = function() {
     
     let seqGroups = {};
     let healthGroups = {};
+    // Reihenfolge der Fähigkeiten: erste Planer-Zeile, in der sie vorkommt.
+    // (Der Auto-Planer exportiert chronologisch, also entspricht das dem
+    // Kampfverlauf.) Wird unten zum Gruppieren nach Fähigkeit benutzt.
+    let triggerFirstRow = {};
 
     const parseTime = (str) => {
         if (!str) return 0;
@@ -819,6 +823,8 @@ window.updatePlannerSummary = function() {
 
         const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor };
         const isHealth = triggerText.includes("Health") || triggerVal.includes("HEALTH");
+        const isEncStart = triggerVal.includes("ENC_START");
+        if (triggerFirstRow[triggerText] === undefined) triggerFirstRow[triggerText] = i;
 
         // --- KOMMA SPLIT (z.B. "7, 22") ---
         const conditions = conditionRaw.split(',').map(s => s.trim()).filter(s => s !== "");
@@ -834,16 +840,27 @@ window.updatePlannerSummary = function() {
                 healthGroups[key].entries.push({ ...entry });
             } else {
                 const key = `${cond}_${triggerText}`;
-                if (!seqGroups[key]) seqGroups[key] = { title: `#${cond} ${triggerText}`, triggerName: triggerText, count: sortValue, entries: [] };
+                if (!seqGroups[key]) seqGroups[key] = { title: `#${cond} ${triggerText}`, triggerName: triggerText, count: sortValue, isEncStart: isEncStart, entries: [] };
                 seqGroups[key].entries.push({ ...entry });
             }
         });
     }
 
     // 3. SORTIEREN & RENDERN
+    // Reihenfolge: Kampfbeginn immer zuerst, danach jede Fähigkeit als
+    // geschlossener Block (in der Reihenfolge ihres ersten Auftretens im
+    // Kampf), innerhalb der Fähigkeit aufsteigend #1, #2, #3 ...
+    // Früher wurde primär nach #-Nummer sortiert — dadurch standen alle #1
+    // verschiedener Fähigkeiten zusammen und die Abfolge einer einzelnen
+    // Fähigkeit war über die ganze Liste verstreut.
     let seqArray = Object.values(seqGroups).sort((a, b) => {
-        if (a.count !== b.count) return a.count - b.count; 
-        return a.triggerName.localeCompare(b.triggerName);
+        if (a.isEncStart !== b.isEncStart) return a.isEncStart ? -1 : 1;
+        if (a.triggerName !== b.triggerName) {
+            const fa = triggerFirstRow[a.triggerName], fb = triggerFirstRow[b.triggerName];
+            if (fa !== fb) return fa - fb;
+            return a.triggerName.localeCompare(b.triggerName);
+        }
+        return a.count - b.count;
     });
     let healthArray = Object.values(healthGroups).sort((a, b) => b.percent - a.percent);
 

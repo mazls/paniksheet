@@ -222,7 +222,7 @@
                 </table>
             </div>
             <div class="mt-3 flex flex-wrap gap-4 text-[10px] text-gray-500">
-                <span>✅ Auto | ✏️ Manuell | ⚠️ Kein CD | ✖ Übersprungen | — Nicht benötigt (klickbar)</span>
+                <span>✅ Auto | ✏️ Manuell | ⚠️ Kein CD frei | ✖ Übersprungen | — Nicht benötigt (klickbar)</span>
             </div>
         </div>
     </section>
@@ -236,6 +236,9 @@
             prefix: 'PROTECTORS',
 
             events: [
+                // ── KEY-FÄHIGKEIT: Unheil — 2× DR + 1× Heal GLEICHZEITIG pro Cast.
+                // Die früh benutzten CDs rotieren automatisch wieder rein,
+                // sobald sie bereit sind (Verfügbarkeits-Tracking im Planner).
                 {
                     name: "Unheil (Calamity)",
                     spellId: 143491,
@@ -244,9 +247,11 @@
                     maxCasts: 8,
                     delay: -3,
                     eventDuration: 5,
-                    requiredCDs: ["any_dr", "any_heal"],
+                    requiredCDs: ["any_dr:2", "any_heal"],
                     icon: "☀️"
                 },
+                // ── Nicht-Key-Events: standardmäßig AUS, im Event-Manager
+                // per Häkchen bei Bedarf wieder aktivierbar. ──
                 {
                     name: "Zusammenstoß (Clash)",
                     spellId: 143027,
@@ -256,7 +261,8 @@
                     delay: 0,
                     eventDuration: 0,
                     requiredCDs: ["movement"],
-                    icon: "💥"
+                    icon: "💥",
+                    defaultDisabled: true
                 },
                 {
                     name: "Rook (Misery/Sorrow/Gloom)",
@@ -267,7 +273,8 @@
                     delay: 0,
                     eventDuration: 30,
                     requiredCDs: ["any_dr", "additional_surv"],
-                    icon: "🔥"
+                    icon: "🔥",
+                    defaultDisabled: true
                 },
                 {
                     name: "He (Mark of Anguish)",
@@ -278,7 +285,8 @@
                     delay: 0,
                     eventDuration: 20,
                     requiredCDs: ["any_heal", "tank_external"],
-                    icon: "🗡️"
+                    icon: "🗡️",
+                    defaultDisabled: true
                 },
                 {
                     name: "Sun (Dark Meditation)",
@@ -290,6 +298,7 @@
                     eventDuration: 20,
                     requiredCDs: ["any_dr", "mana"],
                     icon: "🌙",
+                    defaultDisabled: true,
                     escalationRanges: [
                         { start: 2, end: 2, categories: ["any_dr", "any_heal", "mana"] }
                     ]

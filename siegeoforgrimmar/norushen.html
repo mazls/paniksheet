@@ -428,7 +428,9 @@
             prefix: 'norushen',  // Container-Prefix in der Boss-HTML (norushen-planner-container)
 
             events: [
-                // ── PHASE 1 (100% → 50% HP) ──
+                // ── KEY-FÄHIGKEIT: Blinder Hass — 2× DR + 1× Heal GLEICHZEITIG
+                // pro Cast. Früh benutzte CDs rotieren automatisch wieder rein,
+                // sobald sie bereit sind. ──
                 {
                     name: "Blinder Hass #1 (Raid AOE)",
                     spellId: 145226,
@@ -437,9 +439,11 @@
                     maxCasts: 4,
                     delay: -3,
                     eventDuration: 30,
-                    requiredCDs: ["any_dr", "any_heal"],
+                    requiredCDs: ["any_dr:2", "any_heal"],
                     icon: "💢"
                 },
+                // ── Nicht-Key-Events: standardmäßig AUS, im Event-Manager
+                // per Häkchen bei Bedarf wieder aktivierbar. ──
                 {
                     name: "Tank-Test",
                     spellId: 144851,
@@ -449,7 +453,8 @@
                     delay: 0,
                     eventDuration: 60,
                     requiredCDs: ["tank_external"],
-                    icon: "🛡️"
+                    icon: "🛡️",
+                    defaultDisabled: true
                 },
                 {
                     name: "Heiler-Test",
@@ -460,7 +465,8 @@
                     delay: -2,
                     eventDuration: 60,
                     requiredCDs: ["mana"],
-                    icon: "✨"
+                    icon: "✨",
+                    defaultDisabled: true
                 },
 
                 // ── PHASE 2 ÜBERGANG (50% HP) ──
@@ -486,7 +492,8 @@
                     delay: 0,
                     eventDuration: 15,
                     requiredCDs: ["any_dr", "aoe_stun"],
-                    icon: "👹"
+                    icon: "👹",
+                    defaultDisabled: true
                 },
                 {
                     name: "Großes Add 30% (Phase 2)",
@@ -497,7 +504,8 @@
                     delay: 0,
                     eventDuration: 15,
                     requiredCDs: ["any_dr", "aoe_stun"],
-                    icon: "👹"
+                    icon: "👹",
+                    defaultDisabled: true
                 },
                 {
                     name: "Großes Add 20% (Phase 2)",
@@ -508,7 +516,8 @@
                     delay: 0,
                     eventDuration: 15,
                     requiredCDs: ["any_dr", "aoe_stun"],
-                    icon: "👹"
+                    icon: "👹",
+                    defaultDisabled: true
                 },
                 {
                     name: "Großes Add 10% (Phase 2)",
@@ -519,7 +528,8 @@
                     delay: 0,
                     eventDuration: 15,
                     requiredCDs: ["any_dr", "additional_surv"],
-                    icon: "👹"
+                    icon: "👹",
+                    defaultDisabled: true
                 },
 
             ],
