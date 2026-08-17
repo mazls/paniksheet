@@ -967,6 +967,11 @@ window.CD_AUTO_PLANNER = (function () {
                 timeline.push({
                     eventIdx: eventIdx,
                     eventKey: event._key,
+                    // castIdx = der wievielte Cast DIESES Events (1,2,3...) — die
+                    // Nummer, die auch die Eskalations-Phasen meinen. castNum wird
+                    // darunter global pro Event-NAME neu vergeben und dient nur noch
+                    // als Schlüsselbestandteil für gespeicherte Overrides.
+                    castIdx: currentCastNum,
                     castNum: currentCastNum,
                     absTime: absTime,
                     delay: event.delay || 0,
@@ -1365,6 +1370,7 @@ window.CD_AUTO_PLANNER = (function () {
                         timeline.push({
                             eventIdx: row.eventIdx,
                             eventKey: row.eventKey,
+                            castIdx: row.castIdx,
                             castNum: row.castNum,
                             absTime: nextAbsTime,
                             delay: nextDelay,
@@ -1531,12 +1537,16 @@ window.CD_AUTO_PLANNER = (function () {
             return '<th class="py-2 px-2 min-w-[170px]"' + t + ' style="border-bottom:2px solid ' + c + ';"><span style="color:' + c + ';">' + n + '</span></th>';
         }).join('');
 
+        // Die Delay-Spalte ist ein reines Export-Stellrad — für Gäste nur Rauschen.
+        var canEdit = !!window.isManager;
+        var fixedCols = canEdit ? 5 : 4;
+
         thead.innerHTML = '<tr class="text-left text-gray-400 uppercase tracking-wider border-b border-slate-700 text-[10px]">'
             + '<th class="py-2 px-1 w-8"></th>'
             + '<th class="py-2 px-2 w-16">ETA</th>'
             + '<th class="py-2 px-2 min-w-[130px]">Event</th>'
             + '<th class="py-2 px-1 w-8 text-center">#</th>'
-            + '<th class="py-2 px-1 w-10 text-center" title="Verzögerung zum Trigger (für Export)">Delay</th>'
+            + (canEdit ? '<th class="py-2 px-1 w-10 text-center" title="Verzögerung zum Trigger (für Export)">Delay</th>' : '')
             + thCols + '</tr>';
 
         // Tbody
@@ -1545,7 +1555,39 @@ window.CD_AUTO_PLANNER = (function () {
         // wenn sich Roster/CDs/Kategorien geändert haben (siehe getDropdownFragment).
         _dropdownSig = computeDropdownSig();
 
-        function renderRow(rowIdx, isFirstOfGroup, group) {
+        // Was ändert sich gegenüber dem vorherigen Cast desselben Events?
+        // "+Heal −DR" direkt an der Zeile macht die Eskalationsstufen sichtbar,
+        // ohne dass man die Kategorie-Spalten vergleichen muss.
+        function escalationDelta(prevReq, curReq) {
+            function specs(list) {
+                var m = {};
+                (list || []).forEach(function (entry) {
+                    var sp = parseCatSpec(entry);
+                    if (sp && sp.key) m[sp.key] = sp.count;
+                });
+                return m;
+            }
+            var a = specs(prevReq), b = specs(curReq);
+            var parts = [];
+            function label(key, count) {
+                var c = categories[key];
+                return (c ? c.shortName : key) + (count > 1 ? '×' + count : '');
+            }
+            function color(key) {
+                var c = categories[key];
+                return c ? c.color : '#94a3b8';
+            }
+            Object.keys(b).forEach(function (k) {
+                if (a[k] === undefined) parts.push('<span style="color:' + color(k) + ';">+' + label(k, b[k]) + '</span>');
+                else if (a[k] !== b[k]) parts.push('<span style="color:' + color(k) + ';">' + label(k, b[k]) + '</span>');
+            });
+            Object.keys(a).forEach(function (k) {
+                if (b[k] === undefined) parts.push('<span class="text-slate-600">−' + label(k, a[k]) + '</span>');
+            });
+            return parts.join(' ');
+        }
+
+        function renderRow(rowIdx, isFirstOfGroup, group, nInGroup) {
             var row = timeline[rowIdx];
             var isNew = isFirstOfGroup;
 
@@ -1555,10 +1597,10 @@ window.CD_AUTO_PLANNER = (function () {
                 var slot = row.slots[slotKey];
                 var isReq = requiredKeys.indexOf(slotKey) !== -1;
 
-                // Skipped
+                // Skipped — bewusst „kein CD nötig", also so leise wie möglich
                 if (slot && slot.skipped) {
-                    return '<td class="relative py-1 px-1 align-middle bg-slate-900/40 border border-slate-700/50" style="max-width:105px; height:34px;">'
-                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-red-500">✖ Skipped</span></div>'
+                    return '<td class="relative py-1 px-1 align-middle bg-slate-900/30 border border-slate-700/40" style="max-width:105px; height:34px;" title="Hier ist bewusst kein Cooldown eingeplant.">'
+                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[11px] text-slate-600">✖</span></div>'
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="">-- Cooldown --</option>'
                         + '<option value="__SKIP__" selected>✖ Kein CD nötig</option>'
@@ -1575,20 +1617,21 @@ window.CD_AUTO_PLANNER = (function () {
 
                 // Spread-Gap: geplante Lücke durch Strategie A (Spread)
                 if (slot && slot.spreadGap) {
-                    return '<td class="relative py-1 px-1 align-middle bg-cyan-900/20 border border-cyan-800/50" style="max-width:105px; height:34px;" title="Geplante Lücke (Spread-Strategie): hier wurde absichtlich kein Spieler eingeplant, um die verfügbaren CDs über die Zeit zu strecken.">'
-                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-cyan-300">~ Spread</span></div>'
+                    return '<td class="relative py-1 px-1 align-middle bg-slate-900/25 border border-slate-700/40" style="max-width:105px; height:34px;" title="Geplante Lücke (Spread-Strategie): hier wurde absichtlich kein Spieler eingeplant, um die verfügbaren CDs über die Zeit zu strecken.">'
+                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[11px] text-cyan-500/50">~</span></div>'
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="" selected>~ Spread-Lücke</option>'
                         + '<option value="__SKIP__">✖ Kein CD nötig</option>'
                         + '</select></td>';
                 }
 
-                // Manuell zugewiesen, aber Spieler nicht (mehr) im Roster → Warnung
+                // Manuell zugewiesen, aber Spieler nicht (mehr) im Roster → Warnung.
+                // Die bleibt farbig: hier muss wirklich jemand ran.
                 if (slot && slot.notInRoster) {
-                    return '<td class="relative py-1 px-1 align-middle bg-orange-900/25 border border-orange-600/60" style="max-width:105px; height:34px;" title="' + (slot.player || '') + ' ist nicht im aktuellen Roster — wird NICHT eingeplant/exportiert. Bitte neu zuweisen oder Spieler ins Roster aufnehmen.">'
+                    return '<td class="relative py-1 px-1 align-middle bg-orange-900/20 border border-orange-700/40" style="max-width:105px; height:34px;" title="' + (slot.player || '') + ' ist nicht im aktuellen Roster — wird NICHT eingeplant/exportiert. Bitte neu zuweisen oder Spieler ins Roster aufnehmen.">'
                         + '<div class="pointer-events-none w-full flex flex-col items-center justify-center h-full text-center">'
-                        + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center text-orange-300" style="text-decoration:line-through;">' + (slot.player || '') + '</div>'
-                        + '<div class="text-[8px] leading-[10px] truncate w-full text-center text-orange-400">⚠ nicht im Roster</div>'
+                        + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center text-orange-300/80" style="text-decoration:line-through;">' + (slot.player || '') + '</div>'
+                        + '<div class="text-[8px] leading-[10px] truncate w-full text-center text-orange-400/70">nicht im Roster</div>'
                         + '</div>'
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="" selected>⚠ ' + (slot.player || '') + ' (nicht im Roster)</option>'
@@ -1596,10 +1639,11 @@ window.CD_AUTO_PLANNER = (function () {
                         + '</select></td>';
                 }
 
-                // Unavailable
+                // Unavailable — kein CD frei. Dezent, sonst leuchtet bei 28 Casts
+                // die halbe Tabelle rot; die Gesamtzahl steht in der Statuszeile.
                 if (!slot || slot.unavailable) {
-                    return '<td class="relative py-1 px-1 align-middle bg-red-900/20 border border-red-800/50" style="max-width:105px; height:34px;">'
-                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-red-400">⚠ Fehlt</span></div>'
+                    return '<td class="relative py-1 px-1 align-middle bg-slate-900/25 border border-slate-700/40" style="max-width:105px; height:34px;" title="Kein Cooldown dieser Kategorie war zu diesem Zeitpunkt frei.">'
+                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[10px] text-rose-400/55">----</span></div>'
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
                         + '<option value="" selected>⚠ kein CD</option>'
                         + '<option value="__SKIP__">✖ Kein CD nötig</option>'
@@ -1631,19 +1675,65 @@ window.CD_AUTO_PLANNER = (function () {
             if (typeof mapEntry === 'string') tooltipStr = mapEntry;
             else if (mapEntry && mapEntry.trigger) tooltipStr = mapEntry.trigger;
 
+            // Eskalationsstufe: unterscheiden sich die geforderten Kategorien vom
+            // vorherigen Cast desselben Events, wird die Änderung angeschrieben.
+            var deltaHtml = '';
+            if (!isNew && group && nInGroup > 0) {
+                var prevRow = timeline[group.idxs[nInGroup - 1]];
+                if (prevRow) deltaHtml = escalationDelta(prevRow.requiredCDs, row.requiredCDs);
+            }
+
             // Erste Zeile eines Events: Name + Einklapp-Pfeil. Folgezeilen: „↳".
             var nameCell = isNew
                 ? '<button class="evt-collapse-btn text-left w-full text-gray-200 font-medium hover:text-cyan-300" data-key="' + group.key + '" title="Diesen Event-Block einklappen">'
                 + '▾ ' + row.eventName + '</button>'
-                : '<span class="text-gray-500">↳</span>';
+                : '<span class="text-gray-500">↳</span>'
+                + (deltaHtml ? ' <span class="text-[9px]" title="Änderung gegenüber dem vorherigen Cast">' + deltaHtml + '</span>' : '');
 
-            return '<tr class="hover:bg-slate-800/30 transition-colors ' + (isNew ? 'border-t border-slate-600/80' : 'border-t border-slate-800/30') + '">'
+            return '<tr class="hover:bg-slate-800/30 transition-colors ' + (isNew ? 'border-t border-slate-600/80' : (deltaHtml ? 'border-t border-slate-600/50' : 'border-t border-slate-800/30')) + '">'
                 + '<td class="py-1 px-1 text-center text-sm">' + row.icon + '</td>'
                 + '<td class="py-1 px-2 font-mono text-gray-300" title="Absolute Kampfzeit">' + fmt(row.absTime) + '</td>'
                 + '<td class="py-1 px-2" title="' + tooltipStr + '">' + nameCell + durLabel + '</td>'
-                + '<td class="py-1 px-1 text-center text-gray-500">' + row.castNum + '</td>'
-                + '<td class="py-1 px-1 text-center"><input type="number" class="auto-plan-delay w-10 bg-slate-800/40 text-[11px] text-center text-gray-400 border border-slate-700/60 rounded px-1 py-0.5" data-row="' + rowIdx + '" value="' + (row.delay || 0) + '" title="Verzögerung (neg=vorher)"></td>'
+                + '<td class="py-1 px-1 text-center text-gray-500" title="Der wievielte Cast dieses Events">' + (row.castIdx || row.castNum) + '</td>'
+                + (canEdit
+                    ? '<td class="py-1 px-1 text-center"><input type="number" class="auto-plan-delay w-10 bg-slate-800/40 text-[11px] text-center text-gray-400 border border-slate-700/60 rounded px-1 py-0.5" data-row="' + rowIdx + '" value="' + (row.delay || 0) + '" title="Verzögerung (neg=vorher)"></td>'
+                    : '')
                 + cells + '</tr>';
+        }
+
+        // Kurzfassung der Eskalation eines Event-Blocks: aufeinanderfolgende Casts
+        // mit gleichen Kategorien zusammenfassen → "#1–5 DR · #6 DR+Heal · #7–28 …".
+        // So sieht man den geplanten Aufbau auch, ohne 28 Zeilen aufzuklappen.
+        function escalationSummary(idxs) {
+            var phases = [];
+            var cur = null;
+            idxs.forEach(function (i, n) {
+                var row = timeline[i];
+                var castNo = row.castIdx || row.castNum || (n + 1);
+                var labels = (row.requiredCDs || []).map(function (entry) {
+                    var spec = parseCatSpec(entry);
+                    if (!spec) return { text: String(entry), color: '#94a3b8' };
+                    var c = categories[spec.key];
+                    return {
+                        text: (c ? c.shortName : spec.key) + (spec.count > 1 ? '×' + spec.count : ''),
+                        color: c ? c.color : '#94a3b8'
+                    };
+                });
+                var sig = labels.map(function (l) { return l.text; }).join('+');
+                if (cur && cur.sig === sig) { cur.end = castNo; return; }
+                if (cur) phases.push(cur);
+                cur = { start: castNo, end: castNo, sig: sig, labels: labels };
+            });
+            if (cur) phases.push(cur);
+            if (phases.length < 2) return '';   // ohne Aufbau lohnt die Zeile nicht
+
+            return phases.map(function (p) {
+                var span = p.start === p.end ? '#' + p.start : '#' + p.start + '–' + p.end;
+                var cats = p.labels.length
+                    ? p.labels.map(function (l) { return '<span style="color:' + l.color + ';">' + l.text + '</span>'; }).join('+')
+                    : '<span class="text-slate-600">—</span>';
+                return '<span class="text-slate-500">' + span + '</span>&nbsp;' + cats;
+            }).join('<span class="text-slate-700"> · </span>');
         }
 
         // Eingeklappter Event-Block: eine Zeile mit Kurzfassung
@@ -1658,15 +1748,18 @@ window.CD_AUTO_PLANNER = (function () {
             var firstT = Math.min.apply(null, group.idxs.map(function (i) { return timeline[i].absTime; }));
             var lastT = Math.max.apply(null, group.idxs.map(function (i) { return timeline[i].absTime; }));
             var span = (casts > 1) ? (fmt(firstT) + '–' + fmt(lastT)) : fmt(firstT);
+            var esc = escalationSummary(group.idxs);
 
             return '<tr class="border-t border-slate-600/80 bg-slate-900/40">'
                 + '<td class="py-1 px-1 text-center text-sm">' + group.icon + '</td>'
                 + '<td class="py-1 px-2 font-mono text-gray-500 text-[10px]">' + span + '</td>'
-                + '<td class="py-1 px-2" colspan="' + (3 + colKeys.length) + '">'
+                + '<td class="py-1 px-2" colspan="' + (fixedCols - 2 + colKeys.length) + '">'
                 + '<button class="evt-collapse-btn text-left text-gray-300 hover:text-cyan-300 font-medium" data-key="' + group.key + '" title="Diesen Event-Block wieder ausklappen">'
                 + '▸ ' + group.name
                 + ' <span class="text-gray-500 font-normal text-[10px]">(' + casts + ' Cast' + (casts === 1 ? '' : 's') + ', ' + cdCount + ' CDs eingeklappt)</span>'
-                + '</button></td></tr>';
+                + '</button>'
+                + (esc ? '<div class="text-[10px] leading-[14px] mt-0.5 pl-3">' + esc + '</div>' : '')
+                + '</td></tr>';
         }
 
         var rows = '';
@@ -1689,7 +1782,7 @@ window.CD_AUTO_PLANNER = (function () {
             ctrl += '<span class="text-[10px] text-cyan-400/80 self-center">'
                 + collapsedCount + (collapsedCount === 1 ? ' Block' : ' Blöcke') + ' eingeklappt</span>';
         }
-        rows += '<tr><td colspan="' + (5 + colKeys.length) + '" class="py-1 px-1">'
+        rows += '<tr><td colspan="' + (fixedCols + colKeys.length) + '" class="py-1 px-1">'
             + '<div class="flex flex-wrap gap-2">' + ctrl + '</div></td></tr>';
 
         groups.forEach(function (g) {
@@ -1697,7 +1790,7 @@ window.CD_AUTO_PLANNER = (function () {
                 rows += renderCollapsedGroup(g);
             } else {
                 g.idxs.forEach(function (rowIdx, n) {
-                    rows += renderRow(rowIdx, n === 0, g);
+                    rows += renderRow(rowIdx, n === 0, g, n);
                 });
             }
         });
@@ -2552,6 +2645,13 @@ window.CD_AUTO_PLANNER = (function () {
         });
     }
 
+    // ══════════════════════════════════════════════════════════════
+    // EVENT-EINSTELLUNGEN + ESKALATIONS-PLANER
+    // Geplant wird CAST-WEISE ("beim 6. Schrei der erste Heal-CD, beim 7. eine
+    // BoP"). Gespeichert wird weiterhin im kompakten start/end-Format, in das
+    // die Cast-Liste beim Speichern wieder zusammengefasst wird — alte Pläne
+    // bleiben dadurch unverändert lesbar.
+    // ══════════════════════════════════════════════════════════════
     function openEventSettingsPicker(eventKey) {
         var evtObj = null;
         if (eventKey.startsWith('cfg_')) {
@@ -2560,119 +2660,352 @@ window.CD_AUTO_PLANNER = (function () {
             evtObj = customEvents.find(function (e) { return e._key === eventKey; }) || {};
         }
         var ov = eventOverrides[eventKey] || {};
-
-        var evtDur = ov.eventDuration !== undefined ? ov.eventDuration : (evtObj.eventDuration || 0);
-        var overlap = ov.overlapSec !== undefined ? ov.overlapSec : (evtObj.overlapSec || 0);
-        var resEsc = ov.resetEscalation !== undefined ? ov.resetEscalation : (evtObj.resetEscalation || 0);
-        var contCov = ov.continuousCoverage !== undefined ? ov.continuousCoverage : (evtObj.continuousCoverage || false);
-
-        var rawRanges = ov.escalationRanges !== undefined ? ov.escalationRanges : (evtObj.escalationRanges || []);
-        var escRanges = JSON.parse(JSON.stringify(rawRanges));
-
-        var html = '<div class="mb-4 space-y-3">'
-            + '<div class="flex gap-4">'
-            + '<div class="flex-1"><label class="block text-[10px] text-gray-400 mb-1">Event-Dauer (Sek)</label><input type="number" id="es-dur" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1 rounded" value="' + evtDur + '" step="0.5"></div>'
-            + '<div class="flex-1"><label class="block text-[10px] text-gray-400 mb-1" title="Wie viel Sek. vor Ablauf des vorherigen CD soll der nächste gezogen werden?">Overlap (Sek)</label><input type="number" id="es-overlap" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1 rounded" value="' + overlap + '" step="0.5"></div>'
-            + '</div>'
-            + '<div><label class="block text-[10px] text-gray-400 mb-1" title="Nach wie vielen Casts fängt die Eskalation wieder bei 1 an? (0 = Nie)">Reset Eskalation nach Cast-Count (z.B. nach dem 3. Cast wieder bei 1 anfangen)</label><input type="number" id="es-res" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1 rounded" value="' + resEsc + '"></div>'
-            + '<div class="flex items-center gap-2 mt-2"><input type="checkbox" id="es-cont-cov" ' + (contCov ? 'checked' : '') + ' style="accent-color:#10b981;"><label for="es-cont-cov" class="text-[10px] text-gray-400 cursor-pointer">Continuous Coverage (Folge-CDs automatisch anreihen, falls Event länger dauert)</label></div>'
-            + '</div>'
-
-            + '<div class="text-[11px] font-bold text-gray-300 mb-2">Eskalations-Phasen (Nach Cast-Nummer)</div>'
-            + '<div class="text-[10px] text-gray-500 mb-2">Die Zahlen unten stehen für die Nummer des Casts (z.B. Cast 1 bis 3). Für jede Phase können individuelle Kategorien (CDs) festgelegt werden.</div>'
-            + '<div id="es-ranges-container" class="space-y-2 mb-2"></div>'
-            + '<button id="es-add-range" class="w-full py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-[10px] text-gray-300">+ Phase hinzufügen</button>';
-
-        var content = document.createElement('div');
-        content.innerHTML = html;
-
-        var rCont = content.querySelector('#es-ranges-container');
-
-        function renderRanges() {
-            var htmlStr = '';
-            var allCats = Object.keys(categories);
-            escRanges.forEach(function (r, idx) {
-                var rCats = r.categories || [];
-                var catHtml = '';
-                allCats.forEach(function (catKey) {
-                    var cat = categories[catKey];
-                    var isChecked = requiredHasCat(rCats, catKey);
-                    catHtml += '<label class="flex items-center gap-2 p-1 hover:bg-slate-700/50 rounded cursor-pointer text-[10px]">'
-                        + '<input type="checkbox" data-idx="' + idx + '" value="' + catKey + '" ' + (isChecked ? 'checked' : '') + ' style="accent-color:' + cat.color + ';">'
-                        + '<span style="color:' + cat.color + '">' + cat.name + '</span>'
-                        + '</label>';
-                });
-
-                htmlStr += '<div class="flex flex-col gap-2 bg-slate-900 p-2 border border-slate-700 rounded" data-idx="' + idx + '">'
-                    + '<div class="flex gap-2 items-center">'
-                    + '<span class="text-[10px] text-gray-400">Cast</span>'
-                    + '<input type="number" class="w-12 bg-slate-800 border border-slate-600 text-[10px] px-1 py-1 rounded text-center es-r-start" data-idx="' + idx + '" value="' + r.start + '" title="Start-Cast (Nummer)">'
-                    + '<span class="text-[10px] text-gray-500">bis</span>'
-                    + '<input type="number" class="w-12 bg-slate-800 border border-slate-600 text-[10px] px-1 py-1 rounded text-center es-r-end" data-idx="' + idx + '" value="' + r.end + '" title="End-Cast (Nummer)">'
-                    + '<div class="flex-1"></div>'
-                    + '<button class="text-red-400 hover:text-red-300 px-1 es-r-del" data-idx="' + idx + '" title="Phase löschen">✕</button>'
-                    + '</div>'
-                    + '<div class="bg-slate-800 border border-slate-600 rounded p-1 max-h-32 overflow-y-auto">'
-                    + catHtml
-                    + '</div>'
-                    + '</div>';
-            });
-            rCont.innerHTML = htmlStr;
+        function val(field, fallback) {
+            return ov[field] !== undefined ? ov[field] : (evtObj[field] !== undefined ? evtObj[field] : fallback);
         }
 
-        rCont.addEventListener('change', function (e) {
-            var target = e.target;
-            var idx = parseInt(target.getAttribute('data-idx'));
-            if (isNaN(idx)) return;
-            var r = escRanges[idx];
-            if (!r) return;
+        var evtDur = val('eventDuration', 0) || 0;
+        var overlap = val('overlapSec', 0) || 0;
+        var resEsc = val('resetEscalation', 0) || 0;
+        var contCov = !!val('continuousCoverage', false);
+        var maxCasts = val('maxCasts', 1) || 1;
+        var firstCast = val('firstCast', 0) || 0;
+        var evtCd = val('cooldown', 0) || 0;
+        var baseReq = (val('requiredCDs', []) || []).slice();
+        var evtName = val('name', eventKey) || eventKey;
+        var evtIcon = val('icon', '') || '';
 
-            if (target.type === 'checkbox') {
-                var catKey = target.value;
-                r.categories = r.categories || [];
-                if (target.checked) {
-                    if (!requiredHasCat(r.categories, catKey)) r.categories.push(catKey);
-                } else {
-                    // Auch Einträge mit Anzahl ("any_dr:2") entfernen
-                    r.categories = r.categories.filter(function (e) {
-                        var spec = parseCatSpec(e);
-                        return !spec || spec.key !== catKey;
+        var escRanges = JSON.parse(JSON.stringify(val('escalationRanges', []) || []));
+
+        // Ohne Cooldown gibt es nur einen Cast (siehe generateTimeline).
+        var totalCasts = evtCd > 0 ? Math.max(1, Math.min(200, maxCasts)) : 1;
+
+        // ── Wer ist aktuell auf welchem Cast eingeteilt? (nur zur Anschauung) ──
+        var assignedByPos = {};
+        var pos = 0;
+        (assignments || []).forEach(function (r) {
+            if (r.eventKey !== eventKey || r._isContinuous) return;
+            pos++;
+            var names = [];
+            Object.keys(r.slots || {}).forEach(function (sk) {
+                var s = r.slots[sk];
+                if (!s || !s.player || s.player === '__SKIP__') return;
+                if (s.unavailable || s.spreadGap || s.skipped) return;
+                if (names.indexOf(s.player) === -1) names.push(s.player);
+            });
+            assignedByPos[pos] = names;
+        });
+
+        // ── Cast-Liste aufbauen: castCats[n-1] = Kategorie-Einträge für Cast n ──
+        // Zyklus-Länge: mit "Reset nach N Casts" wiederholt sich das Muster,
+        // dann reicht es, die ersten N zu planen.
+        var cycleLen, castCats;
+        function rebuildCastList() {
+            cycleLen = resEsc > 0 ? Math.max(1, Math.min(resEsc, totalCasts)) : totalCasts;
+            var hadRanges = escRanges.length > 0;
+            castCats = [];
+            for (var n = 1; n <= cycleLen; n++) {
+                var m = escRanges.find(function (r) { return n >= r.start && n <= r.end; });
+                castCats.push(m ? (m.categories || []).slice() : (hadRanges ? [] : baseReq.slice()));
+            }
+        }
+        rebuildCastList();
+
+        var sel = {};        // Cast-Nummer → ausgewählt
+        var anchor = null;   // für Shift+Klick
+
+        function selectedCasts() {
+            return Object.keys(sel).filter(function (k) { return sel[k]; })
+                .map(Number).sort(function (a, b) { return a - b; });
+        }
+
+        // ── Styles (einmalig) ──
+        if (!document.getElementById('esc-planner-styles')) {
+            var est = document.createElement('style');
+            est.id = 'esc-planner-styles';
+            est.textContent =
+                '.esc-casts { max-height:250px; overflow-y:auto; border:1px solid #334155; border-radius:4px; background:#0f172a; }' +
+                '.esc-row { display:flex; align-items:center; gap:6px; padding:3px 6px; cursor:pointer; border-bottom:1px solid rgba(51,65,85,0.4); user-select:none; }' +
+                '.esc-row:last-child { border-bottom:none; }' +
+                '.esc-row:hover { background:rgba(51,65,85,0.35); }' +
+                '.esc-row.sel { background:rgba(34,211,238,0.13); box-shadow:inset 2px 0 0 0 #22d3ee; }' +
+                '.esc-row .esc-n { width:34px; font-size:10px; font-weight:bold; color:#cbd5e1; text-align:right; flex:0 0 auto; }' +
+                '.esc-row .esc-t { width:42px; font-size:9px; color:#64748b; font-family:monospace; flex:0 0 auto; }' +
+                '.esc-row .esc-c { flex:1 1 auto; display:flex; flex-wrap:wrap; gap:3px; min-width:0; }' +
+                '.esc-row .esc-a { flex:0 0 auto; max-width:35%; font-size:9px; color:#64748b; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }' +
+                '.esc-chip { font-size:9px; padding:0 5px; border-radius:8px; line-height:15px; border:1px solid currentColor; opacity:0.9; }' +
+                '.esc-empty { font-size:9px; color:#475569; font-style:italic; }' +
+                '.esc-cat { font-size:10px; padding:2px 7px; border-radius:10px; border:1px solid #334155; background:#0f172a; color:#94a3b8; cursor:pointer; }' +
+                '.esc-cat.on { background:rgba(255,255,255,0.06); font-weight:bold; }' +
+                '.esc-cat.part { border-style:dashed; }' +
+                '.esc-cat .esc-x { margin-left:4px; font-size:9px; opacity:0.75; }' +
+                '.esc-mini { font-size:10px; padding:2px 6px; border-radius:3px; border:1px solid #334155; background:#0f172a; color:#cbd5e1; cursor:pointer; }' +
+                '.esc-mini:hover { background:#1e293b; }';
+            document.head.appendChild(est);
+        }
+
+        var content = document.createElement('div');
+        content.innerHTML = ''
+            + '<div class="mb-3 space-y-2">'
+            + '<div class="flex gap-2">'
+            + '<div class="flex-1"><label class="block text-[10px] text-gray-400 mb-1">Event-Dauer (Sek)</label>'
+            + '<input type="number" id="es-dur" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1 rounded" value="' + evtDur + '" step="0.5"></div>'
+            + '<div class="flex-1"><label class="block text-[10px] text-gray-400 mb-1" title="Wie viel Sek. vor Ablauf des vorherigen CD soll der nächste gezogen werden?">Overlap (Sek)</label>'
+            + '<input type="number" id="es-overlap" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1 rounded" value="' + overlap + '" step="0.5"></div>'
+            + '<div class="flex-1"><label class="block text-[10px] text-gray-400 mb-1" title="Nach wie vielen Casts fängt die Eskalation wieder bei 1 an? (0 = nie)">Reset nach Cast</label>'
+            + '<input type="number" id="es-res" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1 rounded" value="' + resEsc + '" min="0"></div>'
+            + '</div>'
+            + '<label class="flex items-center gap-2 text-[10px] text-gray-400 cursor-pointer">'
+            + '<input type="checkbox" id="es-cont-cov" ' + (contCov ? 'checked' : '') + ' style="accent-color:#10b981;">'
+            + 'Continuous Coverage (Folge-CDs automatisch anreihen, falls das Event länger dauert)</label>'
+            + '</div>'
+
+            + '<div class="border-t border-slate-700 pt-3">'
+            + '<div class="flex items-baseline justify-between mb-1">'
+            + '<div class="text-[11px] font-bold text-gray-200">📈 Eskalation — welcher Cast bekommt welche CDs?</div>'
+            + '<div class="text-[10px] text-gray-500" id="es-cycle-info"></div>'
+            + '</div>'
+            + '<div class="text-[10px] text-gray-500 mb-2">Casts anklicken (Shift = Bereich, Strg = einzeln dazu), dann unten die Kategorien setzen.</div>'
+            + '<div id="es-casts" class="esc-casts"></div>'
+            + '<div class="flex flex-wrap items-center gap-1 mt-2">'
+            + '<button class="esc-mini" id="es-sel-all">Alle</button>'
+            + '<button class="esc-mini" id="es-sel-none">Keine</button>'
+            + '<button class="esc-mini" id="es-sel-toend" title="Von der ersten Auswahl bis zum letzten Cast erweitern">▶ bis Ende</button>'
+            + '<button class="esc-mini" id="es-copy-prev" title="Die Kategorien des Casts vor der Auswahl übernehmen">⧉ wie davor</button>'
+            + '<span class="text-[10px] text-cyan-400/80 ml-1" id="es-sel-info"></span>'
+            + '</div>'
+            + '<div class="text-[10px] text-gray-400 mt-3 mb-1" id="es-pal-label">Kategorien für die Auswahl</div>'
+            + '<div id="es-palette" class="flex flex-wrap gap-1"></div>'
+            + '<div class="text-[10px] text-gray-500 mt-3 leading-relaxed" id="es-summary"></div>'
+            + '</div>';
+
+        var castsEl = content.querySelector('#es-casts');
+        var paletteEl = content.querySelector('#es-palette');
+        var summaryEl = content.querySelector('#es-summary');
+        var selInfoEl = content.querySelector('#es-sel-info');
+        var cycleInfoEl = content.querySelector('#es-cycle-info');
+        var palLabelEl = content.querySelector('#es-pal-label');
+
+        function catChip(entry) {
+            var spec = parseCatSpec(entry);
+            if (!spec) return '';
+            var c = categories[spec.key];
+            var color = c ? c.color : '#94a3b8';
+            var label = c ? c.shortName : spec.key;
+            if (spec.count > 1) label += ' ×' + spec.count;
+            return '<span class="esc-chip" style="color:' + color + ';">' + label + '</span>';
+        }
+
+        function renderCasts() {
+            // Scrollposition halten — bei 28 Casts würde die Liste sonst bei jedem
+            // Klick nach oben springen.
+            var scroll = castsEl.scrollTop;
+            var html = '';
+            for (var n = 1; n <= cycleLen; n++) {
+                var cats = castCats[n - 1] || [];
+                var t = firstCast + (n - 1) * evtCd;
+                var names = assignedByPos[n] || [];
+                html += '<div class="esc-row' + (sel[n] ? ' sel' : '') + '" data-n="' + n + '">'
+                    + '<span class="esc-n">#' + n + '</span>'
+                    + '<span class="esc-t">' + fmt(t) + '</span>'
+                    + '<span class="esc-c">' + (cats.length ? cats.map(catChip).join('') : '<span class="esc-empty">keine CDs</span>') + '</span>'
+                    + '<span class="esc-a" title="' + names.join(', ') + '">' + names.join(', ') + '</span>'
+                    + '</div>';
+            }
+            castsEl.innerHTML = html;
+            castsEl.scrollTop = scroll;
+            cycleInfoEl.textContent = resEsc > 0
+                ? cycleLen + ' Casts im Zyklus (von ' + totalCasts + ', wiederholt sich)'
+                : totalCasts + ' Casts';
+        }
+
+        function renderPalette() {
+            var chosen = selectedCasts();
+            selInfoEl.textContent = chosen.length
+                ? (chosen.length === 1 ? 'Cast #' + chosen[0] : chosen.length + ' Casts ausgewählt (#' + chosen[0] + '–#' + chosen[chosen.length - 1] + ')')
+                : '';
+            var html = '';
+            Object.keys(categories).forEach(function (catKey) {
+                var c = categories[catKey];
+                var hits = 0, count = 1;
+                chosen.forEach(function (n) {
+                    (castCats[n - 1] || []).forEach(function (e) {
+                        var sp = parseCatSpec(e);
+                        if (sp && sp.key === catKey) { hits++; count = Math.max(count, sp.count); }
                     });
-                }
-            } else if (target.classList.contains('es-r-start')) {
-                r.start = parseInt(target.value) || 1;
-            } else if (target.classList.contains('es-r-end')) {
-                r.end = parseInt(target.value) || 99;
+                });
+                var all = chosen.length > 0 && hits === chosen.length;
+                var some = hits > 0 && !all;
+                var style = (all || some) ? ' style="color:' + c.color + ';border-color:' + c.color + ';"' : '';
+                html += '<button class="esc-cat' + (all ? ' on' : '') + (some ? ' part' : '') + '" data-cat="' + catKey + '"'
+                    + style + ' title="' + String(c.name).replace(/"/g, '&quot;') + '">'
+                    + (c.shortName || catKey)
+                    + (all && count > 1 ? '<span class="esc-x" data-count="1">×' + count + '</span>' : (all ? '<span class="esc-x" data-count="1">×1</span>' : ''))
+                    + '</button>';
+            });
+            paletteEl.innerHTML = html || '<span class="text-[10px] text-gray-600">Keine Kategorien vorhanden.</span>';
+            paletteEl.style.opacity = chosen.length ? '1' : '0.4';
+            palLabelEl.textContent = chosen.length
+                ? 'Kategorien für die Auswahl — nochmal auf ×N klicken für mehrere gleichzeitig'
+                : 'Kategorien — erst oben Casts auswählen';
+        }
+
+        function renderSummary() {
+            var parts = [];
+            var cur = null;
+            castCats.forEach(function (cats, i) {
+                var sig = JSON.stringify(cats);
+                if (cur && cur.sig === sig) { cur.end = i + 1; return; }
+                if (cur) parts.push(cur);
+                cur = { start: i + 1, end: i + 1, cats: cats, sig: sig };
+            });
+            if (cur) parts.push(cur);
+            summaryEl.innerHTML = '<b class="text-gray-400">Ergibt:</b> ' + parts.map(function (p) {
+                var span = p.start === p.end ? '#' + p.start : '#' + p.start + '–' + p.end;
+                var labels = p.cats.length
+                    ? p.cats.map(function (e) {
+                        var sp = parseCatSpec(e);
+                        var c = sp && categories[sp.key];
+                        return (c ? c.shortName : (sp ? sp.key : e)) + (sp && sp.count > 1 ? '×' + sp.count : '');
+                    }).join('+')
+                    : '—';
+                return '<span class="text-gray-400">' + span + '</span> ' + labels;
+            }).join(' · ');
+        }
+
+        function renderAll() { renderCasts(); renderPalette(); renderSummary(); }
+        renderAll();
+
+        // ── Auswahl ──
+        castsEl.addEventListener('click', function (e) {
+            var row = e.target.closest('.esc-row');
+            if (!row) return;
+            var n = parseInt(row.dataset.n);
+            if (e.shiftKey && anchor) {
+                var a = Math.min(anchor, n), b = Math.max(anchor, n);
+                if (!e.ctrlKey && !e.metaKey) sel = {};
+                for (var i = a; i <= b; i++) sel[i] = true;
+            } else if (e.ctrlKey || e.metaKey) {
+                if (sel[n]) delete sel[n]; else sel[n] = true;
+                anchor = n;
+            } else {
+                var wasOnly = sel[n] && selectedCasts().length === 1;
+                sel = {};
+                if (!wasOnly) sel[n] = true;
+                anchor = n;
             }
+            renderCasts();
+            renderPalette();
         });
 
-        rCont.addEventListener('click', function (e) {
-            var target = e.target.closest('.es-r-del');
-            if (target) {
-                var idx = parseInt(target.getAttribute('data-idx'));
-                if (!isNaN(idx)) {
-                    escRanges.splice(idx, 1);
-                    renderRanges();
-                }
+        content.querySelector('#es-sel-all').addEventListener('click', function () {
+            sel = {};
+            for (var i = 1; i <= cycleLen; i++) sel[i] = true;
+            anchor = 1;
+            renderCasts(); renderPalette();
+        });
+        content.querySelector('#es-sel-none').addEventListener('click', function () {
+            sel = {}; anchor = null;
+            renderCasts(); renderPalette();
+        });
+        content.querySelector('#es-sel-toend').addEventListener('click', function () {
+            var chosen = selectedCasts();
+            if (!chosen.length) return;
+            for (var i = chosen[0]; i <= cycleLen; i++) sel[i] = true;
+            renderCasts(); renderPalette();
+        });
+        content.querySelector('#es-copy-prev').addEventListener('click', function () {
+            var chosen = selectedCasts();
+            if (!chosen.length || chosen[0] < 2) return;
+            var src = (castCats[chosen[0] - 2] || []).slice();
+            chosen.forEach(function (n) { castCats[n - 1] = src.slice(); });
+            renderAll();
+        });
+
+        // ── Kategorien setzen ──
+        paletteEl.addEventListener('click', function (e) {
+            var btn = e.target.closest('.esc-cat');
+            if (!btn) return;
+            var chosen = selectedCasts();
+            if (!chosen.length) return;
+            var catKey = btn.dataset.cat;
+
+            // Klick auf das "×N"-Badge zählt nur die Anzahl hoch (1→2→3→4→1),
+            // ohne die Kategorie zu entfernen.
+            if (e.target.classList.contains('esc-x')) {
+                var next = (parseInt(String(e.target.textContent).replace('×', '')) || 1) % 4 + 1;
+                chosen.forEach(function (n) { setCat(n, catKey, true, next); });
+                renderAll();
+                return;
             }
+
+            var allHave = chosen.every(function (n) { return requiredHasCat(castCats[n - 1] || [], catKey); });
+            chosen.forEach(function (n) { setCat(n, catKey, !allHave, 1); });
+            renderAll();
         });
 
-        renderRanges();
+        function setCat(n, catKey, on, count) {
+            var arr = castCats[n - 1] || (castCats[n - 1] = []);
+            var idx = -1;
+            for (var i = 0; i < arr.length; i++) {
+                var sp = parseCatSpec(arr[i]);
+                if (sp && sp.key === catKey) { idx = i; break; }
+            }
+            if (!on) { if (idx !== -1) arr.splice(idx, 1); return; }
+            var entry = count > 1 ? catKey + ':' + count : catKey;
+            if (idx === -1) arr.push(entry); else arr[idx] = entry;
+        }
 
-        content.querySelector('#es-add-range').addEventListener('click', function () {
-            var lastEnd = escRanges.length > 0 ? escRanges[escRanges.length - 1].end : 0;
-            escRanges.push({ start: lastEnd + 1, end: lastEnd + 1, categories: [] });
-            renderRanges();
+        // Reset-Feld ändert die Zykluslänge → Liste neu aufbauen
+        content.querySelector('#es-res').addEventListener('change', function (e) {
+            var newRes = parseInt(e.target.value) || 0;
+            if (newRes === resEsc) return;
+            escRanges = buildRanges();       // aktuellen Stand sichern
+            resEsc = newRes;
+            rebuildCastList();
+            sel = {}; anchor = null;
+            renderAll();
         });
 
+        // ── Cast-Liste wieder zu start/end-Bereichen zusammenfassen ──
+        function buildRanges() {
+            if (!castCats.length) return [];
+            var firstSig = JSON.stringify(castCats[0]);
+            var uniform = castCats.every(function (c) { return JSON.stringify(c) === firstSig; });
+            // Überall dasselbe wie die Basis-Kategorien des Events → keine
+            // Eskalation nötig, dann bleibt der Event-Eintrag sauber.
+            if (uniform && firstSig === JSON.stringify(baseReq)) return [];
+
+            var ranges = [];
+            var cur = null;
+            castCats.forEach(function (cats, i) {
+                var sig = JSON.stringify(cats);
+                if (cur && cur.sig === sig) { cur.end = i + 1; return; }
+                if (cur) ranges.push(cur);
+                cur = { start: i + 1, end: i + 1, categories: cats.slice(), sig: sig };
+            });
+            if (cur) ranges.push(cur);
+
+            // Leere Abschnitte weglassen: "kein Bereich trifft zu" bedeutet in
+            // generateTimeline ohnehin "keine CDs".
+            var out = ranges.filter(function (r) { return r.categories.length > 0; })
+                .map(function (r) { return { start: r.start, end: r.end, categories: r.categories }; });
+            // Alles leer → ein expliziter Leer-Bereich, sonst würde beim nächsten
+            // Laden wieder auf die Basis-Kategorien zurückgefallen.
+            if (!out.length) out = [{ start: 1, end: castCats.length, categories: [] }];
+            return out;
+        }
+
+        // ── Modal ──
         var overlay = document.createElement('div');
         overlay.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[9999]';
         var modal = document.createElement('div');
-        modal.className = 'bg-slate-800 border border-slate-600 rounded-lg shadow-xl w-[400px] max-w-full flex flex-col max-h-[90vh]';
+        modal.className = 'bg-slate-800 border border-slate-600 rounded-lg shadow-xl w-[620px] max-w-[95vw] flex flex-col max-h-[90vh]';
 
         var mHead = document.createElement('div');
         mHead.className = 'p-3 border-b border-slate-700 flex justify-between items-center';
-        mHead.innerHTML = '<h3 class="text-sm font-bold text-gray-200">Event-Einstellungen</h3>';
+        mHead.innerHTML = '<h3 class="text-sm font-bold text-gray-200">Event-Einstellungen — '
+            + (evtIcon ? evtIcon + ' ' : '') + String(evtName).replace(/</g, '&lt;') + '</h3>';
 
         var mBody = document.createElement('div');
         mBody.className = 'p-3 overflow-y-auto';
@@ -2694,9 +3027,8 @@ window.CD_AUTO_PLANNER = (function () {
             setOverride(eventKey, 'overlapSec', parseFloat(content.querySelector('#es-overlap').value) || 0, true);
             setOverride(eventKey, 'resetEscalation', parseInt(content.querySelector('#es-res').value) || 0, true);
             setOverride(eventKey, 'continuousCoverage', content.querySelector('#es-cont-cov').checked, true);
-            // Deep copy der Ranges um Proxy-Probleme zu vermeiden
-            var cleanRanges = JSON.parse(JSON.stringify(escRanges));
-            setOverride(eventKey, 'escalationRanges', cleanRanges); // Last call triggers the UI rebuild
+            // Letzter Aufruf ohne silent → Event-Manager neu zeichnen
+            setOverride(eventKey, 'escalationRanges', JSON.parse(JSON.stringify(buildRanges())));
             overlay.remove();
         };
 
@@ -2839,17 +3171,32 @@ window.CD_AUTO_PLANNER = (function () {
     // wieder überschreibt.
     // ══════════════════════════════════════════════════════════════
 
-    // Zuweisungen eines Events einsammeln: castNum → { slotKey: overrideObj }
+    // Zuweisungen eines Events einsammeln: Cast-POSITION (1,2,3...) innerhalb des
+    // Events → { slotKey: overrideObj }.
+    //
+    // Bewusst NICHT row.castNum als Schlüssel: das ist ein globaler Zähler pro
+    // Event-NAME (siehe generateTimeline). Zwei gleichnamige Event-Blöcke teilen
+    // ihn sich, der zweite Block fängt dann z.B. bei #5 an — beim Kopieren fand
+    // dadurch kein einziger Cast seinen Partner. Die Position innerhalb des
+    // Events ist dagegen immer 1..n und passt auf beiden Seiten zusammen.
     function collectEventSlots(eventKey) {
-        var byCast = {};
+        var byPos = {};
+        var pos = 0;
         (assignments || []).forEach(function (r) {
             // Continuous-Coverage-Folgezeilen werden beim Ziel automatisch neu
             // erzeugt — die dürfen nicht mitkopiert werden.
             if (r.eventKey !== eventKey || r._isContinuous) return;
+            pos++;
             var slots = {};
             Object.keys(r.slots || {}).forEach(function (sk) {
                 var s = r.slots[sk];
-                if (!s || s.isExtraPlaceholder || s.unavailable || s.spreadGap || s.skipped || s.notInRoster) return;
+                if (!s || s.isExtraPlaceholder || s.unavailable || s.spreadGap || s.notInRoster) return;
+                // „Kein CD nötig" ist eine bewusste Planungs-Entscheidung und
+                // gehört mit ins Ziel — sonst weist Auto-Assign dort wieder zu.
+                if (s.skipped || s.player === '__SKIP__') {
+                    slots[sk] = { player: '__SKIP__', dbName: '__SKIP__', skip: true };
+                    return;
+                }
                 if (s.isVirtual) {
                     slots[sk] = {
                         player: s.player, dbName: '__VIRTUAL__',
@@ -2857,7 +3204,7 @@ window.CD_AUTO_PLANNER = (function () {
                     };
                     return;
                 }
-                if (s.player && s.dbName && s.player !== '__SKIP__') {
+                if (s.player && s.dbName) {
                     slots[sk] = {
                         player: s.player, dbName: s.dbName,
                         dbClass: s.dbClass, spellId: s.spellId,
@@ -2865,9 +3212,10 @@ window.CD_AUTO_PLANNER = (function () {
                     };
                 }
             });
-            if (Object.keys(slots).length) byCast[r.castNum] = slots;
+            // Auch leere Casts eintragen, damit die Positionen 1:1 durchzählen.
+            byPos[pos] = slots;
         });
-        return byCast;
+        return byPos;
     }
 
     // Anzahl Casts eines Events in der aktuellen Vorschau
@@ -2875,6 +3223,21 @@ window.CD_AUTO_PLANNER = (function () {
         return (assignments || []).filter(function (r) {
             return r.eventKey === eventKey && !r._isContinuous;
         }).length;
+    }
+
+    // Eskalations-Einstellungen eines Events (mit Overrides) auslesen
+    function eventEscalation(eventKey) {
+        var evtObj = {};
+        if (String(eventKey).indexOf('cfg_') === 0) {
+            evtObj = (config.events || [])[parseInt(String(eventKey).replace('cfg_', ''))] || {};
+        } else {
+            evtObj = customEvents.find(function (e) { return e._key === eventKey; }) || {};
+        }
+        var ov = eventOverrides[eventKey] || {};
+        return {
+            ranges: (ov.escalationRanges !== undefined ? ov.escalationRanges : (evtObj.escalationRanges || [])) || [],
+            reset: (ov.resetEscalation !== undefined ? ov.resetEscalation : (evtObj.resetEscalation || 0)) || 0
+        };
     }
 
     function eventDisplayName(eventKey) {
@@ -2894,40 +3257,112 @@ window.CD_AUTO_PLANNER = (function () {
     }
 
     // Kern der Kopier-Funktion (ohne UI, damit testbar).
-    // opts: { categories: bool, overwrite: bool }
-    // Rückgabe: { cds, casts, missingCasts }
+    // opts: { categories: bool, overwrite: bool, pinSource: bool }
+    // Rückgabe: { cds, casts, missingCasts, cleared, pinned, conflicts, conflictExamples }
     function copyEventAssignments(srcKey, dstKey, opts) {
         opts = opts || {};
         var srcSlots = collectEventSlots(srcKey);
+        var srcCount = Object.keys(srcSlots).length;
+        var srcRows = (assignments || []).filter(function (r) {
+            return r.eventKey === srcKey && !r._isContinuous;
+        });
         var dstRows = (assignments || []).filter(function (r) {
             return r.eventKey === dstKey && !r._isContinuous;
         });
 
-        var copiedCds = 0, copiedCasts = 0;
-        dstRows.forEach(function (r) {
-            var src = srcSlots[r.castNum];
+        // Wann wird welcher CD nach dem Kopieren gezogen? Daraus lassen sich
+        // Doppelbelegungen innerhalb der Cooldown-Zeit melden.
+        var usage = {};
+        function noteUsage(ov, time) {
+            if (!ov || !ov.player || !ov.dbName || ov.skip || ov.dbName === '__VIRTUAL__') return;
+            var k = ov.player + '::' + ov.dbName;
+            if (!usage[k]) usage[k] = { cd: ov.cooldownSec || 180, times: [] };
+            usage[k].times.push(time);
+        }
+
+        var copiedCds = 0, copiedCasts = 0, clearedCds = 0, pinnedCds = 0;
+        dstRows.forEach(function (r, i) {
+            var src = srcSlots[i + 1];   // Cast-Position, nicht castNum
             if (!src) return;
             var prefix = rowOverridePrefix(r) + '-';
+
+            // Beim Überschreiben zuerst die bestehenden manuellen Zuweisungen der
+            // Ziel-Zeile wegräumen. Sonst bleiben Slots stehen, die es in der
+            // Quelle gar nicht gibt, und das Ergebnis ist eine Mischung aus
+            // beiden Einteilungen statt einer Kopie.
+            if (opts.overwrite !== false) {
+                Object.keys(manualOverrides).forEach(function (oKey) {
+                    if (oKey.indexOf(prefix) !== 0) return;
+                    // Overrides der Continuous-Coverage-Folgezeilen ("...-c1-cat")
+                    // gehören dieser Zeile nicht.
+                    if (/^c\d+-/.test(oKey.substring(prefix.length))) return;
+                    delete manualOverrides[oKey];
+                    clearedCds++;
+                });
+            }
+
             var any = false;
             Object.keys(src).forEach(function (sk) {
                 if (opts.overwrite === false && manualOverrides[prefix + sk]) return;
                 manualOverrides[prefix + sk] = JSON.parse(JSON.stringify(src[sk]));
+                noteUsage(src[sk], r.absTime);
                 copiedCds++;
                 any = true;
             });
             if (any) copiedCasts++;
         });
 
+        // Die Quelle mit festhalten: die kopierten CDs sind im Ziel jetzt manuell
+        // und blockieren dort die Cooldowns. Bliebe die Quelle automatisch, würde
+        // Auto-Assign sie beim nächsten Lauf neu verteilen — es sähe aus, als hätte
+        // das Kopieren die falsche Seite verändert.
+        if (opts.pinSource !== false) {
+            srcRows.forEach(function (r, i) {
+                var s = srcSlots[i + 1];
+                if (!s) return;
+                var p = rowOverridePrefix(r) + '-';
+                Object.keys(s).forEach(function (sk) {
+                    noteUsage(s[sk], r.absTime);
+                    if (manualOverrides[p + sk]) return;   // war schon manuell
+                    manualOverrides[p + sk] = JSON.parse(JSON.stringify(s[sk]));
+                    pinnedCds++;
+                });
+            });
+        }
+
+        // Doppelbelegungen innerhalb der Cooldown-Zeit sammeln
+        var conflicts = 0, conflictExamples = [];
+        Object.keys(usage).forEach(function (k) {
+            var u = usage[k];
+            var times = u.times.slice().sort(function (a, b) { return a - b; });
+            for (var i = 1; i < times.length; i++) {
+                if (times[i] - times[i - 1] < u.cd) {
+                    conflicts++;
+                    if (conflictExamples.length < 3) {
+                        conflictExamples.push(k.replace('::', ' – ') + ' (' + fmt(times[i - 1]) + ' & ' + fmt(times[i]) + ')');
+                    }
+                }
+            }
+        });
+
         if (opts.categories) {
-            var srcRequired = eventRequiredCDs(srcKey);
             // silent=true: kein Zwischen-Rerender, der Aufrufer startet Auto-Assign
-            if (srcRequired.length) setOverride(dstKey, 'requiredCDs', srcRequired, true);
+            setOverride(dstKey, 'requiredCDs', eventRequiredCDs(srcKey), true);
+            // Die Eskalation gehört zur Einteilung dazu — ohne sie bekäme das Ziel
+            // bei 28 Casts überall dieselben Kategorien statt des geplanten Aufbaus.
+            var srcEsc = eventEscalation(srcKey);
+            setOverride(dstKey, 'escalationRanges', JSON.parse(JSON.stringify(srcEsc.ranges)), true);
+            setOverride(dstKey, 'resetEscalation', srcEsc.reset, true);
         }
 
         return {
             cds: copiedCds,
             casts: copiedCasts,
-            missingCasts: Object.keys(srcSlots).length - copiedCasts
+            cleared: clearedCds,
+            pinned: pinnedCds,
+            conflicts: conflicts,
+            conflictExamples: conflictExamples,
+            missingCasts: Math.max(0, srcCount - dstRows.length)
         };
     }
 
@@ -2940,12 +3375,13 @@ window.CD_AUTO_PLANNER = (function () {
             if (window.showModal) window.showModal('Erst „Auto-Zuweisen" ausführen — es gibt noch keine Einteilung zum Kopieren.');
             return;
         }
-        if (srcCasts.length === 0) {
+        if (srcCdCount === 0) {
             if (window.showModal) window.showModal('Dieses Event hat keine zugewiesenen CDs zum Kopieren.');
             return;
         }
 
         var srcRequired = eventRequiredCDs(srcKey);
+        var srcEscCount = (eventEscalation(srcKey).ranges || []).length;
 
         // Mögliche Ziele: alle aktiven Events außer der Quelle und den
         // automatisch erzeugten Lust/Banner-Hilfsevents.
@@ -2962,27 +3398,37 @@ window.CD_AUTO_PLANNER = (function () {
         var modal = document.createElement('div');
         modal.style.cssText = 'background:#1e293b;padding:20px;border-radius:8px;border:1px solid #475569;max-width:520px;width:90%;max-height:80vh;overflow-y:auto;';
 
+        var srcCastCount = countEventCasts(srcKey);
         var optHtml = targets.map(function (e) {
             var n = countEventCasts(e._key);
+            var warn = (n < srcCastCount) ? '  ⚠ nur ' + n + ' von ' + srcCastCount : '';
             return '<option value="' + e._key + '">' + (e.icon ? e.icon + ' ' : '') + String(e.name).replace(/</g, '&lt;')
-                + ' (' + n + ' Cast' + (n === 1 ? '' : 's') + ')</option>';
+                + ' (' + n + ' Cast' + (n === 1 ? '' : 's') + ')' + warn + '</option>';
         }).join('');
 
         modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">CD-Einteilung kopieren</h4>'
             + '<div class="text-xs text-gray-400 mb-3">Von <span class="text-cyan-300 font-bold">' + String(eventDisplayName(srcKey)).replace(/</g, '&lt;') + '</span>'
-            + ' — <b>' + srcCasts.length + '</b> Casts mit insgesamt <b>' + srcCdCount + '</b> CDs.</div>'
+            + ' — <b>' + srcCastCount + '</b> Casts mit insgesamt <b>' + srcCdCount + '</b> CDs.</div>'
             + '<label class="block text-[10px] text-gray-400 mb-1 uppercase tracking-wide">Ziel-Event</label>'
             + '<select id="cp-target" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1.5 rounded mb-3">' + optHtml + '</select>'
             + '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
             + '<input type="checkbox" id="cp-cats" checked style="accent-color:#22d3ee;">'
-            + '<span class="text-xs text-gray-300">Kategorien mit übernehmen <span class="text-gray-500">(' + (srcRequired.length ? srcRequired.join(', ') : '—') + ')</span></span></label>'
+            + '<span class="text-xs text-gray-300">Kategorien + Eskalation mit übernehmen '
+            + '<span class="text-gray-500">(' + (srcRequired.length ? srcRequired.join(', ') : '—')
+            + (srcEscCount ? ', ' + srcEscCount + ' Eskalations-Phasen' : '') + ')</span></span></label>'
             + '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
             + '<input type="checkbox" id="cp-overwrite" checked style="accent-color:#22d3ee;">'
             + '<span class="text-xs text-gray-300">Vorhandene Zuweisungen im Ziel überschreiben</span></label>'
-            + '<div class="text-[10px] text-gray-500 mt-2 mb-3 leading-relaxed">Cast #1 wird auf Cast #1 kopiert, #2 auf #2 usw. '
+            + '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
+            + '<input type="checkbox" id="cp-pin" checked style="accent-color:#22d3ee;">'
+            + '<span class="text-xs text-gray-300">Quelle festhalten '
+            + '<span class="text-gray-500">(sonst verteilt Auto-Assign die Quelle danach neu)</span></span></label>'
+            + '<div class="text-[10px] text-gray-500 mt-2 mb-3 leading-relaxed">Der 1. Cast der Quelle landet auf dem 1. Cast des Ziels, der 2. auf dem 2. usw. '
             + 'Hat das Ziel weniger Casts, wird nur so weit kopiert, wie es reicht. '
+            + 'Mit „überschreiben" wird das Ziel vorher geleert, sonst bleiben dort vorhandene Zuweisungen stehen. '
             + 'Die kopierten CDs gelten danach als <span class="text-yellow-400">manuell</span> (gelb) — Auto-Assign überschreibt sie nicht mehr. '
-            + 'Auf Cooldown-Konflikte zwischen den beiden Events wird dabei <b>nicht</b> geprüft.</div>'
+            + 'Liegen beide Events so dicht beieinander, dass ein CD nicht wieder bereit ist, wird das danach als '
+            + '<b>Doppelbelegung</b> gemeldet — kopiert wird trotzdem.</div>'
             + '<div class="flex justify-end gap-2">'
             + '<button id="cp-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
             + '<button id="cp-ok" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm font-bold">Kopieren</button>'
@@ -2999,18 +3445,32 @@ window.CD_AUTO_PLANNER = (function () {
             var dstKey = modal.querySelector('#cp-target').value;
             var takeCats = modal.querySelector('#cp-cats').checked;
             var overwrite = modal.querySelector('#cp-overwrite').checked;
+            var pinSource = modal.querySelector('#cp-pin').checked;
             close();
 
-            var res = copyEventAssignments(srcKey, dstKey, { categories: takeCats, overwrite: overwrite });
+            var res = copyEventAssignments(srcKey, dstKey, {
+                categories: takeCats, overwrite: overwrite, pinSource: pinSource
+            });
 
             markDirty();
             runAutoAssign();
 
             var msg = res.cds + ' CDs auf ' + res.casts + ' Casts von „' + eventDisplayName(srcKey)
                 + '" nach „' + eventDisplayName(dstKey) + '" kopiert.';
+            if (res.cleared > 0) {
+                msg += '\n(' + res.cleared + ' vorherige Zuweisung(en) im Ziel wurden dabei ersetzt.)';
+            }
+            if (res.pinned > 0) {
+                msg += '\n(' + res.pinned + ' CDs der Quelle wurden festgehalten, damit sie sich nicht neu verteilen.)';
+            }
             if (res.missingCasts > 0) {
                 msg += '\n\n⚠ ' + res.missingCasts + ' Cast(s) konnten nicht übertragen werden — das Ziel-Event hat weniger Casts.'
                     + '\nErhöhe dort „Casts", wenn du die auch brauchst.';
+            }
+            if (res.conflicts > 0) {
+                msg += '\n\n⚠ ' + res.conflicts + ' Doppelbelegung(en): derselbe CD wird zweimal gezogen, bevor er wieder bereit ist.'
+                    + '\n' + res.conflictExamples.join('\n')
+                    + '\nDas ist so gewollt beim Kopieren — prüfe die gelben Zellen und tausche, wo es nicht passt.';
             }
             msg += '\n\nNicht vergessen: „Plan speichern".';
             if (window.showModal) window.showModal(msg);
@@ -3458,6 +3918,13 @@ window.CD_AUTO_PLANNER = (function () {
                     assignments: assignments.map(function (r) {
                         var slots = {};
                         Object.entries(r.slots).forEach(function (e) {
+                            // „Kein CD nötig" mitspeichern, sonst sieht ein geladener
+                            // Plan (z.B. in der Nur-Lese-Ansicht) an der Stelle so aus,
+                            // als hätte schlicht kein Cooldown gepasst.
+                            if (e[1] && e[1].skipped) {
+                                slots[e[0]] = { player: '__SKIP__', dbName: '__SKIP__', skipped: true, auto: false };
+                                return;
+                            }
                             if (e[1].player && e[1].player !== '__SKIP__' && !e[1].notInRoster) {
                                 slots[e[0]] = { player: e[1].player, dbName: e[1].dbName, auto: e[1].auto };
                             }
@@ -3466,6 +3933,7 @@ window.CD_AUTO_PLANNER = (function () {
                             eventName: r.eventName,
                             eventKey: r.eventKey,
                             eventIdx: r.eventIdx,
+                            castIdx: r.castIdx || r.castNum,
                             castNum: r.castNum,
                             absTime: r.absTime,
                             delay: r.delay || 0,
@@ -3522,6 +3990,19 @@ window.CD_AUTO_PLANNER = (function () {
                         r.icon = ov.icon !== undefined ? ov.icon : (evtObj.icon || '');
                         r.requiredCDs = ov.requiredCDs !== undefined ? ov.requiredCDs : (evtObj.requiredCDs || []);
 
+                        // Eskalation genauso auswerten wie generateTimeline, sonst
+                        // bekäme jeder Cast des Events dieselben Kategorien — in der
+                        // geladenen (Nur-Lese-)Ansicht stünde dann überall „kein CD
+                        // frei", wo bewusst gar keiner geplant war.
+                        var escR = ov.escalationRanges !== undefined ? ov.escalationRanges : (evtObj.escalationRanges || []);
+                        if (escR && escR.length) {
+                            var resetN = ov.resetEscalation !== undefined ? ov.resetEscalation : (evtObj.resetEscalation || 0);
+                            var cn = r.castIdx || r.castNum || 1;
+                            if (resetN) cn = ((cn - 1) % resetN) + 1;
+                            var mR = escR.find(function (x) { return cn >= x.start && cn <= x.end; });
+                            r.requiredCDs = mR ? (mR.categories || []) : [];
+                        }
+
                         // Reconstruct eventIdx if missing (not saved in older plans)
                         if (r.eventIdx === undefined || r.eventIdx === null) {
                             r.eventIdx = (r.eventKey && eventKeyToIdx[r.eventKey] !== undefined)
@@ -3548,91 +4029,25 @@ window.CD_AUTO_PLANNER = (function () {
                         return r;
                     });
 
-                    // Migration: Reconstruct lost escalationRanges from saved assignments
-                    var reconstructed = {};
-                    assignments.forEach(function (r) {
-                        if (!r.eventKey || !r.requiredCDs || !r.castNum) return;
-                        if (!reconstructed[r.eventKey]) reconstructed[r.eventKey] = {};
-                        // Deduplicate by castNum since assignments contains one row per slot
-                        reconstructed[r.eventKey][r.castNum] = r.requiredCDs;
-                    });
-
-                    var recoveredCount = 0;
-
-                    // Cleanup buggy duplicated ranges that might have been saved previously
+                    // Doppelt gespeicherte Eskalations-Bereiche aufräumen (Altlast
+                    // eines früheren Bugs). Die Bereiche selbst stehen in
+                    // eventOverrides — aus den gespeicherten Zeilen lassen sie sich
+                    // nicht rekonstruieren, savePlan schreibt requiredCDs gar nicht mit.
                     Object.keys(eventOverrides).forEach(function (k) {
-                        var ov = eventOverrides[k];
-                        if (ov && ov.escalationRanges && ov.escalationRanges.length > 0) {
+                        var eo = eventOverrides[k];
+                        if (eo && eo.escalationRanges && eo.escalationRanges.length > 0) {
                             var unique = [];
                             var seen = {};
-                            ov.escalationRanges.forEach(function (r) {
+                            eo.escalationRanges.forEach(function (r) {
                                 var sig = r.start + '-' + r.end + '-' + JSON.stringify(r.categories || []);
                                 if (!seen[sig]) {
                                     seen[sig] = true;
                                     unique.push(r);
                                 }
                             });
-                            ov.escalationRanges = unique;
+                            eo.escalationRanges = unique;
                         }
                     });
-
-                    Object.keys(reconstructed).forEach(function (key) {
-                        var evtObj = null;
-                        if (key.startsWith('cfg_')) {
-                            evtObj = config.events[parseInt(key.replace('cfg_', ''))] || {};
-                        } else {
-                            evtObj = customEvents.find(function (e) { return e._key === key; }) || {};
-                        }
-                        var castMap = reconstructed[key];
-                        var casts = Object.keys(castMap).map(function (num) {
-                            return { castNum: parseInt(num), categories: castMap[num] };
-                        });
-                        casts.sort(function (a, b) { return a.castNum - b.castNum; });
-
-                        var ranges = [];
-                        var currentRange = null;
-                        casts.forEach(function (c) {
-                            var catStr = JSON.stringify(c.categories);
-                            if (!currentRange) {
-                                currentRange = { start: c.castNum, end: c.castNum, categories: c.categories, catStr: catStr };
-                            } else {
-                                if (currentRange.catStr === catStr && c.castNum === currentRange.end + 1) {
-                                    currentRange.end = c.castNum;
-                                } else {
-                                    ranges.push({ start: currentRange.start, end: currentRange.end, categories: currentRange.categories });
-                                    currentRange = { start: c.castNum, end: c.castNum, categories: c.categories, catStr: catStr };
-                                }
-                            }
-                        });
-                        if (currentRange) ranges.push({ start: currentRange.start, end: currentRange.end, categories: currentRange.categories });
-
-                        // Nur EIN einheitlicher Bereich über alle Casts = kein
-                        // Eskalations-Muster, sondern schlicht die (damalige)
-                        // Basis-Konfiguration des Events. Daraus KEINEN Override
-                        // bauen — sonst würde eine spätere Config-Änderung (z.B.
-                        // "any_dr" → "any_dr:2") beim Laden alter Pläne wieder
-                        // zurückgedreht werden.
-                        var isTrivial = ranges.length === 1;
-                        var isBaseEscalation = evtObj.escalationRanges && JSON.stringify(ranges) === JSON.stringify(evtObj.escalationRanges);
-
-                        if (!isTrivial && !isBaseEscalation) {
-                            var ov = eventOverrides[key] || {};
-                            if (!ov.escalationRanges || ov.escalationRanges.length === 0) {
-                                if (!eventOverrides[key]) eventOverrides[key] = {};
-                                eventOverrides[key].escalationRanges = ranges;
-                                recoveredCount++;
-                            }
-                        }
-                    });
-
-                    if (recoveredCount > 0) {
-                        console.log("[Auto-Planner] Recovered " + recoveredCount + " lost escalation ranges.");
-                        setTimeout(function () {
-                            if (typeof updateStatus === 'function') {
-                                updateStatus("✨ " + recoveredCount + " verlorene Phasen-Einstellungen automatisch aus alten Einteilungen wiederhergestellt!", "text-emerald-400");
-                            }
-                        }, 1000);
-                    }
                 }
                 clearDirty();
                 return true;
@@ -3649,8 +4064,13 @@ window.CD_AUTO_PLANNER = (function () {
         if (!firebaseRef) return;
         try {
             await firebaseRef.setDoc(firebaseRef.doc(firebaseRef.db, "auto-planner", "_cd-categories"), { categories: categories }, { merge: false });
+            _catsDirty = false;
+            refreshCategoriesDirty();
             if (window.showModal) window.showModal("Kategorien gespeichert!");
-        } catch (e) { console.error("[Auto-Planner]", e); }
+        } catch (e) {
+            console.error("[Auto-Planner]", e);
+            if (window.showModal) window.showModal("Kategorien konnten NICHT gespeichert werden: " + e.message);
+        }
     }
 
     async function loadCategories() {
@@ -3675,18 +4095,40 @@ window.CD_AUTO_PLANNER = (function () {
         categories = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
     }
 
+    // ── Kategorien: ungespeicherte Änderungen sichtbar machen ──
+    var _catsDirty = false;
+    function markCategoriesDirty() {
+        _catsDirty = true;
+        refreshCategoriesDirty();
+    }
+    function refreshCategoriesDirty() {
+        var btn = document.getElementById('btn-save-categories');
+        if (btn) {
+            btn.classList.toggle('cd-save-dirty', _catsDirty);
+            btn.title = _catsDirty
+                ? 'Ungespeicherte Änderungen an den CD-Kategorien.'
+                : 'Kategorien und Prioritäten in der Datenbank speichern (gilt für alle Bosse).';
+        }
+        var hint = document.getElementById('cd-cat-dirty-hint');
+        if (hint) hint.style.display = _catsDirty ? '' : 'none';
+    }
+
+    // Alt-Buttons aus den Boss-HTMLs entfernen.
+    // Dort steckte der Speichern-Button teils mit style="display:none" (dann war
+    // er nie zu sehen), teils gleich zweimal mit derselben ID (dann bekam die
+    // unsichtbare erste Kopie den Klick-Handler und die sichtbare zweite tat
+    // nichts). Der Editor rendert sich seinen Button unten selbst.
+    function dropLegacySaveCategoriesButtons() {
+        Array.from(document.querySelectorAll('[id="btn-save-categories"]')).forEach(function (b) {
+            if (b.parentNode) b.parentNode.removeChild(b);
+        });
+    }
+
     function renderCategoriesAdmin() {
         var el = document.getElementById('cd-categories-container');
         if (!el) return;
 
-        // Der Speichern-Button wird in attachEditorListeners() in den Container
-        // verschoben (neben "+ Neue Kategorie"). Vor dem innerHTML-Reset müssen wir
-        // ihn rausretten, sonst wird er hier zerstört und verschwindet dauerhaft
-        // (z.B. nach dem Entfernen eines Spells aus einer Kategorie).
-        var saveCatBtn = document.getElementById('btn-save-categories');
-        if (saveCatBtn && el.contains(saveCatBtn) && el.parentNode) {
-            el.parentNode.appendChild(saveCatBtn);
-        }
+        dropLegacySaveCategoriesButtons();
 
         // Einmalig Styles injizieren, damit der Editor korrekt scrollt und Zeilen nicht clippen
         if (!document.getElementById('cd-admin-styles')) {
@@ -3699,11 +4141,23 @@ window.CD_AUTO_PLANNER = (function () {
                 '#cd-categories-container .spell-row { overflow: visible; min-height: 32px; }' +
                 '#cd-categories-container::-webkit-scrollbar { width: 8px; }' +
                 '#cd-categories-container::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }' +
-                '#cd-categories-container::-webkit-scrollbar-track { background: #1e293b; }';
+                '#cd-categories-container::-webkit-scrollbar-track { background: #1e293b; }' +
+                // Der Editor scrollt bei vielen Kategorien lang — die Kopfzeile mit
+                // „Speichern" bleibt deshalb oben stehen statt wegzuscrollen.
+                '#cd-cat-toolbar { position: sticky; top: 0; z-index: 5; background: #0f172a; ' +
+                'border-bottom: 1px solid #334155; padding: 6px 0; margin: 0 0 12px 0; }' +
+                '@keyframes cdSaveBlink { 0%,100% { box-shadow:0 0 0 0 rgba(250,204,21,0); } 50% { box-shadow:0 0 0 3px rgba(250,204,21,0.95); } }' +
+                '.cd-save-dirty { animation:cdSaveBlink 1s ease-in-out infinite; }';
             document.head.appendChild(styleTag);
         }
 
-        var addCatBtn = '<div class="mb-3 flex items-center gap-2"><button id="btn-add-category" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Neue Kategorie</button></div>';
+        // Speichern-Button gehört fest zur Kopfzeile des Editors — er wird bei
+        // jedem Rendern mit erzeugt und in attachEditorListeners frisch verdrahtet.
+        var addCatBtn = '<div id="cd-cat-toolbar" class="flex items-center gap-2 flex-wrap">'
+            + '<button id="btn-add-category" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Neue Kategorie</button>'
+            + '<button id="btn-save-categories" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-1.5 px-3 rounded border border-amber-400">💾 Kategorien speichern</button>'
+            + '<span id="cd-cat-dirty-hint" class="text-[10px] text-amber-400" style="display:none;">ungespeicherte Änderungen</span>'
+            + '</div>';
 
         var catsHtml = Object.entries(categories).map(function (entry) {
             var key = entry[0], cat = entry[1];
@@ -3816,15 +4270,17 @@ window.CD_AUTO_PLANNER = (function () {
     }
 
     function attachEditorListeners() {
+        // Speichern — der Button wird bei jedem Rendern neu erzeugt, also hier
+        // auch jedes Mal neu verdrahtet.
+        var saveCatBtn = document.getElementById('btn-save-categories');
+        if (saveCatBtn) {
+            saveCatBtn.addEventListener('click', function () { saveCategories(); });
+        }
+        refreshCategoriesDirty();
+
         // Add category
         var addBtn = document.getElementById('btn-add-category');
         if (addBtn) {
-            var saveCatBtn = document.getElementById('btn-save-categories');
-            if (saveCatBtn) {
-                saveCatBtn.classList.remove('hidden');
-                saveCatBtn.classList.remove('lg:block');
-                addBtn.parentNode.appendChild(saveCatBtn);
-            }
             addBtn.addEventListener('click', function () {
                 var isVirt = confirm('Soll dies eine Virtuelle TTS-Kategorie (ohne Spieler-Zuordnung) werden? OK = Ja, Abbrechen = Nein (Normale Kategorie)');
                 var key = prompt('Eindeutiger Key für neue Kategorie (z.B. "dispel_magic" oder "gesundheitssteine"):');
@@ -3850,6 +4306,7 @@ window.CD_AUTO_PLANNER = (function () {
                         spells: []
                     };
                 }
+                markCategoriesDirty();
                 renderCategoriesAdmin();
             });
         }
@@ -3860,6 +4317,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var cat = e.target.dataset.cat;
                 if (!confirm('Kategorie "' + categories[cat].name + '" wirklich löschen?')) return;
                 delete categories[cat];
+                markCategoriesDirty();
                 renderCategoriesAdmin();
             });
         });
@@ -3868,16 +4326,19 @@ window.CD_AUTO_PLANNER = (function () {
         document.querySelectorAll('.cat-name-input').forEach(function (inp) {
             inp.addEventListener('change', function (e) {
                 categories[e.target.dataset.cat].name = e.target.value;
+                markCategoriesDirty();
             });
         });
         document.querySelectorAll('.cat-short-input').forEach(function (inp) {
             inp.addEventListener('change', function (e) {
                 categories[e.target.dataset.cat].shortName = e.target.value;
+                markCategoriesDirty();
             });
         });
         document.querySelectorAll('.cat-color-input').forEach(function (inp) {
             inp.addEventListener('change', function (e) {
                 categories[e.target.dataset.cat].color = e.target.value;
+                markCategoriesDirty();
             });
         });
 
@@ -3885,6 +4346,7 @@ window.CD_AUTO_PLANNER = (function () {
         document.querySelectorAll('.cat-virtual-input').forEach(function (inp) {
             inp.addEventListener('change', function (e) {
                 categories[e.target.dataset.cat][e.target.dataset.field] = e.target.value;
+                markCategoriesDirty();
             });
         });
 
@@ -3894,6 +4356,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var v = e.target.value;
                 if (v) categories[e.target.dataset.cat].requiredRole = v;
                 else delete categories[e.target.dataset.cat].requiredRole;
+                markCategoriesDirty();
             });
         });
 
@@ -3905,6 +4368,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var v = e.target.value;
                 if (v) categories[cat].spells[idx].requiredRole = v;
                 else delete categories[cat].spells[idx].requiredRole;
+                markCategoriesDirty();
             });
         });
 
@@ -3923,6 +4387,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var cat = e.target.dataset.cat;
                 var idx = parseInt(e.target.dataset.idx);
                 categories[cat].spells.splice(idx, 1);
+                markCategoriesDirty();
                 renderCategoriesAdmin();
             });
         });
@@ -3966,6 +4431,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var arr = categories[fromCat].spells;
                 var item = arr.splice(fromIdx, 1)[0];
                 arr.splice(toIdx, 0, item);
+                markCategoriesDirty();
                 renderCategoriesAdmin();
             });
         });
@@ -4064,6 +4530,7 @@ window.CD_AUTO_PLANNER = (function () {
                 categories[catKey].spells[spellIdx].requiredSpec = selected;
             }
             document.body.removeChild(overlay);
+            markCategoriesDirty();
             renderCategoriesAdmin();
         });
 
@@ -4155,6 +4622,7 @@ window.CD_AUTO_PLANNER = (function () {
                     durationSec: parseInt(cd && cd.durationSec) || 0
                 });
                 document.body.removeChild(overlay);
+                markCategoriesDirty();
                 renderCategoriesAdmin();
             });
         });
@@ -4218,7 +4686,20 @@ window.CD_AUTO_PLANNER = (function () {
             categories[k].spells.forEach(function (s) { total++; if (resolveSpell(s.spellId)) found++; });
         });
 
-        if (window.isManager) {
+        // ══════════════════════════════════════════════════════════
+        // MANAGER-UI — Editoren nur für Gildenräte aufbauen.
+        // Läuft der Login erst NACH dem Init durch, holt der Watcher weiter
+        // unten das nach (früher blieben die Panels dann für immer weg).
+        // ══════════════════════════════════════════════════════════
+        // Alt-Buttons aus dem Boss-HTML sofort wegräumen — auch für Gäste, damit
+        // nirgends ein toter „Kategorien speichern"-Button stehen bleibt.
+        dropLegacySaveCategoriesButtons();
+
+        var _managerUiBuilt = false;
+        function buildManagerUI() {
+            if (_managerUiBuilt || !window.isManager) return;
+            _managerUiBuilt = true;
+
             // Category-Admin automatisch injizieren, falls nicht im Boss-HTML vorhanden
             if (!document.getElementById('cd-categories-admin')) {
                 var plannerContainer = document.getElementById('auto-planner-timeline');
@@ -4249,61 +4730,83 @@ window.CD_AUTO_PLANNER = (function () {
             }
             renderEventManager();
             renderStrategyPanel();
+
+            injectResetEventsButton();
+            injectClearPlannerButton();
+            injectWipeButton();
         }
 
+        buildManagerUI();
+
         // ══════════════════════════════════════════════════════════
-        // MANAGER-SCHUTZ — Nur Manager können Auto-Plan modifizieren
+        // MANAGER-SCHUTZ — Nur Gildenräte können den Auto-Plan ändern.
+        // Gäste sehen den fertigen Plan trotzdem: Tabelle, Ein-/Ausklappen
+        // und Tooltips funktionieren ganz normal, nur Bearbeiten ist gesperrt.
         // ══════════════════════════════════════════════════════════
+        var MANAGER_ONLY_IDS = [
+            'btn-auto-assign', 'btn-export-to-planner', 'btn-save-auto-plan',
+            'btn-clear-auto', 'btn-save-categories', 'btn-clear-planner',
+            'btn-reset-events', 'btn-wipe-db', 'planner-danger-zone',
+            'cd-categories-admin', 'auto-planner-strategy'
+        ];
+
+        function showReadOnlyHint(show) {
+            var timelineEl = document.getElementById('auto-planner-timeline');
+            if (!timelineEl || !timelineEl.parentNode) return;
+            var hint = document.getElementById('auto-planner-readonly-hint');
+            if (!show) { if (hint) hint.style.display = 'none'; return; }
+            if (!hint) {
+                hint = document.createElement('div');
+                hint.id = 'auto-planner-readonly-hint';
+                hint.className = 'text-[11px] text-slate-400 bg-slate-900/40 border border-slate-700/60 rounded px-3 py-2 mb-3';
+                hint.innerHTML = '👁️ <b class="text-slate-300">Nur-Lese-Ansicht.</b> '
+                    + 'Du siehst die gespeicherte Einteilung. Event-Blöcke lassen sich über die Pfeile '
+                    + 'in der Tabelle ein- und ausklappen; zum Bearbeiten als Gildenrat einloggen.';
+                timelineEl.parentNode.insertBefore(hint, timelineEl);
+            }
+            hint.style.display = '';
+        }
+
         function applyManagerProtection() {
             var isManager = !!window.isManager;
             var timelineEl = document.getElementById('auto-planner-timeline');
+            if (!timelineEl) return;
+            var container = timelineEl.parentNode;
 
-            if (timelineEl) {
-                var container = timelineEl.parentNode;
-                var ucBanner = document.getElementById('auto-planner-under-construction');
-
-                if (!isManager) {
-                    if (!ucBanner) {
-                        ucBanner = document.createElement('div');
-                        ucBanner.id = 'auto-planner-under-construction';
-                        ucBanner.className = 'flex flex-col items-center justify-center p-8 my-6 bg-slate-800/60 rounded-xl border-2 border-dashed border-amber-500/50 shadow-lg';
-                        ucBanner.innerHTML =
-                            '<div class="text-6xl mb-4 animate-bounce">🚧</div>' +
-                            '<h3 class="text-2xl font-bold text-amber-400 mb-2 font-mono tracking-wider">UNDER CONSTRUCTION</h3>' +
-                            '<p class="text-slate-300 text-center max-w-md leading-relaxed text-sm">' +
-                            'Der Auto-CD Planer wird überarbeitet! 🛠️<br>' +
-                            '</p>' +
-                            '<div class="mt-6 flex gap-4 text-3xl">' +
-                            '<span class="animate-[spin_3s_linear_infinite]">⚙️</span>' +
-                            '<span class="animate-pulse">🔧</span>' +
-                            '<span class="animate-[pulse_2s_ease-in-out_infinite]">📐</span>' +
-                            '</div>';
-                        container.insertBefore(ucBanner, container.firstChild);
-                    }
-                    ucBanner.style.display = 'flex';
-
-                    Array.from(container.children).forEach(function (child) {
-                        if (child.id !== 'auto-planner-under-construction') {
-                            if (child.dataset.originalDisplay === undefined) {
-                                child.dataset.originalDisplay = child.style.display || '';
-                            }
-                            child.style.display = 'none';
-                        }
-                    });
-                } else {
-                    if (ucBanner) ucBanner.style.display = 'none';
-
-                    Array.from(container.children).forEach(function (child) {
-                        if (child.id !== 'auto-planner-under-construction') {
-                            if (child.dataset.originalDisplay !== undefined) {
-                                child.style.display = child.dataset.originalDisplay;
-                            } else {
-                                child.style.display = '';
-                            }
-                        }
-                    });
+            // Alt-Bestand aufräumen: die frühere „UNDER CONSTRUCTION"-Tafel und das
+            // pauschale Ausblenden aller Geschwister-Elemente gibt es nicht mehr.
+            var ucBanner = document.getElementById('auto-planner-under-construction');
+            if (ucBanner && ucBanner.parentNode) ucBanner.parentNode.removeChild(ucBanner);
+            Array.from(container.children).forEach(function (child) {
+                if (child.dataset.originalDisplay !== undefined) {
+                    child.style.display = child.dataset.originalDisplay;
+                    delete child.dataset.originalDisplay;
                 }
+            });
+
+            MANAGER_ONLY_IDS.forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.style.display = isManager ? '' : 'none';
+            });
+
+            var evtPanel = document.getElementById('auto-planner-events');
+            if (evtPanel) {
+                var evtWrap = evtPanel.closest('details') || evtPanel;
+                evtWrap.style.display = isManager ? '' : 'none';
             }
+
+            // Tabelle nur lesbar schalten: Dropdowns und Delay-Felder sperren,
+            // Inhalt (Spieler + CD) bleibt sichtbar.
+            timelineEl.querySelectorAll('select.auto-plan-select').forEach(function (sel) {
+                sel.disabled = !isManager;
+                sel.style.pointerEvents = isManager ? '' : 'none';
+            });
+            timelineEl.querySelectorAll('input.auto-plan-delay').forEach(function (inp) {
+                inp.disabled = !isManager;
+                inp.style.opacity = isManager ? '' : '0.45';
+            });
+
+            showReadOnlyHint(!isManager);
         }
 
         // Initial anwenden
@@ -4318,6 +4821,9 @@ window.CD_AUTO_PLANNER = (function () {
             var current = !!window.isManager;
             if (current !== lastManagerState) {
                 lastManagerState = current;
+                buildManagerUI();
+                // Neu zeichnen: die Delay-Spalte gibt es nur für Gildenräte.
+                if (assignments && assignments.length) renderTimeline(assignments);
                 applyManagerProtection();
             }
         }, 1500);
@@ -4345,16 +4851,8 @@ window.CD_AUTO_PLANNER = (function () {
             }
             savePlan();
         });
-        var btnSaveCategories = document.getElementById('btn-save-categories');
-        if (btnSaveCategories) {
-            btnSaveCategories.addEventListener('click', function () {
-                if (!window.isManager) {
-                    if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                    return;
-                }
-                saveCategories();
-            });
-        }
+        // „Kategorien speichern" wird vom Kategorie-Editor selbst gerendert und
+        // verdrahtet (siehe renderCategoriesAdmin/attachEditorListeners).
         document.getElementById('btn-clear-auto').addEventListener('click', function () {
             if (!window.isManager) {
                 if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
@@ -4368,21 +4866,20 @@ window.CD_AUTO_PLANNER = (function () {
             } else { if (confirm(msg)) clearPlan(); }
         });
 
-        // ── Events-Reset-Button dynamisch einfügen (nur für Manager) ──
-        injectResetEventsButton();
-
-        // ── Clear-Planner-Button dynamisch einfügen (nur für Manager) ──
-        injectClearPlannerButton();
-
-        // ── DB-Wipe Button dynamisch einfügen (nur für Manager) ──
-        injectWipeButton();
+        // Manager-Buttons (Reset/Clear/Wipe) hängen an buildManagerUI() — sie
+        // werden auch dann noch nachgezogen, wenn der Login später durchläuft.
+        applyManagerProtection();
 
         // Wenn ein gespeicherter Plan existiert, geladene Assignments direkt anzeigen
         if (hasSavedPlan) {
             if (assignments && assignments.length > 0) {
                 renderTimeline(assignments);
             }
-            updateStatus('Gespeicherter Plan geladen. Klicke auf "Auto-Zuweisen", um bei Roster-Änderungen neu zu berechnen.');
+            updateStatus(window.isManager
+                ? 'Gespeicherter Plan geladen. Klicke auf "Auto-Zuweisen", um bei Roster-Änderungen neu zu berechnen.'
+                : 'Gespeicherte CD-Einteilung — Nur-Lese-Ansicht.');
+        } else if (!window.isManager) {
+            updateStatus('Für diesen Boss ist noch keine CD-Einteilung gespeichert.');
         } else {
             updateStatus('Bereit. ' + found + '/' + total + ' Spells in DB. Roster: ' + rosterRef.length + ' Spieler.');
         }
