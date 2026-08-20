@@ -1,5 +1,5 @@
 /**
- * LaneGroups — wiederverwendbare Einteilungs-Blöcke mit Auto-Fill.
+ * LaneGroups - wiederverwendbare Einteilungs-Blöcke mit Auto-Fill.
  */
 
 window.LaneGroups = (function () {
@@ -151,6 +151,10 @@ window.LaneGroups = (function () {
             title: b.title || 'Neuer Block',
             type: type,
             autoFill: b.autoFill !== false,
+            // Schaltet den MRT-Export-Button des Blocks frei (Haken im Layout-
+            // Editor). Der Feldname bleibt "waExport", weil er so in Firestore
+            // bei jedem Boss gespeichert ist - Umbenennen würde die Einstellung
+            // aller bestehenden Blöcke verlieren. Nur das Label heißt MRT.
             waExport: !!b.waExport,
             isolatedBlock: b.isolatedBlock !== false, 
             sharedLanes: b.sharedLanes !== false,
@@ -412,7 +416,7 @@ window.LaneGroups = (function () {
     }
 
     function getPlayerOptionsHtml(inst, selectedName, blockIdx, laneIdx, slotIdx) {
-        let html = '<option value="">—</option>';
+        let html = '<option value="">-</option>';
         const lane = inst.blocks[blockIdx]?.lanes[laneIdx];
         const filterActive = !!(lane && lane.allowedCats !== null && Array.isArray(lane.allowedCats));
         const cc = window.classColors || {};
@@ -467,7 +471,7 @@ window.LaneGroups = (function () {
         });
         html += '</optgroup>';
 
-        // 3) Spec-Slots (über SlotSystem) — nur welche, deren Spieler im aktuellen Roster sind
+        // 3) Spec-Slots (über SlotSystem) - nur welche, deren Spieler im aktuellen Roster sind
         if (ss && typeof ss.getMapping === 'function') {
             const mapping = ss.getMapping();
             const rosterNames = new Set((inst.roster || []).map(p => p.name || p));
@@ -658,7 +662,7 @@ window.LaneGroups = (function () {
             if (display.isBench)   titleParts.push('Bench-Spieler');
             if (display.missing)   titleParts.push('Nicht im Kader');
             if (dups.length > 0)   titleParts.push(`⚠ Auch in ${dups.length} weiteren Feldern`);
-            const titleAttr = titleParts.length > 0 ? ` title="${escapeHtml(titleParts.join(' — '))}"` : '';
+            const titleAttr = titleParts.length > 0 ? ` title="${escapeHtml(titleParts.join(' - '))}"` : '';
 
             html += `<tr>`;
 
@@ -741,7 +745,7 @@ window.LaneGroups = (function () {
             html += `<option value="key-value-list"${block.type === 'key-value-list' ? ' selected' : ''}>Key-Value Liste (Titel + Marker)</option>`;
             html += `</select>`;
             html += `<label class="lg-autofill-toggle" title="Automatisches Füllen erlauben"><input type="checkbox" class="lg-block-autofill" data-block-idx="${blockIdx}"${block.autoFill ? ' checked' : ''}> Auto-Fill</label>`;
-            html += `<label class="lg-autofill-toggle" title="Kopieren-Schaltfläche anzeigen"><input type="checkbox" class="lg-block-waexport" data-block-idx="${blockIdx}"${block.waExport ? ' checked' : ''}> WA Export</label>`;
+            html += `<label class="lg-autofill-toggle" title="MRT-Export-Schaltfläche für diesen Block anzeigen (für alle sichtbar und klickbar)"><input type="checkbox" class="lg-block-waexport" data-block-idx="${blockIdx}"${block.waExport ? ' checked' : ''}> MRT Export</label>`;
             html += `<label class="lg-autofill-toggle" title="Eigenen Pool verwenden"><input type="checkbox" class="lg-block-isolated" data-block-idx="${blockIdx}"${block.isolatedBlock ? ' checked' : ''}> Eigener Pool</label>`;
             html += `<label class="lg-autofill-toggle" title="Nur Klassen/Specs mit Interrupts zulassen"><input type="checkbox" class="lg-block-onlykicks" data-block-idx="${blockIdx}"${block.onlyKicks ? ' checked' : ''}> Nur Kicks</label>`;
             if (block.type === 'multi-lane') {
@@ -756,7 +760,7 @@ window.LaneGroups = (function () {
         } else {
             html += `<h4 class="lg-block-title">${escapeHtml(block.title)}</h4>`;
             if (block.waExport) {
-                html += `<button type="button" class="lg-btn lg-block-export" data-block-idx="${blockIdx}" title="Namen kopieren" style="margin-left: auto;">📋 WA Export</button>`;
+                html += `<button type="button" class="lg-btn lg-block-export" data-block-idx="${blockIdx}" title="Alle Namen dieses Blocks spaltenweise untereinander kopieren (Spalte 1, dann Spalte 2, ...)" style="margin-left: auto;">📋 MRT Export</button>`;
             }
         }
         html += `</div>`;
@@ -906,6 +910,9 @@ window.LaneGroups = (function () {
             if (exportBtn) {
                 const bi = +exportBtn.dataset.blockIdx;
                 const block = inst.blocks[bi];
+                // MRT-Format wie der Kader-Export auf der Comp-Seite: ein Name
+                // pro Zeile, spaltenweise aneinandergereiht (erst alle Slots aus
+                // Spalte 1, dann Spalte 2 usw.). Leere Slots fallen raus.
                 let out = [];
                 block.lanes.forEach(l => {
                     l.slots.forEach(s => {
@@ -1064,7 +1071,7 @@ window.LaneGroups = (function () {
             if (display.isBench)   parts.push('Bench-Spieler');
             if (display.missing)   parts.push('Nicht im Kader');
             if (dups.length > 0)   parts.push('⚠ Auch in ' + dups.length + ' weiteren Feldern');
-            if (parts.length > 0) sel.title = parts.join(' — ');
+            if (parts.length > 0) sel.title = parts.join(' - ');
             else                  sel.removeAttribute('title');
 
             // Dropdown HTML aktualisieren, falls nicht im Fokus
@@ -1360,10 +1367,10 @@ window.LaneGroups = (function () {
         editBox.className = 'lg-modal-edit';
         editBox.innerHTML = `<h4>${isNew ? 'Neue Kategorie' : 'Bearbeiten'}</h4>
             <div class="lg-form-row"><label>Name</label><input id="lg-cat-label" type="text" value="${escapeHtml(cat.label)}"></div>
-            <div class="lg-form-row"><label>Klasse</label><select id="lg-cat-class"><option value="">— alle —</option>${Object.keys(SPEC_DEFINITIONS).map(c => `<option value="${c}"${c === cat.class ? ' selected' : ''}>${CLASS_DISPLAY[c]}</option>`).join('')}</select></div>
-            <div class="lg-form-row"><label>Spec</label><select id="lg-cat-spec"><option value="">— alle —</option></select></div>
-            <div class="lg-form-row"><label>Rolle</label><select id="lg-cat-role"><option value="">— beliebig —</option><option value="tank"${cat.role === 'tank' ? ' selected' : ''}>Tank</option><option value="healer"${cat.role === 'healer' ? ' selected' : ''}>Healer</option><option value="dps"${cat.role === 'dps' ? ' selected' : ''}>DPS</option></select></div>
-            <div class="lg-form-row"><label>Archetyp</label><select id="lg-cat-arch"><option value="">— beliebig —</option><option value="melee"${cat.archetype === 'melee' ? ' selected' : ''}>Melee</option><option value="ranged_physical"${cat.archetype === 'ranged_physical' ? ' selected' : ''}>R-Physical DPS</option><option value="caster"${cat.archetype === 'caster' ? ' selected' : ''}>Caster</option></select></div>
+            <div class="lg-form-row"><label>Klasse</label><select id="lg-cat-class"><option value="">- alle -</option>${Object.keys(SPEC_DEFINITIONS).map(c => `<option value="${c}"${c === cat.class ? ' selected' : ''}>${CLASS_DISPLAY[c]}</option>`).join('')}</select></div>
+            <div class="lg-form-row"><label>Spec</label><select id="lg-cat-spec"><option value="">- alle -</option></select></div>
+            <div class="lg-form-row"><label>Rolle</label><select id="lg-cat-role"><option value="">- beliebig -</option><option value="tank"${cat.role === 'tank' ? ' selected' : ''}>Tank</option><option value="healer"${cat.role === 'healer' ? ' selected' : ''}>Healer</option><option value="dps"${cat.role === 'dps' ? ' selected' : ''}>DPS</option></select></div>
+            <div class="lg-form-row"><label>Archetyp</label><select id="lg-cat-arch"><option value="">- beliebig -</option><option value="melee"${cat.archetype === 'melee' ? ' selected' : ''}>Melee</option><option value="ranged_physical"${cat.archetype === 'ranged_physical' ? ' selected' : ''}>R-Physical DPS</option><option value="caster"${cat.archetype === 'caster' ? ' selected' : ''}>Caster</option></select></div>
             <hr>
             <div class="lg-form-row"><label>Max in ersten N Slots</label><input id="lg-cat-limit-rows" type="number" min="1" value="${cat.limitRows || ''}" style="width:60px"><input id="lg-cat-limit-count" type="number" min="0" value="${cat.limitCount !== undefined ? cat.limitCount : ''}" style="width:80px"></div>
             <div class="lg-form-row"><label>Max gesamt</label><input id="lg-cat-max-total" type="number" min="0" value="${cat.maxTotal !== undefined && cat.maxTotal !== null ? cat.maxTotal : ''}" style="width:100px"></div>
@@ -1373,7 +1380,7 @@ window.LaneGroups = (function () {
         const specSel = editBox.querySelector('#lg-cat-spec');
         function refreshSpecOptions() {
             const cls = editBox.querySelector('#lg-cat-class').value;
-            specSel.innerHTML = '<option value="">— alle —</option>';
+            specSel.innerHTML = '<option value="">- alle -</option>';
             if (cls && SPEC_DEFINITIONS[cls]) SPEC_DEFINITIONS[cls].forEach(s => { specSel.innerHTML += `<option value="${s.value}"${s.value === cat.spec ? ' selected' : ''}>${s.label}</option>`; });
         }
         refreshSpecOptions();
@@ -1420,7 +1427,7 @@ window.LaneGroups = (function () {
                    - min 140px pro Spalte für lesbare Spielernamen */
                 grid-template-columns: repeat(var(--lg-max-cols, 3), minmax(140px, 1fr));
             }
-            /* Mittlere Screens (≤1100px Viewport): max 2 Spalten — Lanes umbrechen */
+            /* Mittlere Screens (≤1100px Viewport): max 2 Spalten - Lanes umbrechen */
             @media (max-width: 1100px) {
                 .lg-lanes-grid { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
             }
@@ -1534,7 +1541,7 @@ window.LaneGroups = (function () {
     // PUBLIC HELPERS für Integrationen (Master-View, WeakAura-Export)
     // ════════════════════════════════════════════════════════════
 
-    // Liefert die Instanz für einen Container — wer das Modul von außen
+    // Liefert die Instanz für einen Container - wer das Modul von außen
     // ansteuern will, bekommt damit Zugriff auf den State.
     function getInstance(containerId) {
         return _instances.get(containerId) || null;
@@ -1550,7 +1557,7 @@ window.LaneGroups = (function () {
         return true;
     }
 
-    // Stabile Signatur der Blöcke OHNE volatile IDs — für Änderungs-Erkennung,
+    // Stabile Signatur der Blöcke OHNE volatile IDs - für Änderungs-Erkennung,
     // damit wir nur dann neu rendern, wenn sich inhaltlich etwas geändert hat.
     function blocksSignature(blocks) {
         return JSON.stringify((blocks || []).map(b => ({
@@ -1566,7 +1573,7 @@ window.LaneGroups = (function () {
 
     // Live-Sync: Wird vom globalen Boss-Listener bei JEDER Firestore-Änderung
     // aufgerufen (nicht nur beim ersten Laden), damit alle Betrachter die
-    // Lane-Einteilungen sofort sehen — ohne die Seite neu zu laden.
+    // Lane-Einteilungen sofort sehen - ohne die Seite neu zu laden.
     // Aktualisiert alle Instanzen, deren Daten sich geändert haben.
     function syncAssignments(assignments) {
         if (!assignments) return;
@@ -1661,7 +1668,7 @@ window.LaneGroups = (function () {
     }
 
     // Liefert eine lesbare Text-Summary einer Instanz (für WeakAura-Export):
-    //   Boss Name — Block-Title
+    //   Boss Name - Block-Title
     //     ⭐ Star: Marcel, Sarah
     //     🟠 Circle: ...
     // - Spec-Slots werden zu echten Spielernamen aufgelöst
@@ -1699,7 +1706,7 @@ window.LaneGroups = (function () {
                 blockLines.push(`  ${label}: ${players.join(', ')}`);
             });
             if (blockLines.length === 0) return;
-            lines.push(`${heading ? heading + ' — ' : ''}${block.title}`);
+            lines.push(`${heading ? heading + ' - ' : ''}${block.title}`);
             blockLines.forEach(l => lines.push(l));
         });
         return lines.join('\n');

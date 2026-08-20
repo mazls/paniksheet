@@ -2,21 +2,21 @@
 // SLOT-SYSTEM (Standalone für PÄNIK-Raid-Tool / index.html-Variante)
 // ──────────────────────────────────────────────────────────────────────────
 // Bietet:
-//   • SPEC_DEFINITIONS — feste Slot-Liste (PROTPALA1, BLOODDK1, ...)
-//   • GROUP_KEYS — ALL, Klassen-Namen, MELEEDPS/RANGEDDPS/TANKS/HEALERS
+//   • SPEC_DEFINITIONS - feste Slot-Liste (PROTPALA1, BLOODDK1, ...)
+//   • GROUP_KEYS - ALL, Klassen-Namen, MELEEDPS/RANGEDDPS/TANKS/HEALERS
 //   • Helper-Funktionen für Dropdown-Augmentation und Resolution
 //
 // Speicher-Pfad in Firestore: raid-tool-data/slotMapping
 //   { mapping: { HPALA1: 'Fojjiuwu', BLOODDK1: 'Nerfmy', ... } }
 //
 // Nutzung im alten Tool:
-//   window.SlotSystem.init()                 — beim Page-Load (lädt Mapping)
-//   window.SlotSystem.augmentPlayerOptions() — kompletten Options-HTML mit
+//   window.SlotSystem.init()                 - beim Page-Load (lädt Mapping)
+//   window.SlotSystem.augmentPlayerOptions() - kompletten Options-HTML mit
 //                                               Roster + Slots + Groups
-//   window.SlotSystem.resolvePlayerName(v)   — Slot zu Spielername auflösen
-//   window.SlotSystem.renderMappingUI(el)    — Mapping-Sektion in Container
-//   window.SlotSystem.isSlotKey(v)           — Prüft ob Wert ein Slot-Key ist
-//   window.SlotSystem.isGroupKey(v)          — Prüft ob Wert ein Group-Key ist
+//   window.SlotSystem.resolvePlayerName(v)   - Slot zu Spielername auflösen
+//   window.SlotSystem.renderMappingUI(el)    - Mapping-Sektion in Container
+//   window.SlotSystem.isSlotKey(v)           - Prüft ob Wert ein Slot-Key ist
+//   window.SlotSystem.isGroupKey(v)          - Prüft ob Wert ein Group-Key ist
 // ══════════════════════════════════════════════════════════════════════════
 
 (function () {
@@ -200,7 +200,7 @@
         try {
             const tools = window.firebaseTools;
             if (!tools || !tools.db || !tools.doc || !tools.getDoc) {
-                console.warn('[SlotSystem] firebaseTools nicht verfügbar — Mapping bleibt leer.');
+                console.warn('[SlotSystem] firebaseTools nicht verfügbar - Mapping bleibt leer.');
                 return;
             }
             const ref = tools.doc(tools.db, DATA_COLLECTION, SLOT_DOC_ID);
@@ -303,7 +303,7 @@
             ${activeSlots.map(slotKey => {
                 const color = slotColor(slotKey);
                 const mappedName = _slotMapping[slotKey];
-                const label = mappedName ? `${slotKey} (${mappedName})` : `${slotKey} (—)`;
+                const label = mappedName ? `${slotKey} (${mappedName})` : `${slotKey} (-)`;
                 const selected = currentValue === slotKey ? 'selected' : '';
                 return `<option value="${escapeHtml(slotKey)}" style="color:${color}; background-color:#192a23;" ${selected}>${escapeHtml(label)}</option>`;
             }).join('')}
@@ -430,7 +430,7 @@
                 <code class="bg-yellow-900/30 text-yellow-200 text-xs px-2 py-0.5 rounded" style="min-width:90px;">${escapeHtml(key)}</code>
                 <span class="text-xs text-gray-400" style="min-width:90px;">${escapeHtml(spec)}</span>
                 <select data-slot-select="${escapeHtml(key)}" class="flex-1 max-w-xs bg-slate-900 border border-slate-600 text-gray-200 text-sm rounded px-2 py-1" ${ro}>
-                    <option value="">— kein Spieler —</option>
+                    <option value="">- kein Spieler -</option>
                     ${playerOptions}
                 </select>
                 ${isManager ? `<button class="text-red-400 hover:text-red-300 text-sm px-2" data-remove-slot="${escapeHtml(key)}" title="Slot entfernen">×</button>` : ''}

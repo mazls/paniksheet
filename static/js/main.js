@@ -1,5 +1,5 @@
 /* =========================================================================
-   main.js — Application Entry-Point
+   main.js - Application Entry-Point
    =========================================================================
    - Importiert alle Module (firebase-init lädt zuerst, dann state, dann der Rest)
    - Theme-Application aus URL/Hash (RAID_THEME_CONFIG)
@@ -7,7 +7,7 @@
    - DOMContentLoaded-Hook: lädt Cooldowns + Roster, setzt Auth auf,
      verdrahtet Video- und Feet-Toggle, registriert hashchange-Listener
    - Lightbox-Logik
-   - logHistory (window.logHistory) — wird von vielen Stellen genutzt
+   - logHistory (window.logHistory) - wird von vielen Stellen genutzt
    - Seiten-Initialisierung (initializePage, initCompPage)
    ========================================================================= */
 
@@ -30,7 +30,7 @@ import {
 import { state, getCurrentRaidId, debounce } from './state.js';
 
 // Diese Module registrieren ihre Funktionen auf window.*.
-// Wir importieren sie ohne explizit etwas zu benutzen — die Imports allein triggern
+// Wir importieren sie ohne explizit etwas zu benutzen - die Imports allein triggern
 // die Side-Effects (Funktionen werden auf window gelegt).
 import './auth-presence.js';
 import './roster-comp.js';
@@ -50,7 +50,7 @@ function applyThemeFromContext() {
 }
  
 // ── Initial beim Page-Load (möglichst früh) ──
-// Kein Warten auf DOMContentLoaded hier — wir setzen das Attribute
+// Kein Warten auf DOMContentLoaded hier - wir setzen das Attribute
 // direkt auf <html>, das funktioniert auch ohne body.
 (function immediateThemeInit() {
     try {
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // =============================================================================
 // NAVIGATION & CONTENT-LOADING
-// (vorher: viel direkt im DOMContentLoaded — jetzt als Top-Level-Funktionen,
+// (vorher: viel direkt im DOMContentLoaded - jetzt als Top-Level-Funktionen,
 //  damit andere Module sie ggf. benutzen können)
 // =============================================================================
 
@@ -194,7 +194,7 @@ mainNav.innerHTML = mainNavHTML;
 		
 			} catch (error) {
 				console.error("Fehler beim Laden des Inhalts:", error);
-				contentContainer.innerHTML = `<div class="text-center p-8 bg-slate-850 rounded-lg"><h2 class="text-2xl font-semibold text-yellow-400">Fehler beim Laden</h2><p class="mt-2 text-gray-400">${error.message}</p><p class="mt-1 text-xs text-gray-500">Datei: <code>${filePath}</code> — siehe Konsole für Details.</p></div>`;
+				contentContainer.innerHTML = `<div class="text-center p-8 bg-slate-850 rounded-lg"><h2 class="text-2xl font-semibold text-yellow-400">Fehler beim Laden</h2><p class="mt-2 text-gray-400">${error.message}</p><p class="mt-1 text-xs text-gray-500">Datei: <code>${filePath}</code> - siehe Konsole für Details.</p></div>`;
 			}
             if (pageId && pageId.includes('/')) {
                 const parts = pageId.split('/');
@@ -251,11 +251,11 @@ mainNav.innerHTML = mainNavHTML;
 
 
 // =============================================================================
-// DOMContentLoaded — Haupt-Init-Sequenz
+// DOMContentLoaded - Haupt-Init-Sequenz
 // =============================================================================
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Dropdown aus sessionStorage syncen — sonst zeigt der Dropdown den HTML-Default
+            // Dropdown aus sessionStorage syncen - sonst zeigt der Dropdown den HTML-Default
             // (z.B. "throneofthunder") an, während getCurrentRaidId() den gespeicherten Wert
             // (z.B. "siegeoforgrimmar") liefert → Theme passt nicht zur visuellen Auswahl.
             const initialRaidSelector = document.getElementById('raid-selector');
@@ -280,7 +280,7 @@ mainNav.innerHTML = mainNavHTML;
             //
             // Wird einmal im DOMContentLoaded registriert und NIE gecancelt.
             // Sorgt dafür, dass Roster-Änderungen (Spieler hinzufügen/entfernen,
-            // Klasse/Spec/Rolle ändern) auf JEDER Seite ankommen — nicht nur
+            // Klasse/Spec/Rolle ändern) auf JEDER Seite ankommen - nicht nur
             // wenn der User gerade auf der Comp-Seite ist.
             //
             // Auf der Comp-Seite: lokale UI (displayRoster, Buffs, Soulstones).
@@ -334,7 +334,7 @@ mainNav.innerHTML = mainNavHTML;
                         }
 
                         window.populateDropdownOptions(select, playersForDropdown, bossId);
-                        // Auswahl wiederherstellen — falls Spieler noch im Roster
+                        // Auswahl wiederherstellen - falls Spieler noch im Roster
                         const stillExists = Array.from(select.options).some(o => o.value === previousValue);
                         if (stillExists) {
                             select.value = previousValue;
@@ -429,7 +429,7 @@ window.RAID_THEME_CONFIG = {
         theme: "soo",   // Blut/Bronze
         banner: "static/banner-soo.jpg"
     }
-    // Weitere Raids hier ergänzen — die behalten das Standard-Theme
+    // Weitere Raids hier ergänzen - die behalten das Standard-Theme
 };
  
 // Default-Banner für alle Raids ohne eigene Config
@@ -502,7 +502,7 @@ window.applyThemeForRaid = function(raidId) {
         });
 
 // =============================================================================
-// LIGHTBOX (außerhalb DOMContentLoaded — globale Refs)
+// LIGHTBOX (außerhalb DOMContentLoaded - globale Refs)
 // =============================================================================
 
 		const lightbox = document.getElementById('image-lightbox');
@@ -638,7 +638,7 @@ window.applyThemeForRaid = function(raidId) {
     }
 
     // 🎯 Spec-Slots: Toggle-Button + initiales Render
-    // (Im Original waren button und container im HTML angelegt, aber nie verdrahtet — das holen wir hier nach.)
+    // (Im Original waren button und container im HTML angelegt, aber nie verdrahtet - das holen wir hier nach.)
     const slotToggleBtn = document.getElementById('btn-slot-toggle');
     const slotContainer = document.getElementById('slot-mapping-container');
     if (slotToggleBtn && slotContainer && window.SlotSystem) {
@@ -675,6 +675,10 @@ window.applyThemeForRaid = function(raidId) {
         if (window.isManager) {
             window.initMasterView();
         }
+
+    // Einklappbare Sektionen auf der Comp-Seite verdrahten (z.B. "Buff & Utility
+    // Einteilung"). Sektionen mit der Klasse "start-collapsed" starten zu.
+    if (window.initCollapsibleSections) window.initCollapsibleSections();
         }
 
 // Für andere Module verfügbar machen

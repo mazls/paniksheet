@@ -267,9 +267,23 @@
     </div>
 </section>
 
+<!-- CD-EINTEILUNG ÜBERSICHT (Ablauf aus dem Matrix Planer) -->
+<section id="cd-summary" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+        📜 CD-Einteilung Übersicht
+        <span class="toggle-icon">▼</span>
+    </h2>
+    <div class="collapsible-content">
+        <div id="dark-animus-planner-summary"
+            class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+            <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">Warte auf Eingaben...</p>
+        </div>
+    </div>
+</section>
+
 <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-        🤖 Auto-CD-Planer
+        🧮 Matrix Planer
         <span class="toggle-icon">▼</span>
     </h2>
     <div class="collapsible-content">
@@ -316,18 +330,7 @@
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
-<div class="mb-6">
-    <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-        <span class="text-xl">📜</span> CD-Einteilung Übersicht
-    </h3>
-    
-    <div id="dark-animus-planner-summary" class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-        <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-            Warte auf Eingabe... <br>
-            <span class="opacity-50">(Ändere etwas im Planer, um die Vorschau zu laden)</span>
-        </p>
-    </div>
-</div>
+
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                                                 <div class="mt-4 text-xs text-gray-500 italic">
@@ -713,7 +716,7 @@ CD_AUTO_PLANNER.init({
 
         // ──────────────────────────────────────────────
         // ANIMA RING (25 Power)
-        // BigWigs: Bar(args.spellId, 22) — alle ~22s
+        // BigWigs: Bar(args.spellId, 22) - alle ~22s
         // ──────────────────────────────────────────────
         {
             name: 'Anima Ring',
@@ -728,7 +731,7 @@ CD_AUTO_PLANNER.init({
 
         // ──────────────────────────────────────────────
         // ANIMA FONT (50 Power)
-        // BigWigs: TargetBar(args.spellId, 30) — Spieler-Debuff
+        // BigWigs: TargetBar(args.spellId, 30) - Spieler-Debuff
         // ──────────────────────────────────────────────
         {
             name: 'Anima Font',
@@ -743,7 +746,7 @@ CD_AUTO_PLANNER.init({
 
         // ──────────────────────────────────────────────
         // INTERRUPTING JOLT (75 Power)
-        // BigWigs: Bar(138763, 22) — alle ~22s
+        // BigWigs: Bar(138763, 22) - alle ~22s
         // 5s pre-warn → delay -5
         // ──────────────────────────────────────────────
         {

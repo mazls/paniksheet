@@ -53,7 +53,7 @@
             class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section start-collapsed">
         <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
             Kampfübersicht & Kernmechaniken
             <span class="toggle-icon">▼</span>
@@ -236,7 +236,7 @@
                                         <label class="block text-xs text-gray-400 mb-1">Klasse</label>
                                         <select id="norushen-orb-prio-modal-class"
                                             class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                            <option value="">— alle Klassen —</option>
+                                            <option value="">- alle Klassen -</option>
                                             <!-- wird von JS gefüllt -->
                                         </select>
                                     </div>
@@ -244,7 +244,7 @@
                                         <label class="block text-xs text-gray-400 mb-1">Spec</label>
                                         <select id="norushen-orb-prio-modal-spec"
                                             class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                            <option value="">— alle Specs —</option>
+                                            <option value="">- alle Specs -</option>
                                             <!-- wird von JS gefüllt, abhängig von Klasse -->
                                         </select>
                                     </div>
@@ -252,7 +252,7 @@
                                         <label class="block text-xs text-gray-400 mb-1">Rolle</label>
                                         <select id="norushen-orb-prio-modal-role"
                                             class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                            <option value="">— beliebig —</option>
+                                            <option value="">- beliebig -</option>
                                             <option value="tank">Tank</option>
                                             <option value="healer">Healer</option>
                                             <option value="dps">Alle DPS</option>
@@ -331,7 +331,7 @@
                         <div class="bg-slate-900 border border-slate-700 rounded p-2">
                             <div class="text-[10px] text-gray-500 uppercase mb-1 tracking-wide">WeakAura Export:</div>
                             <code id="norushen-orb-wa-output"
-                                class="text-xs text-purple-300 font-mono break-all select-all block">—</code>
+                                class="text-xs text-purple-300 font-mono break-all select-all block">-</code>
                         </div>
                     </div>
                 </div>
@@ -367,10 +367,24 @@
         </div>
     </section>
 
+    <!-- CD-EINTEILUNG ÜBERSICHT (Ablauf aus dem Matrix Planer) -->
+    <section id="cd-summary" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            📜 CD-Einteilung Übersicht
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div id="norushen-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">Warte auf Eingaben...</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Auto-Planner Block -->
     <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-            🤖 Auto-CD-Planer
+            🧮 Matrix Planer
             <span class="toggle-icon">▼</span>
         </h2>
         <div class="collapsible-content">
@@ -425,7 +439,7 @@
             prefix: 'norushen',  // Container-Prefix in der Boss-HTML (norushen-planner-container)
 
             events: [
-                // ── KEY-FÄHIGKEIT: Blinder Hass — 2× DR + 1× Heal GLEICHZEITIG
+                // ── KEY-FÄHIGKEIT: Blinder Hass - 2× DR + 1× Heal GLEICHZEITIG
                 // pro Cast. Früh benutzte CDs rotieren automatisch wieder rein,
                 // sobald sie bereit sind. ──
                 {
@@ -556,19 +570,6 @@
             Advanced CD Planner (WA)
             <span class="toggle-icon">▼</span>
         </h2>
-        <div class="mb-6">
-            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-                <span class="text-xl">📜</span> CD-Einteilung Übersicht
-            </h3>
-
-            <div id="norushen-planner-summary"
-                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-                    Wartet auf Eingaben... <br>
-                    <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-                </p>
-            </div>
-        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
@@ -789,7 +790,7 @@
             }
 
             // ══════════════════════════════════════════════════════════
-            // REIHENFOLGE LICHTKUGELN — Tabelle + WeakAura Export
+            // REIHENFOLGE LICHTKUGELN - Tabelle + WeakAura Export
             // ══════════════════════════════════════════════════════════
             (function initOrbOrder() {
                 const tbody = document.getElementById('norushen-orb-order-body');
@@ -886,7 +887,7 @@
                     const entries = orderData
                         .filter(r => r.player && (r.delay !== '' && r.delay !== null && r.delay !== undefined))
                         .map(r => `${r.player}-${r.delay}`);
-                    waOutput.textContent = entries.length > 0 ? entries.join(',') : '—';
+                    waOutput.textContent = entries.length > 0 ? entries.join(',') : '-';
                 }
 
                 function normalizeData() {
@@ -1000,7 +1001,7 @@
 
                 copyBtn.addEventListener('click', () => {
                     const text = waOutput.textContent;
-                    if (!text || text === '—') {
+                    if (!text || text === '-') {
                         if (window.showModal) window.showModal('Keine Einträge zum Kopieren.');
                         return;
                     }
@@ -1161,7 +1162,7 @@
 
                 function updateSpecDropdown(selectedClass, selectedSpec) {
                     if (!modalSpec) return;
-                    modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
+                    modalSpec.innerHTML = '<option value="">- alle Specs -</option>';
                     if (selectedClass && SPEC_DEFINITIONS[selectedClass]) {
                         SPEC_DEFINITIONS[selectedClass].forEach(s => {
                             const opt = new Option(s.label, s.value);
@@ -1311,7 +1312,7 @@
                     if (!prioListEl) return;
                     prioListEl.innerHTML = '';
                     if (prioCategories.length === 0) {
-                        prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien — auf "+" klicken oder "Aus Kader ableiten".</li>';
+                        prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien - auf "+" klicken oder "Aus Kader ableiten".</li>';
                         return;
                     }
                     prioCategories.forEach((cat, idx) => {
@@ -1607,8 +1608,8 @@
                                 html += `<div class="mb-2"><div class="font-bold text-yellow-400">${grp} (${byGroup[grp].length})</div><div class="ml-2">`;
                                 byGroup[grp].forEach(s => {
                                     const cls = getPlayerClass(s.player) || '?';
-                                    const spec = getPlayerSpec(s.player) || '—';
-                                    const role = getPlayerRoleNormalized(s.player) || '—';
+                                    const spec = getPlayerSpec(s.player) || '-';
+                                    const role = getPlayerRoleNormalized(s.player) || '-';
                                     html += `<div class="text-gray-400">• <span class="text-white">${s.name}</span> <span class="text-gray-500">[${cls}/${spec}/${role}]</span></div>`;
                                 });
                                 html += '</div></div>';
@@ -1626,7 +1627,7 @@
                             return;
                         }
                         if (!Array.isArray(roster) || roster.length === 0) {
-                            if (window.showModal) window.showModal('Kader leer — keine Spieler zum Eintragen.');
+                            if (window.showModal) window.showModal('Kader leer - keine Spieler zum Eintragen.');
                             return;
                         }
 

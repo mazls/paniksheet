@@ -1,5 +1,5 @@
 /* =========================================================================
-   ping-system.js — Live Ping / Laserpointer System via RTDB
+   ping-system.js - Live Ping / Laserpointer System via RTDB
    =========================================================================
    Ermöglicht Managern, mit Shift+Linksklick einen visuellen "Ping" auf dem
    Bildschirm zu erzeugen, den alle gerade eingeloggten Nutzer sehen.

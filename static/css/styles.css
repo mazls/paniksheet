@@ -1,5 +1,5 @@
 /* =========================================================================
-   PÄNIK Raidsheet — Stylesheet
+   PÄNIK Raidsheet - Stylesheet
    =========================================================================
    Alle Styles für das Tool. CSS-Variablen ganz oben (Theme), dann
    nach Sektion organisiert.
@@ -302,8 +302,8 @@
 .collapsible-content.collapsed {
     max-height: 0;
 }
-/* Der Auto-CD-Planer wird bei Bossen mit vielen Casts (Thok: 28x Kreischen)
-   deutlich höher als 5000px — overflow:hidden würde die Tabelle sonst
+/* Der Matrix Planer wird bei Bossen mit vielen Casts (Thok: 28x Kreischen)
+   deutlich höher als 5000px - overflow:hidden würde die Tabelle sonst
    unten abschneiden. Dafür klappt diese eine Sektion ohne Animation auf. */
 #auto-planner > .collapsible-content:not(.collapsed) {
     max-height: none;

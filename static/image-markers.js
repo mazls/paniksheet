@@ -1,10 +1,10 @@
 /* =========================================================================
-   image-markers.js — Einteilungs-Marker auf Taktik-Bildern
+   image-markers.js - Einteilungs-Marker auf Taktik-Bildern
    =========================================================================
    Manager klicken einen Raid-Marker im Einteilungsblock (LaneGroups) an und
    danach auf eine Stelle im Taktik-Bild. Dort erscheint für ALLE Nutzer ein
    farbiger Marker-Punkt. Beim Hovern zeigt ein Tooltip die eingeteilten
-   Spieler der Gruppe — live aus dem Einteilungsblock aufgelöst (Spec-Slots,
+   Spieler der Gruppe - live aus dem Einteilungsblock aufgelöst (Spec-Slots,
    Klassenfarben, Bench-Status inklusive).
 
    - Positionen werden als Prozent-Koordinaten (0..1 relativ zum Bild)
@@ -44,7 +44,7 @@ window.ImageMarkers = (function () {
     }
     function clamp01(v) { return Math.min(1, Math.max(0, v)); }
 
-    // Bild-Schlüssel: Dateiname (klein), unabhängig von Host/Pfad-Präfix —
+    // Bild-Schlüssel: Dateiname (klein), unabhängig von Host/Pfad-Präfix -
     // so matchen kleines Bild und Lightbox (voll aufgelöste URL) denselben Key.
     function imageKeyFromSrc(src) {
         if (!src) return '';
@@ -140,7 +140,7 @@ window.ImageMarkers = (function () {
     // ── Overlays über den Bildern ────────────────────────────────────────
 
     // Jedes Taktik-Bild bekommt einen positionierten Wrapper + Overlay-Ebene.
-    // Wrapper ist display:block, die Bilder sind alle w-full h-auto — dadurch
+    // Wrapper ist display:block, die Bilder sind alle w-full h-auto - dadurch
     // ist die Wrapper-Box exakt die Bild-Box und Prozent-Punkte sitzen überall
     // an derselben Bildstelle.
     function wrapContentImages() {
@@ -199,7 +199,7 @@ window.ImageMarkers = (function () {
     // ── Tooltip ──────────────────────────────────────────────────────────
     // Eigenes Element mit reinen Inline-Styles: #global-custom-tooltip wird
     // durch .buff-tooltip (styles.css) auf position:absolute + z-index:100
-    // gezwungen — bei gescrollter Seite landet es außerhalb des Viewports
+    // gezwungen - bei gescrollter Seite landet es außerhalb des Viewports
     // und unter der Lightbox. Deshalb hier bewusst unabhängig davon.
 
     let tipEl = null;
@@ -375,7 +375,7 @@ window.ImageMarkers = (function () {
     }
 
     // "Text-Marker"-Button in einen Bild-Wrapper einhängen (per Hover sichtbar,
-    // nur für Manager — siehe mouseover-Delegation unten).
+    // nur für Manager - siehe mouseover-Delegation unten).
     function addFreeMarkerButton(wrap) {
         if (!wrap || wrap.querySelector('.im-add-btn')) return;
         const btn = document.createElement('button');
@@ -422,7 +422,7 @@ window.ImageMarkers = (function () {
     }
 
     // Identität eines Markers für den Upsert: pro Gruppe/Zeile/Quelle und Bild
-    // existiert genau ein Marker — erneutes Platzieren verschiebt ihn.
+    // existiert genau ein Marker - erneutes Platzieren verschiebt ihn.
     // Freie Text-Marker haben keine Gruppen-Identität (jede Platzierung = neu).
     function markerIdentity(m) {
         if (m.free) return 'free:' + (m.id || '');
@@ -515,7 +515,7 @@ window.ImageMarkers = (function () {
             const slotMarker = (lane.slotMarkers && lane.slotMarkers[si]) || '';
             if (!slotMarker) {
                 if (typeof window.showModal === 'function') {
-                    window.showModal('Diese Zeile hat keinen Marker — bitte zuerst im Layout einen Marker wählen.');
+                    window.showModal('Diese Zeile hat keinen Marker - bitte zuerst im Layout einen Marker wählen.');
                 }
                 return;
             }
@@ -532,7 +532,7 @@ window.ImageMarkers = (function () {
 
         if (!lane.marker) {
             if (typeof window.showModal === 'function') {
-                window.showModal('Diese Spalte hat keinen Marker — bitte zuerst im Layout einen Marker wählen.');
+                window.showModal('Diese Spalte hat keinen Marker - bitte zuerst im Layout einen Marker wählen.');
             }
             return;
         }
@@ -672,7 +672,7 @@ window.ImageMarkers = (function () {
         }
         if (!armInfo.marker) {
             if (typeof window.showModal === 'function') {
-                window.showModal('Kein Marker gewählt — bitte zuerst einen Marker zuweisen.');
+                window.showModal('Kein Marker gewählt - bitte zuerst einen Marker zuweisen.');
             }
             return false;
         }
@@ -698,7 +698,7 @@ window.ImageMarkers = (function () {
 
         const fb = window.firebaseTools;
         if (!fb || !fb.db || !fb.doc) {
-            console.error('[ImageMarkers] window.firebaseTools unvollständig — Marker können nicht geladen werden.');
+            console.error('[ImageMarkers] window.firebaseTools unvollständig - Marker können nicht geladen werden.');
             return;
         }
         const docRef = fb.doc(fb.db, 'raid-tool-data', 'boss-' + slug);
@@ -718,7 +718,7 @@ window.ImageMarkers = (function () {
             }, (err) => console.error('[ImageMarkers] Snapshot-Fehler:', err));
         } else if (typeof fb.getDoc === 'function') {
             // Fallback ohne Live-Sync: Marker wenigstens einmalig laden.
-            console.error('[ImageMarkers] onSnapshot fehlt in window.firebaseTools — Fallback auf einmaliges Laden (kein Live-Sync).');
+            console.error('[ImageMarkers] onSnapshot fehlt in window.firebaseTools - Fallback auf einmaliges Laden (kein Live-Sync).');
             fb.getDoc(docRef)
                 .then(snap => applySnapshot(snap.exists() ? snap.data() : {}))
                 .catch(err => console.error('[ImageMarkers] Laden fehlgeschlagen:', err));

@@ -138,7 +138,7 @@
             class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section start-collapsed">
         <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
             Kampfübersicht & Kernmechaniken
             <span class="toggle-icon">▼</span>
@@ -300,7 +300,7 @@
                                 Exportieren</button>
                         </div>
                         <code id="blackfuse-lines-wa"
-                            class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">—</code>
+                            class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">-</code>
 
                         <!-- Verstecktes Fenster für die Einstellungen -->
                         <div id="blackfuse-lines-prio-modal"
@@ -416,7 +416,7 @@
                                 WA Export</button>
                         </div>
                         <code id="blackfuse-killorder-wa"
-                            class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">—</code>
+                            class="block mt-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-purple-300 font-mono break-all">-</code>
                     </div>
 
                 </div>
@@ -428,9 +428,24 @@
      SIEGECRAFTER BLACKFUSE AUTO-PLANNER
      ════════════════════════════════════════════════════════════════════
 -->
+
+    <!-- CD-EINTEILUNG ÜBERSICHT (Ablauf aus dem Matrix Planer) -->
+    <section id="cd-summary" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            📜 CD-Einteilung Übersicht
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div id="blackfuse-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">Warte auf Eingaben...</p>
+            </div>
+        </div>
+    </section>
+
     <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-            🤖 Auto-CD-Planer
+            🧮 Matrix Planer
             <span class="toggle-icon">▼</span>
         </h2>
         <div class="collapsible-content">
@@ -662,20 +677,6 @@
             CD Planer
             <span class="toggle-icon">▼</span>
         </h2>
-        <div class="mb-6">
-            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-                <span class="text-xl">📜</span> Planungsübersicht
-            </h3>
-
-            <div id="blackfuse-planner-summary"
-                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-                    Warte auf Eingaben... <br>
-                    <span class="opacity-50">(Nehmen Sie Änderungen im Planer vor, um diese Ansicht zu
-                        aktualisieren)</span>
-                </p>
-            </div>
-        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
@@ -1184,7 +1185,7 @@
                 }
 
                 function getPlayerOptions(selectedName) {
-                    let html = '<option value="">—</option>';
+                    let html = '<option value="">-</option>';
                     if (Array.isArray(roster)) {
                         roster.forEach(p => {
                             const name = p.name || p;
@@ -1251,7 +1252,7 @@
                             card.innerHTML = `
                             <span class="text-[11px] font-bold text-gray-300 w-10 text-center">L${l + 1}</span>
                             <select class="blackfuse-belt-select w-full bg-slate-800 border-slate-600 text-[11px] text-white rounded px-1 py-0.5" data-line="${l}">
-                                <option value="">—</option>
+                                <option value="">-</option>
                                 <option value="0" ${val === '0' ? 'selected' : ''}>Team 1</option>
                                 <option value="1" ${val === '1' ? 'selected' : ''}>Team 2</option>
                             </select>
@@ -1277,7 +1278,7 @@
                 }
                 const waOut = document.getElementById('blackfuse-lines-wa');
                 function updateWaDisplay() {
-                    if (waOut) waOut.textContent = buildWa() || '—';
+                    if (waOut) waOut.textContent = buildWa() || '-';
                 }
 
                 teamsGrid.addEventListener('change', (e) => {
@@ -1494,7 +1495,7 @@
                 }
                 function updateSpecDropdown(selCls, selSpec) {
                     if (!modalSpec) return;
-                    modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
+                    modalSpec.innerHTML = '<option value="">- alle Specs -</option>';
                     if (selCls && SPEC_DEFINITIONS[selCls]) {
                         SPEC_DEFINITIONS[selCls].forEach(s => {
                             const opt = new Option(s.label, s.value);

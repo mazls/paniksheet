@@ -221,7 +221,7 @@
             class="size-toggle-btn text-gray-400 py-2 px-6 rounded-md active-size-btn">25-Spieler</button>
     </div>
 
-    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+    <section id="overview" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section start-collapsed">
     <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
         Kampfübersicht & Kernmechaniken
         <span class="toggle-icon">▼</span>
@@ -289,7 +289,7 @@
                     </div>
 
                     <div class="assignment-block">
-                        <h4 class="text-lg font-bold text-cyan-400">✨ Gefängnis-Öffner — 4 Platten</h4>
+                        <h4 class="text-lg font-bold text-cyan-400">✨ Gefängnis-Öffner - 4 Platten</h4>
                         <p class="text-sm text-gray-400 mb-3 px-3">Pro Platte ein RT-Marker und 10 Spieler-Slots.
                             Auto-Füllen funktioniert wie bei Norushen, separater WeakAura-String pro Platte.</p>
 
@@ -381,21 +381,21 @@
                                         <label class="block text-xs text-gray-400 mb-1">Klasse</label>
                                         <select id="sha-plates-prio-modal-class"
                                             class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                            <option value="">— alle Klassen —</option>
+                                            <option value="">- alle Klassen -</option>
                                         </select>
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-400 mb-1">Spec</label>
                                         <select id="sha-plates-prio-modal-spec"
                                             class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                            <option value="">— alle Specs —</option>
+                                            <option value="">- alle Specs -</option>
                                         </select>
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-400 mb-1">Rolle</label>
                                         <select id="sha-plates-prio-modal-role-arch"
                                             class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white">
-                                            <option value="">— beliebig —</option>
+                                            <option value="">- beliebig -</option>
                                             <option value="tank">Tank</option>
                                             <option value="healer">Healer</option>
                                             <option value="dps">Alle DPS</option>
@@ -476,16 +476,30 @@
         </div>
     </section>
 
+    <!-- CD-EINTEILUNG ÜBERSICHT (Ablauf aus dem Matrix Planer) -->
+    <section id="cd-summary" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
+        <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
+            📜 CD-Einteilung Übersicht
+            <span class="toggle-icon">▼</span>
+        </h2>
+        <div class="collapsible-content">
+            <div id="sha-of-pride-planner-summary"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
+                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">Warte auf Eingaben...</p>
+            </div>
+        </div>
+    </section>
+
     <section id="auto-planner" class="bg-slate-850 p-6 rounded-lg mb-6 collapsible-section">
         <h2 class="collapsible-header text-2xl font-semibold mb-3 border-b border-slate-650 pb-2">
-            🤖 Auto-CD-Planer
+            🧮 Matrix Planer
             <span class="toggle-icon">▼</span>
         </h2>
         <div class="collapsible-content">
             <p class="text-sm text-gray-400 mb-4 italic">
                 Plant automatisch Cooldown-Zuteilungen. Hauptfokus: Schwellender Stolz (Raid-AOE) + Tank-Externals für
                 Verletzter Stolz.
-                Phase 2 startet bei 30% HP — HT/Bloodlust dort einplanen!
+                Phase 2 startet bei 30% HP - HT/Bloodlust dort einplanen!
             </p>
 
             <div class="flex flex-wrap items-center gap-2 mb-4">
@@ -529,7 +543,7 @@
             prefix: 'sha-of-pride',
 
             events: [
-                // ── KEY-FÄHIGKEIT: Schwellender Stolz — 2× DR + 1× Heal
+                // ── KEY-FÄHIGKEIT: Schwellender Stolz - 2× DR + 1× Heal
                 // GLEICHZEITIG pro Cast. Früh benutzte CDs rotieren automatisch
                 // wieder rein, sobald sie bereit sind. ──
                 {
@@ -656,19 +670,6 @@
             CD Planer
             <span class="toggle-icon">▼</span>
         </h2>
-        <div class="mb-6">
-            <h3 class="text-lg font-bold text-yellow-400 mb-3 flex items-center gap-2 uppercase tracking-wider">
-                <span class="text-xl">📜</span> Planungsübersicht
-            </h3>
-
-            <div id="sha-of-pride-planner-summary"
-                class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-800/60 p-4 rounded-lg border border-yellow-600/30 shadow-sm min-h-[100px]">
-                <p class="text-gray-500 text-xs italic col-span-2 text-center py-6">
-                    Wartet auf Eingaben... <br>
-                    <span class="opacity-50">(Nehmt Änderungen im Planer vor, um diese Ansicht zu aktualisieren)</span>
-                </p>
-            </div>
-        </div>
         <div class="collapsible-content">
             <div class="bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-700">
                 <div class="mt-4 text-xs text-gray-500 italic">
@@ -747,7 +748,7 @@
             const container = document.getElementById('sha-of-pride-planner-container');
 
             // ══════════════════════════════════════════════════════════
-            // SHA OF PRIDE — 4 PLATTEN MIT RT-MARKERN + AUTO-FÜLLEN
+            // SHA OF PRIDE - 4 PLATTEN MIT RT-MARKERN + AUTO-FÜLLEN
             // ══════════════════════════════════════════════════════════
             (function initShaPlates() {
                 const gridEl = document.getElementById('sha-plates-grid');
@@ -979,14 +980,14 @@
                 }
 
                 // Ist der Spieler bereits auf irgendeiner Platte eingetragen?
-                // (inkl. der aktuellen — für die 🟡-Markierung im Dropdown)
+                // (inkl. der aktuellen - für die 🟡-Markierung im Dropdown)
                 function isPlayerAssignedAnywhere(name) {
                     if (!name) return false;
                     return platesData.some(p => p.slots.includes(name));
                 }
 
                 function getPlayerOptions(selectedName, pIdx) {
-                    let html = '<option value="">—</option>';
+                    let html = '<option value="">-</option>';
                     if (!Array.isArray(roster)) return html;
 
                     const plate = (typeof pIdx === 'number') ? platesData[pIdx] : null;
@@ -1140,7 +1141,7 @@
                         ${renderTagsHtml(pIdx)}
                         ${slotsHtml}
                         <div class="sha-plate-wa-row">
-                            <code class="sha-plate-wa-output" data-plate-idx="${pIdx}">—</code>
+                            <code class="sha-plate-wa-output" data-plate-idx="${pIdx}">-</code>
                             <button class="sha-plate-wa-copy" data-plate-idx="${pIdx}" title="WeakAura-String kopieren">📋</button>
                         </div>
                     `;
@@ -1168,7 +1169,7 @@
                         const s = buildWaString(p);
                         const out = gridEl.querySelector(`.sha-plate-wa-output[data-plate-idx="${p}"]`);
                         if (out) {
-                            out.textContent = s || '—';
+                            out.textContent = s || '-';
                         }
                         if (s) allLines.push(s);
                     }
@@ -1334,7 +1335,7 @@
                             copyBtn.textContent = '✓';
                             setTimeout(() => copyBtn.textContent = old, 1200);
                         }).catch(() => {
-                            if (window.showModal) window.showModal('Kopieren fehlgeschlagen — String manuell markieren.');
+                            if (window.showModal) window.showModal('Kopieren fehlgeschlagen - String manuell markieren.');
                         });
                     }
                 });
@@ -1362,7 +1363,7 @@
                 if (waAllCopyBtn && waAllOutput) {
                     waAllCopyBtn.addEventListener('click', async () => {
                         if (!waAllOutput.value) {
-                            if (window.showModal) window.showModal('Noch keine Spieler eingetragen — nichts zum Kopieren.');
+                            if (window.showModal) window.showModal('Noch keine Spieler eingetragen - nichts zum Kopieren.');
                             return;
                         }
                         try {
@@ -1385,7 +1386,7 @@
                 }
                 function updateSpecDropdown(selectedClass, selectedSpec) {
                     if (!modalSpec) return;
-                    modalSpec.innerHTML = '<option value="">— alle Specs —</option>';
+                    modalSpec.innerHTML = '<option value="">- alle Specs -</option>';
                     if (selectedClass && SPEC_DEFINITIONS[selectedClass]) {
                         SPEC_DEFINITIONS[selectedClass].forEach(s => {
                             const opt = new Option(s.label, s.value);
@@ -1417,7 +1418,7 @@
                     if (!prioListEl) return;
                     prioListEl.innerHTML = '';
                     if (prioCategories.length === 0) {
-                        prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien — auf "+" klicken oder "Aus Kader ableiten".</li>';
+                        prioListEl.innerHTML = '<li class="text-xs text-gray-500 italic p-2">Keine Kategorien - auf "+" klicken oder "Aus Kader ableiten".</li>';
                         return;
                     }
                     prioCategories.forEach((cat, idx) => {
@@ -1850,7 +1851,7 @@
                             const plate = platesData[ref.plateIdx];
                             if (!plate) return null;
                             if (!plate.rt) {
-                                if (window.showModal) window.showModal('Diese Platte hat keinen RT-Marker — bitte zuerst einen Marker wählen.');
+                                if (window.showModal) window.showModal('Diese Platte hat keinen RT-Marker - bitte zuerst einen Marker wählen.');
                                 return null;
                             }
                             return { marker: RT_TO_MARKER[plate.rt] || '', title: 'Platte ' + (ref.plateIdx + 1) };
@@ -1875,7 +1876,7 @@
                     });
 
                     // Klick/Hover-Verdrahtung nur einmal pro DOM (Re-Inits durch
-                    // Roster-Änderungen dürfen keine doppelten Listener anlegen —
+                    // Roster-Änderungen dürfen keine doppelten Listener anlegen -
                     // die Daten kommen über die frisch registrierte Quelle).
                     if (!gridEl.dataset.imWired) {
                         gridEl.dataset.imWired = '1';

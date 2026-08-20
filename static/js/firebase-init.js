@@ -1,5 +1,5 @@
 /* =========================================================================
-   firebase-init.js — Firebase Setup
+   firebase-init.js - Firebase Setup
    =========================================================================
    Initialisiert Firebase App, Firestore (mit lokalem Cache), Auth und
    Realtime Database (RTDB). Exportiert die wichtigsten Refs und

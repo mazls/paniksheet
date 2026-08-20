@@ -3,14 +3,15 @@
  *
  * Diese Datei hängt LaneGroups-Container in den Master-View ein, sodass alle
  * Boss-Einteilungen voll editierbar in der Comp-Übersicht erscheinen. Änderungen
- * schreiben direkt in dieselben Firestore-Pfade wie auf der Boss-Seite —
+ * schreiben direkt in dieselben Firestore-Pfade wie auf der Boss-Seite -
  * Boss-Seite und Master-View sind also synchron.
  *
- * Zusätzlich: read-only Anzeige der boss-spezifischen WeakAura-Strings (Sha,
- * Norushen, Siegecrafter, Paragons …) am Ende jedes Boss-Panels.
+ * Zusätzlich: read-only Anzeige der boss-spezifischen Sonder-Einteilungen (Sha-
+ * Platten, Norushen-Orbs, Siegecrafter-Lines, Kill-Reihenfolgen) am Ende jedes
+ * Boss-Panels - als lesbare Blöcke, der WeakAura-String hängt aufklappbar daran.
  *
  * Hinweis: Der globale WeakAura-Export wird NICHT von dieser Datei gehandhabt
- * — das macht planner-bosses.js nativ (Modul-Ebene buildShaPlatesExport,
+ * - das macht planner-bosses.js nativ (Modul-Ebene buildShaPlatesExport,
  * buildNorushenOrbExport, buildSiegecrafterKillorderExport, etc.).
  *
  * Voraussetzungen:
@@ -26,7 +27,7 @@
     'use strict';
 
     if (!window.LaneGroups) {
-        console.warn('[LaneGroups-Integration] window.LaneGroups nicht gefunden — Datei wird nicht aktiv.');
+        console.warn('[LaneGroups-Integration] window.LaneGroups nicht gefunden - Datei wird nicht aktiv.');
         return;
     }
 
@@ -36,13 +37,15 @@
     // Jeder Provider liest Firestore-Daten eines Bosses und liefert einen
     // fertigen WA-String. Wird im Master-View pro Boss-Panel als read-only
     // Textarea angezeigt. Format:
-    //   { id, label, color, bossIds: [...], build(data, bossId) → string|null }
+    //   { id, label, color, bossIds: [...], build(data, bossId) → string|null,
+    //     renderView(data, bossId) → HTML-String|null (lesbare Read-only-Ansicht) }
 
     if (!window.BossWaProviders) window.BossWaProviders = [];
 
     // Sha-of-Pride Platten
     window.BossWaProviders.push({
         id: 'sha-plates',
+        renderView: (data) => renderShaPlates(data),
         label: '🌈 Sha-of-Pride Platten',
         color: 'text-pink-300',
         bossIds: ['sha-of-pride'],
@@ -64,6 +67,7 @@
     // Norushen Orb-Reihenfolge
     window.BossWaProviders.push({
         id: 'norushen-orb-order',
+        renderView: (data) => renderNorushenOrbs(data),
         label: '🔮 Norushen Orb-Reihenfolge',
         color: 'text-purple-300',
         bossIds: ['norushen'],
@@ -80,6 +84,7 @@
     // Siegecrafter Kill-Reihenfolge (Missile/Mine/Laser)
     window.BossWaProviders.push({
         id: 'blackfuse-killorder',
+        renderView: (data) => renderKillOrder(data, 'blackfuse-killorder'),
         label: '⚙️ Siegecrafter Kill-Reihenfolge',
         color: 'text-orange-300',
         bossIds: ['siegecrafter'],
@@ -99,6 +104,7 @@
     // Siegecrafter Conveyor-Lines (Team-Zuweisungen)
     window.BossWaProviders.push({
         id: 'blackfuse-lines',
+        renderView: (data) => renderBlackfuseLines(data),
         label: '📏 Siegecrafter Conveyor-Lines',
         color: 'text-yellow-300',
         bossIds: ['siegecrafter'],
@@ -129,6 +135,7 @@
     // Paragons Kill-Reihenfolge (Boss-Namen)
     window.BossWaProviders.push({
         id: 'paragons-killorder',
+        renderView: (data) => renderKillOrder(data, 'paragons-killorder'),
         label: '🎯 Paragons Kill-Reihenfolge',
         color: 'text-red-300',
         bossIds: ['paragons'],
@@ -144,6 +151,125 @@
             return filtered.length > 0 ? filtered.join(',') : null;
         }
     });
+
+    // ════════════════════════════════════════════════════════════
+    // READ-ONLY DARSTELLUNG DER SONDER-EINTEILUNGEN
+    // ════════════════════════════════════════════════════════════
+    // Sha-Platten, Norushen-Orbs, Siegecrafter-Lines und die Kill-Reihenfolgen
+    // haben eigene UIs, deren Boss-Seiten-Skripte im Master-View nicht laufen.
+    // Damit die Einteilungs-Übersicht trotzdem vollständig ist, rendern wir die
+    // gespeicherten Daten hier als kompakte, lesbare Blöcke.
+
+    // Raid-Target-Marker (rt1..rt8) wie auf der Sha-Seite
+    const RT_LABELS = {
+        rt1: '★ Stern', rt2: '● Kreis', rt3: '◆ Diamant', rt4: '△ Dreieck',
+        rt5: '☾ Mond', rt6: '◻ Quadrat', rt7: '✚ Kreuz', rt8: '☠ Totenkopf'
+    };
+
+    // Spielername als eingefärbter Chip. Spec-Slots werden vorher aufgelöst.
+    function playerChip(value) {
+        const name = resolveValueForExport(value) || value;
+        if (!name) return '';
+        const player = (window.rosterData || []).find(pl => pl.name === name);
+        const color = (player && window.classColors && window.classColors[player.class]) || '#e2e8f0';
+        return '<span class="inline-block px-1.5 py-0.5 rounded bg-slate-900/70 border border-slate-700 text-[10px] font-semibold"'
+            + ' style="color:' + color + '">' + escapeHtml(name) + '</span>';
+    }
+
+    function chipRow(values) {
+        const chips = (values || []).map(playerChip).filter(Boolean);
+        if (chips.length === 0) return '<span class="text-[10px] text-gray-600 italic">leer</span>';
+        return '<div class="flex flex-wrap gap-1">' + chips.join('') + '</div>';
+    }
+
+    function mvCard(title, innerHtml) {
+        return '<div class="bg-slate-900/40 border border-slate-700 rounded p-2">'
+            + '<div class="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">' + escapeHtml(title) + '</div>'
+            + innerHtml + '</div>';
+    }
+
+    // Sha-of-Pride: 4 Platten mit Marker + Spielern
+    function renderShaPlates(data) {
+        const block = data['sha-plates'];
+        if (!block || !Array.isArray(block.platesData)) return null;
+        const anyFilled = block.platesData.some(pl =>
+            pl && Array.isArray(pl.slots) && pl.slots.some(v => v && String(v).trim()));
+        if (!anyFilled) return null;
+        const cards = block.platesData.map((plate, i) => {
+            const slots = (plate && Array.isArray(plate.slots)) ? plate.slots : [];
+            const marker = plate && plate.rt ? (RT_LABELS[plate.rt] || plate.rt) : 'ohne Marker';
+            return mvCard('Platte ' + (i + 1) + ' - ' + marker, chipRow(slots));
+        });
+        return cards.length ? '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">' + cards.join('') + '</div>' : null;
+    }
+
+    // Norushen: Reihenfolge der Lichtkugeln mit Delay
+    function renderNorushenOrbs(data) {
+        const block = data['norushen-orb-order'];
+        if (!block || !Array.isArray(block.orderData)) return null;
+        const rows = block.orderData
+            .filter(r => r && (r.player || (r.delay !== '' && r.delay !== null && r.delay !== undefined)))
+            .map((r, i) => {
+                const delay = (r.delay === '' || r.delay === null || r.delay === undefined) ? '-' : r.delay + 's';
+                const who = playerChip(r.player) || '<span class="text-gray-600 italic">frei</span>';
+                return '<div class="flex items-center gap-2 text-[11px] py-0.5">'
+                    + '<span class="w-5 text-right text-gray-500 font-mono">' + (i + 1) + '.</span>'
+                    + '<span class="flex-1">' + who + '</span>'
+                    + '<span class="text-gray-400 font-mono">' + delay + '</span>'
+                    + '</div>';
+            });
+        return rows.length ? '<div class="bg-slate-900/40 border border-slate-700 rounded p-2">' + rows.join('') + '</div>' : null;
+    }
+
+    // Siegecrafter: Conveyor-Teams und ihre Line-Zuordnung
+    function renderBlackfuseLines(data) {
+        const block = data['blackfuse-lines'];
+        if (!block || !Array.isArray(block.teamsData)) return null;
+
+        const teamSlots = idx => {
+            const raw = block.teamsData[idx];
+            if (Array.isArray(raw)) return raw;
+            if (raw && Array.isArray(raw.slots)) return raw.slots;
+            if (raw && typeof raw === 'object') return Object.values(raw);
+            return [];
+        };
+
+        const hasPlayers = block.teamsData.some((_, i) => teamSlots(i).some(v => v && String(v).trim()));
+        const hasLines = Array.isArray(block.lineTeams)
+            && block.lineTeams.some(t => t === '0' || t === '1' || t === 0 || t === 1);
+        if (!hasPlayers && !hasLines) return null;
+
+        const teams = block.teamsData.map((_, i) => mvCard('Team ' + (i + 1), chipRow(teamSlots(i))));
+
+        let linesHtml = '';
+        if (Array.isArray(block.lineTeams)) {
+            const items = block.lineTeams.map((t, l) => {
+                const label = (t === '0' || t === 0) ? 'Team 1' : (t === '1' || t === 1) ? 'Team 2' : '-';
+                return '<span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-900/70 border border-slate-700">'
+                    + 'Line ' + (l + 1) + ': <b class="text-yellow-200">' + label + '</b></span>';
+            });
+            linesHtml = mvCard('Line-Zuordnung', '<div class="flex flex-wrap gap-1">' + items.join('') + '</div>');
+        }
+
+        return '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">' + teams.join('') + '</div>'
+            + (linesHtml ? '<div class="mt-2">' + linesHtml + '</div>' : '');
+    }
+
+    // Kill-Reihenfolgen (Siegecrafter-Waffen / Paragons) als nummerierte Chips
+    function renderKillOrder(data, key) {
+        const block = data[key];
+        if (!block) return null;
+        let arr = block.killOrder;
+        if (!Array.isArray(arr)) {
+            if (arr && typeof arr === 'object') arr = Object.values(arr);
+            else return null;
+        }
+        const items = arr.filter(v => v && String(v).trim()).map((v, i) =>
+            '<span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-900/70 border border-slate-700">'
+            + '<span class="text-gray-500 font-mono mr-1">' + (i + 1) + '.</span>'
+            + escapeHtml(String(v)) + '</span>');
+        return items.length ? '<div class="flex flex-wrap gap-1">' + items.join('') + '</div>' : null;
+    }
 
     // Resolution-Helper: Spec-Slot oder Klassen-Wildcard zu Spielername
     function resolveValueForExport(val) {
@@ -164,16 +290,16 @@
     }
 
     // ════════════════════════════════════════════════════════════
-    // LANE-GROUPS DEFAULT-BLOCK-REGISTRY
+    // LANE-GROUPS DEFAULT-BLOCK-REGISTRY (nur noch Fallback)
     // ════════════════════════════════════════════════════════════
-    // Falls für einen Boss noch KEINE LaneGroups-Daten in Firestore stehen
-    // (z.B. weil der Manager auf der Boss-Seite noch nichts editiert hat),
-    // braucht die Master-View trotzdem ein initiales Layout zum Anzeigen.
+    // Primär liest der Master-View containerId, assignmentId und defaultBlocks
+    // direkt aus den LaneGroups.init(...)-Aufrufen der Boss-Seite (siehe
+    // extractLaneGroupConfigs in planner-bosses.js) - dadurch können Boss-Seite
+    // und Übersicht gar nicht mehr auseinanderlaufen.
     //
-    // Diese Defaults müssen mit den `defaultBlocks` aus den Boss-HTMLs
-    // synchron sein. Wenn du sie auf der Boss-Seite änderst, ändere sie
-    // bitte hier ebenfalls, sonst zeigt Master-View ein veraltetes Layout
-    // bis der erste Save passiert.
+    // Diese Registry greift nur, wenn das Boss-HTML nicht geladen bzw. nicht
+    // ausgewertet werden konnte. Sie muss deshalb nicht mehr für jeden Boss
+    // gepflegt werden.
 
     if (!window.LaneGroupsBossDefaults) window.LaneGroupsBossDefaults = {};
 
@@ -286,7 +412,7 @@
     // Strategie:
     // - Die bestehende loadMasterViewData() rendert pro Boss ein Panel.
     //   Sie wird allerdings als lokale Funktion aus dem Modul-Closure
-    //   aufgerufen, nicht über window.loadMasterViewData — daher
+    //   aufgerufen, nicht über window.loadMasterViewData - daher
     //   funktioniert kein einfacher Wrap.
     //
     // - Lösung: MutationObserver auf #mv-accordion. Wenn neue Boss-Container
@@ -328,6 +454,39 @@
         }
     }
 
+    // Liefert die LaneGroups-Konfigurationen eines Bosses. Primärquelle sind die
+    // aus dem Boss-HTML gelesenen init-Aufrufe (planner-bosses.js legt sie in
+    // window.MasterViewLaneGroupConfigs ab) - damit stimmen Container-ID,
+    // assignmentId und Default-Layout immer exakt mit der Boss-Seite überein.
+    // Fehlt der Eintrag (z.B. weil das HTML nicht geladen werden konnte), greift
+    // die statische Registry weiter unten als Fallback.
+    function getLaneGroupConfigs(bossId, container) {
+        const fromHtml = (window.MasterViewLaneGroupConfigs || {})[bossId];
+        if (Array.isArray(fromHtml) && fromHtml.length > 0) {
+            return fromHtml
+                .filter(cfg => !!findById(container, cfg.containerId))
+                .map(cfg => ({
+                    containerId: cfg.containerId,
+                    assignmentId: cfg.assignmentId,
+                    defaultBlocks: cfg.defaultBlocks || []
+                }));
+        }
+
+        // Fallback: alle "*-lane-groups"-Container im Panel + Registry-Defaults
+        const bossDefaults = window.LaneGroupsBossDefaults[bossId] || null;
+        return Array.from(container.querySelectorAll('[id$="-lane-groups"]')).map(el => ({
+            containerId: el.id,
+            assignmentId: bossDefaults ? bossDefaults.assignmentId : el.id.replace('-lane-groups', '-lane-assignments'),
+            defaultBlocks: bossDefaults ? (bossDefaults.defaultBlocks || []) : []
+        }));
+    }
+
+    // IDs im Panel direkt vergleichen statt via querySelector-Selektor - spart
+    // das Escaping und funktioniert auch bei ungewöhnlichen Container-IDs.
+    function findById(root, id) {
+        return Array.from(root.querySelectorAll('[id]')).find(el => el.id === id) || null;
+    }
+
     async function initLaneGroupsInMasterView() {
         const accordion = document.getElementById('mv-accordion');
         if (!accordion) {
@@ -342,7 +501,6 @@
         }
 
         const containers = accordion.querySelectorAll('.mv-boss-content[data-mv-boss-id]');
-        console.log('[LaneGroups-Integration] Boss-Container gefunden:', containers.length);
         if (containers.length === 0) return;
 
         const bossList = Array.from(containers).map(c => ({
@@ -364,88 +522,43 @@
             if (!snap) return;
             const assignments = snap.exists() ? snap.data() : {};
 
-            const lgContainers = b.container.querySelectorAll('[id$="-lane-groups"]');
-            if (lgContainers.length > 0) {
-                console.log('[LaneGroups-Integration]', b.bossId, '— LaneGroups-Container:', lgContainers.length);
-            }
+            getLaneGroupConfigs(b.bossId, b.container).forEach(cfg => {
+                const originalContainer = findById(b.container, cfg.containerId);
+                if (!originalContainer) return;
 
-            lgContainers.forEach(originalContainer => {
-                const originalId = originalContainer.id;
-
-                // Eindeutige MV-ID damit Boss-Seite + MV nicht denselben DOM-ID nutzen
-                const mvId = `mv-lg-${b.bossId}-${originalId}`;
+                // Eindeutige MV-ID, damit Boss-Seite + MV nicht dieselbe DOM-ID nutzen
+                const mvId = 'mv-lg-' + b.bossId + '-' + cfg.containerId;
                 originalContainer.id = mvId;
                 originalContainer.innerHTML = '';
-
-                // assignmentId aus Firestore extrahieren — Heuristik:
-                // Wir suchen den Eintrag im data, der ein blocks-Array hat.
-                let assignmentId = null;
-                Object.keys(assignments).forEach(key => {
-                    const v = assignments[key];
-                    if (v && typeof v === 'object' && Array.isArray(v.blocks)) {
-                        assignmentId = key;
-                    }
-                });
-
-                // Wenn keine Daten in Firestore vorliegen: Defaults aus der
-                // Registry verwenden (siehe window.LaneGroupsBossDefaults oben).
-                // Die assignmentId muss exakt mit dem Boss-HTML-Aufruf matchen,
-                // sonst landet das spätere Save unter falschem Pfad.
-                const bossDefaults = window.LaneGroupsBossDefaults[b.bossId] || null;
-                let defaultBlocks = [];
-                if (!assignmentId) {
-                    if (bossDefaults) {
-                        assignmentId = bossDefaults.assignmentId;
-                        defaultBlocks = bossDefaults.defaultBlocks || [];
-                    } else {
-                        // Letzter Fallback: aus Container-ID ableiten
-                        const knownMappings = {
-                            'iron-juggernaut-lane-groups': 'iron-jug-lanes'
-                        };
-                        assignmentId = knownMappings[originalId] || (originalId.replace('-lane-groups', '-lane-assignments'));
-                    }
-                } else if (bossDefaults && bossDefaults.assignmentId !== assignmentId) {
-                    // Mismatch: Firestore hat Daten unter einem anderen Key als
-                    // unser Default — sehr selten, aber loggen
-                    console.warn('[LaneGroups-Integration]', b.bossId, '— Firestore-assignmentId:', assignmentId, 'aber Default-assignmentId:', bossDefaults.assignmentId);
-                }
-
-                console.log('[LaneGroups-Integration]', b.bossId, '— init aufgerufen:', {
-                    mvId, assignmentId,
-                    hasFirestoreData: !!assignments[assignmentId],
-                    firestoreBlocks: assignments[assignmentId] && Array.isArray(assignments[assignmentId].blocks) ? assignments[assignmentId].blocks.length : 0,
-                    defaultBlocksCount: defaultBlocks.length,
-                    rosterSize: (window.effectiveRoster || window.rosterData || []).length
-                });
 
                 try {
                     const inst = window.LaneGroups.init({
                         containerId: mvId,
                         bossId: b.bossId,
-                        assignmentId: assignmentId,
+                        assignmentId: cfg.assignmentId,
                         roster: window.effectiveRoster || window.rosterData || [],
                         firebaseTools: fbTools,
                         assignments: assignments,
-                        defaultBlocks: defaultBlocks
+                        defaultBlocks: cfg.defaultBlocks
                     });
                     if (!inst) {
-                        console.warn('[LaneGroups-Integration]', b.bossId, '— LaneGroups.init lieferte null');
-                    } else {
-                        console.log('[LaneGroups-Integration]', b.bossId, '— Init OK, Blöcke:', inst.blocks.length);
+                        console.warn('[LaneGroups-Integration]', b.bossId, '- LaneGroups.init lieferte null für', cfg.assignmentId);
                     }
                 } catch (e) {
                     console.error('[LaneGroups-Integration] LaneGroups.init Fehler für', mvId, e);
                 }
             });
 
-            // Boss-spezifische WA-Provider als read-only Textarea anhängen
+            // Boss-spezifische Sonder-Einteilungen (Sha-Platten, Norushen-Orbs,
+            // Siegecrafter-Lines …) als read-only Panels anhängen
             appendProviderOutputsToMvPanel(b, assignments);
         });
     }
 
-    // Hängt für einen Boss-Container im Master-View die Provider-WA-Outputs
-    // als read-only Textareas an. Falls schon vorhanden (z.B. nach Refresh),
-    // werden sie ersetzt statt dupliziert.
+    // Hängt für einen Boss-Container im Master-View die Sonder-Einteilungen an:
+    // oben die lesbare Read-only-Ansicht (renderView), darunter aufklappbar der
+    // WeakAura-String. Falls schon vorhanden (z.B. nach Refresh), werden sie
+    // ersetzt statt dupliziert.
     function appendProviderOutputsToMvPanel(b, assignments) {
         const providers = (window.BossWaProviders || []).filter(p =>
             Array.isArray(p.bossIds) && p.bossIds.includes(b.bossId)
@@ -456,31 +569,49 @@
         b.container.querySelectorAll('.mv-provider-output').forEach(el => el.remove());
 
         providers.forEach(provider => {
-            let output;
+            let output = null;
+            let view = null;
             try {
                 output = provider.build(assignments, b.bossId);
             } catch (e) {
                 console.error('[LaneGroups-Integration] Provider', provider.id, 'Fehler im MV:', e);
-                return;
             }
-            if (!output) return;
+            try {
+                if (typeof provider.renderView === 'function') {
+                    view = provider.renderView(assignments, b.bossId);
+                }
+            } catch (e) {
+                console.error('[LaneGroups-Integration] Provider', provider.id, 'renderView-Fehler im MV:', e);
+            }
+            // Nichts eingeteilt: Block ganz weglassen
+            if (!output && !view) return;
 
-            const rows = Math.min(Math.max(output.split('\n').length, 2), 8);
             const wrap = document.createElement('div');
             wrap.className = 'mv-provider-output mt-3 pt-3 border-t border-slate-700';
             const outputId = `mv-prov-${b.bossId}-${provider.id}-output`;
             const copyBtnId = `mv-prov-${b.bossId}-${provider.id}-copy`;
+            const waId = `mv-prov-${b.bossId}-${provider.id}-wa`;
+
+            // Lesbare Einteilung zuerst, der WeakAura-String darunter zum
+            // Aufklappen - im Master-View interessiert meistens die Einteilung.
+            const waHtml = output ? `
+                <details id="${waId}" class="mt-2">
+                    <summary class="cursor-pointer text-[10px] text-gray-400 hover:text-gray-200">WeakAura-String anzeigen</summary>
+                    <div class="flex justify-end mt-1">
+                        <button id="${copyBtnId}" class="bg-slate-700 hover:bg-slate-600 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors">Kopieren</button>
+                    </div>
+                    <textarea id="${outputId}" readonly rows="${Math.min(Math.max(output.split('\n').length, 2), 8)}"
+                              class="w-full mt-1 bg-black ${provider.color || 'text-gray-300'} font-mono text-[10px] p-2 rounded border border-slate-700 resize-y cursor-text">${escapeHtml(output)}</textarea>
+                </details>` : '';
+
             wrap.innerHTML = `
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs font-bold ${provider.color || 'text-gray-300'} uppercase tracking-wider">
-                        ${escapeHtml(provider.label)}
-                    </span>
-                    <button id="${copyBtnId}" class="bg-slate-700 hover:bg-slate-600 text-white text-[10px] font-bold py-1 px-2 rounded transition-colors">Kopieren</button>
+                <div class="text-xs font-bold ${provider.color || 'text-gray-300'} uppercase tracking-wider mb-2">
+                    ${escapeHtml(provider.label)}
                 </div>
-                <textarea id="${outputId}" readonly rows="${rows}"
-                          class="w-full bg-black ${provider.color || 'text-gray-300'} font-mono text-[10px] p-2 rounded border border-slate-700 resize-y cursor-text">${escapeHtml(output)}</textarea>
+                ${view || ''}
+                ${waHtml}
                 <p class="text-[9px] text-gray-500 italic mt-1">
-                    Read-only WeakAura-String. Zum Editieren bitte auf die Boss-Seite wechseln.
+                    Read-only. Zum Bearbeiten bitte auf die Boss-Seite wechseln.
                 </p>
             `;
             b.container.appendChild(wrap);
@@ -508,7 +639,7 @@
 
     // INITIALISIERUNG: Warte bis #mv-accordion im DOM existiert, dann
     // attach den MutationObserver. Der User navigiert oft erst nach
-    // initialem Page-Load zur Comp-Seite — daher pollen wir.
+    // initialem Page-Load zur Comp-Seite - daher pollen wir.
     // ════════════════════════════════════════════════════════════
 
     function tryAttach() {
@@ -523,11 +654,11 @@
         const interval = setInterval(() => {
             tryAttach();
             attempts++;
-            // Bis zu 60 Sekunden pollen — User kann später hinnavigieren
+            // Bis zu 60 Sekunden pollen - User kann später hinnavigieren
             if (_mvObserverAttached || attempts > 600) {
                 clearInterval(interval);
                 if (!_mvObserverAttached) {
-                    // console.warn('[LaneGroups-Integration] #mv-accordion nicht gefunden — MV-Integration inaktiv');
+                    // console.warn('[LaneGroups-Integration] #mv-accordion nicht gefunden - MV-Integration inaktiv');
                 }
             }
         }, 100);

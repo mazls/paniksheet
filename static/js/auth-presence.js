@@ -1,5 +1,5 @@
 /* =========================================================================
-   auth-presence.js — Auth, Login-Modal, Presence + generische Modals
+   auth-presence.js - Auth, Login-Modal, Presence + generische Modals
    =========================================================================
    - window.showModal(message, isConfirm?)   → Promise<true|false>
    - window.showPrompt(message, defaultValue?) → Promise<string|null>
@@ -78,7 +78,7 @@ window.showModal = function(message, isConfirm = false) {
 				
 
 // =============================================================================
-// PROMPT-FUNKTION (window.showPrompt) — Eingabe-Dialog
+// PROMPT-FUNKTION (window.showPrompt) - Eingabe-Dialog
 // =============================================================================
 
 window.showPrompt = function(message, defaultValue = '') {
@@ -264,7 +264,7 @@ window.showLoginModal = showLoginModal;
 
                 // ══════════════════════════════════════════════════════════════
                 // PRESENCE via Firebase Realtime Database (RTDB)
-                // — Unterstützt mehrere Tabs/Sessions pro User!
+                // - Unterstützt mehrere Tabs/Sessions pro User!
                 // ══════════════════════════════════════════════════════════════
 
                 // Eindeutige ID für diesen Tab/Browser-Fenster generieren
@@ -277,7 +277,7 @@ window.showLoginModal = showLoginModal;
                     last_changed: rtdbServerTimestamp()
                 };
 
-                // onDisconnect registrieren — löscht diese Session, wenn der Tab geschlossen wird
+                // onDisconnect registrieren - löscht diese Session, wenn der Tab geschlossen wird
                 rtdbOnDisconnect(userSessionRef).remove();
 
                 // Sofort als online markieren

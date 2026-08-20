@@ -1,5 +1,5 @@
 /* =========================================================================
-   state.js — Geteilter State & Utilities
+   state.js - Geteilter State & Utilities
    =========================================================================
    Enthält alle Variablen, die früher im großen Script-Scope lagen und von
    vielen Stellen geschrieben/gelesen werden. Plus debounce und getCurrentRaidId.
@@ -104,7 +104,7 @@ window.debouncedUpdateSummary = debouncedUpdateSummary;
  * Liest die aktuelle Raid-ID aus URL-Hash, sessionStorage, raid-selector oder default.
  * Format: "#siegeoforgrimmar/immerseus" → "siegeoforgrimmar"
  *
- * 1:1 aus dem Original übernommen — bitte nicht "vereinfachen" ohne Tests.
+ * 1:1 aus dem Original übernommen - bitte nicht "vereinfachen" ohne Tests.
  */
 export function getCurrentRaidId() {
     // 1. URL-Hash hat höchste Priorität (z.B. "#siegeoforgrimmar/immerseus")

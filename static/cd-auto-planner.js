@@ -315,7 +315,7 @@ window.CD_AUTO_PLANNER = (function () {
         },
 
         // ══════════════════════════════════════════════════════════
-        // MANA (NEU — für Hymn of Hope / Mana Tide)
+        // MANA (NEU - für Hymn of Hope / Mana Tide)
         // ══════════════════════════════════════════════════════════
         mana: {
             name: "Mana-Regeneration", shortName: "Mana", color: "#3b82f6",
@@ -397,7 +397,7 @@ window.CD_AUTO_PLANNER = (function () {
         },
 
         // ══════════════════════════════════════════════════════════
-        // TANK EXTERNAL (NEU — Einzel-Target Tank-CDs)
+        // TANK EXTERNAL (NEU - Einzel-Target Tank-CDs)
         // ══════════════════════════════════════════════════════════
         tank_external: {
             name: "Tank External", shortName: "Tank Ext", color: "#fbbf24",
@@ -412,7 +412,7 @@ window.CD_AUTO_PLANNER = (function () {
         },
 
         // ══════════════════════════════════════════════════════════
-        // P2 TANK-SOAK (NUR PHYSISCH) — Malkorók Blutrausch
+        // P2 TANK-SOAK (NUR PHYSISCH) - Malkorók Blutrausch
         // Personals (nur soakender Tank) + Externals (von anderen).
         // Die eigentliche gestaffelte Verteilung macht das Blood-Rage-
         // Add-on; diese Liste sorgt für Spalte, Fallback & Dropdowns.
@@ -470,7 +470,7 @@ window.CD_AUTO_PLANNER = (function () {
     var manualOverrides = {};
 
     // Eindeutiger Override-Key-Präfix pro Zeile. Continuous-Coverage-Folgezeilen
-    // behalten eventIdx/castNum der Ursprungszeile — ohne den _contIdx-Suffix
+    // behalten eventIdx/castNum der Ursprungszeile - ohne den _contIdx-Suffix
     // würde ein manueller Override auf ALLE Folgezeilen desselben Casts wirken.
     function rowOverridePrefix(row) {
         return row.eventIdx + '-' + row.castNum + (row._contIdx ? '-c' + row._contIdx : '');
@@ -482,7 +482,7 @@ window.CD_AUTO_PLANNER = (function () {
     // werden (z.B. "any_dr:2" = zwei Schadensreduktionen zusammen, wie bei
     // Beschützer-Unheil: 2× DR + 1× Heal).
     // Die Slot-Instanzen heißen dann: catKey (1.), catKey@2 (2.), catKey@3 ...
-    // — so bleiben alte gespeicherte Pläne/Overrides (nur catKey) kompatibel.
+    // - so bleiben alte gespeicherte Pläne/Overrides (nur catKey) kompatibel.
     function parseCatSpec(entry) {
         if (!entry) return null;
         if (typeof entry === 'object') {
@@ -552,7 +552,7 @@ window.CD_AUTO_PLANNER = (function () {
         var btn = document.getElementById('btn-save-auto-plan');
         if (!btn) return;
         btn.classList.toggle('cd-save-dirty', !!_isDirty);
-        btn.title = _isDirty ? 'Ungespeicherte Änderungen — klicke „Plan speichern".' : '';
+        btn.title = _isDirty ? 'Ungespeicherte Änderungen - klicke „Plan speichern".' : '';
     }
     function markDirty() {
         if (_isDirty) return;
@@ -583,7 +583,7 @@ window.CD_AUTO_PLANNER = (function () {
 
     // ── Verteilungs-Strategien (pro Boss konfigurierbar, in Firestore gespeichert) ──
     var assignStrategy = {
-        spread: false,                // A: Lookahead — bei Knappheit gleichmäßig über Zeit verteilen
+        spread: false,                // A: Lookahead - bei Knappheit gleichmäßig über Zeit verteilen
         prioritizeCategories: false,  // B: Hochpriore Kategorie zuerst, niedrige weglassen bei Knappheit
         roundRobin: false,            // C: Spieler reihum nutzen statt immer den ersten in Prio-Liste
         preferHeal: false,            // D: Reine Heiler vor Utility-Heals bevorzugen
@@ -737,7 +737,7 @@ window.CD_AUTO_PLANNER = (function () {
             var ov = eventOverrides[key] || {};
             var isMythic = evt.name && (evt.name.indexOf('(HC)') !== -1 || evt.name.indexOf('(Mythisch)') !== -1 || evt.name.indexOf('(Mythic)') !== -1 || evt.name.indexOf('(M)') !== -1);
             // defaultDisabled: Event bleibt in der Config (Trigger, Zeiten), ist aber
-            // standardmäßig AUS — nur Key-Fähigkeiten sind an. Per Häkchen im
+            // standardmäßig AUS - nur Key-Fähigkeiten sind an. Per Häkchen im
             // Event-Manager reaktivierbar (Override gewinnt immer).
             var disabled = ov.disabled !== undefined ? ov.disabled : (evt.defaultDisabled === true || isMythic);
             if (disabled) return;
@@ -967,7 +967,7 @@ window.CD_AUTO_PLANNER = (function () {
                 timeline.push({
                     eventIdx: eventIdx,
                     eventKey: event._key,
-                    // castIdx = der wievielte Cast DIESES Events (1,2,3...) — die
+                    // castIdx = der wievielte Cast DIESES Events (1,2,3...) - die
                     // Nummer, die auch die Eskalations-Phasen meinen. castNum wird
                     // darunter global pro Event-NAME neu vergeben und dient nur noch
                     // als Schlüsselbestandteil für gespeicherte Overrides.
@@ -1043,7 +1043,7 @@ window.CD_AUTO_PLANNER = (function () {
                 if (oKey.indexOf(prefix) !== 0) return;
                 var rest = oKey.substring(prefix.length);
                 // Keys von Continuous-Coverage-Folgezeilen ("...-c1-cat") nicht
-                // der Basiszeile zuordnen — die Folgezeile matcht selbst.
+                // der Basiszeile zuordnen - die Folgezeile matcht selbst.
                 if (/^c\d+-/.test(rest)) return;
                 var ov = manualOverrides[oKey];
                 if (ov && ov.player && ov.dbName && !ov.skip && !ov.isVirtualCategoryKey && !ov.isExtraPlaceholder && isPlayerInRoster(ov.player)) {
@@ -1072,7 +1072,7 @@ window.CD_AUTO_PLANNER = (function () {
         var spreadAllow = {};
         if (assignStrategy.spread) {
             // Gruppen: (Event, Kategorie) → Liste der Slot-INSTANZEN über alle Casts.
-            // Bei "any_dr:2" zählt jeder Cast doppelt — die Kapazität muss ja beide
+            // Bei "any_dr:2" zählt jeder Cast doppelt - die Kapazität muss ja beide
             // gleichzeitigen Slots aus demselben Spieler-Pool bedienen.
             var groups = {};
             timeline.forEach(function (row) {
@@ -1098,7 +1098,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var spells = getResolvedCategory(catKey);
 
                 // Realistische Kapazität: DISTINCTE verfügbare Spieler (nicht pro Spell
-                // doppelt zählen — das war der Bug, der zu "alle CDs am Anfang, dann
+                // doppelt zählen - das war der Bug, der zu "alle CDs am Anfang, dann
                 // nichts mehr" führte) und pro Spieler die tatsächlich mögliche Anzahl
                 // Casts im Zeitfenster, basierend auf seinem kürzesten anwendbaren CD.
                 var playerBestCd = {};
@@ -1153,7 +1153,7 @@ window.CD_AUTO_PLANNER = (function () {
         // ──────────────────────────────────────────────────────────────
 
         // ──────────────────────────────────────────────────────────────
-        // STRATEGIE C — ROUND-ROBIN
+        // STRATEGIE C - ROUND-ROBIN
         // Counter pro (Spell+Spieler-Klasse-Kombo) zurücksetzen, damit
         // wir Spieler-Listen rotieren können statt immer Index 0 zu nehmen.
         // ──────────────────────────────────────────────────────────────
@@ -1402,7 +1402,7 @@ window.CD_AUTO_PLANNER = (function () {
     // ══════════════════════════════════════════════════════════════
 
     // Auto-injizierte Lust&Banner-Hilfszeilen (SL/Banner Folge-Casts,
-    // 3-Minuten-Wiederholungen, Kampfbeginn-SL/Banner) — standardmäßig
+    // 3-Minuten-Wiederholungen, Kampfbeginn-SL/Banner) - standardmäßig
     // ausgeblendet, per Toggle unter der Tabelle einblendbar. Die Zuweisung
     // und der Export laufen unabhängig davon ganz normal weiter.
     var _showLustBanner = false;
@@ -1412,7 +1412,7 @@ window.CD_AUTO_PLANNER = (function () {
 
     // Eingeklappte Event-Blöcke (eventKey → true). Ein Event mit vielen Casts
     // (z.B. Kreischen mit 28) lässt sich so zu einer Zeile zusammenfalten,
-    // damit die anderen Fähigkeiten übersichtlich bleiben. Reine Anzeige —
+    // damit die anderen Fähigkeiten übersichtlich bleiben. Reine Anzeige -
     // Zuweisung, Speichern und Export bleiben unberührt.
     var _collapsedEvents = {};
 
@@ -1426,7 +1426,7 @@ window.CD_AUTO_PLANNER = (function () {
         // Kampfbeginn (t=0) zuerst, danach jedes Event als Block mit seinen
         // Casts #1, #2, #3... direkt untereinander (statt zeitlich mit anderen
         // Events verschachtelt). Blöcke sortiert nach ihrem ersten Cast.
-        // WICHTIG: nur die DARSTELLUNG ist gruppiert — die Zuweisung selbst
+        // WICHTIG: nur die DARSTELLUNG ist gruppiert - die Zuweisung selbst
         // (autoAssign) bleibt chronologisch, sonst stimmt die CD-Verfügbarkeit
         // nicht. data-row zeigt weiter auf den Original-Index in assignments.
         var groupMin = {};
@@ -1447,7 +1447,7 @@ window.CD_AUTO_PLANNER = (function () {
             return a - b;
         });
 
-        // Lust&Banner-Hilfszeilen ausblenden (Standard) — Toggle unten
+        // Lust&Banner-Hilfszeilen ausblenden (Standard) - Toggle unten
         var lbRowCount = timeline.filter(isLustBannerHelperRow).length;
         var hasLustBanner = lbRowCount > 0 || timeline.some(function (r) {
             return requiredHasCat(r.requiredCDs, 'stormlash') || requiredHasCat(r.requiredCDs, 'skull_banner');
@@ -1468,7 +1468,7 @@ window.CD_AUTO_PLANNER = (function () {
             }
             groupOf[g].idxs.push(i);
         });
-        // Eingeklappte Gruppen fliegen komplett aus der Darstellung — dadurch
+        // Eingeklappte Gruppen fliegen komplett aus der Darstellung - dadurch
         // verschwinden auch ihre Spalten und die restlichen CDs rücken zusammen.
         var visibleIdx = [];
         groups.forEach(function (g) {
@@ -1533,11 +1533,11 @@ window.CD_AUTO_PLANNER = (function () {
             var inst = slotInstanceNum(k);
             var n = isLegacyExtra ? 'Zusatz (alt)' : (cat ? cat.shortName : b);
             if (!isLegacyExtra && baseHasSiblings[b] > 1) n += ' #' + inst;
-            var t = isLegacyExtra ? ' title="Zusatz-CD aus einem älteren Plan. Über das Dropdown auf „—" setzen, um ihn zu entfernen."' : '';
+            var t = isLegacyExtra ? ' title="Zusatz-CD aus einem älteren Plan. Über das Dropdown auf „-" setzen, um ihn zu entfernen."' : '';
             return '<th class="py-2 px-2 min-w-[170px]"' + t + ' style="border-bottom:2px solid ' + c + ';"><span style="color:' + c + ';">' + n + '</span></th>';
         }).join('');
 
-        // Die Delay-Spalte ist ein reines Export-Stellrad — für Gäste nur Rauschen.
+        // Die Delay-Spalte ist ein reines Export-Stellrad - für Gäste nur Rauschen.
         var canEdit = !!window.isManager;
         var fixedCols = canEdit ? 5 : 4;
 
@@ -1597,7 +1597,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var slot = row.slots[slotKey];
                 var isReq = requiredKeys.indexOf(slotKey) !== -1;
 
-                // Skipped — bewusst „kein CD nötig", also so leise wie möglich
+                // Skipped - bewusst „kein CD nötig", also so leise wie möglich
                 if (slot && slot.skipped) {
                     return '<td class="relative py-1 px-1 align-middle bg-slate-900/30 border border-slate-700/40" style="max-width:105px; height:34px;" title="Hier ist bewusst kein Cooldown eingeplant.">'
                         + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[11px] text-slate-600">✖</span></div>'
@@ -1610,9 +1610,9 @@ window.CD_AUTO_PLANNER = (function () {
                 // Nicht required, kein Override → dezenter Strich (klickbar)
                 if (!isReq && (!slot || !slot.player)) {
                     return '<td class="relative py-1 px-1 opacity-50 hover:opacity-100 transition-opacity align-middle bg-slate-900/20 border border-slate-700/50" style="max-width:105px; height:34px;">'
-                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[11px] text-gray-500">—</span></div>'
+                        + '<div class="pointer-events-none w-full flex items-center justify-center h-full text-center"><span class="text-[11px] text-gray-500">-</span></div>'
                         + '<select class="auto-plan-select absolute inset-0 w-full h-full opacity-0 cursor-pointer" data-row="' + rowIdx + '" data-cat="' + slotKey + '">'
-                        + '<option value="" selected>—</option></select></td>';
+                        + '<option value="" selected>-</option></select></td>';
                 }
 
                 // Spread-Gap: geplante Lücke durch Strategie A (Spread)
@@ -1628,7 +1628,7 @@ window.CD_AUTO_PLANNER = (function () {
                 // Manuell zugewiesen, aber Spieler nicht (mehr) im Roster → Warnung.
                 // Die bleibt farbig: hier muss wirklich jemand ran.
                 if (slot && slot.notInRoster) {
-                    return '<td class="relative py-1 px-1 align-middle bg-orange-900/20 border border-orange-700/40" style="max-width:105px; height:34px;" title="' + (slot.player || '') + ' ist nicht im aktuellen Roster — wird NICHT eingeplant/exportiert. Bitte neu zuweisen oder Spieler ins Roster aufnehmen.">'
+                    return '<td class="relative py-1 px-1 align-middle bg-orange-900/20 border border-orange-700/40" style="max-width:105px; height:34px;" title="' + (slot.player || '') + ' ist nicht im aktuellen Roster - wird NICHT eingeplant/exportiert. Bitte neu zuweisen oder Spieler ins Roster aufnehmen.">'
                         + '<div class="pointer-events-none w-full flex flex-col items-center justify-center h-full text-center">'
                         + '<div class="font-bold text-[11px] leading-[13px] truncate w-full text-center text-orange-300/80" style="text-decoration:line-through;">' + (slot.player || '') + '</div>'
                         + '<div class="text-[8px] leading-[10px] truncate w-full text-center text-orange-400/70">nicht im Roster</div>'
@@ -1639,7 +1639,7 @@ window.CD_AUTO_PLANNER = (function () {
                         + '</select></td>';
                 }
 
-                // Unavailable — kein CD frei. Dezent, sonst leuchtet bei 28 Casts
+                // Unavailable - kein CD frei. Dezent, sonst leuchtet bei 28 Casts
                 // die halbe Tabelle rot; die Gesamtzahl steht in der Statuszeile.
                 if (!slot || slot.unavailable) {
                     return '<td class="relative py-1 px-1 align-middle bg-slate-900/25 border border-slate-700/40" style="max-width:105px; height:34px;" title="Kein Cooldown dieser Kategorie war zu diesem Zeitpunkt frei.">'
@@ -1731,7 +1731,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var span = p.start === p.end ? '#' + p.start : '#' + p.start + '–' + p.end;
                 var cats = p.labels.length
                     ? p.labels.map(function (l) { return '<span style="color:' + l.color + ';">' + l.text + '</span>'; }).join('+')
-                    : '<span class="text-slate-600">—</span>';
+                    : '<span class="text-slate-600">-</span>';
                 return '<span class="text-slate-500">' + span + '</span>&nbsp;' + cats;
             }).join('<span class="text-slate-700"> · </span>');
         }
@@ -1840,7 +1840,7 @@ window.CD_AUTO_PLANNER = (function () {
                     fillSelectOptions(e.target);
                 }
             });
-            // Ein-/Ausklappen (Event-Blöcke, Lust&Banner) — reine Anzeige,
+            // Ein-/Ausklappen (Event-Blöcke, Lust&Banner) - reine Anzeige,
             // deshalb kein markDirty() und kein Neuberechnen der Zuweisung.
             tbody.addEventListener('click', function (e) {
                 if (!e.target || !e.target.closest) return;
@@ -1928,7 +1928,7 @@ window.CD_AUTO_PLANNER = (function () {
         var collapsedRows = displayIdx.length - visibleIdx.length;
         if (collapsedRows > 0) hidden.push(collapsedRows + ' Zeilen eingeklappt');
         updateStatus(timeline.length + ' Events, ' + missing + ' ohne CD'
-            + (hidden.length ? ' — ' + hidden.join(', ') : ''));
+            + (hidden.length ? ' - ' + hidden.join(', ') : ''));
 
         if (typeof window._autoPlannerApplyProtection === 'function') {
             window._autoPlannerApplyProtection();
@@ -1945,7 +1945,7 @@ window.CD_AUTO_PLANNER = (function () {
     // Öffnen eines konkreten Selects per fillSelectOptions() injiziert.
     //
     // Performance: Die Optionen werden EINMAL in ein <template> geparst und als
-    // DocumentFragment gecacht. Beim Öffnen wird nur noch geklont (cloneNode) —
+    // DocumentFragment gecacht. Beim Öffnen wird nur noch geklont (cloneNode) -
     // das spart das teure erneute HTML-Parsing pro Select. Der Cache überlebt
     // re-renders und wird nur neu gebaut, wenn sich Roster/CDs/Kategorien ändern
     // (erkannt über eine Signatur). Zusätzlich werden die Fragmente nach jedem
@@ -2137,9 +2137,9 @@ window.CD_AUTO_PLANNER = (function () {
         if (btn) {
             btn.classList.add('animate-pulse');
             btn.style.boxShadow = '0 0 0 2px #f59e0b';
-            btn.title = 'Events wurden geändert — klicke Auto-Assign, um die Vorschau zu aktualisieren.';
+            btn.title = 'Events wurden geändert - klicke Auto-Assign, um die Vorschau zu aktualisieren.';
         }
-        updateStatus('Events geändert — "Auto-Assign" klicken, um die Vorschau neu zu berechnen.');
+        updateStatus('Events geändert - "Auto-Assign" klicken, um die Vorschau neu zu berechnen.');
     }
 
     function clearPreviewStale() {
@@ -2189,7 +2189,7 @@ window.CD_AUTO_PLANNER = (function () {
     }
 
     // ══════════════════════════════════════════════════════════════
-    // EVENT MANAGER — Events deaktivieren, editieren, hinzufügen
+    // EVENT MANAGER - Events deaktivieren, editieren, hinzufügen
     // ══════════════════════════════════════════════════════════════
 
     function renderEventManager() {
@@ -2276,7 +2276,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var label = c ? c.shortName : spec.key;
                 return spec.count > 1 ? label + ' ×' + spec.count : label;
             }).join(', ');
-            if (!catLabels) catLabels = '—';
+            if (!catLabels) catLabels = '-';
 
             var customBadge = r._isCustom ? '<span class="text-[8px] text-emerald-400" title="Selbst angelegt">★</span>' : '';
 
@@ -2306,7 +2306,7 @@ window.CD_AUTO_PLANNER = (function () {
             var rowHasSettings = settingsActive || soakConfigured || catsCustom || (tMode !== 'auto');
 
             var settingsTitle = 'Event-Dauer & Eskalations-Phasen'
-                + (settingsActive ? ' — AKTIV: ' + settingsBits.join(', ') : '');
+                + (settingsActive ? ' - AKTIV: ' + settingsBits.join(', ') : '');
 
             return '<div class="evt-row ' + (r.disabled ? 'disabled' : '') + (rowHasSettings ? ' has-settings' : '') + '" data-key="' + r._key + '">'
                 + '<input type="checkbox" class="evt-enabled" data-key="' + r._key + '"' + (r.disabled ? '' : ' checked') + ' title="Aktiv">'
@@ -2319,7 +2319,7 @@ window.CD_AUTO_PLANNER = (function () {
                 + (function () {
                     var soakBtnVisible = requiredHasCat(r.requiredCDs, 'tank_soak_phys');
                     return '<div style="display:flex;gap:4px;min-width:0;">'
-                        + '<button class="evt-cat-btn' + (catsCustom ? ' custom' : '') + '" data-key="' + r._key + '" title="' + (catsCustom ? 'Kategorien angepasst — ' : '') + 'Klicken um Kategorien zu ändern" style="flex:1;min-width:0;">' + catLabels + ' ' + customBadge + (catsCustom ? ' ✎' : '') + '</button>'
+                        + '<button class="evt-cat-btn' + (catsCustom ? ' custom' : '') + '" data-key="' + r._key + '" title="' + (catsCustom ? 'Kategorien angepasst - ' : '') + 'Klicken um Kategorien zu ändern" style="flex:1;min-width:0;">' + catLabels + ' ' + customBadge + (catsCustom ? ' ✎' : '') + '</button>'
                         + (soakBtnVisible ? '<button class="evt-soak-btn' + (soakConfigured ? ' active' : '') + '" data-key="' + r._key + '" title="Soak-Einstellungen' + (soakConfigured ? ' (konfiguriert)' : '') + '" style="flex:0 0 auto;background:#0f172a;border:1px solid #c8aa6e;color:#c8aa6e;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;">🛡</button>' : '')
                         + '<button class="evt-settings-btn' + (settingsActive ? ' active' : '') + '" data-key="' + r._key + '" title="' + settingsTitle.replace(/"/g, '&quot;') + '" style="flex:0 0 auto;background:#0f172a;border:1px solid #64748b;color:#94a3b8;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;">⚙️' + (settingsActive ? '<span style="color:#22d3ee;">•</span>' : '') + '</button>'
                         + '<button class="evt-copy-btn" data-key="' + r._key + '" title="Komplette CD-Einteilung dieses Events auf ein anderes Event kopieren" style="flex:0 0 auto;background:#0f172a;border:1px solid #64748b;color:#94a3b8;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;">⧉</button>'
@@ -2337,6 +2337,14 @@ window.CD_AUTO_PLANNER = (function () {
             + header + html;
 
         attachEventManagerListeners();
+
+        // Sicherheitsnetz: Die Danger-Zone hängt neben diesem Container, kann
+        // aber bei sehr alten Boss-Layouts noch darin liegen. Falls sie durch das
+        // innerHTML-Neuzeichnen verschwunden ist, hier wieder aufbauen.
+        if (window.isManager && !document.getElementById('planner-danger-zone')) {
+            injectResetEventsButton();
+            injectWipeButton();
+        }
     }
 
     function attachEventManagerListeners() {
@@ -2477,7 +2485,7 @@ window.CD_AUTO_PLANNER = (function () {
         markDirty();
 
         if (!silent) {
-            // Event-Änderungen NICHT mehr sofort in die Vorschau verteilen — erst auf
+            // Event-Änderungen NICHT mehr sofort in die Vorschau verteilen - erst auf
             // "Auto-Assign". Nur den Event-Manager neu zeichnen und Vorschau als veraltet markieren.
             renderEventManager();
             markPreviewStale();
@@ -2541,7 +2549,7 @@ window.CD_AUTO_PLANNER = (function () {
         var triggerDropdown = '';
         if (triggerOptions.length) {
             triggerDropdown = '<select id="trg-pick-trigger" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">'
-                + '<option value="">— Aus triggerMap (Default) —</option>'
+                + '<option value="">- Aus triggerMap (Default) -</option>'
                 + triggerOptions.map(function (t) {
                     return '<option value="' + t.val + '"' + (currentTrigger === t.val ? ' selected' : '') + ' title="' + t.val + '">' + t.text + '</option>';
                 }).join('')
@@ -2552,7 +2560,7 @@ window.CD_AUTO_PLANNER = (function () {
         var npcDropdown = '';
         if (npcOptions.length) {
             npcDropdown = '<select id="trg-pick-npc" class="w-full bg-slate-900 text-white p-2 rounded border border-slate-600 text-sm">'
-                + '<option value="">— NPC wählen —</option>'
+                + '<option value="">- NPC wählen -</option>'
                 + npcOptions.map(function (n) {
                     return '<option value="' + n + '"' + (currentNpc === n ? ' selected' : '') + '>' + n + '</option>';
                 }).join('')
@@ -2649,7 +2657,7 @@ window.CD_AUTO_PLANNER = (function () {
     // EVENT-EINSTELLUNGEN + ESKALATIONS-PLANER
     // Geplant wird CAST-WEISE ("beim 6. Schrei der erste Heal-CD, beim 7. eine
     // BoP"). Gespeichert wird weiterhin im kompakten start/end-Format, in das
-    // die Cast-Liste beim Speichern wieder zusammengefasst wird — alte Pläne
+    // die Cast-Liste beim Speichern wieder zusammengefasst wird - alte Pläne
     // bleiben dadurch unverändert lesbar.
     // ══════════════════════════════════════════════════════════════
     function openEventSettingsPicker(eventKey) {
@@ -2762,7 +2770,7 @@ window.CD_AUTO_PLANNER = (function () {
 
             + '<div class="border-t border-slate-700 pt-3">'
             + '<div class="flex items-baseline justify-between mb-1">'
-            + '<div class="text-[11px] font-bold text-gray-200">📈 Eskalation — welcher Cast bekommt welche CDs?</div>'
+            + '<div class="text-[11px] font-bold text-gray-200">📈 Eskalation - welcher Cast bekommt welche CDs?</div>'
             + '<div class="text-[10px] text-gray-500" id="es-cycle-info"></div>'
             + '</div>'
             + '<div class="text-[10px] text-gray-500 mb-2">Casts anklicken (Shift = Bereich, Strg = einzeln dazu), dann unten die Kategorien setzen.</div>'
@@ -2797,7 +2805,7 @@ window.CD_AUTO_PLANNER = (function () {
         }
 
         function renderCasts() {
-            // Scrollposition halten — bei 28 Casts würde die Liste sonst bei jedem
+            // Scrollposition halten - bei 28 Casts würde die Liste sonst bei jedem
             // Klick nach oben springen.
             var scroll = castsEl.scrollTop;
             var html = '';
@@ -2846,8 +2854,8 @@ window.CD_AUTO_PLANNER = (function () {
             paletteEl.innerHTML = html || '<span class="text-[10px] text-gray-600">Keine Kategorien vorhanden.</span>';
             paletteEl.style.opacity = chosen.length ? '1' : '0.4';
             palLabelEl.textContent = chosen.length
-                ? 'Kategorien für die Auswahl — nochmal auf ×N klicken für mehrere gleichzeitig'
-                : 'Kategorien — erst oben Casts auswählen';
+                ? 'Kategorien für die Auswahl - nochmal auf ×N klicken für mehrere gleichzeitig'
+                : 'Kategorien - erst oben Casts auswählen';
         }
 
         function renderSummary() {
@@ -2868,7 +2876,7 @@ window.CD_AUTO_PLANNER = (function () {
                         var c = sp && categories[sp.key];
                         return (c ? c.shortName : (sp ? sp.key : e)) + (sp && sp.count > 1 ? '×' + sp.count : '');
                     }).join('+')
-                    : '—';
+                    : '-';
                 return '<span class="text-gray-400">' + span + '</span> ' + labels;
             }).join(' · ');
         }
@@ -3004,7 +3012,7 @@ window.CD_AUTO_PLANNER = (function () {
 
         var mHead = document.createElement('div');
         mHead.className = 'p-3 border-b border-slate-700 flex justify-between items-center';
-        mHead.innerHTML = '<h3 class="text-sm font-bold text-gray-200">Event-Einstellungen — '
+        mHead.innerHTML = '<h3 class="text-sm font-bold text-gray-200">Event-Einstellungen - '
             + (evtIcon ? evtIcon + ' ' : '') + String(evtName).replace(/</g, '&lt;') + '</h3>';
 
         var mBody = document.createElement('div');
@@ -3073,7 +3081,7 @@ window.CD_AUTO_PLANNER = (function () {
             return tanks.map(function (t) { return '<option value="' + t + '"' + ((curTank === t || (!curTank && tanks[0] === t)) ? ' selected' : '') + '>' + t + '</option>'; }).join('');
         }
         function safetyOpts(tankName) {
-            var opts = '<option value="">— kein Safety —</option>';
+            var opts = '<option value="">- kein Safety -</option>';
             safetyOptionsFor(tankName).forEach(function (s) { opts += '<option value="' + s.spellId + '"' + (curSafety === s.spellId ? ' selected' : '') + '>' + s.dbName + ' (' + s.player + ')</option>'; });
             return opts;
         }
@@ -3165,7 +3173,7 @@ window.CD_AUTO_PLANNER = (function () {
     // ══════════════════════════════════════════════════════════════
     // EVENT-EINTEILUNG KOPIEREN
     // Überträgt die komplette CD-Einteilung eines Events (alle Casts)
-    // auf ein anderes Event — z.B. „Kreischen P1" → „Kreischen P2".
+    // auf ein anderes Event - z.B. „Kreischen P1" → „Kreischen P2".
     // Cast #1 landet auf Cast #1, #2 auf #2 usw.; die kopierten CDs werden
     // als manuelle Zuweisungen gesetzt (gelb), damit Auto-Assign sie nicht
     // wieder überschreibt.
@@ -3176,7 +3184,7 @@ window.CD_AUTO_PLANNER = (function () {
     //
     // Bewusst NICHT row.castNum als Schlüssel: das ist ein globaler Zähler pro
     // Event-NAME (siehe generateTimeline). Zwei gleichnamige Event-Blöcke teilen
-    // ihn sich, der zweite Block fängt dann z.B. bei #5 an — beim Kopieren fand
+    // ihn sich, der zweite Block fängt dann z.B. bei #5 an - beim Kopieren fand
     // dadurch kein einziger Cast seinen Partner. Die Position innerhalb des
     // Events ist dagegen immer 1..n und passt auf beiden Seiten zusammen.
     function collectEventSlots(eventKey) {
@@ -3184,7 +3192,7 @@ window.CD_AUTO_PLANNER = (function () {
         var pos = 0;
         (assignments || []).forEach(function (r) {
             // Continuous-Coverage-Folgezeilen werden beim Ziel automatisch neu
-            // erzeugt — die dürfen nicht mitkopiert werden.
+            // erzeugt - die dürfen nicht mitkopiert werden.
             if (r.eventKey !== eventKey || r._isContinuous) return;
             pos++;
             var slots = {};
@@ -3192,7 +3200,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var s = r.slots[sk];
                 if (!s || s.isExtraPlaceholder || s.unavailable || s.spreadGap || s.notInRoster) return;
                 // „Kein CD nötig" ist eine bewusste Planungs-Entscheidung und
-                // gehört mit ins Ziel — sonst weist Auto-Assign dort wieder zu.
+                // gehört mit ins Ziel - sonst weist Auto-Assign dort wieder zu.
                 if (s.skipped || s.player === '__SKIP__') {
                     slots[sk] = { player: '__SKIP__', dbName: '__SKIP__', skip: true };
                     return;
@@ -3314,7 +3322,7 @@ window.CD_AUTO_PLANNER = (function () {
 
         // Die Quelle mit festhalten: die kopierten CDs sind im Ziel jetzt manuell
         // und blockieren dort die Cooldowns. Bliebe die Quelle automatisch, würde
-        // Auto-Assign sie beim nächsten Lauf neu verteilen — es sähe aus, als hätte
+        // Auto-Assign sie beim nächsten Lauf neu verteilen - es sähe aus, als hätte
         // das Kopieren die falsche Seite verändert.
         if (opts.pinSource !== false) {
             srcRows.forEach(function (r, i) {
@@ -3348,7 +3356,7 @@ window.CD_AUTO_PLANNER = (function () {
         if (opts.categories) {
             // silent=true: kein Zwischen-Rerender, der Aufrufer startet Auto-Assign
             setOverride(dstKey, 'requiredCDs', eventRequiredCDs(srcKey), true);
-            // Die Eskalation gehört zur Einteilung dazu — ohne sie bekäme das Ziel
+            // Die Eskalation gehört zur Einteilung dazu - ohne sie bekäme das Ziel
             // bei 28 Casts überall dieselben Kategorien statt des geplanten Aufbaus.
             var srcEsc = eventEscalation(srcKey);
             setOverride(dstKey, 'escalationRanges', JSON.parse(JSON.stringify(srcEsc.ranges)), true);
@@ -3372,7 +3380,7 @@ window.CD_AUTO_PLANNER = (function () {
         var srcCdCount = srcCasts.reduce(function (n, c) { return n + Object.keys(srcSlots[c]).length; }, 0);
 
         if (!assignments || !assignments.length) {
-            if (window.showModal) window.showModal('Erst „Auto-Zuweisen" ausführen — es gibt noch keine Einteilung zum Kopieren.');
+            if (window.showModal) window.showModal('Erst „Auto-Zuweisen" ausführen - es gibt noch keine Einteilung zum Kopieren.');
             return;
         }
         if (srcCdCount === 0) {
@@ -3408,13 +3416,13 @@ window.CD_AUTO_PLANNER = (function () {
 
         modal.innerHTML = '<h4 class="text-lg font-bold text-white mb-1">CD-Einteilung kopieren</h4>'
             + '<div class="text-xs text-gray-400 mb-3">Von <span class="text-cyan-300 font-bold">' + String(eventDisplayName(srcKey)).replace(/</g, '&lt;') + '</span>'
-            + ' — <b>' + srcCastCount + '</b> Casts mit insgesamt <b>' + srcCdCount + '</b> CDs.</div>'
+            + ' - <b>' + srcCastCount + '</b> Casts mit insgesamt <b>' + srcCdCount + '</b> CDs.</div>'
             + '<label class="block text-[10px] text-gray-400 mb-1 uppercase tracking-wide">Ziel-Event</label>'
             + '<select id="cp-target" class="w-full bg-slate-900 border border-slate-700 text-white text-xs px-2 py-1.5 rounded mb-3">' + optHtml + '</select>'
             + '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
             + '<input type="checkbox" id="cp-cats" checked style="accent-color:#22d3ee;">'
             + '<span class="text-xs text-gray-300">Kategorien + Eskalation mit übernehmen '
-            + '<span class="text-gray-500">(' + (srcRequired.length ? srcRequired.join(', ') : '—')
+            + '<span class="text-gray-500">(' + (srcRequired.length ? srcRequired.join(', ') : '-')
             + (srcEscCount ? ', ' + srcEscCount + ' Eskalations-Phasen' : '') + ')</span></span></label>'
             + '<label class="flex items-center gap-2 p-2 hover:bg-slate-700/40 rounded cursor-pointer">'
             + '<input type="checkbox" id="cp-overwrite" checked style="accent-color:#22d3ee;">'
@@ -3426,9 +3434,9 @@ window.CD_AUTO_PLANNER = (function () {
             + '<div class="text-[10px] text-gray-500 mt-2 mb-3 leading-relaxed">Der 1. Cast der Quelle landet auf dem 1. Cast des Ziels, der 2. auf dem 2. usw. '
             + 'Hat das Ziel weniger Casts, wird nur so weit kopiert, wie es reicht. '
             + 'Mit „überschreiben" wird das Ziel vorher geleert, sonst bleiben dort vorhandene Zuweisungen stehen. '
-            + 'Die kopierten CDs gelten danach als <span class="text-yellow-400">manuell</span> (gelb) — Auto-Assign überschreibt sie nicht mehr. '
+            + 'Die kopierten CDs gelten danach als <span class="text-yellow-400">manuell</span> (gelb) - Auto-Assign überschreibt sie nicht mehr. '
             + 'Liegen beide Events so dicht beieinander, dass ein CD nicht wieder bereit ist, wird das danach als '
-            + '<b>Doppelbelegung</b> gemeldet — kopiert wird trotzdem.</div>'
+            + '<b>Doppelbelegung</b> gemeldet - kopiert wird trotzdem.</div>'
             + '<div class="flex justify-end gap-2">'
             + '<button id="cp-cancel" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1.5 rounded text-sm">Abbrechen</button>'
             + '<button id="cp-ok" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-sm font-bold">Kopieren</button>'
@@ -3464,13 +3472,13 @@ window.CD_AUTO_PLANNER = (function () {
                 msg += '\n(' + res.pinned + ' CDs der Quelle wurden festgehalten, damit sie sich nicht neu verteilen.)';
             }
             if (res.missingCasts > 0) {
-                msg += '\n\n⚠ ' + res.missingCasts + ' Cast(s) konnten nicht übertragen werden — das Ziel-Event hat weniger Casts.'
+                msg += '\n\n⚠ ' + res.missingCasts + ' Cast(s) konnten nicht übertragen werden - das Ziel-Event hat weniger Casts.'
                     + '\nErhöhe dort „Casts", wenn du die auch brauchst.';
             }
             if (res.conflicts > 0) {
                 msg += '\n\n⚠ ' + res.conflicts + ' Doppelbelegung(en): derselbe CD wird zweimal gezogen, bevor er wieder bereit ist.'
                     + '\n' + res.conflictExamples.join('\n')
-                    + '\nDas ist so gewollt beim Kopieren — prüfe die gelben Zellen und tausche, wo es nicht passt.';
+                    + '\nDas ist so gewollt beim Kopieren - prüfe die gelben Zellen und tausche, wo es nicht passt.';
             }
             msg += '\n\nNicht vergessen: „Plan speichern".';
             if (window.showModal) window.showModal(msg);
@@ -3562,7 +3570,7 @@ window.CD_AUTO_PLANNER = (function () {
 
     function updateStatus(msg) {
         var el = document.getElementById('auto-planner-status');
-        if (el) el.textContent = config.name + ' — ' + msg;
+        if (el) el.textContent = config.name + ' - ' + msg;
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -3950,7 +3958,7 @@ window.CD_AUTO_PLANNER = (function () {
                 }, { merge: false }
             );
             clearDirty();
-            if (window.showModal) window.showModal("Auto-Plan gespeichert!");
+            if (window.showModal) window.showModal("Matrix-Plan gespeichert!");
         } catch (e) { if (window.showModal) window.showModal("Fehler: " + e.message); }
     }
 
@@ -3991,7 +3999,7 @@ window.CD_AUTO_PLANNER = (function () {
                         r.requiredCDs = ov.requiredCDs !== undefined ? ov.requiredCDs : (evtObj.requiredCDs || []);
 
                         // Eskalation genauso auswerten wie generateTimeline, sonst
-                        // bekäme jeder Cast des Events dieselben Kategorien — in der
+                        // bekäme jeder Cast des Events dieselben Kategorien - in der
                         // geladenen (Nur-Lese-)Ansicht stünde dann überall „kein CD
                         // frei", wo bewusst gar keiner geplant war.
                         var escR = ov.escalationRanges !== undefined ? ov.escalationRanges : (evtObj.escalationRanges || []);
@@ -4031,7 +4039,7 @@ window.CD_AUTO_PLANNER = (function () {
 
                     // Doppelt gespeicherte Eskalations-Bereiche aufräumen (Altlast
                     // eines früheren Bugs). Die Bereiche selbst stehen in
-                    // eventOverrides — aus den gespeicherten Zeilen lassen sie sich
+                    // eventOverrides - aus den gespeicherten Zeilen lassen sie sich
                     // nicht rekonstruieren, savePlan schreibt requiredCDs gar nicht mit.
                     Object.keys(eventOverrides).forEach(function (k) {
                         var eo = eventOverrides[k];
@@ -4142,7 +4150,7 @@ window.CD_AUTO_PLANNER = (function () {
                 '#cd-categories-container::-webkit-scrollbar { width: 8px; }' +
                 '#cd-categories-container::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }' +
                 '#cd-categories-container::-webkit-scrollbar-track { background: #1e293b; }' +
-                // Der Editor scrollt bei vielen Kategorien lang — die Kopfzeile mit
+                // Der Editor scrollt bei vielen Kategorien lang - die Kopfzeile mit
                 // „Speichern" bleibt deshalb oben stehen statt wegzuscrollen.
                 '#cd-cat-toolbar { position: sticky; top: 0; z-index: 5; background: #0f172a; ' +
                 'border-bottom: 1px solid #334155; padding: 6px 0; margin: 0 0 12px 0; }' +
@@ -4151,7 +4159,7 @@ window.CD_AUTO_PLANNER = (function () {
             document.head.appendChild(styleTag);
         }
 
-        // Speichern-Button gehört fest zur Kopfzeile des Editors — er wird bei
+        // Speichern-Button gehört fest zur Kopfzeile des Editors - er wird bei
         // jedem Rendern mit erzeugt und in attachEditorListeners frisch verdrahtet.
         var addCatBtn = '<div id="cd-cat-toolbar" class="flex items-center gap-2 flex-wrap">'
             + '<button id="btn-add-category" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs py-1.5 px-3 rounded border border-emerald-500">+ Neue Kategorie</button>'
@@ -4270,7 +4278,7 @@ window.CD_AUTO_PLANNER = (function () {
     }
 
     function attachEditorListeners() {
-        // Speichern — der Button wird bei jedem Rendern neu erzeugt, also hier
+        // Speichern - der Button wird bei jedem Rendern neu erzeugt, also hier
         // auch jedes Mal neu verdrahtet.
         var saveCatBtn = document.getElementById('btn-save-categories');
         if (saveCatBtn) {
@@ -4558,7 +4566,7 @@ window.CD_AUTO_PLANNER = (function () {
             var sid = String(s.spellId);
             existingCounts[sid] = (existingCounts[sid] || 0) + 1;
         });
-        // Alle Spells aus der DB anzeigen — Duplikate explizit erlaubt für spec-spezifische Prio
+        // Alle Spells aus der DB anzeigen - Duplikate explizit erlaubt für spec-spezifische Prio
         var availableCDs = cooldownsDB.filter(function (cd) {
             return cd.name && cd.spellId && cd.name.indexOf('---') !== 0 && cd.name.indexOf('-- ') !== 0;
         });
@@ -4663,7 +4671,7 @@ window.CD_AUTO_PLANNER = (function () {
         // Änderungen (geleerte Zuweisungen) in DB speichern
         try {
             await savePlan();
-            updateStatus("Auto-Plan geleert (Zuweisungen entfernt, Events beibehalten).");
+            updateStatus("Matrix-Plan geleert (Zuweisungen entfernt, Events beibehalten).");
         } catch (e) {
             console.error("[Auto-Planner] clearPlan error:", e);
             updateStatus("Plan lokal geleert (Fehler beim Speichern: " + e.message + ")");
@@ -4687,11 +4695,11 @@ window.CD_AUTO_PLANNER = (function () {
         });
 
         // ══════════════════════════════════════════════════════════
-        // MANAGER-UI — Editoren nur für Gildenräte aufbauen.
+        // MANAGER-UI - Editoren nur für Gildenräte aufbauen.
         // Läuft der Login erst NACH dem Init durch, holt der Watcher weiter
         // unten das nach (früher blieben die Panels dann für immer weg).
         // ══════════════════════════════════════════════════════════
-        // Alt-Buttons aus dem Boss-HTML sofort wegräumen — auch für Gäste, damit
+        // Alt-Buttons aus dem Boss-HTML sofort wegräumen - auch für Gäste, damit
         // nirgends ein toter „Kategorien speichern"-Button stehen bleibt.
         dropLegacySaveCategoriesButtons();
 
@@ -4739,7 +4747,7 @@ window.CD_AUTO_PLANNER = (function () {
         buildManagerUI();
 
         // ══════════════════════════════════════════════════════════
-        // MANAGER-SCHUTZ — Nur Gildenräte können den Auto-Plan ändern.
+        // MANAGER-SCHUTZ - Nur Gildenräte können den Matrix-Plan ändern.
         // Gäste sehen den fertigen Plan trotzdem: Tabelle, Ein-/Ausklappen
         // und Tooltips funktionieren ganz normal, nur Bearbeiten ist gesperrt.
         // ══════════════════════════════════════════════════════════
@@ -4853,20 +4861,9 @@ window.CD_AUTO_PLANNER = (function () {
         });
         // „Kategorien speichern" wird vom Kategorie-Editor selbst gerendert und
         // verdrahtet (siehe renderCategoriesAdmin/attachEditorListeners).
-        document.getElementById('btn-clear-auto').addEventListener('click', function () {
-            if (!window.isManager) {
-                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
-                return;
-            }
-            var msg = "Auto-Plan Zuweisungen leeren?\n\nLöscht alle Zuweisungen im Auto-Plan, behält aber die Event-Anpassungen (Häkchen) bei.\nDie CD-Planer-Einträge im Raidplan bleiben unangetastet.";
-            if (typeof window.showModal === 'function') {
-                var r = window.showModal(msg, true);
-                if (r && typeof r.then === 'function') { r.then(function (ok) { if (ok) clearPlan(); }); }
-                else clearPlan();
-            } else { if (confirm(msg)) clearPlan(); }
-        });
+        document.getElementById('btn-clear-auto').addEventListener('click', handleClearAutoPlan);
 
-        // Manager-Buttons (Reset/Clear/Wipe) hängen an buildManagerUI() — sie
+        // Manager-Buttons (Reset/Clear/Wipe) hängen an buildManagerUI() - sie
         // werden auch dann noch nachgezogen, wenn der Login später durchläuft.
         applyManagerProtection();
 
@@ -4877,7 +4874,7 @@ window.CD_AUTO_PLANNER = (function () {
             }
             updateStatus(window.isManager
                 ? 'Gespeicherter Plan geladen. Klicke auf "Auto-Zuweisen", um bei Roster-Änderungen neu zu berechnen.'
-                : 'Gespeicherte CD-Einteilung — Nur-Lese-Ansicht.');
+                : 'Gespeicherte CD-Einteilung - Nur-Lese-Ansicht.');
         } else if (!window.isManager) {
             updateStatus('Für diesen Boss ist noch keine CD-Einteilung gespeichert.');
         } else {
@@ -4886,7 +4883,7 @@ window.CD_AUTO_PLANNER = (function () {
     }
 
     // ══════════════════════════════════════════════════════════════
-    // STRATEGIE-PANEL — UI für die 3 Verteilungs-Toggles
+    // STRATEGIE-PANEL - UI für die 3 Verteilungs-Toggles
     // ══════════════════════════════════════════════════════════════
     function renderStrategyPanel() {
         if (!window.isManager) return;
@@ -4912,35 +4909,35 @@ window.CD_AUTO_PLANNER = (function () {
             '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
             '<input type="checkbox" id="strat-spread" class="mt-1 accent-cyan-500" ' + (s.spread ? 'checked' : '') + '>' +
             '<div>' +
-            '<div class="font-semibold text-gray-200">A — Spread (Lookahead)</div>' +
+            '<div class="font-semibold text-gray-200">A - Spread (Lookahead)</div>' +
             '<div class="text-[10px] text-gray-400">Bei Knappheit Casts gleichmäßig über die Zeit verteilen statt am Anfang ballen. Lücken werden als "geplante Lücken" markiert.</div>' +
             '</div>' +
             '</label>' +
             '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
             '<input type="checkbox" id="strat-prio" class="mt-1 accent-cyan-500" ' + (s.prioritizeCategories ? 'checked' : '') + '>' +
             '<div>' +
-            '<div class="font-semibold text-gray-200">B — Kategorien-Priorisierung</div>' +
-            '<div class="text-[10px] text-gray-400">Legt fest, <b>welche Kategorie zuerst einen Spieler bekommt</b>, wenn mehrere Kategorien im selben Event dieselben Spieler brauchen. Reihenfolge = wie die Kategorien am Event hinterlegt sind (die erste zuerst). Beispiel: Ein Paladin könnte „Aura“ oder „Handauflegung“ geben — mit B bekommt die zuerst gelistete Kategorie ihn, die andere bleibt in diesem Cast leer. <b>Ohne</b> B entscheidet die globale Kategorie-Reihenfolge. Wirkt nur bei Spieler-Knappheit.</div>' +
+            '<div class="font-semibold text-gray-200">B - Kategorien-Priorisierung</div>' +
+            '<div class="text-[10px] text-gray-400">Legt fest, <b>welche Kategorie zuerst einen Spieler bekommt</b>, wenn mehrere Kategorien im selben Event dieselben Spieler brauchen. Reihenfolge = wie die Kategorien am Event hinterlegt sind (die erste zuerst). Beispiel: Ein Paladin könnte „Aura“ oder „Handauflegung“ geben - mit B bekommt die zuerst gelistete Kategorie ihn, die andere bleibt in diesem Cast leer. <b>Ohne</b> B entscheidet die globale Kategorie-Reihenfolge. Wirkt nur bei Spieler-Knappheit.</div>' +
             '</div>' +
             '</label>' +
             '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
             '<input type="checkbox" id="strat-rr" class="mt-1 accent-cyan-500" ' + (s.roundRobin ? 'checked' : '') + '>' +
             '<div>' +
-            '<div class="font-semibold text-gray-200">C — Round-Robin</div>' +
+            '<div class="font-semibold text-gray-200">C - Round-Robin</div>' +
             '<div class="text-[10px] text-gray-400">Spieler reihum nutzen statt immer den ersten. Bringt Fairness, hilft bei Lücken nur wenn Spieler-CD &lt; Event-Abstand ist.</div>' +
             '</div>' +
             '</label>' +
             '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
             '<input type="checkbox" id="strat-prefer-heal" class="mt-1 accent-cyan-500" ' + (s.preferHeal ? 'checked' : '') + '>' +
             '<div>' +
-            '<div class="font-semibold text-gray-200">D — Bevorzuge Heiler</div>' +
+            '<div class="font-semibold text-gray-200">D - Bevorzuge Heiler</div>' +
             '<div class="text-[10px] text-gray-400">Zieht reine Heiler-Klassen für defensiven CDs heran, bevor Utility-Heals (z.B. Vampirumarmung) der DDs genutzt werden.</div>' +
             '</div>' +
             '</label>' +
             '<label class="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 p-2 rounded">' +
             '<input type="checkbox" id="strat-strict-class" class="mt-1 accent-cyan-500" ' + (s.strictClassBalance ? 'checked' : '') + '>' +
             '<div>' +
-            '<div class="font-semibold text-gray-200">E — Strikte Klassen-Rotation</div>' +
+            '<div class="font-semibold text-gray-200">E - Strikte Klassen-Rotation</div>' +
             '<div class="text-[10px] text-gray-400">Verhindert, dass eine Klasse mehrfach hintereinander ihre Cooldowns ziehen muss, selbst wenn sie verfügbar wäre.</div>' +
             '</div>' +
             '</label>' +
@@ -4965,6 +4962,21 @@ window.CD_AUTO_PLANNER = (function () {
         bind('strat-strict-class', 'strictClassBalance');
     }
 
+    // Klick-Handler für "Matrix-Plan leeren". Als benannte Funktion, damit die
+    // Danger-Zone den Button bei Bedarf neu aufbauen und wieder verdrahten kann.
+    function handleClearAutoPlan() {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
+        var msg = "Matrix-Plan Zuweisungen leeren?\n\nLöscht alle Zuweisungen im Matrix-Plan, behält aber die Event-Anpassungen (Häkchen) bei.\nDie CD-Planer-Einträge im Raidplan bleiben unangetastet.";
+        if (typeof window.showModal === 'function') {
+            var r = window.showModal(msg, true);
+            if (r && typeof r.then === 'function') { r.then(function (ok) { if (ok) clearPlan(); }); }
+            else clearPlan();
+        } else { if (confirm(msg)) clearPlan(); }
+    }
+
     // ── Dynamischer Events-Reset-Button ──
     function injectResetEventsButton() {
         if (!window.isManager) return;
@@ -4977,7 +4989,7 @@ window.CD_AUTO_PLANNER = (function () {
         if (!dangerZone) {
             dangerZone = document.createElement('div');
             dangerZone.id = 'planner-danger-zone';
-            dangerZone.className = "mt-4 pt-4 border-t border-slate-700 flex flex-wrap items-center gap-2";
+            dangerZone.className = "mx-3 mb-3 pt-4 border-t border-slate-700 flex flex-wrap items-center gap-2";
 
             var title = document.createElement('div');
             title.className = 'w-full text-xs font-bold text-slate-300 mb-1 uppercase tracking-wide';
@@ -4985,14 +4997,21 @@ window.CD_AUTO_PLANNER = (function () {
             dangerZone.appendChild(title);
 
             var clearAutoBtn = document.getElementById('btn-clear-auto');
-            if (clearAutoBtn) {
-                clearAutoBtn.classList.replace('bg-slate-700', 'bg-red-800');
-                clearAutoBtn.classList.replace('hover:bg-slate-800', 'hover:bg-red-900');
-                clearAutoBtn.innerHTML = '🗑️ Auto-CD Plan leeren';
-                dangerZone.appendChild(clearAutoBtn);
+            if (!clearAutoBtn) {
+                clearAutoBtn = document.createElement('button');
+                clearAutoBtn.id = 'btn-clear-auto';
+                clearAutoBtn.addEventListener('click', handleClearAutoPlan);
             }
+            clearAutoBtn.className = 'bg-red-800 hover:bg-red-900 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-600';
+            clearAutoBtn.innerHTML = '🗑️ Matrix-Plan leeren';
+            dangerZone.appendChild(clearAutoBtn);
 
-            eventsArea.appendChild(dangerZone);
+            // WICHTIG: NEBEN #auto-planner-events einhängen, nicht hinein.
+            // renderEventManager() setzt bei jeder Event-Änderung das innerHTML
+            // dieses Containers neu - lag die Danger-Zone darin, verschwand sie
+            // (inklusive des hierher verschobenen "Matrix-Plan leeren"-Buttons)
+            // und kam erst nach einem Reload zurück.
+            (eventsArea.parentNode || eventsArea).appendChild(dangerZone);
         }
 
         var resetBtn = document.createElement('button');
@@ -5047,7 +5066,7 @@ window.CD_AUTO_PLANNER = (function () {
         clearBtn.id = 'btn-clear-planner';
         clearBtn.className = 'bg-slate-700 hover:bg-slate-800 text-white font-bold py-1.5 px-3 rounded text-xs border border-slate-500';
         clearBtn.innerHTML = '🧹 Advanced CD-Plan leeren';
-        clearBtn.title = 'Leert ALLE 200 Zeilen des Advanced CD-Plans dieses Bosses (Auto-Plan bleibt unangetastet)';
+        clearBtn.title = 'Leert ALLE 200 Zeilen des Advanced CD-Plans dieses Bosses (Matrix-Plan bleibt unangetastet)';
 
         exportBtn.parentNode.insertBefore(clearBtn, exportBtn.nextSibling);
         clearBtn.style.marginLeft = '0.5rem';
@@ -5057,7 +5076,7 @@ window.CD_AUTO_PLANNER = (function () {
                 if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
                 return;
             }
-            var msg = "Advanced CD-Plan leeren?\n\nLöscht ALLE 200 Zeilen des CD-Planers dieses Bosses (Trigger, Spieler, Cooldowns, Zeiten, Texte).\nDer Auto-CD-Plan bleibt unangetastet.\n\nFortfahren?";
+            var msg = "Advanced CD-Plan leeren?\n\nLöscht ALLE 200 Zeilen des CD-Planers dieses Bosses (Trigger, Spieler, Cooldowns, Zeiten, Texte).\nDer Matrix-Plan bleibt unangetastet.\n\nFortfahren?";
             if (typeof window.showModal === 'function') {
                 var r = window.showModal(msg, true);
                 if (r && typeof r.then === 'function') {
@@ -5167,7 +5186,7 @@ window.CD_AUTO_PLANNER = (function () {
 
             // Logbuch
             if (typeof window.logHistory === 'function') {
-                window.logHistory('Auto-Planner', 'Advanced CD-Plan geleert für Boss "' + config.name + '"',
+                window.logHistory('Matrix Planer', 'Advanced CD-Plan geleert für Boss "' + config.name + '"',
                     '200 Zeilen', currentManager);
             }
 
@@ -5193,7 +5212,7 @@ window.CD_AUTO_PLANNER = (function () {
         wipeBtn.id = 'btn-wipe-db';
         wipeBtn.className = 'bg-red-900 hover:bg-red-950 text-white font-bold py-1.5 px-3 rounded text-xs border border-red-700';
         wipeBtn.innerHTML = '☢️ DB-Einträge löschen';
-        wipeBtn.title = 'Löscht ALLE Datenbank-Einträge für diesen Boss (CD-Planer + Auto-Planer)';
+        wipeBtn.title = 'Löscht ALLE Datenbank-Einträge für diesen Boss (CD-Planer + Matrix Planer)';
         dangerZone.appendChild(wipeBtn);
 
         wipeBtn.addEventListener('click', wipeBossFromDb);
@@ -5229,7 +5248,7 @@ window.CD_AUTO_PLANNER = (function () {
                 "⚠️ ACHTUNG: Alle Datenbank-Einträge für '" + config.name + "' werden GELÖSCHT.\n\n" +
                 "Das betrifft:\n" +
                 "• Den CD-Planer (alle 200 Zeilen)\n" +
-                "• Den Auto-Planer (gespeicherter Plan + Overrides + Custom-Events)\n" +
+                "• Den Matrix Planer (gespeicherter Plan + Overrides + Custom-Events)\n" +
                 "• Sonstige Boss-Einteilungen (Tank-Zuteilungen, Bereich-Zuteilungen etc.)\n\n" +
                 "Diese Aktion kann NICHT rückgängig gemacht werden!\n\n" +
                 "Fortfahren?",
@@ -5286,7 +5305,7 @@ window.CD_AUTO_PLANNER = (function () {
         // Logbuch
         if (typeof window.logHistory === 'function') {
             var mgr = sessionStorage.getItem('currentManager') || 'Unbekannt';
-            window.logHistory('Auto-Planner', 'DB-Wipe für Boss "' + config.name + '"',
+            window.logHistory('Matrix Planer', 'DB-Wipe für Boss "' + config.name + '"',
                 deleted.join(", ") || "(nichts gelöscht)", mgr);
         }
 

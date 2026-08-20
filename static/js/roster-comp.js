@@ -1,5 +1,5 @@
 /* =========================================================================
-   roster-comp.js — Roster, Comp-Seite, Patches, Buffs, Summary
+   roster-comp.js - Roster, Comp-Seite, Patches, Buffs, Summary
    =========================================================================
    Alles rund um das Spieler-Roster:
    - Roster-Daten laden und anzeigen (5er-Gruppen + Bench)
@@ -55,7 +55,7 @@ window.RosterPatches = (function() {
         if (patch.spec)   { out.spec = patch.spec; out.specName = patch.spec; out.specialization = patch.spec; }
         if (patch.role) {
             out.role = patch.role;
-            // roles[] ist die kanonische Form im Roster — überschreiben damit alle Filter konsistent matchen
+            // roles[] ist die kanonische Form im Roster - überschreiben damit alle Filter konsistent matchen
             out.roles = [patch.role];
         }
         // Marker zur Anzeige im UI
@@ -86,7 +86,7 @@ window.RosterPatches = (function() {
         if (opts.excludeBench) {
             const RAID_SLOT_COUNT = 25;
             // Map name → original global index (Bench-Erkennung über globalRoster, nicht über roster
-            //  — der könnte schon umsortiert sein, aber Indizes in globalRoster sind die Wahrheitsquelle)
+            //  - der könnte schon umsortiert sein, aber Indizes in globalRoster sind die Wahrheitsquelle)
             const benchNames = new Set(
                 globalRoster.slice(RAID_SLOT_COUNT).map(p => p.name || p)
             );
@@ -152,7 +152,7 @@ window.RosterPatches = (function() {
         return out;
     }
 
-    // Zentrale Abfrage für Auto-Planer & Dropdowns:
+    // Zentrale Abfrage für Matrix Planer & Dropdowns:
     // Ist <spellId> für <playerName> bei <bossId> deaktiviert?
     function isAbilityDisabled(bossId, playerName, spellId) {
         if (!bossId || !playerName || spellId === undefined || spellId === null) return false;
@@ -181,7 +181,7 @@ window.RosterPatches = (function() {
         // WICHTIG: Mit setDoc(..., { merge: true }) macht Firestore einen
         // rekursiven Map-Merge. Dadurch würden gelöschte Patch-Einträge nicht
         // tatsächlich entfernt, sondern alte+neue gemergt. Lösung: Wir nutzen
-        // updateDoc und setzen das ganze _rosterPatches-Feld als Atom — dann
+        // updateDoc und setzen das ganze _rosterPatches-Feld als Atom - dann
         // ersetzt Firestore das Feld komplett (kein Map-Merge).
         const updateDoc = firebaseTools.updateDoc;
         const setDoc = firebaseTools.setDoc;
@@ -228,7 +228,7 @@ window.RosterPatches = (function() {
 })();
 
 // ════════════════════════════════════════════════════════════════════════
-// ROSTER-PATCHES UI — Banner auf Boss-Seite + Modal-Editor
+// ROSTER-PATCHES UI - Banner auf Boss-Seite + Modal-Editor
 // ════════════════════════════════════════════════════════════════════════
 
 // Klassen-/Spec-Definitionen für die Modal-Dropdowns (analog zu Sha-of-Pride)
@@ -404,7 +404,7 @@ window.openRosterPatchModal = function(bossId) {
                 </div>
                 <p class="text-xs text-gray-400 mb-2">
                     Fähigkeiten, die ein Spieler bei diesem Boss <em>nicht</em> hat (z.&nbsp;B. nicht geskillt).
-                    Der Auto-Planer weist sie ihm nicht zu und sie verschwinden aus den manuellen Dropdowns.
+                    Der Matrix Planer weist sie ihm nicht zu und sie verschwinden aus den manuellen Dropdowns.
                 </p>
                 <ul id="rp-disabled-list" class="space-y-1 mb-2"></ul>
                 <button id="rp-add-disabled" class="text-xs bg-red-800 hover:bg-red-700 text-white py-1.5 px-3 rounded">+ Fähigkeit deaktivieren</button>
@@ -582,7 +582,7 @@ window.openSlotOverrideEditor = function(bossId, existingKey, onSaved) {
     const existing = existingKey ? slotOverrides[existingKey] : undefined;
     const isEdit = !!existingKey;
 
-    // Slot-Liste — nur welche, die noch keinen Override haben (oder der gerade editierte)
+    // Slot-Liste - nur welche, die noch keinen Override haben (oder der gerade editierte)
     // Mit defensivem Fallback: direkt aus SPEC_DEFINITIONS bauen falls getSlotsByClass fehlt
     let allSlotsByClass = {};
     if (window.SlotSystem) {
@@ -604,7 +604,7 @@ window.openSlotOverrideEditor = function(bossId, existingKey, onSaved) {
             getSlotsByClass: typeof window.SlotSystem?.getSlotsByClass,
             SPEC_DEFINITIONS: Array.isArray(window.SlotSystem?.SPEC_DEFINITIONS)
         });
-        alert('Slot-System nicht initialisiert. Bitte die Seite neu laden — falls das Problem bleibt, prüfe in der Browser-Konsole, ob slot-system.js korrekt geladen ist.');
+        alert('Slot-System nicht initialisiert. Bitte die Seite neu laden - falls das Problem bleibt, prüfe in der Browser-Konsole, ob slot-system.js korrekt geladen ist.');
         return;
     }
 
@@ -652,7 +652,7 @@ window.openSlotOverrideEditor = function(bossId, existingKey, onSaved) {
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">Slot</label>
                     <select id="so-key" class="w-full bg-slate-900 border border-slate-600 text-gray-200 text-sm rounded px-2 py-1" ${isEdit ? 'disabled' : ''}>
-                        <option value="">— Slot wählen —</option>
+                        <option value="">- Slot wählen -</option>
                         ${slotOptionsHtml}
                     </select>
                 </div>
@@ -742,7 +742,7 @@ window.openDisabledAbilityEditor = function(bossId, existingName, onSaved) {
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">Spieler</label>
                     <select id="da-player" class="w-full bg-slate-900 border border-slate-600 text-gray-200 text-sm rounded px-2 py-1" ${isEdit ? 'disabled' : ''}>
-                        <option value="">— Spieler wählen —</option>
+                        <option value="">- Spieler wählen -</option>
                         ${playerOptionsHtml}
                     </select>
                 </div>
@@ -850,27 +850,27 @@ window.openRosterPatchEditor = function(bossId, existingName, onSaved) {
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Spieler</label>
                     <select id="rpe-player" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white" ${existingName ? 'disabled' : ''}>
-                        <option value="">— Spieler wählen —</option>
+                        <option value="">- Spieler wählen -</option>
                         ${players.map(n => `<option value="${n}" ${n === existingName ? 'selected' : ''}>${n}</option>`).join('')}
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Klasse <span class="text-gray-500">(leer = unverändert)</span></label>
                     <select id="rpe-class" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
-                        <option value="">— unverändert —</option>
+                        <option value="">- unverändert -</option>
                         ${Object.keys(window.ROSTER_PATCH_SPECS).map(c => `<option value="${c}" ${existing && existing.class && existing.class.toUpperCase() === c ? 'selected' : ''}>${window.ROSTER_PATCH_CLASS_DISPLAY[c]}</option>`).join('')}
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Spec <span class="text-gray-500">(leer = unverändert)</span></label>
                     <select id="rpe-spec" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
-                        <option value="">— unverändert —</option>
+                        <option value="">- unverändert -</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Rolle <span class="text-gray-500">(leer = unverändert)</span></label>
                     <select id="rpe-role" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white">
-                        <option value="">— unverändert —</option>
+                        <option value="">- unverändert -</option>
                         <option value="tank"  ${existing && existing.role === 'tank'  ? 'selected' : ''}>Tank</option>
                         <option value="healer"${existing && existing.role === 'healer'? 'selected' : ''}>Healer</option>
                         <option value="dps"   ${existing && existing.role === 'dps'   ? 'selected' : ''}>DPS</option>
@@ -896,7 +896,7 @@ window.openRosterPatchEditor = function(bossId, existingName, onSaved) {
     const specSel = document.getElementById('rpe-spec');
     
     function refillSpecs(selectedClass, currentSpec) {
-        specSel.innerHTML = '<option value="">— unverändert —</option>';
+        specSel.innerHTML = '<option value="">- unverändert -</option>';
         if (selectedClass && window.ROSTER_PATCH_SPECS[selectedClass]) {
             window.ROSTER_PATCH_SPECS[selectedClass].forEach(s => {
                 const opt = new Option(s, s);
@@ -958,7 +958,7 @@ window.openRosterPatchEditor = function(bossId, existingName, onSaved) {
 };
 
 // ════════════════════════════════════════════════════════════════════════
-// ROSTER-PATCHES — Zentrale Verwaltungs-UI in comp.html
+// ROSTER-PATCHES - Zentrale Verwaltungs-UI in comp.html
 // ════════════════════════════════════════════════════════════════════════
 window.initRosterPatchesCompUI = function(bosses) {
     const section = document.getElementById('roster-patches-section');
@@ -1071,7 +1071,7 @@ window.initRosterPatchesCompUI = function(bosses) {
             html += '<ul class="space-y-1 mb-2">' + names.map(name => {
                 const p = patches[name];
                 const summary = formatPatchSummaryComp(p);
-                const note = p.note ? `<span class="text-gray-500 ml-1 italic">— ${p.note}</span>` : '';
+                const note = p.note ? `<span class="text-gray-500 ml-1 italic">- ${p.note}</span>` : '';
                 return `
                     <li class="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs">
                         <span class="font-bold text-white">${name}</span>
@@ -1200,7 +1200,7 @@ window.setupBossListener = function(bossId) {
         const bossSlotOverrides = (bossPatchesPayload && bossPatchesPayload.slotOverrides) ? bossPatchesPayload.slotOverrides : {};
         const bossDisabledAbilities = (bossPatchesPayload && bossPatchesPayload.disabledAbilities) ? bossPatchesPayload.disabledAbilities : {};
 
-        // Vorherigen Stand merken — wenn Slot-Overrides sich geändert haben, müssen
+        // Vorherigen Stand merken - wenn Slot-Overrides sich geändert haben, müssen
         // die Dropdowns auf der Boss-Seite frisch befüllt werden.
         const previousOverrides = window.RosterPatches.getBossSlotOverrides(bossId);
         const slotOverridesChanged = JSON.stringify(previousOverrides) !== JSON.stringify(bossSlotOverrides);
@@ -1334,7 +1334,7 @@ window.setupBossListener = function(bossId) {
         }, 250);
     });
     
-    // NEU: Safety-Fallback — falls onSnapshot nicht sofort feuert (Cache-Race-Condition)
+    // NEU: Safety-Fallback - falls onSnapshot nicht sofort feuert (Cache-Race-Condition)
     setTimeout(() => {
         if (window._snapshotFirstLoad) {
             console.log("Safety-Fallback: onSnapshot hat nicht gefeuert, erzwinge Init...");
@@ -1494,7 +1494,7 @@ window.handleDeleteAlias = handleDeleteAlias;
 
 
 // =============================================================================
-// BENCH-HELPER — Bench-Spieler sind alle ab Index 25 in window.rosterData.
+// BENCH-HELPER - Bench-Spieler sind alle ab Index 25 in window.rosterData.
 //                 Diese Helper werden von allen Spieler-Dropdowns genutzt.
 // =============================================================================
 
@@ -1585,7 +1585,7 @@ window.buildPlayerOptionsHtml = buildPlayerOptionsHtml;
 
 
 // =============================================================================
-// fetchRoster — lädt das aktuelle Roster + Bench, abonniert onSnapshot
+// fetchRoster - lädt das aktuelle Roster + Bench, abonniert onSnapshot
 // =============================================================================
 
 async function fetchRoster() {
@@ -1620,7 +1620,7 @@ window.populateDropdownOptions = function(selectElement, players, bossId) {
         });
     }
 
-    // 3b. BENCH-SPIELER — eigene Sektion mit Trenner, weiterhin wählbar
+    // 3b. BENCH-SPIELER - eigene Sektion mit Trenner, weiterhin wählbar
     if (benchPlayers.length > 0) {
         const dividerBench = document.createElement('option');
         dividerBench.textContent = '── BENCH ──';
@@ -1635,7 +1635,7 @@ window.populateDropdownOptions = function(selectElement, players, bossId) {
         });
     }
 
-    // 1.5 SPEC-SLOTS — werden vom Slot-System bereitgestellt
+    // 1.5 SPEC-SLOTS - werden vom Slot-System bereitgestellt
     // Wenn bossId angegeben ist, wird das Boss-spezifische Mapping verwendet
     // (mit Slot-Overrides aus _rosterPatches.slotOverrides). Sonst global.
     if (window.SlotSystem) {
@@ -1669,7 +1669,7 @@ window.populateDropdownOptions = function(selectElement, players, bossId) {
                 }
 
                 opt.value = slotKey;
-                opt.textContent = mappedName ? `${slotKey} (${mappedName})` : `${slotKey} (—)`;
+                opt.textContent = mappedName ? `${slotKey} (${mappedName})` : `${slotKey} (-)`;
                 opt.style.color = color;
                 opt.dataset.color = color;
                 selectElement.appendChild(opt);
@@ -1677,7 +1677,7 @@ window.populateDropdownOptions = function(selectElement, players, bossId) {
         }
     }
 
-    // 1. SPEZIAL-GRUPPEN — ALL + Rollen-Aliase
+    // 1. SPEZIAL-GRUPPEN - ALL + Rollen-Aliase
     const specialGroups = ['ALL', 'TANKS', 'HEALERS', 'MELEEDPS', 'RANGEDDPS'];
     const divider1 = document.createElement('option');
     divider1.textContent = '── GRUPPEN ──';

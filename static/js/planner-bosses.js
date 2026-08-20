@@ -1,9 +1,9 @@
 /* =========================================================================
-   planner-bosses.js — Boss-Seiten, CD-Planner, Discord, Loot, MasterView
+   planner-bosses.js - Boss-Seiten, CD-Planner, Discord, Loot, MasterView
    =========================================================================
    Alles, was passiert, wenn ein Boss ausgewählt ist:
    - Planner-Pools (updateAssignmentPools)
-   - Globale Cooldown-WeakAura-Export (generateGlobalWaString — sehr groß!)
+   - Globale Cooldown-WeakAura-Export (generateGlobalWaString - sehr groß!)
      mit Helfern buildCdExportForBoss, buildJiKunWaveExport, buildDurumuSpectrumExport, updateCdExport
    - Top-Level handleAssignmentChange (speichert Assignment-Änderungen)
    - URL-Import-Logik (handleImportFromUrl, "ROBUST V4")
@@ -86,7 +86,7 @@ window.updateAssignmentPools = updateAssignmentPools;
 
 // =============================================================================
 // MODUL-EBENE HILFSFUNKTIONEN für Sha / Norushen / LaneGroups-Exports
-// — werden sowohl von generateGlobalWaString als auch von buildDiscordEmbeds
+// - werden sowohl von generateGlobalWaString als auch von buildDiscordEmbeds
 //   genutzt. Daher hier außerhalb der Funktionen.
 // =============================================================================
 
@@ -123,7 +123,7 @@ function resolveSlotOrPlayer(val) {
 
 // Sha-of-Pride 4-Platten Export.
 // Liest boss-sha-of-pride.sha-plates.platesData[].{rt, slots}.
-// Format pro Platte: "{rtX}-Spieler1,Spieler2" — mehrere Platten durch \n.
+// Format pro Platte: "{rtX}-Spieler1,Spieler2" - mehrere Platten durch \n.
 function buildShaPlatesExport(data) {
     if (!data) return "";
     const block = data['sha-plates'];
@@ -192,7 +192,7 @@ function buildLaneGroupsExport(data) {
 
 // Siegecrafter Black-Iron-Killorder Export.
 // Liest boss-siegecrafter.blackfuse-killorder.killOrder = ['Missile','Mine',...]
-// Format: 'Missile,Mine,Laser,...' — Tokens, keine Spielernamen → keine Resolution.
+// Format: 'Missile,Mine,Laser,...' - Tokens, keine Spielernamen → keine Resolution.
 function buildSiegecrafterKillorderExport(data) {
     if (!data) return "";
     const block = data['blackfuse-killorder'];
@@ -209,8 +209,8 @@ function buildSiegecrafterKillorderExport(data) {
 // Siegecrafter Lines Export (Conveyor-Belt-Teams).
 // Liest boss-siegecrafter.blackfuse-lines:
 //   teamsData = [{slots:[p1,p2,...]}, {slots:[...]}]  (2 Teams mit Spielern;
-//               Legacy-Format: direkte Arrays statt {slots} — beides supported)
-//   lineTeams = ['0','1','—',...]                     (welches Team auf welcher Line)
+//               Legacy-Format: direkte Arrays statt {slots} - beides supported)
+//   lineTeams = ['0','1','-',...]                     (welches Team auf welcher Line)
 // Format: 'LINE1-Marcel,Sarah,LINE2-Steffi,Niyrana'
 function buildSiegecrafterLinesExport(data) {
     if (!data) return "";
@@ -242,7 +242,7 @@ function buildSiegecrafterLinesExport(data) {
 
 // Paragons Killorder Export.
 // Liest boss-paragons.paragons-killorder.killOrder = ['Iyyokuk','Skeer',...]
-// Format: 'Iyyokuk,Skeer,...' — Boss-Namen, keine Spieler → keine Resolution.
+// Format: 'Iyyokuk,Skeer,...' - Boss-Namen, keine Spieler → keine Resolution.
 function buildParagonsKillorderExport(data) {
     if (!data) return "";
     const block = data['paragons-killorder'];
@@ -259,7 +259,7 @@ function buildParagonsKillorderExport(data) {
 
 // =============================================================================
 // GLOBAL WEAKAURA EXPORT (generateGlobalWaString)
-// — incl. buildCdExportForBoss, buildJiKunWaveExport, buildDurumuSpectrumExport,
+// - incl. buildCdExportForBoss, buildJiKunWaveExport, buildDurumuSpectrumExport,
 //   updateCdExport (alles innerhalb der einen großen async-Funktion)
 // =============================================================================
 
@@ -499,7 +499,7 @@ window.generateGlobalWaString = async function() {
             </label>`;
     }).join('');
 
-    // Extras (raidspezifisch — pro Boss mit WeakAura-Export ein eigener Block)
+    // Extras (raidspezifisch - pro Boss mit WeakAura-Export ein eigener Block)
     let extrasHtml = '';
     {
         const specials = [];
@@ -691,7 +691,7 @@ window.generateGlobalWaString = async function() {
             countText = 'Keine Bosse ausgewählt';
         } else {
             countText = `${allEntries.length} Einträge von ${checked.length} Bossen`;
-            if (skipped > 0) countText += ` (${skipped} ausgelassen — Slot/Spieler nicht im Kader)`;
+            if (skipped > 0) countText += ` (${skipped} ausgelassen - Slot/Spieler nicht im Kader)`;
             if (bossesWithOverrides > 0) countText += ` · ${bossesWithOverrides} mit Slot-Overrides`;
         }
         count.textContent = countText;
@@ -776,7 +776,7 @@ window.updatePlannerSummary = function() {
     let seqGroups = {};
     let healthGroups = {};
     // Reihenfolge der Fähigkeiten: erste Planer-Zeile, in der sie vorkommt.
-    // (Der Auto-Planer exportiert chronologisch, also entspricht das dem
+    // (Der Matrix Planer exportiert chronologisch, also entspricht das dem
     // Kampfverlauf.) Wird unten zum Gruppieren nach Fähigkeit benutzt.
     let triggerFirstRow = {};
 
@@ -850,7 +850,7 @@ window.updatePlannerSummary = function() {
     // Reihenfolge: Kampfbeginn immer zuerst, danach jede Fähigkeit als
     // geschlossener Block (in der Reihenfolge ihres ersten Auftretens im
     // Kampf), innerhalb der Fähigkeit aufsteigend #1, #2, #3 ...
-    // Früher wurde primär nach #-Nummer sortiert — dadurch standen alle #1
+    // Früher wurde primär nach #-Nummer sortiert - dadurch standen alle #1
     // verschiedener Fähigkeiten zusammen und die Abfolge einer einzelnen
     // Fähigkeit war über die ganze Liste verstreut.
     let seqArray = Object.values(seqGroups).sort((a, b) => {
@@ -923,7 +923,7 @@ if (typeof Sortable !== 'undefined') {
                 // Wenn nichts verschoben wurde, abbrechen
                 if (evt.newIndex === evt.oldIndex) return;
 
-                // Manager-Schutz — nicht-eingeloggte User dürfen nicht reordern
+                // Manager-Schutz - nicht-eingeloggte User dürfen nicht reordern
                 if (!window.isManager) {
                     if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
                     // Visuell zurücksetzen (Sortable hat das DOM bereits geändert)
@@ -1028,7 +1028,7 @@ if (typeof Sortable !== 'undefined') {
 
         // --- EINFÜGEN ---
         if (btn.classList.contains('paste-row-btn')) {
-            // Manager-Schutz — nicht-eingeloggte User dürfen nichts schreiben
+            // Manager-Schutz - nicht-eingeloggte User dürfen nichts schreiben
             if (!window.isManager) {
                 if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
                 return;
@@ -1064,7 +1064,7 @@ if (typeof Sortable !== 'undefined') {
 
         // --- LÖSCHEN (NEU) ---
         if (btn.classList.contains('delete-row-btn')) {
-            // Manager-Schutz — nicht-eingeloggte User dürfen nichts löschen
+            // Manager-Schutz - nicht-eingeloggte User dürfen nichts löschen
             if (!window.isManager) {
                 if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
                 return;
@@ -1205,7 +1205,7 @@ window.cleanUpInvalidRosterEntries = async function() {
     
     // Hilfsobjekt global verfügbar machen, falls noch nicht geschehen.
     // firebase-init.js setzt bereits die VOLLE Version (inkl. onSnapshot,
-    // serverTimestamp, rtdb*) — die darf hier nicht durch eine reduzierte
+    // serverTimestamp, rtdb*) - die darf hier nicht durch eine reduzierte
     // Variante ersetzt werden, sonst fehlen anderen Modulen Funktionen.
     if (!window.firebaseTools) {
         window.firebaseTools = { db, doc, getDoc, collection, getDocs, updateDoc, setDoc };
@@ -1249,7 +1249,7 @@ window.loadSetupLabels = async function() {
 };
 
 // =============================================================================
-// handleAssignmentChange (Top-Level — wird in Boss-Page + überall referenziert)
+// handleAssignmentChange (Top-Level - wird in Boss-Page + überall referenziert)
 // =============================================================================
 
 async function handleAssignmentChange(event) {
@@ -1551,7 +1551,7 @@ window.allCooldowns = allCooldowns;
 window.handleImportFromUrl = handleImportFromUrl;
 
 // =============================================================================
-// fetchAllCooldowns — lädt CD-Stammdaten (mit localStorage-Cache + Live-Updates)
+// fetchAllCooldowns - lädt CD-Stammdaten (mit localStorage-Cache + Live-Updates)
 // =============================================================================
 // Strategie:
 //   1. Sofort aus localStorage laden (0 Firestore-Reads)
@@ -2219,7 +2219,7 @@ async function openDiscordPostModal() {
                 const payload = {
                     username: 'P Ä N I K Raidsheet',
                     // Der Titel mit dem Raid-Namen wird nur bei der allerersten Nachricht angehängt
-                    content: i === 0 ? `📜 **${raidInfo.name}** — Einteilungen` : '',
+                    content: i === 0 ? `📜 **${raidInfo.name}** - Einteilungen` : '',
                     // Exakt ein Boss-Block wird in diese Nachricht eingefügt
                     embeds: [embeds[i]]
                 };
@@ -2304,7 +2304,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                         let players = [];
                         for (let p = 1; p <= 5; p++) {
                             const pName = data[`jikun-team-${t}-p${p}`]?.player;
-                            if (pName && pName !== '—') players.push(pName);
+                            if (pName && pName !== '-') players.push(pName);
                         }
                         if (players.length > 0) teamLines.push(`> **Team ${t}:** ${players.join(', ')}`);
                     }
@@ -2359,7 +2359,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                         let lines = [];
                         g.keys.forEach(k => {
                             const pName = data[k]?.player;
-                            if (pName && pName !== '—') {
+                            if (pName && pName !== '-') {
                                 let label = k.replace('animus_', '').toUpperCase();
                                 if (label.includes('RING_SOAKER')) label = label.replace('RING_SOAKER_', 'Ring Soaker ');
                                 else if (label.includes('SWAP_BAITER')) label = label.replace('SWAP_BAITER_', 'Materientausch ');
@@ -2390,13 +2390,13 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                         let players = [];
                         for(let i=1; i<=6; i++) {
                             const p = data[`${g.prefix}${i}`]?.player;
-                            if (p && p !== '—') players.push(p);
+                            if (p && p !== '-') players.push(p);
                         }
                         
                         let extraPlayers = [];
                         for(let i=1; i<=2; i++) {
                             const p = data[`${g.prefix}ex${i}`]?.player;
-                            if (p && p !== '—') extraPlayers.push(p);
+                            if (p && p !== '-') extraPlayers.push(p);
                         }
                         
                         if (players.length > 0) {
@@ -2415,7 +2415,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                     let baiters = [];
                     for(let i=1; i<=8; i++) {
                         const p = data[`lei_baiter_${i}`]?.player;
-                        if (p && p !== '—') baiters.push(p);
+                        if (p && p !== '-') baiters.push(p);
                     }
                     if (baiters.length > 0) {
                         description += `\n**⚽ Ball Baiter**\n> ${baiters.join(' | ')}\n`;
@@ -2429,7 +2429,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                     let lines = [];
                     [1, 2].forEach(i => {
                         const p = data[`twins-tank${i}`]?.player;
-                        if (p && p !== '—') lines.push(`> **Tank ${i}:** ${p}`);
+                        if (p && p !== '-') lines.push(`> **Tank ${i}:** ${p}`);
                     });
                     if (lines.length > 0) description += `\n**🛡️ Tank-Einteilung**\n${lines.join('\n')}\n`;
                 }
@@ -2438,7 +2438,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                     let lines = [];
                     [1, 2].forEach(i => {
                         const p = data[`twins-painter-${i}`]?.player;
-                        if (p && p !== '—') lines.push(`> **Painter ${i}:** ${p}`);
+                        if (p && p !== '-') lines.push(`> **Painter ${i}:** ${p}`);
                     });
                     if (lines.length > 0) description += `\n**🎨 Painter (Zeichner)**\n${lines.join('\n')}\n`;
                 }
@@ -2458,7 +2458,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                     seq.forEach(s => {
                         const val = data[s.id]?.text || data[s.id]?.player || data[s.id]?.value || data[s.id];
                         let finalVal = typeof val === 'object' ? (val.text || val.player) : val;
-                        if (finalVal && finalVal !== '—' && finalVal !== '- Wählen -') {
+                        if (finalVal && finalVal !== '-' && finalVal !== '- Wählen -') {
                             lines.push(`> **${s.label}:** ${finalVal}`);
                         }
                     });
@@ -2469,7 +2469,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                     let posLines = [];
                     for(let i=1; i<=17; i++) {
                         const p = data[`twins_celestial_${i}`]?.player;
-                        if (p && p !== '—') posLines.push(`> **Position ${i}:** ${p}`);
+                        if (p && p !== '-') posLines.push(`> **Position ${i}:** ${p}`);
                     }
                     if (posLines.length > 0) description += `\n**📍 Positionen (17 Spieler)**\n${posLines.join('\n')}\n`;
                 }
@@ -2481,14 +2481,14 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                     let lines = [];
                     const t1 = data['qon-tank1']?.player;
                     const t2 = data['qon-tank2']?.player;
-                    if (t1 && t1 !== '—') lines.push(`> **MT (Boss):** ${t1}`);
-                    if (t2 && t2 !== '—') lines.push(`> **OT (Add/Swap):** ${t2}`);
+                    if (t1 && t1 !== '-') lines.push(`> **MT (Boss):** ${t1}`);
+                    if (t2 && t2 !== '-') lines.push(`> **OT (Add/Swap):** ${t2}`);
                     
                     const b1 = data['qon-bop1']?.player;
                     const b2 = data['qon-bop2']?.player;
                     let bops = [];
-                    if (b1 && b1 !== '—') bops.push(b1);
-                    if (b2 && b2 !== '—') bops.push(b2);
+                    if (b1 && b1 !== '-') bops.push(b1);
+                    if (b2 && b2 !== '-') bops.push(b2);
                     if (bops.length > 0) lines.push(`> **BoP Impale:** ${bops.join(', ')}`);
                     
                     if (lines.length > 0) description += `\n**🛡️ Tanks & Spezialaufgaben**\n${lines.join('\n')}\n`;
@@ -2510,7 +2510,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                         let pList = [];
                         g.ids.forEach(id => {
                             const p = data[`qon_pos_${id}`]?.player;
-                            if (p && p !== '—') pList.push(p);
+                            if (p && p !== '-') pList.push(p);
                         });
                         if (pList.length > 0) lines.push(`> **${g.name}:** ${pList.join(' | ')}`);
                     });
@@ -2524,7 +2524,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                         const offset = 16 + (i - 1) * 4;
                         for (let j = 1; j <= 4; j++) {
                             const p = data[`qon_pos_${offset + j}`]?.player;
-                            if (p && p !== '—') pList.push(p);
+                            if (p && p !== '-') pList.push(p);
                         }
                         if (pList.length > 0) lines.push(`> **M${i}:** ${pList.join(', ')}`);
                     }
@@ -2537,7 +2537,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                         let pList = [];
                         for (let i = 1; i <= 5; i++) {
                             const p = data[`qon-soak${team}-${i}`]?.player;
-                            if (p && p !== '—') pList.push(p);
+                            if (p && p !== '-') pList.push(p);
                         }
                         if (pList.length > 0) lines.push(`> **Team ${team}:** ${pList.join(', ')}`);
                     });
@@ -2618,9 +2618,9 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                                 const rowSelects = row.querySelectorAll('.assignment-select');
                                 const players = Array.from(rowSelects).map(sel => {
                                     const id = sel.dataset.assignmentId;
-                                    return data[id]?.player || '—';
+                                    return data[id]?.player || '-';
                                 });
-                                if (players.some(p => p !== '—')) {
+                                if (players.some(p => p !== '-')) {
                                     description += `> ${markName}: ${players.join(' | ')}\n`;
                                 }
                             });
@@ -2708,7 +2708,7 @@ async function buildDiscordEmbeds(raidInfo, selection) {
                 const condLabel = group.condition ? `#${group.condition}` : '';
                 cdLines.push(`**${condLabel} ${group.label}**`);
                 group.entries.forEach(e => {
-                    cdLines.push(`> ${e.time || '-'}s — ${e.playerVal} ➜ ${e.cd || '-'}`);
+                    cdLines.push(`> ${e.time || '-'}s - ${e.playerVal} ➜ ${e.cd || '-'}`);
                 });
             });
 
@@ -2907,6 +2907,80 @@ async function loadMasterViewData() {
     }
 }
 
+// =============================================================================
+// LANE-GROUPS-KONFIG AUS DEM BOSS-HTML LESEN
+// =============================================================================
+// Der Master-View rendert das Assignments-Markup einer Boss-Seite nach, führt
+// deren <script> aber NICHT aus. Damit die LaneGroups-Blöcke trotzdem exakt
+// dieselben Container-/Assignment-IDs und Default-Layouts bekommen wie auf der
+// Boss-Seite, lesen wir die LaneGroups.init(...)-Aufrufe direkt aus dem HTML.
+// Früher riet eine Heuristik die assignmentId aus dem Firestore-Dokument - das
+// ging bei Bossen mit mehreren LaneGroups-Blöcken (z.B. Paragons) schief und
+// speicherte unter falschem Pfad.
+
+// Sucht die zu text[start] passende schließende Klammer. Strings werden
+// übersprungen, damit Apostrophe in Labels ("Rik'kal") nicht stören.
+function matchBalanced(text, start, open, close) {
+    let depth = 0;
+    let inStr = null;
+    for (let i = start; i < text.length; i++) {
+        const ch = text[i];
+        if (inStr) {
+            if (ch === '\\') { i++; continue; }
+            if (ch === inStr) inStr = null;
+            continue;
+        }
+        if (ch === '"' || ch === "'" || ch === '`') { inStr = ch; continue; }
+        if (ch === open) depth++;
+        else if (ch === close) {
+            depth--;
+            if (depth === 0) return i;
+        }
+    }
+    return -1;
+}
+
+function extractLaneGroupConfigs(pageHtml) {
+    const out = [];
+    if (!pageHtml) return out;
+
+    const re = /LaneGroups\s*\.\s*init\s*\(\s*\{/g;
+    let m;
+    while ((m = re.exec(pageHtml)) !== null) {
+        const open = pageHtml.indexOf('{', m.index);
+        const close = matchBalanced(pageHtml, open, '{', '}');
+        if (close < 0) continue;
+        const literal = pageHtml.slice(open, close + 1);
+
+        const containerId = (literal.match(/containerId\s*:\s*['"]([^'"]+)['"]/) || [])[1];
+        const assignmentId = (literal.match(/assignmentId\s*:\s*['"]([^'"]+)['"]/) || [])[1];
+        const bossId = (literal.match(/bossId\s*:\s*['"]([^'"]+)['"]/) || [])[1];
+        if (!containerId || !assignmentId) continue;
+
+        let defaultBlocks = [];
+        const dbIdx = literal.indexOf('defaultBlocks');
+        if (dbIdx !== -1) {
+            const arrStart = literal.indexOf('[', dbIdx);
+            const arrEnd = arrStart !== -1 ? matchBalanced(literal, arrStart, '[', ']') : -1;
+            if (arrEnd > arrStart) {
+                try {
+                    // Reines Objekt-Literal aus unserer eigenen Boss-Seite -
+                    // dieselbe Quelle, die der SPA-Loader ohnehin als <script>
+                    // ausführt, hier aber nur für diesen einen Ausdruck.
+                    defaultBlocks = new Function('return (' + literal.slice(arrStart, arrEnd + 1) + ');')() || [];
+                } catch (e) {
+                    console.warn('[Master-View] defaultBlocks nicht lesbar für', containerId, e);
+                }
+            }
+        }
+
+        out.push({ containerId, assignmentId, bossId, defaultBlocks });
+    }
+    return out;
+}
+
+window.MasterViewLaneGroupConfigs = window.MasterViewLaneGroupConfigs || {};
+
 function renderMasterViewFromHtml(pageHtml, boss) {
     if (!pageHtml) {
         return '<p class="text-gray-500 text-sm italic">Keine Boss-Seite gefunden. Erstelle die HTML-Datei für diesen Boss.</p>';
@@ -2927,13 +3001,22 @@ function renderMasterViewFromHtml(pageHtml, boss) {
     // - Script-Tags
     assignmentsSection.querySelectorAll('script, #positioning-toggle, .positioning-image, .positioning-text, video, .video-wrapper').forEach(el => el.remove());
 
+    // LaneGroups-Konfiguration der Boss-Seite auslesen und für die
+    // Master-View-Integration (lane-groups-integration.js) hinterlegen.
+    const lgConfigs = extractLaneGroupConfigs(pageHtml);
+    window.MasterViewLaneGroupConfigs[boss.id] = lgConfigs;
+    const lgContainerIds = new Set(lgConfigs.map(c => c.containerId));
+
     // Entferne assignment-blocks die keine selects enthalten (reine Info-Blöcke).
-    // AUSNAHME: Blöcke mit einem LaneGroups-Container (id endet auf "-lane-groups")
-    // dürfen NICHT entfernt werden — der Container ist leer, weil LaneGroups erst
-    // zur Laufzeit die UI rendert. Master-View-Integration füllt ihn dann.
+    // AUSNAHME: Blöcke mit einem LaneGroups-Container dürfen NICHT entfernt
+    // werden - der Container ist leer, weil LaneGroups erst zur Laufzeit die UI
+    // rendert. Master-View-Integration füllt ihn dann. Erkannt werden alle
+    // Container aus den init-Aufrufen der Seite (nicht mehr nur "*-lane-groups",
+    // sonst fiel z.B. Paragons' "paragons-power-groups" heraus).
     assignmentsSection.querySelectorAll('.assignment-block').forEach(block => {
         const hasSelects = !!(block.querySelector('.assignment-select') || block.querySelector('.assignment-text-input'));
-        const hasLaneGroupsContainer = !!block.querySelector('[id$="-lane-groups"]');
+        const hasLaneGroupsContainer = !!block.querySelector('[id$="-lane-groups"]')
+            || Array.from(block.querySelectorAll('[id]')).some(el => lgContainerIds.has(el.id));
         if (!hasSelects && !hasLaneGroupsContainer) {
             block.remove();
         }
@@ -3448,20 +3531,8 @@ function initBossPage(pageId, sectionId = null) {
 
     // --- Logik für Sprungmarken und einklappbare Sektionen ---
     const quickNavLinks = document.querySelectorAll('.quick-nav-bar a');
-    const sections = document.querySelectorAll('.collapsible-section');
 
-    // Macht alle Sektionen initial einklappbar und setzt sie als aktiv (offen).
-    sections.forEach((section) => {
-        const header = section.querySelector('.collapsible-header');
-        const content = section.querySelector('.collapsible-content');
-        if (header && content) {
-            header.classList.add('active'); // Alle Sektionen sind standardmäßig offen
-            header.addEventListener('click', () => {
-                header.classList.toggle('active');
-                content.classList.toggle('collapsed');
-            });
-        }
-    });
+    window.initCollapsibleSections();
 
     // Fügt die "Smooth-Scroll"-Funktionalität zu den Sprungmarken hinzu.
     quickNavLinks.forEach(link => {
@@ -3544,7 +3615,7 @@ function initBossPage(pageId, sectionId = null) {
             defaultPhaseButton.click();
         }
     }
-    // Lightbox für ALLE Taktik-Bilder verdrahten — auch auf Seiten ohne
+    // Lightbox für ALLE Taktik-Bilder verdrahten - auch auf Seiten ohne
     // Phasen-Umschalter (z.B. Immerseus), sonst öffnet der Klick nichts.
     document.querySelectorAll('.lightbox-trigger').forEach(img => {
         img.addEventListener('click', (event) => {
@@ -3630,7 +3701,7 @@ async function handleTextInputChange(event) {
     const textToSave = input.value;
     const currentManager = sessionStorage.getItem('currentManager') || 'Unbekannt';
     
-    // Boss zur Laufzeit aus dem Hash bestimmen statt aus dem Closure — falls
+    // Boss zur Laufzeit aus dem Hash bestimmen statt aus dem Closure - falls
     // doch mal ein Handler einer früheren Boss-Seite feuert, landet das Speichern
     // trotzdem im richtigen Dokument und im Log steht der richtige Boss.
     const currentPageId = location.hash.split('/')[1] || pageId;
@@ -3811,7 +3882,7 @@ window.applyAssignmentsBulk = applyAssignmentsBulk;
         function wireAssignmentSelect(select) {
   if (!select || select.dataset._wired === "1") return;
 
-  // Buff-/Soulstone-Selects auf der Comp-Seite NICHT verdrahten —
+  // Buff-/Soulstone-Selects auf der Comp-Seite NICHT verdrahten -
   // die werden von initBuffAssignments/initSoulstoneAssignments verwaltet
   // und haben ihre eigenen Change-Handler. Sonst würde populateDropdownOptions
   // weiter unten ihre `<option selected>` überschreiben.
@@ -4022,8 +4093,8 @@ async function displayCooldowns() {
     snapshot.forEach(doc => {
         const cd = doc.data();
         const row = tableBody.insertRow();
-        const cdSec = (cd.cooldownSec !== null && cd.cooldownSec !== undefined) ? cd.cooldownSec + 's' : '—';
-        const durSec = (cd.durationSec !== null && cd.durationSec !== undefined) ? cd.durationSec + 's' : '—';
+        const cdSec = (cd.cooldownSec !== null && cd.cooldownSec !== undefined) ? cd.cooldownSec + 's' : '-';
+        const durSec = (cd.durationSec !== null && cd.durationSec !== undefined) ? cd.durationSec + 's' : '-';
         row.innerHTML = `
             <td class="px-2 py-2">${cd.name}</td>
             <td class="px-2 py-2" style="color: ${window.classColors[cd.class] || '#FFFFFF'};">${cd.class}</td>
@@ -4205,3 +4276,33 @@ window.displayCooldowns = displayCooldowns;
 window.handleCooldownFormSubmit = handleCooldownFormSubmit;
 window.populateCooldownFormForEdit = populateCooldownFormForEdit;
 window.handleDeleteCooldown = handleDeleteCooldown;
+// Verdrahtet alle .collapsible-section Elemente im Dokument.
+// Sektionen sind standardmäßig offen; mit der Klasse "start-collapsed" auf der
+// Sektion (oder "collapsed" auf dem Content) starten sie zugeklappt.
+// Wird sowohl von den Boss-Seiten als auch von der Comp-Seite aufgerufen.
+window.initCollapsibleSections = function (root) {
+    const scope = root || document;
+    scope.querySelectorAll('.collapsible-section').forEach((section) => {
+        const header = section.querySelector('.collapsible-header');
+        const content = section.querySelector('.collapsible-content');
+        if (!header || !content) return;
+
+        if (!header.dataset.collapsibleBound) {
+            header.dataset.collapsibleBound = '1';
+            header.addEventListener('click', () => {
+                header.classList.toggle('active');
+                content.classList.toggle('collapsed');
+            });
+        }
+
+        const startCollapsed = section.classList.contains('start-collapsed') || content.classList.contains('collapsed');
+        if (startCollapsed) {
+            header.classList.remove('active');
+            content.classList.add('collapsed');
+        } else {
+            header.classList.add('active');
+            content.classList.remove('collapsed');
+        }
+    });
+};
+
