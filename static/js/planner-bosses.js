@@ -795,6 +795,8 @@ window.updatePlannerSummary = function() {
         const condEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-condition"]`);
         const timeEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-time"]`);
         const npcEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-npc"]`);
+        const noteEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-note"]`);
+        const varnameEl = document.querySelector(`[data-assignment-id="${prefix}-planner-row${i}-varname"]`);
 
         // Nur Zeilen mit Trigger & (Spieler ODER CD)
         if (!triggerEl || !triggerEl.value || (!playerEl.value && !cdEl.value)) continue;
@@ -821,7 +823,12 @@ window.updatePlannerSummary = function() {
             playerColor = window.classColors[playerObj.class] || playerObj.color || "#ffffff";
         }
 
-        const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor };
+        // Hinweis + eigener Name aus dem Advanced CD Planner mitnehmen, damit die
+        // Übersicht dieselben Zusatzinfos zeigt wie die Planer-Zeile.
+        const noteVal = noteEl && noteEl.value ? noteEl.value.trim() : "";
+        const varnameVal = varnameEl && varnameEl.value ? varnameEl.value.trim() : "";
+
+        const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor, note: noteVal, varname: varnameVal };
         const isHealth = triggerText.includes("Health") || triggerVal.includes("HEALTH");
         const isEncStart = triggerVal.includes("ENC_START");
         if (triggerFirstRow[triggerText] === undefined) triggerFirstRow[triggerText] = i;
@@ -869,6 +876,20 @@ window.updatePlannerSummary = function() {
     sortEntries(healthArray);
 
     let html = "";
+
+    // Hinweis / Name sind Freitext aus dem Planer - vor dem Einsetzen escapen.
+    const esc = (v) => String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+
+    // Zusatzzeile unter einem CD (Hinweis bzw. "Name: ..."), eingerückt mit
+    // Umbruch-Pfeil, damit die Zugehörigkeit zum CD darüber sichtbar bleibt.
+    const subLine = (labelHtml, textHtml) => `
+                        <div class="flex items-start gap-1 text-[10px] leading-snug pl-0.5">
+                            <span class="text-gray-600 shrink-0">&#8627;</span>
+                            <span class="min-w-0 break-words text-gray-400">${labelHtml}${textHtml}</span>
+                        </div>`;
+
     const renderBlock = (title, entries, colorClass, borderClass) => {
         return `
         <div class="mb-1.5 relative pl-2 border-l-2 ${borderClass} break-inside-avoid">
@@ -877,14 +898,21 @@ window.updatePlannerSummary = function() {
                 ${entries.map(e => {
                     // ÄNDERUNG: KEIN LINK, NUR TEXT
                     let linkContent = `<span style="color:${e.color}; font-weight:600;">${e.cd}</span>`;
-                    
+
+                    const noteHtml = e.note ? subLine('', esc(e.note)) : '';
+                    const nameHtml = e.varname
+                        ? subLine('<span class="text-gray-500">Name:</span> ', esc(e.varname))
+                        : '';
+
                     return `
-                    <div class="text-[11px] text-gray-300 bg-slate-800/40 px-1.5 py-0.5 rounded flex items-center gap-2 hover:bg-slate-800 transition-colors">
+                    <div class="text-[11px] text-gray-300 bg-slate-800/40 px-1.5 py-0.5 rounded flex items-start gap-2 hover:bg-slate-800 transition-colors">
                         <span class="text-gray-500 font-mono w-8 text-right shrink-0">${e.time}s</span>
-                        <div class="flex-1 truncate">
-                            <strong style="color: ${e.playerColor}" class="mr-1">${e.player}</strong>
-                            <span class="text-gray-500 text-[9px] mr-1">➜</span>
-                            ${linkContent}
+                        <div class="flex-1 min-w-0">
+                            <div class="truncate">
+                                <strong style="color: ${e.playerColor}" class="mr-1">${e.player}</strong>
+                                <span class="text-gray-500 text-[9px] mr-1">➜</span>
+                                ${linkContent}
+                            </div>${noteHtml}${nameHtml}
                         </div>
                     </div>`;
                 }).join('')}
