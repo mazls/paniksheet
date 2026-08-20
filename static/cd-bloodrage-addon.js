@@ -302,10 +302,43 @@ window.CD_BLOODRAGE = (function () {
     // catKey: unter welcher Kategorie die Slots erscheinen (Default 'tank_soak_phys')
     // baseRow: die ursprüngliche Blood-Rage-Row aus deiner timeline
     // ──────────────────────────────────────────────────────────────────────
+    // Slot-Instanz-Key ("any_dr@2") -> Kategorie-Key ("any_dr")
+    function slotBaseCat(slotKey) {
+        var s = String(slotKey || "");
+        var at = s.indexOf("@");
+        return at === -1 ? s : s.slice(0, at);
+    }
+
+    // requiredCDs-Eintrag ("any_dr:2", "any_dr@2", {cat:...}) -> Kategorie-Key
+    function requiredEntryCat(entry) {
+        if (!entry) return "";
+        if (typeof entry === "object") return entry.cat || entry.key || "";
+        var s = String(entry);
+        var at = s.indexOf("@");
+        if (at !== -1) return s.slice(0, at);
+        var col = s.indexOf(":");
+        return col === -1 ? s : s.slice(0, col);
+    }
+
     function expandTimelineRow(baseRow, planResult, catKey) {
         catKey = catKey || "tank_soak_phys";
+
+        // Alles, was NICHT zur Soak-Kategorie gehört, bleibt erhalten: weitere
+        // Pflicht-Kategorien des Events (z.B. any_heal) und manuell gesetzte
+        // Zusatz-CDs. Früher ersetzte die Expansion die Slots komplett - damit
+        // verschwand jede andere Einteilung, sobald an einem Soak-Event noch
+        // etwas anderes hängt.
+        var keptSlots = {};
+        Object.keys(baseRow.slots || {}).forEach(function (k) {
+            if (slotBaseCat(k) === catKey) return;   // Soak-Slots liefert der Plan
+            keptSlots[k] = baseRow.slots[k];
+        });
+        var keptRequired = (baseRow.requiredCDs || []).filter(function (entry) {
+            return requiredEntryCat(entry) !== catKey;
+        });
+
         var rows = [];
-        planResult.rotation.forEach(function (e) {
+        planResult.rotation.forEach(function (e, i) {
             var slots = {};
             slots[catKey] = {
                 player: e.player,
@@ -317,17 +350,27 @@ window.CD_BLOODRAGE = (function () {
                 auto: true,
                 _bloodrage: true
             };
+            // Die Nicht-Soak-Slots hängen an der ERSTEN Rotationszeile (dort
+            // steht der eigentliche Event-Zeitpunkt). Sonst stünde jeder
+            // Zusatz-CD n-mal in der Tabelle und würde n-mal exportiert.
+            if (i === 0) {
+                Object.keys(keptSlots).forEach(function (k) { slots[k] = keptSlots[k]; });
+            }
             rows.push(Object.assign({}, baseRow, {
                 // gestaffelter Offset wird als relativer Delay exportiert ("Zeit")
                 delay: e.offsetSec,
                 absTime: baseRow.absTime, // gleicher Event-Zeitpunkt
-                requiredCDs: [catKey],
+                requiredCDs: (i === 0) ? [catKey].concat(keptRequired) : [catKey],
                 slots: slots,
                 // alle Rotations-Rows gehören zum selben Cast -> Condition pinnen
                 _sourceEvent: Object.assign({}, baseRow._sourceEvent || {}, {
                     forceTriggerCondition: baseRow.castNum || 1
                 }),
-                _bloodrageExpanded: true
+                _bloodrageExpanded: true,
+                // Laufende Nummer der Rotationszeile. Der Planer hängt sie an den
+                // Override-Key, damit jede Zeile ihre eigenen manuellen CDs
+                // bekommt statt sich einen Namensraum zu teilen.
+                _soakIdx: i + 1
             }));
         });
         return rows;

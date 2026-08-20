@@ -472,8 +472,81 @@ window.CD_AUTO_PLANNER = (function () {
     // Eindeutiger Override-Key-Präfix pro Zeile. Continuous-Coverage-Folgezeilen
     // behalten eventIdx/castNum der Ursprungszeile - ohne den _contIdx-Suffix
     // würde ein manueller Override auf ALLE Folgezeilen desselben Casts wirken.
+    // Namensraum eines Zeilen-Overrides. Continuous-Folgezeilen ("-c1") und die
+    // Rotationszeilen des Tank-Soaks ("-s2", "-s3", ...) bekommen einen eigenen,
+    // damit ein manueller CD genau in DER Zeile landet, in der er gesetzt wurde.
+    // Die erste Soak-Zeile behält bewusst den Basis-Prefix - so bleiben bereits
+    // gespeicherte Overrides aus älteren Plänen gültig.
+    // Baut aus einem manuellen Override das Slot-Objekt der Tabelle.
+    // Als eigene Funktion, weil Overrides an zwei Stellen angewendet werden:
+    // in autoAssign (normale Zeilen) und nach der Blood-Rage-Expansion
+    // (Soak-Rotationszeilen, die es zum Zeitpunkt von autoAssign noch nicht gab).
+    function buildSlotFromOverride(ov) {
+        if (!ov) return null;
+
+        if (ov.skip) {
+            return { player: null, dbName: null, auto: false, skipped: true };
+        }
+        if (ov.isExtraPlaceholder) {
+            return { isExtraPlaceholder: true };
+        }
+        if (ov.isVirtualCategoryKey) {
+            var vCat = categories[ov.isVirtualCategoryKey];
+            if (vCat) {
+                return {
+                    isVirtual: true,
+                    player: normalizePlayerForPlanner(ov.player === 'Alle' || ov.player === 'ALL' ? vCat.defaultPlayer : ov.player),
+                    dbName: '',
+                    note: vCat.defaultNote || '',
+                    tts: vCat.defaultTts || '',
+                    varname: vCat.defaultName || '',
+                    icon: vCat.defaultIcon || '',
+                    auto: false,
+                    skipped: false,
+                    isVirtualCategoryKey: ov.isVirtualCategoryKey
+                };
+            }
+            // Kategorie gibt es nicht mehr -> unten als normaler Override behandeln
+        }
+        // Manuell zugewiesener Spieler, der nicht (mehr) im Roster ist ->
+        // NICHT einplanen/exportieren, sondern sichtbar als Warnung markieren.
+        if (ov.player && ov.dbName && !isPlayerInRoster(ov.player)) {
+            return {
+                player: ov.player, dbName: ov.dbName,
+                dbClass: ov.dbClass, spellId: ov.spellId,
+                cooldownSec: ov.cooldownSec, durationSec: ov.durationSec,
+                auto: false, notInRoster: true
+            };
+        }
+
+        var slot = JSON.parse(JSON.stringify(ov));
+        slot.auto = false;
+        return slot;
+    }
+
+    // Zieht die manuellen Overrides für die Soak-Rotationszeilen nach.
+    // Diese Zeilen baut das Blood-Rage-Add-on erst NACH autoAssign, deshalb
+    // läuft die Override-Schleife dort noch ins Leere. Ohne diesen Schritt
+    // verschwindet jeder CD, den man in eine Soak-Zeile einträgt, beim
+    // nächsten Auto-Zuweisen wieder.
+    function applyOverridesToExpandedRows(rows) {
+        (rows || []).forEach(function (row) {
+            if (!row._bloodrageExpanded) return;
+            var rowPrefix = rowOverridePrefix(row) + '-';
+            Object.keys(manualOverrides).forEach(function (oKey) {
+                if (oKey.indexOf(rowPrefix) !== 0) return;
+                var slotKey = oKey.substring(rowPrefix.length);
+                if (/^[cs]\d+-/.test(slotKey)) return;
+                var slot = buildSlotFromOverride(manualOverrides[oKey]);
+                if (slot) row.slots[slotKey] = slot;
+            });
+        });
+    }
+
     function rowOverridePrefix(row) {
-        return row.eventIdx + '-' + row.castNum + (row._contIdx ? '-c' + row._contIdx : '');
+        return row.eventIdx + '-' + row.castNum
+            + (row._contIdx ? '-c' + row._contIdx : '')
+            + (row._soakIdx > 1 ? '-s' + row._soakIdx : '');
     }
 
     // ── Kategorie-Spezifikationen mit Anzahl ──
@@ -1220,9 +1293,9 @@ window.CD_AUTO_PLANNER = (function () {
             Object.keys(manualOverrides).forEach(function (oKey) {
                 if (oKey.indexOf(rowPrefix) !== 0) return;
                 var ck = oKey.substring(rowPrefix.length);
-                // Overrides von Continuous-Coverage-Folgezeilen ("c1-...") gehören
-                // nicht zur Basiszeile.
-                if (/^c\d+-/.test(ck)) return;
+                // Overrides von Continuous-Coverage-Folgezeilen ("c1-...") und
+                // Soak-Rotationszeilen ("s2-...") gehören nicht zur Basiszeile.
+                if (/^[cs]\d+-/.test(ck)) return;
                 if (iterSlots.indexOf(ck) === -1) iterSlots.push(ck);
             });
 
@@ -1236,50 +1309,11 @@ window.CD_AUTO_PLANNER = (function () {
 
                 if (hasOverride) {
                     var ov = manualOverrides[oKey];
-                    if (ov.skip) {
-                        row.slots[slotKey] = { player: null, dbName: null, auto: false, skipped: true };
-                        return;
-                    }
-
-                    if (ov.isExtraPlaceholder) {
-                        row.slots[slotKey] = { isExtraPlaceholder: true };
-                        return;
-                    }
-
-                    if (ov.isVirtualCategoryKey) {
-                        var vCat = categories[ov.isVirtualCategoryKey];
-                        if (vCat) {
-                            row.slots[slotKey] = {
-                                isVirtual: true,
-                                player: normalizePlayerForPlanner(ov.player === 'Alle' || ov.player === 'ALL' ? vCat.defaultPlayer : ov.player),
-                                dbName: '',
-                                note: vCat.defaultNote || '',
-                                tts: vCat.defaultTts || '',
-                                varname: vCat.defaultName || '',
-                                icon: vCat.defaultIcon || '',
-                                auto: false,
-                                skipped: false,
-                                isVirtualCategoryKey: ov.isVirtualCategoryKey
-                            };
-                            return;
-                        }
-                    }
-
-                    // Manuell zugewiesener Spieler, der nicht (mehr) im Roster ist →
-                    // NICHT einplanen/exportieren, sondern sichtbar als Warnung markieren.
-                    if (ov.player && ov.dbName && !isPlayerInRoster(ov.player)) {
-                        row.slots[slotKey] = {
-                            player: ov.player, dbName: ov.dbName,
-                            dbClass: ov.dbClass, spellId: ov.spellId,
-                            cooldownSec: ov.cooldownSec, durationSec: ov.durationSec,
-                            auto: false, notInRoster: true
-                        };
-                        return;
-                    }
-
-                    row.slots[slotKey] = JSON.parse(JSON.stringify(ov));
-                    row.slots[slotKey].auto = false;
-                    if (ov.player && ov.dbName) {
+                    var ovSlot = buildSlotFromOverride(ov);
+                    row.slots[slotKey] = ovSlot;
+                    // Nur echte Zuweisungen belegen den Spieler-Cooldown.
+                    if (!ovSlot.skipped && !ovSlot.isExtraPlaceholder && !ovSlot.isVirtual
+                        && !ovSlot.notInRoster && ov.player && ov.dbName) {
                         markUsed(ov.player, ov.dbName, ov.cooldownSec || 180, row.absTime);
                     }
                     return;
@@ -2171,6 +2205,9 @@ window.CD_AUTO_PLANNER = (function () {
                     catKey: "tank_soak_phys",
                     planOpts: { expectedHitDmg: 1800000, threshold: 0.50, swingSec: 1.5 } // nur Fallback
                 });
+                // Die Rotationszeilen entstehen erst hier - manuelle CDs, die in
+                // einer dieser Zeilen stehen, jetzt nachziehen.
+                applyOverridesToExpandedRows(assignments);
             }
 
             renderTimeline(assignments);
@@ -3578,6 +3615,125 @@ window.CD_AUTO_PLANNER = (function () {
     // Trigger = Event-Typ | Condition = # | Zeit = Delay | CD = DB-Name
     // ══════════════════════════════════════════════════════════════
 
+    // ══════════════════════════════════════════════════════════════
+    // MATRIX ↔ CD-PLANER: gemeinsame Zuordnung
+    // ══════════════════════════════════════════════════════════════
+    // Export und Import müssen dieselbe Antwort auf die Frage geben: welche
+    // Planer-Zeile (Auslöser + #) gehört zu welcher Matrix-Zeile? Deshalb
+    // berechnet BEIDE Richtungen dieselbe Funktion. Läuft das auseinander,
+    // schreibt der Import CDs in den falschen Cast.
+
+    // Alle exportfähigen Slots einer Zeile (Kategorie-Slots, Mehrfach-Instanzen
+    // "any_dr@2" und Zusatz-CDs "extra_1").
+    function collectExportableSlots(row) {
+        var validSlots = [];
+        Object.keys(row.slots || {}).forEach(function (slotKey) {
+            var slot = row.slots[slotKey];
+            if (!slot || slot.skipped || slot.isExtraPlaceholder || slot.notInRoster || slot.spreadGap) return;
+            if (!slot.isVirtual && (!slot.player || !slot.dbName || slot.player === '__SKIP__')) return;
+            slot._catKey = slotKey; // Store slotKey for later use
+            validSlots.push(slot);
+        });
+        return validSlots;
+    }
+
+    // Auslöser / NPC / # / Zeit einer Matrix-Zeile, so wie sie im CD-Planer
+    // landen. triggerCounts wird mitgezählt und MUSS über alle Zeilen in
+    // derselben Reihenfolge laufen.
+    function computeRowTrigger(row, triggerCounts) {
+        // triggerMap kann String (nur Trigger) oder Object ({ trigger, npc, percent }) sein
+        var mapEntry = row._sourceTriggerMap || (config.triggerMap && config.triggerMap[row.eventName]);
+        var triggerVal = '';
+        var npcVal = '';
+        var percentVal = null;
+        if (typeof mapEntry === 'string') {
+            triggerVal = mapEntry;
+        } else if (mapEntry && typeof mapEntry === 'object') {
+            triggerVal = mapEntry.trigger || '';
+            npcVal = mapEntry.npc || '';
+            if (mapEntry.percent !== undefined && mapEntry.percent !== null) {
+                percentVal = mapEntry.percent;
+            }
+        }
+
+        // triggerOverride aus Event-Manager überschreibt triggerMap
+        var ovEntry = eventOverrides[row.eventKey];
+        var triggerOv = ovEntry && ovEntry.triggerOverride;
+        if (triggerOv) {
+            if (triggerOv.mode === 'hp') {
+                var healthTrigger = null;
+                try {
+                    if (typeof TRIGGER_OPTIONS !== 'undefined') {
+                        var found = TRIGGER_OPTIONS.find(function (t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+                        if (found) healthTrigger = found.val;
+                    }
+                } catch (e) { /* ignore */ }
+                if (!healthTrigger && window.TRIGGER_OPTIONS) {
+                    var found2 = window.TRIGGER_OPTIONS.find(function (t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
+                    if (found2) healthTrigger = found2.val;
+                }
+                if (healthTrigger) triggerVal = healthTrigger;
+                npcVal = triggerOv.npc || '';
+                percentVal = (triggerOv.percent !== undefined) ? triggerOv.percent : null;
+            } else if (triggerOv.mode === 'cast') {
+                if (triggerOv.trigger) triggerVal = triggerOv.trigger;
+                npcVal = '';
+                percentVal = null;
+            }
+        }
+
+        var isHealthTrigger = triggerVal && triggerVal.indexOf('HEALTH') !== -1;
+        var isEncStartTrigger = triggerVal && triggerVal.indexOf('ENC_START') !== -1;
+
+        var conditionVal;
+        if (isEncStartTrigger) {
+            conditionVal = '1';
+        } else if (isHealthTrigger && percentVal !== null) {
+            conditionVal = String(percentVal);
+        } else if (triggerOv && triggerOv.mode === 'cast') {
+            conditionVal = String(row.castNum);
+        } else if (row._sourceEvent && typeof row._sourceEvent.forceTriggerCondition !== 'undefined') {
+            conditionVal = String(row._sourceEvent.forceTriggerCondition);
+        } else if (row._sourceEvent && row._sourceEvent._isFollowUp) {
+            conditionVal = String(triggerCounts[triggerVal] || 1);
+        } else if (row._isContinuous) {
+            conditionVal = String(triggerCounts[triggerVal] || 1);
+        } else {
+            triggerCounts[triggerVal] = (triggerCounts[triggerVal] || 0) + 1;
+            conditionVal = String(triggerCounts[triggerVal]);
+        }
+
+        var timeVal;
+        if (isEncStartTrigger) {
+            var cOff = row._continuousOffset || 0;
+            timeVal = String(Math.round((row.absTime || 0) + (row.delay || 0) - cOff));
+        } else {
+            timeVal = String(row.delay || 0);
+        }
+
+        return {
+            trigger: triggerVal,
+            npc: (isHealthTrigger && npcVal) ? npcVal : '',
+            isHealthTrigger: isHealthTrigger,
+            isEncStartTrigger: isEncStartTrigger,
+            condition: conditionVal,
+            time: timeVal
+        };
+    }
+
+    // Ein Durchlauf über alle Matrix-Zeilen in Export-Reihenfolge.
+    // Liefert [{ row, validSlots, trig }] - Basis für Export UND Import.
+    function buildExportIndex() {
+        var triggerCounts = {};
+        var out = [];
+        assignments.forEach(function (row) {
+            var validSlots = collectExportableSlots(row);
+            if (validSlots.length === 0) return;
+            out.push({ row: row, validSlots: validSlots, trig: computeRowTrigger(row, triggerCounts) });
+        });
+        return out;
+    }
+
     async function exportToPlanner() {
         if (!window.isManager) {
             if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
@@ -3589,7 +3745,6 @@ window.CD_AUTO_PLANNER = (function () {
 
         var prefix = container.id.replace('-planner-container', '');
         var rowNum = 1, exported = 0, skipped = 0;
-        var triggerCounts = {};
 
         // BATCH-MODE aktivieren: keine change-Events → keine setDoc-Calls aus handleAssignmentChange
         window._suspendAssignListeners = true;
@@ -3611,98 +3766,19 @@ window.CD_AUTO_PLANNER = (function () {
         }
 
         try {
-            assignments.forEach(function (row) {
-                // Alle Slots der Zeile einheitlich einsammeln: Kategorie-Slots,
-                // Mehrfach-Instanzen ("any_dr@2") und Zusatz-CDs ("extra_1").
-                var validSlots = [];
-                Object.keys(row.slots).forEach(function (slotKey) {
-                    var slot = row.slots[slotKey];
-                    if (!slot || slot.skipped || slot.isExtraPlaceholder || slot.notInRoster || slot.spreadGap) return;
-                    if (!slot.isVirtual && (!slot.player || !slot.dbName || slot.player === '__SKIP__')) return;
-                    slot._catKey = slotKey; // Store slotKey for later use
-                    validSlots.push(slot);
-                });
-
-                if (validSlots.length === 0) return;
-
-                // triggerMap kann String (nur Trigger) oder Object ({ trigger, npc, percent }) sein
-                var mapEntry = row._sourceTriggerMap || (config.triggerMap && config.triggerMap[row.eventName]);
-                var triggerVal = '';
-                var npcVal = '';
-                var percentVal = null;
-                if (typeof mapEntry === 'string') {
-                    triggerVal = mapEntry;
-                } else if (mapEntry && typeof mapEntry === 'object') {
-                    triggerVal = mapEntry.trigger || '';
-                    npcVal = mapEntry.npc || '';
-                    if (mapEntry.percent !== undefined && mapEntry.percent !== null) {
-                        percentVal = mapEntry.percent;
-                    }
-                }
-
-                // triggerOverride aus Event-Manager überschreibt triggerMap
-                var ovEntry = eventOverrides[row.eventKey];
-                var triggerOv = ovEntry && ovEntry.triggerOverride;
-                if (triggerOv) {
-                    if (triggerOv.mode === 'hp') {
-                        var healthTrigger = null;
-                        try {
-                            if (typeof TRIGGER_OPTIONS !== 'undefined') {
-                                var found = TRIGGER_OPTIONS.find(function (t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
-                                if (found) healthTrigger = found.val;
-                            }
-                        } catch (e) { /* ignore */ }
-                        if (!healthTrigger && window.TRIGGER_OPTIONS) {
-                            var found2 = window.TRIGGER_OPTIONS.find(function (t) { return t.val && t.val.indexOf('HEALTH') !== -1; });
-                            if (found2) healthTrigger = found2.val;
-                        }
-                        if (healthTrigger) triggerVal = healthTrigger;
-                        npcVal = triggerOv.npc || '';
-                        percentVal = (triggerOv.percent !== undefined) ? triggerOv.percent : null;
-                    } else if (triggerOv.mode === 'cast') {
-                        if (triggerOv.trigger) triggerVal = triggerOv.trigger;
-                        npcVal = '';
-                        percentVal = null;
-                    }
-                }
-
-                var isHealthTrigger = triggerVal && triggerVal.indexOf('HEALTH') !== -1;
-                var isEncStartTrigger = triggerVal && triggerVal.indexOf('ENC_START') !== -1;
-
-                var conditionVal;
-                if (isEncStartTrigger) {
-                    conditionVal = '1';
-                } else if (isHealthTrigger && percentVal !== null) {
-                    conditionVal = String(percentVal);
-                } else if (triggerOv && triggerOv.mode === 'cast') {
-                    conditionVal = String(row.castNum);
-                } else if (row._sourceEvent && typeof row._sourceEvent.forceTriggerCondition !== 'undefined') {
-                    conditionVal = String(row._sourceEvent.forceTriggerCondition);
-                } else if (row._sourceEvent && row._sourceEvent._isFollowUp) {
-                    conditionVal = String(triggerCounts[triggerVal] || 1);
-                } else if (row._isContinuous) {
-                    conditionVal = String(triggerCounts[triggerVal] || 1);
-                } else {
-                    triggerCounts[triggerVal] = (triggerCounts[triggerVal] || 0) + 1;
-                    conditionVal = String(triggerCounts[triggerVal]);
-                }
-
-                var timeVal;
-                if (isEncStartTrigger) {
-                    var cOff = row._continuousOffset || 0;
-                    timeVal = String(Math.round((row.absTime || 0) + (row.delay || 0) - cOff));
-                } else {
-                    timeVal = String(row.delay || 0);
-                }
+            buildExportIndex().forEach(function (item) {
+                var row = item.row;
+                var validSlots = item.validSlots;
+                var trig = item.trig;
 
                 validSlots.forEach(function (slot) {
-                    // Logische Zeile sammeln (noch nicht schreiben → Merge erfolgt danach)
+                    // Logische Zeile sammeln (noch nicht schreiben -> Merge erfolgt danach)
                     var entry = {
-                        trigger: triggerVal,
-                        npc: (isHealthTrigger && npcVal) ? npcVal : '',
-                        isHealthTrigger: isHealthTrigger,
-                        condition: conditionVal,
-                        time: timeVal,
+                        trigger: trig.trigger,
+                        npc: trig.npc,
+                        isHealthTrigger: trig.isHealthTrigger,
+                        condition: trig.condition,
+                        time: trig.time,
                         isVirtual: !!slot.isVirtual,
                         player: slot.player
                     };
@@ -3880,6 +3956,292 @@ window.CD_AUTO_PLANNER = (function () {
         if (window.showModal) window.showModal(msg);
     }
 
+    // ══════════════════════════════════════════════════════════════
+    // IMPORT ← CD-PLANER
+    // Liest die Zeilen des Advanced CD Planners und trägt sie als manuelle
+    // Einträge in die Matrix ein. Gegenstück zu exportToPlanner: die Zuordnung
+    // Planer-Zeile → Matrix-Zeile läuft über dieselbe Auslöser/#-Berechnung.
+    // ══════════════════════════════════════════════════════════════
+
+    // Alle Kategorien, in denen dieser Cooldown vorkommt (Reihenfolge = Kategorie-
+    // Reihenfolge). Damit landet ein importierter CD in seiner "richtigen" Spalte
+    // statt in einer Zusatzspalte.
+    function categoriesContainingCd(dbName) {
+        var hits = [];
+        Object.keys(categories).forEach(function (catKey) {
+            var cat = categories[catKey];
+            if (!cat || cat.isVirtual || !Array.isArray(cat.spells)) return;
+            var found = resolveCategory(catKey).some(function (sp) { return sp.dbName === dbName; });
+            if (found) hits.push(catKey);
+        });
+        return hits;
+    }
+
+    // Virtuelle Kategorie anhand ihres Anzeigenamens (so exportiert exportToPlanner sie)
+    function virtualCategoryByName(name) {
+        var hit = null;
+        Object.keys(categories).forEach(function (catKey) {
+            var cat = categories[catKey];
+            if (cat && cat.isVirtual && cat.name === name && !hit) hit = catKey;
+        });
+        return hit;
+    }
+
+    // Sucht in einer Matrix-Zeile den Slot, in den dieser CD gehört.
+    // taken = bereits in diesem Import belegte Slot-Keys dieser Zeile.
+    function pickSlotKeyForImport(row, dbName, player, taken) {
+        var requiredKeys = slotKeysForRequired(row.requiredCDs);
+        var candidateCats = categoriesContainingCd(dbName);
+
+        // 1) Exakt dieselbe Zuweisung ist schon da -> diesen Slot wiederverwenden
+        var exact = Object.keys(row.slots || {}).find(function (k) {
+            var s = row.slots[k];
+            return s && s.dbName === dbName && s.player === player && taken.indexOf(k) === -1;
+        });
+        if (exact) return exact;
+
+        // 2) Passende Kategorie-Spalte, die frei ist oder denselben CD hält
+        var ordered = requiredKeys.filter(function (k) { return candidateCats.indexOf(baseCatKey(k)) !== -1; });
+        var free = ordered.find(function (k) {
+            if (taken.indexOf(k) !== -1) return false;
+            var s = row.slots[k];
+            return !s || !s.player || s.unavailable || s.spreadGap || s.dbName === dbName;
+        });
+        if (free) return free;
+
+        // 3) Kategorie passt, ist aber am Event nicht gefordert -> eigene Spalte
+        var extraCat = candidateCats.find(function (c) { return taken.indexOf(c) === -1 && !(row.slots[c] && row.slots[c].player); });
+        if (extraCat) return extraCat;
+
+        // 4) Zusatz-Slot. Nummer so wählen, dass nichts überschrieben wird.
+        for (var n = 1; n <= 40; n++) {
+            var k = 'extra_' + n;
+            if (taken.indexOf(k) !== -1) continue;
+            var s = row.slots[k];
+            if (!s || !s.player) return k;
+        }
+        return null;
+    }
+
+    // Liest alle befüllten Zeilen des Advanced CD Planners aus dem DOM.
+    function readPlannerRows(prefix) {
+        var out = [];
+        for (var i = 1; i <= 300; i++) {
+            var rp = prefix + '-planner-row' + i;
+            var triggerEl = document.querySelector('[data-assignment-id="' + rp + '-trigger"]');
+            if (!triggerEl) continue;
+            var playerEl = document.querySelector('[data-assignment-id="' + rp + '-player"]');
+            var cdEl = document.querySelector('[data-assignment-id="' + rp + '-cooldown"]');
+            if (!triggerEl.value) continue;
+            if (!playerEl || !cdEl || !playerEl.value || !cdEl.value) continue;
+
+            var get = function (f) {
+                var el = document.querySelector('[data-assignment-id="' + rp + '-' + f + '"]');
+                return el && el.value ? el.value.trim() : '';
+            };
+            out.push({
+                rowNum: i,
+                trigger: triggerEl.value,
+                npc: get('npc'),
+                condition: get('condition') || '0',
+                time: get('time') || '0',
+                player: playerEl.value,
+                cooldown: cdEl.value,
+                note: get('note'),
+                tts: get('tts'),
+                varname: get('varname'),
+                icon: get('icon')
+            });
+        }
+        return out;
+    }
+
+    async function importFromPlanner() {
+        if (!window.isManager) {
+            if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+            return;
+        }
+        if (!assignments.length) {
+            return window.showModal && window.showModal("Die Matrix ist leer - erst „Auto-Zuweisen“ ausführen, damit es Zeilen zum Zuordnen gibt.");
+        }
+        var container = document.querySelector('[id$="-planner-container"]');
+        if (!container) return window.showModal && window.showModal("CD-Planer nicht gefunden.");
+        var prefix = container.id.replace('-planner-container', '');
+
+        var plannerRows = readPlannerRows(prefix);
+        if (plannerRows.length === 0) {
+            return window.showModal && window.showModal("Im Advanced CD Planner stehen keine vollständigen Zeilen (Auslöser + Spieler + Cooldown).");
+        }
+
+        // Index über die Matrix aufbauen: "TRIGGER|#" → alle Zeilen dieses Casts.
+        // Mehrere Zeilen pro Schlüssel sind normal (Soak-Rotation: alle
+        // Rotationszeilen hängen am selben Cast, unterscheiden sich aber in der
+        // Zeit). Deshalb wird unten zusätzlich über die Zeit ausgewählt.
+        var index = {};
+        buildExportIndex().forEach(function (item) {
+            var key = item.trig.trigger + '|' + item.trig.condition;
+            if (!index[key]) index[key] = [];
+            index[key].push(item);
+        });
+
+        // Wohin gehört eine Planer-Zeile? Kandidaten sind alle Matrix-Zeilen mit
+        // demselben Auslöser + #, sortiert nach Zeit-Nähe (bei der Soak-Rotation
+        // hängen mehrere Zeilen am selben Cast und unterscheiden sich nur darin).
+        // Eine Zeile, die diese Zuweisung bereits enthält, gewinnt immer - so
+        // bleibt Export → Import identisch und legt keine Dubletten an.
+        function pickPlacement(candidates, pr, takenPerRow) {
+            if (!candidates || candidates.length === 0) return null;
+            var want = parseFloat(pr.time);
+            if (isNaN(want)) want = 0;
+
+            var sorted = candidates.slice().sort(function (a, b) {
+                var ta = parseFloat(a.trig.time); if (isNaN(ta)) ta = 0;
+                var tb = parseFloat(b.trig.time); if (isNaN(tb)) tb = 0;
+                return Math.abs(ta - want) - Math.abs(tb - want);
+            });
+
+            // 1) Zeile, in der Spieler + CD schon genau so stehen
+            for (var i = 0; i < sorted.length; i++) {
+                var row = sorted[i].row;
+                var taken = takenPerRow[rowOverridePrefix(row)] || [];
+                var exact = Object.keys(row.slots || {}).find(function (k) {
+                    var s = row.slots[k];
+                    return s && s.dbName === pr.cooldown && s.player === pr.player && taken.indexOf(k) === -1;
+                });
+                if (exact) return { row: row, slotKey: exact };
+            }
+
+            // 2) Sonst die zeitlich nächste Zeile, in der noch ein Slot frei ist
+            for (var j = 0; j < sorted.length; j++) {
+                var r2 = sorted[j].row;
+                var t2 = takenPerRow[rowOverridePrefix(r2)] || [];
+                var sk = pickSlotKeyForImport(r2, pr.cooldown, pr.player, t2);
+                if (sk) return { row: r2, slotKey: sk };
+            }
+            return null;
+        }
+
+        // Vorschau rechnen, damit der Bestätigungsdialog sagen kann, was passiert
+        var planned = [];      // { row, slotKey, override }
+        var unmatched = [];    // Planer-Zeilen ohne passende Matrix-Zeile
+        var noSlot = [];       // zugeordnet, aber kein Platz in der Zeile
+        var takenPerRow = {};  // rowPrefix → belegte Slot-Keys
+
+        plannerRows.forEach(function (pr) {
+            // "1,3" → mehrere Casts
+            var conds = pr.condition.split(',').map(function (c) { return c.trim(); }).filter(Boolean);
+            if (conds.length === 0) conds = ['0'];
+
+            var matchedAny = false;
+            conds.forEach(function (cond) {
+                var candidates = index[pr.trigger + '|' + cond];
+                if (!candidates || candidates.length === 0) return;
+                matchedAny = true;
+
+                var placement = pickPlacement(candidates, pr, takenPerRow);
+                if (!placement) { noSlot.push(pr); return; }
+                var row = placement.row;
+
+                var rowPrefix = rowOverridePrefix(row);
+                if (!takenPerRow[rowPrefix]) takenPerRow[rowPrefix] = [];
+                var taken = takenPerRow[rowPrefix];
+
+                // Virtuelle Kategorie (Marker, Ansagen ...) wieder als solche eintragen
+                var virtKey = virtualCategoryByName(pr.cooldown);
+                if (virtKey) {
+                    var vSlotKey = taken.indexOf(virtKey) === -1 ? virtKey : null;
+                    if (!vSlotKey) { noSlot.push(pr); return; }
+                    taken.push(vSlotKey);
+                    planned.push({
+                        row: row, slotKey: vSlotKey,
+                        override: { player: pr.player, dbName: '__VIRTUAL__', isVirtualCategoryKey: virtKey }
+                    });
+                    return;
+                }
+
+                var slotKey = placement.slotKey;
+                taken.push(slotKey);
+
+                var dbEntry = cooldownsDB.find(function (cd) { return cd.name === pr.cooldown; });
+                var catSpell = resolveCategory(baseCatKey(slotKey)).find(function (sp) { return sp.dbName === pr.cooldown; });
+                planned.push({
+                    row: row, slotKey: slotKey,
+                    override: {
+                        player: pr.player,
+                        dbName: pr.cooldown,
+                        dbClass: dbEntry ? dbEntry.class : 'UNKNOWN',
+                        spellId: dbEntry ? dbEntry.spellId : '',
+                        cooldownSec: (catSpell && catSpell.cooldownSec) || parseInt(dbEntry && dbEntry.cooldownSec) || 180,
+                        durationSec: (catSpell && catSpell.durationSec) || parseInt(dbEntry && dbEntry.durationSec) || 0
+                    }
+                });
+            });
+            if (!matchedAny) unmatched.push(pr);
+        });
+
+        if (planned.length === 0) {
+            var hint = "Keine Planer-Zeile konnte einer Matrix-Zeile zugeordnet werden.\n\n"
+                + "Der Import ordnet über Auslöser + # zu - genau so, wie der Export sie schreibt. "
+                + "Passt beides nicht zusammen (z.B. weil die Events seitdem geändert wurden), "
+                + "hilft ein „In CD-Planer exportieren“ als gemeinsamer Ausgangspunkt.";
+            return window.showModal && window.showModal(hint);
+        }
+
+        // Was steht in einer angefassten Matrix-Zeile, kommt aber im Plan nicht
+        // vor? Der Import löscht nichts - der Nutzer soll aber wissen, dass die
+        // Matrix danach mehr enthält als sein Plan.
+        var leftovers = 0;
+        var touchedRows = [];
+        planned.forEach(function (pl) {
+            if (touchedRows.indexOf(pl.row) === -1) touchedRows.push(pl.row);
+        });
+        touchedRows.forEach(function (row) {
+            var taken = takenPerRow[rowOverridePrefix(row)] || [];
+            Object.keys(row.slots || {}).forEach(function (k) {
+                var sl = row.slots[k];
+                if (!sl || !sl.player || sl.player === '__SKIP__' || sl.skipped) return;
+                if (sl.notInRoster || sl.isExtraPlaceholder) return;
+                if (taken.indexOf(k) === -1) leftovers++;
+            });
+        });
+
+        var msg = "Advanced CD-Plan in die Matrix übernehmen?\n\n"
+            + "• " + planned.length + " Einträge werden als manuelle CDs gesetzt\n";
+        if (unmatched.length > 0) {
+            msg += "• " + unmatched.length + " Planer-Zeilen ohne passende Matrix-Zeile (bleiben unberührt)\n";
+        }
+        if (noSlot.length > 0) {
+            msg += "• " + noSlot.length + " Zeilen ohne freien Platz in ihrer Matrix-Zeile\n";
+        }
+        if (leftovers > 0) {
+            msg += "• " + leftovers + " CDs stehen in der Matrix, aber nicht im Plan - die bleiben stehen\n";
+        }
+        msg += "\nBestehende Matrix-Einträge werden dabei überschrieben, nichts wird gelöscht.\nFortfahren?";
+
+        var ok = true;
+        if (typeof window.showModal === 'function') {
+            var r = window.showModal(msg, true);
+            if (r && typeof r.then === 'function') ok = await r;
+        } else {
+            ok = confirm(msg);
+        }
+        if (!ok) return;
+
+        planned.forEach(function (p) {
+            manualOverrides[rowOverridePrefix(p.row) + '-' + p.slotKey] = p.override;
+        });
+
+        markDirty();
+        await runAutoAssign();
+
+        var done = planned.length + ' Einträge übernommen.';
+        if (unmatched.length > 0) done += '\n⚠ ' + unmatched.length + ' Zeilen nicht zugeordnet (Auslöser/# ohne Gegenstück).';
+        if (noSlot.length > 0) done += '\n⚠ ' + noSlot.length + ' Zeilen ohne freien Slot.';
+        if (leftovers > 0) done += '\n⚠ ' + leftovers + ' CDs in der Matrix stehen nicht im Plan (unverändert gelassen).';
+        done += '\n\nZum dauerhaften Sichern noch „Plan speichern“ klicken.';
+        if (window.showModal) window.showModal(done);
+    }
+
     function setPlannerSelect(id, value, suppressEvent) {
         var el = document.querySelector('[data-assignment-id="' + id + '"]');
         if (!el) return false;
@@ -3952,7 +4314,15 @@ window.CD_AUTO_PLANNER = (function () {
                             _contIdx: r._contIdx || 0,
                             _continuousOffset: r._continuousOffset || 0,
                             _sourceTriggerMap: r._sourceTriggerMap || null,
-                            soak: r.soak || null
+                            soak: r.soak || null,
+                            // Soak-Rotationszeilen: Nummer + die tatsächlich für
+                            // DIESE Zeile geltenden Kategorien mitspeichern. Ohne
+                            // beides zeigte die geladene Ansicht auf jeder
+                            // Rotationszeile alle Event-Kategorien (also lauter
+                            // leere Spalten) statt nur den Soak.
+                            _bloodrageExpanded: r._bloodrageExpanded || false,
+                            _soakIdx: r._soakIdx || 0,
+                            requiredCDs: r._bloodrageExpanded ? (r.requiredCDs || []) : null
                         };
                     })
                 }, { merge: false }
@@ -3996,14 +4366,21 @@ window.CD_AUTO_PLANNER = (function () {
                         }
                         var ov = eventOverrides[r.eventKey] || {};
                         r.icon = ov.icon !== undefined ? ov.icon : (evtObj.icon || '');
-                        r.requiredCDs = ov.requiredCDs !== undefined ? ov.requiredCDs : (evtObj.requiredCDs || []);
+
+                        // Expandierte Soak-Zeilen bringen ihre eigenen Kategorien mit
+                        // (nur der Soak, bei der ersten Zeile zusätzlich der Rest des
+                        // Events). Die dürfen nicht vom Event überschrieben werden.
+                        var isExpandedSoak = !!r._bloodrageExpanded && Array.isArray(r.requiredCDs);
+                        if (!isExpandedSoak) {
+                            r.requiredCDs = ov.requiredCDs !== undefined ? ov.requiredCDs : (evtObj.requiredCDs || []);
+                        }
 
                         // Eskalation genauso auswerten wie generateTimeline, sonst
                         // bekäme jeder Cast des Events dieselben Kategorien - in der
                         // geladenen (Nur-Lese-)Ansicht stünde dann überall „kein CD
                         // frei", wo bewusst gar keiner geplant war.
                         var escR = ov.escalationRanges !== undefined ? ov.escalationRanges : (evtObj.escalationRanges || []);
-                        if (escR && escR.length) {
+                        if (!isExpandedSoak && escR && escR.length) {
                             var resetN = ov.resetEscalation !== undefined ? ov.resetEscalation : (evtObj.resetEscalation || 0);
                             var cn = r.castIdx || r.castNum || 1;
                             if (resetN) cn = ((cn - 1) % resetN) + 1;
@@ -4740,6 +5117,7 @@ window.CD_AUTO_PLANNER = (function () {
             renderStrategyPanel();
 
             injectResetEventsButton();
+            injectImportButton();
             injectClearPlannerButton();
             injectWipeButton();
         }
@@ -4754,7 +5132,7 @@ window.CD_AUTO_PLANNER = (function () {
         var MANAGER_ONLY_IDS = [
             'btn-auto-assign', 'btn-export-to-planner', 'btn-save-auto-plan',
             'btn-clear-auto', 'btn-save-categories', 'btn-clear-planner',
-            'btn-reset-events', 'btn-wipe-db', 'planner-danger-zone',
+            'btn-reset-events', 'btn-wipe-db', 'planner-danger-zone', 'btn-import-from-planner',
             'cd-categories-admin', 'auto-planner-strategy'
         ];
 
@@ -5052,6 +5430,33 @@ window.CD_AUTO_PLANNER = (function () {
         } catch (e) {
             console.error("[Auto-Planner] resetEvents error:", e);
         }
+    }
+
+    // ── Dynamischer Import-Button (CD-Planer → Matrix) ──
+    // Sitzt direkt neben dem Export, damit beide Richtungen beieinander liegen.
+    function injectImportButton() {
+        if (!window.isManager) return;
+        if (document.getElementById('btn-import-from-planner')) return;
+
+        var exportBtn = document.getElementById('btn-export-to-planner');
+        if (!exportBtn || !exportBtn.parentNode) return;
+
+        var importBtn = document.createElement('button');
+        importBtn.id = 'btn-import-from-planner';
+        importBtn.className = 'bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 rounded text-xs border border-amber-400';
+        importBtn.innerHTML = '⬆️ Aus CD-Planer importieren';
+        importBtn.title = 'Übernimmt die Zeilen des Advanced CD Planners als manuelle CDs in die Matrix. '
+            + 'Zugeordnet wird über Auslöser + # - also genau umgekehrt zum Export.';
+
+        exportBtn.parentNode.insertBefore(importBtn, exportBtn.nextSibling);
+
+        importBtn.addEventListener('click', function () {
+            if (!window.isManager) {
+                if (window.showModal) window.showModal("Nur Gildenräte können diese Aktion ausführen.");
+                return;
+            }
+            importFromPlanner();
+        });
     }
 
     // ── Dynamischer Clear-Button für Advanced CD-Plan ──
