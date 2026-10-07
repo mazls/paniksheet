@@ -3909,7 +3909,7 @@ window.CD_AUTO_PLANNER = (function () {
                 var probeEl = document.querySelector('[data-assignment-id="' + prefix + '-planner-row' + probe + '-trigger"]');
                 if (probeEl && probeEl.value) lastUsedRow = probe;
             }
-            var clearFields = ['trigger', 'npc', 'condition', 'time', 'player', 'cooldown', 'note', 'tts', 'varname', 'icon'];
+            var clearFields = ['trigger', 'npc', 'condition', 'time', 'player', 'cooldown', 'note', 'tts', 'varname', 'icon', 'extra'];
             for (var clr = rowNum; clr <= lastUsedRow; clr++) {
                 var clrPrefix = prefix + '-planner-row' + clr;
                 clearFields.forEach(function (f) {

@@ -1212,6 +1212,7 @@ window.setupBossListener = function(bossId) {
         // 'assignments' = alles außer den Meta-Feldern
         const assignments = { ...rawData };
         delete assignments._rosterPatches;
+        window.lastBossAssignments = assignments; // für „Gilt auch für“ (extra-triggers.js)
         
         // Effektiver Roster = globalRoster + bossPatches
         const effectiveRoster = window.RosterPatches.buildEffectiveRoster(window.rosterData || [], bossId);
@@ -1277,6 +1278,7 @@ window.setupBossListener = function(bossId) {
                     input.value = val;
                 }
             });
+            if (window.refreshExtraTriggers) window.refreshExtraTriggers();
         };
 
         if (window._snapshotFirstLoad) {

@@ -284,6 +284,8 @@ window.generateGlobalWaString = async function() {
 
     // --- 2. HILFSFUNKTION: CD-Planner Export für einen Boss ---
     function buildCdExportForBoss(bossId, data) {
+        // Zeilen mit „Gilt auch für“ in Einzelzeilen auflösen
+        if (window.expandExtraTriggers) data = window.expandExtraTriggers(data);
         let entries = [];
         const npcName = data[`${bossId}-npc_name`]?.text || "Unknown NPC";
 
@@ -665,7 +667,7 @@ window.generateGlobalWaString = async function() {
 
         checked.forEach(cb => {
             const bossId = cb.dataset.bossId;
-            const data = bossDataMap[bossId];
+            const data = bossDataMap[bossId] && window.expandExtraTriggers ? window.expandExtraTriggers(bossDataMap[bossId]) : bossDataMap[bossId];
             if (data) {
                 // Roh-Anzahl der Trigger-Zeilen für Skip-Statistik
                 const rawCount = Object.keys(data)
@@ -829,14 +831,19 @@ window.updatePlannerSummary = function() {
         const varnameVal = varnameEl && varnameEl.value ? varnameEl.value.trim() : "";
 
         const entry = { time: timeVal, timeSec: timeSeconds, player: playerVal, playerColor: playerColor, cd: cdText, color: cdColor, note: noteVal, varname: varnameVal };
-        const isHealth = triggerText.includes("Health") || triggerVal.includes("HEALTH");
-        const isEncStart = triggerVal.includes("ENC_START");
-        if (triggerFirstRow[triggerText] === undefined) triggerFirstRow[triggerText] = i;
 
         // --- KOMMA SPLIT (z.B. "7, 22") ---
         const conditions = conditionRaw.split(',').map(s => s.trim()).filter(s => s !== "");
         if (conditions.length === 0) conditions.push("0");
 
+        // „Gilt auch für“: dieselbe Zeile zusätzlich unter weiteren Triggern einsortieren
+        const extraTriggers = (window.getRowExtraTriggers ? window.getRowExtraTriggers(`${prefix}-planner-row${i}`) : [])
+            .map(v => { const o = Array.from(triggerEl.options).find(x => x.value === v); return o ? { val: v, text: o.text } : null; })
+            .filter(Boolean);
+        [{ val: triggerVal, text: triggerText }, ...extraTriggers].forEach(({ val: triggerVal, text: triggerText }) => {
+        const isHealth = triggerText.includes("Health") || triggerVal.includes("HEALTH");
+        const isEncStart = triggerVal.includes("ENC_START");
+        if (triggerFirstRow[triggerText] === undefined) triggerFirstRow[triggerText] = i;
         conditions.forEach(cond => {
             const sortValue = parseFloat(cond) || 0;
 
@@ -850,6 +857,7 @@ window.updatePlannerSummary = function() {
                 if (!seqGroups[key]) seqGroups[key] = { title: `#${cond} ${triggerText}`, triggerName: triggerText, count: sortValue, isEncStart: isEncStart, entries: [] };
                 seqGroups[key].entries.push({ ...entry });
             }
+        });
         });
     }
 
@@ -939,6 +947,9 @@ window.initPlannerRowFeatures = function(containerId) {
     if (!container) return;
 
     const prefix = containerId.replace('-rows-container', '');
+
+    // 0. „Gilt auch für“-Buttons neben den Triggern (static/js/extra-triggers.js)
+    if (window.initExtraTriggerButtons) window.initExtraTriggerButtons(container);
 
     // 1. SORTABLE (Zeilen verschieben)
 if (typeof Sortable !== 'undefined') {
@@ -2710,7 +2721,9 @@ async function buildDiscordEmbeds(raidInfo, selection) {
         // --- CD-Planer ---
         if (incCDs) {
             const cdEntries = [];
-            Object.keys(data).forEach(key => {
+            const cdData = window.expandExtraTriggers ? window.expandExtraTriggers(data) : data;
+            Object.keys(cdData).forEach(key => {
+                const data = cdData;
                 if (!key.includes('-planner-row') || !key.endsWith('-player')) return;
                 const playerVal = data[key]?.player;
                 if (!playerVal) return;
