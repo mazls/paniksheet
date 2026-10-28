@@ -25,6 +25,45 @@
 
 <body class="pt-4">
 
+    <!-- Startseite: Hinweis auf den neuen Raidplaner, das alte Sheet bleibt erreichbar -->
+    <style>
+        #start-gate { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(15, 12, 8, 0.82); backdrop-filter: blur(4px); }
+        #start-gate .gate-box { max-width: 30rem; width: 100%; text-align: center; padding: 2rem 1.5rem; border: 1px solid #c79c3f; border-radius: 0.5rem; background: linear-gradient(180deg, rgba(78, 62, 42, 0.96), rgba(43, 34, 25, 0.98)); box-shadow: 0 6px 30px rgba(0, 0, 0, 0.7); }
+        #start-gate h1 { font-size: 2.25rem; font-weight: 700; color: #ffc72c; letter-spacing: 0.15em; text-shadow: 0 2px 0 #1a1008; }
+        #start-gate p { margin-top: 0.75rem; color: #dcc89d; line-height: 1.5; }
+        #start-gate .gate-actions { margin-top: 1.75rem; display: flex; flex-direction: column; gap: 0.75rem; }
+        #start-gate a, #start-gate button { display: block; padding: 0.85rem 1rem; border-radius: 0.375rem; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; }
+        #start-gate .gate-new { color: #ffd100; text-shadow: 0 1px 1px #000; background: linear-gradient(180deg, #b52a1d 0%, #85170e 55%, #641009 100%); border: 1px solid #d8ad4f; }
+        #start-gate .gate-new:hover { background: linear-gradient(180deg, #cf3526 0%, #9d1d12 55%, #74130a 100%); color: #fff3b0; }
+        #start-gate .gate-old { color: #f6eedb; background: linear-gradient(180deg, #62503a, #473929); border: 1px solid #8f7140; }
+        #start-gate .gate-old:hover { border-color: #e0b85a; color: #ffd100; }
+        #start-gate a:focus-visible, #start-gate button:focus-visible { outline: 2px solid #f8b700; outline-offset: 2px; }
+        #start-gate small { display: block; margin-top: 0.4rem; font-weight: 400; font-size: 0.8rem; opacity: 0.8; }
+    </style>
+    <div id="start-gate" role="dialog" aria-modal="true" aria-labelledby="start-gate-title">
+        <div class="gate-box">
+            <h1 id="start-gate-title">P Ä N I K</h1>
+            <p>Unsere Raidplanung ist umgezogen. Einteilungen, Cooldowns und Roster findest du jetzt im neuen Raidplaner.</p>
+            <div class="gate-actions">
+                <a class="gate-new" href="https://panik-raidplaner.web.app">Zum neuen Raidplaner<small>panik-raidplaner.web.app</small></a>
+                <button type="button" class="gate-old" id="start-gate-old">Weiter zum alten Sheet<small>Mists of Pandaria</small></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var gate = document.getElementById('start-gate');
+            var seen = false;
+            try { seen = sessionStorage.getItem('paniksheet-old') === '1'; } catch (e) { }
+            if (seen) { gate.remove(); return; }
+            document.getElementById('start-gate-old').addEventListener('click', function () {
+                try { sessionStorage.setItem('paniksheet-old', '1'); } catch (e) { }
+                gate.remove();
+            });
+            gate.querySelector('.gate-new').focus();
+        })();
+    </script>
+
     <video autoplay muted loop playsinline id="background-video">
         <source src="static/background.webm" type="video/webm">
     </video>
